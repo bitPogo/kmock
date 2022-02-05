@@ -20,5 +20,15 @@ object Version {
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
         const val spotless = "6.2.0"
+
+        /**
+         * [KSP](https://github.com/google/ksp)
+         */
+        const val ksp = "1.6.10-1.0.2"
+    }
+
+    val antibytes = Antibytes
+    object Antibytes {
+        val test = "f0f5eec"
     }
 }
