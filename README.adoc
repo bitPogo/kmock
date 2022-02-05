@@ -19,10 +19,10 @@ endif::[]
 ++++
 <div align="center">
     <p><!-- PROJECT TITLE -->
-        <h3>Antibytes  Test-Utils-KMP library</h3>
+        <h3>Antibytes  KMock library</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
-        A crossplatfrom library with some convenience tools for testing on Kotlin Multiplatform
+        A crossplatfrom mock framework for Kotlin Multiplatform
     </p>
     <p><!-- PROJECT DOCUMENTATION -->
         <a href="README.adoc"><strong>Explore the docs »</strong></a>
