@@ -26,4 +26,9 @@ object Version {
          */
         const val ksp = "1.6.10-1.0.2"
     }
+
+    val antibytes = Antibytes
+    object Antibytes {
+        val test = "f0f5eec"
+    }
 }

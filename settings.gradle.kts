@@ -18,7 +18,7 @@ plugins {
 }
 
 include(
-    // ":kmock",
+    ":kmock",
 )
 
 buildCache {
