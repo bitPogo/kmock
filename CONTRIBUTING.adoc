@@ -1,0 +1,86 @@
+= Contributing
+:link-repository: https://github.com/bitPogo/kmock
+:doctype: article
+:toc: macro
+:toclevels: 2
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
+
+When contributing to this project, this document should help you get started.
+
+[discrete]
+==== Table Of Contents
+
+toc::[]
+
+== Code Of Conduct
+
+This project adheres to the Contributor Covenant link:CODE-OF-CONDUCT.adoc[Code Of Conduct]. By participating, you are expected to uphold this code.
+
+== Issues
+
+We use GitHub issues to track bugs and enhancements.
+
+Issues are very valuable to this project, please feel free to open link:{link-repository}/issues[issues] for:
+
+* _**Questions**_ help us to improve the user experience
+* _**Ideas**_ are a great source for contributions
+* _**Problems**_ show where this project is lacking
+
+If you are reporting a problem, please provide as much information as possible, since this will help us to fix it. This includes, if possible, a description or small sample project how to reproduce the problem.
+
+Also please check out first if an issue had been already opened with your request.
+
+== Contribute Code
+
+=== Pull Request
+
+link:{link-repository}/pulls[Pull requests] are always welcome and great way to contribute to the project.
+
+If you contribute, you have:
+
+* made clear which problem you're trying to solve
+* followed our link:DEVELOPING.adoc[Development process]
+
+==== Create Pull Request
+
+Please use our title pattern: `{type of change} {short description}`:
+
+* `type of change`:
+- *Add* for new features or functionality
+- *Change* for changes in existing features or functionality
+- *Remove* for removed features or functionality
+- *Fix* for any bug fixes
+- *Security* in case of vulnerabilities
+- *Bump* for dependency updates
+* `short description` of your change
+
+Example:
+
+* Add awesome hashing algorithm
+
+Pull requests must fill the provided template. Put N/A when a paragraph cannot be filled.
+
+*Labels* should be used (enhancement,bugfix, help wanted etc...) to categorise your contribution.
+
+Important:: Work in progress pull-requests should be created as a draft.
+
+==== Code Review
+
+Your contribution has to meet these criteria:
+
+* [ ] Functional and fitting in the project
+* [ ] Code style and naming conventions followed
+* [ ] Test written and passing
+* [ ] Continuous Integration build passing
+* [ ] Cross platform testing done for all supported platforms
+* [ ] Documentation updated (if necessary)
+* [ ] Changelog updated (if necessary)

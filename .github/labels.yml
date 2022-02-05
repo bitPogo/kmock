@@ -1,0 +1,68 @@
+- name: bug
+  description: Something isn't working
+  color: d73a4a
+- name: ci
+  description: CI/CD
+  color: dce775
+- name: build
+  description: build tools
+  color: dce775
+- name: dependencies
+  description: Pull requests that update a dependency file
+  color: dce775
+- name: scripts
+  description: Gradle script changes
+  color: ffc999
+- name: documentation
+  description: Improvements or additions to documentation
+  color: 0075ca
+- name: enhancement
+  description: New feature or request
+  color: 64b5f6
+- name: feature
+  description: A new feature!
+  color: 26A763
+- name: good first issue
+  description: Good for newcomers
+  color: ffd54f
+- name: help wanted
+  description: Extra attention is needed
+  color: f043e1
+- name: performance
+  description: Performance topics
+  color: 64b5f6
+- name: question
+  description: Further information is requested
+  color: ba68c8
+- name: security
+  description: Security issue or vulnerability
+  color: e57373
+- name: breaking
+  description: Breaking change
+  color: f21d32
+
+# Meta
+- name: blocked
+  description: This is blocked
+  color: f7ae7e
+- name: duplicate
+  description: This issue or pull request already exists
+  color: cfd3d7
+- name: invalid
+  description: This doesn't seem right
+  color: ff088c
+- name: wontfix
+  description: This will not be worked on
+  color: cfd3d7
+- name: DO NOT MERGE
+  description: Not ready yet!
+  color: e56992
+
+# Library
+- name: kmock-gradle
+  description: KMock Gradle Plugin
+  color: 000080
+
+- name: kmock
+  description: KMock
+  color: 000080

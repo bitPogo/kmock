@@ -1,0 +1,22 @@
+build:
+  - .github/**/*
+
+scripts:
+  - buildSrc/src/main/kotlin/**/script/**/*.kts
+
+dependencies:
+  - buildSrc/**/*
+  - gradlePlugin/**/*
+
+documentation:
+  - docs/**/*
+  - README.adoc
+  - LICENSE
+  - CHANGELOG.adoc
+  - CODE-OF-CONDUCT.adoc
+  - CONTRIBUTION.adoc
+  - readmeOSS.adoc
+
+# Library
+test-utils:
+  - kmock-gradle/**/*

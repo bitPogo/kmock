@@ -1,0 +1,25 @@
+name: Antibytes CI - Pull-Request Precheck
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened, assigned, unassigned]
+    branches:
+      - main
+      - release/*
+      - core/*
+      - plugin/*
+      - bugfix/*
+
+jobs:
+  pull-request-precheck:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Danger
+        uses: docker://ghcr.io/danger/danger-kotlin:1.0.0
+        with:
+          args: --failOnErrors --no-publish-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,45 @@
+= Changelog
+:link-repository: https://github.com/bitPogo/kmock
+:doctype: article
+:toc: macro
+:toclevels: 1
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
+
+All important changes of this project must be documented in this file.
+
+The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
+and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+[discrete]
+==== Versions
+
+toc::[]
+
+== link:{link-repository}/releases/latest[Unreleased]
+
+=== Added
+
+=== Changed
+
+=== Deprecated
+
+=== Removed
+
+=== Fixed
+
+=== Security
+
+=== Bumped
+
+=== Deprecated
+
+=== Migration

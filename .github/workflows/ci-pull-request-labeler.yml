@@ -1,0 +1,12 @@
+name: Antibytes CI - Pull-Request Labeler
+
+on:
+  - pull_request
+
+jobs:
+  add-labels-to-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

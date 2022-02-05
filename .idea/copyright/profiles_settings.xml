@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="antibytes-license">
+    <module2copyright>
+      <element module="All" copyright="antibytes-license" />
+    </module2copyright>
+  </settings>
+</component>

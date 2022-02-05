@@ -1,0 +1,24 @@
+name: Antibytes CI - Label configuration
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/*
+      - core/*
+      - plugin/*
+      - bugfix/*
+    paths:
+      - '.github/labels.yml'
+  workflow_dispatch:
+
+jobs:
+  configure-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: micnncim/action-label-syncer@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          manifest: .github/labels.yml
