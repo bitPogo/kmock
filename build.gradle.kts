@@ -30,6 +30,7 @@ allprojects {
         addCustomRepositories()
         mavenCentral()
         google()
+        jcenter()
     }
 
     configurations.all {
@@ -48,6 +49,6 @@ allprojects {
 }
 
 tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "7.3.3"
+    gradleVersion = "7.2"
     distributionType = Wrapper.DistributionType.ALL
 }

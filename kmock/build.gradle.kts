@@ -30,18 +30,32 @@ antiBytesPublishing {
 kotlin {
     android()
 
+    js(IR) {
+        nodejs()
+        browser()
+    }
+
     jvm()
+
+    ios()
+
+    linuxX64()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.common)
+                implementation(Dependency.multiplatform.stately.isolate)
+                implementation(Dependency.multiplatform.stately.concurrency)
+
+                implementation(LocalDependency.antibytes.test.core)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(Dependency.multiplatform.test.common)
                 implementation(Dependency.multiplatform.test.annotations)
+                implementation(Dependency.multiplatform.coroutines.common)
 
                 implementation(LocalDependency.antibytes.test.annotations)
                 implementation(LocalDependency.antibytes.test.core)
@@ -66,6 +80,21 @@ kotlin {
             }
         }
 
+        val jsMain by getting {
+            dependencies {
+                dependsOn(commonMain)
+                implementation(Dependency.multiplatform.kotlin.js)
+                implementation(Dependency.js.nodejs)
+            }
+        }
+        val jsTest by getting {
+            dependencies {
+                dependsOn(commonTest)
+
+                implementation(Dependency.multiplatform.test.js)
+            }
+        }
+
         val jvmMain by getting {
             dependencies {
                 dependsOn(commonMain)
@@ -78,6 +107,66 @@ kotlin {
 
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
+            }
+        }
+
+
+
+        val nativeMain by creating {
+            dependencies {
+                dependsOn(commonMain)
+            }
+        }
+
+        val nativeTest by creating {
+            dependencies {
+                dependsOn(commonTest)
+            }
+        }
+
+        val darwinMain by creating {
+            dependencies {
+                dependsOn(nativeMain)
+            }
+        }
+        val darwinTest by creating {
+            dependencies {
+                dependsOn(nativeTest)
+            }
+        }
+
+        val otherMain by creating {
+            dependencies {
+                dependsOn(nativeMain)
+            }
+        }
+
+        val otherTest by creating {
+            dependencies {
+                dependsOn(nativeTest)
+            }
+        }
+
+        val linuxX64Main by getting {
+            dependencies {
+                dependsOn(otherMain)
+            }
+        }
+
+        val linuxX64Test by getting {
+            dependencies {
+                dependsOn(otherTest)
+            }
+        }
+
+        val iosMain by getting {
+            dependencies {
+                dependsOn(darwinMain)
+            }
+        }
+        val iosTest by getting {
+            dependencies {
+                dependsOn(darwinTest)
             }
         }
     }
