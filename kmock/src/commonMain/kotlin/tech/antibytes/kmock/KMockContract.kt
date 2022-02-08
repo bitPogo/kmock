@@ -41,10 +41,16 @@ interface KMockContract {
 
         fun verify(
             exactly: Int? = null,
-            atLeast: Int? = null,
+            atLeast: Int = 1,
             atMost: Int? = null,
             action: () -> VerificationHandle
         )
+
+        companion object {
+            const val NOT_CALLED = "Call not found."
+            const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
+            const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
+        }
     }
 
     interface VerificationHandle {

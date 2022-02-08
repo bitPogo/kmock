@@ -58,7 +58,6 @@ kotlin {
                 implementation(Dependency.multiplatform.coroutines.common)
 
                 implementation(LocalDependency.antibytes.test.annotations)
-                implementation(LocalDependency.antibytes.test.core)
                 implementation(LocalDependency.antibytes.test.coroutine)
                 implementation(LocalDependency.antibytes.test.fixture)
             }
