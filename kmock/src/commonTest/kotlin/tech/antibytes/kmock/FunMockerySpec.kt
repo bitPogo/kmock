@@ -24,22 +24,22 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class MockerySpec {
+class FunMockerySpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
 
     @Test
     @JsName("fn0")
-    fun `It fulfils Mockery`() {
-        Mockery<Unit>(fixture.fixture()) fulfils KMockContract.Mockery::class
+    fun `It fulfils FunMockery`() {
+        FunMockery<Unit>(fixture.fixture()) fulfils KMockContract.FunMockery::class
     }
 
     @Test
     @JsName("fn1")
     fun `Given a returnValue is set it is threadsafe retrievable`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val value: String = fixture.fixture()
 
         // When
@@ -57,7 +57,7 @@ class MockerySpec {
     @JsName("fn2")
     fun `Given a returnValue is set with nullable value it is threadsafe retrievable`() {
         // Given
-        val mockery = Mockery<String?>(fixture.fixture())
+        val mockery = FunMockery<String?>(fixture.fixture())
         val value: String? = null
 
         // When
@@ -75,7 +75,7 @@ class MockerySpec {
     @JsName("fn3")
     fun `Given a returnValues is set with an emptyList it fails`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -89,7 +89,7 @@ class MockerySpec {
     @JsName("fn4")
     fun `Given a returnValues is set it is threadsafe retrievable`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val values: List<String> = fixture.listFixture()
 
         // When
@@ -107,7 +107,7 @@ class MockerySpec {
     @JsName("fn5")
     fun `Given a sideEffect is set it is threadsafe retrievable`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val effect: (Array<*>) -> String = { fixture.fixture() }
 
         // When
@@ -127,7 +127,7 @@ class MockerySpec {
     fun `Given invoke is called it fails iif no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = Mockery<String>(name)
+        val mockery = FunMockery<String>(name)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -146,7 +146,7 @@ class MockerySpec {
     fun `Given invoke is called it fails iif no ReturnValue Provider is set for JS`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = Mockery<String>(name)
+        val mockery = FunMockery<String>(name)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -161,7 +161,7 @@ class MockerySpec {
     @JsName("fn7")
     fun `Given invoke is called it returns the ReturnValue threadsafe`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val value: String = fixture.fixture()
 
         // When
@@ -181,7 +181,7 @@ class MockerySpec {
     @JsName("fn8")
     fun `Given invoke is called it returns the ReturnValues threadsafe`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val values: List<String> = fixture.listFixture(size = 5)
 
         // When
@@ -203,7 +203,7 @@ class MockerySpec {
     @JsName("fn9")
     fun `Given invoke is called it returns the last ReturnValue if the given List is down to one value threadsafe`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val values: List<String> = fixture.listFixture(size = 1)
 
         // When
@@ -225,7 +225,7 @@ class MockerySpec {
     @JsName("fn10")
     fun `Given invoke is called it calls the given SideEffect and delegates values threadsafe`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: String = fixture.fixture()
@@ -259,7 +259,7 @@ class MockerySpec {
     @JsName("fn11")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val value: String = fixture.fixture()
         val values: List<String> = fixture.listFixture(size = 2)
 
@@ -281,7 +281,7 @@ class MockerySpec {
     @JsName("fn12")
     fun `Given invoke is called it uses SideEffect over ReturnValues`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val expected: String = fixture.fixture()
         val values: List<String> = fixture.listFixture(size = 2)
 
@@ -303,7 +303,7 @@ class MockerySpec {
     @JsName("fn13")
     fun `Given invoke is called it captures Arguments threadsafe`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val mockery = FunMockery<String>(fixture.fixture())
         val values: List<String> = fixture.listFixture(size = 5)
         val argument: String = fixture.fixture()
 
@@ -319,40 +319,71 @@ class MockerySpec {
         runBlockingTest {
             val actual = mockery.getArgumentsForCall(0)
 
-            actual.size mustBe 1
+            actual!!.size mustBe 1
             actual[0] mustBe argument
         }
     }
 
     @Test
     @JsName("fn14")
-    fun `Its default call count is 0`() {
-        Mockery<String>(fixture.fixture()).calls mustBe 0
+    fun `Given invoke is called it captures void Arguments threadsafe`() {
+        // Given
+        val mockery = FunMockery<String>(fixture.fixture())
+        val values: List<String> = fixture.listFixture(size = 5)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.returnValues = values
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            mockery.invoke()
+        }
+
+        runBlockingTest {
+            val actual = mockery.getArgumentsForCall(0)
+
+            actual mustBe null
+        }
     }
 
     @Test
     @JsName("fn15")
-    fun `Given invoke is called calls counts the Invocations`() {
+    fun `It reflects the given id`() {
         // Given
-        val mockery = Mockery<String>(fixture.fixture())
+        val name: String = fixture.fixture()
+
+        // When
+        val actual = FunMockery<String>(name).id
+
+        // Then
+        actual mustBe name
+    }
+
+    @Test
+    @JsName("fn16")
+    fun `Its default call count is 0`() {
+        FunMockery<String>(fixture.fixture()).calls mustBe 0
+    }
+
+    @Test
+    @JsName("fn17")
+    fun `Given invoke is called it increments the call counter threadsafe`() {
+        // Given
+        val mockery = FunMockery<String>(fixture.fixture())
         val values: List<String> = fixture.listFixture(size = 5)
-        val invocations = 5
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.returnValues = values.toList()
+            mockery.returnValues = values
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            for (x in 0 until invocations) {
-                mockery.invoke()
-            }
+            mockery.invoke()
         }
 
         runBlockingTest {
-            val actual = mockery.calls
-
-            actual mustBe invocations
+            mockery.calls mustBe 1
         }
     }
 }

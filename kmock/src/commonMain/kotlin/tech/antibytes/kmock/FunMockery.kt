@@ -12,15 +12,15 @@ import co.touchlab.stately.isolate.IsolateState
 import tech.antibytes.util.test.MockError
 import kotlin.math.max
 
-class Mockery<ReturnValue>(
-    private val name: String
-) : KMockContract.Mockery<ReturnValue> {
+class FunMockery<ReturnValue>(
+    override val id: String
+) : KMockContract.FunMockery<ReturnValue> {
     private val _returnValue: AtomicReference<ReturnValue?> = AtomicReference(null)
     private val _returnValues: AtomicReference<List<ReturnValue>?> = AtomicReference(null)
     private val _sideEffect: AtomicReference<((Array<out Any?>) -> ReturnValue)?> = AtomicReference(null)
     private val _calls: AtomicReference<Int> = AtomicReference(0)
     private val provider: AtomicReference<PROVIDER> = AtomicReference(PROVIDER.NO_PROVIDER)
-    private val arguments: IsolateState<MutableList<Array<out Any?>>> = IsolateState { mutableListOf() }
+    private val arguments: IsolateState<MutableList<Array<out Any?>?>> = IsolateState { mutableListOf() }
 
     private fun setProvider(provider: PROVIDER) {
         val activeProvider = max(
@@ -81,8 +81,16 @@ class Mockery<ReturnValue>(
         return value
     }
 
+    private fun guardArguments(arguments: Array<out Any?>): Array<out Any?>? {
+        return if (arguments.isEmpty()) {
+            null
+        } else {
+            arguments
+        }
+    }
+
     private fun captureArguments(arguments: Array<out Any?>) {
-        this.arguments.access { it.add(arguments) }
+        this.arguments.access { it.add(guardArguments(arguments)) }
     }
 
     private fun incrementInvocations() {
@@ -104,7 +112,7 @@ class Mockery<ReturnValue>(
             PROVIDER.RETURN_VALUE -> _returnValue.get() as ReturnValue
             PROVIDER.RETURN_VALUES -> retrieveValue()
             PROVIDER.SIDE_EFFECT -> _sideEffect.get()!!.invoke(arguments)
-            else -> throw MockError.MissingStub("Missing stub value for $name")
+            else -> throw MockError.MissingStub("Missing stub value for $id")
         }
     }
 
@@ -115,5 +123,5 @@ class Mockery<ReturnValue>(
         SIDE_EFFECT(3)
     }
 
-    override fun getArgumentsForCall(callIndex: Int): Array<out Any?> = arguments.access { it[callIndex] }
+    override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? = arguments.access { it[callIndex] }
 }
