@@ -100,7 +100,7 @@ class VerificationSpec {
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify(exactly = expectedCalls) {
+            verify(exactly = expectedCalls, atMost = 0) {
                 VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
             }
         }
@@ -110,6 +110,20 @@ class VerificationSpec {
 
     @Test
     @JsName("fn5")
+    fun `Given verify is called it passes if the covered mock matches the requirements`() {
+        // Given
+        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val givenCalls = 3
+        val expectedCalls = 1
+
+        // When
+        verify(exactly = givenCalls) {
+            VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+        }
+    }
+
+    @Test
+    @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
         // Given
         val verifierLower = VerifierStub(emptyList())
@@ -143,7 +157,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn7")
     fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
         // Given
         val handleMockery = FunMockeryStub(
@@ -176,7 +190,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match`() {
         // Given
         val name: String = fixture.fixture()
@@ -208,7 +222,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn9")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values`() {
         // Given
         val name: String = fixture.fixture()
@@ -247,7 +261,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn10")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -292,7 +306,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn11")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length while exceeding the range`() {
         // Given
         val name: String = fixture.fixture()
@@ -345,7 +359,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn12")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
@@ -403,7 +417,60 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn13")
+    fun `Given verifyStrictOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
+        // Given
+        val name1: String = fixture.fixture()
+        val name2: String = fixture.fixture()
+        val expectedCallIdx = 1
+        val referenceMockery1 = FunMockeryStub(
+            name1,
+            calls = fixture.fixture()
+        )
+        val referenceMockery2 = FunMockeryStub(
+            name2,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name1,
+            listOf(
+                0,
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name2,
+            listOf(
+                0,
+            )
+        )
+
+        val handle3 = VerificationHandle(
+            name1,
+            listOf(
+                expectedCallIdx,
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery1, 0),
+                Reference(referenceMockery2, 0),
+                Reference(referenceMockery1, expectedCallIdx),
+            )
+        )
+
+        // When
+        verifier.verifyStrictOrder {
+            add(handle1)
+            add(handle2)
+            add(handle3)
+        }
+    }
+
+    @Test
+    @JsName("fn14")
     fun `Given verifyOrder is called it fails if the amount captured calls is smaller than the given Order`() {
         // Given
         val verifier = VerifierStub(emptyList())
@@ -421,7 +488,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn15")
     fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
         val handleMockery = FunMockeryStub(
             fixture.fixture(),
@@ -453,7 +520,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn16")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found`() {
         // Given
         val name: String = fixture.fixture()
@@ -479,7 +546,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn17")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls`() {
         // Given
         val name: String = fixture.fixture()
@@ -520,7 +587,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn18")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls`() {
         // Given
         val name: String = fixture.fixture()
@@ -556,7 +623,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn19")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -602,7 +669,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn20")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -647,7 +714,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn21")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
@@ -700,7 +767,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn22")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies does not match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
