@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock
 
+import tech.antibytes.mock.FunMockeryStub
 import tech.antibytes.util.test.fixture.PublicApi
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -56,5 +57,79 @@ class VerificationChainBuilderSpec {
 
         // Then
         actual mustBe handles
+    }
+
+    @Test
+    @JsName("fn2")
+    fun `Given withArguments is called it uses the extension of FunMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = FunMockeryStub(name, 1)
+        val values = fixture.listFixture<String>().toTypedArray()
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            values
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.withArguments(mock, *(values.sorted()).toTypedArray())
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn3")
+    fun `Given withSameArguments is called it uses the extension of FunMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = FunMockeryStub(name, 1)
+        val values = fixture.listFixture<String>().toTypedArray()
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            values
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.withSameArguments(mock, *values)
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn4")
+    fun `Given withoutArguments is called it uses the extension of FunMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = FunMockeryStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            fixture.listFixture<String>().toTypedArray()
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.withoutArguments(mock, fixture.fixture<String>())
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
     }
 }
