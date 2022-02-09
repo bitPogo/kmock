@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock
 
+import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.mock.FunMockeryStub
 import tech.antibytes.mock.VerifierStub
-import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -148,11 +148,11 @@ class VerificationSpec {
         // Given
         val handleMockery = FunMockeryStub(
             fixture.fixture(),
-            calls = 3
+            calls = fixture.fixture()
         )
         val referenceMockery = FunMockeryStub(
             fixture.fixture(),
-            calls = 3
+            calls = fixture.fixture()
         )
 
         val handle = VerificationHandle(
@@ -184,7 +184,7 @@ class VerificationSpec {
         val actualCallIdx = 1
         val referenceMockery = FunMockeryStub(
             name,
-            calls = 3
+            calls = fixture.fixture()
         )
 
         val handle = VerificationHandle(
@@ -216,7 +216,7 @@ class VerificationSpec {
         val actualCallIdx = 2
         val referenceMockery = FunMockeryStub(
             name,
-            calls = 3
+            calls = fixture.fixture()
         )
 
         val handle = VerificationHandle(
@@ -255,7 +255,7 @@ class VerificationSpec {
         val actualCallIdx = 2
         val referenceMockery = FunMockeryStub(
             name,
-            calls = 3
+            calls = fixture.fixture()
         )
 
         val handle1 = VerificationHandle(
@@ -297,10 +297,9 @@ class VerificationSpec {
         // Given
         val name: String = fixture.fixture()
         val expectedCallIdx = 2
-        val actualCallIdx = 1
         val referenceMockery = FunMockeryStub(
             name,
-            calls = 3
+            calls = fixture.fixture()
         )
 
         val handle1 = VerificationHandle(
@@ -327,8 +326,8 @@ class VerificationSpec {
         val verifier = VerifierStub(
             listOf(
                 Reference(referenceMockery, 0),
-                Reference(referenceMockery, expectedCallIdx + 1),
-                Reference(referenceMockery, expectedCallIdx + 2)
+                Reference(referenceMockery, expectedCallIdx - 1),
+                Reference(referenceMockery, expectedCallIdx),
             )
         )
 
@@ -347,6 +346,64 @@ class VerificationSpec {
 
     @Test
     @JsName("fn11")
+    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with mixed References`() {
+        // Given
+        val name1: String = fixture.fixture()
+        val name2: String = fixture.fixture()
+        val expectedCallIdx = 2
+        val referenceMockery1 = FunMockeryStub(
+            name1,
+            calls = fixture.fixture()
+        )
+        val referenceMockery2 = FunMockeryStub(
+            name2,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name1,
+            listOf(
+                0,
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name2,
+            listOf(
+                0,
+            )
+        )
+
+        val handle3 = VerificationHandle(
+            name1,
+            listOf(
+                expectedCallIdx,
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery1, 0),
+                Reference(referenceMockery2, 0),
+                Reference(referenceMockery1, expectedCallIdx),
+            )
+        )
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyStrictOrder {
+                add(handle1)
+                add(handle2)
+                add(handle3)
+            }
+        }
+
+        error.message mustBe "The captured calls of $name1 exceeds the captured calls."
+    }
+
+    @Test
+    @JsName("fn12")
     fun `Given verifyOrder is called it fails if the amount captured calls is smaller than the given Order`() {
         // Given
         val verifier = VerifierStub(emptyList())
@@ -361,5 +418,342 @@ class VerificationSpec {
         }
 
         error.message mustBe "The given verification chain (has ${verifier.references.size} items) is exceeding the captured calls (1 were captured)."
+    }
+
+    @Test
+    @JsName("fn13")
+    fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
+        val handleMockery = FunMockeryStub(
+            fixture.fixture(),
+            calls = fixture.fixture()
+        )
+        val referenceMockery = FunMockeryStub(
+            fixture.fixture(),
+            calls = fixture.fixture()
+        )
+
+        val handle = VerificationHandle(
+            handleMockery.id,
+            listOf(1)
+        )
+
+        val verifier = VerifierStub(
+            listOf(Reference(referenceMockery, 0))
+        )
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyOrder {
+                add(handle)
+            }
+        }
+
+        error.message mustBe "Last referred invocation of ${handleMockery.id} was not found."
+    }
+
+    @Test
+    @JsName("fn14")
+    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found`() {
+        // Given
+        val name: String = fixture.fixture()
+        val expectedCallIdx = 0
+        val referenceMockery = FunMockeryStub(
+            name,
+            calls = fixture.fixture()
+        )
+
+        val handle = VerificationHandle(
+            name,
+            listOf(expectedCallIdx)
+        )
+
+        val verifier = VerifierStub(
+            listOf(Reference(referenceMockery, expectedCallIdx))
+        )
+
+        // When
+        verifier.verifyStrictOrder {
+            add(handle)
+        }
+    }
+
+    @Test
+    @JsName("fn15")
+    fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val expectedCallIdx1 = 1
+        val expectedCallIdx2 = 0
+        val referenceMockery = FunMockeryStub(
+            name,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name,
+            listOf(expectedCallIdx1)
+        )
+
+        val handle2 = VerificationHandle(
+            name,
+            listOf(expectedCallIdx2)
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery, expectedCallIdx1),
+                Reference(referenceMockery, expectedCallIdx2)
+            )
+        )
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyOrder {
+                add(handle1)
+                add(handle2)
+            }
+        }
+
+        error.message mustBe "Last referred invocation of $name was not found."
+    }
+
+    @Test
+    @JsName("fn16")
+    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val expectedCallIdx1 = 0
+        val expectedCallIdx2 = 1
+        val referenceMockery = FunMockeryStub(
+            name,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name,
+            listOf(expectedCallIdx1)
+        )
+
+        val handle2 = VerificationHandle(
+            name,
+            listOf(expectedCallIdx2)
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery, expectedCallIdx1),
+                Reference(referenceMockery, expectedCallIdx2)
+            )
+        )
+
+        // When
+        verifier.verifyOrder {
+            add(handle1)
+            add(handle2)
+        }
+    }
+
+    @Test
+    @JsName("fn17")
+    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls with various length`() {
+        // Given
+        val name: String = fixture.fixture()
+        val expectedCallIdx1 = 2
+        val expectedCallIdx2 = 3
+
+        val referenceMockery = FunMockeryStub(
+            name,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name,
+            listOf(
+                0,
+                1,
+                expectedCallIdx1
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name,
+            listOf(
+                0,
+                expectedCallIdx2
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery, 0),
+                Reference(referenceMockery, 1),
+                Reference(referenceMockery, expectedCallIdx1),
+                Reference(referenceMockery, expectedCallIdx2)
+            )
+        )
+
+        // When
+        verifier.verifyOrder {
+            add(handle1)
+            add(handle2)
+        }
+    }
+
+    @Test
+    @JsName("fn18")
+    fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls with various length`() {
+        // Given
+        val name: String = fixture.fixture()
+        val expectedCallIdx1 = 3
+        val expectedCallIdx2 = 2
+        val referenceMockery = FunMockeryStub(
+            name,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name,
+            listOf(
+                expectedCallIdx1
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name,
+            listOf(
+                expectedCallIdx2
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery, expectedCallIdx1),
+                Reference(referenceMockery, expectedCallIdx2)
+            )
+        )
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyOrder {
+                add(handle1)
+                add(handle2)
+            }
+        }
+
+        error.message mustBe "Last referred invocation of $name was not found."
+    }
+
+    @Test
+    @JsName("fn19")
+    fun `Given verifyOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
+        // Given
+        val name1: String = fixture.fixture()
+        val name2: String = fixture.fixture()
+        val expectedCallIdx = 2
+        val referenceMockery1 = FunMockeryStub(
+            name1,
+            calls = fixture.fixture()
+        )
+        val referenceMockery2 = FunMockeryStub(
+            name2,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name1,
+            listOf(
+                0,
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name2,
+            listOf(
+                0,
+            )
+        )
+
+        val handle3 = VerificationHandle(
+            name1,
+            listOf(
+                expectedCallIdx,
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery1, 0),
+                Reference(referenceMockery2, 0),
+                Reference(referenceMockery1, expectedCallIdx),
+            )
+        )
+
+        // When
+        verifier.verifyOrder {
+            add(handle1)
+            add(handle2)
+            add(handle3)
+        }
+    }
+
+    @Test
+    @JsName("fn20")
+    fun `Given verifyOrder is called it fails if the referenced CallIndicies does not match on multiple values with mixed References`() {
+        // Given
+        val name1: String = fixture.fixture()
+        val name2: String = fixture.fixture()
+        val expectedCallIdx = 2
+        val referenceMockery1 = FunMockeryStub(
+            name1,
+            calls = fixture.fixture()
+        )
+        val referenceMockery2 = FunMockeryStub(
+            name2,
+            calls = fixture.fixture()
+        )
+
+        val handle1 = VerificationHandle(
+            name1,
+            listOf(
+                0,
+            )
+        )
+
+        val handle2 = VerificationHandle(
+            name2,
+            listOf(
+                0,
+            )
+        )
+
+        val handle3 = VerificationHandle(
+            name1,
+            listOf(
+                expectedCallIdx + 1,
+            )
+        )
+
+        val verifier = VerifierStub(
+            listOf(
+                Reference(referenceMockery1, 0),
+                Reference(referenceMockery2, 0),
+                Reference(referenceMockery1, expectedCallIdx),
+            )
+        )
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyOrder {
+                add(handle1)
+                add(handle2)
+                add(handle3)
+            }
+        }
+
+        error.message mustBe "Last referred invocation of $name1 was not found."
     }
 }

@@ -6,8 +6,8 @@
 
 package tech.antibytes.kmock
 
-import tech.antibytes.kmock.KMockContract.Mockery
 import tech.antibytes.kmock.KMockContract.FunMockery
+import tech.antibytes.kmock.KMockContract.Mockery
 
 private fun traverseFunMock(
     mock: FunMockery<*>,

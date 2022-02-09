@@ -60,5 +60,6 @@ interface KMockContract {
         const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
         const val MISMATCHING_FUNCTION = "Excepted \$1, but got \$2."
         const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
+        const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
     }
 }

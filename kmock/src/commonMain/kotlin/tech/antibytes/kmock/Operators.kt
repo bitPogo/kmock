@@ -57,5 +57,3 @@ infix fun KMockContract.VerificationHandle.diff(
 infix fun KMockContract.VerificationHandle.xor(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle = this.diff(other)
-
-

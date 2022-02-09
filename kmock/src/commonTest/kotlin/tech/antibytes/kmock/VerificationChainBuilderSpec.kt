@@ -40,7 +40,7 @@ class VerificationChainBuilderSpec {
     }
 
     @Test
-    @JsName("fn0")
+    @JsName("fn1")
     fun `Given add and toList is called it adds the given Handles and return them as List`() {
         // Given
         val size = 5
