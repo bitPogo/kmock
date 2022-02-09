@@ -22,12 +22,11 @@ infix fun KMockContract.VerificationHandle.and(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle = this.union(other)
 
-
 infix fun KMockContract.VerificationHandle.intersect(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle {
     val set = this.callIndices
-        .filter { value -> other.callIndices.contains(value) }
+        .filter { value -> value in other.callIndices }
         .sorted()
 
     return VerificationHandle(
@@ -46,7 +45,7 @@ infix fun KMockContract.VerificationHandle.diff(
     val set = this.callIndices
         .toMutableSet()
         .also { it.addAll(other.callIndices) }
-        .filterNot { value -> this.callIndices.contains(value) && other.callIndices.contains(value) }
+        .filterNot { value -> value in this.callIndices && value in other.callIndices }
         .sorted()
 
     return VerificationHandle(
@@ -58,3 +57,5 @@ infix fun KMockContract.VerificationHandle.diff(
 infix fun KMockContract.VerificationHandle.xor(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle = this.diff(other)
+
+

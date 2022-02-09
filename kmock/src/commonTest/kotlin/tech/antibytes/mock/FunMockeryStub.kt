@@ -16,13 +16,13 @@ class FunMockeryStub(
 ) : KMockContract.FunMockery<Any> {
     override var returnValue: Any
         get() = TODO("Not yet implemented")
-        set(value) {}
+        set(_) = TODO("Not yet implemented")
     override var returnValues: List<Any>
         get() = TODO("Not yet implemented")
-        set(value) {}
+        set(_) = TODO("Not yet implemented")
     override var sideEffect: (Array<out Any?>) -> Any
         get() = TODO("Not yet implemented")
-        set(value) {}
+        set(_) = TODO("Not yet implemented")
 
     override fun invoke(vararg arguments: Any?): Any {
         TODO("Not yet implemented")

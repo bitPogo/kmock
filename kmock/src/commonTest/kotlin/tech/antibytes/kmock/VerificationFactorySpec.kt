@@ -19,7 +19,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn0")
-    fun `Given withArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given withArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -33,7 +33,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn1")
-    fun `Given withArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
+    fun `Given withArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -55,7 +55,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn2")
-    fun `Given withArguments is called with a FunMockery, it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
+    fun `Given withArguments is called with a FunMockery it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -78,7 +78,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn4")
-    fun `Given withSameArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given withSameArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -92,7 +92,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn5")
-    fun `Given withSameArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
+    fun `Given withSameArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -114,7 +114,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn6")
-    fun `Given withSameArguments is called with a FunMockery, it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
+    fun `Given withSameArguments is called with a FunMockery it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -137,7 +137,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn7")
-    fun `Given withoutArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given withoutArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -151,7 +151,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn8")
-    fun `Given withoutArguments is called with a FunMockery, it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
+    fun `Given withoutArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -174,7 +174,7 @@ class VerificationFactorySpec {
 
     @Test
     @JsName("fn9")
-    fun `Given withoutArguments is called with a FunMockery, it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
+    fun `Given withoutArguments is called with a FunMockery it returns a VerficationHandle which contains matches if something matches, while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)

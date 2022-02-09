@@ -6,7 +6,7 @@
 
 package tech.antibytes.kmock
 
-internal data class VerificationHandle(
+data class VerificationHandle(
     override val id: String,
     override val callIndices: List<Int>
 ) : KMockContract.VerificationHandle

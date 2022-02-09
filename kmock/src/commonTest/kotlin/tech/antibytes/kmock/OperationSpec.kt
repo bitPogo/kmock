@@ -80,7 +80,7 @@ class OperationSpec {
     }
 
     @Test
-    @JsName("fn1")
+    @JsName("fn2")
     fun `Given diif is called with different VerificationHandles it makes the difference of both`() {
         // Given
         val name: String = fixture.fixture()

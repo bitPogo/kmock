@@ -13,7 +13,7 @@ import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
 
-class ExtensionsSpec {
+class ArgumentMatcherSpec {
     private val fixture = kotlinFixture()
 
     @Test
@@ -44,7 +44,7 @@ class ExtensionsSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given withArguments is called without Arguments (void) it returns true if the Array contains Arguments`() {
+    fun `Given withArguments is called without Arguments void it returns true if the Array contains Arguments`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
@@ -57,7 +57,7 @@ class ExtensionsSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given withArguments is called without Arguments (void) it returns true if the Array is null`() {
+    fun `Given withArguments is called without Arguments void it returns true if the Array is null`() {
         // Given
         val array = null
 
@@ -135,7 +135,7 @@ class ExtensionsSpec {
 
     @Test
     @JsName("fn9")
-    fun `Given withSameArguments is called without Arguments (void) it returns false if the Array has Arguments`() {
+    fun `Given withSameArguments is called without Arguments void it returns false if the Array has Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 1).toTypedArray()
 
@@ -148,7 +148,7 @@ class ExtensionsSpec {
 
     @Test
     @JsName("fn10")
-    fun `Given withSameArguments is called witg Arguments (void) it returns false if the Array is null`() {
+    fun `Given withSameArguments is called witg Arguments void it returns false if the Array is null`() {
         // Given
         val array = null
 
@@ -161,7 +161,7 @@ class ExtensionsSpec {
 
     @Test
     @JsName("fn11")
-    fun `Given withSameArguments is called without Arguments (void) it returns false if the Array is null`() {
+    fun `Given withSameArguments is called without Arguments void it returns false if the Array is null`() {
         // Given
         val array = null
 

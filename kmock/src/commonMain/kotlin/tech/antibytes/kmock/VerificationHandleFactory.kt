@@ -7,9 +7,10 @@
 package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.Mockery
+import tech.antibytes.kmock.KMockContract.FunMockery
 
 private fun traverseFunMock(
-    mock: KMockContract.FunMockery<*>,
+    mock: FunMockery<*>,
     action: Array<out Any?>?.() -> Boolean
 ): KMockContract.VerificationHandle {
     val callIndices = mutableListOf<Int>()
@@ -27,21 +28,21 @@ private fun applyMatcher(
     mock: Mockery<*>,
     action: Array<out Any?>?.() -> Boolean
 ): KMockContract.VerificationHandle {
-    return if (mock is KMockContract.FunMockery<*>) {
+    return if (mock is FunMockery<*>) {
         traverseFunMock(mock, action)
     } else {
         TODO()
     }
 }
 
-fun Mockery<*>.withArguments(
+fun FunMockery<*>.withArguments(
     vararg values: Any?
 ): KMockContract.VerificationHandle = applyMatcher(this) { withArguments(*values) }
 
-fun Mockery<*>.withSameArguments(
+fun FunMockery<*>.withSameArguments(
     vararg values: Any?
 ): KMockContract.VerificationHandle = applyMatcher(this) { withSameArguments(*values) }
 
-fun Mockery<*>.withoutArguments(
+fun FunMockery<*>.withoutArguments(
     vararg values: Any?
 ): KMockContract.VerificationHandle = applyMatcher(this) { withoutArguments(*values) }

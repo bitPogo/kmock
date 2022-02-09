@@ -27,6 +27,11 @@ interface KMockContract {
 
     interface PropMockery<ReturnValue> : Mockery<ReturnValue>
 
+    interface VerificationHandle {
+        val id: String
+        val callIndices: List<Int>
+    }
+
     data class Reference(
         val mockery: Mockery<*>,
         val callIndex: Int
@@ -36,25 +41,24 @@ interface KMockContract {
         fun addReference(referredMock: Mockery<*>, referredCall: Int)
     }
 
-    interface Verifier {
-        val references: List<Reference>
+    interface VerificationHandleContainer {
+        fun add(handle: VerificationHandle)
 
-        fun verify(
-            exactly: Int? = null,
-            atLeast: Int = 1,
-            atMost: Int? = null,
-            action: () -> VerificationHandle
-        )
-
-        companion object {
-            const val NOT_CALLED = "Call not found."
-            const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-            const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-        }
+        fun toList(): List<VerificationHandle>
     }
 
-    interface VerificationHandle {
-        val id: String
-        val callIndices: List<Int>
+    interface Verifier {
+        val references: List<Reference>
+    }
+
+    companion object {
+        const val NOT_CALLED = "Call not found."
+        const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
+        const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
+        const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
+        const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
+        const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
+        const val MISMATCHING_FUNCTION = "Excepted \$1, but got \$2."
+        const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
     }
 }
