@@ -9,11 +9,13 @@ package tech.antibytes.kmock
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import co.touchlab.stately.isolate.IsolateState
+import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.util.test.MockError
 import kotlin.math.max
 
 class FunMockery<ReturnValue>(
-    override val id: String
+    override val id: String,
+    collector: Collector = Collector { _, _ -> Unit }
 ) : KMockContract.FunMockery<ReturnValue> {
     private val _returnValue: AtomicReference<ReturnValue?> = AtomicReference(null)
     private val _returnValues: AtomicReference<List<ReturnValue>?> = AtomicReference(null)
@@ -21,6 +23,7 @@ class FunMockery<ReturnValue>(
     private val _calls: AtomicReference<Int> = AtomicReference(0)
     private val provider: AtomicReference<PROVIDER> = AtomicReference(PROVIDER.NO_PROVIDER)
     private val arguments: IsolateState<MutableList<Array<out Any?>?>> = IsolateState { mutableListOf() }
+    private val collector = AtomicReference(collector)
 
     private fun setProvider(provider: PROVIDER) {
         val activeProvider = max(
@@ -102,9 +105,17 @@ class FunMockery<ReturnValue>(
         )
     }
 
+    private fun notifyCollector() {
+        collector.get().addReference(
+            this,
+            this._calls.get()
+        )
+    }
+
     @Suppress("UNCHECKED_CAST")
     @Throws(MockError.MissingStub::class)
     override fun invoke(vararg arguments: Any?): ReturnValue {
+        notifyCollector()
         captureArguments(arguments)
         incrementInvocations()
 

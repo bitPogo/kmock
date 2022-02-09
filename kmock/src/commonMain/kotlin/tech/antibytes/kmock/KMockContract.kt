@@ -37,7 +37,7 @@ interface KMockContract {
         val callIndex: Int
     )
 
-    interface Collector {
+    fun interface Collector {
         fun addReference(referredMock: Mockery<*>, referredCall: Int)
     }
 

@@ -114,7 +114,6 @@ class VerificationSpec {
         // Given
         val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
-        val expectedCalls = 1
 
         // When
         verify(exactly = givenCalls) {
