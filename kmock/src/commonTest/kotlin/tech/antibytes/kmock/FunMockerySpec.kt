@@ -126,7 +126,7 @@ class FunMockerySpec {
     @Test
     @JsName("fn6")
     @IgnoreJs
-    fun `Given invoke is called it fails iif no ReturnValue Provider is set`() {
+    fun `Given invoke is called it fails if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
         val mockery = FunMockery<Any, () -> Any>(name)
@@ -395,7 +395,7 @@ class FunMockerySpec {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*>?>(null)
+        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
         val capturedCalledIdx = AtomicReference<Int?>(null)
 
         val collector = Collector { referredMock, referredCall ->

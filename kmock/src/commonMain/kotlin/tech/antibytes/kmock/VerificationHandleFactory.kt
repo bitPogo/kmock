@@ -8,11 +8,13 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.FunMockery
 import tech.antibytes.kmock.KMockContract.Mockery
+import tech.antibytes.kmock.KMockContract.PropMockery
+import tech.antibytes.kmock.KMockContract.VerificationHandle
 
-private fun traverseFunMock(
-    mock: FunMockery<*, *>,
-    action: Array<out Any?>?.() -> Boolean
-): KMockContract.VerificationHandle {
+private fun <T> traverseMock(
+    mock: Mockery<*, T>,
+    action: T.() -> Boolean
+): VerificationHandle {
     val callIndices = mutableListOf<Int>()
 
     for (idx in 0 until mock.calls) {
@@ -24,25 +26,22 @@ private fun traverseFunMock(
     return VerificationHandle(mock.id, callIndices)
 }
 
-private fun applyMatcher(
-    mock: Mockery<*>,
-    action: Array<out Any?>?.() -> Boolean
-): KMockContract.VerificationHandle {
-    return if (mock is FunMockery<*, *>) {
-        traverseFunMock(mock, action)
-    } else {
-        TODO()
-    }
-}
-
 fun FunMockery<*, *>.withArguments(
     vararg values: Any?
-): KMockContract.VerificationHandle = applyMatcher(this) { withArguments(*values) }
+): VerificationHandle = traverseMock(this) { withArguments(*values) }
 
 fun FunMockery<*, *>.withSameArguments(
     vararg values: Any?
-): KMockContract.VerificationHandle = applyMatcher(this) { withSameArguments(*values) }
+): VerificationHandle = traverseMock(this) { withSameArguments(*values) }
 
 fun FunMockery<*, *>.withoutArguments(
     vararg values: Any?
-): KMockContract.VerificationHandle = applyMatcher(this) { withoutArguments(*values) }
+): VerificationHandle = traverseMock(this) { withoutArguments(*values) }
+
+fun PropMockery<*>.wasGotten(): VerificationHandle = traverseMock(this) { wasGotten() }
+
+fun PropMockery<*>.wasSet(): VerificationHandle = traverseMock(this) { wasSet() }
+
+fun PropMockery<*>.wasSetTo(
+    value: Any?
+): VerificationHandle = traverseMock(this) { wasSetTo(value) }

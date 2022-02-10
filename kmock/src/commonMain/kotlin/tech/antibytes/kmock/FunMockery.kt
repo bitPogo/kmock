@@ -25,6 +25,13 @@ class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val arguments: IsolateState<MutableList<Array<out Any?>?>> = IsolateState { mutableListOf() }
     private val collector = AtomicReference(collector)
 
+    private enum class PROVIDER(val value: Int) {
+        NO_PROVIDER(0),
+        RETURN_VALUE(1),
+        RETURN_VALUES(2),
+        SIDE_EFFECT(3)
+    }
+
     private fun setProvider(provider: PROVIDER) {
         val activeProvider = max(
             provider.value,
@@ -110,13 +117,6 @@ class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
             this,
             this._calls.get()
         )
-    }
-
-    private enum class PROVIDER(val value: Int) {
-        NO_PROVIDER(0),
-        RETURN_VALUE(1),
-        RETURN_VALUES(2),
-        SIDE_EFFECT(3)
     }
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? = arguments.access { it[callIndex] }

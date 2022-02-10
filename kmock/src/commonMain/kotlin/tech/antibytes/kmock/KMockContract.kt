@@ -9,12 +9,14 @@ package tech.antibytes.kmock
 import tech.antibytes.util.test.MockError
 
 interface KMockContract {
-    sealed interface Mockery<ReturnValue> {
+    sealed interface Mockery<ReturnValue, Arguments> {
         val id: String
         val calls: Int
+
+        fun getArgumentsForCall(callIndex: Int): Arguments
     }
 
-    interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue> {
+    interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue, Array<out Any?>?> {
         var returnValue: ReturnValue
         var returnValues: List<ReturnValue>
         var sideEffect: SideEffect
@@ -162,11 +164,21 @@ interface KMockContract {
             arg11: Arg11,
             arg12: Arg12,
         ): ReturnValue
-
-        fun getArgumentsForCall(callIndex: Int): Array<out Any?>?
     }
 
-    interface PropMockery<ReturnValue> : Mockery<ReturnValue>
+    sealed class GetOrSet(val value: Any?) {
+        class Get : GetOrSet(null)
+        class Set(newValue: Any?) : GetOrSet(newValue)
+    }
+
+    interface PropMockery<Value> : Mockery<Value, GetOrSet> {
+        var get: Value
+        var getMany: List<Value>
+        var set: (Value) -> Unit
+
+        fun onGet(): Value
+        fun onSet(value: Value)
+    }
 
     interface VerificationHandle {
         val id: String
@@ -174,12 +186,12 @@ interface KMockContract {
     }
 
     data class Reference(
-        val mockery: Mockery<*>,
+        val mockery: Mockery<*, *>,
         val callIndex: Int
     )
 
     fun interface Collector {
-        fun addReference(referredMock: Mockery<*>, referredCall: Int)
+        fun addReference(referredMock: Mockery<*, *>, referredCall: Int)
     }
 
     interface VerificationHandleContainer {

@@ -281,4 +281,47 @@ class ArgumentMatcherSpec {
         // Then
         actual mustBe false
     }
+
+    @Test
+    @JsName("fn20")
+    fun `Given wasGotten is called it returns false if it is attacht to Set`() {
+        KMockContract.GetOrSet.Set(null).wasGotten() mustBe false
+    }
+
+    @Test
+    @JsName("fn21")
+    fun `Given wasGotten is called it returns true if it is attacht to Get`() {
+        KMockContract.GetOrSet.Get().wasGotten() mustBe true
+    }
+
+    @Test
+    @JsName("fn22")
+    fun `Given wasSet is called it returns false if it is attacht to Get`() {
+        KMockContract.GetOrSet.Get().wasSet() mustBe false
+    }
+
+    @Test
+    @JsName("fn23")
+    fun `Given wasGotten is called it returns true if it is attacht to Set`() {
+        KMockContract.GetOrSet.Set(null).wasSet() mustBe true
+    }
+
+    @Test
+    @JsName("fn24")
+    fun `Given wasSetTo is called it returns false if it is attacht to Get`() {
+        KMockContract.GetOrSet.Get().wasSetTo(null) mustBe false
+    }
+
+    @Test
+    @JsName("fn25")
+    fun `Given wasSetTo is called it returns false if the values do not match`() {
+        KMockContract.GetOrSet.Set(fixture.fixture()).wasSetTo(fixture.fixture()) mustBe false
+    }
+
+    @Test
+    @JsName("fn26")
+    fun `Given wasSetTo is called it returns true if the values do math`() {
+        val value: Any = fixture.fixture()
+        KMockContract.GetOrSet.Set(value).wasSetTo(value) mustBe true
+    }
 }

@@ -16,7 +16,7 @@ class Verifier : KMockContract.Verifier, KMockContract.Collector {
     override val references: List<Reference>
         get() = _references.access { it.toList() }
 
-    override fun addReference(referredMock: Mockery<*>, referredCall: Int) {
+    override fun addReference(referredMock: Mockery<*, *>, referredCall: Int) {
         _references.access { references ->
             references.add(Reference(referredMock, referredCall))
         }

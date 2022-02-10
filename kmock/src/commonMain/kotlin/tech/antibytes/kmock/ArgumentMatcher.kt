@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock
 
+import tech.antibytes.kmock.KMockContract.GetOrSet
+
 internal fun Array<out Any?>?.withArguments(vararg values: Any?): Boolean {
     return when {
         this == null -> values.isEmpty()
@@ -23,5 +25,16 @@ internal fun Array<out Any?>?.withoutArguments(vararg values: Any?): Boolean {
         values.isNotEmpty()
     } else {
         values.none { value -> this.contains(value) }
+    }
+}
+
+internal fun GetOrSet.wasGotten(): Boolean = this is GetOrSet.Get
+
+internal fun GetOrSet.wasSet(): Boolean = this is GetOrSet.Set
+
+internal fun GetOrSet.wasSetTo(value: Any?): Boolean {
+    return when (this) {
+        !is GetOrSet.Set -> false
+        else -> this.value == value
     }
 }
