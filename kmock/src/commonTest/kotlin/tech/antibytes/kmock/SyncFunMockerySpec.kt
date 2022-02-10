@@ -26,7 +26,7 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class FunMockerySpec {
+class SyncFunMockerySpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
@@ -34,14 +34,20 @@ class FunMockerySpec {
     @Test
     @JsName("fn0")
     fun `It fulfils FunMockery`() {
-        FunMockery<Unit, () -> Unit>(fixture.fixture()) fulfils KMockContract.FunMockery::class
+        SyncFunMockery<Unit, () -> Unit>(fixture.fixture()) fulfils KMockContract.FunMockery::class
+    }
+
+    @Test
+    @JsName("fn0_a")
+    fun `It fulfils SyncFunMockery`() {
+        SyncFunMockery<Unit, () -> Unit>(fixture.fixture()) fulfils KMockContract.SyncFunMockery::class
     }
 
     @Test
     @JsName("fn1")
     fun `Given a returnValue is set it is threadsafe retrievable`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
@@ -59,7 +65,7 @@ class FunMockerySpec {
     @JsName("fn2")
     fun `Given a returnValue is set with nullable value it is threadsafe retrievable`() {
         // Given
-        val mockery = FunMockery<Any?, () -> Any?>(fixture.fixture())
+        val mockery = SyncFunMockery<Any?, () -> Any?>(fixture.fixture())
         val value: Any? = null
 
         // When
@@ -77,7 +83,7 @@ class FunMockerySpec {
     @JsName("fn3")
     fun `Given a returnValues is set with an emptyList it fails`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -91,7 +97,7 @@ class FunMockerySpec {
     @JsName("fn4")
     fun `Given a returnValues is set it is threadsafe retrievable`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture()
 
         // When
@@ -109,7 +115,7 @@ class FunMockerySpec {
     @JsName("fn5")
     fun `Given a sideEffect is set it is threadsafe retrievable`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val effect: () -> Any = { fixture.fixture() }
 
         // When
@@ -129,7 +135,7 @@ class FunMockerySpec {
     fun `Given invoke is called it fails if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = FunMockery<Any, () -> Any>(name)
+        val mockery = SyncFunMockery<Any, () -> Any>(name)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -148,7 +154,7 @@ class FunMockerySpec {
     fun `Given invoke is called it fails iif no ReturnValue Provider is set for JS`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = FunMockery<Any, () -> Any>(name)
+        val mockery = SyncFunMockery<Any, () -> Any>(name)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -163,7 +169,7 @@ class FunMockerySpec {
     @JsName("fn7")
     fun `Given invoke is called it returns the ReturnValue threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val value: String = fixture.fixture()
 
         // When
@@ -183,7 +189,7 @@ class FunMockerySpec {
     @JsName("fn8")
     fun `Given invoke is called it returns the ReturnValues threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
@@ -205,7 +211,7 @@ class FunMockerySpec {
     @JsName("fn9")
     fun `Given invoke is called it returns the last ReturnValue if the given List is down to one value threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 1)
 
         // When
@@ -227,7 +233,7 @@ class FunMockerySpec {
     @JsName("fn10")
     fun `Given invoke is called it calls the given SideEffect and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -261,7 +267,7 @@ class FunMockerySpec {
     @JsName("fn11")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
 
@@ -283,7 +289,7 @@ class FunMockerySpec {
     @JsName("fn12")
     fun `Given invoke is called it uses SideEffect over ReturnValues`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val expected: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
 
@@ -305,7 +311,7 @@ class FunMockerySpec {
     @JsName("fn13")
     fun `Given invoke is called it captures Arguments threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String) -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
         val argument: String = fixture.fixture()
 
@@ -330,7 +336,7 @@ class FunMockerySpec {
     @JsName("fn14")
     fun `Given invoke is called it captures void Arguments threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
@@ -356,7 +362,7 @@ class FunMockerySpec {
         val name: String = fixture.fixture()
 
         // When
-        val actual = FunMockery<Any, () -> Any>(name).id
+        val actual = SyncFunMockery<Any, () -> Any>(name).id
 
         // Then
         actual mustBe name
@@ -365,14 +371,14 @@ class FunMockerySpec {
     @Test
     @JsName("fn16")
     fun `Its default call count is 0`() {
-        FunMockery<Any, () -> Any>(fixture.fixture()).calls mustBe 0
+        SyncFunMockery<Any, () -> Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
     @JsName("fn17")
     fun `Given invoke is called it increments the call counter threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
@@ -404,7 +410,7 @@ class FunMockerySpec {
         }
 
         // When
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture(), collector)
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture(), collector)
 
         runBlockingTestInContext(testScope1.coroutineContext) {
             mockery.returnValues = values
@@ -420,11 +426,12 @@ class FunMockerySpec {
         }
     }
 
+    // Functions
     @Test
     @JsName("fn19")
     fun `Given invoke is called it calls the given SideEffect with 0 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val expected: Any = fixture.fixture()
 
         // When
@@ -447,7 +454,7 @@ class FunMockerySpec {
     @JsName("fn20")
     fun `Given invoke is called it calls the given SideEffect with 1 Argument and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
 
@@ -482,7 +489,7 @@ class FunMockerySpec {
     @JsName("fn21")
     fun `Given invoke is called it calls the given SideEffect with 2 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -522,7 +529,7 @@ class FunMockerySpec {
     @JsName("fn22")
     fun `Given invoke is called it calls the given SideEffect with 3 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -567,7 +574,7 @@ class FunMockerySpec {
     @JsName("fn23")
     fun `Given invoke is called it calls the given SideEffect with 4 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -617,7 +624,7 @@ class FunMockerySpec {
     @JsName("fn24")
     fun `Given invoke is called it calls the given SideEffect with 5 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -673,7 +680,7 @@ class FunMockerySpec {
     @JsName("fn25")
     fun `Given invoke is called it calls the given SideEffect with 6 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -734,7 +741,7 @@ class FunMockerySpec {
     @JsName("fn27")
     fun `Given invoke is called it calls the given SideEffect with 7 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -800,7 +807,7 @@ class FunMockerySpec {
     @JsName("fn28")
     fun `Given invoke is called it calls the given SideEffect with 8 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -823,26 +830,26 @@ class FunMockerySpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.sideEffect =
-                { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7 ->
-                    testScope1.launch {
-                        actualArgument0.send(givenArg0)
-                        actualArgument1.send(givenArg1)
-                        actualArgument2.send(givenArg2)
-                        actualArgument3.send(givenArg3)
-                        actualArgument4.send(givenArg4)
-                        actualArgument5.send(givenArg5)
-                        actualArgument6.send(givenArg6)
-                        actualArgument7.send(givenArg7)
-                    }
-
-                    expected
+            mockery.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7 ->
+                testScope1.launch {
+                    actualArgument0.send(givenArg0)
+                    actualArgument1.send(givenArg1)
+                    actualArgument2.send(givenArg2)
+                    actualArgument3.send(givenArg3)
+                    actualArgument4.send(givenArg4)
+                    actualArgument5.send(givenArg5)
+                    actualArgument6.send(givenArg6)
+                    actualArgument7.send(givenArg7)
                 }
+
+                expected
+            }
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             // When
-            val actual = mockery.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7)
+            val actual =
+                mockery.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7)
 
             // Then
             actual mustBe expected
@@ -873,7 +880,7 @@ class FunMockerySpec {
     fun `Given invoke is called it calls the given SideEffect with 9 Arguments and delegates values threadsafe`() {
         // Given
         val mockery =
-            FunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+            SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -898,22 +905,21 @@ class FunMockerySpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.sideEffect =
-                { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8 ->
-                    testScope1.launch {
-                        actualArgument0.send(givenArg0)
-                        actualArgument1.send(givenArg1)
-                        actualArgument2.send(givenArg2)
-                        actualArgument3.send(givenArg3)
-                        actualArgument4.send(givenArg4)
-                        actualArgument5.send(givenArg5)
-                        actualArgument6.send(givenArg6)
-                        actualArgument7.send(givenArg7)
-                        actualArgument8.send(givenArg8)
-                    }
-
-                    expected
+            mockery.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8 ->
+                testScope1.launch {
+                    actualArgument0.send(givenArg0)
+                    actualArgument1.send(givenArg1)
+                    actualArgument2.send(givenArg2)
+                    actualArgument3.send(givenArg3)
+                    actualArgument4.send(givenArg4)
+                    actualArgument5.send(givenArg5)
+                    actualArgument6.send(givenArg6)
+                    actualArgument7.send(givenArg7)
+                    actualArgument8.send(givenArg8)
                 }
+
+                expected
+            }
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
@@ -960,7 +966,8 @@ class FunMockerySpec {
     @JsName("fn30")
     fun `Given invoke is called it calls the given SideEffect with 10 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery =
+            SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -1053,7 +1060,7 @@ class FunMockerySpec {
     fun `Given invoke is called it calls the given SideEffect with 11 Arguments and delegates values threadsafe`() {
         // Given
         val mockery =
-            FunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+            SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -1152,7 +1159,10 @@ class FunMockerySpec {
     @JsName("fn32")
     fun `Given invoke is called it calls the given SideEffect with 12 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery =
+            SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+                fixture.fixture()
+            )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -1256,7 +1266,10 @@ class FunMockerySpec {
     @JsName("fn33")
     fun `Given invoke is called it calls the given SideEffect with 13 Arguments and delegates values threadsafe`() {
         // Given
-        val mockery = FunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery =
+            SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+                fixture.fixture()
+            )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()

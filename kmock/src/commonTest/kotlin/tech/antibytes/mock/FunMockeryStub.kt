@@ -13,7 +13,7 @@ class FunMockeryStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>?)? = null
-) : KMockContract.FunMockery<Any, () -> Any> {
+) : KMockContract.SyncFunMockery<Any, () -> Any> {
     override var returnValue: Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")

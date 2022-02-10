@@ -6,8 +6,6 @@
 
 package tech.antibytes.kmock
 
-import tech.antibytes.util.test.MockError
-
 interface KMockContract {
     sealed interface Mockery<ReturnValue, Arguments> {
         val id: String
@@ -20,27 +18,25 @@ interface KMockContract {
         var returnValue: ReturnValue
         var returnValues: List<ReturnValue>
         var sideEffect: SideEffect
+    }
 
-        @Throws(MockError.MissingStub::class)
+    interface SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : FunMockery<ReturnValue, SideEffect> {
+
         fun invoke(): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0> invoke(arg0: Arg0): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1> invoke(
             arg0: Arg0,
             arg1: Arg1
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -48,7 +44,6 @@ interface KMockContract {
             arg3: Arg3
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -57,7 +52,6 @@ interface KMockContract {
             arg4: Arg4
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -67,7 +61,6 @@ interface KMockContract {
             arg5: Arg5
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -78,7 +71,6 @@ interface KMockContract {
             arg6: Arg6
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -90,7 +82,6 @@ interface KMockContract {
             arg7: Arg7
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -103,7 +94,6 @@ interface KMockContract {
             arg8: Arg8
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -117,7 +107,6 @@ interface KMockContract {
             arg9: Arg9
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -132,7 +121,6 @@ interface KMockContract {
             arg10: Arg10
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
             arg1: Arg1,
@@ -148,8 +136,140 @@ interface KMockContract {
             arg11: Arg11
         ): ReturnValue
 
-        @Throws(MockError.MissingStub::class)
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7,
+            arg8: Arg8,
+            arg9: Arg9,
+            arg10: Arg10,
+            arg11: Arg11,
+            arg12: Arg12,
+        ): ReturnValue
+    }
+
+    interface AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : FunMockery<ReturnValue, SideEffect> {
+
+        suspend fun invoke(): ReturnValue
+
+        suspend fun <Arg0> invoke(arg0: Arg0): ReturnValue
+
+        suspend fun <Arg0, Arg1> invoke(
+            arg0: Arg0,
+            arg1: Arg1
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7,
+            arg8: Arg8
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7,
+            arg8: Arg8,
+            arg9: Arg9
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7,
+            arg8: Arg8,
+            arg9: Arg9,
+            arg10: Arg10
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
+            arg0: Arg0,
+            arg1: Arg1,
+            arg2: Arg2,
+            arg3: Arg3,
+            arg4: Arg4,
+            arg5: Arg5,
+            arg6: Arg6,
+            arg7: Arg7,
+            arg8: Arg8,
+            arg9: Arg9,
+            arg10: Arg10,
+            arg11: Arg11
+        ): ReturnValue
+
+        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
