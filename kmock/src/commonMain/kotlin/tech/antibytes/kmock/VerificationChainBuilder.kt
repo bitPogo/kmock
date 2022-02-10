@@ -19,14 +19,14 @@ class VerificationChainBuilder : KMockContract.VerificationHandleContainer {
     override fun toList(): List<VerificationHandle> = handles.toList()
 }
 
-fun VerificationChainBuilder.withArguments(mockery: FunMockery<*>, vararg arguments: Any?) {
+fun VerificationChainBuilder.withArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
     this.add(mockery.withArguments(*arguments))
 }
 
-fun VerificationChainBuilder.withSameArguments(mockery: FunMockery<*>, vararg arguments: Any?) {
+fun VerificationChainBuilder.withSameArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
     this.add(mockery.withSameArguments(*arguments))
 }
 
-fun VerificationChainBuilder.withoutArguments(mockery: FunMockery<*>, vararg arguments: Any?) {
+fun VerificationChainBuilder.withoutArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
     this.add(mockery.withoutArguments(*arguments))
 }
