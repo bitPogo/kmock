@@ -7,7 +7,9 @@
 package tech.antibytes.kmock
 
 import tech.antibytes.mock.FunMockeryStub
+import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
+import tech.antibytes.util.test.coroutine.asyncMultiBlock
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -43,7 +45,7 @@ class VerifierSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given add reference is called it adds a refrenence entry threadsafe`() {
+    fun `Given add reference is called it adds a refrenence entry threadsafe`(): AsyncTestReturnValue {
         // Given
         val index: Int = fixture.fixture<Int>().absoluteValue
         val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
@@ -60,5 +62,7 @@ class VerifierSpec {
             verifier.references.first().mockery sameAs mockery
             verifier.references.first().callIndex mustBe index
         }
+
+        return asyncMultiBlock
     }
 }

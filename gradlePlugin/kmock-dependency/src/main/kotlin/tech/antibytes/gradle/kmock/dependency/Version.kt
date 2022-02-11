@@ -30,6 +30,6 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        val test = "753d329-add-ios-SNAPSHOT"
+        val test = "7b11c9d-add-ios-SNAPSHOT"
     }
 }
