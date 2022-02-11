@@ -200,6 +200,32 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn14")
+    fun `Given withoutArgument is called with an Argument it returns false if the Array contains no Argument`() {
+        // Given
+        val array = null
+
+        // When
+        val actual = array.withoutArguments()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn15")
+    fun `Given withoutArgument is called with an Argument it returns true if the Array contains Arguments`() {
+        // Given
+        val array = null
+
+        // When
+        val actual = array.withoutArguments(fixture.listFixture<String>().toTypedArray())
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn16")
     fun `Given withoutArgument is called with an Argument it returns true if the Array contains not the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -212,7 +238,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn17")
     fun `Given withoutArgument is called with an Argument it returns false if the Array contains the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -225,7 +251,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn18")
     fun `Given withoutArgument is called without Argument it returns true if the Array contains Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -238,7 +264,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn19")
     fun `Given withoutArgument is called with Arguments it returns false if the Array is null`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -251,7 +277,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn20")
     fun `Given withoutArgument is called with Arguments it returns true if the Array none of given Arguments matches`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
@@ -265,7 +291,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn21")
     fun `Given withoutArgument is called with Arguments it returns false if the Array matches at least one of given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
@@ -283,43 +309,43 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn22")
     fun `Given wasGotten is called it returns false if it is attacht to Set`() {
         KMockContract.GetOrSet.Set(null).wasGotten() mustBe false
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn23")
     fun `Given wasGotten is called it returns true if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasGotten() mustBe true
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn24")
     fun `Given wasSet is called it returns false if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasSet() mustBe false
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn25")
     fun `Given wasGotten is called it returns true if it is attacht to Set`() {
         KMockContract.GetOrSet.Set(null).wasSet() mustBe true
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn26")
     fun `Given wasSetTo is called it returns false if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasSetTo(null) mustBe false
     }
 
     @Test
-    @JsName("fn25")
+    @JsName("fn27")
     fun `Given wasSetTo is called it returns false if the values do not match`() {
         KMockContract.GetOrSet.Set(fixture.fixture()).wasSetTo(fixture.fixture()) mustBe false
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn28")
     fun `Given wasSetTo is called it returns true if the values do math`() {
         val value: Any = fixture.fixture()
         KMockContract.GetOrSet.Set(value).wasSetTo(value) mustBe true

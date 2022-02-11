@@ -12,6 +12,7 @@ interface KMockContract {
         val calls: Int
 
         fun getArgumentsForCall(callIndex: Int): Arguments
+        fun clear()
     }
 
     interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue, Array<out Any?>?> {
@@ -322,6 +323,8 @@ interface KMockContract {
 
     interface Verifier {
         val references: List<Reference>
+
+        fun clear()
     }
 
     companion object {
@@ -331,7 +334,7 @@ interface KMockContract {
         const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
         const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
         const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-        const val MISMATCHING_FUNCTION = "Excepted \$1, but got \$2."
+        const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
         const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
         const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
     }

@@ -177,4 +177,8 @@ class FunMockeryStub(
     ): Any {
         TODO("Not yet implemented")
     }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }

@@ -40,4 +40,8 @@ class PropertyMockeryStub(
     override fun onSet(value: Any) {
         TODO("Not yet implemented")
     }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }

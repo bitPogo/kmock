@@ -95,7 +95,7 @@ private fun initChainVerification(
 
 private fun guardStrictChain(references: List<Reference>, handles: List<VerificationHandle>) {
     if (handles.size != references.size) {
-        val message = formatMessage(NOTHING_TO_STRICTLY_VERIFY, handles.size, references.size)
+        val message = formatMessage(NOTHING_TO_STRICTLY_VERIFY, references.size, handles.size)
 
         throw AssertionError(message)
     }
@@ -208,6 +208,10 @@ fun Verifier.verifyOrder(
     guardChain(this.references, handles)
 
     this.references.forEach { reference ->
+        if (handleOffset == handles.size) {
+            return@forEach
+        }
+
         val functionName = handles[handleOffset].id
         val lastCall = handleCalls[functionName] ?: -1
         val call = scanHandle(lastCall, handles[handleOffset].callIndices)
@@ -215,10 +219,6 @@ fun Verifier.verifyOrder(
         if (evaluateReference(reference, functionName, call)) {
             handleCalls[functionName] = call!!
             handleOffset += 1
-        }
-
-        if (handleOffset == handles.size) {
-            return@forEach
         }
     }
 

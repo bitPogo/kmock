@@ -142,7 +142,7 @@ class VerificationSpec {
             }
         }
 
-        errorLowerBound.message mustBe "The given verification chain (has ${verifierLower.references.size} items) does not match the captured calls (1 were captured)."
+        errorLowerBound.message mustBe "The given verification chain (has 1 items) does not match the captured calls (${verifierLower.references.size} were captured)."
 
         // Then
         val errorUpperBound = assertFailsWith<AssertionError> {
@@ -152,7 +152,7 @@ class VerificationSpec {
             }
         }
 
-        errorUpperBound.message mustBe "The given verification chain (has ${verifierUpper.references.size} items) does not match the captured calls (1 were captured)."
+        errorUpperBound.message mustBe "The given verification chain (has 1 items) does not match the captured calls (${verifierUpper.references.size} were captured)."
     }
 
     @Test
@@ -185,7 +185,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted ${handleMockery.id}, but got ${referenceMockery.id}."
+        error.message mustBe "Excepted '${handleMockery.id}', but got '${referenceMockery.id}'."
     }
 
     @Test
