@@ -291,13 +291,13 @@ class ArgumentMatcherSpec {
     @Test
     @JsName("fn21")
     fun `Given wasGotten is called it returns true if it is attacht to Get`() {
-        KMockContract.GetOrSet.Get().wasGotten() mustBe true
+        KMockContract.GetOrSet.Get.wasGotten() mustBe true
     }
 
     @Test
     @JsName("fn22")
     fun `Given wasSet is called it returns false if it is attacht to Get`() {
-        KMockContract.GetOrSet.Get().wasSet() mustBe false
+        KMockContract.GetOrSet.Get.wasSet() mustBe false
     }
 
     @Test
@@ -309,7 +309,7 @@ class ArgumentMatcherSpec {
     @Test
     @JsName("fn24")
     fun `Given wasSetTo is called it returns false if it is attacht to Get`() {
-        KMockContract.GetOrSet.Get().wasSetTo(null) mustBe false
+        KMockContract.GetOrSet.Get.wasSetTo(null) mustBe false
     }
 
     @Test

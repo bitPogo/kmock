@@ -30,3 +30,15 @@ fun VerificationChainBuilder.withSameArguments(mockery: FunMockery<*, *>, vararg
 fun VerificationChainBuilder.withoutArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
     this.add(mockery.withoutArguments(*arguments))
 }
+
+fun VerificationChainBuilder.wasGotten(mockery: KMockContract.PropMockery<*>) {
+    this.add(mockery.wasGotten())
+}
+
+fun VerificationChainBuilder.wasSet(mockery: KMockContract.PropMockery<*>) {
+    this.add(mockery.wasSet())
+}
+
+fun VerificationChainBuilder.wasSetTo(mockery: KMockContract.PropMockery<*>, value: Any?) {
+    this.add(mockery.wasSetTo(value))
+}

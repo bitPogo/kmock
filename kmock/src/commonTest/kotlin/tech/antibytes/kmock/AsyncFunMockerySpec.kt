@@ -143,7 +143,6 @@ class AsyncFunMockerySpec {
         val name: String = fixture.fixture()
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(name)
 
-
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // Then
             val error = assertFailsWith<MockError.MissingStub> {

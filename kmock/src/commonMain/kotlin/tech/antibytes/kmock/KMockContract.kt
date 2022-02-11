@@ -287,7 +287,7 @@ interface KMockContract {
     }
 
     sealed class GetOrSet(val value: Any?) {
-        class Get : GetOrSet(null)
+        object Get : GetOrSet(null)
         class Set(newValue: Any?) : GetOrSet(newValue)
     }
 

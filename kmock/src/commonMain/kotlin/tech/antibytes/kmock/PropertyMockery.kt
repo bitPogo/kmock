@@ -99,7 +99,7 @@ class PropertyMockery<Value>(
     }
 
     override fun onGet(): Value {
-        onEvent(GetOrSet.Get())
+        onEvent(GetOrSet.Get)
 
         return when (provider.get()) {
             false -> _get.get()!!

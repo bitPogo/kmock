@@ -7,6 +7,7 @@
 package tech.antibytes.kmock
 
 import tech.antibytes.mock.FunMockeryStub
+import tech.antibytes.mock.PropertyMockeryStub
 import tech.antibytes.util.test.fixture.PublicApi
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -126,6 +127,79 @@ class VerificationChainBuilderSpec {
         // When
         val container = VerificationChainBuilder()
         container.withoutArguments(mock, fixture.fixture<String>())
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn5")
+    fun `Given wasGotten is called it uses the extension of PropMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = PropertyMockeryStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            KMockContract.GetOrSet.Get
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.wasGotten(mock)
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given wasSet is called it uses the extension of PropMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = PropertyMockeryStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            KMockContract.GetOrSet.Set(null)
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.wasSet(mock)
+
+        // Then
+        val actual = container.toList()[0]
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given wasSetTo is called it uses the extension of PropMockery`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = PropertyMockeryStub(name, 1)
+        val value: Any = fixture.fixture()
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            KMockContract.GetOrSet.Set(value)
+        }
+
+        // When
+        val container = VerificationChainBuilder()
+        container.wasSetTo(mock, value)
 
         // Then
         val actual = container.toList()[0]

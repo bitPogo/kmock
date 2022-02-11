@@ -228,7 +228,7 @@ class VerificationFactorySpec {
         mock.getArgumentsForCall = { givenIndex ->
             capturedIndex = givenIndex
 
-            KMockContract.GetOrSet.Get()
+            KMockContract.GetOrSet.Get
         }
 
         // When
@@ -250,7 +250,7 @@ class VerificationFactorySpec {
         mock.getArgumentsForCall = { givenIndex ->
             capturedIndex = givenIndex
 
-            KMockContract.GetOrSet.Get()
+            KMockContract.GetOrSet.Get
         }
 
         // When
@@ -294,7 +294,7 @@ class VerificationFactorySpec {
         mock.getArgumentsForCall = { givenIndex ->
             capturedIndex = givenIndex
 
-            KMockContract.GetOrSet.Get()
+            KMockContract.GetOrSet.Get
         }
 
         // When
