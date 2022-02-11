@@ -23,6 +23,6 @@ class Verifier : KMockContract.Verifier, KMockContract.Collector {
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        _references.access { it.clear() }
     }
 }
