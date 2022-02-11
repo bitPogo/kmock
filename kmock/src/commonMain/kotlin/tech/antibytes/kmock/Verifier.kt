@@ -21,4 +21,8 @@ class Verifier : KMockContract.Verifier, KMockContract.Collector {
             references.add(Reference(referredMock, referredCall))
         }
     }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }

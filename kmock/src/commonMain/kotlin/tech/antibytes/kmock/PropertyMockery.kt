@@ -115,4 +115,8 @@ class PropertyMockery<Value>(
     }
 
     override fun getArgumentsForCall(callIndex: Int): GetOrSet = arguments.access { it[callIndex] }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }

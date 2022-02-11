@@ -12,6 +12,7 @@ interface KMockContract {
         val calls: Int
 
         fun getArgumentsForCall(callIndex: Int): Arguments
+        fun clear()
     }
 
     interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue, Array<out Any?>?> {
@@ -322,6 +323,8 @@ interface KMockContract {
 
     interface Verifier {
         val references: List<Reference>
+
+        fun clear()
     }
 
     companion object {

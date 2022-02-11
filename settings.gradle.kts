@@ -19,6 +19,7 @@ plugins {
 
 include(
     ":kmock",
+    ":examples",
 )
 
 buildCache {
