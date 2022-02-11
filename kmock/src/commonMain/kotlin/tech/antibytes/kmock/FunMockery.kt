@@ -132,6 +132,11 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? = arguments.access { it[callIndex] }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        _returnValue.set(null)
+        _returnValues.set(null)
+        _sideEffect.set(null)
+        _calls.set(0)
+        provider.set(PROVIDER.NO_PROVIDER)
+        arguments.access { it.clear() }
     }
 }

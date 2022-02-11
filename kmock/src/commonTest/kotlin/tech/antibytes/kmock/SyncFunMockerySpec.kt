@@ -11,6 +11,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.util.test.MockError
+import tech.antibytes.util.test.annotations.IgnoreJs
+import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.asyncMultiBlock
@@ -1402,5 +1404,93 @@ class SyncFunMockerySpec {
         }
 
         return asyncMultiBlock
+    }
+
+    @Test
+    @IgnoreJs
+    @JsName("fn34")
+    fun `Given clear is called it clears the mock`() {
+        // Given
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: () -> Any = {
+            fixture.fixture()
+        }
+
+        mockery.returnValue = value
+        mockery.returnValues = values
+        mockery.sideEffect = sideEffect
+
+        // When
+        mockery.invoke()
+
+        mockery.clear()
+
+        // Then
+        mockery.returnValue mustBe null
+        try {
+            mockery.returnValues
+        } catch (error: Throwable) {
+            (error is NullPointerException) mustBe true
+        }
+
+        try {
+            mockery.sideEffect mustBe null
+        } catch (error: Throwable) {
+            (error is NullPointerException) mustBe true
+        }
+
+        mockery.calls mustBe 0
+
+        try {
+            mockery.getArgumentsForCall(0)
+        } catch (error: Throwable) {
+            (error is IndexOutOfBoundsException) mustBe true
+        }
+    }
+
+    @Test
+    @JsOnly
+    @JsName("fn35")
+    fun `Given clear is called it clears the mock for Js`() {
+        // Given
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: () -> Any = {
+            fixture.fixture()
+        }
+
+        mockery.returnValue = value
+        mockery.returnValues = values
+        mockery.sideEffect = sideEffect
+
+        // When
+        mockery.invoke()
+
+        mockery.clear()
+
+        // Then
+        mockery.returnValue mustBe null
+        try {
+            mockery.returnValues
+        } catch (error: Throwable) {
+            (error is ClassCastException) mustBe true
+        }
+
+        try {
+            mockery.sideEffect mustBe null
+        } catch (error: Throwable) {
+            (error is ClassCastException) mustBe true
+        }
+
+        mockery.calls mustBe 0
+
+        try {
+            mockery.getArgumentsForCall(0)
+        } catch (error: Throwable) {
+            (error is IndexOutOfBoundsException) mustBe true
+        }
     }
 }
