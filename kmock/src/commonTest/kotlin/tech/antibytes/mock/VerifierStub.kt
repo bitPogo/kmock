@@ -10,4 +10,8 @@ import tech.antibytes.kmock.KMockContract
 
 class VerifierStub(
     override val references: List<KMockContract.Reference>
-) : KMockContract.Verifier
+) : KMockContract.Verifier {
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
+}

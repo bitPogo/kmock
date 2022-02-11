@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock.example
 
+import kotlinx.coroutines.flow.SharedFlow
+
 interface ExampleContract {
     interface SampleDomainObject {
         var id: String
@@ -25,6 +27,6 @@ interface ExampleContract {
 
     interface SampleController {
         suspend fun fetchAndStore(url: String): SampleDomainObject
-        fun find(id: String): SampleDomainObject
+        fun find(id: String): SharedFlow<SampleDomainObject>
     }
 }
