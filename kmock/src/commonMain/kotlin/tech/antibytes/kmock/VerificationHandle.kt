@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock
 
-class ExampleClass {
-    fun doSomething() = "something"
-}
+data class VerificationHandle(
+    override val id: String,
+    override val callIndices: List<Int>
+) : KMockContract.VerificationHandle
