@@ -10,6 +10,8 @@ import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.util.test.MockError
+import tech.antibytes.util.test.annotations.IgnoreJs
+import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.asyncMultiBlock
@@ -19,6 +21,7 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
+import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
@@ -441,5 +444,81 @@ class PropertyMockerySpec {
         }
 
         return asyncMultiBlock
+    }
+
+    @Test
+    @IgnoreJs
+    @JsName("fn21")
+    fun `Given clear is called it clears the mock`() {
+        // Given
+        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: (Any) -> Unit = { }
+
+        mockery.get = value
+        mockery.getMany = values
+        mockery.set = sideEffect
+
+        mockery.onGet()
+        mockery.onSet(fixture.fixture())
+
+        mockery.clear()
+
+        mockery.get mustBe null
+
+        try {
+            mockery.getMany
+        } catch (error: Throwable) {
+            (error is NullPointerException) mustBe true
+        }
+
+        mockery.set isNot sideEffect
+
+        mockery.calls mustBe 0
+
+        try {
+            mockery.getArgumentsForCall(0)
+        } catch (error: Throwable) {
+            (error is IndexOutOfBoundsException) mustBe true
+        }
+    }
+
+    @Test
+    @JsOnly
+    @JsName("fn22")
+    fun `Given clear is called it clears the mock for Js`() {
+        // Given
+        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: (Any) -> Unit = { }
+
+        mockery.get = value
+        mockery.getMany = values
+        mockery.set = sideEffect
+
+        mockery.onGet()
+        mockery.onSet(fixture.fixture())
+
+        mockery.clear()
+
+        mockery.get mustBe null
+
+        try {
+            mockery.getMany
+        } catch (error: Throwable) {
+            (error is ClassCastException) mustBe true
+        }
+
+        mockery.set isNot sideEffect
+
+        mockery.calls mustBe 0
+
+        try {
+            mockery.getArgumentsForCall(0)
+        } catch (error: Throwable) {
+            (error is IndexOutOfBoundsException) mustBe true
+        }
     }
 }

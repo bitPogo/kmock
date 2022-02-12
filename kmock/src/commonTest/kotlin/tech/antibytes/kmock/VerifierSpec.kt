@@ -65,4 +65,20 @@ class VerifierSpec {
 
         return asyncMultiBlock
     }
+
+    @Test
+    @JsName("fn4")
+    fun `Given clear is called it clears the verifier`() {
+        // Given
+        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val verifier = Verifier()
+
+        // When
+        verifier.addReference(mockery, fixture.fixture())
+
+        verifier.clear()
+
+        // Then
+        verifier.references mustBe emptyList()
+    }
 }

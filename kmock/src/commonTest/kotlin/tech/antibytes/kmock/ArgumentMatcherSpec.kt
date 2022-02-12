@@ -23,7 +23,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withArguments(fixture.fixture<String>())
+        val actual = array.wasCalledWithArguments(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -36,7 +36,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withArguments(array.first())
+        val actual = array.wasCalledWithArguments(array.first())
 
         // Then
         actual mustBe true
@@ -49,7 +49,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withArguments()
+        val actual = array.wasCalledWithArguments()
 
         // Then
         actual mustBe true
@@ -62,7 +62,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withArguments()
+        val actual = array.wasCalledWithArguments()
 
         // Then
         actual mustBe true
@@ -75,7 +75,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withArguments(fixture.listFixture<String>(), fixture.listFixture<String>())
+        val actual = array.wasCalledWithArguments(fixture.listFixture<String>(), fixture.listFixture<String>())
 
         // Then
         actual mustBe false
@@ -88,7 +88,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.withArguments(array[0], array[1], array[2], fixture.fixture<String>())
+        val actual = array.wasCalledWithArguments(array[0], array[1], array[2], fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -101,7 +101,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.withArguments(array[0], array[1], array[2], array[3])
+        val actual = array.wasCalledWithArguments(array[0], array[1], array[2], array[3])
 
         // Then
         actual mustBe true
@@ -114,7 +114,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withSameArguments(fixture.fixture<String>())
+        val actual = array.wasCalledWithArgumentsStrict(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -127,7 +127,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 1).toTypedArray()
 
         // When
-        val actual = array.withSameArguments(array.first())
+        val actual = array.wasCalledWithArgumentsStrict(array.first())
 
         // Then
         actual mustBe true
@@ -140,7 +140,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 1).toTypedArray()
 
         // When
-        val actual = array.withSameArguments()
+        val actual = array.wasCalledWithArgumentsStrict()
 
         // Then
         actual mustBe false
@@ -153,7 +153,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withSameArguments(fixture.fixture<String>())
+        val actual = array.wasCalledWithArgumentsStrict(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -166,7 +166,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withSameArguments()
+        val actual = array.wasCalledWithArgumentsStrict()
 
         // Then
         actual mustBe true
@@ -179,7 +179,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.withSameArguments(array[0], array[1], array[2], array[3])
+        val actual = array.wasCalledWithArgumentsStrict(array[0], array[1], array[2], array[3])
 
         // Then
         actual mustBe false
@@ -192,7 +192,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.withSameArguments(*array)
+        val actual = array.wasCalledWithArgumentsStrict(*array)
 
         // Then
         actual mustBe true
@@ -205,7 +205,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withoutArguments()
+        val actual = array.wasCalledWithoutArguments()
 
         // Then
         actual mustBe false
@@ -218,7 +218,7 @@ class ArgumentMatcherSpec {
         val array = null
 
         // When
-        val actual = array.withoutArguments(fixture.listFixture<String>().toTypedArray())
+        val actual = array.wasCalledWithoutArguments(fixture.listFixture<String>().toTypedArray())
 
         // Then
         actual mustBe true
@@ -231,7 +231,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withoutArguments(fixture.fixture<String>())
+        val actual = array.wasCalledWithoutArguments(fixture.fixture<String>())
 
         // Then
         actual mustBe true
@@ -244,7 +244,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withoutArguments(array.first())
+        val actual = array.wasCalledWithoutArguments(array.first())
 
         // Then
         actual mustBe false
@@ -257,7 +257,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withoutArguments()
+        val actual = array.wasCalledWithoutArguments()
 
         // Then
         actual mustBe true
@@ -270,7 +270,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.withoutArguments()
+        val actual = array.wasCalledWithoutArguments()
 
         // Then
         actual mustBe true
@@ -284,7 +284,7 @@ class ArgumentMatcherSpec {
 
         // When
         val actual =
-            array.withoutArguments(fixture.fixture<String>(), fixture.fixture<String>(), fixture.fixture<String>())
+            array.wasCalledWithoutArguments(fixture.fixture<String>(), fixture.fixture<String>(), fixture.fixture<String>())
 
         // Then
         actual mustBe true
@@ -297,7 +297,7 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.withoutArguments(
+        val actual = array.wasCalledWithoutArguments(
             array[0],
             fixture.fixture<String>(),
             fixture.fixture<String>(),

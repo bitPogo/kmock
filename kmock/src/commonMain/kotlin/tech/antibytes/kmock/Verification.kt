@@ -66,6 +66,17 @@ private infix fun VerificationHandle.mustBeAtMost(value: Int) {
     }
 }
 
+/**
+ * Verification function for a given assertion.
+ * Note:<ul>
+ *      <li>any boundary parameter will cause a failure in combination with wasCalledWithoutArguments if at least one argument matches.</li>
+ * </ul>
+ * @param exactly Int or null - the exact amount of calls. This parameter overrides atLeast and atMost. Use null to deactivate the criteria.
+ * @param atLeast Int - the minimum amount of calls.
+ * @param atMost Int or null - the maximum amount of calls. Use null to deactivate the criteria.
+ * @param action ArgumentMatcher - Primary criteria to select VerificationHandles.
+ * @throws AssertionError if it does not match the given criteria.
+ */
 fun verify(
     exactly: Int? = null,
     atLeast: Int = 1,
