@@ -18,5 +18,8 @@ documentation:
   - readmeOSS.adoc
 
 # Library
-test-utils:
+kmock:
   - kmock-gradle/**/*
+
+examples:
+  - examples/**/*

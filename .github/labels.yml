@@ -66,3 +66,7 @@
 - name: kmock
   description: KMock
   color: 000080
+
+- name: examples
+  description: Examples
+  color: 000080

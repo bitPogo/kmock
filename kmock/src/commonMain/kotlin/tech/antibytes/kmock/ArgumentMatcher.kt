@@ -8,7 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.GetOrSet
 
-internal fun Array<out Any?>?.withArguments(vararg values: Any?): Boolean {
+internal fun Array<out Any?>?.wasCalledWithArguments(vararg values: Any?): Boolean {
     return when {
         this == null -> values.isEmpty()
         values.isEmpty() -> true
@@ -16,11 +16,11 @@ internal fun Array<out Any?>?.withArguments(vararg values: Any?): Boolean {
     }
 }
 
-internal fun Array<out Any?>?.withSameArguments(vararg values: Any?): Boolean {
+internal fun Array<out Any?>?.wasCalledWithArgumentsStrict(vararg values: Any?): Boolean {
     return this?.contentDeepEquals(values) ?: values.isEmpty()
 }
 
-internal fun Array<out Any?>?.withoutArguments(vararg values: Any?): Boolean {
+internal fun Array<out Any?>?.wasCalledWithoutArguments(vararg values: Any?): Boolean {
     return if (this == null) {
         values.isNotEmpty()
     } else {

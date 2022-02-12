@@ -26,17 +26,19 @@ private fun <T> traverseMock(
     return VerificationHandle(mock.id, callIndices)
 }
 
-fun FunMockery<*, *>.withArguments(
+fun FunMockery<*, *>.wasCalledWithArguments(
     vararg values: Any?
-): VerificationHandle = traverseMock(this) { withArguments(*values) }
+): VerificationHandle = traverseMock(this) {
+    wasCalledWithArguments(*values)
+}
 
-fun FunMockery<*, *>.withSameArguments(
+fun FunMockery<*, *>.wasCalledWithArgumentsStrict(
     vararg values: Any?
-): VerificationHandle = traverseMock(this) { withSameArguments(*values) }
+): VerificationHandle = traverseMock(this) { wasCalledWithArgumentsStrict(*values) }
 
-fun FunMockery<*, *>.withoutArguments(
+fun FunMockery<*, *>.wasCalledWithoutArguments(
     vararg values: Any?
-): VerificationHandle = traverseMock(this) { withoutArguments(*values) }
+): VerificationHandle = traverseMock(this) { wasCalledWithoutArguments(*values) }
 
 fun PropMockery<*>.wasGotten(): VerificationHandle = traverseMock(this) { wasGotten() }
 
