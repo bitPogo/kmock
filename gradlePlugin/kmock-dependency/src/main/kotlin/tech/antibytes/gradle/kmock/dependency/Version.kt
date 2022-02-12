@@ -21,6 +21,8 @@ object Version {
          */
         const val antibytes = "80c1464"
 
+        const val kmock = "2862f9f-add-stub-auto-SNAPSHOT"
+
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
