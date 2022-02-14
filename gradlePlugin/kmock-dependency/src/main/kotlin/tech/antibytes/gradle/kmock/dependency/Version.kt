@@ -19,9 +19,7 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "80c1464"
-
-        const val kmock = "2862f9f-add-stub-auto-SNAPSHOT"
+        const val antibytes = "9388cf9"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
@@ -32,7 +30,7 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        val test = "b8215f8-add-ios-SNAPSHOT"
+        val test = "de45ed1-add-ios-SNAPSHOT"
     }
 
     val google = Google

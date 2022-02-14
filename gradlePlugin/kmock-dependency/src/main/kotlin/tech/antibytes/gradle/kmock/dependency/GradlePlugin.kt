@@ -13,5 +13,4 @@ object GradlePlugin {
     const val projectConfig = "tech.antibytes.gradle-plugins:antibytes-configuration:${Version.gradle.antibytes}"
     const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:${Version.gradle.spotless}"
     const val ksp = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${Version.google.ksp}"
-    const val kmock = "tech.antibytes.kmock:kmock-gradle:${Version.gradle.kmock}"
 }

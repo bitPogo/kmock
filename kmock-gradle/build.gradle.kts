@@ -31,12 +31,14 @@ dependencies {
     implementation(LocalDependency.google.ksp)
     implementation(LocalDependency.square.kotlinPoet.core)
     implementation(LocalDependency.square.kotlinPoet.ksp)
+    implementation(LocalDependency.antibytes.gradle.util)
     implementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.core)
-    testImplementation(Dependency.multiplatform.test.jvm)
+    testImplementation(LocalDependency.antibytes.test.fixture)
     testImplementation(platform(Dependency.jvm.test.junit))
     testImplementation(Dependency.jvm.test.jupiter)
+    testImplementation(Dependency.jvm.test.mockk)
 
     testImplementation(LocalDependency.antibytes.test.gradle)
 }
@@ -44,6 +46,39 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+val templatesPath = "${projectDir}/src/main/resources/template"
+val configPath = "${projectDir}/src-gen/main/kotlin/tech/antibytes/gradle/kmock/config"
+
+val provideConfig: Task by tasks.creating {
+    doFirst {
+        val templates = File(templatesPath)
+        val configs = File(configPath)
+
+        val config = File(templates, "Config.tmpl")
+            .readText()
+            .replace("VERSION", project.version as String)
+
+        if (!configs.exists()) {
+            if(!configs.mkdir()) {
+                System.err.println("Creation of the configuration directory failed!")
+            }
+        }
+        File(configPath, "Config.kt").writeText(config)
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
+    this.dependsOn(provideConfig)
+}
+
+sourceSets.getByName("main") {
+    java.srcDir("src-gen/main/kotlin")
 }
 
 gradlePlugin {

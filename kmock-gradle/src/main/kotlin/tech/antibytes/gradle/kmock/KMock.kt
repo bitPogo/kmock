@@ -8,17 +8,19 @@ package tech.antibytes.gradle.kmock
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import tech.antibytes.gradle.util.applyIfNotExists
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import tech.antibytes.gradle.util.isAndroidApplication
+import tech.antibytes.gradle.util.isAndroidLibrary
+import tech.antibytes.gradle.util.isKmp
 
 class KMock : Plugin<Project> {
-    override fun apply(target: Project) {
-        target.afterEvaluate {
-            val sourceSet = extensions.findByType<KotlinMultiplatformExtension>() ?: throw RuntimeException()
+    private fun addKSP(project: Project) {
+        project.applyIfNotExists("com.google.devtools.ksp")
+    }
 
-            sourceSet.targets.all {
-                println(this.name)
-            }
-        }
+    override fun apply(target: Project) {
+        addKSP(target)
     }
 }
