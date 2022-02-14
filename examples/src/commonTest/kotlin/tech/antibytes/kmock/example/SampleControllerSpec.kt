@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 import tech.antibytes.kmock.Verifier
@@ -41,6 +42,7 @@ import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
 
+@MagicStub(SampleRemoteRepository::class)
 class SampleControllerSpec {
     private val fixture = kotlinFixture()
 

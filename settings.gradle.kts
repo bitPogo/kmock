@@ -19,8 +19,8 @@ plugins {
 
 include(
     ":kmock",
+    ":kmock-processor",
     ":examples",
-    ":kmock-processor"
 )
 
 buildCache {

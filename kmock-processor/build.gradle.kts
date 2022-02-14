@@ -23,6 +23,13 @@ antiBytesPublishing {
     versioning = KMockProcessorConfiguration.publishing.versioning
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview"
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
+}
+
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
     implementation(Dependency.multiplatform.stately.isolate)
@@ -35,6 +42,7 @@ dependencies {
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)
     testImplementation(platform(Dependency.jvm.test.junit))
+    testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(Dependency.jvm.test.jupiter)
     testImplementation(Dependency.jvm.test.mockk)
 }

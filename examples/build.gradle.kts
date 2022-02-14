@@ -16,6 +16,9 @@ plugins {
 
     id("tech.antibytes.gradle.configuration")
     id("tech.antibytes.gradle.coverage")
+
+    // Processor
+    id("com.google.devtools.ksp")
 }
 
 group = KMockConfiguration.group
@@ -162,4 +165,18 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    add("kspMetadata", project(":kmock-processor"))
+    add("kspJvm", project(":kmock-processor"))
+    add("kspJvmTest", project(":kmock-processor"))
+    add("kspAndroid", project(":kmock-processor"))
+    add("kspAndroidTest", project(":kmock-processor"))
+    add("kspJs", project(":kmock-processor"))
+    add("kspJsTest", project(":kmock-processor"))
+    add("kspLinuxX64", project(":kmock-processor"))
+    add("kspLinuxX64Test", project(":kmock-processor"))
+    add("kspIosX64", project(":kmock-processor"))
+    add("kspIosX64Test", project(":kmock-processor"))
 }
