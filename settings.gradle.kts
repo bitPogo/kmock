@@ -20,6 +20,7 @@ plugins {
 include(
     ":kmock",
     ":examples",
+    ":kmock-processor"
 )
 
 buildCache {

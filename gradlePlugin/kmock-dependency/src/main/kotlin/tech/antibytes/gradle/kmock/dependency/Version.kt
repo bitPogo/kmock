@@ -12,24 +12,42 @@ object Version {
 
     object Gradle {
         /**
+         * [Kotlin](https://github.com/JetBrains/kotlin)
+         */
+        val kotlin = "1.6.10"
+
+        /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "165ee05"
+        const val antibytes = "80c1464"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
         const val spotless = "6.2.0"
+    }
 
+    val antibytes = Antibytes
+
+    object Antibytes {
+        val test = "047a358-add-ios-SNAPSHOT"
+    }
+
+    val google = Google
+
+    object Google {
         /**
          * [KSP](https://github.com/google/ksp)
          */
         const val ksp = "1.6.10-1.0.2"
     }
 
-    val antibytes = Antibytes
+    val square = Square
 
-    object Antibytes {
-        val test = "7b11c9d-add-ios-SNAPSHOT"
+    object Square {
+        /**
+         * [Kotlin Poet](https://square.github.io/kotlinpoet/)
+         */
+        val kotlinPoet = "1.10.2"
     }
 }
