@@ -13,7 +13,8 @@ import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
-import tech.antibytes.util.test.coroutine.asyncMultiBlock
+import tech.antibytes.util.test.coroutine.clearBlockingTest
+import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
@@ -24,6 +25,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -31,6 +33,11 @@ class AsyncFunMockerySpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
+
+    @BeforeTest
+    fun setUp() {
+        clearBlockingTest()
+    }
 
     @Test
     @JsName("fn0")
@@ -61,7 +68,7 @@ class AsyncFunMockerySpec {
             mockery.returnValue mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -81,7 +88,7 @@ class AsyncFunMockerySpec {
             mockery.returnValue mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -115,7 +122,7 @@ class AsyncFunMockerySpec {
             mockery.returnValues mustBe values
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -135,7 +142,7 @@ class AsyncFunMockerySpec {
             mockery.sideEffect sameAs effect
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -175,7 +182,7 @@ class AsyncFunMockerySpec {
             actual mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -199,7 +206,7 @@ class AsyncFunMockerySpec {
             }
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -223,7 +230,7 @@ class AsyncFunMockerySpec {
             }
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -259,7 +266,7 @@ class AsyncFunMockerySpec {
             actualArgument1.get() mustBe argument1
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -283,7 +290,7 @@ class AsyncFunMockerySpec {
             actual mustBe values.first()
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -307,7 +314,7 @@ class AsyncFunMockerySpec {
             actual mustBe expected
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -334,7 +341,7 @@ class AsyncFunMockerySpec {
             actual[0] mustBe argument
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -359,7 +366,7 @@ class AsyncFunMockerySpec {
             actual mustBe null
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -401,7 +408,7 @@ class AsyncFunMockerySpec {
             mockery.calls mustBe 1
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -434,7 +441,7 @@ class AsyncFunMockerySpec {
             capturedCalledIdx.get() mustBe 0
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -459,7 +466,7 @@ class AsyncFunMockerySpec {
             mockery.getArgumentsForCall(0) mustBe null
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -494,7 +501,7 @@ class AsyncFunMockerySpec {
             arguments!![0] mustBe argument0
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -535,7 +542,7 @@ class AsyncFunMockerySpec {
             arguments[1] mustBe argument1
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -580,7 +587,7 @@ class AsyncFunMockerySpec {
             arguments[2] mustBe argument2
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -630,7 +637,7 @@ class AsyncFunMockerySpec {
             arguments[3] mustBe argument3
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -685,7 +692,7 @@ class AsyncFunMockerySpec {
             arguments[4] mustBe argument4
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -746,7 +753,7 @@ class AsyncFunMockerySpec {
             arguments[5] mustBe argument5
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -812,7 +819,7 @@ class AsyncFunMockerySpec {
             arguments[6] mustBe argument6
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -892,7 +899,7 @@ class AsyncFunMockerySpec {
             arguments[7] mustBe argument7
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -978,7 +985,7 @@ class AsyncFunMockerySpec {
             arguments[8] mustBe argument8
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -1070,7 +1077,7 @@ class AsyncFunMockerySpec {
             arguments[9] mustBe argument9
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -1169,7 +1176,7 @@ class AsyncFunMockerySpec {
             arguments[10] mustBe argument10
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -1273,7 +1280,7 @@ class AsyncFunMockerySpec {
             arguments[11] mustBe argument11
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -1383,7 +1390,7 @@ class AsyncFunMockerySpec {
             arguments[12] mustBe argument12
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test

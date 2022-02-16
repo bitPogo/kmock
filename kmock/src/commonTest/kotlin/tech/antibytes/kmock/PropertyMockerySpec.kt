@@ -14,7 +14,8 @@ import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
-import tech.antibytes.util.test.coroutine.asyncMultiBlock
+import tech.antibytes.util.test.coroutine.clearBlockingTest
+import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
@@ -25,6 +26,7 @@ import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -32,6 +34,11 @@ class PropertyMockerySpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
+
+    @BeforeTest
+    fun setUp() {
+        clearBlockingTest()
+    }
 
     @Test
     @JsName("fn0")
@@ -56,7 +63,7 @@ class PropertyMockerySpec {
             mockery.get mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -76,7 +83,7 @@ class PropertyMockerySpec {
             mockery.get mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -110,7 +117,7 @@ class PropertyMockerySpec {
             mockery.getMany mustBe values
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -130,7 +137,7 @@ class PropertyMockerySpec {
             mockery.set sameAs effect
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -170,7 +177,7 @@ class PropertyMockerySpec {
             actual mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -194,7 +201,7 @@ class PropertyMockerySpec {
             }
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -218,7 +225,7 @@ class PropertyMockerySpec {
             }
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -242,7 +249,7 @@ class PropertyMockerySpec {
             actual mustBe values.first()
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -272,7 +279,7 @@ class PropertyMockerySpec {
             actualNew.receive() mustBe newValue
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -298,7 +305,7 @@ class PropertyMockerySpec {
             actual.value mustBe null
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -320,7 +327,7 @@ class PropertyMockerySpec {
             actual.value mustBe value
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -362,7 +369,7 @@ class PropertyMockerySpec {
             mockery.calls mustBe 1
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -381,7 +388,7 @@ class PropertyMockerySpec {
             mockery.calls mustBe 1
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -414,7 +421,7 @@ class PropertyMockerySpec {
             capturedCalledIdx.get() mustBe 0
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test
@@ -443,7 +450,7 @@ class PropertyMockerySpec {
             capturedCalledIdx.get() mustBe 0
         }
 
-        return asyncMultiBlock
+        return resolveMultiBlockCalls()
     }
 
     @Test

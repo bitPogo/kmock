@@ -30,6 +30,7 @@ import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
+import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
@@ -61,6 +62,7 @@ class SampleControllerAutoStubSpec {
         local.clear()
         remote.clear()
         domainObject.clear()
+        clearBlockingTest()
     }
 
     @Test

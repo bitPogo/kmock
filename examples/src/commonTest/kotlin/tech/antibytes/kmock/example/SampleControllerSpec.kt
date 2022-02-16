@@ -31,6 +31,7 @@ import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
+import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
@@ -40,10 +41,16 @@ import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class SampleControllerSpec {
     private val fixture = kotlinFixture()
+
+    @BeforeTest
+    fun setUp() {
+        clearBlockingTest()
+    }
 
     @Test
     @JsName("fn0")
