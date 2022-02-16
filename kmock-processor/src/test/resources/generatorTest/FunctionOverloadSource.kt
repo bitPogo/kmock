@@ -15,6 +15,7 @@ interface SyncFunctionOverload {
     fun foo(fuzz: Any, ozz: String): Any
     fun foo(fuzz: String, ozz: Any): Any
     fun foo(fuzz: String, ozz: Abc): Any
+    fun foo(fuzz: (Any) -> Unit): Any
 }
 
 data class Abc(

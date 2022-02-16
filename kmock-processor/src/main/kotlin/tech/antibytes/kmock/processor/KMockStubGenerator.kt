@@ -208,6 +208,14 @@ internal class KMockStubGenerator(
         return function.build()
     }
 
+    private fun filterLambdas(
+        parameterTypes: List<TypeName>
+    ) {
+        parameterTypes.forEach { type ->
+            println(type)
+        }
+    }
+
     private fun buildSyncFunMockery(
         qualifier: String,
         mockeryName: String,
@@ -265,6 +273,7 @@ internal class KMockStubGenerator(
         parameter.forEach { suffix ->
             val suffixCased = suffix.toString()
                 .removePrefix("kotlin.")
+                .substringBefore('<') // Lambdas
                 .let { name ->
                     if (name.contains('.')) {
                         name.split('.')
