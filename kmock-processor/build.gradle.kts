@@ -35,8 +35,12 @@ dependencies {
     implementation(Dependency.multiplatform.stately.isolate)
     implementation(Dependency.multiplatform.stately.concurrency)
     implementation(LocalDependency.google.ksp)
-    implementation(LocalDependency.square.kotlinPoet.core)
-    implementation(LocalDependency.square.kotlinPoet.ksp)
+    implementation(LocalDependency.square.kotlinPoet.core) {
+        exclude(module = "kotlin-reflect")
+    }
+    implementation(LocalDependency.square.kotlinPoet.ksp) {
+        exclude(module = "kotlin-reflect")
+    }
     implementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.core)
@@ -45,6 +49,8 @@ dependencies {
     testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(Dependency.jvm.test.jupiter)
     testImplementation(Dependency.jvm.test.mockk)
+    testImplementation(LocalDependency.compilerTest.core)
+    testImplementation(LocalDependency.compilerTest.ksp)
 }
 
 java {

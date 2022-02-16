@@ -16,7 +16,7 @@ import tech.antibytes.util.test.MockError
 class PropertyMockery<Value>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit }
-) : KMockContract.PropMockery<Value> {
+) : KMockContract.PropertyMockery<Value> {
     private val provider: AtomicReference<Boolean?> = AtomicReference(null)
     private val _get: AtomicReference<Value?> = AtomicReference(null)
     private val _getMany: AtomicReference<List<Value>?> = AtomicReference(null)

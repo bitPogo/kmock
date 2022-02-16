@@ -8,7 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.FunMockery
 import tech.antibytes.kmock.KMockContract.Mockery
-import tech.antibytes.kmock.KMockContract.PropMockery
+import tech.antibytes.kmock.KMockContract.PropertyMockery
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 
 private fun <T> traverseMock(
@@ -40,10 +40,10 @@ fun FunMockery<*, *>.wasCalledWithoutArguments(
     vararg values: Any?
 ): VerificationHandle = traverseMock(this) { wasCalledWithoutArguments(*values) }
 
-fun PropMockery<*>.wasGotten(): VerificationHandle = traverseMock(this) { wasGotten() }
+fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMock(this) { wasGotten() }
 
-fun PropMockery<*>.wasSet(): VerificationHandle = traverseMock(this) { wasSet() }
+fun PropertyMockery<*>.wasSet(): VerificationHandle = traverseMock(this) { wasSet() }
 
-fun PropMockery<*>.wasSetTo(
+fun PropertyMockery<*>.wasSetTo(
     value: Any?
 ): VerificationHandle = traverseMock(this) { wasSetTo(value) }

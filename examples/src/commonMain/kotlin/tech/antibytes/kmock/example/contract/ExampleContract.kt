@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.example
+package tech.antibytes.kmock.example.contract
 
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -28,5 +28,9 @@ interface ExampleContract {
     interface SampleController {
         suspend fun fetchAndStore(url: String): SampleDomainObject
         fun find(id: String): SharedFlow<SampleDomainObject>
+    }
+
+    interface DecoderFactory {
+        fun createDecoder(): PlatformDecoder?
     }
 }

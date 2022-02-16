@@ -17,3 +17,13 @@ import kotlin.reflect.KClass
  * @param interfaces variable amount of interfaces
  */
 annotation class MagicStub(vararg val interfaces: KClass<*>)
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Annotation to determine which interfaces are about to be stubbed for commonCode
+ *
+ * @param interfaces variable amount of interfaces
+ */
+annotation class MagicStubCommon(vararg val interfaces: KClass<*>)

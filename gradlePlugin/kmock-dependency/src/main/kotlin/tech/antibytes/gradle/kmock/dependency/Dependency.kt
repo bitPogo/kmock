@@ -51,4 +51,11 @@ object Dependency {
             val ksp = "com.squareup:kotlinpoet-ksp:${Version.square.kotlinPoet}"
         }
     }
+
+    val compilerTest = CompilerTest
+
+    object CompilerTest {
+        val core = "com.github.tschuchortdev:kotlin-compile-testing:${Version.compilerTest}"
+        val ksp = "com.github.tschuchortdev:kotlin-compile-testing-ksp:${Version.compilerTest}"
+    }
 }

@@ -31,14 +31,14 @@ fun VerificationChainBuilder.wasCalledWithoutArguments(mockery: FunMockery<*, *>
     this.add(mockery.wasCalledWithoutArguments(*arguments))
 }
 
-fun VerificationChainBuilder.wasGotten(mockery: KMockContract.PropMockery<*>) {
+fun VerificationChainBuilder.wasGotten(mockery: KMockContract.PropertyMockery<*>) {
     this.add(mockery.wasGotten())
 }
 
-fun VerificationChainBuilder.wasSet(mockery: KMockContract.PropMockery<*>) {
+fun VerificationChainBuilder.wasSet(mockery: KMockContract.PropertyMockery<*>) {
     this.add(mockery.wasSet())
 }
 
-fun VerificationChainBuilder.wasSetTo(mockery: KMockContract.PropMockery<*>, value: Any?) {
+fun VerificationChainBuilder.wasSetTo(mockery: KMockContract.PropertyMockery<*>, value: Any?) {
     this.add(mockery.wasSetTo(value))
 }

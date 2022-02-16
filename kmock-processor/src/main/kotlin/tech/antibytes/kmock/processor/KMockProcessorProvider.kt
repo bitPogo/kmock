@@ -12,10 +12,11 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+        val logger = environment.logger
+
         return KMockProcessor(
-            environment.logger,
-            environment.codeGenerator,
-            KMockAggregator()
+            KMockStubGenerator(logger, environment.codeGenerator),
+            KMockAggregator(logger)
         )
     }
 }

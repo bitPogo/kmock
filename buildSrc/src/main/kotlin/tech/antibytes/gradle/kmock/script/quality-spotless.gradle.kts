@@ -42,7 +42,7 @@ plugins {
 spotless {
     kotlin {
         target("**/*.kt")
-        targetExclude("buildSrc/build/", "**/buildSrc/build/")
+        targetExclude("buildSrc/build/", "**/buildSrc/build/", "**/kmock-processor/src/test/resources/")
         ktlint(Version.gradle.ktLint).userData(
             mapOf(
                 "disabled_rules" to "no-wildcard-imports",

@@ -14,7 +14,7 @@ class PropertyMockeryStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> GetOrSet)? = null
-) : KMockContract.PropMockery<Any> {
+) : KMockContract.PropertyMockery<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {
             throw MockError.MissingStub("Missing sideeffect getArgumentsForCall")

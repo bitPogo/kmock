@@ -53,4 +53,9 @@ object Version {
          */
         val kotlinPoet = "1.10.2"
     }
+
+    /**
+     * [Compiler Test](https://github.com/tschuchortdev/kotlin-compile-testing)
+     */
+    val compilerTest = "1.4.7"
 }

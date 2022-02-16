@@ -292,7 +292,7 @@ interface KMockContract {
         class Set(newValue: Any?) : GetOrSet(newValue)
     }
 
-    interface PropMockery<Value> : Mockery<Value, GetOrSet> {
+    interface PropertyMockery<Value> : Mockery<Value, GetOrSet> {
         var get: Value
         var getMany: List<Value>
         var set: (Value) -> Unit
