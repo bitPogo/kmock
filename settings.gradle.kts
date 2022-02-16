@@ -19,6 +19,7 @@ plugins {
 
 include(
     ":kmock",
+    ":kmock-processor",
     ":examples",
 )
 

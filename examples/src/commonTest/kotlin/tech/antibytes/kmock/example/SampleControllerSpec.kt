@@ -17,9 +17,10 @@ import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 import tech.antibytes.kmock.Verifier
 import tech.antibytes.kmock.assertWasCalledStrictlyWith
-import tech.antibytes.kmock.example.ExampleContract.SampleDomainObject
-import tech.antibytes.kmock.example.ExampleContract.SampleLocalRepository
-import tech.antibytes.kmock.example.ExampleContract.SampleRemoteRepository
+import tech.antibytes.kmock.example.contract.ExampleContract
+import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
+import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
+import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
@@ -48,8 +49,8 @@ class SampleControllerSpec {
     @JsName("fn0")
     fun `It fulfils SampleController`() {
         SampleController(
-            SampleLocalRepositoryStub(),
-            SampleRemoteRepositoryStub()
+            SampleLocalRepositoryManualStub(),
+            SampleRemoteRepositoryManualStub()
         ) fulfils ExampleContract.SampleController::class
     }
 
@@ -63,9 +64,9 @@ class SampleControllerSpec {
         val id = fixture.listFixture<String>(size = 2)
         val number = fixture.fixture<Int>()
 
-        val local = SampleLocalRepositoryStub(verifier)
-        val remote = SampleRemoteRepositoryStub(verifier)
-        val domainObject = SampleDomainObjectStub(verifier)
+        val local = SampleLocalRepositoryManualStub(verifier)
+        val remote = SampleRemoteRepositoryManualStub(verifier)
+        val domainObject = SampleDomainObjectManualStub(verifier)
 
         domainObject.propId.getMany = id
         domainObject.propValue.get = number
@@ -111,9 +112,9 @@ class SampleControllerSpec {
         val id = fixture.fixture<String>()
         val number = fixture.fixture<Int>()
 
-        val local = SampleLocalRepositoryStub(verifier)
-        val remote = SampleRemoteRepositoryStub(verifier)
-        val domainObject = SampleDomainObjectStub(verifier)
+        val local = SampleLocalRepositoryManualStub(verifier)
+        val remote = SampleRemoteRepositoryManualStub(verifier)
+        val domainObject = SampleDomainObjectManualStub(verifier)
 
         domainObject.propId.get = id
         domainObject.propValue.get = number
@@ -154,7 +155,7 @@ class SampleControllerSpec {
     }
 }
 
-private class SampleDomainObjectStub(
+private class SampleDomainObjectManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleDomainObject {
     val propId = PropertyMockery<String>("do#id", verifier)
@@ -168,7 +169,7 @@ private class SampleDomainObjectStub(
         get() = propValue.onGet()
 }
 
-private class SampleRemoteRepositoryStub(
+private class SampleRemoteRepositoryManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleRemoteRepository {
     val fetch = AsyncFunMockery<SampleDomainObject, suspend (String) -> SampleDomainObject>("remote#fetch", verifier)
@@ -179,7 +180,7 @@ private class SampleRemoteRepositoryStub(
     override fun find(id: String): SampleDomainObject = find.invoke(id)
 }
 
-private class SampleLocalRepositoryStub(
+private class SampleLocalRepositoryManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleLocalRepository {
     val store = AsyncFunMockery<SampleDomainObject, suspend (String, Int) -> SampleDomainObject>("local#store", verifier)

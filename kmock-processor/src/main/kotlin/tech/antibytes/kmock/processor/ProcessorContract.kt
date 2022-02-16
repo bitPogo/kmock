@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ *
+ * Use of this source code is governed by Apache v2.0
+ */
+
+package tech.antibytes.kmock.processor
+
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.ClassName
+import tech.antibytes.kmock.AsyncFunMockery
+import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.PropertyMockery
+import tech.antibytes.kmock.SyncFunMockery
+
+internal interface ProcessorContract {
+    interface Aggregator {
+        fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
+    }
+
+    data class Aggregated(
+        val illFormed: List<KSAnnotated>,
+        val extractedInterfaces: List<KSClassDeclaration>,
+        val dependencies: List<KSFile>
+    )
+
+    interface StubGenerator {
+        fun writePlatformStubs(
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>
+        )
+
+        fun writeCommonStubs(
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>
+        )
+    }
+
+    enum class Target(val value: String) {
+        COMMON("COMMON SOURCE"),
+        PLATFORM("")
+    }
+
+    companion object {
+        val ANNOTATION_NAME: String = MagicStub::class.java.canonicalName
+        val ANNOTATION_COMMON_NAME: String = MagicStubCommon::class.java.canonicalName
+        val COLLECTOR_NAME = ClassName(
+            Collector::class.java.packageName,
+            "KMockContract.${Collector::class.java.simpleName}"
+        )
+        val KMOCK_CONTRACT = ClassName(
+            KMockContract::class.java.packageName,
+            KMockContract::class.java.simpleName
+        )
+
+        val SYNC_FUN_NAME = ClassName(
+            SyncFunMockery::class.java.packageName,
+            SyncFunMockery::class.java.simpleName
+        )
+        val ASYNC_FUN_NAME = ClassName(
+            AsyncFunMockery::class.java.packageName,
+            AsyncFunMockery::class.java.simpleName
+        )
+        val PROP_NAME = ClassName(
+            PropertyMockery::class.java.packageName,
+            PropertyMockery::class.java.simpleName
+        )
+    }
+}

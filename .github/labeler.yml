@@ -21,5 +21,11 @@ documentation:
 kmock:
   - kmock-gradle/**/*
 
+kmock-gradle:
+  - kmock-gradle/**/*
+
+kmock-processor:
+  - kmock-processor/**/*
+
 examples:
   - examples/**/*

@@ -60,14 +60,14 @@ fun FunMockery<*, *>.assertWasCalledWithout(
     }
 }
 
-fun KMockContract.PropMockery<*>.assertWasGotten(exactly: Int) {
+fun KMockContract.PropertyMockery<*>.assertWasGotten(exactly: Int) {
     verify(exactly = exactly) { this.wasGotten() }
 }
 
-fun KMockContract.PropMockery<*>.assertWasSet(exactly: Int) {
+fun KMockContract.PropertyMockery<*>.assertWasSet(exactly: Int) {
     verify(exactly = exactly) { this.wasSet() }
 }
 
-fun KMockContract.PropMockery<*>.assertWasSetTo(exactly: Int, value: Any?) {
+fun KMockContract.PropertyMockery<*>.assertWasSetTo(exactly: Int, value: Any?) {
     verify(exactly = exactly) { this.wasSetTo(value) }
 }

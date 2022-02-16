@@ -63,6 +63,10 @@
   description: KMock Gradle Plugin
   color: 000080
 
+- name: kmock-processor
+  description: Stubgenerator
+  color: 000080
+
 - name: kmock
   description: KMock
   color: 000080

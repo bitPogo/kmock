@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import tech.antibytes.kmock.example.contract.ExampleContract
 
 class SampleController(
     private val localRepository: ExampleContract.SampleLocalRepository,

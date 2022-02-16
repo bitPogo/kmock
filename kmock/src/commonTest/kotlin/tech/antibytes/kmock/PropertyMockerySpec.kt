@@ -36,7 +36,7 @@ class PropertyMockerySpec {
     @Test
     @JsName("fn0")
     fun `It fulfils PropMockery`() {
-        PropertyMockery<Unit>(fixture.fixture()) fulfils KMockContract.PropMockery::class
+        PropertyMockery<Unit>(fixture.fixture()) fulfils KMockContract.PropertyMockery::class
     }
 
     @Test
