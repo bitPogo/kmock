@@ -28,12 +28,8 @@ antiBytesPublishing {
 
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
-    implementation(Dependency.multiplatform.stately.isolate)
-    implementation(Dependency.multiplatform.stately.concurrency)
-    implementation(LocalDependency.google.ksp)
-    implementation(LocalDependency.square.kotlinPoet.core)
-    implementation(LocalDependency.square.kotlinPoet.ksp)
     implementation(LocalDependency.antibytes.gradle.util)
+    implementation(LocalDependency.gradle.ksp)
     implementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.core)

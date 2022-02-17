@@ -7,10 +7,10 @@
 package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import tech.antibytes.gradle.kmock.KMockPluginContract
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.util.isJs
 

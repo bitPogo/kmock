@@ -6,7 +6,6 @@
 
 package tech.antibytes.gradle.kmock.source
 
-import tech.antibytes.util.test.fixture.kotlinFixture
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -24,6 +23,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fixture.fixture
+import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 
 class SingleSourceSetConfiguratorSpec {
