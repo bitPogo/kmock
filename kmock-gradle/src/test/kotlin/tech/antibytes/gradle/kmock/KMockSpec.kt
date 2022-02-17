@@ -6,7 +6,6 @@
 
 package tech.antibytes.gradle.kmock
 
-
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -60,6 +59,4 @@ class KMockSpec {
         verify(exactly = 1) { plugins.hasPlugin("com.google.devtools.ksp") }
         verify(exactly = 0) { plugins.apply("com.google.devtools.ksp") }
     }
-
-
 }

@@ -7,6 +7,8 @@
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
 
 plugins {
     `kotlin-dsl`
@@ -52,34 +54,28 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val templatesPath = "${projectDir}/src/main/resources/template"
-val configPath = "${projectDir}/src-gen/main/kotlin/tech/antibytes/gradle/kmock/config"
+afterEvaluate {
+    val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
+        packageName.set("tech.antibytes.gradle.kmock.config")
+        stringFields.set(
+            mapOf(
+                "version" to project.version as String
+            )
+        )
+    }
 
-val provideConfig: Task by tasks.creating {
-    doFirst {
-        val templates = File(templatesPath)
-        val configs = File(configPath)
-
-        val config = File(templates, "Config.tmpl")
-            .readText()
-            .replace("VERSION", project.version as String)
-
-        if (!configs.exists()) {
-            if(!configs.mkdir()) {
-                System.err.println("Creation of the configuration directory failed!")
-            }
-        }
-        File(configPath, "Config.kt").writeText(config)
+    tasks.withType(KotlinCompile::class.java) {
+        this.dependsOn(generateConfig)
     }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
-    this.dependsOn(provideConfig)
+kotlin {
+    sourceSets.main {
+        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+    }
 }
 
-sourceSets.getByName("main") {
-    java.srcDir("src-gen/main/kotlin")
-}
+
 
 gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {

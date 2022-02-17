@@ -6,11 +6,12 @@
 
 package tech.antibytes.gradle.kmock
 
-import org.gradle.api.provider.SetProperty
+import org.gradle.api.Project
 
 internal interface KMockPluginContract {
-    interface Extension {
-        val androidVariants: SetProperty<String>
-        val androidFlavours: SetProperty<String>
+    interface Extension
+
+    interface SourceSetConfigurator {
+        fun configure(project: Project)
     }
 }

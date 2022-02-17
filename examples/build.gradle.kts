@@ -4,10 +4,6 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
-import com.google.devtools.ksp.gradle.KspTask
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
@@ -181,22 +177,6 @@ kotlin {
 }
 
 afterEvaluate {
-    tasks.findByName("cleanJvmTest")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/jvmTest")
-    }
-    tasks.findByName("cleanJsNodeTestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/hsNodeTest")
-    }
-    tasks.findByName("cleanJsBrowserTestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/jsBrowserTest")
-    }
-    tasks.findByName("cleanLinuxX64TestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/linuxX64Test")
-    }
-    tasks.findByName("cleanIosX64TestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/iosX64Test")
-    }
-
     val moveToCommon by tasks.creating(Copy::class) {
         description = "Extract Common Sources"
         group = "Code Generation"

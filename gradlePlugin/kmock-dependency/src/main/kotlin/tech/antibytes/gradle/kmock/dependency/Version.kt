@@ -24,7 +24,7 @@ object Version {
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
-        const val spotless = "6.2.0"
+        const val spotless = "6.3.0"
     }
 
     val antibytes = Antibytes
@@ -42,7 +42,7 @@ object Version {
         /**
          * [KSP DevTools on MavenCentral](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin)
          */
-        const val ksp = "1.6.10-1.0.2"
+        const val ksp = "1.6.10-1.0.3"
     }
 
     val square = Square
