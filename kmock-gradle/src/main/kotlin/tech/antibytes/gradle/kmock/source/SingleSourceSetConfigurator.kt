@@ -10,11 +10,21 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import tech.antibytes.gradle.kmock.config.MainConfig
+import tech.antibytes.gradle.util.isJs
 
-object JvmSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
-    private fun extendSourceSet(project: Project) {
+object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
+    private fun extendJvmSourceSet(project: Project) {
         project.extensions.configure<KotlinJvmProjectExtension>("kotlin") {
+            sourceSets.getByName("test") {
+                kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+            }
+        }
+    }
+
+    private fun extendJsSourceSet(project: Project) {
+        project.extensions.configure<KotlinJsProjectExtension>("kotlin") {
             sourceSets.getByName("test") {
                 kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
             }
@@ -28,7 +38,12 @@ object JvmSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
     }
 
     override fun configure(project: Project) {
-        extendSourceSet(project)
+        if (project.isJs()) {
+            extendJsSourceSet(project)
+        } else {
+            extendJvmSourceSet(project)
+        }
+
         addKsp(project)
     }
 }
