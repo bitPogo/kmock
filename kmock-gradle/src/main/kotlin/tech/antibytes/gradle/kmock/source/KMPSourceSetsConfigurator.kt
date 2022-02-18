@@ -14,7 +14,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import java.util.Locale
 
-object KMPSourceSetsConfigurator : KMockPluginContract.SourceSetConfigurator {
+internal object KMPSourceSetsConfigurator : KMockPluginContract.SourceSetConfigurator {
     private fun extendSourceSet(sourceSet: KotlinSourceSet, buildDir: String) {
         sourceSet.kotlin.srcDir(
             "$buildDir/generated/antibytes/${sourceSet.name}"

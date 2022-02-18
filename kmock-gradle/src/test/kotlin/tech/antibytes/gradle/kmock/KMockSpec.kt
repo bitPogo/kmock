@@ -17,8 +17,6 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 
 class KMockSpec {
-    private val fixture = kotlinFixture()
-
     @Test
     fun `It fulfils Plugin`() {
         KMock() fulfils Plugin::class

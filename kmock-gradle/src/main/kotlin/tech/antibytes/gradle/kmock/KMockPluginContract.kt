@@ -7,9 +7,21 @@
 package tech.antibytes.gradle.kmock
 
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.TaskAction
 
-internal interface KMockPluginContract {
-    interface Extension
+interface KMockPluginContract {
+    interface CleanUpTask {
+        @get:Input
+        val indicator: Property<String>
+
+        @get:Input
+        val target: Property<String>
+
+        @TaskAction
+        fun cleanUp()
+    }
 
     interface SourceSetConfigurator {
         fun configure(project: Project)

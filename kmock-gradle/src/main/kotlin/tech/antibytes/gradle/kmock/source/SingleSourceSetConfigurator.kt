@@ -14,7 +14,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.util.isJs
 
-object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
+internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
     private fun extendJvmSourceSet(project: Project) {
         project.extensions.configure<KotlinJvmProjectExtension>("kotlin") {
             sourceSets.getByName("test") {
