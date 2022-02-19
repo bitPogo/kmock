@@ -6,23 +6,22 @@
 
 package tech.antibytes.kmock
 
-import co.touchlab.stately.isolate.IsolateState
+import co.touchlab.stately.collections.IsoMutableList
+import co.touchlab.stately.collections.sharedMutableListOf
 import tech.antibytes.kmock.KMockContract.Mockery
 import tech.antibytes.kmock.KMockContract.Reference
 
 class Verifier : KMockContract.Verifier, KMockContract.Collector {
-    private val _references: IsolateState<MutableList<Reference>> = IsolateState { mutableListOf() }
+    private val _references: IsoMutableList<Reference> = sharedMutableListOf()
 
     override val references: List<Reference>
-        get() = _references.access { it.toList() }
+        get() = _references.toList()
 
     override fun addReference(referredMock: Mockery<*, *>, referredCall: Int) {
-        _references.access { references ->
-            references.add(Reference(referredMock, referredCall))
-        }
+        _references.add(Reference(referredMock, referredCall))
     }
 
     override fun clear() {
-        _references.access { it.clear() }
+        _references.clear()
     }
 }
