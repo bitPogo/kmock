@@ -7,7 +7,6 @@
 package tech.antibytes.gradle.kmock
 
 import io.mockk.Runs
-import tech.antibytes.util.test.fixture.kotlinFixture
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.just
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.util.test.fixture.fixture
+import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
@@ -140,7 +140,6 @@ class SharedSourceCopistSpec {
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
 
-
         every { copyTask.dependsOn(any()) } returns copyTask
         every { copyTask.mustRunAfter(any()) } returns copyTask
         every { copyTask.from(any<String>()) } returns copyTask
@@ -183,7 +182,6 @@ class SharedSourceCopistSpec {
         every { copyTask.include(any<String>()) } returns copyTask
         every { copyTask.exclude(capture(filter)) } returns copyTask
 
-
         SharedSourceCopist.copySharedSource(project, source, target, indicator)
 
         every { fileTreeElement.file } returns file
@@ -217,7 +215,6 @@ class SharedSourceCopistSpec {
         every { copyTask.into(any<String>()) } returns copyTask
         every { copyTask.include(any<String>()) } returns copyTask
         every { copyTask.exclude(capture(filter)) } returns copyTask
-
 
         SharedSourceCopist.copySharedSource(project, source, target, indicator)
 

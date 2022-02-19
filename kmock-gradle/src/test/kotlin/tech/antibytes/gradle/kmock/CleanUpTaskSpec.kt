@@ -13,10 +13,10 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import tech.antibytes.gradle.kmock.KMockPluginContract.CleanUpTask
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
-import tech.antibytes.gradle.kmock.KMockPluginContract.CleanUpTask
 import kotlin.test.assertFailsWith
 
 class CleanUpTaskSpec {
