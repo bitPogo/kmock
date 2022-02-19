@@ -17,6 +17,8 @@ plugins {
     id("tech.antibytes.gradle.configuration")
     id("tech.antibytes.gradle.publishing")
     id("tech.antibytes.gradle.coverage")
+
+    id("kotlinx-atomicfu")
 }
 
 group = KMockConfiguration.group
@@ -45,8 +47,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.common)
-                implementation(Dependency.multiplatform.stately.isolate)
-                implementation(Dependency.multiplatform.stately.concurrency)
+                implementation(Dependency.multiplatform.atomicFu.common)
+                implementation(Dependency.multiplatform.stately.collections)
 
                 implementation(LocalDependency.antibytes.test.core)
             }
@@ -56,6 +58,7 @@ kotlin {
                 implementation(Dependency.multiplatform.test.common)
                 implementation(Dependency.multiplatform.test.annotations)
                 implementation(Dependency.multiplatform.coroutines.common)
+                implementation(Dependency.multiplatform.stately.concurrency)
 
                 implementation(LocalDependency.antibytes.test.annotations)
                 implementation(LocalDependency.antibytes.test.coroutine)

@@ -42,6 +42,7 @@ dependencies {
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)
+    testImplementation(Dependency.multiplatform.stately.collections)
     testImplementation(platform(Dependency.jvm.test.junit))
     testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(Dependency.jvm.test.jupiter)

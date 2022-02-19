@@ -19,7 +19,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     ): ReturnValue {
         onEvent(arguments)
 
-        return when (provider.get()) {
+        return when (provider) {
             PROVIDER.RETURN_VALUE -> retrieveValue()
             PROVIDER.RETURN_VALUES -> retrieveFromValues()
             PROVIDER.SIDE_EFFECT -> function()

@@ -23,14 +23,22 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
 class KMockAggregatorSpec {
-    private val fixture = kotlinFixture()
+    private val fixture = kotlinFixture { configuration ->
+        configuration.addGenerator(
+            String::class,
+            StringAlphaGenerator,
+            named("stringAlpha")
+        )
+    }
 
     @Test
     fun `It fulfils Aggregator`() {
@@ -88,7 +96,7 @@ class KMockAggregatorSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns if (fixture.random.nextBoolean()) {
+        } returns if (fixture.random.access { it.nextBoolean() }) {
             MagicStub::class.qualifiedName!!
         } else {
             MagicStubCommon::class.qualifiedName!!
@@ -127,7 +135,7 @@ class KMockAggregatorSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns if (fixture.random.nextBoolean()) {
+        } returns if (fixture.random.access { it.nextBoolean() }) {
             MagicStub::class.qualifiedName!!
         } else {
             MagicStubCommon::class.qualifiedName!!
@@ -166,7 +174,7 @@ class KMockAggregatorSpec {
             ClassKind.ANNOTATION_CLASS
         )
 
-        val selector = fixture.random.nextInt(0, selection.lastIndex)
+        val selector = fixture.random.access { it.nextInt(0, selection.lastIndex) }
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -183,12 +191,12 @@ class KMockAggregatorSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture()
-        val packageName: String = fixture.fixture()
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns if (fixture.random.nextBoolean()) {
+        } returns if (fixture.random.access { it.nextBoolean() }) {
             MagicStub::class.qualifiedName!!
         } else {
             MagicStubCommon::class.qualifiedName!!
@@ -216,7 +224,7 @@ class KMockAggregatorSpec {
         KMockAggregator(logger).extractInterfaces(annotated)
 
         // Then
-        verify(exactly = 1) { logger.error("Cannot stub non interface `$packageName`.`$className`.") }
+        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
     }
 
     @Test
@@ -241,12 +249,12 @@ class KMockAggregatorSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture()
-        val packageName: String = fixture.fixture()
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns if (fixture.random.nextBoolean()) {
+        } returns if (fixture.random.access { it.nextBoolean() }) {
             MagicStub::class.qualifiedName!!
         } else {
             MagicStubCommon::class.qualifiedName!!
@@ -299,12 +307,12 @@ class KMockAggregatorSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture()
-        val packageName: String = fixture.fixture()
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns if (fixture.random.nextBoolean()) {
+        } returns if (fixture.random.access { it.nextBoolean() }) {
             MagicStub::class.qualifiedName!!
         } else {
             MagicStubCommon::class.qualifiedName!!

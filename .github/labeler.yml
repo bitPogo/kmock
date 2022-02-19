@@ -19,7 +19,7 @@ documentation:
 
 # Library
 kmock:
-  - kmock-gradle/**/*
+  - kmock/**/*
 
 kmock-gradle:
   - kmock-gradle/**/*
