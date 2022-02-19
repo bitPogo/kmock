@@ -30,7 +30,6 @@ dependencies {
     implementation(LocalDependency.kotlin.gradle)
     implementation(LocalDependency.antibytes.gradle.util)
     implementation(LocalDependency.gradle.ksp)
-    implementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)
@@ -80,7 +79,7 @@ gradlePlugin {
         id = KMockGradleConfiguration.pluginId
         implementationClass = "tech.antibytes.gradle.kmock.KMock"
         displayName = "${id}.gradle.plugin"
-        description = "KMock Stub Generator"
+        description = "KMock Gradle Plugin"
         version = "0.1.0"
     }
 }
