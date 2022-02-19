@@ -20,6 +20,7 @@ plugins {
 include(
     ":kmock",
     ":kmock-processor",
+    ":kmock-gradle",
     ":examples",
 )
 

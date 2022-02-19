@@ -4,10 +4,6 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
-import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
-import com.google.devtools.ksp.gradle.KspTask
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
@@ -53,9 +49,9 @@ kotlin {
             }
         }
         val commonTest by getting {
-            dependencies {
-                kotlin.srcDir("build/generated/ksp/commonTest")
+            kotlin.srcDir("build/generated/ksp/commonTest")
 
+            dependencies {
                 implementation(Dependency.multiplatform.test.common)
                 implementation(Dependency.multiplatform.test.annotations)
 
@@ -91,10 +87,11 @@ kotlin {
             }
         }
         val jsTest by getting {
+            kotlin.srcDir("build/generated/ksp/jsTest")
+
             dependencies {
                 dependsOn(commonTest)
 
-                kotlin.srcDir("build/generated/ksp/jsTest")
                 implementation(Dependency.multiplatform.test.js)
             }
         }
@@ -106,9 +103,10 @@ kotlin {
             }
         }
         val jvmTest by getting {
+            kotlin.srcDir("build/generated/ksp/jvmTest")
+
             dependencies {
                 dependsOn(commonTest)
-                kotlin.srcDir("build/generated/ksp/jvmTest")
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
             }
@@ -153,9 +151,10 @@ kotlin {
             }
         }
         val linuxX64Test by getting {
+            kotlin.srcDir("src-gen/generated/ksp/linuxX64Test")
+
             dependencies {
                 dependsOn(otherTest)
-                kotlin.srcDir("src-gen/generated/ksp/linuxX64Test")
             }
         }
 
@@ -171,33 +170,16 @@ kotlin {
         }
 
         val iosX64Test by getting {
+            kotlin.srcDir("build/generated/ksp/iosX64Test")
             dependencies {
                 dependsOn(iosTest)
-
-                kotlin.srcDir("build/generated/ksp/iosX64Test")
             }
         }
     }
 }
 
 afterEvaluate {
-    tasks.findByName("cleanJvmTest")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/jvmTest")
-    }
-    tasks.findByName("cleanJsNodeTestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/hsNodeTest")
-    }
-    tasks.findByName("cleanJsBrowserTestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/jsBrowserTest")
-    }
-    tasks.findByName("cleanLinuxX64TestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/linuxX64Test")
-    }
-    tasks.findByName("cleanIosX64TestClean")?.doLast {
-        delete("${project.buildDir.absolutePath}/generated/ksp/iosX64Test")
-    }
-
-    val moveToCommon by tasks.creating(Copy::class) {
+    val copyToCommon by tasks.creating(Copy::class) {
         description = "Extract Common Sources"
         group = "Code Generation"
         dependsOn("kspTestKotlinJvm")
@@ -219,7 +201,9 @@ afterEvaluate {
     val cleanDuplicatesJvm by tasks.creating(DefaultTask::class) {
         description = "Removes Contradicting Sources"
         group = "Code Generation"
-        mustRunAfter(moveToCommon)
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
         mustRunAfter("kspTestKotlinJvm")
 
         doLast {
@@ -237,9 +221,58 @@ afterEvaluate {
         }
     }
 
+    val cleanDuplicatesAndroidDebug by tasks.creating(DefaultTask::class) {
+        description = "Removes Contradicting Sources"
+        group = "Code Generation"
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
+        mustRunAfter("kspDebugUnitTestKotlinAndroid")
+
+        doLast {
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidDebugUnitTest").toList()
+
+            files.forEach { file ->
+                if (!file.absolutePath.contains("commonTest")) {
+                    val indicator = file.bufferedReader().readLine()
+
+                    if (indicator == "// COMMON SOURCE") {
+                        file.delete()
+                    }
+                }
+            }
+        }
+    }
+
+    val cleanDuplicatesAndroidRelease by tasks.creating(DefaultTask::class) {
+        description = "Removes Contradicting Sources"
+        group = "Code Generation"
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
+        mustRunAfter("kspReleaseUnitTestKotlinAndroid")
+
+        doLast {
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidReleaseUnitTest").toList()
+
+            files.forEach { file ->
+                if (!file.absolutePath.contains("commonTest")) {
+                    val indicator = file.bufferedReader().readLine()
+
+                    if (indicator == "// COMMON SOURCE") {
+                        file.delete()
+                    }
+                }
+            }
+        }
+    }
+
     val cleanDuplicatesJs by tasks.creating(DefaultTask::class) {
         description = "Removes Contradicting Sources"
         group = "Code Generation"
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
         mustRunAfter("kspTestKotlinJs")
 
         doLast {
@@ -260,6 +293,9 @@ afterEvaluate {
     val cleanDuplicatesIosX64 by tasks.creating(DefaultTask::class) {
         description = "Removes Contradicting Sources"
         group = "Code Generation"
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
         mustRunAfter("kspTestKotlinIosX64")
 
         doLast {
@@ -280,6 +316,9 @@ afterEvaluate {
     val cleanDuplicatesLinuxX64 by tasks.creating(DefaultTask::class) {
         description = "Removes Contradicting Sources"
         group = "Code Generation"
+
+        dependsOn(copyToCommon)
+        mustRunAfter(copyToCommon)
         mustRunAfter("kspTestKotlinLinuxX64")
 
         doLast {
@@ -297,48 +336,22 @@ afterEvaluate {
         }
     }
 
-    tasks.getByName("kspDebugUnitTestKotlinAndroid") {
-        doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidDebugUnitTest").toList()
+    tasks.getByName("compileTestKotlinJvm").dependsOn(cleanDuplicatesJvm, copyToCommon)
+    tasks.getByName("compileTestKotlinJs").dependsOn(cleanDuplicatesJs, copyToCommon)
+    tasks.getByName("compileTestKotlinJs").mustRunAfter(copyToCommon)
+    tasks.getByName("compileTestKotlinIosX64").dependsOn(cleanDuplicatesIosX64, copyToCommon)
+    tasks.getByName("compileTestKotlinIosX64").mustRunAfter(copyToCommon)
+    tasks.getByName("compileTestKotlinLinuxX64").dependsOn(cleanDuplicatesLinuxX64, copyToCommon)
+    tasks.getByName("compileDebugUnitTestKotlinAndroid").mustRunAfter(copyToCommon)
+    tasks.getByName("compileDebugUnitTestKotlinAndroid").dependsOn(cleanDuplicatesAndroidDebug, copyToCommon)
+    tasks.getByName("compileReleaseUnitTestKotlinAndroid").mustRunAfter(copyToCommon)
+    tasks.getByName("compileReleaseUnitTestKotlinAndroid").dependsOn(cleanDuplicatesAndroidRelease, copyToCommon)
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMON SOURCE") {
-                        file.delete()
-                    }
-                }
-            }
-        }
-    }
-
-    tasks.getByName("kspReleaseUnitTestKotlinAndroid") {
-        doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidReleaseUnitTest").toList()
-
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMON SOURCE") {
-                        file.delete()
-                    }
-                }
-            }
-        }
-    }
-
-    tasks.getByName("compileTestKotlinJvm").dependsOn(cleanDuplicatesJvm, moveToCommon)
-    tasks.getByName("compileTestKotlinJs").dependsOn(cleanDuplicatesJs, moveToCommon)
-    tasks.getByName("compileTestKotlinJs").mustRunAfter(moveToCommon)
-    tasks.getByName("compileTestKotlinIosX64").dependsOn(cleanDuplicatesIosX64, moveToCommon)
-    tasks.getByName("compileTestKotlinIosX64").mustRunAfter(moveToCommon)
-    tasks.getByName("compileTestKotlinLinuxX64").dependsOn(cleanDuplicatesLinuxX64, moveToCommon)
-    tasks.getByName("compileDebugUnitTestKotlinAndroid").mustRunAfter(moveToCommon)
-    tasks.getByName("compileDebugUnitTestKotlinAndroid").dependsOn(moveToCommon)
-    tasks.getByName("compileReleaseKotlinAndroid").mustRunAfter(moveToCommon)
-    tasks.getByName("compileReleaseKotlinAndroid").dependsOn(moveToCommon)
+    tasks.getByName("kspTestKotlinJs").mustRunAfter(copyToCommon)
+    tasks.getByName("kspTestKotlinLinuxX64").mustRunAfter(copyToCommon)
+    tasks.getByName("kspTestKotlinIosX64").mustRunAfter(copyToCommon)
+    tasks.getByName("kspDebugUnitTestKotlinAndroid").mustRunAfter(copyToCommon)
+    tasks.getByName("kspReleaseUnitTestKotlinAndroid").mustRunAfter(copyToCommon)
 }
 
 dependencies {

@@ -31,9 +31,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
-    implementation(LocalDependency.kotlin.gradle)
-    implementation(Dependency.multiplatform.stately.isolate)
-    implementation(Dependency.multiplatform.stately.concurrency)
     implementation(LocalDependency.google.ksp)
     implementation(LocalDependency.square.kotlinPoet.core) {
         exclude(module = "kotlin-reflect")

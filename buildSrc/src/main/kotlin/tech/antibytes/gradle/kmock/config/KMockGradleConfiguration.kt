@@ -11,13 +11,15 @@ import tech.antibytes.gradle.publishing.api.PomConfiguration
 
 object KMockGradleConfiguration {
     const val group = "tech.antibytes.kmock"
+    const val id = "kmock-gradle"
+    const val pluginId = "$group.$id"
 
     val publishing = Publishing
 
     object Publishing : KMockPublishingConfiguration() {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
-                name = "kmock-gradle",
+                name = id,
                 description = "Mocking Framework for Kotlin Multiplatform.",
                 year = 2022,
                 url = "https://$gitHubRepositoryPath"

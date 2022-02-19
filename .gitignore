@@ -25,7 +25,6 @@ captures/
 example-android-app/
 
 # generated
-**/src-gen/commonTest/kotlin/**/config/TestConfig.kt
 
 # kotlin-js
 kotlin-js-store/
