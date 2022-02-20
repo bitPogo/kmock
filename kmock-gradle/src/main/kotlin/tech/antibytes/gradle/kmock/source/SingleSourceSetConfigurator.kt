@@ -18,7 +18,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
     private fun extendJvmSourceSet(project: Project) {
         project.extensions.configure<KotlinJvmProjectExtension>("kotlin") {
             sourceSets.getByName("test") {
-                kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+                kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/test")
             }
         }
     }
@@ -26,7 +26,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
     private fun extendJsSourceSet(project: Project) {
         project.extensions.configure<KotlinJsProjectExtension>("kotlin") {
             sourceSets.getByName("test") {
-                kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+                kotlin.srcDir("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/test")
             }
         }
     }

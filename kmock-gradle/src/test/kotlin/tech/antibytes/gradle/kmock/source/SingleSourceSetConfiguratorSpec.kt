@@ -67,7 +67,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/antibytes/main") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
     }
 
     @Test
@@ -104,7 +104,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/antibytes/main") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
     }
 
     @Test
