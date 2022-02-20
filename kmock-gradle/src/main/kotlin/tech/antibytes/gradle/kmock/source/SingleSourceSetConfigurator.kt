@@ -33,7 +33,10 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
 
     private fun addKsp(project: Project) {
         project.dependencies {
-            "kspTest"("tech.antibytes.kmock:kmock-processor:${MainConfig.version}")
+            add(
+                "kspTest",
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+            )
         }
     }
 

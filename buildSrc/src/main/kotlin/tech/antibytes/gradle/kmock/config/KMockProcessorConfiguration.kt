@@ -16,6 +16,7 @@ object KMockProcessorConfiguration {
 
     object Publishing : KMockPublishingConfiguration() {
         val packageConfiguration = PackageConfiguration(
+            isJavaLibrary = true,
             pom = PomConfiguration(
                 name = "kmock-processor",
                 description = "Mocking Framework for Kotlin Multiplatform.",

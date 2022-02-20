@@ -19,12 +19,14 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
 import org.gradle.internal.impldep.org.testng.annotations.AfterTest
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.source.KMPSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fulfils
 
+@Disabled
 class KMockSpec {
     @BeforeEach
     fun setUp() {
