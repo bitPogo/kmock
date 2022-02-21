@@ -98,7 +98,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     private fun captureArguments(arguments: Array<out Any?>) {
-        this.arguments.access { it.add(guardArguments(arguments)) }
+        this.arguments.add(guardArguments(arguments))
     }
 
     private fun incrementInvocations() {
@@ -123,6 +123,6 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         _sideEffect.update { null }
         _calls.update { 0 }
         _provider.update { PROVIDER.NO_PROVIDER }
-        arguments.access { it.clear() }
+        arguments.clear()
     }
 }
