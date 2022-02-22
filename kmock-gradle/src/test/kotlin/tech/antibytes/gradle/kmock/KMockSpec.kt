@@ -13,16 +13,14 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
-import org.gradle.internal.impldep.org.testng.annotations.AfterTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.source.KMPSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
-import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fulfils
 
 class KMockSpec {
@@ -31,7 +29,7 @@ class KMockSpec {
         mockkObject(SingleSourceSetConfigurator)
     }
 
-    @AfterTest
+    @AfterEach
     fun tearDown() {
         unmockkObject(SingleSourceSetConfigurator)
     }
@@ -51,7 +49,7 @@ class KMockSpec {
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.apply(any()) } returns mockk()
-        every { project.afterEvaluate(any<Action<Project>>()) } just Runs
+        every { SingleSourceSetConfigurator.configure(any()) } just Runs
 
         // When
         kmock.apply(project)
@@ -68,9 +66,10 @@ class KMockSpec {
         val plugins: PluginContainer = mockk()
 
         every { project.plugins } returns plugins
-        every { plugins.hasPlugin(any<String>()) } returns true
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
         every { plugins.apply(any()) } returns mockk()
-        every { project.afterEvaluate(any<Action<Project>>()) } just Runs
+        every { SingleSourceSetConfigurator.configure(any()) } just Runs
 
         // When
         kmock.apply(project)
@@ -91,11 +90,6 @@ class KMockSpec {
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { plugins.apply(any()) } returns mockk()
         every { SingleSourceSetConfigurator.configure(any()) } just Runs
-
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
 
         // When
         kmock.apply(project)
@@ -118,11 +112,6 @@ class KMockSpec {
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { plugins.apply(any()) } returns mockk()
         every { KMPSourceSetsConfigurator.configure(any()) } just Runs
-
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
 
         // When
         kmock.apply(project)

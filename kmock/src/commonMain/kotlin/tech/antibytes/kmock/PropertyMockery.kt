@@ -70,7 +70,7 @@ class PropertyMockery<Value>(
     }
 
     private fun captureArguments(argument: GetOrSet) {
-        this.arguments.access { it.add(argument) }
+        this.arguments.add(argument)
     }
 
     private fun notifyCollector() {

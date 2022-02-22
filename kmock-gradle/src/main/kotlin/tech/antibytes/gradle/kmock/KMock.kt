@@ -21,12 +21,10 @@ class KMock : Plugin<Project> {
     override fun apply(target: Project) {
         addKSP(target)
 
-        target.afterEvaluate {
-            if (target.isKmp()) {
-                KMPSourceSetsConfigurator.configure(target)
-            } else {
-                SingleSourceSetConfigurator.configure(target)
-            }
+        if (!target.isKmp()) {
+            SingleSourceSetConfigurator.configure(target)
+        } else {
+            KMPSourceSetsConfigurator.configure(target)
         }
     }
 }

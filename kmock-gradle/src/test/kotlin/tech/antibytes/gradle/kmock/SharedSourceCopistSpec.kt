@@ -116,8 +116,6 @@ class SharedSourceCopistSpec {
 
         verify(exactly = 1) { copyTask.description = "Extract Target Sources" }
         verify(exactly = 1) { copyTask.group = "Code Generation" }
-        verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinSource") }
-        verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinSource") }
         verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$source") }
         verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$target") }
         verify(exactly = 1) { copyTask.include("**/*.kt") }

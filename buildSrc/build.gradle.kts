@@ -28,5 +28,4 @@ dependencies {
     implementation(Dependency.gradle.projectConfig)
     implementation(Dependency.gradle.runtimeConfig)
     implementation(Dependency.gradle.ksp)
-
 }

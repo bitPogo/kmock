@@ -39,7 +39,7 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun extendSourceSet(sourceSet: KotlinSourceSet, buildDir: String) {
         sourceSet.kotlin.srcDir(
-            "$buildDir/generated/antibytes/${sourceSet.name}"
+            "$buildDir/generated/ksp/${sourceSet.name}"
         )
     }
 
@@ -67,19 +67,19 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
     private fun addSource(
         sourceSet: KotlinSourceSet,
         sourceCollector: MutableMap<String, String>,
-        dependencies: DependencyHandler,
-        buildDir: String
+        dependencies: DependencyHandler
     ) {
         val platformName = cleanSourceName(sourceSet.name)
         val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
         try {
-            addKspDependency(dependencies, kspDependency)
+            addKspDependency(dependencies, "ksp${platformName.capitalize(Locale.ROOT)}Test")
         } catch (e: Throwable) {
             return
         }
 
-        sourceCollector[platformName] = kspDependency
-        extendSourceSet(sourceSet, buildDir)
+        if (!platformName.startsWith("android")) {
+            sourceCollector[platformName] = kspDependency
+        }
     }
 
     private fun selectReferenceSource(
@@ -103,18 +103,12 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
         )
     }
 
-    private fun useAndroid(
-        project: Project,
-        dependencies: DependencyHandler
-    ): Pair<Copy, String> {
+    private fun useAndroid(project: Project): Pair<Copy, String> {
         val androidDebug = "androidDebugUnitTest"
         val androidDebugKsp = "kspDebugUnitTestKotlinAndroid"
 
         val androidRelease = "androidReleaseUnitTest"
         val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
-
-        addKspDependency(dependencies, androidDebugKsp)
-        addKspDependency(dependencies, androidReleaseKsp)
 
         val copyToCommon = SharedSourceCopist
             .copySharedSource(project, androidDebug, target, indicator)
@@ -155,11 +149,10 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun wireSharedSourceTasks(
         project: Project,
-        dependencies: DependencyHandler,
         sourceCollector: Map<String, String>
     ) {
         val (copyToCommon, precedence) = if (project.isAndroid()) {
-            useAndroid(project, dependencies)
+            useAndroid(project)
         } else {
             selectReferenceSource(project, sourceCollector)
         }
@@ -193,23 +186,21 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
-                if (!sourceSet.name.startsWith("android") && sourceSet.name.endsWith("Test")) {
+                if (
+                    sourceSet.name == "androidTest" || (sourceSet.name.endsWith("Test") && !sourceSet.name.startsWith("android"))
+                ) {
+                    extendSourceSet(sourceSet, buildDir)
                     addSource(
                         sourceSet,
                         sourceCollector,
-                        dependencies,
-                        buildDir
+                        dependencies
                     )
-                }
-
-                if (sourceSet.name == "androidDebugUnitTest" || sourceSet.name == "androidReleaseUnitTest") {
-                    extendSourceSet(sourceSet, buildDir)
                 }
             }
         }
 
         if (sourceCollector.isNotEmpty()) {
-            wireSharedSourceTasks(project, dependencies, sourceCollector)
+            project.afterEvaluate { wireSharedSourceTasks(project, sourceCollector) }
         }
     }
 }

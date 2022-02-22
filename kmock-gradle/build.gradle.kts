@@ -62,6 +62,7 @@ afterEvaluate {
 
     tasks.withType(KotlinCompile::class.java) {
         this.dependsOn(generateConfig)
+        this.mustRunAfter(generateConfig)
     }
 }
 
@@ -70,8 +71,6 @@ kotlin {
         kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
     }
 }
-
-
 
 gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {
