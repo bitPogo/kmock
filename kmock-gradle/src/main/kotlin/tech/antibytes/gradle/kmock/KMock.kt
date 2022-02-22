@@ -24,9 +24,7 @@ class KMock : Plugin<Project> {
         if (!target.isKmp()) {
             SingleSourceSetConfigurator.configure(target)
         } else {
-            target.afterEvaluate {
-                KMPSourceSetsConfigurator.configure(target)
-            }
+            KMPSourceSetsConfigurator.configure(target)
         }
     }
 }

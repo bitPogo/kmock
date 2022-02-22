@@ -94,7 +94,7 @@ class KMPSourceSetsConfiguratorSpec {
     }
 
     @Test
-    fun `Given configure is called it ignores SharedTest Sources`() {
+    fun `Given configure is called it ignores SharedTest Sources, while extending there source dirs anyways`() {
         // Given
         val project: Project = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -128,24 +128,35 @@ class KMPSourceSetsConfiguratorSpec {
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
 
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+
         every { dependencies.add(any(), any()) } throws RuntimeException()
 
         // When
         KMPSourceSetsConfigurator.configure(project)
 
         // Then
-        verify(exactly = 1) {
+        verify(atLeast = 1) {
             dependencies.add(
-                "kspTestKotlinNative",
+                "kspNativeTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspAppleTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
 
         verify(exactly = 1) {
-            dependencies.add(
-                "kspTestKotlinApple",
-                "tech.antibytes.kmock:kmock-processor:$version"
-            )
+            source1.kotlin.srcDir("$path/generated/ksp/nativeTest")
+        }
+
+        verify(exactly = 1) {
+            source2.kotlin.srcDir("$path/generated/ksp/appleTest")
         }
     }
 
@@ -202,6 +213,11 @@ class KMPSourceSetsConfiguratorSpec {
             kotlin
         )
 
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -229,24 +245,24 @@ class KMPSourceSetsConfiguratorSpec {
         // Then
         verify(exactly = 1) {
             dependencies.add(
-                "kspTestKotlinJvm",
+                "kspJvmTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
-                "kspTestKotlinJs",
+                "kspJsTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/antibytes/jvmTest")
+            source1.kotlin.srcDir("$path/generated/ksp/jvmTest")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/antibytes/jsTest")
+            source2.kotlin.srcDir("$path/generated/ksp/jsTest")
         }
 
         verify(atLeast = 1) {
@@ -343,6 +359,11 @@ class KMPSourceSetsConfiguratorSpec {
             kotlin
         )
 
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -402,6 +423,11 @@ class KMPSourceSetsConfiguratorSpec {
         invokeGradleAction(
             { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
             kotlin
+        )
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
         )
 
         every { kotlin.sourceSets } returns sources
@@ -465,6 +491,11 @@ class KMPSourceSetsConfiguratorSpec {
             kotlin
         )
 
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -499,8 +530,7 @@ class KMPSourceSetsConfiguratorSpec {
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
         val jvm: KotlinSourceSet = mockk()
-        val androidDebug: KotlinSourceSet = mockk()
-        val androidRelease: KotlinSourceSet = mockk()
+        val androidTest: KotlinSourceSet = mockk()
         val version: String = fixture.fixture()
 
         val copyTask: Copy = mockk()
@@ -514,13 +544,11 @@ class KMPSourceSetsConfiguratorSpec {
 
         val sourceSets = mutableListOf(
             jvm,
-            androidDebug,
-            androidRelease
+            androidTest,
         )
 
         every { jvm.name } returns "jvmTest"
-        every { androidDebug.name } returns "androidDebugUnitTest"
-        every { androidRelease.name } returns "androidReleaseUnitTest"
+        every { androidTest.name } returns "androidTest"
 
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
@@ -530,6 +558,11 @@ class KMPSourceSetsConfiguratorSpec {
         invokeGradleAction(
             { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
             kotlin
+        )
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
         )
 
         every { kotlin.sourceSets } returns sources
@@ -560,8 +593,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { dependencies.add(any(), any()) } returns mockk()
 
         every { jvm.kotlin.srcDir(any()) } returns mockk()
-        every { androidDebug.kotlin.srcDir(any()) } returns mockk()
-        every { androidRelease.kotlin.srcDir(any()) } returns mockk()
+        every { androidTest.kotlin.srcDir(any()) } returns mockk()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -589,35 +621,24 @@ class KMPSourceSetsConfiguratorSpec {
 
         verify(exactly = 1) {
             dependencies.add(
-                "kspTestKotlinJvm",
+                "kspJvmTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
-                "kspDebugUnitTestKotlinAndroid",
+                "kspAndroidTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
 
         verify(exactly = 1) {
-            dependencies.add(
-                "kspReleaseUnitTestKotlinAndroid",
-                "tech.antibytes.kmock:kmock-processor:$version"
-            )
+            jvm.kotlin.srcDir("$path/generated/ksp/jvmTest")
         }
 
         verify(exactly = 1) {
-            jvm.kotlin.srcDir("$path/generated/antibytes/jvmTest")
-        }
-
-        verify(exactly = 1) {
-            androidDebug.kotlin.srcDir("$path/generated/antibytes/androidDebugUnitTest")
-        }
-
-        verify(exactly = 1) {
-            androidRelease.kotlin.srcDir("$path/generated/antibytes/androidReleaseUnitTest")
+            androidTest.kotlin.srcDir("$path/generated/ksp/androidTest")
         }
 
         verify(atLeast = 1) {

@@ -63,6 +63,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
 
     override fun configure(project: Project) {
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
+
         when {
             project.isJs() -> extendJsSourceSet(project, buildDir)
             project.isAndroid() -> extendAndroidSourceSet(project, buildDir)

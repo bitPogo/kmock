@@ -217,6 +217,7 @@ class SingleSourceSetConfiguratorSpec {
         val dependencies: DependencyHandler = mockk()
         val version: String = fixture.fixture()
 
+        every { project.buildDir.absolutePath } returns fixture.fixture()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
         every { MainConfig.version } returns version
@@ -241,7 +242,7 @@ class SingleSourceSetConfiguratorSpec {
     }
 
     @Test
-    fun `Given configure is called with a Project it adds an addtional KSP dependencies for an AndroidLibrary`() {
+    fun `Given configure is called with a Project it adds an additional KSP dependencies for an AndroidLibrary`() {
         // Given
         mockkObject(MainConfig)
 
@@ -249,6 +250,7 @@ class SingleSourceSetConfiguratorSpec {
         val dependencies: DependencyHandler = mockk()
         val version: String = fixture.fixture()
 
+        every { project.buildDir.absolutePath } returns fixture.fixture()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
         every { MainConfig.version } returns version
@@ -262,7 +264,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
-        verify(exactly = 1) {
+        verify(atLeast = 1) {
             dependencies.add(
                 "kspAndroidTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
@@ -273,7 +275,7 @@ class SingleSourceSetConfiguratorSpec {
     }
 
     @Test
-    fun `Given configure is called with a Project it adds an addtional KSP dependencies for an AndroidApplication`() {
+    fun `Given configure is called with a Project it adds an additional KSP dependencies for an AndroidApplication`() {
         // Given
         mockkObject(MainConfig)
 
@@ -282,14 +284,15 @@ class SingleSourceSetConfiguratorSpec {
         val version: String = fixture.fixture()
 
         every { project.extensions } returns mockk(relaxed = true)
+        every { project.buildDir.absolutePath } returns fixture.fixture()
         every { project.dependencies } returns dependencies
         every { MainConfig.version } returns version
 
         every { dependencies.add(any<String>(), any<String>()) } returns mockk()
 
         every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns false
-        every { project.plugins.hasPlugin("com.android.library") } returns true
-        every { project.plugins.hasPlugin("com.android.application") } returns false
+        every { project.plugins.hasPlugin("com.android.library") } returns false
+        every { project.plugins.hasPlugin("com.android.application") } returns true
 
         // When
         SingleSourceSetConfigurator.configure(project)

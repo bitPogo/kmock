@@ -43,7 +43,6 @@ object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         target: String,
         indicator: String
     ) {
-        val capitalSource = source.capitalize(Locale.ROOT)
         val capitalTarget = target.capitalize(Locale.ROOT)
 
         task.description = "Extract $capitalTarget Sources"
@@ -53,8 +52,6 @@ object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             .into("$buildDir/generated/ksp/${target}Test")
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
-            .dependsOn("kspTestKotlin$capitalSource")
-            .mustRunAfter("kspTestKotlin$capitalSource")
     }
 
     override fun copySharedSource(
