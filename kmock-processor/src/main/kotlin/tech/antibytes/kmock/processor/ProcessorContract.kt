@@ -21,6 +21,7 @@ import tech.antibytes.kmock.SyncFunMockery
 internal interface ProcessorContract {
     interface Aggregator {
         fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
+        fun extractRelaxer(annotated: Sequence<KSAnnotated>): String?
     }
 
     data class Aggregated(

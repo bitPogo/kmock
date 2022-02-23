@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.dependency.Version
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.kmock.dependency.addCustomRepositories
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
     id("tech.antibytes.gradle.kmock.dependency")

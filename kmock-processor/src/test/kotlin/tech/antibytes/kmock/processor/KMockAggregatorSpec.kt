@@ -12,9 +12,14 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeAlias
+import com.google.devtools.ksp.symbol.KSTypeParameter
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueArgument
+import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Modifier
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -29,6 +34,7 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import kotlin.math.log
 import kotlin.test.assertFailsWith
 
 class KMockAggregatorSpec {
@@ -341,5 +347,269 @@ class KMockAggregatorSpec {
 
         // Then
         sourceFiles mustBe listOf(file)
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it does nothing if no relaxer was defined`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {}
+
+        // When
+        val relaxer = KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        relaxer mustBe null
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated function is not inlined`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        every { source.modifiers } returns emptySet()
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated function does not take exactly 1 parameter`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns emptyList()
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions parameter is not a string`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val parameter: KSValueParameter = mockk()
+
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { parameter.type.resolve().toString() } returns "Any"
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions typeParameter are not exactly 1`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val parameter: KSValueParameter = mockk()
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { parameter.type.resolve().toString() } returns "String"
+
+        every { source.typeParameters } returns emptyList()
+        every { source.returnType } returns mockk()
+
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions typeParameter has a bound`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
+
+        val bound: Sequence<KSTypeReference> = sequence {
+            yield(mockk())
+        }
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { parameter.type.resolve().toString() } returns "String"
+
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns bound
+
+        every { source.returnType } returns mockk()
+
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions typeParameter is not Refined`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { parameter.type.resolve().toString() } returns "String"
+
+        every { source.returnType } returns mockk()
+
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns false
+
+        every { logger.error(any()) } just Runs
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions typeParameter does not match the ReturnType`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
+        val returnType: KSTypeReference = mockk()
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { source.returnType } returns returnType
+        every { parameter.type.resolve().toString() } returns "String"
+
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns true
+
+        every { source.simpleName.asString() } returns fixture.fixture()
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 1) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    @Test
+    fun `Given extractRelaxer is called with KSAnnotated it returns the FunctionName`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSFunctionDeclaration = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val functionName: String = fixture.fixture()
+        val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
+        val returnType: KSTypeReference = mockk()
+
+        every { source.modifiers } returns setOf(Modifier.INLINE)
+        every { source.parameters } returns listOf(parameter)
+        every { source.returnType.toString() } returns "Any"
+        every { parameter.type.resolve().toString() } returns "String"
+
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "Any"
+
+        every { source.simpleName.asString() } returns functionName
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        val actual = KMockAggregator(logger).extractRelaxer(annotated)
+
+        // Then
+        verify(exactly = 0) { logger.error(any()) }
+
+        actual mustBe functionName
     }
 }

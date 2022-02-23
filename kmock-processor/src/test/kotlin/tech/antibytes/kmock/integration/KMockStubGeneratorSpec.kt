@@ -196,6 +196,26 @@ class KMockStubGeneratorSpec {
     }
 
     @Test
+    fun `Given a annotated Source is processed, it writes a stub while using the Relaxer`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "RelaxedSource.kt",
+            loadResource("/RelaxedSource.kt")
+        )
+        //val expected = loadResource("/GenericsExpected.kt")
+
+        // When
+        val compilerResult = compile(provider, source)
+        val actual = resolveGenerated("GenericsStub.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        // actual isNot null
+
+        // actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source is processed, it fails if function parameters are ill named`() {
         // Given
         val source = SourceFile.kotlin(

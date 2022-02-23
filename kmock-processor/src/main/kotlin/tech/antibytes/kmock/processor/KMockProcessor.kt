@@ -12,11 +12,11 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MagicStubRelaxer
 
 /*
  * Notices -> No deep checking in order to no drain performance
  */
-
 internal class KMockProcessor(
     private val stubGenerator: ProcessorContract.StubGenerator,
     private val aggregator: ProcessorContract.Aggregator
@@ -31,6 +31,13 @@ internal class KMockProcessor(
     private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
             MagicStubCommon::class.qualifiedName!!,
+            false
+        )
+    }
+
+    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            MagicStubRelaxer::class.qualifiedName!!,
             false
         )
     }
@@ -55,6 +62,8 @@ internal class KMockProcessor(
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
+
         val platformIll = stubPlatformSources(resolver)
         val commonIll = stubCommonSources(resolver)
 

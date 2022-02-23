@@ -9,11 +9,17 @@ package tech.antibytes.kmock.processor
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.FunctionKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
+import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
@@ -71,5 +77,41 @@ internal class KMockAggregator(
             interfaceCollector.values.toList(),
             fileCollector
         )
+    }
+
+    private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
+        return parameter.size == 1 &&
+            parameter.first().type.resolve().toString() == "String"
+    }
+
+    private fun hasValidTypeParameter(
+        typeParameter: List<KSTypeParameter>,
+        returnType: KSTypeReference?
+    ): Boolean {
+        return typeParameter.size == 1 &&
+            typeParameter.first().bounds.toList().isEmpty() &&
+            typeParameter.first().isReified &&
+            typeParameter.first().toString() == returnType.toString()
+    }
+
+    private fun validateRelaxer(symbol: KSFunctionDeclaration) {
+        val isValid = symbol.modifiers.contains(Modifier.INLINE)
+            && hasValidParameter(symbol.parameters)
+            && hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
+
+        if (!isValid) {
+            logger.error("Invalid Relaxer!")
+        }
+    }
+
+    override fun extractRelaxer(annotated: Sequence<KSAnnotated>): String? {
+        val annotatedSymbol = annotated.firstOrNull()
+
+        return if (annotatedSymbol is KSFunctionDeclaration) {
+            validateRelaxer(annotatedSymbol)
+            annotatedSymbol.simpleName.asString()
+        } else {
+            null
+        }
     }
 }

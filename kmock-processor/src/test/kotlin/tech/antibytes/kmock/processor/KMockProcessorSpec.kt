@@ -15,14 +15,20 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.util.test.fixture.fixture
+import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
 class KMockProcessorSpec {
+    private val fixture = kotlinFixture()
+
     @Test
     fun `It fulfils SymbolProcessor`() {
         KMockProcessor(mockk(), mockk()) fulfils SymbolProcessor::class
@@ -40,6 +46,7 @@ class KMockProcessorSpec {
         } returns annotated
 
         every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
+        every { aggregator.extractRelaxer(any()) } returns fixture.fixture()
 
         // When
         KMockProcessor(
@@ -65,6 +72,7 @@ class KMockProcessorSpec {
         } returns annotated
 
         every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
+        every { aggregator.extractRelaxer(any()) } returns fixture.fixture()
 
         // When
         KMockProcessor(
@@ -98,6 +106,7 @@ class KMockProcessorSpec {
             ProcessorContract.Aggregated(illegalCommon, mockk(), mockk()),
             ProcessorContract.Aggregated(illegalPlatform, mockk(), mockk())
         )
+        every { aggregator.extractRelaxer(any()) } returns fixture.fixture()
 
         // When
         val actual = KMockProcessor(mockk(relaxed = true), aggregator).process(resolver)
@@ -129,6 +138,7 @@ class KMockProcessorSpec {
         every {
             aggregator.extractInterfaces(any())
         } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
+        every { aggregator.extractRelaxer(any()) } returns fixture.fixture()
 
         every { generator.writeCommonStubs(any(), any()) } just Runs
         every { generator.writePlatformStubs(any(), any()) } just Runs
