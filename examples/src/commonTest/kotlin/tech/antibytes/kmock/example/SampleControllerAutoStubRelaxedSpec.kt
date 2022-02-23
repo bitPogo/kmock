@@ -69,9 +69,9 @@ internal inline fun <reified T> relax(id: String): T {
 class SampleControllerAutoStubRelaxedSpec {
     private val fixture = kotlinFixture()
     private var verifier = Verifier()
-    private var local = SampleLocalRepositoryMock(verifier, true)
-    private var remote = SampleRemoteRepositoryMock(verifier, true)
-    private var domainObject = SampleDomainObjectMock(verifier, true)
+    private var local = SampleLocalRepositoryMock(verifier, relaxed = true)
+    private var remote = SampleRemoteRepositoryMock(verifier, relaxed = true)
+    private var domainObject = SampleDomainObjectMock(verifier, relaxed = true)
 
     @BeforeTest
     fun setUp() {
