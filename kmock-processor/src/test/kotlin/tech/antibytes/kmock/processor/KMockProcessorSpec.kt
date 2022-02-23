@@ -17,9 +17,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.MagicStub
-import tech.antibytes.kmock.MagicStubCommon
-import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.Relaxer
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -34,7 +34,7 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process is called it retrieves all MagicStub annotated sources`() {
+    fun `Given process is called it retrieves all Stub annotated sources`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
@@ -55,12 +55,12 @@ class KMockProcessorSpec {
 
         // Then
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(MagicStub::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given process is called it retrieves all MagicStubCommon annotated sources`() {
+    fun `Given process is called it retrieves all StubCommon annotated sources`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
@@ -81,7 +81,7 @@ class KMockProcessorSpec {
 
         // Then
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(MagicStubCommon::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
@@ -123,7 +123,7 @@ class KMockProcessorSpec {
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
-        val generator: ProcessorContract.StubGenerator = mockk()
+        val generator: ProcessorContract.MockGenerator = mockk()
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
@@ -139,14 +139,14 @@ class KMockProcessorSpec {
         } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
         every { aggregator.extractRelaxer(any()) } returns mockk()
 
-        every { generator.writeCommonStubs(any(), any(), any()) } just Runs
-        every { generator.writePlatformStubs(any(), any(), any()) } just Runs
+        every { generator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         // When
         KMockProcessor(generator, aggregator).process(resolver)
 
         // Then
-        verify(exactly = 1) { resolver.getSymbolsWithAnnotation(MagicStubRelaxer::class.qualifiedName!!, false) }
+        verify(exactly = 1) { resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false) }
         verify(exactly = 1) { aggregator.extractRelaxer(annotated) }
     }
 
@@ -156,7 +156,7 @@ class KMockProcessorSpec {
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
-        val generator: ProcessorContract.StubGenerator = mockk()
+        val generator: ProcessorContract.MockGenerator = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
@@ -173,14 +173,14 @@ class KMockProcessorSpec {
         } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
         every { aggregator.extractRelaxer(any()) } returns relaxer
 
-        every { generator.writeCommonStubs(any(), any(), any()) } just Runs
-        every { generator.writePlatformStubs(any(), any(), any()) } just Runs
+        every { generator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         // When
         KMockProcessor(generator, aggregator).process(resolver)
 
         // Then
-        verify(exactly = 1) { generator.writeCommonStubs(interfaces, dependencies, relaxer) }
-        verify(exactly = 1) { generator.writePlatformStubs(interfaces, dependencies, relaxer) }
+        verify(exactly = 1) { generator.writeCommonMocks(interfaces, dependencies, relaxer) }
+        verify(exactly = 1) { generator.writePlatformMocks(interfaces, dependencies, relaxer) }
     }
 }

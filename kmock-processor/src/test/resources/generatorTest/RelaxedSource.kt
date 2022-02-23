@@ -6,15 +6,15 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
-import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.Relaxer
 
-@MagicStubRelaxer
+@Relaxer
 internal inline fun <reified T> relaxed(id: String): T {
     return id as T
 }
 
-@MagicStub(Relaxed::class)
+@Mock(Relaxed::class)
 interface Relaxed {
     val buzz: String
 

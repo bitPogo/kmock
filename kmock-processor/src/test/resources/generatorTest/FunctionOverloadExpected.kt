@@ -11,29 +11,41 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class SyncFunctionOverloadStub(
-    verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
+internal class SyncFunctionOverloadMock(
+    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    spyOn: SyncFunctionOverload? = null
 ) : SyncFunctionOverload {
     public val fooFun: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionOverload#fooFun", verifier)
+        SyncFunMockery("generatorTest.SyncFunctionOverload#fooFun", spyOn = if (spyOn != null) { {
+                fuzz ,ozz ->
+            foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public val fooWithAnyFun: KMockContract.SyncFunMockery<Any, (kotlin.Any, kotlin.Int) ->
-    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithAnyFun", verifier)
+    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithAnyFun", spyOn = if
+                                                                                                 (spyOn != null) { { fuzz ,ozz ->
+        foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public val fooWithStringFun: KMockContract.SyncFunMockery<Any, (kotlin.Any, kotlin.String) ->
-    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithStringFun", verifier)
+    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithStringFun", spyOn = if
+                                                                                                    (spyOn != null) { { fuzz ,ozz ->
+        foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public val fooWithStringAnyFun: KMockContract.SyncFunMockery<Any, (kotlin.String, kotlin.Any) ->
-    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithStringAnyFun",
-        verifier)
+    kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithStringAnyFun", spyOn =
+    if (spyOn != null) { { fuzz ,ozz ->
+        foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public val fooWithGeneratorTestAbcFun: KMockContract.SyncFunMockery<Any, (kotlin.String,
         generatorTest.Abc) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithGeneratorTestAbcFun", verifier)
+        SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithGeneratorTestAbcFun", spyOn = if
+                                                                                                    (spyOn != null) { { fuzz ,ozz ->
+            foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public val fooWithFunction1Fun: KMockContract.SyncFunMockery<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithFunction1Fun", verifier)
+        SyncFunMockery("generatorTest.SyncFunctionOverload#fooWithFunction1Fun", spyOn = if (spyOn !=
+            null) { { fuzz ->
+            foo(fuzz) } } else { null }, collector = verifier, )
 
     public override fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
 
@@ -48,7 +60,7 @@ internal class SyncFunctionOverloadStub(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = fooWithFunction1Fun.invoke(fuzz)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         fooFun.clear()
         fooWithAnyFun.clear()
         fooWithStringFun.clear()

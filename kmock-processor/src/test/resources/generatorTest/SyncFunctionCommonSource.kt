@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MockCommon
 
-@MagicStubCommon(SyncFunctionCommon::class)
+@MockCommon(SyncFunctionCommon::class)
 interface SyncFunctionCommon {
     fun foo(fuzz: Int, ozz: Any): Any
 

@@ -6,15 +6,15 @@
 
 package tech.antibytes.kmock.example.contract
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 import tech.antibytes.util.test.fulfils
 import kotlin.test.Test
 
-@MagicStub(ExampleContractJs.JsDecoder::class)
+@Mock(ExampleContractJs.JsDecoder::class)
 class JsDecoderAutoSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils JsDecoder`() {
-        JsDecoderStub() fulfils ExampleContractJs.JsDecoder::class
+        JsDecoderMock() fulfils ExampleContractJs.JsDecoder::class
     }
 }

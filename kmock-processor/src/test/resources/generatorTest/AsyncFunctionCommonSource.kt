@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MockCommon
 
-@MagicStubCommon(AsyncFunctionCommon::class)
+@MockCommon(AsyncFunctionCommon::class)
 interface AsyncFunctionCommon {
     suspend fun foo(fuzz: Int, ozz: Any): Any
 

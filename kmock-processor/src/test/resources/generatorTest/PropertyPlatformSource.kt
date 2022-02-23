@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(PropertyPlatform::class)
+@Mock(PropertyPlatform::class)
 interface PropertyPlatform {
     val foo: String
     val bar: Int

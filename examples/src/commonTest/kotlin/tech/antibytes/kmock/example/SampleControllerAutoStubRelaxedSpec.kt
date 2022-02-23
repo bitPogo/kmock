@@ -11,16 +11,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import tech.antibytes.kmock.MagicStubCommon
-import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.Relaxer
 import tech.antibytes.kmock.Verifier
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
-import tech.antibytes.kmock.example.contract.SampleDomainObjectStub
-import tech.antibytes.kmock.example.contract.SampleLocalRepositoryStub
-import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryStub
+import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
+import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
+import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
@@ -51,7 +51,7 @@ object Fixture {
     var fixture: PublicApi.Fixture? = null
 }
 
-@MagicStubRelaxer
+@Relaxer
 internal inline fun <reified T> relax(id: String): T {
     if (Fixture.fixture == null) {
         Fixture.fixture = kotlinFixture()
@@ -60,7 +60,7 @@ internal inline fun <reified T> relax(id: String): T {
     return Fixture.fixture!!.fixture()
 }
 
-@MagicStubCommon(
+@MockCommon(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,
@@ -69,16 +69,16 @@ internal inline fun <reified T> relax(id: String): T {
 class SampleControllerAutoStubRelaxedSpec {
     private val fixture = kotlinFixture()
     private var verifier = Verifier()
-    private var local = SampleLocalRepositoryStub(verifier, true)
-    private var remote = SampleRemoteRepositoryStub(verifier, true)
-    private var domainObject = SampleDomainObjectStub(verifier, true)
+    private var local = SampleLocalRepositoryMock(verifier, relaxed = true)
+    private var remote = SampleRemoteRepositoryMock(verifier, relaxed = true)
+    private var domainObject = SampleDomainObjectMock(verifier, relaxed = true)
 
     @BeforeTest
     fun setUp() {
         verifier.clear()
-        local.clear()
-        remote.clear()
-        domainObject.clear()
+        local.clearMock()
+        remote.clearMock()
+        domainObject.clearMock()
         clearBlockingTest()
     }
 

@@ -6,11 +6,11 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(Generics::class)
+@Mock(Generics::class)
 interface Generics<K : Any, L> {
-    val template: K
+    var template: K
     fun <T> foo(payload: T)
     fun <K: Int> foo(payload: K)
 }

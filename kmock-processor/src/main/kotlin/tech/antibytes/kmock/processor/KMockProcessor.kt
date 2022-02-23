@@ -10,35 +10,35 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
-import tech.antibytes.kmock.MagicStub
-import tech.antibytes.kmock.MagicStubCommon
-import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 
 /*
  * Notices -> No deep checking in order to no drain performance
  */
 internal class KMockProcessor(
-    private val stubGenerator: ProcessorContract.StubGenerator,
+    private val mockGenerator: ProcessorContract.MockGenerator,
     private val aggregator: ProcessorContract.Aggregator
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            MagicStub::class.qualifiedName!!,
+            Mock::class.qualifiedName!!,
             false
         )
     }
 
     private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            MagicStubCommon::class.qualifiedName!!,
+            MockCommon::class.qualifiedName!!,
             false
         )
     }
 
     private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            MagicStubRelaxer::class.qualifiedName!!,
+            RelaxerAnnotation::class.qualifiedName!!,
             false
         )
     }
@@ -47,7 +47,7 @@ internal class KMockProcessor(
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
 
-        stubGenerator.writePlatformStubs(
+        mockGenerator.writePlatformMocks(
             aggregated.extractedInterfaces,
             aggregated.dependencies,
             relaxer
@@ -60,7 +60,7 @@ internal class KMockProcessor(
         val annotated = fetchCommonAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
 
-        stubGenerator.writeCommonStubs(
+        mockGenerator.writeCommonMocks(
             aggregated.extractedInterfaces,
             aggregated.dependencies,
             relaxer

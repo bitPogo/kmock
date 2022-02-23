@@ -7,15 +7,15 @@
 package tech.antibytes.kmock.example.contract
 
 import org.junit.Test
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 import tech.antibytes.util.test.fulfils
 
-@MagicStub(
+@Mock(
     ExampleContractJvm.JvmDecoder::class
 )
 class JvmDecoderAutoSpec {
     @Test
     fun `It fulfils JvmDecoder`() {
-        JvmDecoderStub() fulfils ExampleContractJvm.JvmDecoder::class
+        JvmDecoderMock() fulfils ExampleContractJvm.JvmDecoder::class
     }
 }

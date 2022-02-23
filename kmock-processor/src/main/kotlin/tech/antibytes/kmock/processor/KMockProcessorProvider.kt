@@ -15,7 +15,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val logger = environment.logger
 
         return KMockProcessor(
-            KMockStubGenerator(logger, environment.codeGenerator),
+            KMockMockGenerator(logger, environment.codeGenerator),
             KMockAggregator(logger)
         )
     }

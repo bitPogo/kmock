@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(SyncFunctionOverload::class)
+@Mock(SyncFunctionOverload::class)
 interface SyncFunctionOverload {
     fun foo(fuzz: Int, ozz: Any): Any
     fun foo(fuzz: Any, ozz: Int): Any
