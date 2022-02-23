@@ -34,7 +34,6 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.math.log
 import kotlin.test.assertFailsWith
 
 class KMockAggregatorSpec {
@@ -374,6 +373,7 @@ class KMockAggregatorSpec {
         every { source.modifiers } returns emptySet()
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -398,6 +398,7 @@ class KMockAggregatorSpec {
         every { source.parameters } returns emptyList()
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -420,12 +421,12 @@ class KMockAggregatorSpec {
 
         val parameter: KSValueParameter = mockk()
 
-
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns listOf(parameter)
         every { parameter.type.resolve().toString() } returns "Any"
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -457,6 +458,7 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -495,6 +497,7 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -530,6 +533,7 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
@@ -563,6 +567,7 @@ class KMockAggregatorSpec {
         every { typeParameter.bounds } returns sequence { }
         every { typeParameter.isReified } returns true
 
+        every { source.packageName.asString() } returns fixture.fixture()
         every { source.simpleName.asString() } returns fixture.fixture()
 
         every { logger.error(any()) } just Runs
@@ -586,9 +591,9 @@ class KMockAggregatorSpec {
         }
 
         val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
         val typeParameter: KSTypeParameter = mockk()
-        val returnType: KSTypeReference = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns listOf(parameter)
@@ -600,6 +605,7 @@ class KMockAggregatorSpec {
         every { typeParameter.isReified } returns true
         every { typeParameter.toString() } returns "Any"
 
+        every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
 
         every { logger.error(any()) } just Runs
@@ -610,6 +616,6 @@ class KMockAggregatorSpec {
         // Then
         verify(exactly = 0) { logger.error(any()) }
 
-        actual mustBe functionName
+        actual mustBe ProcessorContract.Relaxer(packageName, functionName)
     }
 }

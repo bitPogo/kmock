@@ -30,7 +30,6 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
-import tech.antibytes.kmock.KMockContract.Relaxer
 
 class PropertyMockerySpec {
     private val fixture = kotlinFixture()

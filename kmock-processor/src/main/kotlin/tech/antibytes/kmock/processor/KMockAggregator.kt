@@ -9,7 +9,6 @@ package tech.antibytes.kmock.processor
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.ClassKind
-import com.google.devtools.ksp.symbol.FunctionKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -23,6 +22,7 @@ import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockAggregator(
     private val logger: KSPLogger
@@ -95,21 +95,24 @@ internal class KMockAggregator(
     }
 
     private fun validateRelaxer(symbol: KSFunctionDeclaration) {
-        val isValid = symbol.modifiers.contains(Modifier.INLINE)
-            && hasValidParameter(symbol.parameters)
-            && hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
+        val isValid = symbol.modifiers.contains(Modifier.INLINE) &&
+            hasValidParameter(symbol.parameters) &&
+            hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
 
         if (!isValid) {
             logger.error("Invalid Relaxer!")
         }
     }
 
-    override fun extractRelaxer(annotated: Sequence<KSAnnotated>): String? {
+    override fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer? {
         val annotatedSymbol = annotated.firstOrNull()
 
         return if (annotatedSymbol is KSFunctionDeclaration) {
             validateRelaxer(annotatedSymbol)
-            annotatedSymbol.simpleName.asString()
+            Relaxer(
+                annotatedSymbol.packageName.asString(),
+                annotatedSymbol.simpleName.asString()
+            )
         } else {
             null
         }

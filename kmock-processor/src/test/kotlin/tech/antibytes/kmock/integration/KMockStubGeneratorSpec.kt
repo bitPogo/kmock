@@ -202,17 +202,17 @@ class KMockStubGeneratorSpec {
             "RelaxedSource.kt",
             loadResource("/RelaxedSource.kt")
         )
-        //val expected = loadResource("/GenericsExpected.kt")
+        val expected = loadResource("/RelaxedExpected.kt")
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("GenericsStub.kt")
+        val actual = resolveGenerated("RelaxedStub.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        // actual isNot null
+        actual isNot null
 
-        // actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test

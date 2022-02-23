@@ -10,12 +10,15 @@ import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubRelaxer
 
 @MagicStubRelaxer
-internal inline fun <reified T> test(id: String): T {
-
+internal inline fun <reified T> relaxed(id: String): T {
+    return id as T
 }
 
 @MagicStub(Relaxed::class)
 interface Relaxed {
-    fun foo(payload: Any)
+    val buzz: String
+
+    fun foo(payload: Any): String
+    suspend fun bar(payload: Any): String
 }
 
