@@ -12,8 +12,9 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
-    relaxer: Relaxer<ReturnValue>? = null
-) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>, FunMockery<ReturnValue, SideEffect>(id, collector, relaxer) {
+    relaxer: Relaxer<ReturnValue>? = null,
+    spyOn: SideEffect? = null
+) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>, FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, spyOn) {
     private fun execute(
         function: () -> ReturnValue,
         vararg arguments: Any?
@@ -21,9 +22,9 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         onEvent(arguments)
 
         return when (provider) {
-            PROVIDER.RETURN_VALUE -> retrieveValue()
-            PROVIDER.RETURN_VALUES -> retrieveFromValues()
-            PROVIDER.SIDE_EFFECT -> function()
+            Provider.RETURN_VALUE -> retrieveValue()
+            Provider.RETURN_VALUES -> retrieveFromValues()
+            Provider.SIDE_EFFECT -> function()
             else -> invokeRelaxerOrFail()
         }
     }

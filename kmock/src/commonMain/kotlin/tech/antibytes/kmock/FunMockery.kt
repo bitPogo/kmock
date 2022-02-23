@@ -20,26 +20,36 @@ import kotlin.math.max
 abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
-    relaxer: Relaxer<ReturnValue>?
+    relaxer: Relaxer<ReturnValue>?,
+    protected val spyOn: SideEffect?
 ) : KMockContract.FunMockery<ReturnValue, SideEffect> {
     private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
     private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
     private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
     private val _calls: AtomicInt = atomic(0)
-    private val _provider: AtomicRef<PROVIDER> = atomic(PROVIDER.NO_PROVIDER)
+    private val _provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
     protected val provider by _provider
     private val arguments: IsoMutableList<Array<out Any?>?> = sharedMutableListOf()
     private val collector: AtomicRef<Collector> = atomic(collector)
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
-    protected enum class PROVIDER(val value: Int) {
+    protected enum class Provider(val value: Int) {
         NO_PROVIDER(0),
         RETURN_VALUE(1),
         RETURN_VALUES(2),
-        SIDE_EFFECT(3)
+        SIDE_EFFECT(3),
+        SPY(4),
     }
 
-    private fun setProvider(provider: PROVIDER) {
+    private fun useSpyOrDefault(): Provider {
+        return if (spyOn == null) {
+            Provider.NO_PROVIDER
+        } else {
+            Provider.SPY
+        }
+    }
+
+    private fun setProvider(provider: Provider) {
         val activeProvider = max(
             provider.value,
             this._provider.value.value
@@ -54,7 +64,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         @Suppress("UNCHECKED_CAST")
         get() = _returnValue.value as ReturnValue
         set(value) {
-            setProvider(PROVIDER.RETURN_VALUE)
+            setProvider(Provider.RETURN_VALUE)
             _returnValue.update { value }
         }
 
@@ -64,7 +74,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(PROVIDER.RETURN_VALUES)
+                setProvider(Provider.RETURN_VALUES)
                 _returnValues.clear()
                 _returnValues.addAll(values)
             }
@@ -73,7 +83,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     override var sideEffect: SideEffect
         get() = _sideEffect.value as SideEffect
         set(value) {
-            setProvider(PROVIDER.SIDE_EFFECT)
+            setProvider(Provider.SIDE_EFFECT)
             _sideEffect.update { value }
         }
 
@@ -130,7 +140,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         _returnValues.clear()
         _sideEffect.update { null }
         _calls.update { 0 }
-        _provider.update { PROVIDER.NO_PROVIDER }
+        _provider.update { Provider.NO_PROVIDER }
         arguments.clear()
     }
 }
