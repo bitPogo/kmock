@@ -23,7 +23,7 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class AsyncFunMockeryInvocationsSpec {
+class SyncFunMockeryInvocationsSpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
@@ -37,7 +37,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn1")
     fun `Given invoke is called it calls the given SideEffect with 0 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture())
         val expected: Any = fixture.fixture()
 
         // When
@@ -64,7 +64,7 @@ class AsyncFunMockeryInvocationsSpec {
         // Given
         val expected: Any = fixture.fixture()
         val implementation = Implementation<Any>()
-        val mockery = AsyncFunMockery<Any, suspend () -> Any>(
+        val mockery = SyncFunMockery<Any, () -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun0
         )
@@ -91,7 +91,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn3")
     fun `Given invoke is called it calls the given SideEffect with 1 Argument and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
 
@@ -130,7 +130,7 @@ class AsyncFunMockeryInvocationsSpec {
         val expected: Any = fixture.fixture()
         val implementation = Implementation<Any>()
 
-        val mockery = AsyncFunMockery<Any, suspend (String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun1
         )
@@ -166,7 +166,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn5")
     fun `Given invoke is called it calls the given SideEffect with 2 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -212,7 +212,7 @@ class AsyncFunMockeryInvocationsSpec {
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun2
         )
@@ -253,7 +253,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn7")
     fun `Given invoke is called it calls the given SideEffect with 3 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -308,7 +308,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument1 = AtomicReference<Int?>(null)
         val actualArgument2 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun3
         )
@@ -348,7 +348,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn9")
     fun `Given invoke is called it calls the given SideEffect with 4 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -406,7 +406,7 @@ class AsyncFunMockeryInvocationsSpec {
         val argument3: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun4
         )
@@ -454,7 +454,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn11")
     fun `Given invoke is called it calls the given SideEffect with 5 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -525,7 +525,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument3 = AtomicReference<Int?>(null)
         val actualArgument4 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun5
         )
@@ -570,7 +570,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn13")
     fun `Given invoke is called it calls the given SideEffect with 6 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -649,7 +649,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument4 = AtomicReference<String?>(null)
         val actualArgument5 = AtomicReference<Int?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun6
         )
@@ -698,7 +698,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn15")
     fun `Given invoke is called it calls the given SideEffect with 7 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -784,7 +784,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument5 = AtomicReference<Int?>(null)
         val actualArgument6 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun7
         )
@@ -836,7 +836,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn17")
     fun `Given invoke is called it calls the given SideEffect with 8 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -938,7 +938,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument6 = AtomicReference<String?>(null)
         val actualArgument7 = AtomicReference<Int?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun8
         )
@@ -1002,7 +1002,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn19")
     fun `Given invoke is called it calls the given SideEffect with 9 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -1112,7 +1112,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument7 = AtomicReference<Int?>(null)
         val actualArgument8 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun9
         )
@@ -1180,7 +1180,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn21")
     fun `Given invoke is called it calls the given SideEffect with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1300,7 +1300,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument8 = AtomicReference<String?>(null)
         val actualArgument9 = AtomicReference<Int?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun10
         )
@@ -1372,7 +1372,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn23")
     fun `Given invoke is called it calls the given SideEffect with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1501,7 +1501,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument9 = AtomicReference<Int?>(null)
         val actualArgument10 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun11
         )
@@ -1578,7 +1578,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn25")
     fun `Given invoke is called it calls the given SideEffect with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1714,7 +1714,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument10 = AtomicReference<String?>(null)
         val actualArgument11 = AtomicReference<Int?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun12
         )
@@ -1794,7 +1794,7 @@ class AsyncFunMockeryInvocationsSpec {
     @JsName("fn27")
     fun `Given invoke is called it calls the given SideEffect with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1938,7 +1938,7 @@ class AsyncFunMockeryInvocationsSpec {
         val actualArgument11 = AtomicReference<Int?>(null)
         val actualArgument12 = AtomicReference<String?>(null)
 
-        val mockery = AsyncFunMockery<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val mockery = SyncFunMockery<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun13
         )
@@ -2018,22 +2018,22 @@ class AsyncFunMockeryInvocationsSpec {
         return resolveMultiBlockCalls()
     }
 
-    @JsName("ImplementationFunAsync")
+    @JsName("ImplementationFunSync")
     private class Implementation<T> {
-        private val _fun0: AtomicRef<(suspend () -> T)?> = atomic(null)
-        private val _fun1: AtomicRef<(suspend (Any?) -> T)?> = atomic(null)
-        private val _fun2: AtomicRef<(suspend (Any?, Any?) -> T)?> = atomic(null)
-        private val _fun3: AtomicRef<(suspend (Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun4: AtomicRef<(suspend (Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun5: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun6: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun7: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun8: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun9: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun10: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun11: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun12: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
-        private val _fun13: AtomicRef<(suspend (Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun0: AtomicRef<(() -> T)?> = atomic(null)
+        private val _fun1: AtomicRef<((Any?) -> T)?> = atomic(null)
+        private val _fun2: AtomicRef<((Any?, Any?) -> T)?> = atomic(null)
+        private val _fun3: AtomicRef<((Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun4: AtomicRef<((Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun5: AtomicRef<((Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun6: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun7: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun8: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun9: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun10: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun11: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun12: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
+        private val _fun13: AtomicRef<((Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?, Any?) -> T)?> = atomic(null)
 
         @JsName("fun0a")
         var fun0 by _fun0
@@ -2064,40 +2064,40 @@ class AsyncFunMockeryInvocationsSpec {
         @JsName("fun13a")
         var fun13 by _fun13
 
-        suspend fun fun0(): T {
+        fun fun0(): T {
             return _fun0.value?.invoke() ?: throw RuntimeException("Missing sideeffect fun0")
         }
 
-        suspend fun fun1(arg0: Any?): T {
+        fun fun1(arg0: Any?): T {
             return _fun1.value?.invoke(arg0) ?: throw RuntimeException("Missing sideeffect fun1")
         }
 
-        suspend fun fun2(arg0: Any?, arg1: Any?): T {
+        fun fun2(arg0: Any?, arg1: Any?): T {
             return _fun2.value?.invoke(arg0, arg1) ?: throw RuntimeException("Missing sideeffect fun2")
         }
 
-        suspend fun fun3(arg0: Any?, arg1: Any?, arg2: Any?): T {
+        fun fun3(arg0: Any?, arg1: Any?, arg2: Any?): T {
             return _fun3.value?.invoke(arg0, arg1, arg2) ?: throw RuntimeException("Missing sideeffect fun3")
         }
 
-        suspend fun fun4(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?): T {
+        fun fun4(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?): T {
             return _fun4.value?.invoke(arg0, arg1, arg2, arg3) ?: throw RuntimeException("Missing sideeffect fun4")
         }
 
-        suspend fun fun5(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?): T {
+        fun fun5(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?): T {
             return _fun5.value?.invoke(arg0, arg1, arg2, arg3, arg4) ?: throw RuntimeException("Missing sideeffect fun5")
         }
 
-        suspend fun fun6(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?, arg5: Any?): T {
+        fun fun6(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?, arg5: Any?): T {
             return _fun6.value?.invoke(arg0, arg1, arg2, arg3, arg4, arg5) ?: throw RuntimeException("Missing sideeffect fun6")
         }
 
-        suspend fun fun7(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?, arg5: Any?, arg6: Any?): T {
+        fun fun7(arg0: Any?, arg1: Any?, arg2: Any?, arg3: Any?, arg4: Any?, arg5: Any?, arg6: Any?): T {
             return _fun7.value?.invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
                 ?: throw RuntimeException("Missing sideeffect fun7")
         }
 
-        suspend fun fun8(
+        fun fun8(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,
@@ -2111,7 +2111,7 @@ class AsyncFunMockeryInvocationsSpec {
                 ?: throw RuntimeException("Missing sideeffect fun8")
         }
 
-        suspend fun fun9(
+        fun fun9(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,
@@ -2126,7 +2126,7 @@ class AsyncFunMockeryInvocationsSpec {
                 ?: throw RuntimeException("Missing sideeffect fun9")
         }
 
-        suspend fun fun10(
+        fun fun10(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,
@@ -2142,7 +2142,7 @@ class AsyncFunMockeryInvocationsSpec {
                 ?: throw RuntimeException("Missing sideeffect fun10")
         }
 
-        suspend fun fun11(
+        fun fun11(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,
@@ -2159,7 +2159,7 @@ class AsyncFunMockeryInvocationsSpec {
                 ?: throw RuntimeException("Missing sideeffect fun11")
         }
 
-        suspend fun fun12(
+        fun fun12(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,
@@ -2177,7 +2177,7 @@ class AsyncFunMockeryInvocationsSpec {
                 ?: throw RuntimeException("Missing sideeffect fun12")
         }
 
-        suspend fun fun13(
+        fun fun13(
             arg0: Any?,
             arg1: Any?,
             arg2: Any?,

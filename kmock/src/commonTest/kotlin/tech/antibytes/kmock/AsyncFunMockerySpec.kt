@@ -18,7 +18,6 @@ import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -585,8 +584,8 @@ class AsyncFunMockerySpec {
     }
 
     private class Implementation<T>(
+        @JsName("fun0a")
         var fun0: (suspend () -> T)? = null,
-        var fun1: (suspend (Any) -> T)? = null
     ) {
         suspend fun fun0(): T {
             return fun0?.invoke() ?: throw RuntimeException("Missing sideeffect fun0")

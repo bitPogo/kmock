@@ -14,9 +14,11 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
     spyOn: SideEffect? = null
-) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>, FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, spyOn) {
+) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>,
+    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, spyOn) {
     private fun execute(
         function: () -> ReturnValue,
+        spy: (() -> ReturnValue)?,
         vararg arguments: Any?
     ): ReturnValue {
         onEvent(arguments)
@@ -25,6 +27,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
             Provider.RETURN_VALUE -> retrieveValue()
             Provider.RETURN_VALUES -> retrieveFromValues()
             Provider.SIDE_EFFECT -> function()
+            Provider.SPY -> spy!!()
             else -> invokeRelaxerOrFail()
         }
     }
@@ -36,7 +39,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke()
         }
 
-        return execute(invocation)
+        val spyOn = {
+            (spyOn as () -> ReturnValue)
+                .invoke()
+        }
+
+        return execute(invocation, spyOn)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -46,7 +54,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0)
         }
 
-        return execute(invocation, arg0)
+        val spyOn = {
+            (spyOn as (Arg0) -> ReturnValue)
+                .invoke(arg0)
+        }
+
+        return execute(invocation, spyOn, arg0)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -56,7 +69,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1)
         }
 
-        return execute(invocation, arg0, arg1)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1) -> ReturnValue)
+                .invoke(arg0, arg1)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -66,7 +84,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2)
         }
 
-        return execute(invocation, arg0, arg1, arg2)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2) -> ReturnValue)
+                .invoke(arg0, arg1, arg2)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -76,7 +99,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -92,7 +120,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -109,7 +142,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -127,7 +165,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -146,7 +189,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -166,7 +214,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -187,7 +240,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -209,7 +267,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -232,7 +295,12 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+        }
+
+        return execute(invocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -256,6 +324,27 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
         }
 
-        return execute(invocation, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+        val spyOn = {
+            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
+                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+        }
+
+        return execute(
+            invocation,
+            spyOn,
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5,
+            arg6,
+            arg7,
+            arg8,
+            arg9,
+            arg10,
+            arg11,
+            arg12
+        )
     }
 }
