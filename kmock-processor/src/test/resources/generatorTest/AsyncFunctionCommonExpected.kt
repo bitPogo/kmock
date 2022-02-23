@@ -11,10 +11,13 @@ import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
 internal class AsyncFunctionCommonMock(
-    verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
+    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    spyOn: AsyncFunctionCommon? = null
 ) : AsyncFunctionCommon {
     public val fooFun: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
-    kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionCommon#fooFun", verifier)
+    kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionCommon#fooFun", spyOn = if (spyOn !=
+        null) { { fuzz ,ozz ->
+        foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
 

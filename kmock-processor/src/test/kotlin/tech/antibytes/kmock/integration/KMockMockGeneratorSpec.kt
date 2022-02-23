@@ -156,6 +156,26 @@ class KMockMockGeneratorSpec {
     }
 
     @Test
+    fun `Given a annotated CommonSource is processed, it writes a stub for abstract Suspending Functions`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "AsyncFunctionCommonSource.kt",
+            loadResource("/AsyncFunctionCommonSource.kt")
+        )
+        val expected = loadResource("/AsyncFunctionCommonExpected.kt")
+
+        // When
+        val compilerResult = compile(provider, source)
+        val actual = resolveGenerated("AsyncFunctionCommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source is processed, it writes a stub for abstract Functions while respecting overload`() {
         // Given
         val source = SourceFile.kotlin(
@@ -207,8 +227,6 @@ class KMockMockGeneratorSpec {
         // When
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("RelaxedMock.kt")
-
-        println(actual)
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
