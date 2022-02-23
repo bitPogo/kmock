@@ -25,9 +25,14 @@ class KMockProcessorProviderSpec {
     fun `Given create is called it returns a SymbolProcessor`() {
         // Given
         val environment: SymbolProcessorEnvironment = mockk()
+        val options = mapOf(
+            "isKmp" to "false",
+            "rootPackage" to "somewher",
+        )
 
         every { environment.logger } returns mockk()
         every { environment.codeGenerator } returns mockk()
+        every { environment.options } returns options
 
         // When
         val processor = KMockProcessorProvider().create(environment)

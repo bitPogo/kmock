@@ -20,7 +20,9 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
  */
 internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
+    private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val aggregator: ProcessorContract.Aggregator,
+    private val options: ProcessorContract.Options,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
@@ -43,9 +45,20 @@ internal class KMockProcessor(
         )
     }
 
-    private fun stubPlatformSources(resolver: Resolver, relaxer: Relaxer?): List<KSAnnotated> {
+    private fun stubPlatformSources(
+        resolver: Resolver,
+        relaxer: Relaxer?
+    ): List<KSAnnotated> {
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
+
+        factoryGenerator.writeFactories(
+            options.rootPackage,
+            options.isKmp,
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
 
         mockGenerator.writePlatformMocks(
             aggregated.extractedInterfaces,
@@ -59,6 +72,14 @@ internal class KMockProcessor(
     private fun stubCommonSources(resolver: Resolver, relaxer: Relaxer?): List<KSAnnotated> {
         val annotated = fetchCommonAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
+
+        factoryGenerator.writeFactories(
+            options.rootPackage,
+            options.isKmp,
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
 
         mockGenerator.writeCommonMocks(
             aggregated.extractedInterfaces,

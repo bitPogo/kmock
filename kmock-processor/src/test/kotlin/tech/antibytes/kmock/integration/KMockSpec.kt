@@ -9,6 +9,7 @@ package tech.antibytes.kmock.integration
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
+import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -17,19 +18,20 @@ import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
 
-class KMockMockGeneratorSpec {
+class KMockSpec {
     @TempDir
     lateinit var buildDir: File
     private val provider = KMockProcessorProvider()
     private val fixtureRoot = "/generatorTest"
 
     private fun loadResource(path: String): String {
-        return KMockMockGeneratorSpec::class.java.getResource(fixtureRoot + path).readText()
+        return KMockSpec::class.java.getResource(fixtureRoot + path).readText()
     }
 
     private fun compile(
         processorProvider: SymbolProcessorProvider,
-        source: SourceFile
+        source: SourceFile,
+        isKmp: Boolean = false
     ): KotlinCompilation.Result {
         return KotlinCompilation().apply {
             sources = listOf(source)
@@ -37,6 +39,10 @@ class KMockMockGeneratorSpec {
             workingDir = buildDir
             inheritClassPath = true
             verbose = false
+            kspArgs = mutableMapOf(
+                "isKmp" to isKmp.toString(),
+                "rootPackage" to "generatorTest"
+            )
         }.compile()
     }
 
@@ -63,16 +69,20 @@ class KMockMockGeneratorSpec {
             loadResource("/PropertyPlatformSource.kt")
         )
         val expected = loadResource("/PropertyPlatformExpected.kt")
+        val expectedFactory = loadResource("/FactoryPlatformExpected.kt")
 
         // When
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("PropertyPlatformMock.kt")
+        val actualFactory = resolveGenerated("MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
+        actualFactory isNot null
 
         actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actualFactory!!.normalizeSource() mustBe expectedFactory.normalizeSource()
     }
 
     @Test
@@ -83,16 +93,20 @@ class KMockMockGeneratorSpec {
             loadResource("/PropertyCommonSource.kt")
         )
         val expected = loadResource("/PropertyCommonExpected.kt")
+        val expectedFactory = loadResource("/FactoryCommonExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("PropertyCommonMock.kt")
+        val actualFactory = resolveGenerated("MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
+        actualFactory isNot null
 
         actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actualFactory!!.normalizeSource() mustBe expectedFactory.normalizeSource()
     }
 
     @Test
@@ -223,16 +237,22 @@ class KMockMockGeneratorSpec {
             loadResource("/RelaxedSource.kt")
         )
         val expected = loadResource("/RelaxedExpected.kt")
+        val expectedFactory = loadResource("/FactoryRelaxedExpected.kt")
 
         // When
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("RelaxedMock.kt")
+        val actualFactory = resolveGenerated("MockFactory.kt")
+
+        println(actualFactory)
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
+        actualFactory isNot null
 
         actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actualFactory!!.normalizeSource() mustBe expectedFactory.normalizeSource()
     }
 
     @Test

@@ -24,13 +24,14 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import tech.antibytes.kmock.processor.ProcessorContract.Options
 
 class KMockProcessorSpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `It fulfils SymbolProcessor`() {
-        KMockProcessor(mockk(), mockk()) fulfils SymbolProcessor::class
+        KMockProcessor(mockk(), mockk(), mockk(), mockk()) fulfils SymbolProcessor::class
     }
 
     @Test
@@ -50,7 +51,9 @@ class KMockProcessorSpec {
         // When
         KMockProcessor(
             mockk(relaxed = true),
-            aggregator
+            mockk(relaxed = true),
+            aggregator,
+            Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -76,7 +79,9 @@ class KMockProcessorSpec {
         // When
         KMockProcessor(
             mockk(relaxed = true),
-            aggregator
+            mockk(relaxed = true),
+            aggregator,
+            Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -108,7 +113,12 @@ class KMockProcessorSpec {
         every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
-        val actual = KMockProcessor(mockk(relaxed = true), aggregator).process(resolver)
+        val actual = KMockProcessor(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            aggregator,
+            Options(fixture.fixture(), fixture.fixture())
+        ).process(resolver)
 
         // Then
         actual mustBe listOf(
@@ -143,7 +153,12 @@ class KMockProcessorSpec {
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         // When
-        KMockProcessor(generator, aggregator).process(resolver)
+        KMockProcessor(
+            generator,
+            mockk(relaxed = true),
+            aggregator,
+            Options(fixture.fixture(), fixture.fixture())
+        ).process(resolver)
 
         // Then
         verify(exactly = 1) { resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false) }
@@ -177,7 +192,12 @@ class KMockProcessorSpec {
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         // When
-        KMockProcessor(generator, aggregator).process(resolver)
+        KMockProcessor(
+            generator,
+            mockk(relaxed = true),
+            aggregator,
+            Options(fixture.fixture(), fixture.fixture())
+        ).process(resolver)
 
         // Then
         verify(exactly = 1) { generator.writeCommonMocks(interfaces, dependencies, relaxer) }
