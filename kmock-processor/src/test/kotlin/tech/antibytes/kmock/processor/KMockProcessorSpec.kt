@@ -19,10 +19,15 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.util.test.fixture.fixture
+import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
 class KMockProcessorSpec {
+    private val fixture = kotlinFixture()
+
     @Test
     fun `It fulfils SymbolProcessor`() {
         KMockProcessor(mockk(), mockk()) fulfils SymbolProcessor::class
@@ -40,6 +45,7 @@ class KMockProcessorSpec {
         } returns annotated
 
         every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
+        every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
         KMockProcessor(
@@ -65,6 +71,7 @@ class KMockProcessorSpec {
         } returns annotated
 
         every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
+        every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
         KMockProcessor(
@@ -98,6 +105,7 @@ class KMockProcessorSpec {
             ProcessorContract.Aggregated(illegalCommon, mockk(), mockk()),
             ProcessorContract.Aggregated(illegalPlatform, mockk(), mockk())
         )
+        every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
         val actual = KMockProcessor(mockk(relaxed = true), aggregator).process(resolver)
@@ -110,7 +118,7 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process it delegates captured Stubs to the StubGenerator`() {
+    fun `Given process it and resolves the Relaxer`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
@@ -129,15 +137,50 @@ class KMockProcessorSpec {
         every {
             aggregator.extractInterfaces(any())
         } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
+        every { aggregator.extractRelaxer(any()) } returns mockk()
 
-        every { generator.writeCommonStubs(any(), any()) } just Runs
-        every { generator.writePlatformStubs(any(), any()) } just Runs
+        every { generator.writeCommonStubs(any(), any(), any()) } just Runs
+        every { generator.writePlatformStubs(any(), any(), any()) } just Runs
 
         // When
         KMockProcessor(generator, aggregator).process(resolver)
 
         // Then
-        verify(exactly = 1) { generator.writeCommonStubs(interfaces, dependencies) }
-        verify(exactly = 1) { generator.writePlatformStubs(interfaces, dependencies) }
+        verify(exactly = 1) { resolver.getSymbolsWithAnnotation(MagicStubRelaxer::class.qualifiedName!!, false) }
+        verify(exactly = 1) { aggregator.extractRelaxer(annotated) }
+    }
+
+    @Test
+    fun `Given process it delegates captured Stubs to the StubGenerator`() {
+        // Given
+        val resolver: Resolver = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {}
+        val aggregator: ProcessorContract.Aggregator = mockk()
+        val generator: ProcessorContract.StubGenerator = mockk()
+        val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
+
+        val illegal: List<KSAnnotated> = listOf(mockk())
+
+        val interfaces: List<KSClassDeclaration> = mockk()
+        val dependencies: List<KSFile> = mockk()
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            aggregator.extractInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
+        every { aggregator.extractRelaxer(any()) } returns relaxer
+
+        every { generator.writeCommonStubs(any(), any(), any()) } just Runs
+        every { generator.writePlatformStubs(any(), any(), any()) } just Runs
+
+        // When
+        KMockProcessor(generator, aggregator).process(resolver)
+
+        // Then
+        verify(exactly = 1) { generator.writeCommonStubs(interfaces, dependencies, relaxer) }
+        verify(exactly = 1) { generator.writePlatformStubs(interfaces, dependencies, relaxer) }
     }
 }

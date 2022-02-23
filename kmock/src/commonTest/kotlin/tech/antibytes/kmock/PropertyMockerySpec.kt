@@ -7,6 +7,7 @@
 package tech.antibytes.kmock
 
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.util.test.MockError
@@ -70,7 +71,9 @@ class PropertyMockerySpec {
     @JsName("fn2")
     fun `Given a get is set with nullable value it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any?>(fixture.fixture())
+        val mockery = PropertyMockery<Any?>(
+            fixture.fixture(),
+        )
         val value: Any? = null
 
         // When
@@ -155,6 +158,32 @@ class PropertyMockerySpec {
             }
 
             error.message mustBe "Missing stub value for $name"
+        }
+    }
+
+    @Test
+    @JsName("fn6a")
+    fun `Given onGet is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedId = AtomicReference<String?>(null)
+        val mockery = PropertyMockery<Any>(
+            name,
+            relaxer = { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        )
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = mockery.onGet()
+
+            // Then
+            actual mustBe value
+            capturedId.value mustBe name
         }
     }
 

@@ -19,8 +19,14 @@ import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
 internal interface ProcessorContract {
+    data class Relaxer(
+        val packageName: String,
+        val functionName: String
+    )
+
     interface Aggregator {
         fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
+        fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
     data class Aggregated(
@@ -32,12 +38,14 @@ internal interface ProcessorContract {
     interface StubGenerator {
         fun writePlatformStubs(
             interfaces: List<KSClassDeclaration>,
-            dependencies: List<KSFile>
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?
         )
 
         fun writeCommonStubs(
             interfaces: List<KSClassDeclaration>,
-            dependencies: List<KSFile>
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?
         )
     }
 

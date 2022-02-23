@@ -40,6 +40,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import java.util.Locale
 
 internal class KMockStubGenerator(
@@ -90,13 +91,28 @@ internal class KMockStubGenerator(
         }
     }
 
-    private fun buildConstructor(): FunSpec {
+    private fun buildRelaxer(relaxer: Relaxer?): String {
+        return if (relaxer == null) {
+            ""
+        } else {
+            ", if(relaxed) { { mockId -> ${relaxer.functionName}(mockId) } } else { null }"
+        }
+    }
+
+    private fun buildConstructor(relaxer: Relaxer?): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
         collector.defaultValue("KMockContract.Collector { _, _ -> Unit }")
 
         constructor.addParameter(collector.build())
+
+        if (relaxer != null) {
+            val relaxed = ParameterSpec.builder("relaxed", Boolean::class)
+            relaxed.defaultValue("false")
+
+            constructor.addParameter(relaxed.build())
+        }
 
         return constructor.build()
     }
@@ -144,6 +160,7 @@ internal class KMockStubGenerator(
         qualifier: String,
         propertyName: String,
         propertyType: TypeName,
+        relaxer: Relaxer?
     ): PropertySpec {
         val property = PropertySpec.builder(
             "${propertyName}Prop",
@@ -153,7 +170,7 @@ internal class KMockStubGenerator(
         )
 
         return property
-            .initializer("PropertyMockery(\"$qualifier#$propertyName\", verifier)")
+            .initializer("PropertyMockery(\"$qualifier#$propertyName\", verifier${buildRelaxer(relaxer)})")
             .build()
     }
 
@@ -161,7 +178,8 @@ internal class KMockStubGenerator(
         qualifier: String,
         ksProperty: KSPropertyDeclaration,
         typeResolver: TypeParameterResolver,
-        propertyNameCollector: MutableList<String> = mutableListOf()
+        propertyNameCollector: MutableList<String> = mutableListOf(),
+        relaxer: Relaxer?
     ): List<PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(typeResolver)
@@ -170,7 +188,7 @@ internal class KMockStubGenerator(
         propertyNameCollector.add("${propertyName}Prop")
         return listOf(
             buildProperty(propertyName, propertyType, isMutable),
-            buildPropertyMockery(qualifier, propertyName, propertyType)
+            buildPropertyMockery(qualifier, propertyName, propertyType, relaxer)
         )
     }
 
@@ -208,19 +226,12 @@ internal class KMockStubGenerator(
         return function.build()
     }
 
-    private fun filterLambdas(
-        parameterTypes: List<TypeName>
-    ) {
-        parameterTypes.forEach { type ->
-            println(type)
-        }
-    }
-
     private fun buildSyncFunMockery(
         qualifier: String,
         mockeryName: String,
         parameterTypes: List<TypeName>,
-        returnType: TypeName
+        returnType: TypeName,
+        relaxer: Relaxer?
     ): PropertySpec {
         val lambda = TypeVariableName("(${parameterTypes.joinToString(", ")}) -> $returnType")
         val property = PropertySpec.builder(
@@ -231,7 +242,7 @@ internal class KMockStubGenerator(
         )
 
         return property
-            .initializer("SyncFunMockery(\"$qualifier#$mockeryName\", verifier)")
+            .initializer("SyncFunMockery(\"$qualifier#$mockeryName\", verifier${buildRelaxer(relaxer)})")
             .build()
     }
 
@@ -239,7 +250,8 @@ internal class KMockStubGenerator(
         qualifier: String,
         mockeryName: String,
         parameterTypes: List<TypeName>,
-        returnType: TypeName
+        returnType: TypeName,
+        relaxer: Relaxer?
     ): PropertySpec {
         val lambda = TypeVariableName("suspend (${parameterTypes.joinToString(", ")}) -> $returnType")
         val property = PropertySpec.builder(
@@ -250,7 +262,7 @@ internal class KMockStubGenerator(
         )
 
         return property
-            .initializer("AsyncFunMockery(\"$qualifier#$mockeryName\", verifier)")
+            .initializer("AsyncFunMockery(\"$qualifier#$mockeryName\", verifier${buildRelaxer(relaxer)})")
             .build()
     }
 
@@ -354,7 +366,8 @@ internal class KMockStubGenerator(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
-        functionNameCollector: MutableList<String>
+        functionNameCollector: MutableList<String>,
+        relaxer: Relaxer?
     ): Pair<PropertySpec, FunSpec> {
         val functionName = ksFunction.simpleName.asString()
         val generics = resolveGeneric(ksFunction)
@@ -386,14 +399,16 @@ internal class KMockStubGenerator(
                 qualifier,
                 mockeryName,
                 mockeryParameter,
-                returnType
+                returnType,
+                relaxer
             )
         } else {
             buildSyncFunMockery(
                 qualifier,
                 mockeryName,
                 mockeryParameter,
-                returnType
+                returnType,
+                relaxer
             )
         }
 
@@ -419,7 +434,11 @@ internal class KMockStubGenerator(
         return function.build()
     }
 
-    private fun buildStub(className: String, template: KSClassDeclaration): TypeSpec {
+    private fun buildStub(
+        className: String,
+        template: KSClassDeclaration,
+        relaxer: Relaxer?
+    ): TypeSpec {
         val implementation = TypeSpec.classBuilder(className)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val qualifier = template.qualifiedName!!.asString()
@@ -435,7 +454,7 @@ internal class KMockStubGenerator(
             implementation.typeVariables.addAll(mapGeneric(generics))
         }
 
-        implementation.primaryConstructor(buildConstructor())
+        implementation.primaryConstructor(buildConstructor(relaxer))
 
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isAbstract()) {
@@ -444,7 +463,8 @@ internal class KMockStubGenerator(
                         qualifier,
                         ksProperty,
                         typeResolver,
-                        propertyNameCollector
+                        propertyNameCollector,
+                        relaxer
                     )
                 )
             }
@@ -456,7 +476,8 @@ internal class KMockStubGenerator(
                     qualifier,
                     ksFunction,
                     typeResolver,
-                    functionNameCollector
+                    functionNameCollector,
+                    relaxer
                 )
 
                 implementation.addFunction(function)
@@ -472,7 +493,8 @@ internal class KMockStubGenerator(
     private fun writeStub(
         template: KSClassDeclaration,
         dependencies: List<KSFile>,
-        target: ProcessorContract.Target
+        target: ProcessorContract.Target,
+        relaxer: Relaxer?
     ) {
         val className = "${template.simpleName.asString()}Stub"
         val file = FileSpec.builder(
@@ -480,7 +502,7 @@ internal class KMockStubGenerator(
             className
         )
 
-        val implementation = buildStub(className, template)
+        val implementation = buildStub(className, template, relaxer)
 
         if (target.value.isNotEmpty()) {
             file.addComment(target.value)
@@ -491,6 +513,10 @@ internal class KMockStubGenerator(
         file.addImport(SYNC_FUN_NAME.packageName, SYNC_FUN_NAME.simpleName)
         file.addImport(ASYNC_FUN_NAME.packageName, ASYNC_FUN_NAME.simpleName)
 
+        if (relaxer != null) {
+            file.addImport(relaxer.packageName, relaxer.functionName)
+        }
+
         file.addType(implementation)
         file.build().writeTo(
             codeGenerator = codeGenerator,
@@ -499,15 +525,33 @@ internal class KMockStubGenerator(
         )
     }
 
-    override fun writeCommonStubs(interfaces: List<KSClassDeclaration>, dependencies: List<KSFile>) {
+    override fun writeCommonStubs(
+        interfaces: List<KSClassDeclaration>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
         interfaces.forEach { template ->
-            writeStub(template, dependencies, ProcessorContract.Target.COMMON)
+            writeStub(
+                template,
+                dependencies,
+                ProcessorContract.Target.COMMON,
+                relaxer
+            )
         }
     }
 
-    override fun writePlatformStubs(interfaces: List<KSClassDeclaration>, dependencies: List<KSFile>) {
+    override fun writePlatformStubs(
+        interfaces: List<KSClassDeclaration>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
         interfaces.forEach { template ->
-            writeStub(template, dependencies, ProcessorContract.Target.PLATFORM)
+            writeStub(
+                template,
+                dependencies,
+                ProcessorContract.Target.PLATFORM,
+                relaxer
+            )
         }
     }
 }

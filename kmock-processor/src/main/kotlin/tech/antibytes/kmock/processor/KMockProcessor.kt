@@ -12,11 +12,12 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.MagicStub
 import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MagicStubRelaxer
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 /*
  * Notices -> No deep checking in order to no drain performance
  */
-
 internal class KMockProcessor(
     private val stubGenerator: ProcessorContract.StubGenerator,
     private val aggregator: ProcessorContract.Aggregator
@@ -35,28 +36,45 @@ internal class KMockProcessor(
         )
     }
 
-    private fun stubPlatformSources(resolver: Resolver): List<KSAnnotated> {
+    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            MagicStubRelaxer::class.qualifiedName!!,
+            false
+        )
+    }
+
+    private fun stubPlatformSources(resolver: Resolver, relaxer: Relaxer?): List<KSAnnotated> {
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
 
-        stubGenerator.writePlatformStubs(aggregated.extractedInterfaces, aggregated.dependencies)
+        stubGenerator.writePlatformStubs(
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
 
         return aggregated.illFormed
     }
 
-    private fun stubCommonSources(resolver: Resolver): List<KSAnnotated> {
+    private fun stubCommonSources(resolver: Resolver, relaxer: Relaxer?): List<KSAnnotated> {
         val annotated = fetchCommonAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
 
-        stubGenerator.writeCommonStubs(aggregated.extractedInterfaces, aggregated.dependencies)
+        stubGenerator.writeCommonStubs(
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
 
         return aggregated.illFormed
     }
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val platformIll = stubPlatformSources(resolver)
-        val commonIll = stubCommonSources(resolver)
+        val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
+
+        val platformIll = stubPlatformSources(resolver, relaxer)
+        val commonIll = stubCommonSources(resolver, relaxer)
 
         return platformIll.toMutableList().also {
             it.addAll(commonIll)

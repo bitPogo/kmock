@@ -13,12 +13,14 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.util.test.MockError
 import kotlin.math.max
 
 abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
-    collector: Collector = Collector { _, _ -> Unit }
+    collector: Collector = Collector { _, _ -> Unit },
+    relaxer: Relaxer<ReturnValue>?
 ) : KMockContract.FunMockery<ReturnValue, SideEffect> {
     private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
     private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
@@ -28,6 +30,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     protected val provider by _provider
     private val arguments: IsoMutableList<Array<out Any?>?> = sharedMutableListOf()
     private val collector: AtomicRef<Collector> = atomic(collector)
+    private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
     protected enum class PROVIDER(val value: Int) {
         NO_PROVIDER(0),
@@ -88,6 +91,11 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     protected fun retrieveSideEffect(): SideEffect = _sideEffect.value!!
+
+    protected fun invokeRelaxerOrFail(): ReturnValue {
+        return relaxer.value?.relax(id)
+            ?: throw MockError.MissingStub("Missing stub value for $id")
+    }
 
     private fun guardArguments(arguments: Array<out Any?>): Array<out Any?>? {
         return if (arguments.isEmpty()) {

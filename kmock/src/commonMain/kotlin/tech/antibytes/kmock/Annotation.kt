@@ -27,3 +27,17 @@ annotation class MagicStub(vararg val interfaces: KClass<*>)
  * @param interfaces variable amount of interfaces
  */
 annotation class MagicStubCommon(vararg val interfaces: KClass<*>)
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
+/**
+ * Annotation to determine a relaxer. The Processor will use only the first specified relaxer.
+ * Note: The relaxer must match the following form or the Processor fails:
+ * ```
+ *   inline fun <reified T> relax(id: String): T {
+ *      ...
+ *   }
+ * ```
+ */
+annotation class MagicStubRelaxer

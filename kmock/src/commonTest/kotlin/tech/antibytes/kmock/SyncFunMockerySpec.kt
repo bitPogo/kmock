@@ -7,6 +7,7 @@
 package tech.antibytes.kmock
 
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract.Collector
@@ -161,6 +162,32 @@ class SyncFunMockerySpec {
             }
 
             error.message mustBe "Missing stub value for $name"
+        }
+    }
+
+    @Test
+    @JsName("fn6a")
+    fun `Given invoke is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedId = AtomicReference<String?>(null)
+        val mockery = SyncFunMockery<Any, () -> Any>(
+            name,
+            relaxer = { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        )
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = mockery.invoke()
+
+            // Then
+            actual mustBe value
+            capturedId.value mustBe name
         }
     }
 

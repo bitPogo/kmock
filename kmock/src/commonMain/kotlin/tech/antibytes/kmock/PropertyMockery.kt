@@ -14,11 +14,13 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.GetOrSet
+import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.util.test.MockError
 
 class PropertyMockery<Value>(
     override val id: String,
-    collector: Collector = Collector { _, _ -> Unit }
+    collector: Collector = Collector { _, _ -> Unit },
+    relaxer: Relaxer<Value>? = null
 ) : KMockContract.PropertyMockery<Value> {
     private val provider: AtomicRef<Boolean?> = atomic(null)
     private val _get: AtomicRef<Value?> = atomic(null)
@@ -27,6 +29,7 @@ class PropertyMockery<Value>(
     private val _calls: AtomicInt = atomic(0)
     private val arguments: IsoMutableList<GetOrSet> = sharedMutableListOf()
     private val collector: AtomicRef<Collector> = atomic(collector)
+    private val relaxer: AtomicRef<Relaxer<Value>?> = atomic(relaxer)
 
     override var get: Value
         @Suppress("UNCHECKED_CAST")
@@ -86,13 +89,18 @@ class PropertyMockery<Value>(
         incrementInvocations()
     }
 
+    private fun invokeRelaxerOrFail(): Value {
+        return relaxer.value?.relax(id)
+            ?: throw MockError.MissingStub("Missing stub value for $id")
+    }
+
     override fun onGet(): Value {
         onEvent(GetOrSet.Get)
 
         return when (provider.value) {
             false -> _get.value!!
             true -> retrieveValue()
-            else -> throw MockError.MissingStub("Missing stub value for $id")
+            else -> invokeRelaxerOrFail()
         }
     }
 

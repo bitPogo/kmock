@@ -327,6 +327,10 @@ interface KMockContract {
         fun clear()
     }
 
+    fun interface Relaxer<T> {
+        fun relax(id: String): T
+    }
+
     companion object {
         const val NOT_CALLED = "Call not found."
         const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
