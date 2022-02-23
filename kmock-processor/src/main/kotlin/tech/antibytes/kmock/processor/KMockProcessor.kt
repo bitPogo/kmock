@@ -20,7 +20,7 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
  */
 internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
-    private val aggregator: ProcessorContract.Aggregator
+    private val aggregator: ProcessorContract.Aggregator,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
