@@ -140,7 +140,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         _returnValues.clear()
         _sideEffect.update { null }
         _calls.update { 0 }
-        _provider.update { Provider.NO_PROVIDER }
+        _provider.update { useSpyOrDefault() }
         arguments.clear()
     }
 }

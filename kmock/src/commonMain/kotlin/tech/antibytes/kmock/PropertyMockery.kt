@@ -21,8 +21,10 @@ class PropertyMockery<Value>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<Value>? = null,
+    private val spyOnGet: (Function0<Value>)? = null,
+    private val spyOnSet: (Function1<Value, Unit>)? = null
 ) : KMockContract.PropertyMockery<Value> {
-    private val provider: AtomicRef<Boolean?> = atomic(null)
+    private val provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
     private val _get: AtomicRef<Value?> = atomic(null)
     private val _getMany: IsoMutableList<Value> = sharedMutableListOf()
     private val _set: AtomicRef<((Value) -> Unit)> = atomic { /*Do Nothing on Default*/ }
@@ -31,11 +33,26 @@ class PropertyMockery<Value>(
     private val collector: AtomicRef<Collector> = atomic(collector)
     private val relaxer: AtomicRef<Relaxer<Value>?> = atomic(relaxer)
 
+    private enum class Provider(val value: Int) {
+        NO_PROVIDER(0),
+        VALUE(1),
+        VALUES(2),
+        SPY(3),
+    }
+
+    private fun useSpyOrDefault(): Provider {
+        return if (spyOnGet == null) {
+            Provider.NO_PROVIDER
+        } else {
+            Provider.SPY
+        }
+    }
+
     override var get: Value
         @Suppress("UNCHECKED_CAST")
         get() = _get.value as Value
         set(value) {
-            provider.getAndSet(false)
+            provider.getAndSet(Provider.VALUE)
             _get.getAndSet(value)
         }
 
@@ -45,7 +62,7 @@ class PropertyMockery<Value>(
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                provider.getAndSet(true)
+                provider.getAndSet(Provider.VALUES)
                 _getMany.clear()
                 _getMany.addAll(values)
             }
@@ -98,8 +115,9 @@ class PropertyMockery<Value>(
         onEvent(GetOrSet.Get)
 
         return when (provider.value) {
-            false -> _get.value!!
-            true -> retrieveValue()
+            Provider.VALUE -> _get.value!!
+            Provider.VALUES -> retrieveValue()
+            Provider.SPY -> spyOnGet!!.invoke()
             else -> invokeRelaxerOrFail()
         }
     }
@@ -108,12 +126,14 @@ class PropertyMockery<Value>(
         onEvent(GetOrSet.Set(value))
 
         set(value)
+
+        spyOnSet?.invoke(value)
     }
 
     override fun getArgumentsForCall(callIndex: Int): GetOrSet = arguments[callIndex]
 
     override fun clear() {
-        provider.update { null }
+        provider.update { useSpyOrDefault() }
         _get.update { null }
         _getMany.clear()
         _set.update { { /*Do Nothing on Default*/ } }

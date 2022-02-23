@@ -583,6 +583,41 @@ class SyncFunMockerySpec {
         }
     }
 
+    @Test
+    @JsName("fn21")
+    fun `Given clear is called it clears the mock while leave the spy intact`(): AsyncTestReturnValue {
+        // Given
+        val implementation = Implementation<Any>()
+
+        val valueImpl: Any = fixture.fixture()
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: () -> Any = {
+            fixture.fixture()
+        }
+
+        val mockery = SyncFunMockery<Any, () -> Any>(
+            fixture.fixture(),
+            spyOn = implementation::fun0
+        )
+
+        implementation.fun0 = { valueImpl }
+
+        mockery.returnValue = value
+        mockery.returnValues = values
+        mockery.sideEffect = sideEffect
+
+        return runBlockingTestInContext(testScope2.coroutineContext) {
+            mockery.invoke()
+
+            mockery.clear()
+
+            val actual = mockery.invoke()
+
+            actual mustBe valueImpl
+        }
+    }
+
     private class Implementation<T>(
         @JsName("fun0a")
         var fun0: (() -> T)? = null,

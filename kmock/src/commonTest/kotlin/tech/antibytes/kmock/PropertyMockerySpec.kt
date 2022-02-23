@@ -188,6 +188,30 @@ class PropertyMockerySpec {
     }
 
     @Test
+    @JsName("fn6b")
+    fun `Given onGet is called it uses the given Spy if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val value: Any = fixture.fixture()
+
+        val implementation = Implementation<Any>()
+        val mockery = PropertyMockery(
+            name,
+            spyOnGet = implementation::foo::get
+        )
+
+        implementation.fooProp = value
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = mockery.onGet()
+
+            // Then
+            actual mustBe value
+        }
+    }
+
+    @Test
     @JsName("fn7")
     fun `Given onGet is called it returns the Get Value threadsafe`(): AsyncTestReturnValue {
         // Given
@@ -361,6 +385,30 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn14")
+    fun `Given onSet is called it uses the given Spy`(): AsyncTestReturnValue {
+        // Given
+        val implementation = Implementation<Any>()
+
+        val mockery = PropertyMockery(
+            fixture.fixture(),
+            spyOnSet = implementation::bar::set
+        )
+        val value: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            mockery.onSet(value)
+        }
+
+        runBlockingTest {
+            implementation.barProp.value mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn15")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -373,7 +421,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn16")
     fun `Its default call count is 0`() {
         PropertyMockery<Any>(fixture.fixture()).calls mustBe 0
     }
@@ -499,8 +547,10 @@ class PropertyMockerySpec {
         mockery.onGet()
         mockery.onSet(fixture.fixture())
 
+        // When
         mockery.clear()
 
+        // Then
         mockery.get mustBe null
 
         try {
@@ -537,8 +587,11 @@ class PropertyMockerySpec {
         mockery.onGet()
         mockery.onSet(fixture.fixture())
 
+        // When
+
         mockery.clear()
 
+        // Then
         mockery.get mustBe null
 
         try {
@@ -556,5 +609,57 @@ class PropertyMockerySpec {
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
+    }
+
+    @Test
+    @JsName("fn23")
+    fun `Given clear is called it clears the mock while repecting Spyies`() {
+        // Given
+        val implementation = Implementation<Any>()
+
+        val value: Any = fixture.fixture()
+        val valueImp: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture()
+        val sideEffect: (Any) -> Unit = { }
+
+        implementation.fooProp = valueImp
+
+        // When
+        val mockery = PropertyMockery(
+            fixture.fixture(),
+            spyOnGet = implementation::foo::get
+        )
+        mockery.get = value
+        mockery.getMany = values
+        mockery.set = sideEffect
+
+        mockery.onGet()
+        mockery.onSet(fixture.fixture())
+
+        mockery.clear()
+
+        // Then
+        mockery.onGet() mustBe valueImp
+    }
+
+    private class Implementation<T>(
+        var fooProp: T? = null,
+        var barProp: AtomicReference<T?> = AtomicReference(null)
+    ) {
+        val foo: T
+            get() {
+                return fooProp ?: throw MockError.MissingStub("Missing Sideeffect foo")
+            }
+        var bar: T
+            get() {
+                return if (barProp.value == null) {
+                    throw MockError.MissingStub("Missing Sideeffect bar")
+                } else {
+                    barProp.value!!
+                }
+            }
+            set(value) {
+                barProp.set(value)
+            }
     }
 }
