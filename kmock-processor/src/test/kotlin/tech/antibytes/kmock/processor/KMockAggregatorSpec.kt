@@ -26,8 +26,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.MagicStub
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -51,7 +51,7 @@ class KMockAggregatorSpec {
     }
 
     @Test
-    fun `Given extractInterfaces is called it retrieves all MagicStub Annotations`() {
+    fun `Given extractInterfaces is called it retrieves all Stub Annotations`() {
         // Given
         val source: KSAnnotated = mockk()
 
@@ -84,7 +84,7 @@ class KMockAggregatorSpec {
     }
 
     @Test
-    fun `Given extractInterfaces is called it filters all ill MagicStub Annotations`() {
+    fun `Given extractInterfaces is called it filters all ill Stub Annotations`() {
         // Given
         val source: KSAnnotated = mockk()
 
@@ -102,9 +102,9 @@ class KMockAggregatorSpec {
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
-            MagicStub::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         } else {
-            MagicStubCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!
         }
 
         every { source.annotations } returns sourceAnnotations
@@ -141,9 +141,9 @@ class KMockAggregatorSpec {
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
-            MagicStub::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         } else {
-            MagicStubCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!
         }
 
         every { source.annotations } returns sourceAnnotations
@@ -202,9 +202,9 @@ class KMockAggregatorSpec {
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
-            MagicStub::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         } else {
-            MagicStubCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!
         }
 
         every { source.annotations } returns sourceAnnotations
@@ -260,9 +260,9 @@ class KMockAggregatorSpec {
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
-            MagicStub::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         } else {
-            MagicStubCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!
         }
 
         every { source.annotations } returns sourceAnnotations
@@ -318,9 +318,9 @@ class KMockAggregatorSpec {
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
-            MagicStub::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         } else {
-            MagicStubCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!
         }
 
         every { source.annotations } returns sourceAnnotations

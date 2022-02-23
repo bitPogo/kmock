@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MockCommon
 
-@MagicStubCommon(PropertyCommon::class)
+@MockCommon(PropertyCommon::class)
 interface PropertyCommon {
     val foo: String
     val bar: Int

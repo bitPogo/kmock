@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(Ill::class)
+@Mock(Ill::class)
 interface Ill {
     fun <T> foo(payload: T)
     fun <T : Int> foo(payload: T)

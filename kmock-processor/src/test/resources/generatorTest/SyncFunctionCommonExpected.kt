@@ -10,7 +10,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class SyncFunctionCommonStub(
+internal class SyncFunctionCommonMock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
 ) : SyncFunctionCommon {
     public val fooFun: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
@@ -18,7 +18,7 @@ internal class SyncFunctionCommonStub(
 
     public override fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         fooFun.clear()
     }
 }

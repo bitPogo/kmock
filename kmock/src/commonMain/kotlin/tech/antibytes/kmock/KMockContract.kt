@@ -331,6 +331,10 @@ interface KMockContract {
         fun relax(id: String): T
     }
 
+    fun interface Spy<T> {
+        fun spy(): T
+    }
+
     companion object {
         const val NOT_CALLED = "Call not found."
         const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."

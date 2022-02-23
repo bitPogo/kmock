@@ -6,10 +6,10 @@
 
 package tech.antibytes.kmock.example.contract
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 import kotlin.test.Test
 
-@MagicStub(PlatformThingContract::class)
+@Mock(PlatformThingContract::class)
 class PlatformDecoderSpec {
     @Test
     fun doSomething() {

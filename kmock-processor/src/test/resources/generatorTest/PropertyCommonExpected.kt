@@ -10,7 +10,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class PropertyCommonStub(
+internal class PropertyCommonMock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
 ) : PropertyCommon {
     public override val foo: String
@@ -26,7 +26,7 @@ internal class PropertyCommonStub(
     public val buzzProp: KMockContract.PropertyMockery<Any> =
         PropertyMockery("generatorTest.PropertyCommon#buzz", verifier)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         fooProp.clear()
         buzzProp.clear()
     }

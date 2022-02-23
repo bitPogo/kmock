@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(SyncFunctionPlatform::class)
+@Mock(SyncFunctionPlatform::class)
 interface SyncFunctionPlatform {
     fun foo(fuzz: Int, ozz: Any): dynamic
 

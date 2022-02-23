@@ -11,7 +11,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class RelaxedStub(
+internal class RelaxedMock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit },
     relaxed: Boolean = false
 ) : Relaxed {
@@ -34,7 +34,7 @@ internal class RelaxedStub(
 
     public override suspend fun bar(payload: Any): String = barFun.invoke(payload)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         buzzProp.clear()
         fooFun.clear()
         barFun.clear()

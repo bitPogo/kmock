@@ -60,12 +60,12 @@ internal class KMockAggregator(
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
-            val magicStub = findKMockAnnotation(annotatedSymbol.annotations)
+            val Stub = findKMockAnnotation(annotatedSymbol.annotations)
 
-            if (magicStub.arguments.isEmpty()) {
+            if (Stub.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
             } else {
-                typeContainer.addAll(magicStub.arguments.first().value as List<KSType>)
+                typeContainer.addAll(Stub.arguments.first().value as List<KSType>)
                 fileCollector.add(annotatedSymbol.containingFile!!)
             }
         }

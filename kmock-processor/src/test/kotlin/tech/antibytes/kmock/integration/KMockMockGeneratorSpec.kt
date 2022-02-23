@@ -17,14 +17,14 @@ import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
 
-class KMockStubGeneratorSpec {
+class KMockMockGeneratorSpec {
     @TempDir
     lateinit var buildDir: File
     private val provider = KMockProcessorProvider()
     private val fixtureRoot = "/generatorTest"
 
     private fun loadResource(path: String): String {
-        return KMockStubGeneratorSpec::class.java.getResource(fixtureRoot + path).readText()
+        return KMockMockGeneratorSpec::class.java.getResource(fixtureRoot + path).readText()
     }
 
     private fun compile(
@@ -66,7 +66,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("PropertyPlatformStub.kt")
+        val actual = resolveGenerated("PropertyPlatformMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -86,7 +86,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("PropertyCommonStub.kt")
+        val actual = resolveGenerated("PropertyCommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -106,7 +106,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("SyncFunctionPlatformStub.kt")
+        val actual = resolveGenerated("SyncFunctionPlatformMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -126,7 +126,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("SyncFunctionCommonStub.kt")
+        val actual = resolveGenerated("SyncFunctionCommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -146,7 +146,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("AsyncFunctionPlatformStub.kt")
+        val actual = resolveGenerated("AsyncFunctionPlatformMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -166,7 +166,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("FunctionOverloadStub.kt")
+        val actual = resolveGenerated("FunctionOverloadMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -186,7 +186,7 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("GenericsStub.kt")
+        val actual = resolveGenerated("GenericsMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -196,7 +196,7 @@ class KMockStubGeneratorSpec {
     }
 
     @Test
-    fun `Given a annotated Source is processed, it writes a stub while using the Relaxer`() {
+    fun `Given a annotated Source is processed, it writes a mock while using the Relaxer`() {
         // Given
         val source = SourceFile.kotlin(
             "RelaxedSource.kt",
@@ -206,7 +206,9 @@ class KMockStubGeneratorSpec {
 
         // When
         val compilerResult = compile(provider, source)
-        val actual = resolveGenerated("RelaxedStub.kt")
+        val actual = resolveGenerated("RelaxedMock.kt")
+
+        println(actual)
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

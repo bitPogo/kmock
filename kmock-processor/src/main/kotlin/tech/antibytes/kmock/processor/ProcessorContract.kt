@@ -13,8 +13,8 @@ import com.squareup.kotlinpoet.ClassName
 import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.MagicStub
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
@@ -35,14 +35,14 @@ internal interface ProcessorContract {
         val dependencies: List<KSFile>
     )
 
-    interface StubGenerator {
-        fun writePlatformStubs(
+    interface MockGenerator {
+        fun writePlatformMocks(
             interfaces: List<KSClassDeclaration>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
-        fun writeCommonStubs(
+        fun writeCommonMocks(
             interfaces: List<KSClassDeclaration>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
@@ -55,8 +55,8 @@ internal interface ProcessorContract {
     }
 
     companion object {
-        val ANNOTATION_NAME: String = MagicStub::class.java.canonicalName
-        val ANNOTATION_COMMON_NAME: String = MagicStubCommon::class.java.canonicalName
+        val ANNOTATION_NAME: String = Mock::class.java.canonicalName
+        val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"

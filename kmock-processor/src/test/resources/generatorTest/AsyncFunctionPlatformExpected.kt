@@ -9,7 +9,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class AsyncFunctionPlatformStub(
+internal class AsyncFunctionPlatformMock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
 ) : AsyncFunctionPlatform {
     public val fooFun: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
@@ -17,7 +17,7 @@ internal class AsyncFunctionPlatformStub(
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         fooFun.clear()
     }
 }

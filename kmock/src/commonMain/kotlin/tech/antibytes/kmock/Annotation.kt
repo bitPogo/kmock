@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  *
  * @param interfaces variable amount of interfaces
  */
-annotation class MagicStub(vararg val interfaces: KClass<*>)
+annotation class Mock(vararg val interfaces: KClass<*>)
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
@@ -26,7 +26,7 @@ annotation class MagicStub(vararg val interfaces: KClass<*>)
  *
  * @param interfaces variable amount of interfaces
  */
-annotation class MagicStubCommon(vararg val interfaces: KClass<*>)
+annotation class MockCommon(vararg val interfaces: KClass<*>)
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
@@ -40,4 +40,4 @@ annotation class MagicStubCommon(vararg val interfaces: KClass<*>)
  *   }
  * ```
  */
-annotation class MagicStubRelaxer
+annotation class Relaxer

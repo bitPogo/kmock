@@ -43,10 +43,10 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import java.util.Locale
 
-internal class KMockStubGenerator(
+internal class KMockMockGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
-) : ProcessorContract.StubGenerator {
+) : ProcessorContract.MockGenerator {
     private fun resolveBound(type: KSTypeParameter): KSTypeReference? {
         return if (type.bounds.toList().isEmpty()) {
             null
@@ -416,12 +416,12 @@ internal class KMockStubGenerator(
         return Pair(mockery, function)
     }
 
-    fun buildClear(
+    private fun buildClear(
         propertyNames: List<String>,
         functionNames: List<String>
     ): FunSpec {
         val function = FunSpec
-            .builder("clear")
+            .builder("clearMock")
 
         propertyNames.forEach { name ->
             function.addStatement("$name.clear()")
@@ -434,7 +434,7 @@ internal class KMockStubGenerator(
         return function.build()
     }
 
-    private fun buildStub(
+    private fun buildMock(
         className: String,
         template: KSClassDeclaration,
         relaxer: Relaxer?
@@ -490,19 +490,19 @@ internal class KMockStubGenerator(
         return implementation.build()
     }
 
-    private fun writeStub(
+    private fun writeMock(
         template: KSClassDeclaration,
         dependencies: List<KSFile>,
         target: ProcessorContract.Target,
         relaxer: Relaxer?
     ) {
-        val className = "${template.simpleName.asString()}Stub"
+        val className = "${template.simpleName.asString()}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
             className
         )
 
-        val implementation = buildStub(className, template, relaxer)
+        val implementation = buildMock(className, template, relaxer)
 
         if (target.value.isNotEmpty()) {
             file.addComment(target.value)
@@ -525,13 +525,13 @@ internal class KMockStubGenerator(
         )
     }
 
-    override fun writeCommonStubs(
+    override fun writeCommonMocks(
         interfaces: List<KSClassDeclaration>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         interfaces.forEach { template ->
-            writeStub(
+            writeMock(
                 template,
                 dependencies,
                 ProcessorContract.Target.COMMON,
@@ -540,13 +540,13 @@ internal class KMockStubGenerator(
         }
     }
 
-    override fun writePlatformStubs(
+    override fun writePlatformMocks(
         interfaces: List<KSClassDeclaration>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         interfaces.forEach { template ->
-            writeStub(
+            writeMock(
                 template,
                 dependencies,
                 ProcessorContract.Target.PLATFORM,

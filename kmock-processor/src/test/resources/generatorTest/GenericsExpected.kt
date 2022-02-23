@@ -7,7 +7,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class GenericsStub<K: Any, L>(
+internal class GenericsMock<K: Any, L>(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
 ) : Generics<K, L> {
     public override val template: K
@@ -26,7 +26,7 @@ internal class GenericsStub<K: Any, L>(
 
     public override fun <K : Int> foo(payload: K): Unit = fooWithKFun.invoke(payload)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         templateProp.clear()
         fooFun.clear()
         fooWithKFun.clear()

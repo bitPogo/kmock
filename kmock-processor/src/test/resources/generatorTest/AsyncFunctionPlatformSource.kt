@@ -6,9 +6,9 @@
 
 package generatorTest
 
-import tech.antibytes.kmock.MagicStub
+import tech.antibytes.kmock.Mock
 
-@MagicStub(AsyncFunctionPlatform::class)
+@Mock(AsyncFunctionPlatform::class)
 interface AsyncFunctionPlatform {
     suspend fun foo(fuzz: Int, ozz: Any): dynamic
 

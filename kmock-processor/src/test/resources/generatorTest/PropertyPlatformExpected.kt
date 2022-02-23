@@ -9,7 +9,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
-internal class PropertyPlatformStub(
+internal class PropertyPlatformMock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit }
 ) : PropertyPlatform {
     public override val foo: String
@@ -25,7 +25,7 @@ internal class PropertyPlatformStub(
     public val buzzProp: KMockContract.PropertyMockery<Any> =
         PropertyMockery("generatorTest.PropertyPlatform#buzz", verifier)
 
-    public fun clear(): Unit {
+    public fun clearMock(): Unit {
         fooProp.clear()
         buzzProp.clear()
     }

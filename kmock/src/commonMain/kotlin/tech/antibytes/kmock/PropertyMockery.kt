@@ -20,7 +20,7 @@ import tech.antibytes.util.test.MockError
 class PropertyMockery<Value>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
-    relaxer: Relaxer<Value>? = null
+    relaxer: Relaxer<Value>? = null,
 ) : KMockContract.PropertyMockery<Value> {
     private val provider: AtomicRef<Boolean?> = atomic(null)
     private val _get: AtomicRef<Value?> = atomic(null)

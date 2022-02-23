@@ -11,15 +11,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import tech.antibytes.kmock.MagicStubCommon
+import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.Verifier
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
-import tech.antibytes.kmock.example.contract.SampleDomainObjectStub
-import tech.antibytes.kmock.example.contract.SampleLocalRepositoryStub
-import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryStub
+import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
+import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
+import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
@@ -43,7 +43,7 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-@MagicStubCommon(
+@MockCommon(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,
@@ -52,16 +52,16 @@ import kotlin.test.Test
 class SampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()
     private var verifier = Verifier()
-    private var local = SampleLocalRepositoryStub(verifier)
-    private var remote = SampleRemoteRepositoryStub(verifier)
-    private var domainObject = SampleDomainObjectStub(verifier)
+    private var local = SampleLocalRepositoryMock(verifier)
+    private var remote = SampleRemoteRepositoryMock(verifier)
+    private var domainObject = SampleDomainObjectMock(verifier)
 
     @BeforeTest
     fun setUp() {
         verifier.clear()
-        local.clear()
-        remote.clear()
-        domainObject.clear()
+        local.clearMock()
+        remote.clearMock()
+        domainObject.clearMock()
         clearBlockingTest()
     }
 
