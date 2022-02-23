@@ -7,12 +7,13 @@
 package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.KMockContract.Relaxer
 
 class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
-    collector: Collector = Collector { _, _ -> Unit }
-) : KMockContract.AsyncFunMockery<ReturnValue, SideEffect>, FunMockery<ReturnValue, SideEffect>(id, collector) {
+    collector: Collector = Collector { _, _ -> Unit },
+    relaxer: Relaxer<ReturnValue>? = null
+) : KMockContract.AsyncFunMockery<ReturnValue, SideEffect>, FunMockery<ReturnValue, SideEffect>(id, collector, relaxer) {
     private suspend fun execute(
         function: suspend () -> ReturnValue,
         vararg arguments: Any?
@@ -23,7 +24,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
             PROVIDER.RETURN_VALUE -> retrieveValue()
             PROVIDER.RETURN_VALUES -> retrieveFromValues()
             PROVIDER.SIDE_EFFECT -> function()
-            else -> throw MockError.MissingStub("Missing stub value for $id")
+            else -> invokeRelaxerOrFail()
         }
     }
 
