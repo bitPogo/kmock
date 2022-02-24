@@ -30,6 +30,7 @@ dependencies {
     implementation(LocalDependency.kotlin.gradle)
     implementation(LocalDependency.antibytes.gradle.util)
     implementation(LocalDependency.gradle.ksp)
+    implementation(LocalDependency.square.kotlinPoet.core)
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)

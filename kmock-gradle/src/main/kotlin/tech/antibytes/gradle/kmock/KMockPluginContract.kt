@@ -12,7 +12,11 @@ import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
-interface KMockPluginContract {
+internal interface KMockPluginContract {
+    interface Extension {
+        var rootPackage: String
+    }
+
     interface CleanUpTask {
         @get:Input
         val indicator: Property<String>
