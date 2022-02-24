@@ -152,11 +152,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/nativeTest")
+            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/appleTest")
+            source2.kotlin.srcDir("$path/generated/ksp/apple/appleTest")
         }
     }
 
@@ -258,11 +258,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/jvmTest")
+            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/jsTest")
+            source2.kotlin.srcDir("$path/generated/ksp/js/jsTest")
         }
 
         verify(atLeast = 1) {
@@ -634,11 +634,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            jvm.kotlin.srcDir("$path/generated/ksp/jvmTest")
+            jvm.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
         verify(exactly = 1) {
-            androidTest.kotlin.srcDir("$path/generated/ksp/androidTest")
+            androidTest.kotlin.srcDir("$path/generated/ksp/android/androidTest")
         }
 
         verify(atLeast = 1) {

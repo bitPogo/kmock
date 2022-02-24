@@ -48,8 +48,8 @@ object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         task.description = "Extract $capitalTarget Sources"
         task.group = "Code Generation"
 
-        task.from("$buildDir/generated/ksp/${source}Test")
-            .into("$buildDir/generated/ksp/${target}Test")
+        task.from("$buildDir/generated/ksp/$source/${source}Test")
+            .into("$buildDir/generated/ksp/$target/${target}Test")
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
     }

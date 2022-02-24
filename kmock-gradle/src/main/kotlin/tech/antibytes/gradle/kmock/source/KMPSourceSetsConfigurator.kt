@@ -30,16 +30,23 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun cleanSourceName(sourceName: String): String = sourceName.substringBeforeLast("Test")
 
-    private fun addKspDependency(dependencies: DependencyHandler, dependency: String) {
+    private fun addKspDependency(
+        dependencies: DependencyHandler,
+        dependency: String
+    ) {
         dependencies.add(
             dependency,
             "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
         )
     }
 
-    private fun extendSourceSet(sourceSet: KotlinSourceSet, buildDir: String) {
+    private fun extendSourceSet(
+        platformName: String,
+        sourceSet: KotlinSourceSet,
+        buildDir: String
+    ) {
         sourceSet.kotlin.srcDir(
-            "$buildDir/generated/ksp/${sourceSet.name}"
+            "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
         )
     }
 
@@ -65,11 +72,10 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
     }
 
     private fun addSource(
-        sourceSet: KotlinSourceSet,
+        platformName: String,
         sourceCollector: MutableMap<String, String>,
         dependencies: DependencyHandler
     ) {
-        val platformName = cleanSourceName(sourceSet.name)
         val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
         try {
             addKspDependency(dependencies, "ksp${platformName.capitalize(Locale.ROOT)}Test")
@@ -189,12 +195,10 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
                 if (
                     sourceSet.name == "androidTest" || (sourceSet.name.endsWith("Test") && !sourceSet.name.startsWith("android"))
                 ) {
-                    extendSourceSet(sourceSet, buildDir)
-                    addSource(
-                        sourceSet,
-                        sourceCollector,
-                        dependencies
-                    )
+                    val platformName = cleanSourceName(sourceSet.name)
+                    extendSourceSet(platformName, sourceSet, buildDir)
+
+                    addSource(platformName, sourceCollector, dependencies)
                 }
             }
         }

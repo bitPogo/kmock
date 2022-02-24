@@ -88,8 +88,10 @@ class SharedSourceCopistSpec {
     fun `Given copySharedSource is called it creates a CopyTask`() {
         // Given
         val indicator = "Common"
-        val source = "sourceTest"
-        val target = "targetTest"
+        val sourcePlatform = "source"
+        val source = "${sourcePlatform}Test"
+        val targetPlatform = "target"
+        val target = "${targetPlatform}Test"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk()
 
@@ -116,8 +118,8 @@ class SharedSourceCopistSpec {
 
         verify(exactly = 1) { copyTask.description = "Extract Target Sources" }
         verify(exactly = 1) { copyTask.group = "Code Generation" }
-        verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$source") }
-        verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$target") }
+        verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$sourcePlatform/$source") }
+        verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$targetPlatform/$target") }
         verify(exactly = 1) { copyTask.include("**/*.kt") }
         verify(exactly = 1) { copyTask.exclude(any<Spec<FileTreeElement>>()) }
     }

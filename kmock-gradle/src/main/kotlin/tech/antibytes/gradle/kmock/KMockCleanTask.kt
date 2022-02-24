@@ -16,6 +16,10 @@ abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
             throw StopExecutionException("Missing CleanUp Indicator!")
         }
 
+        if (targetPlatform.orNull.isNullOrEmpty()) {
+            throw StopExecutionException("Missing CleanUp Target Platform!")
+        }
+
         if (target.orNull.isNullOrEmpty()) {
             throw StopExecutionException("Missing CleanUp Target!")
         }
@@ -25,7 +29,9 @@ abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
     override fun cleanUp() {
         guardInputs()
 
-        val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/${target.get()}").toList()
+        val files = project.fileTree(
+            "${project.buildDir.absolutePath}/generated/ksp/${targetPlatform.get()}/${target.get()}"
+        ).toList()
 
         files.forEach { file ->
             val indicator = file.bufferedReader().readLine()

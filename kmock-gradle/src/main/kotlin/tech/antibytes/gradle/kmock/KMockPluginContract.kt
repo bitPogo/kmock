@@ -18,6 +18,9 @@ interface KMockPluginContract {
         val indicator: Property<String>
 
         @get:Input
+        val targetPlatform: Property<String>
+
+        @get:Input
         val target: Property<String>
 
         @TaskAction
