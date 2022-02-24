@@ -26,7 +26,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.wasCalledWithArguments()
+        val actual = mock.hadBeenCalledWith()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -47,7 +47,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithArguments(fixture.fixture<String>())
+        val actual = mock.hadBeenCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -70,7 +70,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithArguments(*(values.sorted()).toTypedArray())
+        val actual = mock.hadBeenCalledWith(*(values.sorted()).toTypedArray())
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -85,7 +85,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.wasCalledWithArgumentsStrict()
+        val actual = mock.hadBeenStrictlyCalledWith()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -106,7 +106,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithArgumentsStrict(fixture.fixture<String>())
+        val actual = mock.hadBeenStrictlyCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -129,7 +129,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithArgumentsStrict(*values)
+        val actual = mock.hadBeenStrictlyCalledWith(*values)
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -144,7 +144,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.wasCalledWithoutArguments()
+        val actual = mock.hadBeenCalledWithout()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -166,7 +166,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithoutArguments(*values)
+        val actual = mock.hadBeenCalledWithout(*values)
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -188,7 +188,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.wasCalledWithoutArguments(fixture.fixture<String>())
+        val actual = mock.hadBeenCalledWithout(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))

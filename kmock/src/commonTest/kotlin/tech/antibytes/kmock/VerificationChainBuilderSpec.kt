@@ -77,7 +77,7 @@ class VerificationChainBuilderSpec {
 
         // When
         val container = VerificationChainBuilder()
-        container.wasCalledWithArguments(mock, *(values.sorted()).toTypedArray())
+        container.hadBeenCalledWith(mock, *(values.sorted()).toTypedArray())
 
         // Then
         val actual = container.toList()[0]
@@ -102,7 +102,7 @@ class VerificationChainBuilderSpec {
 
         // When
         val container = VerificationChainBuilder()
-        container.wasCalledWithArgumentsStrict(mock, *values)
+        container.hadBeenStrictlyCalledWith(mock, *values)
 
         // Then
         val actual = container.toList()[0]
@@ -126,7 +126,7 @@ class VerificationChainBuilderSpec {
 
         // When
         val container = VerificationChainBuilder()
-        container.wasCalledWithoutArguments(mock, fixture.fixture<String>())
+        container.hadBeenCalledWithout(mock, fixture.fixture<String>())
 
         // Then
         val actual = container.toList()[0]

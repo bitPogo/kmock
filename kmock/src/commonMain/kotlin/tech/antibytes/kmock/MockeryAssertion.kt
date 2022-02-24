@@ -8,41 +8,41 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.FunMockery
 
-fun FunMockery<*, *>.assertWasCalled(
+fun FunMockery<*, *>.assertHadBeenCalled(
     exactly: Int,
 ) {
     verify(exactly = exactly) {
-        this.wasCalledWithArguments()
+        this.hadBeenCalledWith()
     }
 }
 
-fun FunMockery<*, *>.assertWasCalledWith(
-    exactly: Int,
-    vararg arguments: Any?
-) {
-    verify(exactly = exactly) {
-        this.wasCalledWithArguments(*arguments)
-    }
-}
-
-fun FunMockery<*, *>.assertWasCalledStrictlyWith(
+fun FunMockery<*, *>.assertHadBeenCalledWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
     verify(exactly = exactly) {
-        this.wasCalledWithArgumentsStrict(*arguments)
+        this.hadBeenCalledWith(*arguments)
     }
 }
 
-fun FunMockery<*, *>.assertWasNotCalled() {
-    verify(exactly = 0) {
-        this.wasCalledWithArguments()
+fun FunMockery<*, *>.assertHadBeenCalledStrictlyWith(
+    exactly: Int,
+    vararg arguments: Any?
+) {
+    verify(exactly = exactly) {
+        this.hadBeenStrictlyCalledWith(*arguments)
     }
 }
 
-fun FunMockery<*, *>.assertWasNotCalledWith(vararg illegal: Any?) {
+fun FunMockery<*, *>.assertHadNotBeenCalled() {
     verify(exactly = 0) {
-        this.wasCalledWithArguments(*illegal)
+        this.hadBeenCalledWith()
+    }
+}
+
+fun FunMockery<*, *>.assertHadNotBeenCalledWith(vararg illegal: Any?) {
+    verify(exactly = 0) {
+        this.hadBeenCalledWith(*illegal)
     }
 }
 
@@ -52,11 +52,11 @@ fun FunMockery<*, *>.assertWasNotCalledWith(vararg illegal: Any?) {
  * @param arguments variable amount of nullable Any typed argument
  * @throws AssertionError if a call contains a at least one given argument.
  */
-fun FunMockery<*, *>.assertWasCalledWithout(
+fun FunMockery<*, *>.assertHadBeenCalledWithout(
     vararg arguments: Any?
 ) {
     verify(atMost = 100) {
-        this.wasCalledWithoutArguments(*arguments)
+        this.hadBeenCalledWithout(*arguments)
     }
 }
 

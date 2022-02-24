@@ -19,16 +19,16 @@ class VerificationChainBuilder : KMockContract.VerificationHandleContainer {
     override fun toList(): List<VerificationHandle> = handles.toList()
 }
 
-fun VerificationChainBuilder.wasCalledWithArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.wasCalledWithArguments(*arguments))
+fun VerificationChainBuilder.hadBeenCalledWith(mockery: FunMockery<*, *>, vararg arguments: Any?) {
+    this.add(mockery.hadBeenCalledWith(*arguments))
 }
 
-fun VerificationChainBuilder.wasCalledWithArgumentsStrict(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.wasCalledWithArgumentsStrict(*arguments))
+fun VerificationChainBuilder.hadBeenStrictlyCalledWith(mockery: FunMockery<*, *>, vararg arguments: Any?) {
+    this.add(mockery.hadBeenStrictlyCalledWith(*arguments))
 }
 
-fun VerificationChainBuilder.wasCalledWithoutArguments(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.wasCalledWithoutArguments(*arguments))
+fun VerificationChainBuilder.hadBeenCalledWithout(mockery: FunMockery<*, *>, vararg arguments: Any?) {
+    this.add(mockery.hadBeenCalledWithout(*arguments))
 }
 
 fun VerificationChainBuilder.wasGotten(mockery: KMockContract.PropertyMockery<*>) {

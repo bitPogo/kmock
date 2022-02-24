@@ -16,7 +16,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 import tech.antibytes.kmock.Verifier
-import tech.antibytes.kmock.assertWasCalledStrictlyWith
+import tech.antibytes.kmock.assertHadBeenCalledStrictlyWith
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
@@ -24,9 +24,9 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.wasCalledWithArguments
-import tech.antibytes.kmock.wasCalledWithArgumentsStrict
-import tech.antibytes.kmock.wasCalledWithoutArguments
+import tech.antibytes.kmock.hadBeenCalledWith
+import tech.antibytes.kmock.hadBeenStrictlyCalledWith
+import tech.antibytes.kmock.hadBeenCalledWithout
 import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
@@ -89,22 +89,22 @@ class SampleControllerSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote.fetch.wasCalledWithArgumentsStrict(url) }
-            verify(exactly = 1) { local.store.wasCalledWithArgumentsStrict(id[1], number) }
+            verify(exactly = 1) { remote.fetch.hadBeenStrictlyCalledWith(url) }
+            verify(exactly = 1) { local.store.hadBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(remote.fetch, url)
+                hadBeenStrictlyCalledWith(remote.fetch, url)
                 wasGotten(domainObject.propId)
                 wasSet(domainObject.propId)
                 wasGotten(domainObject.propId)
                 wasGotten(domainObject.propValue)
-                wasCalledWithArgumentsStrict(local.store, id[1], number)
+                hadBeenStrictlyCalledWith(local.store, id[1], number)
             }
 
             verifier.verifyOrder {
-                wasCalledWithArguments(remote.fetch, url)
+                hadBeenCalledWith(remote.fetch, url)
                 wasSetTo(domainObject.propId, "42")
-                wasCalledWithArguments(local.store, id[1])
+                hadBeenCalledWith(local.store, id[1])
             }
         }
     }
@@ -143,20 +143,20 @@ class SampleControllerSpec {
 
             delay(20)
 
-            local.contains.assertWasCalledStrictlyWith(1, idOrg)
-            local.fetch.assertWasCalledStrictlyWith(1, id)
-            remote.find.assertWasCalledStrictlyWith(1, idOrg)
+            local.contains.assertHadBeenCalledStrictlyWith(1, idOrg)
+            local.fetch.assertHadBeenCalledStrictlyWith(1, id)
+            remote.find.assertHadBeenCalledStrictlyWith(1, idOrg)
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(local.contains, idOrg)
-                wasCalledWithArgumentsStrict(remote.find, idOrg)
+                hadBeenStrictlyCalledWith(local.contains, idOrg)
+                hadBeenStrictlyCalledWith(remote.find, idOrg)
                 wasGotten(domainObject.propId)
-                wasCalledWithArgumentsStrict(local.fetch, id)
+                hadBeenStrictlyCalledWith(local.fetch, id)
                 wasSet(domainObject.propId)
             }
 
             verifier.verifyOrder {
-                wasCalledWithoutArguments(local.contains, "abc")
+                hadBeenCalledWithout(local.contains, "abc")
             }
         }
     }

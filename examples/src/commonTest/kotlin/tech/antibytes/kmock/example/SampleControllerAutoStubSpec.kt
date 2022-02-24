@@ -23,9 +23,9 @@ import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.wasCalledWithArguments
-import tech.antibytes.kmock.wasCalledWithArgumentsStrict
-import tech.antibytes.kmock.wasCalledWithoutArguments
+import tech.antibytes.kmock.hadBeenCalledWith
+import tech.antibytes.kmock.hadBeenStrictlyCalledWith
+import tech.antibytes.kmock.hadBeenCalledWithout
 import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
@@ -93,22 +93,22 @@ class SampleControllerAutoStubSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote.fetchFun.wasCalledWithArgumentsStrict(url) }
-            verify(exactly = 1) { local.storeFun.wasCalledWithArgumentsStrict(id[1], number) }
+            verify(exactly = 1) { remote.fetchFun.hadBeenStrictlyCalledWith(url) }
+            verify(exactly = 1) { local.storeFun.hadBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(remote.fetchFun, url)
+                hadBeenStrictlyCalledWith(remote.fetchFun, url)
                 wasGotten(domainObject.idProp)
                 wasSet(domainObject.idProp)
                 wasGotten(domainObject.idProp)
                 wasGotten(domainObject.valueProp)
-                wasCalledWithArgumentsStrict(local.storeFun, id[1], number)
+                hadBeenStrictlyCalledWith(local.storeFun, id[1], number)
             }
 
             verifier.verifyOrder {
-                wasCalledWithArguments(remote.fetchFun, url)
+                hadBeenCalledWith(remote.fetchFun, url)
                 wasSetTo(domainObject.idProp, "42")
-                wasCalledWithArguments(local.storeFun, id[1])
+                hadBeenCalledWith(local.storeFun, id[1])
             }
         }
     }
@@ -141,20 +141,20 @@ class SampleControllerAutoStubSpec {
 
             delay(20)
 
-            verify(exactly = 1) { local.containsFun.wasCalledWithArgumentsStrict(idOrg) }
-            verify(exactly = 1) { local.fetchFun.wasCalledWithArgumentsStrict(id) }
-            verify(exactly = 1) { remote.findFun.wasCalledWithArgumentsStrict(idOrg) }
+            verify(exactly = 1) { local.containsFun.hadBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 1) { local.fetchFun.hadBeenStrictlyCalledWith(id) }
+            verify(exactly = 1) { remote.findFun.hadBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(local.containsFun, idOrg)
-                wasCalledWithArgumentsStrict(remote.findFun, idOrg)
+                hadBeenStrictlyCalledWith(local.containsFun, idOrg)
+                hadBeenStrictlyCalledWith(remote.findFun, idOrg)
                 wasGotten(domainObject.idProp)
-                wasCalledWithArgumentsStrict(local.fetchFun, id)
+                hadBeenStrictlyCalledWith(local.fetchFun, id)
                 wasSet(domainObject.idProp)
             }
 
             verifier.verifyOrder {
-                wasCalledWithoutArguments(local.containsFun, "abc")
+                hadBeenCalledWithout(local.containsFun, "abc")
             }
         }
     }
