@@ -15,6 +15,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -45,10 +46,16 @@ class KMockSpec {
         val kmock = KMock()
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
 
         every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
         every { SingleSourceSetConfigurator.configure(any()) } just Runs
 
         // When
@@ -64,11 +71,17 @@ class KMockSpec {
         val kmock = KMock()
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
 
         every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
         every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
         every { SingleSourceSetConfigurator.configure(any()) } just Runs
 
         // When
@@ -79,16 +92,47 @@ class KMockSpec {
     }
 
     @Test
+    fun `Given apply is called it creates the KMockExtension`() {
+        // Given
+        val kmock = KMock()
+        val project: Project = mockk()
+        val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
+
+        every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
+        every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
+        every { SingleSourceSetConfigurator.configure(any()) } just Runs
+
+        // When
+        kmock.apply(project)
+
+        verify(exactly = 1) { extensions.create("kmock", KMockExtension::class.java) }
+    }
+
+    @Test
     fun `Given apply is called it delegates the call to the SingleSourceSetConfigurator if the Project is not KMP`() {
         // Given
         val kmock = KMock()
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
 
         every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
         every { SingleSourceSetConfigurator.configure(any()) } just Runs
 
         // When
@@ -106,11 +150,17 @@ class KMockSpec {
         val kmock = KMock()
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
 
         every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
         every { KMPSourceSetsConfigurator.configure(any()) } just Runs
 
         // When

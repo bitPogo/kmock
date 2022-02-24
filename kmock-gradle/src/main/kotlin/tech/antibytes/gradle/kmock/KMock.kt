@@ -21,6 +21,8 @@ class KMock : Plugin<Project> {
     override fun apply(target: Project) {
         addKSP(target)
 
+        target.extensions.create("kmock", KMockExtension::class.java)
+
         if (!target.isKmp()) {
             SingleSourceSetConfigurator.configure(target)
         } else {

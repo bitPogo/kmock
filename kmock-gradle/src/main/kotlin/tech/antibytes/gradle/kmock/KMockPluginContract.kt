@@ -41,6 +41,8 @@ internal interface KMockPluginContract {
     }
 
     interface SourceSetConfigurator {
-        fun configure(project: Project)
+        fun configure(
+            project: Project
+        )
     }
 }
