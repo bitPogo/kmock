@@ -42,6 +42,18 @@ class VerificationChainBuilderSpec {
     }
 
     @Test
+    @JsName("fn0a")
+    fun `It fulfils VerificationReferenceBuilder`() {
+        VerificationChainBuilder() fulfils KMockContract.VerificationReferenceBuilder::class
+    }
+
+    @Test
+    @JsName("fn0b")
+    fun `It fulfils VerificationReferenceCleaner`() {
+        VerificationChainBuilder() fulfils KMockContract.VerificationReferenceCleaner::class
+    }
+
+    @Test
     @JsName("fn1")
     fun `Given add and toList is called it adds the given Handles and return them as List`() {
         // Given
@@ -96,7 +108,7 @@ class VerificationChainBuilderSpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn4")
     fun `Given cleanEnsuredMocks it cleans itself from a Mock`() {
         // Given
         val mock = FunMockeryStub(

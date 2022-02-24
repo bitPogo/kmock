@@ -316,10 +316,16 @@ interface KMockContract {
         fun addReference(referredMock: Mockery<*, *>, referredCall: Int)
     }
 
-    interface VerificationChainBuilder {
+    interface VerificationReferenceBuilder {
         fun ensureVerificationOf(vararg mocks: Mockery<*, *>)
-        fun add(handle: VerificationHandle)
+    }
 
+    interface VerificationReferenceCleaner {
+        fun ensureVerificationOf(vararg mocks: Mockery<*, *>)
+    }
+
+    interface VerificationChainBuilder {
+        fun add(handle: VerificationHandle)
         fun toList(): List<VerificationHandle>
     }
 

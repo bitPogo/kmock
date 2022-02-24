@@ -7,10 +7,9 @@
 package tech.antibytes.kmock
 
 import VerificationChainBuilderStub
+import tech.antibytes.kmock.KMockContract.VerificationHandle
 import tech.antibytes.mock.FunMockeryStub
 import tech.antibytes.mock.PropertyMockeryStub
-import tech.antibytes.kmock.KMockContract.VerificationHandle
-import tech.antibytes.kmock.KMockContract.VerificationChainBuilder
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -29,7 +28,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.hadBeenCalledWith()
+        val actual = mock.hasBeenCalledWith()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -50,7 +49,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenCalledWith(fixture.fixture<String>())
+        val actual = mock.hasBeenCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -73,7 +72,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenCalledWith(*(values.sorted()).toTypedArray())
+        val actual = mock.hasBeenCalledWith(*(values.sorted()).toTypedArray())
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -99,7 +98,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        mock.hadBeenCalledWith(*(values.sorted()).toTypedArray())
+        mock.hasBeenCalledWith(*(values.sorted()).toTypedArray())
         val actual = captured.first()
 
         // Then
@@ -115,7 +114,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.hadBeenStrictlyCalledWith()
+        val actual = mock.hasBeenStrictlyCalledWith()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -136,7 +135,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenStrictlyCalledWith(fixture.fixture<String>())
+        val actual = mock.hasBeenStrictlyCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -159,7 +158,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenStrictlyCalledWith(*values)
+        val actual = mock.hasBeenStrictlyCalledWith(*values)
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -185,7 +184,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        mock.hadBeenStrictlyCalledWith(*values)
+        mock.hasBeenStrictlyCalledWith(*values)
 
         val actual = captured.first()
 
@@ -202,7 +201,7 @@ class VerificationHandleFactorySpec {
         val mock = FunMockeryStub(name, 0)
 
         // When
-        val actual = mock.hadBeenCalledWithout()
+        val actual = mock.hasBeenCalledWithout()
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -224,7 +223,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenCalledWithout(*values)
+        val actual = mock.hasBeenCalledWithout(*values)
 
         // Then
         actual mustBe VerificationHandle(name, emptyList())
@@ -246,7 +245,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hadBeenCalledWithout(fixture.fixture<String>())
+        val actual = mock.hasBeenCalledWithout(fixture.fixture<String>())
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -271,7 +270,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        mock.hadBeenCalledWithout(fixture.fixture<String>())
+        mock.hasBeenCalledWithout(fixture.fixture<String>())
         val actual = captured.first()
 
         // Then

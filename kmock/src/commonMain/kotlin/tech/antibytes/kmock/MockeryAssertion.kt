@@ -12,7 +12,7 @@ fun FunMockery<*, *>.assertHadBeenCalled(
     exactly: Int,
 ) {
     verify(exactly = exactly) {
-        this.hadBeenCalledWith()
+        this.hasBeenCalledWith()
     }
 }
 
@@ -21,7 +21,7 @@ fun FunMockery<*, *>.assertHadBeenCalledWith(
     vararg arguments: Any?
 ) {
     verify(exactly = exactly) {
-        this.hadBeenCalledWith(*arguments)
+        this.hasBeenCalledWith(*arguments)
     }
 }
 
@@ -30,19 +30,19 @@ fun FunMockery<*, *>.assertHadBeenCalledStrictlyWith(
     vararg arguments: Any?
 ) {
     verify(exactly = exactly) {
-        this.hadBeenStrictlyCalledWith(*arguments)
+        this.hasBeenStrictlyCalledWith(*arguments)
     }
 }
 
 fun FunMockery<*, *>.assertHadNotBeenCalled() {
     verify(exactly = 0) {
-        this.hadBeenCalledWith()
+        this.hasBeenCalledWith()
     }
 }
 
 fun FunMockery<*, *>.assertHadNotBeenCalledWith(vararg illegal: Any?) {
     verify(exactly = 0) {
-        this.hadBeenCalledWith(*illegal)
+        this.hasBeenCalledWith(*illegal)
     }
 }
 
@@ -56,7 +56,7 @@ fun FunMockery<*, *>.assertHadBeenCalledWithout(
     vararg arguments: Any?
 ) {
     verify(atMost = 100) {
-        this.hadBeenCalledWithout(*arguments)
+        this.hasBeenCalledWithout(*arguments)
     }
 }
 

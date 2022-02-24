@@ -21,12 +21,12 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
+import tech.antibytes.kmock.hasBeenCalledWith
+import tech.antibytes.kmock.hasBeenCalledWithout
+import tech.antibytes.kmock.hasBeenStrictlyCalledWith
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.hadBeenCalledWith
-import tech.antibytes.kmock.hadBeenStrictlyCalledWith
-import tech.antibytes.kmock.hadBeenCalledWithout
 import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
@@ -108,22 +108,22 @@ class SampleControllerAutoStubRelaxedSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote.fetchFun.hadBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local.storeFun.hadBeenCalledWith(id[1]) }
+            verify(exactly = 1) { remote.fetchFun.hasBeenStrictlyCalledWith(url) }
+            verify(exactly = 1) { local.storeFun.hasBeenCalledWith(id[1]) }
 
             verifier.verifyStrictOrder {
-                remote.fetchFun.hadBeenStrictlyCalledWith(url)
+                remote.fetchFun.hasBeenStrictlyCalledWith(url)
                 domainObject.idProp.wasGotten()
                 domainObject.idProp.wasSet()
                 domainObject.idProp.wasGotten()
                 domainObject.valueProp.wasGotten()
-                local.storeFun.hadBeenCalledWith(id[1])
+                local.storeFun.hasBeenCalledWith(id[1])
             }
 
             verifier.verifyOrder {
-                remote.fetchFun.hadBeenCalledWith(url)
+                remote.fetchFun.hasBeenCalledWith(url)
                 domainObject.idProp.wasSetTo("42")
-                local.storeFun.hadBeenCalledWith(id[1])
+                local.storeFun.hasBeenCalledWith(id[1])
             }
         }
     }
@@ -154,20 +154,20 @@ class SampleControllerAutoStubRelaxedSpec {
 
             delay(20)
 
-            verify(exactly = 1) { local.containsFun.hadBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 1) { local.fetchFun.hadBeenStrictlyCalledWith(id) }
-            verify(exactly = 1) { remote.findFun.hadBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 1) { local.containsFun.hasBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 1) { local.fetchFun.hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 1) { remote.findFun.hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
-                local.containsFun.hadBeenStrictlyCalledWith(idOrg)
-                remote.findFun.hadBeenStrictlyCalledWith(idOrg)
+                local.containsFun.hasBeenStrictlyCalledWith(idOrg)
+                remote.findFun.hasBeenStrictlyCalledWith(idOrg)
                 domainObject.idProp.wasGotten()
-                local.fetchFun.hadBeenStrictlyCalledWith(id)
+                local.fetchFun.hasBeenStrictlyCalledWith(id)
                 domainObject.idProp.wasSet()
             }
 
             verifier.verifyOrder {
-                local.containsFun.hadBeenCalledWithout("abc")
+                local.containsFun.hasBeenCalledWithout("abc")
             }
         }
     }

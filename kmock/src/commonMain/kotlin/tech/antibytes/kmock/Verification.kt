@@ -17,6 +17,7 @@ import tech.antibytes.kmock.KMockContract.Companion.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.Companion.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.VerificationHandle
+import tech.antibytes.kmock.KMockContract.VerificationReferenceBuilder
 import tech.antibytes.kmock.KMockContract.Verifier
 
 private fun formatMessage(
@@ -95,7 +96,7 @@ fun verify(
 }
 
 private fun initChainVerification(
-    scope: KMockContract.VerificationChainBuilder.() -> Any,
+    scope: VerificationReferenceBuilder.() -> Any,
     references: List<Reference>
 ): List<VerificationHandle> {
     val container = VerificationChainBuilder()
@@ -160,7 +161,7 @@ private fun evaluateStrictReference(
 }
 
 fun Verifier.verifyStrictOrder(
-    scope: KMockContract.VerificationChainBuilder.() -> Any,
+    scope: VerificationReferenceBuilder.() -> Any,
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)
@@ -219,7 +220,7 @@ private fun ensureAllHandlesAreDone(
 }
 
 fun Verifier.verifyOrder(
-    scope: KMockContract.VerificationChainBuilder.() -> Any
+    scope: VerificationReferenceBuilder.() -> Any
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)

@@ -125,28 +125,22 @@ class VerificationSpec {
     @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
         // Given
-        val mock1 = FunMockeryStub(fixture.fixture(), 1)
-        val mock2 = FunMockeryStub(fixture.fixture(), 0)
-
-        mock1.getArgumentsForCall = {
-            arrayOf(Any())
-        }
-
         val verifierLower = VerifierStub(emptyList())
         val verifierUpper = VerifierStub(
             listOf(
-                Reference(mock1, fixture.fixture()),
-                Reference(mock2, fixture.fixture())
+                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
+                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
             )
         )
+        val handle = VerificationHandle(fixture.fixture(), fixture.listFixture())
 
         // Then
         val errorLowerBound = assertFailsWith<AssertionError> {
             // When
             verifierLower.verifyStrictOrder {
-                ensureVerificationOf(mock1, mock2)
+                this as VerificationChainBuilder
 
-                mock1.hadBeenCalledWith()
+                add(handle)
             }
         }
 
@@ -156,7 +150,9 @@ class VerificationSpec {
         val errorUpperBound = assertFailsWith<AssertionError> {
             // When
             verifierUpper.verifyStrictOrder {
-                mock1.hadBeenCalledWith()
+                this as VerificationChainBuilder
+
+                add(handle)
             }
         }
 
@@ -189,6 +185,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle)
             }
         }
@@ -221,6 +219,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle)
             }
         }
@@ -259,6 +259,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle)
                 add(handle)
             }
@@ -304,6 +306,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
             }
@@ -356,6 +360,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
                 add(handle3)
@@ -414,6 +420,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
                 add(handle3)
@@ -470,6 +478,8 @@ class VerificationSpec {
 
         // When
         verifier.verifyStrictOrder {
+            this as VerificationChainBuilder
+
             add(handle1)
             add(handle2)
             add(handle3)
@@ -487,6 +497,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyOrder {
+                this as VerificationChainBuilder
+
                 add(handle)
             }
         }
@@ -519,6 +531,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyOrder {
+                this as VerificationChainBuilder
+
                 add(handle)
             }
         }
@@ -548,6 +562,8 @@ class VerificationSpec {
 
         // When
         verifier.verifyStrictOrder {
+            this as VerificationChainBuilder
+
             add(handle)
         }
     }
@@ -585,6 +601,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
             }
@@ -624,6 +642,8 @@ class VerificationSpec {
 
         // When
         verifier.verifyOrder {
+            this as VerificationChainBuilder
+
             add(handle1)
             add(handle2)
         }
@@ -670,6 +690,8 @@ class VerificationSpec {
 
         // When
         verifier.verifyOrder {
+            this as VerificationChainBuilder
+
             add(handle1)
             add(handle2)
         }
@@ -712,6 +734,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
             }
@@ -767,6 +791,8 @@ class VerificationSpec {
 
         // When
         verifier.verifyOrder {
+            this as VerificationChainBuilder
+
             add(handle1)
             add(handle2)
             add(handle3)
@@ -822,6 +848,8 @@ class VerificationSpec {
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyOrder {
+                this as VerificationChainBuilder
+
                 add(handle1)
                 add(handle2)
                 add(handle3)

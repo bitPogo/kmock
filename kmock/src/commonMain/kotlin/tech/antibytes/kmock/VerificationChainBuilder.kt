@@ -6,10 +6,14 @@
 
 package tech.antibytes.kmock
 
+import co.touchlab.stately.collections.IsoMutableList
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 
-class VerificationChainBuilder : KMockContract.VerificationChainBuilder {
-    private val handles = mutableListOf<VerificationHandle>()
+internal class VerificationChainBuilder :
+    KMockContract.VerificationReferenceBuilder,
+    KMockContract.VerificationChainBuilder,
+    KMockContract.VerificationReferenceCleaner {
+    private val handles = IsoMutableList<VerificationHandle>()
     private val ensuredMocks = mutableListOf<KMockContract.Mockery<*, *>>()
 
     override fun ensureVerificationOf(vararg mocks: KMockContract.Mockery<*, *>) {

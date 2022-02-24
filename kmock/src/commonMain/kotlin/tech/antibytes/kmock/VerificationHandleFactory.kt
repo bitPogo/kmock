@@ -9,7 +9,6 @@ package tech.antibytes.kmock
 import tech.antibytes.kmock.KMockContract.FunMockery
 import tech.antibytes.kmock.KMockContract.Mockery
 import tech.antibytes.kmock.KMockContract.PropertyMockery
-import tech.antibytes.kmock.KMockContract.VerificationHandle
 
 private fun <T> traverseMockAndShare(
     mock: Mockery<*, T>,
@@ -38,17 +37,17 @@ private fun shareHandle(
     }
 }
 
-fun FunMockery<*, *>.hadBeenCalledWith(
+fun FunMockery<*, *>.hasBeenCalledWith(
     vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hadBeenCalledWith(*values) }
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*values) }
 
-fun FunMockery<*, *>.hadBeenStrictlyCalledWith(
+fun FunMockery<*, *>.hasBeenStrictlyCalledWith(
     vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hadBeenStrictlyCalledWith(*values) }
+): VerificationHandle = traverseMockAndShare(this) { hasBeenStrictlyCalledWith(*values) }
 
-fun FunMockery<*, *>.hadBeenCalledWithout(
+fun FunMockery<*, *>.hasBeenCalledWithout(
     vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hadBeenCalledWithout(*values) }
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithout(*values) }
 
 fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
 

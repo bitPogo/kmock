@@ -21,12 +21,12 @@ import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
+import tech.antibytes.kmock.hasBeenCalledWith
+import tech.antibytes.kmock.hasBeenCalledWithout
+import tech.antibytes.kmock.hasBeenStrictlyCalledWith
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.hadBeenCalledWith
-import tech.antibytes.kmock.hadBeenStrictlyCalledWith
-import tech.antibytes.kmock.hadBeenCalledWithout
 import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
@@ -89,22 +89,22 @@ class SampleControllerSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote.fetch.hadBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local.store.hadBeenStrictlyCalledWith(id[1], number) }
+            verify(exactly = 1) { remote.fetch.hasBeenStrictlyCalledWith(url) }
+            verify(exactly = 1) { local.store.hasBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                remote.fetch.hadBeenStrictlyCalledWith(url)
+                remote.fetch.hasBeenStrictlyCalledWith(url)
                 domainObject.propId.wasGotten()
                 domainObject.propId.wasSet()
                 domainObject.propId.wasGotten()
                 domainObject.propValue.wasGotten()
-                local.store.hadBeenCalledWith(id[1])
+                local.store.hasBeenCalledWith(id[1])
             }
 
             verifier.verifyOrder {
-                remote.fetch.hadBeenCalledWith(url)
+                remote.fetch.hasBeenCalledWith(url)
                 domainObject.propId.wasSetTo("42")
-                local.store.hadBeenCalledWith(id[1])
+                local.store.hasBeenCalledWith(id[1])
             }
         }
     }
@@ -148,15 +148,15 @@ class SampleControllerSpec {
             remote.find.assertHadBeenCalledStrictlyWith(1, idOrg)
 
             verifier.verifyStrictOrder {
-                local.contains.hadBeenStrictlyCalledWith(idOrg)
-                remote.find.hadBeenStrictlyCalledWith(idOrg)
+                local.contains.hasBeenStrictlyCalledWith(idOrg)
+                remote.find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propId.wasGotten()
-                local.fetch.hadBeenStrictlyCalledWith(id)
+                local.fetch.hasBeenStrictlyCalledWith(id)
                 domainObject.propId.wasSet()
             }
 
             verifier.verifyOrder {
-                local.contains.hadBeenCalledWithout("abc")
+                local.contains.hasBeenCalledWithout("abc")
             }
         }
     }
