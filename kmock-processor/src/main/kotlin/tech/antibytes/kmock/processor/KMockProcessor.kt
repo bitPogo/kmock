@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 
@@ -22,7 +23,7 @@ internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val aggregator: ProcessorContract.Aggregator,
-    private val options: ProcessorContract.Options,
+    private val rootPackage: String,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
@@ -47,18 +48,11 @@ internal class KMockProcessor(
 
     private fun stubPlatformSources(
         resolver: Resolver,
+        commonAggregated: Aggregated,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
-
-        factoryGenerator.writeFactories(
-            options.rootPackage,
-            options.isKmp,
-            aggregated.extractedInterfaces,
-            aggregated.dependencies,
-            relaxer
-        )
 
         mockGenerator.writePlatformMocks(
             aggregated.extractedInterfaces,
@@ -66,20 +60,22 @@ internal class KMockProcessor(
             relaxer
         )
 
+        factoryGenerator.writePlatformFactories(
+            rootPackage,
+            commonAggregated.extractedInterfaces.toMutableList().also { it.addAll(aggregated.extractedInterfaces) },
+            commonAggregated.dependencies.toMutableList().also { it.addAll(aggregated.dependencies) },
+            relaxer
+        )
+
         return aggregated.illFormed
     }
 
-    private fun stubCommonSources(resolver: Resolver, relaxer: Relaxer?): List<KSAnnotated> {
+    private fun stubCommonSources(
+        resolver: Resolver,
+        relaxer: Relaxer?
+    ): Aggregated {
         val annotated = fetchCommonAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
-
-        factoryGenerator.writeFactories(
-            options.rootPackage,
-            options.isKmp,
-            aggregated.extractedInterfaces,
-            aggregated.dependencies,
-            relaxer
-        )
 
         mockGenerator.writeCommonMocks(
             aggregated.extractedInterfaces,
@@ -87,18 +83,25 @@ internal class KMockProcessor(
             relaxer
         )
 
-        return aggregated.illFormed
+        factoryGenerator.writeCommonFactories(
+            rootPackage,
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
+
+        return aggregated
     }
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
 
-        val platformIll = stubPlatformSources(resolver, relaxer)
-        val commonIll = stubCommonSources(resolver, relaxer)
+        val commonAggregated = stubCommonSources(resolver, relaxer)
+        val platformIll = stubPlatformSources(resolver, commonAggregated, relaxer)
 
         return platformIll.toMutableList().also {
-            it.addAll(commonIll)
+            it.addAll(commonAggregated.illFormed)
         }
     }
 }

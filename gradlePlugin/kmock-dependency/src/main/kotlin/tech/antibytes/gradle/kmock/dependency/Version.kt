@@ -42,7 +42,7 @@ object Version {
         /**
          * [KSP DevTools on MavenCentral](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin)
          */
-        const val ksp = "1.6.10-1.0.4"
+        const val ksp = "1.6.10-1.0.2"
     }
 
     val square = Square

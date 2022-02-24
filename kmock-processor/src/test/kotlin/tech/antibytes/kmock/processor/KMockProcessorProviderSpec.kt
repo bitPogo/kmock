@@ -26,8 +26,7 @@ class KMockProcessorProviderSpec {
         // Given
         val environment: SymbolProcessorEnvironment = mockk()
         val options = mapOf(
-            "isKmp" to "false",
-            "rootPackage" to "somewher",
+            "rootPackage" to "somewhere",
         )
 
         every { environment.logger } returns mockk()
@@ -42,5 +41,6 @@ class KMockProcessorProviderSpec {
 
         verify(exactly = 1) { environment.logger }
         verify(exactly = 1) { environment.codeGenerator }
+        verify(exactly = 1) { environment.options }
     }
 }

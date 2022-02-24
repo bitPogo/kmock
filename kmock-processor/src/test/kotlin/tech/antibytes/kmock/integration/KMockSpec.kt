@@ -30,8 +30,7 @@ class KMockSpec {
 
     private fun compile(
         processorProvider: SymbolProcessorProvider,
-        source: SourceFile,
-        isKmp: Boolean = false
+        source: SourceFile
     ): KotlinCompilation.Result {
         return KotlinCompilation().apply {
             sources = listOf(source)
@@ -40,7 +39,6 @@ class KMockSpec {
             inheritClassPath = true
             verbose = false
             kspArgs = mutableMapOf(
-                "isKmp" to isKmp.toString(),
                 "rootPackage" to "generatorTest"
             )
         }.compile()
@@ -96,9 +94,9 @@ class KMockSpec {
         val expectedFactory = loadResource("/FactoryCommonExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source, true)
+        val compilerResult = compile(provider, source)
         val actual = resolveGenerated("PropertyCommonMock.kt")
-        val actualFactory = resolveGenerated("MockFactory.kt")
+        val actualFactory = resolveGenerated("MockFactoryCommon.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -243,8 +241,6 @@ class KMockSpec {
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("RelaxedMock.kt")
         val actualFactory = resolveGenerated("MockFactory.kt")
-
-        println(actualFactory)
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

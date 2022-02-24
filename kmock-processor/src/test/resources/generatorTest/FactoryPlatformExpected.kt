@@ -7,6 +7,8 @@ internal inline fun <reified T> kmock(verifier: KMockContract.Collector = Collec
 }, relaxed: Boolean = false): T = when (T::class) {
     generatorTest.PropertyPlatform::class -> generatorTest.PropertyPlatformMock(verifier = verifier)
         as T
+    generatorTest.PropertyPlatformMock::class -> generatorTest.PropertyPlatformMock(verifier =
+    verifier) as T
     else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
 }
 

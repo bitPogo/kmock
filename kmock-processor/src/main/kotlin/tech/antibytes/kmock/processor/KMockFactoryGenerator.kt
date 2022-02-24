@@ -43,19 +43,31 @@ internal class KMockFactoryGenerator(
         function.beginControlFlow("return when (T::class)")
 
         interfaces.forEach { interfaze ->
-            val qualifiedName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
+            val qualifiedName = interfaze.qualifiedName!!.asString()
+            val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
 
             if (relaxer == null) {
                 function.addStatement(
                     "%L::class -> %LMock(verifier = verifier) as T",
                     qualifiedName,
-                    qualifiedName,
+                    interfaceName,
+                )
+
+                function.addStatement(
+                    "%LMock::class -> %LMock(verifier = verifier) as T",
+                    interfaceName,
+                    interfaceName,
                 )
             } else {
                 function.addStatement(
                     "%L::class -> %LMock(verifier = verifier, relaxed = relaxed) as T",
                     qualifiedName,
-                    qualifiedName,
+                    interfaceName,
+                )
+                function.addStatement(
+                    "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed) as T",
+                    interfaceName,
+                    interfaceName,
                 )
             }
         }
@@ -66,21 +78,17 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildMockFactory(
-        isKmp: Boolean,
+        suffix: String,
         interfaces: List<KSClassDeclaration>,
         relaxer: Relaxer?
     ): FunSpec {
-        val factory = FunSpec.builder("kmock")
+        val factory = FunSpec.builder("kmock$suffix")
         val type = TypeVariableName("T")
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
             .addParameter(buildVerifierParameter())
             .addParameter(buildRelaxedParameter())
-
-        if (isKmp) {
-            factory.addModifiers(KModifier.ACTUAL)
-        }
 
         return buildMockSelector(factory, interfaces, relaxer).build()
     }
@@ -97,11 +105,12 @@ internal class KMockFactoryGenerator(
         function.beginControlFlow("return when (T::class)")
 
         interfaces.forEach { interfaze ->
-            val qualifiedName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
+            val qualifiedName = interfaze.qualifiedName!!.asString()
+            val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
             function.addStatement(
                 "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
                 qualifiedName,
-                qualifiedName,
+                interfaceName,
                 qualifiedName,
             )
         }
@@ -112,10 +121,10 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildSpySelector(
-        isKmp: Boolean,
+        suffix: String,
         interfaces: List<KSClassDeclaration>,
     ): FunSpec {
-        val factory = FunSpec.builder("kspy")
+        val factory = FunSpec.builder("kspy$suffix")
         val type = TypeVariableName("T")
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
@@ -123,16 +132,12 @@ internal class KMockFactoryGenerator(
             .addParameter(buildVerifierParameter())
             .addParameter(buildSpyParameter())
 
-        if (isKmp) {
-            factory.addModifiers(KModifier.ACTUAL)
-        }
-
         return buildSpySelector(factory, interfaces).build()
     }
 
-    override fun writeFactories(
+    private fun writeFactories(
         packageName: String,
-        isKmp: Boolean,
+        suffix: String,
         interfaces: List<KSClassDeclaration>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
@@ -140,12 +145,12 @@ internal class KMockFactoryGenerator(
         if (interfaces.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 packageName,
-                "MockFactory"
+                "MockFactory$suffix"
             )
             file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
-            file.addFunction(buildMockFactory(isKmp, interfaces, relaxer))
-            file.addFunction(buildSpySelector(isKmp, interfaces))
+            file.addFunction(buildMockFactory(suffix, interfaces, relaxer))
+            file.addFunction(buildSpySelector(suffix, interfaces))
 
             file.build().writeTo(
                 codeGenerator = codeGenerator,
@@ -153,5 +158,23 @@ internal class KMockFactoryGenerator(
                 originatingKSFiles = dependencies
             )
         }
+    }
+
+    override fun writePlatformFactories(
+        packageName: String,
+        interfaces: List<KSClassDeclaration>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
+        writeFactories(packageName, "", interfaces, dependencies, relaxer)
+    }
+
+    override fun writeCommonFactories(
+        packageName: String,
+        interfaces: List<KSClassDeclaration>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
+        writeFactories(packageName, "Common", interfaces, dependencies, relaxer)
     }
 }

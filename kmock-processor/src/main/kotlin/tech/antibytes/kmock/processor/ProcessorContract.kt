@@ -19,11 +19,6 @@ import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 
 internal interface ProcessorContract {
-    data class Options(
-        val isKmp: Boolean,
-        val rootPackage: String
-    )
-
     data class Relaxer(
         val packageName: String,
         val functionName: String
@@ -55,9 +50,15 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryGenerator {
-        fun writeFactories(
+        fun writePlatformFactories(
             packageName: String,
-            isKmp: Boolean,
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?,
+        )
+
+        fun writeCommonFactories(
+            packageName: String,
             interfaces: List<KSClassDeclaration>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
