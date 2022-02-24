@@ -125,20 +125,28 @@ class VerificationSpec {
     @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
         // Given
+        val mock1 = FunMockeryStub(fixture.fixture(), 1)
+        val mock2 = FunMockeryStub(fixture.fixture(), 0)
+
+        mock1.getArgumentsForCall = {
+            arrayOf(Any())
+        }
+
         val verifierLower = VerifierStub(emptyList())
         val verifierUpper = VerifierStub(
             listOf(
-                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
-                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
+                Reference(mock1, fixture.fixture()),
+                Reference(mock2, fixture.fixture())
             )
         )
-        val handle = VerificationHandle(fixture.fixture(), fixture.listFixture())
 
         // Then
         val errorLowerBound = assertFailsWith<AssertionError> {
             // When
             verifierLower.verifyStrictOrder {
-                add(handle)
+                ensureVerificationOf(mock1, mock2)
+
+                mock1.hadBeenCalledWith()
             }
         }
 
@@ -148,7 +156,7 @@ class VerificationSpec {
         val errorUpperBound = assertFailsWith<AssertionError> {
             // When
             verifierUpper.verifyStrictOrder {
-                add(handle)
+                mock1.hadBeenCalledWith()
             }
         }
 

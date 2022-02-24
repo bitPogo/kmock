@@ -93,18 +93,18 @@ class SampleControllerSpec {
             verify(exactly = 1) { local.store.hadBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                hadBeenStrictlyCalledWith(remote.fetch, url)
-                wasGotten(domainObject.propId)
-                wasSet(domainObject.propId)
-                wasGotten(domainObject.propId)
-                wasGotten(domainObject.propValue)
-                hadBeenStrictlyCalledWith(local.store, id[1], number)
+                remote.fetch.hadBeenStrictlyCalledWith(url)
+                domainObject.propId.wasGotten()
+                domainObject.propId.wasSet()
+                domainObject.propId.wasGotten()
+                domainObject.propValue.wasGotten()
+                local.store.hadBeenCalledWith(id[1])
             }
 
             verifier.verifyOrder {
-                hadBeenCalledWith(remote.fetch, url)
-                wasSetTo(domainObject.propId, "42")
-                hadBeenCalledWith(local.store, id[1])
+                remote.fetch.hadBeenCalledWith(url)
+                domainObject.propId.wasSetTo("42")
+                local.store.hadBeenCalledWith(id[1])
             }
         }
     }
@@ -148,15 +148,15 @@ class SampleControllerSpec {
             remote.find.assertHadBeenCalledStrictlyWith(1, idOrg)
 
             verifier.verifyStrictOrder {
-                hadBeenStrictlyCalledWith(local.contains, idOrg)
-                hadBeenStrictlyCalledWith(remote.find, idOrg)
-                wasGotten(domainObject.propId)
-                hadBeenStrictlyCalledWith(local.fetch, id)
-                wasSet(domainObject.propId)
+                local.contains.hadBeenStrictlyCalledWith(idOrg)
+                remote.find.hadBeenStrictlyCalledWith(idOrg)
+                domainObject.propId.wasGotten()
+                local.fetch.hadBeenStrictlyCalledWith(id)
+                domainObject.propId.wasSet()
             }
 
             verifier.verifyOrder {
-                hadBeenCalledWithout(local.contains, "abc")
+                local.contains.hadBeenCalledWithout("abc")
             }
         }
     }

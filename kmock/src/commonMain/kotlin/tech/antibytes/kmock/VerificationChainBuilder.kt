@@ -6,39 +6,30 @@
 
 package tech.antibytes.kmock
 
-import tech.antibytes.kmock.KMockContract.FunMockery
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 
-class VerificationChainBuilder : KMockContract.VerificationHandleContainer {
+class VerificationChainBuilder : KMockContract.VerificationChainBuilder {
     private val handles = mutableListOf<VerificationHandle>()
+    private val ensuredMocks = mutableListOf<KMockContract.Mockery<*, *>>()
+
+    override fun ensureVerificationOf(vararg mocks: KMockContract.Mockery<*, *>) {
+        mocks.forEach { mock ->
+            if (mock.verificationBuilderReference == null) {
+                mock.verificationBuilderReference = this
+                ensuredMocks.add(mock)
+            }
+        }
+    }
+
+    internal fun cleanEnsuredMocks() {
+        ensuredMocks.forEach { mock ->
+            mock.verificationBuilderReference = null
+        }
+    }
 
     override fun add(handle: VerificationHandle) {
         handles.add(handle)
     }
 
     override fun toList(): List<VerificationHandle> = handles.toList()
-}
-
-fun VerificationChainBuilder.hadBeenCalledWith(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.hadBeenCalledWith(*arguments))
-}
-
-fun VerificationChainBuilder.hadBeenStrictlyCalledWith(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.hadBeenStrictlyCalledWith(*arguments))
-}
-
-fun VerificationChainBuilder.hadBeenCalledWithout(mockery: FunMockery<*, *>, vararg arguments: Any?) {
-    this.add(mockery.hadBeenCalledWithout(*arguments))
-}
-
-fun VerificationChainBuilder.wasGotten(mockery: KMockContract.PropertyMockery<*>) {
-    this.add(mockery.wasGotten())
-}
-
-fun VerificationChainBuilder.wasSet(mockery: KMockContract.PropertyMockery<*>) {
-    this.add(mockery.wasSet())
-}
-
-fun VerificationChainBuilder.wasSetTo(mockery: KMockContract.PropertyMockery<*>, value: Any?) {
-    this.add(mockery.wasSetTo(value))
 }

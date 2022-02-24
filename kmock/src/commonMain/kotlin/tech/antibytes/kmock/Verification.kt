@@ -95,11 +95,20 @@ fun verify(
 }
 
 private fun initChainVerification(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: KMockContract.VerificationChainBuilder.() -> Any,
+    references: List<Reference>
 ): List<VerificationHandle> {
     val container = VerificationChainBuilder()
 
+    references.forEach { reference ->
+        reference.mockery.verificationBuilderReference = container
+    }
+
     scope(container)
+
+    references.forEach { reference ->
+        reference.mockery.verificationBuilderReference = null
+    }
 
     return container.toList()
 }
@@ -151,10 +160,10 @@ private fun evaluateStrictReference(
 }
 
 fun Verifier.verifyStrictOrder(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: KMockContract.VerificationChainBuilder.() -> Any,
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope)
+    val handles = initChainVerification(scope, this.references)
 
     guardStrictChain(this.references, handles)
 
@@ -210,10 +219,10 @@ private fun ensureAllHandlesAreDone(
 }
 
 fun Verifier.verifyOrder(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: KMockContract.VerificationChainBuilder.() -> Any
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope)
+    val handles = initChainVerification(scope, this.references)
     var handleOffset = 0
 
     guardChain(this.references, handles)

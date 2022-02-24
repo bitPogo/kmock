@@ -97,18 +97,18 @@ class SampleControllerAutoStubSpec {
             verify(exactly = 1) { local.storeFun.hadBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                hadBeenStrictlyCalledWith(remote.fetchFun, url)
-                wasGotten(domainObject.idProp)
-                wasSet(domainObject.idProp)
-                wasGotten(domainObject.idProp)
-                wasGotten(domainObject.valueProp)
-                hadBeenStrictlyCalledWith(local.storeFun, id[1], number)
+                remote.fetchFun.hadBeenStrictlyCalledWith(url)
+                domainObject.idProp.wasGotten()
+                domainObject.idProp.wasSet()
+                domainObject.idProp.wasGotten()
+                domainObject.valueProp.wasGotten()
+                local.storeFun.hadBeenCalledWith(id[1])
             }
 
             verifier.verifyOrder {
-                hadBeenCalledWith(remote.fetchFun, url)
-                wasSetTo(domainObject.idProp, "42")
-                hadBeenCalledWith(local.storeFun, id[1])
+                remote.fetchFun.hadBeenCalledWith(url)
+                domainObject.idProp.wasSetTo("42")
+                local.storeFun.hadBeenCalledWith(id[1])
             }
         }
     }
@@ -146,15 +146,15 @@ class SampleControllerAutoStubSpec {
             verify(exactly = 1) { remote.findFun.hadBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
-                hadBeenStrictlyCalledWith(local.containsFun, idOrg)
-                hadBeenStrictlyCalledWith(remote.findFun, idOrg)
-                wasGotten(domainObject.idProp)
-                hadBeenStrictlyCalledWith(local.fetchFun, id)
-                wasSet(domainObject.idProp)
+                local.containsFun.hadBeenStrictlyCalledWith(idOrg)
+                remote.findFun.hadBeenStrictlyCalledWith(idOrg)
+                domainObject.idProp.wasGotten()
+                local.fetchFun.hadBeenStrictlyCalledWith(id)
+                domainObject.idProp.wasSet()
             }
 
             verifier.verifyOrder {
-                hadBeenCalledWithout(local.containsFun, "abc")
+                local.containsFun.hadBeenCalledWithout("abc")
             }
         }
     }
