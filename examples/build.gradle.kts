@@ -23,6 +23,10 @@ plugins {
 
 group = KMockConfiguration.group
 
+ksp {
+    arg("rootPackage", "tech.antibytes.kmock.example")
+}
+
 kotlin {
     android()
 
@@ -200,7 +204,7 @@ afterEvaluate {
         this.exclude { details: FileTreeElement ->
             if (details.file.isFile) {
                 val indicator = details.file.bufferedReader().readLine()
-                indicator != "// COMMON SOURCE"
+                indicator != "// COMMON SOURCE" && !details.file.name.endsWith("MockFactoryCommon.kt")
             } else {
                 false
             }
@@ -222,7 +226,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }
@@ -245,7 +249,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }
@@ -268,7 +272,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }
@@ -291,7 +295,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }
@@ -314,7 +318,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }
@@ -337,7 +341,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE") {
+                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
                         file.delete()
                     }
                 }

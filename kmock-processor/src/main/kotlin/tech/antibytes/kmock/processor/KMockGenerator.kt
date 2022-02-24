@@ -43,7 +43,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import java.util.Locale
 
-internal class KMockMockGenerator(
+internal class KMockGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockGenerator {

@@ -49,6 +49,22 @@ internal interface ProcessorContract {
         )
     }
 
+    interface MockFactoryGenerator {
+        fun writePlatformFactories(
+            packageName: String,
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?,
+        )
+
+        fun writeCommonFactories(
+            packageName: String,
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?,
+        )
+    }
+
     enum class Target(val value: String) {
         COMMON("COMMON SOURCE"),
         PLATFORM("")

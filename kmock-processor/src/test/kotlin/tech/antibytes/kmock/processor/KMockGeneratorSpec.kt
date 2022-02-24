@@ -10,9 +10,9 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.util.test.fulfils
 
-class KMockMockGeneratorSpec {
+class KMockGeneratorSpec {
     @Test
     fun `It fulfils MockGenerator`() {
-        KMockMockGenerator(mockk(), mockk()) fulfils ProcessorContract.MockGenerator::class
+        KMockGenerator(mockk(), mockk()) fulfils ProcessorContract.MockGenerator::class
     }
 }
