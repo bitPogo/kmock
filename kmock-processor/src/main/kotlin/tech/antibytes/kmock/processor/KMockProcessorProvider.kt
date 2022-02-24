@@ -19,7 +19,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             KMockGenerator(logger, generator),
             KMockFactoryGenerator(logger, generator),
             KMockAggregator(logger),
-            environment.options["rootPackage"]!!
+            ProcessorContract.Options(
+                isKmp = environment.options["isKmp"] == true.toString(),
+                rootPackage = environment.options["rootPackage"]!!
+            )
         )
     }
 }
