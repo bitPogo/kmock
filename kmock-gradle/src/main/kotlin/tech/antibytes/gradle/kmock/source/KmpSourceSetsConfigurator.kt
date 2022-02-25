@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.gradle.kmock
+package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -13,7 +13,9 @@ import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.getByName
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import tech.antibytes.gradle.kmock.KMockCleanTask
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
+import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.util.isAndroid
 import java.util.Locale
@@ -114,8 +116,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val androidRelease = "androidReleaseUnitTest"
         val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
 
-        val copyToCommon = SharedSourceCopist
-            .copySharedSource(project, androidDebug, target, indicator)
+        val copyToCommon = SharedSourceCopist.copySharedSource(project, androidDebug, target, indicator)
             .dependsOn(androidDebugKsp)
             .mustRunAfter(androidDebugKsp) as Copy
 
