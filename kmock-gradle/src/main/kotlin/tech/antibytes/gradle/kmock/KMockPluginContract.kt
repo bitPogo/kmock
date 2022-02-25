@@ -36,6 +36,7 @@ internal interface KMockPluginContract {
     interface SharedSourceCopist {
         fun copySharedSource(
             project: Project,
+            platform: String,
             source: String,
             target: String,
             indicator: String
@@ -43,9 +44,7 @@ internal interface KMockPluginContract {
     }
 
     interface SourceSetConfigurator {
-        fun configure(
-            project: Project
-        )
+        fun configure(project: Project)
     }
 
     interface FactoryGenerator {
@@ -56,6 +55,7 @@ internal interface KMockPluginContract {
     }
 
     companion object {
+        const val TARGET = "COMMON SOURCE"
         val COLLECTOR_NAME = ClassName(
             "tech.antibytes.kmock",
             "KMockContract.Collector"

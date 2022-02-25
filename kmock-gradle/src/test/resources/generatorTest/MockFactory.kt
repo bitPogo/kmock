@@ -1,3 +1,4 @@
+// COMMON SOURCE
 package test
 
 import tech.antibytes.kmock.KMockContract

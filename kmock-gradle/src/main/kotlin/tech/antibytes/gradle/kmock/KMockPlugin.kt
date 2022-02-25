@@ -15,29 +15,20 @@ import tech.antibytes.gradle.util.applyIfNotExists
 import tech.antibytes.gradle.util.isKmp
 
 class KMockPlugin : Plugin<Project> {
-    private fun configureKmp(project: Project, extension: KMockPluginContract.Extension) {
+    private fun configureKmp(project: Project) {
         KmpSourceSetsConfigurator.configure(project)
         project.extensions.getByType(KspExtension::class.java).arg("isKmp", true.toString())
-
-        project.afterEvaluate {
-            val kspCommon = project.mkdir("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest/kotlin")
-
-            FactoryGenerator.generate(
-                kspCommon,
-                extension.rootPackage
-            )
-        }
     }
 
     override fun apply(target: Project) {
         target.applyIfNotExists("com.google.devtools.ksp")
 
-        val extension = target.extensions.create("kmock", KMockExtension::class.java)
+        target.extensions.create("kmock", KMockExtension::class.java)
 
         if (!target.isKmp()) {
             SingleSourceSetConfigurator.configure(target)
         } else {
-            configureKmp(target, extension)
+            configureKmp(target)
         }
     }
 }

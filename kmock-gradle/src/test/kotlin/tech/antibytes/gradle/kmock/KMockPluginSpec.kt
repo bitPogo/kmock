@@ -193,13 +193,11 @@ class KMockPluginSpec {
         val kspExtension: KspExtension = mockk()
         val rootPackage: String = fixture.fixture()
         val buildDir = File(fixture.fixture<String>())
-        val kspCommont = File(fixture.fixture<String>())
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
         every { project.afterEvaluate(any<Action<Project>>()) } just Runs
         every { project.buildDir } returns buildDir
-        every { project.mkdir(any()) } returns kspCommont
 
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
@@ -218,20 +216,12 @@ class KMockPluginSpec {
 
         every { kmockExtension.rootPackage } returns rootPackage
         every { kspExtension.arg(any(), any()) } just Runs
-        every { FactoryGenerator.generate(any(), any()) } just Runs
 
         // When
         kmock.apply(project)
 
         // Then
         verify(exactly = 1) { kspExtension.arg("isKmp", "true") }
-        verify(exactly = 1) { project.mkdir("${buildDir.absolutePath}/generated/ksp/common/commonTest/kotlin") }
-        verify(exactly = 1) {
-            FactoryGenerator.generate(
-                kspCommont,
-                rootPackage
-            )
-        }
 
         unmockkObject(KmpSourceSetsConfigurator)
         unmockkObject(FactoryGenerator)

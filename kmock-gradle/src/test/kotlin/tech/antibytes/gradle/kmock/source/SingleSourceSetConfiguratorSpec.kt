@@ -109,7 +109,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
     }
 
     @Test
