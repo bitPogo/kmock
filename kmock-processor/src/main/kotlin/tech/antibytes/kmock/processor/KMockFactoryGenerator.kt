@@ -133,7 +133,7 @@ internal class KMockFactoryGenerator(
         return function
     }
 
-    private fun buildSpySelector(
+    private fun buildSpyFactory(
         isKmp: Boolean,
         interfaces: List<KSClassDeclaration>,
     ): FunSpec {
@@ -163,10 +163,10 @@ internal class KMockFactoryGenerator(
                 options.rootPackage,
                 "MockFactory"
             )
-            file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
+            // file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
             file.addFunction(buildMockFactory(options.isKmp, interfaces, relaxer))
-            file.addFunction(buildSpySelector(options.isKmp, interfaces))
+            file.addFunction(buildSpyFactory(options.isKmp, interfaces))
 
             file.build().writeTo(
                 codeGenerator = codeGenerator,

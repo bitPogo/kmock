@@ -6,11 +6,13 @@
 
 package tech.antibytes.gradle.kmock
 
+import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 internal interface KMockPluginContract {
     interface Extension {
@@ -43,6 +45,20 @@ internal interface KMockPluginContract {
     interface SourceSetConfigurator {
         fun configure(
             project: Project
+        )
+    }
+
+    interface FactoryGenerator {
+        fun generate(
+            targetDir: File,
+            rootPackage: String
+        )
+    }
+
+    companion object {
+        val COLLECTOR_NAME = ClassName(
+            "tech.antibytes.kmock",
+            "KMockContract.Collector"
         )
     }
 }
