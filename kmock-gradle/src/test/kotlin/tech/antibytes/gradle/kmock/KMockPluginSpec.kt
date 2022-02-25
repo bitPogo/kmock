@@ -22,7 +22,6 @@ import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fixture.fixture

@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.gradle.kmock.source
+package tech.antibytes.gradle.kmock
 
 import io.mockk.Runs
 import io.mockk.every
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockCleanTask
 import tech.antibytes.gradle.kmock.KMockPluginContract
+import tech.antibytes.gradle.kmock.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.test.invokeGradleAction
@@ -34,7 +35,7 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 
-class KMPSourceSetsConfiguratorSpec {
+class KmpSourceSetsConfiguratorSpec {
     private val fixture = kotlinFixture()
 
     @BeforeEach

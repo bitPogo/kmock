@@ -9,7 +9,6 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.util.applyIfNotExists
 import tech.antibytes.gradle.util.isKmp
