@@ -296,6 +296,7 @@ interface KMockContract {
     interface PropertyMockery<Value> : Mockery<Value, GetOrSet> {
         var get: Value
         var getMany: List<Value>
+        var getSideEffect: Function0<Value>
         var set: (Value) -> Unit
 
         fun onGet(): Value

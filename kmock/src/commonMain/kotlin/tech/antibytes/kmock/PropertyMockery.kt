@@ -16,6 +16,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.util.test.MockError
+import kotlin.math.max
 
 class PropertyMockery<Value>(
     override val id: String,
@@ -27,6 +28,7 @@ class PropertyMockery<Value>(
     private val provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
     private val _get: AtomicRef<Value?> = atomic(null)
     private val _getMany: IsoMutableList<Value> = sharedMutableListOf()
+    private val _sideEffect: AtomicRef<Function0<Value>?> = atomic(null)
     private val _set: AtomicRef<((Value) -> Unit)> = atomic { /*Do Nothing on Default*/ }
     private val _calls: AtomicInt = atomic(0)
     private val arguments: IsoMutableList<GetOrSet> = sharedMutableListOf()
@@ -40,6 +42,7 @@ class PropertyMockery<Value>(
         NO_PROVIDER(0),
         VALUE(1),
         VALUES(2),
+        SIDE_EFFECT(3),
         SPY(3),
     }
 
@@ -51,12 +54,23 @@ class PropertyMockery<Value>(
         }
     }
 
+    private fun setProvider(provider: Provider) {
+        val activeProvider = max(
+            provider.value,
+            this.provider.value.value
+        )
+
+        if (activeProvider == provider.value) {
+            this.provider.update { provider }
+        }
+    }
+
     override var get: Value
         @Suppress("UNCHECKED_CAST")
         get() = _get.value as Value
         set(value) {
-            provider.getAndSet(Provider.VALUE)
-            _get.getAndSet(value)
+            setProvider(Provider.VALUE)
+            _get.update { value }
         }
 
     override var getMany: List<Value>
@@ -65,10 +79,17 @@ class PropertyMockery<Value>(
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                provider.getAndSet(Provider.VALUES)
+                setProvider(Provider.VALUES)
                 _getMany.clear()
                 _getMany.addAll(values)
             }
+        }
+
+    override var getSideEffect: Function0<Value>
+        get() = _sideEffect.value as Function0<Value>
+        set(value) {
+            setProvider(Provider.SIDE_EFFECT)
+            _sideEffect.update { value }
         }
 
     override var set: (Value) -> Unit
@@ -120,6 +141,7 @@ class PropertyMockery<Value>(
         return when (provider.value) {
             Provider.VALUE -> _get.value!!
             Provider.VALUES -> retrieveValue()
+            Provider.SIDE_EFFECT -> _sideEffect.value!!.invoke()
             Provider.SPY -> spyOnGet!!.invoke()
             else -> invokeRelaxerOrFail()
         }
@@ -139,6 +161,7 @@ class PropertyMockery<Value>(
         provider.update { useSpyOrDefault() }
         _get.update { null }
         _getMany.clear()
+        _sideEffect.update { null }
         _set.update { { /*Do Nothing on Default*/ } }
         _calls.update { 0 }
         arguments.clear()

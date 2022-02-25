@@ -30,6 +30,9 @@ class PropertyMockeryStub(
     override var getMany: List<Any>
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
+    override var getSideEffect: () -> Any
+        get() = TODO("Not yet implemented")
+        set(_) = TODO("Not yet implemented")
     override var set: (Any) -> Unit
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
