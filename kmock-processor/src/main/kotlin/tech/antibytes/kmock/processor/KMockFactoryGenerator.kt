@@ -23,16 +23,25 @@ internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
-    private fun buildRelaxedParameter(): ParameterSpec {
-        return ParameterSpec.builder("relaxed", TypeVariableName("Boolean"))
-            .defaultValue("false")
-            .build()
+    private fun buildRelaxedParameter(
+        isKmp: Boolean
+    ): ParameterSpec {
+        val parameter = ParameterSpec.builder("relaxed", TypeVariableName("Boolean"))
+        if (!isKmp) {
+            parameter.defaultValue("false")
+        }
+
+        return parameter.build()
     }
 
-    private fun buildVerifierParameter(): ParameterSpec {
-        return ParameterSpec.builder("verifier", COLLECTOR_NAME)
-            .defaultValue("Collector { _, _ -> Unit }")
-            .build()
+    private fun buildVerifierParameter(
+        isKmp: Boolean
+    ): ParameterSpec {
+        val parameter = ParameterSpec.builder("verifier", COLLECTOR_NAME)
+        if (!isKmp) {
+            parameter.defaultValue("Collector { _, _ -> Unit }")
+        }
+        return parameter.build()
     }
 
     private fun buildMockSelector(
@@ -78,17 +87,21 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildMockFactory(
-        suffix: String,
+        isKmp: Boolean,
         interfaces: List<KSClassDeclaration>,
         relaxer: Relaxer?
     ): FunSpec {
-        val factory = FunSpec.builder("kmock$suffix")
+        val factory = FunSpec.builder("kmock")
         val type = TypeVariableName("T")
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
-            .addParameter(buildVerifierParameter())
-            .addParameter(buildRelaxedParameter())
+            .addParameter(buildVerifierParameter(isKmp))
+            .addParameter(buildRelaxedParameter(isKmp))
+
+        if (isKmp) {
+            factory.addModifiers(KModifier.ACTUAL)
+        }
 
         return buildMockSelector(factory, interfaces, relaxer).build()
     }
@@ -113,6 +126,12 @@ internal class KMockFactoryGenerator(
                 interfaceName,
                 qualifiedName,
             )
+            function.addStatement(
+                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
+                interfaceName,
+                interfaceName,
+                qualifiedName,
+            )
         }
         function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${T::class.simpleName}.\")")
         function.endControlFlow()
@@ -120,37 +139,40 @@ internal class KMockFactoryGenerator(
         return function
     }
 
-    private fun buildSpySelector(
-        suffix: String,
+    private fun buildSpyFactory(
+        isKmp: Boolean,
         interfaces: List<KSClassDeclaration>,
     ): FunSpec {
-        val factory = FunSpec.builder("kspy$suffix")
+        val factory = FunSpec.builder("kspy")
         val type = TypeVariableName("T")
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
-            .addParameter(buildVerifierParameter())
+            .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildSpyParameter())
+
+        if (isKmp) {
+            factory.addModifiers(KModifier.ACTUAL)
+        }
 
         return buildSpySelector(factory, interfaces).build()
     }
 
-    private fun writeFactories(
-        packageName: String,
-        suffix: String,
+    override fun writeFactories(
+        options: ProcessorContract.Options,
         interfaces: List<KSClassDeclaration>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         if (interfaces.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
-                packageName,
-                "MockFactory$suffix"
+                options.rootPackage,
+                "MockFactory"
             )
             file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
-            file.addFunction(buildMockFactory(suffix, interfaces, relaxer))
-            file.addFunction(buildSpySelector(suffix, interfaces))
+            file.addFunction(buildMockFactory(options.isKmp, interfaces, relaxer))
+            file.addFunction(buildSpyFactory(options.isKmp, interfaces))
 
             file.build().writeTo(
                 codeGenerator = codeGenerator,
@@ -158,23 +180,5 @@ internal class KMockFactoryGenerator(
                 originatingKSFiles = dependencies
             )
         }
-    }
-
-    override fun writePlatformFactories(
-        packageName: String,
-        interfaces: List<KSClassDeclaration>,
-        dependencies: List<KSFile>,
-        relaxer: Relaxer?
-    ) {
-        writeFactories(packageName, "", interfaces, dependencies, relaxer)
-    }
-
-    override fun writeCommonFactories(
-        packageName: String,
-        interfaces: List<KSClassDeclaration>,
-        dependencies: List<KSFile>,
-        relaxer: Relaxer?
-    ) {
-        writeFactories(packageName, "Common", interfaces, dependencies, relaxer)
     }
 }

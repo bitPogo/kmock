@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.KMockPluginContract.CleanUpTask
+import tech.antibytes.util.test.fixture.fixture
+import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -24,6 +26,7 @@ class CleanUpTaskSpec {
     private lateinit var buildDir: File
     private lateinit var file: File
     private lateinit var project: Project
+    private val fixture = kotlinFixture()
 
     @BeforeEach
     fun setup() {
@@ -41,7 +44,10 @@ class CleanUpTaskSpec {
         val ksp = File(generated, "ksp")
         ksp.mkdir()
 
-        val target = File(ksp, "target")
+        val targetPlatform = File(ksp, "platform")
+        targetPlatform.mkdir()
+
+        val target = File(targetPlatform, "target")
         target.mkdir()
 
         val sub = File(target, "sub")
@@ -103,12 +109,47 @@ class CleanUpTaskSpec {
     }
 
     @Test
+    fun `Given the CleanUpTask is executed it fails if the targetPlatform is missing`() {
+        // Given
+        val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
+
+        // Then
+        task.indicator.set(fixture.fixture<String>())
+
+        val error = assertFailsWith<StopExecutionException> {
+            // When
+            task.cleanUp()
+        }
+
+        error.message mustBe "Missing CleanUp Target Platform!"
+    }
+
+    @Test
+    fun `Given the CleanUpTask is executed it fails if the targetPlatform is empty`() {
+        // Given
+        val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
+
+        // Then
+        task.indicator.set(fixture.fixture<String>())
+        task.targetPlatform.set("")
+
+        val error = assertFailsWith<StopExecutionException> {
+            // When
+            task.cleanUp()
+        }
+
+        error.message mustBe "Missing CleanUp Target Platform!"
+    }
+
+    @Test
     fun `Given the CleanUpTask is executed it fails if the target is missing`() {
         // Given
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set("COMMON SOURCE")
+        task.indicator.set(fixture.fixture<String>())
+        task.targetPlatform.set(fixture.fixture<String>())
+
         val error = assertFailsWith<StopExecutionException> {
             // When
             task.cleanUp()
@@ -123,7 +164,8 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set("COMMON SOURCE")
+        task.indicator.set(fixture.fixture<String>())
+        task.targetPlatform.set(fixture.fixture<String>())
         task.target.set("")
 
         val error = assertFailsWith<StopExecutionException> {
@@ -142,7 +184,8 @@ class CleanUpTaskSpec {
         val target = createStubs(stubs)
 
         // When
-        task.indicator.set("Common")
+        task.indicator.set(fixture.fixture<String>())
+        task.targetPlatform.set("platfrom")
         task.target.set("target")
         task.cleanUp()
 
@@ -166,17 +209,18 @@ class CleanUpTaskSpec {
 
         // When
         task.indicator.set(indicator)
+        task.targetPlatform.set("platfrom")
         task.target.set("target")
         task.cleanUp()
 
         // Then
         target.walkBottomUp().forEach { file ->
-            if (file.name != "target" && file.name != "sub") {
-                val name = file.name.substringAfterLast("/")
+            if (file.isFile) {
+                val name = file.name.substringAfterLast('/')
                 isClean = !(name == stubs.first || name == stubs.second)
             }
         }
 
-        isClean mustBe true
+        isClean mustBe false
     }
 }

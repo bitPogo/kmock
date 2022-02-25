@@ -33,6 +33,9 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val collector: AtomicRef<Collector> = atomic(collector)
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
+    private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
+    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
+
     protected enum class Provider(val value: Int) {
         NO_PROVIDER(0),
         RETURN_VALUE(1),

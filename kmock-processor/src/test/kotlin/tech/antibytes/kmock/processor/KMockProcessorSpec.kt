@@ -30,7 +30,12 @@ class KMockProcessorSpec {
 
     @Test
     fun `It fulfils SymbolProcessor`() {
-        KMockProcessor(mockk(), mockk(), mockk(), fixture.fixture()) fulfils SymbolProcessor::class
+        KMockProcessor(
+            mockk(),
+            mockk(),
+            mockk(),
+            ProcessorContract.Options(fixture.fixture(), fixture.fixture())
+        ) fulfils SymbolProcessor::class
     }
 
     @Test
@@ -52,7 +57,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            fixture.fixture()
+            ProcessorContract.Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -80,7 +85,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            fixture.fixture()
+            ProcessorContract.Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -116,7 +121,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            fixture.fixture()
+            ProcessorContract.Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -152,7 +157,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            fixture.fixture()
+            ProcessorContract.Options(fixture.fixture(), fixture.fixture())
         ).process(resolver)
 
         // Then
@@ -168,7 +173,7 @@ class KMockProcessorSpec {
         val aggregator: ProcessorContract.Aggregator = mockk()
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
-        val rootPackage = fixture.fixture<String>()
+        val options = ProcessorContract.Options(fixture.fixture(), fixture.fixture())
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
@@ -188,33 +193,24 @@ class KMockProcessorSpec {
         every { generator.writeCommonMocks(any(), any(), any()) } just Runs
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writePlatformFactories(any(), any(), any(), any()) } just Runs
-        every { factoryGenerator.writeCommonFactories(any(), any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
 
         // When
         KMockProcessor(
             generator,
             factoryGenerator,
             aggregator,
-            rootPackage
+            options
         ).process(resolver)
 
         // Then
         verify(exactly = 1) { generator.writeCommonMocks(interfaces, dependencies, relaxer) }
         verify(exactly = 1) { generator.writePlatformMocks(interfaces, dependencies, relaxer) }
         verify(exactly = 1) {
-            factoryGenerator.writePlatformFactories(
-                rootPackage,
+            factoryGenerator.writeFactories(
+                options,
                 interfaces.toMutableList().also { it.addAll(interfaces) },
                 dependencies.toMutableList().also { it.addAll(dependencies) },
-                relaxer
-            )
-        }
-        verify(exactly = 1) {
-            factoryGenerator.writeCommonFactories(
-                rootPackage,
-                interfaces,
-                dependencies,
                 relaxer
             )
         }

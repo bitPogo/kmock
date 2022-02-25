@@ -11,8 +11,10 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -25,7 +27,9 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.FactoryGenerator
 import tech.antibytes.gradle.kmock.KMockCleanTask
+import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.gradle.kmock.config.MainConfig
@@ -33,8 +37,9 @@ import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
+import java.io.File
 
-class KMPSourceSetsConfiguratorSpec {
+class KmpSourceSetsConfiguratorSpec {
     private val fixture = kotlinFixture()
 
     @BeforeEach
@@ -51,7 +56,7 @@ class KMPSourceSetsConfiguratorSpec {
 
     @Test
     fun `It fulfils SourceSetConfigurator`() {
-        KMPSourceSetsConfigurator fulfils KMockPluginContract.SourceSetConfigurator::class
+        KmpSourceSetsConfigurator fulfils KMockPluginContract.SourceSetConfigurator::class
     }
 
     @Test
@@ -87,7 +92,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { sources.iterator() } returns sourceSets.listIterator()
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 0) { dependencies.add(any(), any()) }
@@ -134,7 +139,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { dependencies.add(any(), any()) } throws RuntimeException()
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(atLeast = 1) {
@@ -152,11 +157,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/nativeTest")
+            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/appleTest")
+            source2.kotlin.srcDir("$path/generated/ksp/apple/appleTest")
         }
     }
 
@@ -192,6 +197,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
@@ -199,6 +205,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
@@ -229,7 +236,7 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -239,8 +246,10 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
+
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
@@ -258,11 +267,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/jvmTest")
+            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/jsTest")
+            source2.kotlin.srcDir("$path/generated/ksp/js/jsTest")
         }
 
         verify(atLeast = 1) {
@@ -274,10 +283,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, any(), "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "COMMON SOURCE")
         }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[0].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -286,6 +296,7 @@ class KMPSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
+        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
         verify(exactly = 1) { cleanUpTasks[1].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -375,16 +386,16 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "jvmTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "jvm", "jvmTest", "commonTest", "COMMON SOURCE")
         }
     }
 
@@ -441,16 +452,16 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "jsTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "js", "jsTest", "commonTest", "COMMON SOURCE")
         }
     }
 
@@ -507,16 +518,16 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "native1Test", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "native1", "native1Test", "commonTest", "COMMON SOURCE")
         }
     }
 
@@ -572,6 +583,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
@@ -579,6 +591,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
@@ -586,6 +599,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { cleanUpTasks[2].group = any() } just Runs
         every { cleanUpTasks[2].description = any() } just Runs
         every { cleanUpTasks[2].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[2].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
         every { cleanUpTasks[2].mustRunAfter(any()) } returns cleanUpTasks[2]
@@ -597,7 +611,7 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJvm") } returns kspTask
@@ -611,12 +625,14 @@ class KMPSourceSetsConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
+
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "androidDebugUnitTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "android", "androidDebugUnitTest", "commonTest", "COMMON SOURCE")
         }
 
         verify(exactly = 1) {
@@ -634,11 +650,11 @@ class KMPSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            jvm.kotlin.srcDir("$path/generated/ksp/jvmTest")
+            jvm.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
         verify(exactly = 1) {
-            androidTest.kotlin.srcDir("$path/generated/ksp/androidTest")
+            androidTest.kotlin.srcDir("$path/generated/ksp/android/androidTest")
         }
 
         verify(atLeast = 1) {
@@ -656,6 +672,7 @@ class KMPSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
+                "android",
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMON SOURCE"
@@ -666,6 +683,7 @@ class KMPSourceSetsConfiguratorSpec {
         verify(exactly = 1) { copyTask.mustRunAfter("kspDebugUnitTestKotlinAndroid") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
         verify(exactly = 1) { cleanUpTasks[0].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -674,6 +692,7 @@ class KMPSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
         verify(exactly = 1) { cleanUpTasks[1].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -682,6 +701,7 @@ class KMPSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[2].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }
@@ -725,5 +745,106 @@ class KMPSourceSetsConfiguratorSpec {
         verify(atLeast = 2) { compileTask.mustRunAfter(copyTask) }
 
         verify(exactly = 2) { kspTask.mustRunAfter(copyTask) }
+    }
+
+    @Test
+    fun `Given configure is called it configures sets up the Entrypoint for the Factory method`() {
+        mockkObject(FactoryGenerator)
+
+        // Given
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+        val source1: KotlinSourceSet = mockk()
+        val version: String = fixture.fixture()
+
+        val copyTask: Copy = mockk()
+        val compileTask: Task = mockk()
+        val kspTask: Task = mockk()
+        val cleanUpTasks: List<KMockCleanTask> = listOf(
+            mockk(),
+            mockk(),
+        )
+
+        val sourceSets = mutableListOf(
+            source1,
+        )
+
+        val delegatedProject: Project = mockk()
+        val delegatedCopyTask: Copy = mockk()
+        val kmockExtension: KMockExtension = mockk()
+        val targetFile: File = mockk()
+        val factoryGenerator = slot<Action<Copy>>()
+        val rootPackage: String = fixture.fixture()
+
+        every { source1.name } returns "jvmTest"
+
+        every { cleanUpTasks[0].group = any() } just Runs
+        every { cleanUpTasks[0].description = any() } just Runs
+        every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].indicator.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
+        every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
+
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
+            kotlin
+        )
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+        every { MainConfig.version } returns version
+
+        every { dependencies.add(any(), any()) } returns mockk()
+
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+
+        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
+
+        every { project.tasks.getByName(any<String>()) } returns compileTask
+
+        every { compileTask.dependsOn(any(), any()) } returns compileTask
+        every { compileTask.mustRunAfter(any()) } returns compileTask
+
+        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
+
+        every { copyTask.doLast(capture(factoryGenerator) as Action<in Task>) } returns mockk()
+
+        every { delegatedCopyTask.project } returns delegatedProject
+
+        every { delegatedProject.file(any<String>()) } returns targetFile
+        every { delegatedProject.extensions.getByType(KMockExtension::class.java) } returns kmockExtension
+        every { delegatedProject.buildDir.absolutePath } returns path
+
+        every { kmockExtension.rootPackage } returns rootPackage
+
+        every { FactoryGenerator.generate(any(), any()) } just Runs
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        factoryGenerator.captured.execute(delegatedCopyTask)
+
+        // Then
+        verify(exactly = 1) { delegatedProject.file("$path/generated/ksp/common/commonTest/kotlin") }
+        verify(exactly = 1) { FactoryGenerator.generate(targetFile, rootPackage) }
+
+        unmockkObject(FactoryGenerator)
     }
 }

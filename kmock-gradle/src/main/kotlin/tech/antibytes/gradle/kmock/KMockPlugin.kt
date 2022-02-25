@@ -6,25 +6,29 @@
 
 package tech.antibytes.gradle.kmock
 
+import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import tech.antibytes.gradle.kmock.source.KMPSourceSetsConfigurator
+import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.util.applyIfNotExists
 import tech.antibytes.gradle.util.isKmp
 
-class KMock : Plugin<Project> {
-    private fun addKSP(project: Project) {
-        project.applyIfNotExists("com.google.devtools.ksp")
+class KMockPlugin : Plugin<Project> {
+    private fun configureKmp(project: Project) {
+        KmpSourceSetsConfigurator.configure(project)
+        project.extensions.getByType(KspExtension::class.java).arg("isKmp", true.toString())
     }
 
     override fun apply(target: Project) {
-        addKSP(target)
+        target.applyIfNotExists("com.google.devtools.ksp")
+
+        target.extensions.create("kmock", KMockExtension::class.java)
 
         if (!target.isKmp()) {
             SingleSourceSetConfigurator.configure(target)
         } else {
-            KMPSourceSetsConfigurator.configure(target)
+            configureKmp(target)
         }
     }
 }

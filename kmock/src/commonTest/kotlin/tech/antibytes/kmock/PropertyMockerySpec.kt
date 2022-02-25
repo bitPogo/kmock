@@ -125,6 +125,26 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn5")
+    fun `Given a getSideEffect is set it is threadsafe retrievable`(): AsyncTestReturnValue {
+        // Given
+        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val sideEffect = { fixture.fixture<Any>() }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.getSideEffect = sideEffect
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            mockery.getSideEffect mustBe sideEffect
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn6")
     fun `Given a set is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -144,7 +164,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn7")
     fun `Given onGet is called it fails if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -162,7 +182,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn6a")
+    @JsName("fn7a")
     fun `Given onGet is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -188,7 +208,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn6b")
+    @JsName("fn7b")
     fun `Given onGet is called it uses the given Spy if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -212,7 +232,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
     fun `Given onGet is called it returns the Get Value threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -234,7 +254,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn9")
     fun `Given onGet is called it returns the GetMany Value threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -258,7 +278,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn10")
     fun `Given onGet is called it returns the last GetMany Value if the given List is down to one value threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -282,7 +302,30 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn11")
+    fun `Given onGet is called it returns the GetSideEffect Value threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val value = fixture.fixture<Any>()
+        val sideEffect = { value }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.getSideEffect = sideEffect
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = mockery.onGet()
+
+            // Then
+            actual mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn12")
     fun `Given onGet is called it uses GetMany over Get`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -291,8 +334,8 @@ class PropertyMockerySpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.get = value
             mockery.getMany = values
+            mockery.get = value
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
@@ -306,7 +349,32 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn13")
+    fun `Given onGet is called it uses GetSideEffect over GetMany`(): AsyncTestReturnValue {
+        // Given
+        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture(size = 2)
+        val sideEffect = { value }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.getSideEffect = sideEffect
+            mockery.getMany = values
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = mockery.onGet()
+
+            // Then
+            actual mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn14")
     fun `Given onSet is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -336,7 +404,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn15")
     fun `Given onGet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -362,7 +430,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn16")
     fun `Given onSet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -384,7 +452,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn17")
     fun `Given onSet is called it uses the given Spy`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -408,7 +476,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn18")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -421,13 +489,13 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn19")
     fun `Its default call count is 0`() {
         PropertyMockery<Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn20")
     fun `Given onGet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -450,7 +518,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn21")
     fun `Given onSet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -469,7 +537,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn22")
     fun `Given the mockery has a Collector and onGet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -502,7 +570,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn23")
     fun `Given the mockery has a Collector and onSet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val value: Any = fixture.fixture()
@@ -532,7 +600,7 @@ class PropertyMockerySpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn21")
+    @JsName("fn24")
     fun `Given clear is called it clears the mock`() {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -542,6 +610,7 @@ class PropertyMockerySpec {
 
         mockery.get = value
         mockery.getMany = values
+        mockery.getSideEffect = { value }
         mockery.set = sideEffect
 
         mockery.onGet()
@@ -559,6 +628,12 @@ class PropertyMockerySpec {
             (error is NullPointerException) mustBe true
         }
 
+        try {
+            mockery.getSideEffect
+        } catch (error: Throwable) {
+            (error is NullPointerException) mustBe true
+        }
+
         mockery.set isNot sideEffect
 
         mockery.calls mustBe 0
@@ -572,7 +647,7 @@ class PropertyMockerySpec {
 
     @Test
     @JsOnly
-    @JsName("fn22")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -582,6 +657,7 @@ class PropertyMockerySpec {
 
         mockery.get = value
         mockery.getMany = values
+        mockery.getSideEffect = { value }
         mockery.set = sideEffect
 
         mockery.onGet()
@@ -600,6 +676,12 @@ class PropertyMockerySpec {
             (error is ClassCastException) mustBe true
         }
 
+        try {
+            mockery.getSideEffect
+        } catch (error: Throwable) {
+            (error is ClassCastException) mustBe true
+        }
+
         mockery.set isNot sideEffect
 
         mockery.calls mustBe 0
@@ -612,7 +694,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock while repecting Spyies`() {
         // Given
         val implementation = Implementation<Any>()
@@ -631,6 +713,7 @@ class PropertyMockerySpec {
         )
         mockery.get = value
         mockery.getMany = values
+        mockery.getSideEffect = { value }
         mockery.set = sideEffect
 
         mockery.onGet()

@@ -18,12 +18,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn0")
-    fun `Given withArguments is called with an Argument it returns false if the Array contains not the given Argument`() {
+    fun `Given hadBeenCalledWith is called with an Argument it returns false if the Array contains not the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArguments(fixture.fixture<String>())
+        val actual = array.hasBeenCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -31,12 +31,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn1")
-    fun `Given withArguments is called with an Argument it returns false if the Array contains the given Argument`() {
+    fun `Given hadBeenCalledWith is called with an Argument it returns false if the Array contains the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArguments(array.first())
+        val actual = array.hasBeenCalledWith(array.first())
 
         // Then
         actual mustBe true
@@ -44,12 +44,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given withArguments is called without Arguments void it returns true if the Array contains Arguments`() {
+    fun `Given hadBeenCalledWith is called without Arguments void it returns true if the Array contains Arguments`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArguments()
+        val actual = array.hasBeenCalledWith()
 
         // Then
         actual mustBe true
@@ -57,12 +57,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given withArguments is called without Arguments void it returns true if the Array is null`() {
+    fun `Given hadBeenCalledWith is called without Arguments void it returns true if the Array is null`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithArguments()
+        val actual = array.hasBeenCalledWith()
 
         // Then
         actual mustBe true
@@ -70,12 +70,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given withArguments is called with Arguments it returns false if the Array is null`() {
+    fun `Given hadBeenCalledWith is called with Arguments it returns false if the Array is null`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithArguments(fixture.listFixture<String>(), fixture.listFixture<String>())
+        val actual = array.hasBeenCalledWith(fixture.listFixture<String>(), fixture.listFixture<String>())
 
         // Then
         actual mustBe false
@@ -83,12 +83,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn5")
-    fun `Given withArguments is called with Arguments it returns false if the Array contains not all of given Arguments`() {
+    fun `Given hadBeenCalledWith is called with Arguments it returns false if the Array contains not all of given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArguments(array[0], array[1], array[2], fixture.fixture<String>())
+        val actual = array.hasBeenCalledWith(array[0], array[1], array[2], fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -96,12 +96,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn6")
-    fun `Given withArguments is called with Arguments it returns true if the Array contains all of given Arguments`() {
+    fun `Given hadBeenCalledWith is called with Arguments it returns true if the Array contains all of given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArguments(array[0], array[1], array[2], array[3])
+        val actual = array.hasBeenCalledWith(array[0], array[1], array[2], array[3])
 
         // Then
         actual mustBe true
@@ -109,12 +109,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn7")
-    fun `Given withSameArguments is called with an Argument it returns false if the Array matches not the given Argument`() {
+    fun `Given hadBeenStrictlyCalledWith is called with an Argument it returns false if the Array matches not the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict(fixture.fixture<String>())
+        val actual = array.hasBeenStrictlyCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -122,12 +122,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn8")
-    fun `Given withSameArguments is called with an Argument it returns true if the Array matches the given Argument`() {
+    fun `Given hadBeenStrictlyCalledWith is called with an Argument it returns true if the Array matches the given Argument`() {
         // Given
         val array = fixture.listFixture<String>(size = 1).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict(array.first())
+        val actual = array.hasBeenStrictlyCalledWith(array.first())
 
         // Then
         actual mustBe true
@@ -135,12 +135,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn9")
-    fun `Given withSameArguments is called without Arguments void it returns false if the Array has Arguments`() {
+    fun `Given hadBeenStrictlyCalledWith is called without Arguments void it returns false if the Array has Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 1).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict()
+        val actual = array.hasBeenStrictlyCalledWith()
 
         // Then
         actual mustBe false
@@ -148,12 +148,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn10")
-    fun `Given withSameArguments is called witg Arguments void it returns false if the Array is null`() {
+    fun `Given hadBeenStrictlyCalledWith is called witg Arguments void it returns false if the Array is null`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict(fixture.fixture<String>())
+        val actual = array.hasBeenStrictlyCalledWith(fixture.fixture<String>())
 
         // Then
         actual mustBe false
@@ -161,12 +161,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn11")
-    fun `Given withSameArguments is called without Arguments void it returns false if the Array is null`() {
+    fun `Given hadBeenStrictlyCalledWith is called without Arguments void it returns false if the Array is null`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict()
+        val actual = array.hasBeenStrictlyCalledWith()
 
         // Then
         actual mustBe true
@@ -174,12 +174,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn12")
-    fun `Given withSameArguments is called with Arguments it returns false if the Array matches not exactly the given Arguments`() {
+    fun `Given hadBeenStrictlyCalledWith is called with Arguments it returns false if the Array matches not exactly the given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict(array[0], array[1], array[2], array[3])
+        val actual = array.hasBeenStrictlyCalledWith(array[0], array[1], array[2], array[3])
 
         // Then
         actual mustBe false
@@ -187,12 +187,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn13")
-    fun `Given withSameArguments is called with Arguments it returns true if the Array matches exactly the given Arguments`() {
+    fun `Given hadBeenStrictlyCalledWith is called with Arguments it returns true if the Array matches exactly the given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithArgumentsStrict(*array)
+        val actual = array.hasBeenStrictlyCalledWith(*array)
 
         // Then
         actual mustBe true
@@ -200,12 +200,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn14")
-    fun `Given withoutArgument is called with an Argument it returns false if the Array contains no Argument`() {
+    fun `Given hadBeenCalledWithout is called with an Argument it returns false if the Array contains no Argument`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithoutArguments()
+        val actual = array.hasBeenCalledWithout()
 
         // Then
         actual mustBe false
@@ -213,12 +213,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn15")
-    fun `Given withoutArgument is called with an Argument it returns true if the Array contains Arguments`() {
+    fun `Given hadBeenCalledWithout is called with an Argument it returns true if the Array contains Arguments`() {
         // Given
         val array = null
 
         // When
-        val actual = array.wasCalledWithoutArguments(fixture.listFixture<String>().toTypedArray())
+        val actual = array.hasBeenCalledWithout(fixture.listFixture<String>().toTypedArray())
 
         // Then
         actual mustBe true
@@ -226,12 +226,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn16")
-    fun `Given withoutArgument is called with an Argument it returns true if the Array contains not the given Argument`() {
+    fun `Given hadBeenCalledWithout is called with an Argument it returns true if the Array contains not the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithoutArguments(fixture.fixture<String>())
+        val actual = array.hasBeenCalledWithout(fixture.fixture<String>())
 
         // Then
         actual mustBe true
@@ -239,12 +239,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn17")
-    fun `Given withoutArgument is called with an Argument it returns false if the Array contains the given Argument`() {
+    fun `Given hadBeenCalledWithout is called with an Argument it returns false if the Array contains the given Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithoutArguments(array.first())
+        val actual = array.hasBeenCalledWithout(array.first())
 
         // Then
         actual mustBe false
@@ -252,12 +252,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn18")
-    fun `Given withoutArgument is called without Argument it returns true if the Array contains Argument`() {
+    fun `Given hadBeenCalledWithout is called without Argument it returns true if the Array contains Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithoutArguments()
+        val actual = array.hasBeenCalledWithout()
 
         // Then
         actual mustBe true
@@ -265,12 +265,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn19")
-    fun `Given withoutArgument is called with Arguments it returns false if the Array is null`() {
+    fun `Given hadBeenCalledWithout is called with Arguments it returns false if the Array is null`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
 
         // When
-        val actual = array.wasCalledWithoutArguments()
+        val actual = array.hasBeenCalledWithout()
 
         // Then
         actual mustBe true
@@ -278,13 +278,13 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn20")
-    fun `Given withoutArgument is called with Arguments it returns true if the Array none of given Arguments matches`() {
+    fun `Given hadBeenCalledWithout is called with Arguments it returns true if the Array none of given Arguments matches`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
         val actual =
-            array.wasCalledWithoutArguments(fixture.fixture<String>(), fixture.fixture<String>(), fixture.fixture<String>())
+            array.hasBeenCalledWithout(fixture.fixture<String>(), fixture.fixture<String>(), fixture.fixture<String>())
 
         // Then
         actual mustBe true
@@ -292,12 +292,12 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn21")
-    fun `Given withoutArgument is called with Arguments it returns false if the Array matches at least one of given Arguments`() {
+    fun `Given hadBeenCalledWithout is called with Arguments it returns false if the Array matches at least one of given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
 
         // When
-        val actual = array.wasCalledWithoutArguments(
+        val actual = array.hasBeenCalledWithout(
             array[0],
             fixture.fixture<String>(),
             fixture.fixture<String>(),

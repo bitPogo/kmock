@@ -30,6 +30,7 @@ dependencies {
     implementation(LocalDependency.kotlin.gradle)
     implementation(LocalDependency.antibytes.gradle.util)
     implementation(LocalDependency.gradle.ksp)
+    implementation(LocalDependency.square.kotlinPoet.core)
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)
@@ -76,7 +77,7 @@ gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {
         group = KMockGradleConfiguration.group
         id = KMockGradleConfiguration.pluginId
-        implementationClass = "tech.antibytes.gradle.kmock.KMock"
+        implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
         displayName = "${id}.gradle.plugin"
         description = "KMock Gradle Plugin"
         version = "0.1.0"

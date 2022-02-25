@@ -10,6 +10,7 @@ interface KMockContract {
     sealed interface Mockery<ReturnValue, Arguments> {
         val id: String
         val calls: Int
+        var verificationBuilderReference: VerificationChainBuilder?
 
         fun getArgumentsForCall(callIndex: Int): Arguments
         fun clear()
@@ -295,6 +296,7 @@ interface KMockContract {
     interface PropertyMockery<Value> : Mockery<Value, GetOrSet> {
         var get: Value
         var getMany: List<Value>
+        var getSideEffect: Function0<Value>
         var set: (Value) -> Unit
 
         fun onGet(): Value
@@ -315,9 +317,16 @@ interface KMockContract {
         fun addReference(referredMock: Mockery<*, *>, referredCall: Int)
     }
 
-    interface VerificationHandleContainer {
-        fun add(handle: VerificationHandle)
+    interface VerificationReferenceBuilder {
+        fun ensureVerificationOf(vararg mocks: Mockery<*, *>)
+    }
 
+    interface VerificationReferenceCleaner {
+        fun ensureVerificationOf(vararg mocks: Mockery<*, *>)
+    }
+
+    interface VerificationChainBuilder {
+        fun add(handle: VerificationHandle)
         fun toList(): List<VerificationHandle>
     }
 
@@ -329,10 +338,6 @@ interface KMockContract {
 
     fun interface Relaxer<T> {
         fun relax(id: String): T
-    }
-
-    fun interface Spy<T> {
-        fun spy(): T
     }
 
     companion object {

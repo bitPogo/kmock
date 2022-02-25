@@ -13,14 +13,17 @@ import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.getByName
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import tech.antibytes.gradle.kmock.FactoryGenerator
 import tech.antibytes.gradle.kmock.KMockCleanTask
+import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.util.isAndroid
+import java.io.File
 import java.util.Locale
 
-internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
+internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     private val precedences = listOf(
         "jvm",
         "js",
@@ -30,31 +33,40 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun cleanSourceName(sourceName: String): String = sourceName.substringBeforeLast("Test")
 
-    private fun addKspDependency(dependencies: DependencyHandler, dependency: String) {
+    private fun addKspDependency(
+        dependencies: DependencyHandler,
+        dependency: String
+    ) {
         dependencies.add(
             dependency,
             "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
         )
     }
 
-    private fun extendSourceSet(sourceSet: KotlinSourceSet, buildDir: String) {
+    private fun extendSourceSet(
+        platformName: String,
+        sourceSet: KotlinSourceSet,
+        buildDir: String
+    ) {
         sourceSet.kotlin.srcDir(
-            "$buildDir/generated/ksp/${sourceSet.name}"
+            "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
         )
     }
 
     private fun createCleanUpTask(
         project: Project,
+        platformName: String,
         sourceSetName: String,
         kspTask: String,
         moveTask: Copy
     ): Task {
-        val cleanUpTask = project.tasks.create(
+        val cleanUpTask: KMockCleanTask = project.tasks.create(
             "cleanDuplicates${sourceSetName.capitalize(Locale.ROOT)}",
             KMockCleanTask::class.java
         )
 
         cleanUpTask.target.set(sourceSetName)
+        cleanUpTask.targetPlatform.set(platformName)
         cleanUpTask.indicator.set(indicator)
         cleanUpTask.description = "Removes Contradicting Sources"
         cleanUpTask.group = "Code Generation"
@@ -65,11 +77,10 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
     }
 
     private fun addSource(
-        sourceSet: KotlinSourceSet,
+        platformName: String,
         sourceCollector: MutableMap<String, String>,
         dependencies: DependencyHandler
     ) {
-        val platformName = cleanSourceName(sourceSet.name)
         val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
         try {
             addKspDependency(dependencies, "ksp${platformName.capitalize(Locale.ROOT)}Test")
@@ -91,14 +102,26 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
         precedences.forEach { precedence ->
             if (precedence in actualSources) {
                 return Pair(
-                    SharedSourceCopist.copySharedSource(project, precedence + "Test", target, indicator),
+                    SharedSourceCopist.copySharedSource(
+                        project = project,
+                        platform = precedence,
+                        source = precedence + "Test",
+                        target = target,
+                        indicator = indicator,
+                    ),
                     precedence
                 )
             }
         }
 
         return Pair(
-            SharedSourceCopist.copySharedSource(project, actualSources.first() + "Test", target, indicator),
+            SharedSourceCopist.copySharedSource(
+                project = project,
+                platform = actualSources.first(),
+                source = actualSources.first() + "Test",
+                target = target,
+                indicator = indicator
+            ),
             actualSources.first()
         )
     }
@@ -110,23 +133,28 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
         val androidRelease = "androidReleaseUnitTest"
         val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
 
-        val copyToCommon = SharedSourceCopist
-            .copySharedSource(project, androidDebug, target, indicator)
-            .dependsOn(androidDebugKsp)
-            .mustRunAfter(androidDebugKsp) as Copy
+        val copyToCommon = SharedSourceCopist.copySharedSource(
+            project = project,
+            platform = "android",
+            source = androidDebug,
+            target = target,
+            indicator = indicator
+        ).dependsOn(androidDebugKsp).mustRunAfter(androidDebugKsp) as Copy
 
         val cleanUpTaskDebug = createCleanUpTask(
-            project,
-            androidDebug,
-            androidDebugKsp,
-            copyToCommon
+            project = project,
+            platformName = "android",
+            sourceSetName = androidDebug,
+            kspTask = androidDebugKsp,
+            moveTask = copyToCommon
         )
 
         val cleanUpTaskRelease = createCleanUpTask(
-            project,
-            androidRelease,
-            androidReleaseKsp,
-            copyToCommon
+            project = project,
+            platformName = "android",
+            sourceSetName = androidRelease,
+            kspTask = androidReleaseKsp,
+            moveTask = copyToCommon
         )
 
         project.tasks.getByName("compileDebugUnitTestKotlinAndroid").dependsOn(
@@ -147,6 +175,19 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
         )
     }
 
+    private fun setUpKmpEntryPoint(project: Project) {
+        val extension: KMockExtension = project.extensions.getByType(KMockExtension::class.java)
+
+        val kspCommon: File = project.file(
+            "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest/kotlin"
+        )
+
+        FactoryGenerator.generate(
+            kspCommon,
+            extension.rootPackage
+        )
+    }
+
     private fun wireSharedSourceTasks(
         project: Project,
         sourceCollector: Map<String, String>
@@ -157,9 +198,12 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
             selectReferenceSource(project, sourceCollector)
         }
 
+        copyToCommon.doLast { setUpKmpEntryPoint(this.project) }
+
         sourceCollector.forEach { (platform, kspTask) ->
             val cleanUpTask = createCleanUpTask(
                 project,
+                platform,
                 "${platform}Test",
                 kspTask,
                 copyToCommon
@@ -179,7 +223,9 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
         }
     }
 
-    override fun configure(project: Project) {
+    override fun configure(
+        project: Project
+    ) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
         val sourceCollector: MutableMap<String, String> = mutableMapOf()
@@ -189,12 +235,10 @@ internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
                 if (
                     sourceSet.name == "androidTest" || (sourceSet.name.endsWith("Test") && !sourceSet.name.startsWith("android"))
                 ) {
-                    extendSourceSet(sourceSet, buildDir)
-                    addSource(
-                        sourceSet,
-                        sourceCollector,
-                        dependencies
-                    )
+                    val platformName = cleanSourceName(sourceSet.name)
+                    extendSourceSet(platformName, sourceSet, buildDir)
+
+                    addSource(platformName, sourceCollector, dependencies)
                 }
             }
         }

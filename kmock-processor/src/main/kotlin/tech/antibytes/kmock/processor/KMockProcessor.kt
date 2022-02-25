@@ -23,7 +23,7 @@ internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val aggregator: ProcessorContract.Aggregator,
-    private val rootPackage: String,
+    private val options: ProcessorContract.Options,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
@@ -60,8 +60,8 @@ internal class KMockProcessor(
             relaxer
         )
 
-        factoryGenerator.writePlatformFactories(
-            rootPackage,
+        factoryGenerator.writeFactories(
+            options,
             commonAggregated.extractedInterfaces.toMutableList().also { it.addAll(aggregated.extractedInterfaces) },
             commonAggregated.dependencies.toMutableList().also { it.addAll(aggregated.dependencies) },
             relaxer
@@ -83,13 +83,6 @@ internal class KMockProcessor(
             relaxer
         )
 
-        factoryGenerator.writeCommonFactories(
-            rootPackage,
-            aggregated.extractedInterfaces,
-            aggregated.dependencies,
-            relaxer
-        )
-
         return aggregated
     }
 
@@ -98,7 +91,11 @@ internal class KMockProcessor(
         val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
 
         val commonAggregated = stubCommonSources(resolver, relaxer)
-        val platformIll = stubPlatformSources(resolver, commonAggregated, relaxer)
+        val platformIll = stubPlatformSources(
+            resolver,
+            commonAggregated,
+            relaxer
+        )
 
         return platformIll.toMutableList().also {
             it.addAll(commonAggregated.illFormed)

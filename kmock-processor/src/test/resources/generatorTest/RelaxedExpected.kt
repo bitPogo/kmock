@@ -17,30 +17,30 @@ internal class RelaxedMock(
     relaxed: Boolean = false
 ) : Relaxed {
     public override val buzz: String
-        get() = buzzProp.onGet()
+        get() = _buzz.onGet()
 
-    public val buzzProp: KMockContract.PropertyMockery<String> =
-        PropertyMockery("generatorTest.Relaxed#buzzProp", spyOnGet = if (spyOn != null) {
+    public val _buzz: KMockContract.PropertyMockery<String> =
+        PropertyMockery("generatorTest.Relaxed#_buzz", spyOnGet = if (spyOn != null) {
             spyOn::buzz::get } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
             relaxed(mockId) } } else { null })
 
-    public val fooFun: KMockContract.SyncFunMockery<String, (kotlin.Any) -> kotlin.String> =
-        SyncFunMockery("generatorTest.Relaxed#fooFun", spyOn = if (spyOn != null) { { payload ->
+    public val _foo: KMockContract.SyncFunMockery<String, (kotlin.Any) -> kotlin.String> =
+        SyncFunMockery("generatorTest.Relaxed#_foo", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
             relaxed(mockId) } } else { null })
 
-    public val barFun: KMockContract.AsyncFunMockery<String, suspend (kotlin.Any) -> kotlin.String> =
-        AsyncFunMockery("generatorTest.Relaxed#barFun", spyOn = if (spyOn != null) { { payload ->
+    public val _bar: KMockContract.AsyncFunMockery<String, suspend (kotlin.Any) -> kotlin.String> =
+        AsyncFunMockery("generatorTest.Relaxed#_bar", spyOn = if (spyOn != null) { { payload ->
             bar(payload) } } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
             relaxed(mockId) } } else { null })
 
-    public override fun foo(payload: Any): String = fooFun.invoke(payload)
+    public override fun foo(payload: Any): String = _foo.invoke(payload)
 
-    public override suspend fun bar(payload: Any): String = barFun.invoke(payload)
+    public override suspend fun bar(payload: Any): String = _bar.invoke(payload)
 
-    public fun clearMock(): Unit {
-        buzzProp.clear()
-        fooFun.clear()
-        barFun.clear()
+    public fun _clearMock(): Unit {
+        _buzz.clear()
+        _foo.clear()
+        _bar.clear()
     }
 }

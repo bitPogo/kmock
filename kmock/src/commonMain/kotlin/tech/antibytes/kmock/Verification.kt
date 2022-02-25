@@ -17,6 +17,7 @@ import tech.antibytes.kmock.KMockContract.Companion.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.Companion.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.VerificationHandle
+import tech.antibytes.kmock.KMockContract.VerificationReferenceBuilder
 import tech.antibytes.kmock.KMockContract.Verifier
 
 private fun formatMessage(
@@ -95,11 +96,20 @@ fun verify(
 }
 
 private fun initChainVerification(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: VerificationReferenceBuilder.() -> Any,
+    references: List<Reference>
 ): List<VerificationHandle> {
     val container = VerificationChainBuilder()
 
+    references.forEach { reference ->
+        reference.mockery.verificationBuilderReference = container
+    }
+
     scope(container)
+
+    references.forEach { reference ->
+        reference.mockery.verificationBuilderReference = null
+    }
 
     return container.toList()
 }
@@ -151,10 +161,10 @@ private fun evaluateStrictReference(
 }
 
 fun Verifier.verifyStrictOrder(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: VerificationReferenceBuilder.() -> Any,
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope)
+    val handles = initChainVerification(scope, this.references)
 
     guardStrictChain(this.references, handles)
 
@@ -210,10 +220,10 @@ private fun ensureAllHandlesAreDone(
 }
 
 fun Verifier.verifyOrder(
-    scope: VerificationChainBuilder.() -> Unit
+    scope: VerificationReferenceBuilder.() -> Any
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope)
+    val handles = initChainVerification(scope, this.references)
     var handleOffset = 0
 
     guardChain(this.references, handles)

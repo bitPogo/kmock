@@ -12,7 +12,8 @@ import tech.antibytes.util.test.MockError
 class FunMockeryStub(
     override val id: String,
     override val calls: Int,
-    var getArgumentsForCall: ((Int) -> Array<out Any?>?)? = null
+    var getArgumentsForCall: ((Int) -> Array<out Any?>?)? = null,
+    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null
 ) : KMockContract.SyncFunMockery<Any, () -> Any> {
     override var returnValue: Any
         get() = TODO("Not yet implemented")

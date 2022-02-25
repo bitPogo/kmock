@@ -24,6 +24,11 @@ internal interface ProcessorContract {
         val functionName: String
     )
 
+    data class Options(
+        val isKmp: Boolean,
+        val rootPackage: String
+    )
+
     interface Aggregator {
         fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
@@ -50,15 +55,8 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryGenerator {
-        fun writePlatformFactories(
-            packageName: String,
-            interfaces: List<KSClassDeclaration>,
-            dependencies: List<KSFile>,
-            relaxer: Relaxer?,
-        )
-
-        fun writeCommonFactories(
-            packageName: String,
+        fun writeFactories(
+            options: Options,
             interfaces: List<KSClassDeclaration>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,

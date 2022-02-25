@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ *
+ * Use of this source code is governed by Apache v2.0
+ */
+
+package tech.antibytes.kmock.example
+
+import tech.antibytes.kmock.KMockContract
+
+internal expect inline fun <reified T> kmock(
+    verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit },
+    relaxed: Boolean = false
+): T
+
+internal expect inline fun <reified T> kspy(
+    verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit },
+    spyOn: T
+): T

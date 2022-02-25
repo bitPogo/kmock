@@ -9,9 +9,8 @@ package tech.antibytes.kmock
 import tech.antibytes.kmock.KMockContract.FunMockery
 import tech.antibytes.kmock.KMockContract.Mockery
 import tech.antibytes.kmock.KMockContract.PropertyMockery
-import tech.antibytes.kmock.KMockContract.VerificationHandle
 
-private fun <T> traverseMock(
+private fun <T> traverseMockAndShare(
     mock: Mockery<*, T>,
     action: T.() -> Boolean
 ): VerificationHandle {
@@ -23,27 +22,37 @@ private fun <T> traverseMock(
         }
     }
 
-    return VerificationHandle(mock.id, callIndices)
+    val handle = VerificationHandle(mock.id, callIndices)
+    shareHandle(mock, handle)
+
+    return handle
 }
 
-fun FunMockery<*, *>.wasCalledWithArguments(
-    vararg values: Any?
-): VerificationHandle = traverseMock(this) {
-    wasCalledWithArguments(*values)
+private fun shareHandle(
+    mock: Mockery<*, *>,
+    handle: VerificationHandle
+) {
+    if (mock.verificationBuilderReference != null) {
+        mock.verificationBuilderReference!!.add(handle)
+    }
 }
 
-fun FunMockery<*, *>.wasCalledWithArgumentsStrict(
+fun FunMockery<*, *>.hasBeenCalledWith(
     vararg values: Any?
-): VerificationHandle = traverseMock(this) { wasCalledWithArgumentsStrict(*values) }
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*values) }
 
-fun FunMockery<*, *>.wasCalledWithoutArguments(
+fun FunMockery<*, *>.hasBeenStrictlyCalledWith(
     vararg values: Any?
-): VerificationHandle = traverseMock(this) { wasCalledWithoutArguments(*values) }
+): VerificationHandle = traverseMockAndShare(this) { hasBeenStrictlyCalledWith(*values) }
 
-fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMock(this) { wasGotten() }
+fun FunMockery<*, *>.hasBeenCalledWithout(
+    vararg values: Any?
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithout(*values) }
 
-fun PropertyMockery<*>.wasSet(): VerificationHandle = traverseMock(this) { wasSet() }
+fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
+
+fun PropertyMockery<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) { wasSet() }
 
 fun PropertyMockery<*>.wasSetTo(
     value: Any?
-): VerificationHandle = traverseMock(this) { wasSetTo(value) }
+): VerificationHandle = traverseMockAndShare(this) { wasSetTo(value) }

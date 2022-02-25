@@ -14,14 +14,14 @@ internal class SyncFunctionCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: SyncFunctionCommon? = null
 ) : SyncFunctionCommon {
-    public val fooFun: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionCommon#fooFun", spyOn = if (spyOn != null) { { fuzz
+    public val _foo: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+        SyncFunMockery("generatorTest.SyncFunctionCommon#_foo", spyOn = if (spyOn != null) { { fuzz
             ,ozz ->
             foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
-    public override fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
+    public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
-    public fun clearMock(): Unit {
-        fooFun.clear()
+    public fun _clearMock(): Unit {
+        _foo.clear()
     }
 }

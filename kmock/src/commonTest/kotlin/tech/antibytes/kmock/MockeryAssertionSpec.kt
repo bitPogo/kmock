@@ -20,7 +20,7 @@ class MockeryAssertionSpec {
 
     @Test
     @JsName("fn0")
-    fun `Given assertWasCalled fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 5)
@@ -30,13 +30,13 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasCalled(exactly = 1)
+            mockery.assertHadBeenCalled(exactly = 1)
         }
     }
 
     @Test
     @JsName("fn1")
-    fun `Given assertWasCalled accepts if the amount of calls match the criteria`() {
+    fun `Given assertHadBeenCalled accepts if the amount of calls match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -44,12 +44,12 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertWasCalled(exactly = 1)
+        mockery.assertHadBeenCalled(exactly = 1)
     }
 
     @Test
     @JsName("fn2")
-    fun `Given assertWasCalledWith fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -59,7 +59,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasCalledWith(
+            mockery.assertHadBeenCalledWith(
                 exactly = 1,
                 arguments = fixture.listFixture<String>().toTypedArray()
             )
@@ -68,14 +68,14 @@ class MockeryAssertionSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given assertWasCalledWith accepts if the amount of calls does match the criteria`() {
+    fun `Given assertHadBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
 
         mockery.getArgumentsForCall = { values }
         // When
-        mockery.assertWasCalledWith(
+        mockery.assertHadBeenCalledWith(
             exactly = 1,
             values[0]
         )
@@ -83,7 +83,7 @@ class MockeryAssertionSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given assertWasCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadBeenCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -93,7 +93,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasCalledStrictlyWith(
+            mockery.assertHadBeenCalledStrictlyWith(
                 exactly = 1,
                 values[0]
             )
@@ -102,7 +102,7 @@ class MockeryAssertionSpec {
 
     @Test
     @JsName("fn5")
-    fun `Given assertWasCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
+    fun `Given assertHadBeenCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -110,7 +110,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertWasCalledStrictlyWith(
+        mockery.assertHadBeenCalledStrictlyWith(
             exactly = 1,
             arguments = values
         )
@@ -118,7 +118,7 @@ class MockeryAssertionSpec {
 
     @Test
     @JsName("fn6")
-    fun `Given assertWasNotCalled fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadNotBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -128,13 +128,13 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasNotCalled()
+            mockery.assertHadNotBeenCalled()
         }
     }
 
     @Test
     @JsName("fn7")
-    fun `Given assertWasNotCalled accepts if the amount of calls does match the criteria`() {
+    fun `Given assertHadNotBeenCalled accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 0)
@@ -142,12 +142,12 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertWasNotCalled()
+        mockery.assertHadNotBeenCalled()
     }
 
     @Test
     @JsName("fn8")
-    fun `Given assertWasNotCalledWith fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadNotBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -157,13 +157,13 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasNotCalledWith(values[0])
+            mockery.assertHadNotBeenCalledWith(values[0])
         }
     }
 
     @Test
     @JsName("fn9")
-    fun `Given assertWasNotCalledWith accepts if the amount of calls does match the criteria`() {
+    fun `Given assertHadNotBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 1)
@@ -171,12 +171,12 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertWasNotCalledWith(fixture.fixture())
+        mockery.assertHadNotBeenCalledWith(fixture.fixture())
     }
 
     @Test
     @JsName("fn10")
-    fun `Given assertWasCalledWithout fails if the amount of calls does not match the criteria`() {
+    fun `Given assertHadBeenCalledWithout fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 2)
@@ -186,13 +186,13 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasCalledWithout(values[0])
+            mockery.assertHadBeenCalledWithout(values[0])
         }
     }
 
     @Test
     @JsName("fn11")
-    fun `Given assertWasCalledWithout accepts if the amount of calls does match the criteria`() {
+    fun `Given assertHadBeenCalledWithout accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
         val mockery = FunMockeryStub(fixture.fixture(), 2)
@@ -200,7 +200,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertWasCalledWithout(fixture.fixture())
+        mockery.assertHadBeenCalledWithout(fixture.fixture())
     }
 
     @Test

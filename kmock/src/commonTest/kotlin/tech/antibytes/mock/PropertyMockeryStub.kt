@@ -13,7 +13,8 @@ import tech.antibytes.util.test.MockError
 class PropertyMockeryStub(
     override val id: String,
     override val calls: Int,
-    var getArgumentsForCall: ((Int) -> GetOrSet)? = null
+    var getArgumentsForCall: ((Int) -> GetOrSet)? = null,
+    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null
 ) : KMockContract.PropertyMockery<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {
@@ -27,6 +28,9 @@ class PropertyMockeryStub(
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
     override var getMany: List<Any>
+        get() = TODO("Not yet implemented")
+        set(_) = TODO("Not yet implemented")
+    override var getSideEffect: () -> Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
     override var set: (Any) -> Unit

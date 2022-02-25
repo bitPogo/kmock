@@ -25,6 +25,7 @@ group = KMockConfiguration.group
 
 ksp {
     arg("rootPackage", "tech.antibytes.kmock.example")
+    arg("isKmp", true.toString())
 }
 
 kotlin {
@@ -62,7 +63,7 @@ kotlin {
             }
         }
         val commonTest by getting {
-            kotlin.srcDir("build/generated/ksp/commonTest")
+            kotlin.srcDir("build/generated/ksp/common/commonTest")
 
             dependencies {
                 implementation(Dependency.multiplatform.test.common)
@@ -84,6 +85,7 @@ kotlin {
         }
         val androidTest by getting {
             dependencies {
+                kotlin.srcDir("build/generated/ksp/android/androidTest")
                 dependsOn(commonTest)
 
                 implementation(Dependency.multiplatform.test.jvm)
@@ -100,7 +102,7 @@ kotlin {
             }
         }
         val jsTest by getting {
-            kotlin.srcDir("build/generated/ksp/jsTest")
+            kotlin.srcDir("build/generated/ksp/js/jsTest")
 
             dependencies {
                 dependsOn(commonTest)
@@ -116,7 +118,7 @@ kotlin {
             }
         }
         val jvmTest by getting {
-            kotlin.srcDir("build/generated/ksp/jvmTest")
+            kotlin.srcDir("build/generated/ksp/jvm/jvmTest")
 
             dependencies {
                 dependsOn(commonTest)
@@ -164,7 +166,7 @@ kotlin {
             }
         }
         val linuxX64Test by getting {
-            kotlin.srcDir("src-gen/generated/ksp/linuxX64Test")
+            kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test")
 
             dependencies {
                 dependsOn(otherTest)
@@ -183,7 +185,7 @@ kotlin {
         }
 
         val iosX64Test by getting {
-            kotlin.srcDir("build/generated/ksp/iosX64Test")
+            kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test")
             dependencies {
                 dependsOn(iosTest)
             }
@@ -198,13 +200,13 @@ afterEvaluate {
         dependsOn("kspTestKotlinJvm")
         mustRunAfter("kspTestKotlinJvm")
 
-        this.from("${project.buildDir.absolutePath}/generated/ksp/jvmTest")
-        this.into("${project.buildDir.absolutePath}/generated/ksp/commonTest")
+        this.from("${project.buildDir.absolutePath}/generated/ksp/jvm/jvmTest")
+        this.into("${project.buildDir.absolutePath}/generated/ksp/common/commonTest")
         this.include("**/*.kt")
         this.exclude { details: FileTreeElement ->
             if (details.file.isFile) {
                 val indicator = details.file.bufferedReader().readLine()
-                indicator != "// COMMON SOURCE" && !details.file.name.endsWith("MockFactoryCommon.kt")
+                indicator != "// COMMON SOURCE"
             } else {
                 false
             }
@@ -220,13 +222,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinJvm")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/jvmTest").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/jvm/jvmTest").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }
@@ -243,13 +245,13 @@ afterEvaluate {
         mustRunAfter("kspDebugUnitTestKotlinAndroid")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidDebugUnitTest").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/android/androidDebugUnitTest").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }
@@ -266,13 +268,13 @@ afterEvaluate {
         mustRunAfter("kspReleaseUnitTestKotlinAndroid")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/androidReleaseUnitTest").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/android/androidReleaseUnitTest").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }
@@ -289,13 +291,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinJs")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/jsTest").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/js/jsTest").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }
@@ -312,13 +314,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinIosX64")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/iosX64Test").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/iosX64/iosX64Test").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }
@@ -335,13 +337,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinLinuxX64")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/linuxX64Test").toList()
+            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/linuxX64/linuxX64Test").toList()
 
             files.forEach { file ->
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// COMMON SOURCE" || file.name.endsWith("MockFactoryCommon.kt")) {
+                    if (indicator == "// COMMON SOURCE") {
                         file.delete()
                     }
                 }

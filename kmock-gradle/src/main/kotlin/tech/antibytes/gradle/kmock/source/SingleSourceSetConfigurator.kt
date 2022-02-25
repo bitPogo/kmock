@@ -40,7 +40,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
     private fun extendJsSourceSet(project: Project, buildDir: String) {
         project.extensions.configure<KotlinJsProjectExtension>("kotlin") {
             sourceSets.getByName("test") {
-                kotlin.srcDir("$buildDir/generated/ksp/test")
+                kotlin.srcDir("$buildDir/generated/ksp/js/test")
             }
         }
     }

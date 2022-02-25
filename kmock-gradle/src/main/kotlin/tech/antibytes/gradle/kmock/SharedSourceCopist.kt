@@ -13,13 +13,17 @@ import org.gradle.api.tasks.StopExecutionException
 import java.util.Locale
 
 object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
-    private fun guardInputs(source: String, target: String, indicator: String) {
+    private fun guardInputs(platform: String, source: String, target: String, indicator: String) {
+        if (platform.isEmpty()) {
+            throw StopExecutionException("Cannot copy from invalid Platform Definition!")
+        }
+
         if (source.isEmpty()) {
-            throw StopExecutionException("Cannot copy form invalid SourceDefinition!")
+            throw StopExecutionException("Cannot copy from invalid Source Definition!")
         }
 
         if (target.isEmpty()) {
-            throw StopExecutionException("Cannot copy to invalid SourceDefinition!")
+            throw StopExecutionException("Cannot copy to invalid Target Definition!")
         }
 
         if (indicator.isEmpty()) {
@@ -39,6 +43,7 @@ object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
     private fun setUpTask(
         task: Copy,
         buildDir: String,
+        platform: String,
         source: String,
         target: String,
         indicator: String
@@ -48,29 +53,31 @@ object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         task.description = "Extract $capitalTarget Sources"
         task.group = "Code Generation"
 
-        task.from("$buildDir/generated/ksp/${source}Test")
-            .into("$buildDir/generated/ksp/${target}Test")
+        task.from("$buildDir/generated/ksp/$platform/${source}Test")
+            .into("$buildDir/generated/ksp/$target/${target}Test")
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
     }
 
     override fun copySharedSource(
         project: Project,
+        platform: String,
         source: String,
         target: String,
         indicator: String
     ): Copy {
-        guardInputs(source, target, indicator)
+        guardInputs(platform, source, target, indicator)
 
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
         val task = project.tasks.create("moveTo${target.capitalize(Locale.ROOT)}", Copy::class.java)
 
         setUpTask(
-            task,
-            buildDir,
-            source.substringBeforeLast("Test"),
-            target.substringBeforeLast("Test"),
-            indicator
+            task = task,
+            platform = platform,
+            buildDir = buildDir,
+            source = source.substringBeforeLast("Test"),
+            target = target.substringBeforeLast("Test"),
+            indicator = indicator
         )
 
         return task

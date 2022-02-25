@@ -58,27 +58,36 @@ class SharedSourceCopistSpec {
     }
 
     @Test
-    fun `Given copySharedSource is called it fails if Source is empty`() {
+    fun `Given copySharedSource is called it fails if Platform is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "", "", "")
+            SharedSourceCopist.copySharedSource(project, "", "", "", "")
         }
 
-        error.message mustBe "Cannot copy form invalid SourceDefinition!"
+        error.message mustBe "Cannot copy from invalid Platform Definition!"
+    }
+
+    @Test
+    fun `Given copySharedSource is called it fails if Source is empty`() {
+        val error = assertFailsWith<StopExecutionException> {
+            SharedSourceCopist.copySharedSource(project, "test", "", "", "")
+        }
+
+        error.message mustBe "Cannot copy from invalid Source Definition!"
     }
 
     @Test
     fun `Given copySharedSource is called it fails if Target is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "test", "", "")
+            SharedSourceCopist.copySharedSource(project, "test", "test", "", "")
         }
 
-        error.message mustBe "Cannot copy to invalid SourceDefinition!"
+        error.message mustBe "Cannot copy to invalid Target Definition!"
     }
 
     @Test
     fun `Given copySharedSource is called it fails if Indicator is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "test", "test", "")
+            SharedSourceCopist.copySharedSource(project, "test", "test", "test", "")
         }
 
         error.message mustBe "Cannot copy with invalid Indicator!"
@@ -88,8 +97,10 @@ class SharedSourceCopistSpec {
     fun `Given copySharedSource is called it creates a CopyTask`() {
         // Given
         val indicator = "Common"
-        val source = "sourceTest"
-        val target = "targetTest"
+        val sourcePlatform = "source"
+        val source = "${sourcePlatform}XTest"
+        val targetPlatform = "target"
+        val target = "${targetPlatform}Test"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk()
 
@@ -106,7 +117,13 @@ class SharedSourceCopistSpec {
         every { copyTask.exclude(any<Spec<FileTreeElement>>()) } returns copyTask
 
         // When
-        val task = SharedSourceCopist.copySharedSource(project, source, target, indicator)
+        val task = SharedSourceCopist.copySharedSource(
+            project,
+            sourcePlatform,
+            source,
+            target,
+            indicator
+        )
 
         // Then
         task sameAs copyTask
@@ -116,8 +133,8 @@ class SharedSourceCopistSpec {
 
         verify(exactly = 1) { copyTask.description = "Extract Target Sources" }
         verify(exactly = 1) { copyTask.group = "Code Generation" }
-        verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$source") }
-        verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$target") }
+        verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$sourcePlatform/$source") }
+        verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$targetPlatform/$target") }
         verify(exactly = 1) { copyTask.include("**/*.kt") }
         verify(exactly = 1) { copyTask.exclude(any<Spec<FileTreeElement>>()) }
     }
@@ -126,7 +143,8 @@ class SharedSourceCopistSpec {
     fun `Given copySharedSource is called it creates a CopyTask, which ignores non files`() {
         // Given
         val indicator = "Common"
-        val source = "sourceTest"
+        val sourcePlatform = "source"
+        val source = "${sourcePlatform}Test"
         val target = "targetTest"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
@@ -145,7 +163,13 @@ class SharedSourceCopistSpec {
         every { copyTask.include(any<String>()) } returns copyTask
         every { copyTask.exclude(capture(filter)) } returns copyTask
 
-        SharedSourceCopist.copySharedSource(project, source, target, indicator)
+        SharedSourceCopist.copySharedSource(
+            project,
+            sourcePlatform,
+            source,
+            target,
+            indicator
+        )
 
         every { fileTreeElement.file } returns file
         every { file.isFile } returns false
@@ -161,7 +185,8 @@ class SharedSourceCopistSpec {
     fun `Given copySharedSource is called it creates a CopyTask, which ignores files, which do not contain the indicator`() {
         // Given
         val indicator = "Common"
-        val source = "sourceTest"
+        val sourcePlatform = "source"
+        val source = "${sourcePlatform}Test"
         val target = "targetTest"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
@@ -180,7 +205,13 @@ class SharedSourceCopistSpec {
         every { copyTask.include(any<String>()) } returns copyTask
         every { copyTask.exclude(capture(filter)) } returns copyTask
 
-        SharedSourceCopist.copySharedSource(project, source, target, indicator)
+        SharedSourceCopist.copySharedSource(
+            project,
+            sourcePlatform,
+            source,
+            target,
+            indicator
+        )
 
         every { fileTreeElement.file } returns file
 
@@ -195,7 +226,8 @@ class SharedSourceCopistSpec {
     fun `Given copySharedSource is called it creates a CopyTask, which copies files, which contain the indicator`() {
         // Given
         val indicator = "Common"
-        val source = "sourceTest"
+        val sourcePlatform = "source"
+        val source = "${sourcePlatform}Test"
         val target = "targetTest"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
@@ -214,7 +246,13 @@ class SharedSourceCopistSpec {
         every { copyTask.include(any<String>()) } returns copyTask
         every { copyTask.exclude(capture(filter)) } returns copyTask
 
-        SharedSourceCopist.copySharedSource(project, source, target, indicator)
+        SharedSourceCopist.copySharedSource(
+            project,
+            sourcePlatform,
+            source,
+            target,
+            indicator
+        )
 
         every { fileTreeElement.file } returns file
 

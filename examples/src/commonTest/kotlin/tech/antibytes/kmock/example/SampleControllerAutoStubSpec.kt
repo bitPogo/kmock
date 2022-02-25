@@ -20,12 +20,12 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
+import tech.antibytes.kmock.hasBeenCalledWith
+import tech.antibytes.kmock.hasBeenCalledWithout
+import tech.antibytes.kmock.hasBeenStrictlyCalledWith
 import tech.antibytes.kmock.verify
 import tech.antibytes.kmock.verifyOrder
 import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.wasCalledWithArguments
-import tech.antibytes.kmock.wasCalledWithArgumentsStrict
-import tech.antibytes.kmock.wasCalledWithoutArguments
 import tech.antibytes.kmock.wasGotten
 import tech.antibytes.kmock.wasSet
 import tech.antibytes.kmock.wasSetTo
@@ -59,9 +59,9 @@ class SampleControllerAutoStubSpec {
     @BeforeTest
     fun setUp() {
         verifier.clear()
-        local.clearMock()
-        remote.clearMock()
-        domainObject.clearMock()
+        local._clearMock()
+        remote._clearMock()
+        domainObject._clearMock()
         clearBlockingTest()
     }
 
@@ -79,11 +79,11 @@ class SampleControllerAutoStubSpec {
         val id = fixture.listFixture<String>(size = 2)
         val number = fixture.fixture<Int>()
 
-        domainObject.idProp.getMany = id
-        domainObject.valueProp.get = number
+        domainObject._id.getMany = id
+        domainObject._value.get = number
 
-        remote.fetchFun.returnValue = domainObject
-        local.storeFun.returnValue = domainObject
+        remote._fetch.returnValue = domainObject
+        local._store.returnValue = domainObject
 
         // When
         val controller = SampleController(local, remote)
@@ -93,22 +93,22 @@ class SampleControllerAutoStubSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote.fetchFun.wasCalledWithArgumentsStrict(url) }
-            verify(exactly = 1) { local.storeFun.wasCalledWithArgumentsStrict(id[1], number) }
+            verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
+            verify(exactly = 1) { local._store.hasBeenStrictlyCalledWith(id[1], number) }
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(remote.fetchFun, url)
-                wasGotten(domainObject.idProp)
-                wasSet(domainObject.idProp)
-                wasGotten(domainObject.idProp)
-                wasGotten(domainObject.valueProp)
-                wasCalledWithArgumentsStrict(local.storeFun, id[1], number)
+                remote._fetch.hasBeenStrictlyCalledWith(url)
+                domainObject._id.wasGotten()
+                domainObject._id.wasSet()
+                domainObject._id.wasGotten()
+                domainObject._value.wasGotten()
+                local._store.hasBeenCalledWith(id[1])
             }
 
             verifier.verifyOrder {
-                wasCalledWithArguments(remote.fetchFun, url)
-                wasSetTo(domainObject.idProp, "42")
-                wasCalledWithArguments(local.storeFun, id[1])
+                remote._fetch.hasBeenCalledWith(url)
+                domainObject._id.wasSetTo("42")
+                local._store.hasBeenCalledWith(id[1])
             }
         }
     }
@@ -121,12 +121,12 @@ class SampleControllerAutoStubSpec {
         val id = fixture.fixture<String>()
         val number = fixture.fixture<Int>()
 
-        domainObject.idProp.get = id
-        domainObject.valueProp.get = number
+        domainObject._id.get = id
+        domainObject._value.get = number
 
-        remote.findFun.returnValue = domainObject
-        local.containsFun.sideEffect = { true }
-        local.fetchFun.returnValue = domainObject
+        remote._find.returnValue = domainObject
+        local._contains.sideEffect = { true }
+        local._fetch.returnValue = domainObject
 
         // When
         val controller = SampleController(local, remote)
@@ -141,20 +141,20 @@ class SampleControllerAutoStubSpec {
 
             delay(20)
 
-            verify(exactly = 1) { local.containsFun.wasCalledWithArgumentsStrict(idOrg) }
-            verify(exactly = 1) { local.fetchFun.wasCalledWithArgumentsStrict(id) }
-            verify(exactly = 1) { remote.findFun.wasCalledWithArgumentsStrict(idOrg) }
+            verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 1) { local._fetch.hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
-                wasCalledWithArgumentsStrict(local.containsFun, idOrg)
-                wasCalledWithArgumentsStrict(remote.findFun, idOrg)
-                wasGotten(domainObject.idProp)
-                wasCalledWithArgumentsStrict(local.fetchFun, id)
-                wasSet(domainObject.idProp)
+                local._contains.hasBeenStrictlyCalledWith(idOrg)
+                remote._find.hasBeenStrictlyCalledWith(idOrg)
+                domainObject._id.wasGotten()
+                local._fetch.hasBeenStrictlyCalledWith(id)
+                domainObject._id.wasSet()
             }
 
             verifier.verifyOrder {
-                wasCalledWithoutArguments(local.containsFun, "abc")
+                local._contains.hasBeenCalledWithout("abc")
             }
         }
     }
