@@ -192,6 +192,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
@@ -199,6 +200,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
@@ -278,6 +280,7 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[0].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -286,6 +289,7 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
+        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
         verify(exactly = 1) { cleanUpTasks[1].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -572,6 +576,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
@@ -579,6 +584,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
@@ -586,6 +592,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { cleanUpTasks[2].group = any() } just Runs
         every { cleanUpTasks[2].description = any() } just Runs
         every { cleanUpTasks[2].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].targetPlatform.set(any<String>()) } just Runs
         every { cleanUpTasks[2].indicator.set(any<String>()) } just Runs
         every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
         every { cleanUpTasks[2].mustRunAfter(any()) } returns cleanUpTasks[2]
@@ -666,6 +673,7 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { copyTask.mustRunAfter("kspDebugUnitTestKotlinAndroid") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
         verify(exactly = 1) { cleanUpTasks[0].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -674,6 +682,7 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
         verify(exactly = 1) { cleanUpTasks[1].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -682,6 +691,7 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[2].indicator.set("COMMON SOURCE") }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }

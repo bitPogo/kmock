@@ -52,16 +52,18 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun createCleanUpTask(
         project: Project,
+        platformName: String,
         sourceSetName: String,
         kspTask: String,
         moveTask: Copy
     ): Task {
-        val cleanUpTask = project.tasks.create(
+        val cleanUpTask: KMockCleanTask = project.tasks.create(
             "cleanDuplicates${sourceSetName.capitalize(Locale.ROOT)}",
             KMockCleanTask::class.java
         )
 
         cleanUpTask.target.set(sourceSetName)
+        cleanUpTask.targetPlatform.set(platformName)
         cleanUpTask.indicator.set(indicator)
         cleanUpTask.description = "Removes Contradicting Sources"
         cleanUpTask.group = "Code Generation"
@@ -122,6 +124,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         val cleanUpTaskDebug = createCleanUpTask(
             project,
+            "android",
             androidDebug,
             androidDebugKsp,
             copyToCommon
@@ -129,6 +132,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         val cleanUpTaskRelease = createCleanUpTask(
             project,
+            "android",
             androidRelease,
             androidReleaseKsp,
             copyToCommon
@@ -165,6 +169,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         sourceCollector.forEach { (platform, kspTask) ->
             val cleanUpTask = createCleanUpTask(
                 project,
+                platform,
                 "${platform}Test",
                 kspTask,
                 copyToCommon
