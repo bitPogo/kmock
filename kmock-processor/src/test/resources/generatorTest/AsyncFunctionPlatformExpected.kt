@@ -13,14 +13,14 @@ internal class AsyncFunctionPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: AsyncFunctionPlatform? = null
 ) : AsyncFunctionPlatform {
-    public val fooFun: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
-    kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionPlatform#fooFun", spyOn = if (spyOn
-        != null) { { fuzz ,ozz ->
+    public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
+    kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionPlatform#_foo", spyOn = if (spyOn !=
+        null) { { fuzz ,ozz ->
         foo(fuzz ,ozz) } } else { null }, collector = verifier, )
 
-    public override suspend fun foo(fuzz: Int, ozz: Any): Any = fooFun.invoke(fuzz, ozz)
+    public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
-    public fun clearMock(): Unit {
-        fooFun.clear()
+    public fun _clearMock(): Unit {
+        _foo.clear()
     }
 }

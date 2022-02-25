@@ -128,7 +128,7 @@ internal class KMockFactoryGenerator(
             )
             function.addStatement(
                 "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
-                qualifiedName,
+                interfaceName,
                 interfaceName,
                 qualifiedName,
             )

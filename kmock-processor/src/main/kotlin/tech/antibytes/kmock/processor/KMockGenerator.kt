@@ -127,7 +127,7 @@ internal class KMockGenerator(
     private fun buildGetter(propertyName: String): FunSpec {
         return FunSpec
             .getterBuilder()
-            .addStatement("return ${propertyName}Prop.onGet()")
+            .addStatement("return _$propertyName.onGet()")
             .build()
     }
 
@@ -138,7 +138,7 @@ internal class KMockGenerator(
         return FunSpec
             .setterBuilder()
             .addParameter("value", propertyType)
-            .addStatement("return ${propertyName}Prop.onSet(value)")
+            .addStatement("return _$propertyName.onSet(value)")
             .build()
     }
 
@@ -173,14 +173,14 @@ internal class KMockGenerator(
         return if (!isMutable) {
             propertyMock.initializer(
                 "PropertyMockery(%S, spyOnGet = %L, collector = verifier, %L)",
-                "$qualifier#${propertyName}Prop",
+                "$qualifier#_$propertyName",
                 "if (spyOn != null) { spyOn::$propertyName::get } else { null }",
                 buildRelaxer(relaxer)
             )
         } else {
             propertyMock.initializer(
                 "PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, %L)",
-                "$qualifier#${propertyName}Prop",
+                "$qualifier#$propertyName",
                 "if (spyOn != null) { spyOn::$propertyName::get } else { null }",
                 "if (spyOn != null) { spyOn::$propertyName::set } else { null }",
                 buildRelaxer(relaxer)
@@ -196,7 +196,7 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ): PropertySpec {
         val property = PropertySpec.builder(
-            "${propertyName}Prop",
+            "_$propertyName",
             KMockContract.PropertyMockery::class
                 .asClassName()
                 .parameterizedBy(propertyType),
@@ -222,7 +222,7 @@ internal class KMockGenerator(
         val propertyType = ksProperty.type.toTypeName(typeResolver)
         val isMutable = ksProperty.isMutable
 
-        propertyNameCollector.add("${propertyName}Prop")
+        propertyNameCollector.add("_$propertyName")
         return listOf(
             buildProperty(propertyName, propertyType, isMutable),
             buildPropertyMockery(qualifier, propertyName, propertyType, isMutable, relaxer)
@@ -380,18 +380,18 @@ internal class KMockGenerator(
                     }
                 }
 
-            val suffixedName: String = functionName + "With" + suffixCased
+            val suffixedName = "${functionName}With$suffixCased"
 
-            if (!existingFunctions.contains(suffixedName + "Fun")) {
+            if (!existingFunctions.contains(suffixedName)) {
                 return suffixedName
             } else {
                 titleCasedSuffixes.add(suffixCased)
             }
         }
 
-        val extensiveName = functionName + "With" + titleCasedSuffixes.joinToString("")
+        val extensiveName = "${functionName}With${titleCasedSuffixes.joinToString("")}"
 
-        if (existingFunctions.contains(extensiveName + "Fun")) {
+        if (existingFunctions.contains(extensiveName)) {
             // Note: This should only happen with generic
             logger.error("The generator cannot differentiate between Functions - $extensiveName - Therefore please revisit your defining Interface and make your ParameterDefinitions more unique.")
         }
@@ -404,11 +404,13 @@ internal class KMockGenerator(
         parameter: List<TypeName>,
         existingFunctions: List<String>
     ): String {
-        return if (existingFunctions.contains(functionName + "Fun")) {
-            determineSuffixedFunctionName(functionName, parameter, existingFunctions)
+        val mockeryName = "_$functionName"
+
+        return if (existingFunctions.contains(mockeryName)) {
+            determineSuffixedFunctionName(mockeryName, parameter, existingFunctions)
         } else {
-            functionName
-        } + "Fun"
+            mockeryName
+        }
     }
 
     private fun determineParameter(
@@ -509,7 +511,7 @@ internal class KMockGenerator(
         functionNames: List<String>
     ): FunSpec {
         val function = FunSpec
-            .builder("clearMock")
+            .builder("_clearMock")
 
         propertyNames.forEach { name ->
             function.addStatement("$name.clear()")
