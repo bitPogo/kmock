@@ -51,7 +51,7 @@ class KMPSourceSetsConfiguratorSpec {
 
     @Test
     fun `It fulfils SourceSetConfigurator`() {
-        KMPSourceSetsConfigurator fulfils KMockPluginContract.SourceSetConfigurator::class
+        KmpSourceSetsConfigurator fulfils KMockPluginContract.SourceSetConfigurator::class
     }
 
     @Test
@@ -87,7 +87,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { sources.iterator() } returns sourceSets.listIterator()
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 0) { dependencies.add(any(), any()) }
@@ -134,7 +134,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { dependencies.add(any(), any()) } throws RuntimeException()
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(atLeast = 1) {
@@ -240,7 +240,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
@@ -380,7 +380,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
@@ -446,7 +446,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
@@ -512,7 +512,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { project.tasks.getByName(any<String>()) } returns compileTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {
@@ -612,7 +612,7 @@ class KMPSourceSetsConfiguratorSpec {
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
         // When
-        KMPSourceSetsConfigurator.configure(project)
+        KmpSourceSetsConfigurator.configure(project)
 
         // Then
         verify(exactly = 1) {

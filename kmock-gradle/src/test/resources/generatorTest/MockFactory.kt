@@ -1,5 +1,6 @@
 package test
 
+import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
 internal expect inline fun <reified T> kmock(verifier: KMockContract.Collector = Collector { _, _ ->

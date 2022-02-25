@@ -77,7 +77,7 @@ gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {
         group = KMockGradleConfiguration.group
         id = KMockGradleConfiguration.pluginId
-        implementationClass = "tech.antibytes.gradle.kmock.KMock"
+        implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
         displayName = "${id}.gradle.plugin"
         description = "KMock Gradle Plugin"
         version = "0.1.0"

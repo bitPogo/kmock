@@ -163,7 +163,7 @@ internal class KMockFactoryGenerator(
                 options.rootPackage,
                 "MockFactory"
             )
-            // file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
+            file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
             file.addFunction(buildMockFactory(options.isKmp, interfaces, relaxer))
             file.addFunction(buildSpyFactory(options.isKmp, interfaces))

@@ -13,6 +13,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import org.gradle.api.tasks.StopExecutionException
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.COLLECTOR_NAME
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMOCK_CONTRACT
 import java.io.File
 
 internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
@@ -72,6 +73,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
             rootPackage,
             "MockFactory"
         )
+        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
         file.addFunction(buildMockFactory())
         file.addFunction(buildSpyFactory())

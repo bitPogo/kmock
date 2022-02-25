@@ -60,5 +60,10 @@ internal interface KMockPluginContract {
             "tech.antibytes.kmock",
             "KMockContract.Collector"
         )
+
+        val KMOCK_CONTRACT = ClassName(
+            "tech.antibytes.kmock",
+            "KMockContract"
+        )
     }
 }

@@ -20,7 +20,7 @@ import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.util.isAndroid
 import java.util.Locale
 
-internal object KMPSourceSetsConfigurator : SourceSetConfigurator {
+internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     private val precedences = listOf(
         "jvm",
         "js",
