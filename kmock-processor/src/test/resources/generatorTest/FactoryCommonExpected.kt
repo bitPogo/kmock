@@ -15,5 +15,7 @@ internal actual inline fun <reified T> kspy(verifier: KMockContract.Collector, s
                                                                                                   (T::class) {
     generatorTest.PropertyCommon::class -> generatorTest.PropertyCommonMock(verifier = verifier, spyOn
     = spyOn as generatorTest.PropertyCommon) as T
+    generatorTest.PropertyCommonMock::class -> generatorTest.PropertyCommonMock(verifier = verifier,
+        spyOn = spyOn as generatorTest.PropertyCommon) as T
     else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
 }

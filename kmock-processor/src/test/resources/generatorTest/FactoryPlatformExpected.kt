@@ -16,5 +16,7 @@ internal inline fun <reified T> kspy(verifier: KMockContract.Collector = Collect
     spyOn: T): T = when (T::class) {
     generatorTest.PropertyPlatform::class -> generatorTest.PropertyPlatformMock(verifier = verifier,
         spyOn = spyOn as generatorTest.PropertyPlatform) as T
+    generatorTest.PropertyPlatformMock::class -> generatorTest.PropertyPlatformMock(verifier =
+    verifier, spyOn = spyOn as generatorTest.PropertyPlatform) as T
     else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
 }

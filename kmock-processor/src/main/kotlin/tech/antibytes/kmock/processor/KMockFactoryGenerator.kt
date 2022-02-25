@@ -126,6 +126,12 @@ internal class KMockFactoryGenerator(
                 interfaceName,
                 qualifiedName,
             )
+            function.addStatement(
+                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
+                qualifiedName,
+                interfaceName,
+                qualifiedName,
+            )
         }
         function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${T::class.simpleName}.\")")
         function.endControlFlow()
