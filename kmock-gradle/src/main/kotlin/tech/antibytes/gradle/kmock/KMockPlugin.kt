@@ -13,22 +13,17 @@ import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.util.applyIfNotExists
 import tech.antibytes.gradle.util.isKmp
-import java.io.File
 
 class KMockPlugin : Plugin<Project> {
-    private fun configureKsp(project: Project, extension: KMockPluginContract.Extension) {
-        project.extensions.configure<KspExtension>("ksp") {
-            arg("rootPackage", extension.rootPackage)
-            arg("isKmp", true.toString())
-        }
-    }
-
     private fun configureKmp(project: Project, extension: KMockPluginContract.Extension) {
         KmpSourceSetsConfigurator.configure(project)
+        project.extensions.getByType(KspExtension::class.java).arg("isKmp", true.toString())
+
         project.afterEvaluate {
-            configureKsp(project, extension)
+            val kspCommon = project.mkdir("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest/kotlin")
+
             FactoryGenerator.generate(
-                File("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest"),
+                kspCommon,
                 extension.rootPackage
             )
         }

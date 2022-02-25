@@ -6,6 +6,23 @@
 
 package tech.antibytes.gradle.kmock
 
-abstract class KMockExtension : KMockPluginContract.Extension {
-    override var rootPackage: String = ""
+import com.google.devtools.ksp.gradle.KspExtension
+import org.gradle.api.Project
+
+abstract class KMockExtension(
+    project: Project
+) : KMockPluginContract.Extension {
+    private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+    private var _rootPackage: String = ""
+
+    override var rootPackage: String
+        get() = _rootPackage
+        set(value) {
+            propagateToKsp(value)
+            _rootPackage = value
+        }
+
+    private fun propagateToKsp(rootPackage: String) {
+        ksp.arg("rootPackage", rootPackage)
+    }
 }

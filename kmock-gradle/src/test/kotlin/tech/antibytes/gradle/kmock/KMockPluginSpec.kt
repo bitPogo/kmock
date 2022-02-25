@@ -167,6 +167,7 @@ class KMockPluginSpec {
         every { plugins.apply(any()) } returns mockk()
 
         every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+        every { extensions.getByType<KspExtension>(KspExtension::class.java) } returns mockk(relaxed = true)
 
         every { KmpSourceSetsConfigurator.configure(any()) } just Runs
 
@@ -192,11 +193,13 @@ class KMockPluginSpec {
         val kspExtension: KspExtension = mockk()
         val rootPackage: String = fixture.fixture()
         val buildDir = File(fixture.fixture<String>())
+        val kspCommont = File(fixture.fixture<String>())
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
         every { project.afterEvaluate(any<Action<Project>>()) } just Runs
         every { project.buildDir } returns buildDir
+        every { project.mkdir(any()) } returns kspCommont
 
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
@@ -211,10 +214,7 @@ class KMockPluginSpec {
             project
         )
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KspExtension>("ksp", probe) },
-            kspExtension
-        )
+        every { extensions.getByType<KspExtension>(KspExtension::class.java) } returns kspExtension
 
         every { kmockExtension.rootPackage } returns rootPackage
         every { kspExtension.arg(any(), any()) } just Runs
@@ -224,11 +224,11 @@ class KMockPluginSpec {
         kmock.apply(project)
 
         // Then
-        verify(exactly = 1) { kspExtension.arg("rootPackage", rootPackage) }
         verify(exactly = 1) { kspExtension.arg("isKmp", "true") }
+        verify(exactly = 1) { project.mkdir("${buildDir.absolutePath}/generated/ksp/common/commonTest/kotlin") }
         verify(exactly = 1) {
             FactoryGenerator.generate(
-                File("${buildDir.absolutePath}/generated/ksp/common/commonTest"),
+                kspCommont,
                 rootPackage
             )
         }
