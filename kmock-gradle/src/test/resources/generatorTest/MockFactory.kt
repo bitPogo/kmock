@@ -11,8 +11,8 @@ internal expect inline fun <reified T> kmock(
     freeze: Boolean = true
 ): T
 
-internal expect inline fun <reified T> kspy(
-    spyOn: T,
+internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
-): T
+): Mock

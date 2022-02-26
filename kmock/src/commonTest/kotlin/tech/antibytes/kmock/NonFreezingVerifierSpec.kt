@@ -16,25 +16,25 @@ import kotlin.js.JsName
 import kotlin.math.absoluteValue
 import kotlin.test.Test
 
-class VerifierUnfrozenSpec {
+class NonFreezingVerifierSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
     fun `It fulfils Verifier`() {
-        UnfreezingVerifier() fulfils KMockContract.Verifier::class
+        NonfreezingVerifier() fulfils KMockContract.Verifier::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils Collector`() {
-        UnfreezingVerifier() fulfils KMockContract.Collector::class
+        NonfreezingVerifier() fulfils KMockContract.Collector::class
     }
 
     @Test
     @JsName("fn2")
     fun `It has a emptyMap of references by default`() {
-        UnfreezingVerifier().references mustBe emptyList()
+        NonfreezingVerifier().references mustBe emptyList()
     }
 
     @Test
@@ -44,7 +44,7 @@ class VerifierUnfrozenSpec {
         val index: Int = fixture.fixture<Int>().absoluteValue
         val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = UnfreezingVerifier()
+        val verifier = NonfreezingVerifier()
 
         // When
         verifier.addReference(mockery, index)
@@ -59,7 +59,7 @@ class VerifierUnfrozenSpec {
     fun `Given clear is called it clears the verifier`() {
         // Given
         val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
-        val verifier = UnfreezingVerifier()
+        val verifier = NonfreezingVerifier()
 
         // When
         verifier.addReference(mockery, fixture.fixture())

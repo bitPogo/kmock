@@ -7,12 +7,15 @@
 package tech.antibytes.kmock.example
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlinx.atomicfu.AtomicInt
+import kotlinx.atomicfu.AtomicRef
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.Relaxer
+import tech.antibytes.kmock.NonfreezingVerifier
 import tech.antibytes.kmock.Verifier
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
@@ -35,30 +38,13 @@ import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
-import tech.antibytes.util.test.fixture.PublicApi
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
-import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-
-@ThreadLocal
-object Fixture {
-    var fixture: PublicApi.Fixture? = null
-}
-
-@Relaxer
-internal inline fun <reified T> relax(id: String): T {
-    if (Fixture.fixture == null) {
-        Fixture.fixture = kotlinFixture()
-    }
-
-    return Fixture.fixture!!.fixture()
-}
 
 @MockCommon(
     SampleRemoteRepository::class,
@@ -66,12 +52,16 @@ internal inline fun <reified T> relax(id: String): T {
     SampleDomainObject::class,
     ExampleContract.DecoderFactory::class
 )
-class SampleControllerAutoStubRelaxedSpec {
+class SampleControllerAutoSpyFactorySpec {
     private val fixture = kotlinFixture()
     private val verifier = Verifier()
-    private val local = SampleLocalRepositoryMock(verifier, relaxed = true)
-    private val remote = SampleRemoteRepositoryMock(verifier, relaxed = true)
-    private val domainObject = SampleDomainObjectMock(verifier, relaxed = true)
+    private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
+    private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
+    private val domainObjectInstance = DomainObject("test", 21)
+    private val domainObject: SampleDomainObjectMock = kspy(
+        domainObjectInstance,
+        verifier,
+    )
 
     @BeforeTest
     fun setUp() {
@@ -83,19 +73,15 @@ class SampleControllerAutoStubRelaxedSpec {
     }
 
     @Test
-    @JsName("fn0")
-    fun `It fulfils SampleController`() {
-        SampleController(local, remote) fulfils ExampleContract.SampleController::class
-    }
-
-    @Test
     @JsName("fn1")
     fun `Given fetchAndStore it fetches and stores DomainObjects`(): AsyncTestReturnValue {
         // Given
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)
+        val number = fixture.fixture<Int>()
 
         domainObject._id.getMany = id
+        domainObject._value.get = number
 
         remote._fetch.returnValue = domainObject
         local._store.returnValue = domainObject
@@ -109,7 +95,7 @@ class SampleControllerAutoStubRelaxedSpec {
             actual mustBe domainObject
 
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
+            verify(exactly = 1) { local._store.hasBeenCalledWith() }
 
             verifier.verifyStrictOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
@@ -117,13 +103,13 @@ class SampleControllerAutoStubRelaxedSpec {
                 domainObject._id.wasSet()
                 domainObject._id.wasGotten()
                 domainObject._value.wasGotten()
-                local._store.hasBeenCalledWith(id[1])
+                local._store.hasBeenCalledWith()
             }
 
             verifier.verifyOrder {
                 remote._fetch.hasBeenCalledWith(url)
                 domainObject._id.wasSetTo("42")
-                local._store.hasBeenCalledWith(id[1])
+                local._store.hasBeenCalledWith()
             }
         }
     }
@@ -134,8 +120,10 @@ class SampleControllerAutoStubRelaxedSpec {
         // Given
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
+        val number = fixture.fixture<Int>()
 
         domainObject._id.get = id
+        domainObject._value.get = number
 
         remote._find.returnValue = domainObject
         local._contains.sideEffect = { true }
@@ -155,14 +143,14 @@ class SampleControllerAutoStubRelaxedSpec {
             delay(20)
 
             verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 1) { local._fetch.hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 1) { local._fetch.hasBeenCalledWith() }
             verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
-                local._fetch.hasBeenStrictlyCalledWith(id)
+                local._fetch.hasBeenCalledWith()
                 domainObject._id.wasSet()
             }
 
@@ -171,4 +159,63 @@ class SampleControllerAutoStubRelaxedSpec {
             }
         }
     }
+
+    @Test
+    @JsName("fn3")
+    fun `Given find it fetches blocking a DomainObjects`() {
+        // Given
+        val idOrg = fixture.fixture<String>()
+        val instance = DomainObject2("test", 21)
+        val verifier = NonfreezingVerifier()
+        val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
+        val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
+
+        val domainObject: SampleDomainObjectMock = kspy(
+            instance,
+            verifier,
+            freeze = false
+        )
+
+        remote._find.returnValue = domainObject
+        local._contains.sideEffect = { true }
+        local._fetch.returnValue = domainObject
+
+        // When
+        val controller = SampleController(local, remote)
+
+        // When
+        controller.findBlocking(idOrg)
+
+        verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
+        verify(exactly = 1) { local._fetch.hasBeenCalledWith() }
+        verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
+
+        verifier.verifyStrictOrder {
+            local._contains.hasBeenStrictlyCalledWith(idOrg)
+            remote._find.hasBeenStrictlyCalledWith(idOrg)
+            domainObject._id.wasGotten()
+            local._fetch.hasBeenCalledWith()
+            domainObject._id.wasSet()
+        }
+
+        verifier.verifyOrder {
+            local._contains.hasBeenCalledWithout("abc")
+        }
+    }
 }
+
+private class DomainObject(
+    id: String,
+    value: Int
+) : SampleDomainObject {
+    private val _id: AtomicRef<String> = atomic(id)
+    private val _value: AtomicInt = atomic(value)
+
+    override var id: String by _id
+    override val value: Int by _value
+}
+
+private class DomainObject2(
+    override var id: String,
+    override val value: Int
+) : SampleDomainObject

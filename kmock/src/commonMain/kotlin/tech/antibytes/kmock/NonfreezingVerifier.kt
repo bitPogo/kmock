@@ -9,7 +9,7 @@ package tech.antibytes.kmock
 import tech.antibytes.kmock.KMockContract.Mockery
 import tech.antibytes.kmock.KMockContract.Reference
 
-class UnfreezingVerifier : KMockContract.Verifier, KMockContract.Collector {
+class NonfreezingVerifier : KMockContract.Verifier, KMockContract.Collector {
     private val _references: MutableList<Reference> = mutableListOf()
 
     override val references: List<Reference>

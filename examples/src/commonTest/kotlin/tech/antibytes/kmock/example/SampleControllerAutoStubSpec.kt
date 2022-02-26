@@ -51,10 +51,10 @@ import kotlin.test.Test
 )
 class SampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()
-    private var verifier = Verifier()
-    private var local = SampleLocalRepositoryMock(verifier)
-    private var remote = SampleRemoteRepositoryMock(verifier)
-    private var domainObject = SampleDomainObjectMock(verifier)
+    private val verifier = Verifier()
+    private val local = SampleLocalRepositoryMock(verifier)
+    private val remote = SampleRemoteRepositoryMock(verifier)
+    private val domainObject = SampleDomainObjectMock(verifier)
 
     @BeforeTest
     fun setUp() {

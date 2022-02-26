@@ -36,12 +36,18 @@ class PropertyMockery<Value>(
     private val _getManyUnfrozen: MutableList<Value> = mutableListOf()
     private var _sideEffectUnfrozen: Function0<Value>? = null
 
+    private val collector: AtomicRef<Collector?> = atomic(resolveAtomicCollector(collector))
+    private val collectorNonFreezing: Collector? = if (!freeze) {
+        collector
+    } else {
+        null
+    }
+
     private val _set: AtomicRef<((Value) -> Unit)> = atomic { /*Do Nothing on Default*/ }
     private var _setUnfrozen: Function1<Value, Unit> = { /*Do Nothing on Default*/ }
 
     private val _calls: AtomicInt = atomic(0)
     private val arguments: IsoMutableList<GetOrSet> = sharedMutableListOf()
-    private val collector: AtomicRef<Collector> = atomic(collector)
     private val relaxer: AtomicRef<Relaxer<Value>?> = atomic(relaxer)
 
     private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
@@ -53,6 +59,14 @@ class PropertyMockery<Value>(
         VALUES(2),
         SIDE_EFFECT(3),
         SPY(3),
+    }
+
+    private fun resolveAtomicCollector(collector: Collector): Collector? {
+        return if (freeze) {
+            collector
+        } else {
+            null
+        }
     }
 
     private fun useSpyOrDefault(): Provider {
@@ -188,10 +202,17 @@ class PropertyMockery<Value>(
     }
 
     private fun notifyCollector() {
-        collector.value.addReference(
-            this,
-            this._calls.value
-        )
+        if (freeze) {
+            collector.value!!.addReference(
+                this,
+                this._calls.value
+            )
+        } else {
+            collectorNonFreezing!!.addReference(
+                this,
+                this._calls.value
+            )
+        }
     }
 
     private fun onEvent(argument: GetOrSet) {

@@ -51,10 +51,10 @@ import kotlin.test.Test
 )
 class SampleControllerAutoStubFactorySpec {
     private val fixture = kotlinFixture()
-    private var verifier = Verifier()
-    private var local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
-    private var remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
-    private var domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)
+    private val verifier = Verifier()
+    private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
+    private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
+    private val domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)
 
     @BeforeTest
     fun setUp() {
