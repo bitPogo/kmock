@@ -23,10 +23,12 @@ internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
+    private val boolean = TypeVariableName("Boolean")
+
     private fun buildRelaxedParameter(
         isKmp: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("relaxed", TypeVariableName("Boolean"))
+        val parameter = ParameterSpec.builder("relaxed", boolean)
         if (!isKmp) {
             parameter.defaultValue("false")
         }
@@ -44,6 +46,16 @@ internal class KMockFactoryGenerator(
         return parameter.build()
     }
 
+    private fun buildFreezeParameter(
+        isKmp: Boolean
+    ): ParameterSpec {
+        val parameter = ParameterSpec.builder("freeze", boolean)
+        if (!isKmp) {
+            parameter.defaultValue("true")
+        }
+        return parameter.build()
+    }
+
     private fun buildMockSelector(
         function: FunSpec.Builder,
         interfaces: List<KSClassDeclaration>,
@@ -57,24 +69,24 @@ internal class KMockFactoryGenerator(
 
             if (relaxer == null) {
                 function.addStatement(
-                    "%L::class -> %LMock(verifier = verifier) as T",
+                    "%L::class -> %LMock(verifier = verifier, freeze = freeze) as T",
                     qualifiedName,
                     interfaceName,
                 )
 
                 function.addStatement(
-                    "%LMock::class -> %LMock(verifier = verifier) as T",
+                    "%LMock::class -> %LMock(verifier = verifier, freeze = freeze) as T",
                     interfaceName,
                     interfaceName,
                 )
             } else {
                 function.addStatement(
-                    "%L::class -> %LMock(verifier = verifier, relaxed = relaxed) as T",
+                    "%L::class -> %LMock(verifier = verifier, relaxed = relaxed, freeze = freeze) as T",
                     qualifiedName,
                     interfaceName,
                 )
                 function.addStatement(
-                    "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed) as T",
+                    "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed, freeze = freeze) as T",
                     interfaceName,
                     interfaceName,
                 )
@@ -98,6 +110,7 @@ internal class KMockFactoryGenerator(
             .returns(type)
             .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildRelaxedParameter(isKmp))
+            .addParameter(buildFreezeParameter(isKmp))
 
         if (isKmp) {
             factory.addModifiers(KModifier.ACTUAL)
@@ -121,13 +134,13 @@ internal class KMockFactoryGenerator(
             val qualifiedName = interfaze.qualifiedName!!.asString()
             val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
             function.addStatement(
-                "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
+                "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L, freeze = freeze) as T",
                 qualifiedName,
                 interfaceName,
                 qualifiedName,
             )
             function.addStatement(
-                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as T",
+                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L, freeze = freeze) as T",
                 interfaceName,
                 interfaceName,
                 qualifiedName,
@@ -148,8 +161,9 @@ internal class KMockFactoryGenerator(
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
-            .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildSpyParameter())
+            .addParameter(buildVerifierParameter(isKmp))
+            .addParameter(buildFreezeParameter(isKmp))
 
         if (isKmp) {
             factory.addModifiers(KModifier.ACTUAL)
