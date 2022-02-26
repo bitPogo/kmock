@@ -15,9 +15,9 @@ internal class SyncFunctionCommonMock(
     spyOn: SyncFunctionCommon? = null
 ) : SyncFunctionCommon {
     public val _foo: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionCommon#_foo", spyOn = if (spyOn != null) { { fuzz
-            ,ozz ->
-            foo(fuzz ,ozz) } } else { null }, collector = verifier, )
+        SyncFunMockery("generatorTest.SyncFunctionCommon#_foo", spyOn = if (spyOn != null) { { fuzz,
+            ozz ->
+            foo(fuzz, ozz) } } else { null }, collector = verifier, )
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

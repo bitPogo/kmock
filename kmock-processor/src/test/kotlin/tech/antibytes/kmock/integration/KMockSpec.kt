@@ -252,19 +252,4 @@ class KMockSpec {
         actual!!.normalizeSource() mustBe expected.normalizeSource()
         actualFactory!!.normalizeSource() mustBe expectedFactory.normalizeSource()
     }
-
-    @Test
-    fun `Given a annotated Source is processed, it fails if function parameters are ill named`() {
-        // Given
-        val source = SourceFile.kotlin(
-            "IllNamedSource.kt",
-            loadResource("/IllNamedSource.kt")
-        )
-
-        // When
-        val compilerResult = compile(provider, source)
-
-        // Then
-        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.COMPILATION_ERROR
-    }
 }

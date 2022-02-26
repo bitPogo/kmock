@@ -20,9 +20,9 @@ internal class RelaxedMock(
         get() = _buzz.onGet()
 
     public val _buzz: KMockContract.PropertyMockery<String> =
-        PropertyMockery("generatorTest.Relaxed#_buzz", spyOnGet = if (spyOn != null) {
-            spyOn::buzz::get } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
-            relaxed(mockId) } } else { null })
+        PropertyMockery("generatorTest.Relaxed#_buzz", spyOnGet = if (spyOn != null) { { spyOn.buzz }
+        } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId -> relaxed(mockId) } }
+        else { null })
 
     public val _foo: KMockContract.SyncFunMockery<String, (kotlin.Any) -> kotlin.String> =
         SyncFunMockery("generatorTest.Relaxed#_foo", spyOn = if (spyOn != null) { { payload ->
