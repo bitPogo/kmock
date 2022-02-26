@@ -12,6 +12,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.util.test.MockError
 import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
+import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -138,6 +139,30 @@ class AsyncFunMockeryUnfrozenSpec {
 
     @Test
     @JsName("fn6b")
+    fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedId = AtomicReference<String?>(null)
+        val mockery = AsyncFunMockery<Any, suspend () -> Unit>(
+            name,
+            unitFunRelaxer = { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        )
+
+        // When
+        val actual = mockery.invoke()
+
+        // Then
+        actual mustBe value
+        capturedId.value mustBe name
+    }
+
+    @Test
+    @JsName("fn6c")
     fun `Given invoke is called it uses the given Implementation if no ReturnValue Provider is set`() = runBlockingTest {
         // Given
         val name: String = fixture.fixture()

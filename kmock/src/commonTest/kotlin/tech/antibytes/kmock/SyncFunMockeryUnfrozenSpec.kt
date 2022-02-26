@@ -159,6 +159,30 @@ class SyncFunMockeryUnfrozenSpec {
 
     @Test
     @JsName("fn6b")
+    fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`() {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedId = AtomicReference<String?>(null)
+        val mockery = SyncFunMockery<Any, () -> Unit>(
+            name,
+            unitFunRelaxer = { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        )
+
+        // When
+        val actual = mockery.invoke()
+
+        // Then
+        actual mustBe value
+        capturedId.value mustBe name
+    }
+
+    @Test
+    @JsName("fn6c")
     fun `Given invoke is called it uses the given Implementation if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
