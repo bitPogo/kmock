@@ -25,7 +25,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     }
 
     private fun buildRelaxedParameter(): ParameterSpec {
-        return ParameterSpec.builder("relaxed", TypeVariableName("Boolean"))
+        return ParameterSpec.builder("relaxed", Boolean::class)
             .defaultValue("false")
             .build()
     }
@@ -33,6 +33,12 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     private fun buildVerifierParameter(): ParameterSpec {
         return ParameterSpec.builder("verifier", COLLECTOR_NAME)
             .defaultValue("Collector { _, _ -> Unit }")
+            .build()
+    }
+
+    private fun buildFreezeParameter(): ParameterSpec {
+        return ParameterSpec.builder("freeze", Boolean::class)
+            .defaultValue("true")
             .build()
     }
 
@@ -45,6 +51,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
             .returns(type)
             .addParameter(buildVerifierParameter())
             .addParameter(buildRelaxedParameter())
+            .addParameter(buildFreezeParameter())
             .addModifiers(KModifier.EXPECT)
             .build()
     }
@@ -61,8 +68,9 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
         return factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
-            .addParameter(buildVerifierParameter())
             .addParameter(buildSpyParameter())
+            .addParameter(buildVerifierParameter())
+            .addParameter(buildFreezeParameter())
             .addModifiers(KModifier.EXPECT)
             .build()
     }

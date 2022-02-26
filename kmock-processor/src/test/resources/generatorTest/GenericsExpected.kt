@@ -1,5 +1,6 @@
 package generatorTest
 
+import kotlin.Boolean
 import kotlin.Unit
 import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract
@@ -9,7 +10,8 @@ import tech.antibytes.kmock.SyncFunMockery
 
 internal class GenericsMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    spyOn: Generics<K, L>? = null
+    spyOn: Generics<K, L>? = null,
+    freeze: Boolean = true
 ) : Generics<K, L> {
     public override var template: K
         get() = _template.onGet()
@@ -18,15 +20,15 @@ internal class GenericsMock<K : Any, L>(
     public val _template: KMockContract.PropertyMockery<K> =
         PropertyMockery("generatorTest.Generics#template", spyOnGet = if (spyOn != null) { {
             spyOn.template } } else { null }, spyOnSet = if (spyOn != null) { { spyOn.template = it } }
-        else { null }, collector = verifier, )
+        else { null }, collector = verifier, freeze = freeze, )
 
     public val _foo: KMockContract.SyncFunMockery<Unit, (Any?) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->
-            foo(payload) } } else { null }, collector = verifier, )
+            foo(payload) } } else { null }, collector = verifier, freeze = freeze, )
 
     public val _fooWithInt: KMockContract.SyncFunMockery<Unit, (Int) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_fooWithInt", spyOn = if (spyOn != null) { { payload ->
-            foo(payload) } } else { null }, collector = verifier, )
+            foo(payload) } } else { null }, collector = verifier, freeze = freeze, )
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 

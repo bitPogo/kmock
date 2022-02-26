@@ -111,8 +111,12 @@ internal class KMockGenerator(
         val spy = ParameterSpec.builder("spyOn", superType.copy(nullable = true))
         spy.defaultValue("null")
 
+        val freeze = ParameterSpec.builder("freeze", Boolean::class)
+        freeze.defaultValue("true")
+
         constructor.addParameter(collector.build())
         constructor.addParameter(spy.build())
+        constructor.addParameter(freeze.build())
 
         if (relaxer != null) {
             val relaxed = ParameterSpec.builder("relaxed", Boolean::class)
@@ -172,14 +176,14 @@ internal class KMockGenerator(
     ): PropertySpec.Builder {
         return if (!isMutable) {
             propertyMock.initializer(
-                "PropertyMockery(%S, spyOnGet = %L, collector = verifier, %L)",
+                "PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)",
                 "$qualifier#_$propertyName",
                 "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
                 buildRelaxer(relaxer)
             )
         } else {
             propertyMock.initializer(
-                "PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, %L)",
+                "PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)",
                 "$qualifier#$propertyName",
                 "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
                 "if (spyOn != null) { { spyOn.$propertyName = it } } else { null }",
@@ -286,7 +290,7 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ): PropertySpec.Builder {
         return propertyMock.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, %L)",
+            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
             mockery,
             "$qualifier#$mockeryName",
             "if (spyOn != null) { ${buildFunctionSpyInvocation(functionName, parameterNames)} } else { null }",

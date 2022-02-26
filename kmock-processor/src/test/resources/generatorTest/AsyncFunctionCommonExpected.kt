@@ -2,6 +2,7 @@
 package generatorTest
 
 import kotlin.Any
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.Unit
 import tech.antibytes.kmock.AsyncFunMockery
@@ -12,12 +13,13 @@ import tech.antibytes.kmock.SyncFunMockery
 
 internal class AsyncFunctionCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    spyOn: AsyncFunctionCommon? = null
+    spyOn: AsyncFunctionCommon? = null,
+    freeze: Boolean = true
 ) : AsyncFunctionCommon {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
     kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionCommon#_foo", spyOn = if (spyOn !=
-        null) { { fuzz ,ozz ->
-        foo(fuzz ,ozz) } } else { null }, collector = verifier, )
+        null) { { fuzz, ozz ->
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, )
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
