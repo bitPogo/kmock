@@ -18,16 +18,16 @@ internal class PropertyCommonMock(
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyMockery<String> =
-        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = if (spyOn != null) {
-            spyOn::foo::get } else { null }, collector = verifier, )
+        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = if (spyOn != null) { {
+            spyOn.foo } } else { null }, collector = verifier, )
 
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
     public val _buzz: KMockContract.PropertyMockery<Any> =
-        PropertyMockery("generatorTest.PropertyCommon#buzz", spyOnGet = if (spyOn != null) {
-            spyOn::buzz::get } else { null }, spyOnSet = if (spyOn != null) { spyOn::buzz::set } else {
+        PropertyMockery("generatorTest.PropertyCommon#buzz", spyOnGet = if (spyOn != null) { {
+            spyOn.buzz } } else { null }, spyOnSet = if (spyOn != null) { { spyOn.buzz = it } } else {
             null }, collector = verifier, )
 
     public fun _clearMock(): Unit {

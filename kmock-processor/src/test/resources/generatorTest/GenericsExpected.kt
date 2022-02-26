@@ -16,25 +16,25 @@ internal class GenericsMock<K : Any, L>(
         set(`value`) = _template.onSet(value)
 
     public val _template: KMockContract.PropertyMockery<K> =
-        PropertyMockery("generatorTest.Generics#template", spyOnGet = if (spyOn != null) {
-            spyOn::template::get } else { null }, spyOnSet = if (spyOn != null) { spyOn::template::set }
+        PropertyMockery("generatorTest.Generics#template", spyOnGet = if (spyOn != null) { {
+            spyOn.template } } else { null }, spyOnSet = if (spyOn != null) { { spyOn.template = it } }
         else { null }, collector = verifier, )
 
     public val _foo: KMockContract.SyncFunMockery<Unit, (Any?) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, )
 
-    public val _fooWithK: KMockContract.SyncFunMockery<Unit, (Int) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.Generics#_fooWithK", spyOn = if (spyOn != null) { { payload ->
+    public val _fooWithInt: KMockContract.SyncFunMockery<Unit, (Int) -> kotlin.Unit> =
+        SyncFunMockery("generatorTest.Generics#_fooWithInt", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, )
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 
-    public override fun <K : Int> foo(payload: K): Unit = _fooWithK.invoke(payload)
+    public override fun <K : Int> foo(payload: K): Unit = _fooWithInt.invoke(payload)
 
     public fun _clearMock(): Unit {
         _template.clear()
         _foo.clear()
-        _fooWithK.clear()
+        _fooWithInt.clear()
     }
 }

@@ -174,15 +174,15 @@ internal class KMockGenerator(
             propertyMock.initializer(
                 "PropertyMockery(%S, spyOnGet = %L, collector = verifier, %L)",
                 "$qualifier#_$propertyName",
-                "if (spyOn != null) { spyOn::$propertyName::get } else { null }",
+                "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
                 buildRelaxer(relaxer)
             )
         } else {
             propertyMock.initializer(
                 "PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, %L)",
                 "$qualifier#$propertyName",
-                "if (spyOn != null) { spyOn::$propertyName::get } else { null }",
-                "if (spyOn != null) { spyOn::$propertyName::set } else { null }",
+                "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
+                "if (spyOn != null) { { spyOn.$propertyName = it } } else { null }",
                 buildRelaxer(relaxer)
             )
         }
@@ -267,7 +267,7 @@ internal class KMockGenerator(
         functionName: String,
         parameterNames: List<String>
     ): String {
-        val parameter = parameterNames.joinToString(" ,")
+        val parameter = parameterNames.joinToString(", ")
 
         return if (parameter.isEmpty()) {
             "{ $functionName() }"
@@ -363,11 +363,19 @@ internal class KMockGenerator(
     private fun determineSuffixedFunctionName(
         functionName: String,
         parameter: List<TypeName>,
-        existingFunctions: List<String>
+        generics: Map<String, KSTypeReference?>
     ): String {
         val titleCasedSuffixes: MutableList<String> = mutableListOf()
         parameter.forEach { suffix ->
-            val suffixCased = suffix.toString()
+            suffix
+                .toString()
+                .let { name ->
+                    if (name in generics) {
+                        generics[name]?.resolve()?.toString() ?: "Any"
+                    } else {
+                        name
+                    }
+                }
                 .removePrefix("kotlin.")
                 .substringBefore('<') // Lambdas
                 .let { name ->
@@ -379,35 +387,26 @@ internal class KMockGenerator(
                         name
                     }
                 }
-
-            val suffixedName = "${functionName}With$suffixCased"
-
-            if (!existingFunctions.contains(suffixedName)) {
-                return suffixedName
-            } else {
-                titleCasedSuffixes.add(suffixCased)
-            }
+                .also { suffixCased -> titleCasedSuffixes.add(suffixCased) }
         }
 
-        val extensiveName = "${functionName}With${titleCasedSuffixes.joinToString("")}"
-
-        if (existingFunctions.contains(extensiveName)) {
-            // Note: This should only happen with generic
-            logger.error("The generator cannot differentiate between Functions - $extensiveName - Therefore please revisit your defining Interface and make your ParameterDefinitions more unique.")
-        }
-
-        return extensiveName
+        return "${functionName}With${titleCasedSuffixes.joinToString("")}"
     }
 
     private fun selectFunMockeryName(
         functionName: String,
+        generics: Map<String, KSTypeReference?>,
         parameter: List<TypeName>,
         existingFunctions: List<String>
     ): String {
         val mockeryName = "_$functionName"
 
         return if (existingFunctions.contains(mockeryName)) {
-            determineSuffixedFunctionName(mockeryName, parameter, existingFunctions)
+            determineSuffixedFunctionName(
+                mockeryName,
+                parameter,
+                generics
+            )
         } else {
             mockeryName
         }
@@ -464,6 +463,7 @@ internal class KMockGenerator(
         val mockeryParameter = determineMockeryParameter(parameter.second, generics)
         val mockeryName = selectFunMockeryName(
             functionName,
+            generics ?: emptyMap(),
             parameter.second,
             functionNameCollector
         )
@@ -507,17 +507,12 @@ internal class KMockGenerator(
     }
 
     private fun buildClear(
-        propertyNames: List<String>,
-        functionNames: List<String>
+        proxyNames: List<String>,
     ): FunSpec {
         val function = FunSpec
             .builder("_clearMock")
 
-        propertyNames.forEach { name ->
-            function.addStatement("$name.clear()")
-        }
-
-        functionNames.forEach { name ->
+        proxyNames.forEach { name ->
             function.addStatement("$name.clear()")
         }
 
@@ -533,8 +528,7 @@ internal class KMockGenerator(
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val qualifier = template.qualifiedName!!.asString()
 
-        val functionNameCollector: MutableList<String> = mutableListOf()
-        val propertyNameCollector: MutableList<String> = mutableListOf()
+        val proxyNameCollector: MutableList<String> = mutableListOf()
         val superType = resolveType(template)
 
         implementation.addSuperinterface(superType)
@@ -556,7 +550,7 @@ internal class KMockGenerator(
                         qualifier,
                         ksProperty,
                         typeResolver,
-                        propertyNameCollector,
+                        proxyNameCollector,
                         relaxer
                     )
                 )
@@ -569,7 +563,7 @@ internal class KMockGenerator(
                     qualifier,
                     ksFunction,
                     typeResolver,
-                    functionNameCollector,
+                    proxyNameCollector,
                     relaxer
                 )
 
@@ -578,7 +572,7 @@ internal class KMockGenerator(
             }
         }
 
-        implementation.addFunction(buildClear(propertyNameCollector, functionNameCollector))
+        implementation.addFunction(buildClear(proxyNameCollector))
 
         return implementation.build()
     }
