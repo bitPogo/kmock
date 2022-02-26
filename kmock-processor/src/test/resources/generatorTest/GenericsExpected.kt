@@ -17,10 +17,14 @@ internal class GenericsMock<K : Any, L>(
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
 
-    public val _template: KMockContract.PropertyMockery<K> =
-        PropertyMockery("generatorTest.Generics#template", spyOnGet = if (spyOn != null) { {
-            spyOn.template } } else { null }, spyOnSet = if (spyOn != null) { { spyOn.template = it } }
-        else { null }, collector = verifier, freeze = freeze, )
+    public val _template: KMockContract.PropertyMockery<K> = if (spyOn == null) {
+        PropertyMockery("generatorTest.Generics#_template", spyOnGet = null, spyOnSet = null,
+            collector = verifier, freeze = freeze, )
+    } else {
+        PropertyMockery("generatorTest.Generics#_template", spyOnGet = { spyOn.template }, spyOnSet
+        = { spyOn.template = it; Unit }, collector = verifier, freeze = freeze, )
+    }
+
 
     public val _foo: KMockContract.SyncFunMockery<Unit, (Any?) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->

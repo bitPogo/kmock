@@ -174,19 +174,42 @@ internal class KMockGenerator(
         isMutable: Boolean,
         relaxer: Relaxer?
     ): PropertySpec.Builder {
+        val name = "$qualifier#_$propertyName"
+
         return if (!isMutable) {
             propertyMock.initializer(
-                "PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)",
-                "$qualifier#_$propertyName",
-                "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
+                """
+                    |if (spyOn == null) {
+                    |   PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                    |} else {
+                    |   PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                    |}
+                |
+                """.trimMargin(),
+                name,
+                "null",
+                buildRelaxer(relaxer),
+                name,
+                "{ spyOn.$propertyName }",
                 buildRelaxer(relaxer)
             )
         } else {
             propertyMock.initializer(
-                "PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)",
-                "$qualifier#$propertyName",
-                "if (spyOn != null) { { spyOn.$propertyName } } else { null }",
-                "if (spyOn != null) { { spyOn.$propertyName = it } } else { null }",
+                """
+                |if (spyOn == null) {
+                |   PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |} else {
+                |   PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |}
+                |
+                """.trimMargin(),
+                name,
+                "null",
+                "null",
+                buildRelaxer(relaxer),
+                name,
+                "{ spyOn.$propertyName }",
+                "{ spyOn.$propertyName = it; Unit }",
                 buildRelaxer(relaxer)
             )
         }

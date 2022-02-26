@@ -20,9 +20,14 @@ internal class SyncFunctionOverloadMock(
     public override val foo: Any
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyMockery<Any> =
-        PropertyMockery("generatorTest.SyncFunctionOverload#_foo", spyOnGet = if (spyOn != null) { {
-            spyOn.foo } } else { null }, collector = verifier, freeze = freeze, )
+    public val _foo: KMockContract.PropertyMockery<Any> = if (spyOn == null) {
+        PropertyMockery("generatorTest.SyncFunctionOverload#_foo", spyOnGet = null, collector =
+        verifier, freeze = freeze, )
+    } else {
+        PropertyMockery("generatorTest.SyncFunctionOverload#_foo", spyOnGet = { spyOn.foo },
+            collector = verifier, freeze = freeze, )
+    }
+
 
     public val _fooWithIntAny: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) ->
     kotlin.Any> = SyncFunMockery("generatorTest.SyncFunctionOverload#_fooWithIntAny", spyOn = if
