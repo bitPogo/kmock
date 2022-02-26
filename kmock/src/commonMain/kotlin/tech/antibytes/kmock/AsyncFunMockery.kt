@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
 
@@ -13,9 +14,13 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
+    freeze: Boolean = true,
     spyOn: SideEffect? = null
 ) : KMockContract.AsyncFunMockery<ReturnValue, SideEffect>,
-    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, spyOn) {
+    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, freeze, spyOn) {
+
+    override var _returnValuesUnfrozen: MutableList<ReturnValue> = sharedMutableListOf()
+
     private suspend fun execute(
         function: suspend () -> ReturnValue,
         spy: (suspend () -> ReturnValue)?,
@@ -24,7 +29,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         onEvent(arguments)
 
         return when (provider) {
-            Provider.RETURN_VALUE -> retrieveValue()
+            Provider.RETURN_VALUE -> returnValue
             Provider.RETURN_VALUES -> retrieveFromValues()
             Provider.SIDE_EFFECT -> function()
             Provider.SPY -> spy!!()
@@ -35,7 +40,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override suspend fun invoke(): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend () -> ReturnValue)
+            (sideEffect as suspend () -> ReturnValue)
                 .invoke()
         }
 
@@ -50,7 +55,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override suspend fun <Arg0> invoke(arg0: Arg0): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0) -> ReturnValue)
+            (sideEffect as suspend (Arg0) -> ReturnValue)
                 .invoke(arg0)
         }
 
@@ -65,7 +70,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override suspend fun <Arg0, Arg1> invoke(arg0: Arg0, arg1: Arg1): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1) -> ReturnValue)
                 .invoke(arg0, arg1)
         }
 
@@ -80,7 +85,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override suspend fun <Arg0, Arg1, Arg2> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2) -> ReturnValue)
                 .invoke(arg0, arg1, arg2)
         }
 
@@ -95,7 +100,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3)
         }
 
@@ -116,7 +121,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg4: Arg4
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4)
         }
 
@@ -138,7 +143,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg5: Arg5
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
         }
 
@@ -161,7 +166,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg6: Arg6
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
         }
 
@@ -185,7 +190,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg7: Arg7
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
         }
 
@@ -210,7 +215,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg8: Arg8
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
         }
 
@@ -236,7 +241,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg9: Arg9
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
         }
 
@@ -263,7 +268,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg10: Arg10
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
         }
 
@@ -291,7 +296,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg11: Arg11
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
         }
 
@@ -320,7 +325,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg12: Arg12
     ): ReturnValue {
         val invocation = suspend {
-            (retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
+            (sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
         }
 

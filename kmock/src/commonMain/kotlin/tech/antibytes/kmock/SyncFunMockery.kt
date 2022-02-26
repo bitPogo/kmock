@@ -13,9 +13,13 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
+    freeze: Boolean = true,
     spyOn: SideEffect? = null
 ) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>,
-    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, spyOn) {
+    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, freeze, spyOn) {
+
+    override var _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
+
     private fun execute(
         function: () -> ReturnValue,
         spy: (() -> ReturnValue)?,
@@ -24,7 +28,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         onEvent(arguments)
 
         return when (provider) {
-            Provider.RETURN_VALUE -> retrieveValue()
+            Provider.RETURN_VALUE -> returnValue
             Provider.RETURN_VALUES -> retrieveFromValues()
             Provider.SIDE_EFFECT -> function()
             Provider.SPY -> spy!!()
@@ -35,7 +39,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override fun invoke(): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as () -> ReturnValue)
+            (sideEffect as () -> ReturnValue)
                 .invoke()
         }
 
@@ -50,7 +54,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override fun <Arg0> invoke(arg0: Arg0): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0) -> ReturnValue)
+            (sideEffect as (Arg0) -> ReturnValue)
                 .invoke(arg0)
         }
 
@@ -65,7 +69,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override fun <Arg0, Arg1> invoke(arg0: Arg0, arg1: Arg1): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1) -> ReturnValue)
                 .invoke(arg0, arg1)
         }
 
@@ -80,7 +84,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override fun <Arg0, Arg1, Arg2> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2) -> ReturnValue)
                 .invoke(arg0, arg1, arg2)
         }
 
@@ -95,7 +99,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     @Suppress("UNCHECKED_CAST")
     override fun <Arg0, Arg1, Arg2, Arg3> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3)
         }
 
@@ -116,7 +120,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg4: Arg4
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4)
         }
 
@@ -138,7 +142,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg5: Arg5
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
         }
 
@@ -161,7 +165,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg6: Arg6
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
         }
 
@@ -185,7 +189,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg7: Arg7
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
         }
 
@@ -210,7 +214,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg8: Arg8
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
         }
 
@@ -236,7 +240,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg9: Arg9
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
         }
 
@@ -263,7 +267,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg10: Arg10
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
         }
 
@@ -291,7 +295,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg11: Arg11
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
         }
 
@@ -320,7 +324,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg12: Arg12
     ): ReturnValue {
         val invocation = {
-            (retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
+            (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
         }
 
