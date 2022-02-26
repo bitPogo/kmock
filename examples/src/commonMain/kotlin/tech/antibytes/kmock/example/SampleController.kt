@@ -44,4 +44,13 @@ class SampleController(
 
         return flow
     }
+
+    override fun findBlocking(id: String): ExampleContract.SampleDomainObject {
+        localRepository.contains(id)
+
+        val objc = remoteRepository.find(id)
+        localRepository.fetch(objc.id)
+
+        return objc.also { objc.id = "23" }
+    }
 }

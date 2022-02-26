@@ -21,9 +21,9 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
-    generatorTest.Relaxed::class -> generatorTest.RelaxedMock(verifier = verifier, spyOn = spyOn as
-        generatorTest.Relaxed) as Mock
-    generatorTest.RelaxedMock::class -> generatorTest.RelaxedMock(verifier = verifier, spyOn = spyOn
-        as generatorTest.Relaxed) as Mock
+    generatorTest.Relaxed::class -> generatorTest.RelaxedMock(verifier = verifier, freeze = freeze,
+        spyOn = spyOn as generatorTest.Relaxed) as Mock
+    generatorTest.RelaxedMock::class -> generatorTest.RelaxedMock(verifier = verifier, freeze =
+    freeze, spyOn = spyOn as generatorTest.Relaxed) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

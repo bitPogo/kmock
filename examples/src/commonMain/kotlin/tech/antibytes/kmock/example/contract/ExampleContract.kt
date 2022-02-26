@@ -28,6 +28,7 @@ interface ExampleContract {
     interface SampleController {
         suspend fun fetchAndStore(url: String): SampleDomainObject
         fun find(id: String): SharedFlow<SampleDomainObject>
+        fun findBlocking(id: String): SampleDomainObject
     }
 
     interface DecoderFactory {

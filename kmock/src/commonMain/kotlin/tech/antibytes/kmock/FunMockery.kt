@@ -36,8 +36,14 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val _provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
     protected val provider by _provider
 
+    private val collector: AtomicRef<Collector?> = atomic(resolveAtomicCollector(collector))
+    private val collectorNonFreezing: Collector? = if (!freeze) {
+        collector
+    } else {
+        null
+    }
+
     private val arguments: IsoMutableList<Array<out Any?>?> = sharedMutableListOf()
-    private val collector: AtomicRef<Collector> = atomic(collector)
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
     private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
@@ -49,6 +55,14 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         RETURN_VALUES(2),
         SIDE_EFFECT(3),
         SPY(4),
+    }
+
+    private fun resolveAtomicCollector(collector: Collector): Collector? {
+        return if (freeze) {
+            collector
+        } else {
+            null
+        }
     }
 
     private fun useSpyOrDefault(): Provider {
@@ -177,7 +191,17 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     private fun notifyCollector() {
-        collector.value.addReference(this, this._calls.value)
+        if (freeze) {
+            collector.value!!.addReference(
+                this,
+                this._calls.value
+            )
+        } else {
+            collectorNonFreezing!!.addReference(
+                this,
+                this._calls.value
+            )
+        }
     }
 
     protected fun onEvent(arguments: Array<out Any?>) {

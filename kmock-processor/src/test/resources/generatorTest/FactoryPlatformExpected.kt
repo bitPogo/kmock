@@ -22,8 +22,8 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     generatorTest.PropertyPlatform::class -> generatorTest.PropertyPlatformMock(verifier = verifier,
-        spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
+        freeze = freeze, spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
     generatorTest.PropertyPlatformMock::class -> generatorTest.PropertyPlatformMock(verifier =
-    verifier, spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
+    verifier, freeze = freeze, spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

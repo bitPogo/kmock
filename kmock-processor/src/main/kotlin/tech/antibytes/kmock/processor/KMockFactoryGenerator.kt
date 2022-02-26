@@ -133,13 +133,13 @@ internal class KMockFactoryGenerator(
             val qualifiedName = interfaze.qualifiedName!!.asString()
             val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
             function.addStatement(
-                "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as Mock",
+                "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L) as Mock",
                 qualifiedName,
                 interfaceName,
                 qualifiedName,
             )
             function.addStatement(
-                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as Mock",
+                "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L) as Mock",
                 interfaceName,
                 interfaceName,
                 qualifiedName,

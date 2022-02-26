@@ -19,6 +19,8 @@ plugins {
 
     // Processor
     id("com.google.devtools.ksp")
+
+    id("kotlinx-atomicfu")
 }
 
 group = KMockConfiguration.group
@@ -72,6 +74,10 @@ kotlin {
                 implementation(LocalDependency.antibytes.test.annotations)
                 implementation(LocalDependency.antibytes.test.coroutine)
                 implementation(LocalDependency.antibytes.test.fixture)
+
+                implementation(Dependency.multiplatform.stately.freeze)
+
+                implementation(Dependency.multiplatform.atomicFu.common)
 
                 api(project(":kmock"))
             }
