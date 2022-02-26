@@ -6,27 +6,19 @@
 
 package tech.antibytes.kmock
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.util.test.MockError
 import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
-import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
-import tech.antibytes.util.test.coroutine.TestScopeDispatcher
-import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
-import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -35,7 +27,7 @@ class AsyncFunMockeryUnfrozenSpec {
 
     @Test
     @JsName("fn1")
-    fun `Given a returnValue is set it is retrievable`() = runBlockingTest { 
+    fun `Given a returnValue is set it is retrievable`() = runBlockingTest {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
@@ -278,7 +270,6 @@ class AsyncFunMockeryUnfrozenSpec {
         mockery.sideEffect = { expected }
         mockery.returnValues = values
 
-
         val actual = mockery.invoke()
 
         // Then
@@ -363,12 +354,12 @@ class AsyncFunMockeryUnfrozenSpec {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5) // NOTE: These values get frozen
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
-        val capturedCalledIdx = AtomicReference<Int?>(null)
+        var capturedMock: KMockContract.Mockery<*, *>? = null
+        var capturedCalledIdx: Int? = null
 
         val collector = Collector { referredMock, referredCall ->
-            capturedMock.set(referredMock)
-            capturedCalledIdx.set(referredCall)
+            capturedMock = referredMock
+            capturedCalledIdx = referredCall
         }
 
         // When
@@ -378,9 +369,8 @@ class AsyncFunMockeryUnfrozenSpec {
 
         mockery.invoke()
 
-
-        capturedMock.get()?.id mustBe mockery.id
-        capturedCalledIdx.get() mustBe 0
+        capturedMock?.id mustBe mockery.id
+        capturedCalledIdx mustBe 0
     }
 
     @Test
@@ -492,7 +482,6 @@ class AsyncFunMockeryUnfrozenSpec {
         mockery.returnValue = value
         mockery.returnValues = values
         mockery.sideEffect = sideEffect
-
 
         mockery.invoke()
 

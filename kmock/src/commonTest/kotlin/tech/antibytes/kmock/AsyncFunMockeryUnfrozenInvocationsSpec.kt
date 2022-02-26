@@ -9,13 +9,8 @@ package tech.antibytes.kmock
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
-import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
-import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
-import tech.antibytes.util.test.coroutine.runBlockingTestInContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.mustBe
@@ -66,7 +61,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
         implementation.fun0 = {
             expected
         }
-        
+
         val actual = mockery.invoke()
 
         // Then
@@ -93,7 +88,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0)
 
@@ -128,7 +123,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0)
 
@@ -163,7 +158,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0, argument1)
 
@@ -204,7 +199,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0, argument1)
 
@@ -237,7 +232,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
         val actualArgument2 = AtomicReference<String?>(null)
 
         // When
-        
+
         mockery.sideEffect = { givenArg0, givenArg1, givenArg2 ->
             actualArgument0.set(givenArg0)
             actualArgument1.set(givenArg1)
@@ -245,7 +240,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0, argument1, argument2)
 
@@ -290,7 +285,7 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-        
+
         // When
         val actual = mockery.invoke(argument0, argument1, argument2)
 
@@ -481,7 +476,6 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
             spyOn = implementation::fun5,
             freeze = false
         )
-
 
         implementation.fun5 = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4 ->
             actualArgument0.set(givenArg0 as String?)
@@ -802,7 +796,6 @@ class AsyncFunMockeryUnfrozenInvocationsSpec {
 
             expected
         }
-
 
         val actual = mockery.invoke(
             argument0,

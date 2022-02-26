@@ -29,7 +29,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
 
     private var _returnValueUnfrozen: ReturnValue? = null
-    protected abstract var _returnValuesUnfrozen: MutableList<ReturnValue>
+    private val _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
     private var _sideEffectUnfrozen: SideEffect? = null
 
     private val _calls: AtomicInt = atomic(0)

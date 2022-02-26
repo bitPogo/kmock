@@ -67,7 +67,9 @@ kotlin {
                 implementation(Dependency.multiplatform.test.common)
                 implementation(Dependency.multiplatform.test.annotations)
                 implementation(Dependency.multiplatform.coroutines.common)
+
                 implementation(Dependency.multiplatform.stately.concurrency)
+                implementation(Dependency.multiplatform.stately.freeze)
 
                 implementation(LocalDependency.antibytes.test.annotations)
                 implementation(LocalDependency.antibytes.test.coroutine)

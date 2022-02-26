@@ -22,14 +22,23 @@ class PropertyMockery<Value>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<Value>? = null,
+    private val freeze: Boolean = true,
     private val spyOnGet: (Function0<Value>)? = null,
     private val spyOnSet: (Function1<Value, Unit>)? = null
 ) : KMockContract.PropertyMockery<Value> {
     private val provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
+
     private val _get: AtomicRef<Value?> = atomic(null)
     private val _getMany: IsoMutableList<Value> = sharedMutableListOf()
     private val _sideEffect: AtomicRef<Function0<Value>?> = atomic(null)
+
+    private var _getUnfrozen: Value? = null
+    private val _getManyUnfrozen: MutableList<Value> = mutableListOf()
+    private var _sideEffectUnfrozen: Function0<Value>? = null
+
     private val _set: AtomicRef<((Value) -> Unit)> = atomic { /*Do Nothing on Default*/ }
+    private var _setUnfrozen: Function1<Value, Unit> = { /*Do Nothing on Default*/ }
+
     private val _calls: AtomicInt = atomic(0)
     private val arguments: IsoMutableList<GetOrSet> = sharedMutableListOf()
     private val collector: AtomicRef<Collector> = atomic(collector)
@@ -65,47 +74,108 @@ class PropertyMockery<Value>(
         }
     }
 
+    private fun setGetValue(value: Value) {
+        if (freeze) {
+            _get.update { value }
+        } else {
+            _getUnfrozen = value
+        }
+    }
+
     override var get: Value
         @Suppress("UNCHECKED_CAST")
-        get() = _get.value as Value
+        get() {
+            return if (freeze) {
+                _get.value
+            } else {
+                _getUnfrozen
+            } as Value
+        }
         set(value) {
             setProvider(Provider.VALUE)
-            _get.update { value }
+            setGetValue(value)
         }
 
+    private fun setGetManyValue(values: List<Value>) {
+        if (freeze) {
+            _getMany.clear()
+            _getMany.addAll(values)
+        } else {
+            _getManyUnfrozen.clear()
+            _getManyUnfrozen.addAll(values)
+        }
+    }
+
+    private fun _getGetMany(): MutableList<Value> {
+        return if (freeze) {
+            _getMany
+        } else {
+            _getManyUnfrozen
+        }
+    }
+
     override var getMany: List<Value>
-        get() = _getMany.toList()
+        get() = _getGetMany().toList()
         set(values) {
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
                 setProvider(Provider.VALUES)
-                _getMany.clear()
-                _getMany.addAll(values)
+                setGetManyValue(values)
             }
         }
 
+    private fun _setGetSideEffect(sideEffect: Function0<Value>) {
+        if (freeze) {
+            _sideEffect.update { sideEffect }
+        } else {
+            _sideEffectUnfrozen = sideEffect
+        }
+    }
+
     override var getSideEffect: Function0<Value>
-        get() = _sideEffect.value as Function0<Value>
+        get() {
+            return if (freeze) {
+                _sideEffect.value
+            } else {
+                _sideEffectUnfrozen
+            } as Function0<Value>
+        }
         set(value) {
             setProvider(Provider.SIDE_EFFECT)
-            _sideEffect.update { value }
+            _setGetSideEffect(value)
         }
 
+    private fun setSetSideEffect(sideEffect: Function1<Value, Unit>) {
+        if (freeze) {
+            _set.update { sideEffect }
+        } else {
+            _setUnfrozen = sideEffect
+        }
+    }
+
     override var set: (Value) -> Unit
-        get() = _set.value
+        get() {
+            return if (freeze) {
+                _set.value
+            } else {
+                _setUnfrozen
+            }
+        }
         set(value) {
-            _set.update { value }
+            setSetSideEffect(value)
         }
 
     override val calls: Int
         get() = _calls.value
 
     private fun retrieveValue(): Value {
-        return if (_getMany.size == 1) {
-            _getMany.first()
+        val values = _getGetMany()
+
+        return if (values.size == 1) {
+            values.first()
         } else {
-            _getMany.removeAt(0)
+            values.removeAt(0)
         }
     }
 
@@ -139,9 +209,9 @@ class PropertyMockery<Value>(
         onEvent(GetOrSet.Get)
 
         return when (provider.value) {
-            Provider.VALUE -> _get.value!!
+            Provider.VALUE -> get
             Provider.VALUES -> retrieveValue()
-            Provider.SIDE_EFFECT -> _sideEffect.value!!.invoke()
+            Provider.SIDE_EFFECT -> getSideEffect.invoke()
             Provider.SPY -> spyOnGet!!.invoke()
             else -> invokeRelaxerOrFail()
         }
@@ -157,12 +227,23 @@ class PropertyMockery<Value>(
 
     override fun getArgumentsForCall(callIndex: Int): GetOrSet = arguments[callIndex]
 
+    private fun clearValueHolders() {
+        if (freeze) {
+            _get.update { null }
+            _getMany.clear()
+            _sideEffect.update { null }
+            _set.update { { /*Do Nothing on Default*/ } }
+        } else {
+            _getUnfrozen = null
+            _getManyUnfrozen.clear()
+            _sideEffectUnfrozen = null
+            _setUnfrozen = { /*Do Nothing on Default*/ }
+        }
+    }
+
     override fun clear() {
         provider.update { useSpyOrDefault() }
-        _get.update { null }
-        _getMany.clear()
-        _sideEffect.update { null }
-        _set.update { { /*Do Nothing on Default*/ } }
+        clearValueHolders()
         _calls.update { 0 }
         arguments.clear()
     }

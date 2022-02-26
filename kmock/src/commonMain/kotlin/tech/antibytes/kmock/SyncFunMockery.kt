@@ -17,9 +17,6 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     spyOn: SideEffect? = null
 ) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>,
     FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, freeze, spyOn) {
-
-    override var _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
-
     private fun execute(
         function: () -> ReturnValue,
         spy: (() -> ReturnValue)?,

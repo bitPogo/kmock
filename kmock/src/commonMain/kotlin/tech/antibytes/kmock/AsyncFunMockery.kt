@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
 
@@ -18,9 +17,6 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     spyOn: SideEffect? = null
 ) : KMockContract.AsyncFunMockery<ReturnValue, SideEffect>,
     FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, freeze, spyOn) {
-
-    override var _returnValuesUnfrozen: MutableList<ReturnValue> = sharedMutableListOf()
-
     private suspend fun execute(
         function: suspend () -> ReturnValue,
         spy: (suspend () -> ReturnValue)?,
