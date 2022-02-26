@@ -1,6 +1,7 @@
 // COMMON SOURCE
 package test
 
+import kotlin.Boolean
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 

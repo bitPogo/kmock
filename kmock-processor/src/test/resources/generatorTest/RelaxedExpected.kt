@@ -14,6 +14,7 @@ import tech.antibytes.kmock.SyncFunMockery
 internal class RelaxedMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: Relaxed? = null,
+    freeze: Boolean = true,
     relaxed: Boolean = false
 ) : Relaxed {
     public override val buzz: String
@@ -21,18 +22,18 @@ internal class RelaxedMock(
 
     public val _buzz: KMockContract.PropertyMockery<String> =
         PropertyMockery("generatorTest.Relaxed#_buzz", spyOnGet = if (spyOn != null) { { spyOn.buzz }
-        } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId -> relaxed(mockId) } }
-        else { null })
+        } else { null }, collector = verifier, freeze = freeze, relaxer = if(relaxed) { { mockId ->
+            relaxed(mockId) } } else { null })
 
     public val _foo: KMockContract.SyncFunMockery<String, (kotlin.Any) -> kotlin.String> =
         SyncFunMockery("generatorTest.Relaxed#_foo", spyOn = if (spyOn != null) { { payload ->
-            foo(payload) } } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
-            relaxed(mockId) } } else { null })
+            foo(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if(relaxed)
+        { { mockId -> relaxed(mockId) } } else { null })
 
     public val _bar: KMockContract.AsyncFunMockery<String, suspend (kotlin.Any) -> kotlin.String> =
         AsyncFunMockery("generatorTest.Relaxed#_bar", spyOn = if (spyOn != null) { { payload ->
-            bar(payload) } } else { null }, collector = verifier, relaxer = if(relaxed) { { mockId ->
-            relaxed(mockId) } } else { null })
+            bar(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if(relaxed)
+        { { mockId -> relaxed(mockId) } } else { null })
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 

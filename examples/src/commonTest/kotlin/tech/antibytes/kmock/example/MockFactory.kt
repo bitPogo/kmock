@@ -10,10 +10,12 @@ import tech.antibytes.kmock.KMockContract
 
 internal expect inline fun <reified T> kmock(
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit },
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
+    freeze: Boolean = true
 ): T
 
 internal expect inline fun <reified T> kspy(
+    spyOn: T,
     verifier: KMockContract.Collector = KMockContract.Collector { _, _ -> Unit },
-    spyOn: T
+    freeze: Boolean = true
 ): T

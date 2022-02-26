@@ -18,8 +18,6 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TARGET
 import java.io.File
 
 internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
-    private val boolean = TypeVariableName("Boolean")
-
     private fun guardPackageName(rootPackage: String) {
         if (rootPackage.isEmpty()) {
             throw StopExecutionException("Missing package definition!")
@@ -27,7 +25,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     }
 
     private fun buildRelaxedParameter(): ParameterSpec {
-        return ParameterSpec.builder("relaxed", boolean)
+        return ParameterSpec.builder("relaxed", Boolean::class)
             .defaultValue("false")
             .build()
     }
@@ -39,7 +37,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     }
 
     private fun buildFreezeParameter(): ParameterSpec {
-        return ParameterSpec.builder("freeze", boolean)
+        return ParameterSpec.builder("freeze", Boolean::class)
             .defaultValue("true")
             .build()
     }

@@ -23,12 +23,10 @@ internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
-    private val boolean = TypeVariableName("Boolean")
-
     private fun buildRelaxedParameter(
         isKmp: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("relaxed", boolean)
+        val parameter = ParameterSpec.builder("relaxed", Boolean::class)
         if (!isKmp) {
             parameter.defaultValue("false")
         }
@@ -49,7 +47,7 @@ internal class KMockFactoryGenerator(
     private fun buildFreezeParameter(
         isKmp: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("freeze", boolean)
+        val parameter = ParameterSpec.builder("freeze", Boolean::class)
         if (!isKmp) {
             parameter.defaultValue("true")
         }

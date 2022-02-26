@@ -1,5 +1,6 @@
 package generatorTest
 
+import kotlin.Boolean
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
