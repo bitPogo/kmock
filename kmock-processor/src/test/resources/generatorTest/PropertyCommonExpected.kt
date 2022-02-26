@@ -19,18 +19,27 @@ internal class PropertyCommonMock(
     public override val foo: String
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyMockery<String> =
-        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = if (spyOn != null) { {
-            spyOn.foo } } else { null }, collector = verifier, freeze = freeze, )
+    public val _foo: KMockContract.PropertyMockery<String> = if (spyOn == null) {
+        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = null, collector = verifier,
+            freeze = freeze, )
+    } else {
+        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = { spyOn.foo }, collector =
+        verifier, freeze = freeze, )
+    }
+
 
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
-    public val _buzz: KMockContract.PropertyMockery<Any> =
-        PropertyMockery("generatorTest.PropertyCommon#buzz", spyOnGet = if (spyOn != null) { {
-            spyOn.buzz } } else { null }, spyOnSet = if (spyOn != null) { { spyOn.buzz = it } } else {
-            null }, collector = verifier, freeze = freeze, )
+    public val _buzz: KMockContract.PropertyMockery<Any> = if (spyOn == null) {
+        PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = null, spyOnSet = null,
+            collector = verifier, freeze = freeze, )
+    } else {
+        PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet =
+        { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, )
+    }
+
 
     public fun _clearMock(): Unit {
         _foo.clear()
