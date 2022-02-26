@@ -103,6 +103,7 @@ internal class KMockFactoryGenerator(
     ): FunSpec {
         val factory = FunSpec.builder("kmock")
         val type = TypeVariableName("T")
+
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(type.copy(reified = true))
             .returns(type)
@@ -118,7 +119,7 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildSpyParameter(): ParameterSpec {
-        return ParameterSpec.builder("spyOn", TypeVariableName("T"))
+        return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
             .build()
     }
 
@@ -126,25 +127,25 @@ internal class KMockFactoryGenerator(
         function: FunSpec.Builder,
         interfaces: List<KSClassDeclaration>,
     ): FunSpec.Builder {
-        function.beginControlFlow("return when (T::class)")
+        function.beginControlFlow("return when (Mock::class)")
 
         interfaces.forEach { interfaze ->
             val qualifiedName = interfaze.qualifiedName!!.asString()
             val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
             function.addStatement(
-                "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L, freeze = freeze) as T",
+                "%L::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as Mock",
                 qualifiedName,
                 interfaceName,
                 qualifiedName,
             )
             function.addStatement(
-                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L, freeze = freeze) as T",
+                "%LMock::class -> %LMock(verifier = verifier, spyOn = spyOn as %L) as Mock",
                 interfaceName,
                 interfaceName,
                 qualifiedName,
             )
         }
-        function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${T::class.simpleName}.\")")
+        function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${Mock::class.simpleName}.\")")
         function.endControlFlow()
 
         return function
@@ -155,10 +156,13 @@ internal class KMockFactoryGenerator(
         interfaces: List<KSClassDeclaration>,
     ): FunSpec {
         val factory = FunSpec.builder("kspy")
-        val type = TypeVariableName("T")
+        val spy = TypeVariableName("SpyOn")
+        val mock = TypeVariableName("Mock").copy(bounds = listOf(spy))
+
         factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
-            .addTypeVariable(type.copy(reified = true))
-            .returns(type)
+            .addTypeVariable(mock.copy(reified = true))
+            .addTypeVariable(spy.copy(reified = true))
+            .returns(mock)
             .addParameter(buildSpyParameter())
             .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildFreezeParameter(isKmp))

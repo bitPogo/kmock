@@ -57,17 +57,19 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     }
 
     private fun buildSpyParameter(): ParameterSpec {
-        return ParameterSpec.builder("spyOn", TypeVariableName("T"))
+        return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
             .build()
     }
 
     private fun buildSpyFactory(): FunSpec {
         val factory = FunSpec.builder("kspy")
-        val type = TypeVariableName("T")
+        val spy = TypeVariableName("SpyOn")
+        val mock = TypeVariableName("Mock").copy(bounds = listOf(spy))
 
         return factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
-            .addTypeVariable(type.copy(reified = true))
-            .returns(type)
+            .addTypeVariable(mock.copy(reified = true))
+            .addTypeVariable(spy.copy(reified = true))
+            .returns(mock)
             .addParameter(buildSpyParameter())
             .addParameter(buildVerifierParameter())
             .addParameter(buildFreezeParameter())

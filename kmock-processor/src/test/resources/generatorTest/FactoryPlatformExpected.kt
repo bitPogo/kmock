@@ -16,14 +16,14 @@ internal inline fun <reified T> kmock(
     else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
 }
 
-internal inline fun <reified T> kspy(
-    spyOn: T,
+internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
-): T = when (T::class) {
+): Mock = when (Mock::class) {
     generatorTest.PropertyPlatform::class -> generatorTest.PropertyPlatformMock(verifier = verifier,
-        spyOn = spyOn as generatorTest.PropertyPlatform, freeze = freeze) as T
+        spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
     generatorTest.PropertyPlatformMock::class -> generatorTest.PropertyPlatformMock(verifier =
-    verifier, spyOn = spyOn as generatorTest.PropertyPlatform, freeze = freeze) as T
-    else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
+    verifier, spyOn = spyOn as generatorTest.PropertyPlatform) as Mock
+    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
