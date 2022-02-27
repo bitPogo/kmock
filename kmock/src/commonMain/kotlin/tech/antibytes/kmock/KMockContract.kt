@@ -16,6 +16,10 @@ interface KMockContract {
         fun clear()
     }
 
+    fun interface Relaxer<T> {
+        fun relax(id: String): T
+    }
+
     interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue, Array<out Any?>?> {
         var returnValue: ReturnValue
         var returnValues: List<ReturnValue>
@@ -303,19 +307,23 @@ interface KMockContract {
         fun onSet(value: Value)
     }
 
+    fun interface Collector {
+        fun addReference(referredMock: Mockery<*, *>, referredCall: Int)
+    }
+
     interface VerificationHandle {
         val id: String
         val callIndices: List<Int>
+    }
+
+    fun interface MatcherConstraint {
+        fun matches(actual: Any?): Boolean
     }
 
     data class Reference(
         val mockery: Mockery<*, *>,
         val callIndex: Int
     )
-
-    fun interface Collector {
-        fun addReference(referredMock: Mockery<*, *>, referredCall: Int)
-    }
 
     interface VerificationReferenceBuilder {
         fun ensureVerificationOf(vararg mocks: Mockery<*, *>)
@@ -334,10 +342,6 @@ interface KMockContract {
         val references: List<Reference>
 
         fun clear()
-    }
-
-    fun interface Relaxer<T> {
-        fun relax(id: String): T
     }
 
     companion object {

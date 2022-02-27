@@ -11,25 +11,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.PropertyMockery
-import tech.antibytes.kmock.SyncFunMockery
-import tech.antibytes.kmock.Verifier
-import tech.antibytes.kmock.assertHadBeenCalledStrictlyWith
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
-import tech.antibytes.kmock.hasBeenCalledWith
-import tech.antibytes.kmock.hasBeenCalledWithout
-import tech.antibytes.kmock.hasBeenStrictlyCalledWith
-import tech.antibytes.kmock.verify
-import tech.antibytes.kmock.verifyOrder
-import tech.antibytes.kmock.verifyStrictOrder
-import tech.antibytes.kmock.wasGotten
-import tech.antibytes.kmock.wasSet
-import tech.antibytes.kmock.wasSetTo
+import tech.antibytes.kmock.mock.AsyncFunMockery
+import tech.antibytes.kmock.mock.PropertyMockery
+import tech.antibytes.kmock.mock.SyncFunMockery
+import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.assertHasBeenCalledStrictlyWith
+import tech.antibytes.kmock.verification.hasBeenCalledWith
+import tech.antibytes.kmock.verification.hasBeenCalledWithout
+import tech.antibytes.kmock.verification.hasBeenStrictlyCalledWith
+import tech.antibytes.kmock.verification.verify
+import tech.antibytes.kmock.verification.verifyOrder
+import tech.antibytes.kmock.verification.verifyStrictOrder
+import tech.antibytes.kmock.verification.wasGotten
+import tech.antibytes.kmock.verification.wasSet
+import tech.antibytes.kmock.verification.wasSetTo
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
@@ -143,9 +143,9 @@ class SampleControllerSpec {
 
             delay(20)
 
-            local.contains.assertHadBeenCalledStrictlyWith(1, idOrg)
-            local.fetch.assertHadBeenCalledStrictlyWith(1, id)
-            remote.find.assertHadBeenCalledStrictlyWith(1, idOrg)
+            local.contains.assertHasBeenCalledStrictlyWith(1, idOrg)
+            local.fetch.assertHasBeenCalledStrictlyWith(1, id)
+            remote.find.assertHasBeenCalledStrictlyWith(1, idOrg)
 
             verifier.verifyStrictOrder {
                 local.contains.hasBeenStrictlyCalledWith(idOrg)
