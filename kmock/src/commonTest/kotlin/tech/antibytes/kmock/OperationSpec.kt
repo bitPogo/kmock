@@ -29,7 +29,7 @@ class OperationSpec {
 
         // When
         val actualUnion = handle1 union handle2
-        val actualAnd = handle1 and handle2
+        val actualOr = handle1 or handle2
 
         // Then
         val expected = values1.toMutableList()
@@ -38,7 +38,7 @@ class OperationSpec {
             .toList()
             .sorted()
 
-        actualAnd mustBe actualUnion
+        actualOr mustBe actualUnion
 
         actualUnion.id mustBe handle1.id
         actualUnion.callIndices.forEachIndexed { idx, value ->
@@ -66,12 +66,12 @@ class OperationSpec {
 
         // When
         val actualIntersect = handle1 intersect handle2
-        val actualOr = handle1 or handle2
+        val actualAnd = handle1 and handle2
 
         // Then
         val expected = base.sorted()
 
-        actualOr mustBe actualIntersect
+        actualAnd mustBe actualIntersect
 
         actualIntersect.id mustBe handle1.id
         actualIntersect.callIndices.forEachIndexed { idx, value ->

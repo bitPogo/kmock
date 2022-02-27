@@ -37,6 +37,8 @@ private fun shareHandle(
     }
 }
 
+fun FunMockery<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
+
 fun FunMockery<*, *>.hasBeenCalledWith(
     vararg values: Any?
 ): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*values) }

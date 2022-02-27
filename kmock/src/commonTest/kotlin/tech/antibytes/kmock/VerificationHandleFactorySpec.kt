@@ -22,7 +22,43 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn0")
-    fun `Given wasCalledWithArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if there were no calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = FunMockeryStub(name, 0)
+
+        // When
+        val actual = mock.hasBeenCalled()
+
+        // Then
+        actual mustBe VerificationHandle(name, emptyList())
+    }
+
+    @Test
+    @JsName("fn1")
+    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if there were calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = FunMockeryStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            fixture.listFixture<String>().toTypedArray()
+        }
+
+        // When
+        val actual = mock.hasBeenCalled()
+
+        // Then
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+    
+    @Test
+    @JsName("fn2")
+    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -35,8 +71,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn1")
-    fun `Given wasCalledWithArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    @JsName("fn3")
+    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -57,8 +93,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn2")
-    fun `Given wasCalledWithArguments is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    @JsName("fn4")
+    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -80,8 +116,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn3")
-    fun `Given wasCalledWithArguments is called with a FunMockery it propagtes its handle`() {
+    @JsName("fn5")
+    fun `Given hasBeenCalledWith is called with a FunMockery it propagtes its handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
@@ -107,8 +143,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn4")
-    fun `Given wasCalledWithArgumentsStrict is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    @JsName("fn6")
+    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -121,8 +157,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn5")
-    fun `Given wasCalledWithArgumentsStrict is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    @JsName("fn7")
+    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -143,8 +179,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn6")
-    fun `Given wasCalledWithArgumentsStrict is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    @JsName("fn8")
+    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -166,8 +202,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn7")
-    fun `Given wasCalledWithArgumentsStrict is called with a FunMockery it propagates its Handle`() {
+    @JsName("fn9")
+    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
@@ -194,8 +230,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn8")
-    fun `Given wasCalledWithoutArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    @JsName("fn10")
+    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 0)
@@ -208,8 +244,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn9")
-    fun `Given wasCalledWithoutArguments is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    @JsName("fn11")
+    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -231,8 +267,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn10")
-    fun `Given wasCalledWithoutArguments is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    @JsName("fn12")
+    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
@@ -253,8 +289,8 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn11")
-    fun `Given wasCalledWithoutArguments is called with a FunMockery it propagates its Handle`() {
+    @JsName("fn13")
+    fun `Given hasBeenCalledWithout is called with a FunMockery it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
@@ -279,7 +315,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn14")
     fun `Given wasGotten is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -301,7 +337,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn15")
     fun `Given wasGotten is called with a PropMockery it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -323,7 +359,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn16")
     fun `Given wasGotten is called with a PropMockery it it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -349,7 +385,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn17")
     fun `Given wasSet is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -371,7 +407,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn18")
     fun `Given wasSet is called with a PropMockery it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -393,7 +429,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn19")
     fun `Given wasSet is called with a PropMockery it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -419,7 +455,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn20")
     fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -441,7 +477,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn21")
     fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle while filtering mismatching Values`() {
         // Given
         val name: String = fixture.fixture()
@@ -463,7 +499,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn22")
     fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -486,7 +522,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn23")
     fun `Given wasSetTo is called with a PropMockery it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()

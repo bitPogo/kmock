@@ -8,6 +8,8 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.GetOrSet
 
+internal fun Array<out Any?>?.hasBeenCalledWithVoid(): Boolean = this == null
+
 internal fun Array<out Any?>?.hasBeenCalledWith(vararg values: Any?): Boolean {
     return when {
         this == null -> values.isEmpty()

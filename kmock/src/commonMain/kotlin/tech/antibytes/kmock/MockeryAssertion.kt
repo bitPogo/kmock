@@ -8,7 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.KMockContract.FunMockery
 
-fun FunMockery<*, *>.assertHadBeenCalled(
+fun FunMockery<*, *>.assertHasBeenCalled(
     exactly: Int,
 ) {
     verify(exactly = exactly) {
@@ -16,7 +16,7 @@ fun FunMockery<*, *>.assertHadBeenCalled(
     }
 }
 
-fun FunMockery<*, *>.assertHadBeenCalledWith(
+fun FunMockery<*, *>.assertHasBeenCalledWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
@@ -25,7 +25,7 @@ fun FunMockery<*, *>.assertHadBeenCalledWith(
     }
 }
 
-fun FunMockery<*, *>.assertHadBeenCalledStrictlyWith(
+fun FunMockery<*, *>.assertHasBeenCalledStrictlyWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
@@ -34,13 +34,13 @@ fun FunMockery<*, *>.assertHadBeenCalledStrictlyWith(
     }
 }
 
-fun FunMockery<*, *>.assertHadNotBeenCalled() {
+fun FunMockery<*, *>.assertHasNotBeenCalled() {
     verify(exactly = 0) {
         this.hasBeenCalledWith()
     }
 }
 
-fun FunMockery<*, *>.assertHadNotBeenCalledWith(vararg illegal: Any?) {
+fun FunMockery<*, *>.assertHasNotBeenCalledWith(vararg illegal: Any?) {
     verify(exactly = 0) {
         this.hasBeenCalledWith(*illegal)
     }

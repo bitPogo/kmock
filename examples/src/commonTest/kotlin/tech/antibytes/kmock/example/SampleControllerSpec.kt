@@ -16,7 +16,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
 import tech.antibytes.kmock.Verifier
-import tech.antibytes.kmock.assertHadBeenCalledStrictlyWith
+import tech.antibytes.kmock.assertHasBeenCalledStrictlyWith
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
@@ -143,9 +143,9 @@ class SampleControllerSpec {
 
             delay(20)
 
-            local.contains.assertHadBeenCalledStrictlyWith(1, idOrg)
-            local.fetch.assertHadBeenCalledStrictlyWith(1, id)
-            remote.find.assertHadBeenCalledStrictlyWith(1, idOrg)
+            local.contains.assertHasBeenCalledStrictlyWith(1, idOrg)
+            local.fetch.assertHasBeenCalledStrictlyWith(1, id)
+            remote.find.assertHasBeenCalledStrictlyWith(1, idOrg)
 
             verifier.verifyStrictOrder {
                 local.contains.hasBeenStrictlyCalledWith(idOrg)

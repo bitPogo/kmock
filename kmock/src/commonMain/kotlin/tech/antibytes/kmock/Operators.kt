@@ -18,7 +18,7 @@ infix fun KMockContract.VerificationHandle.union(
     )
 }
 
-infix fun KMockContract.VerificationHandle.and(
+infix fun KMockContract.VerificationHandle.or(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle = this.union(other)
 
@@ -35,7 +35,7 @@ infix fun KMockContract.VerificationHandle.intersect(
     )
 }
 
-infix fun KMockContract.VerificationHandle.or(
+infix fun KMockContract.VerificationHandle.and(
     other: KMockContract.VerificationHandle
 ): KMockContract.VerificationHandle = this.intersect(other)
 

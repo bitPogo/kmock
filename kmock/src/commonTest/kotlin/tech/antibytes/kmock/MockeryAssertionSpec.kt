@@ -30,7 +30,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadBeenCalled(exactly = 1)
+            mockery.assertHasBeenCalled(exactly = 1)
         }
     }
 
@@ -44,7 +44,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHadBeenCalled(exactly = 1)
+        mockery.assertHasBeenCalled(exactly = 1)
     }
 
     @Test
@@ -59,7 +59,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadBeenCalledWith(
+            mockery.assertHasBeenCalledWith(
                 exactly = 1,
                 arguments = fixture.listFixture<String>().toTypedArray()
             )
@@ -75,7 +75,7 @@ class MockeryAssertionSpec {
 
         mockery.getArgumentsForCall = { values }
         // When
-        mockery.assertHadBeenCalledWith(
+        mockery.assertHasBeenCalledWith(
             exactly = 1,
             values[0]
         )
@@ -93,7 +93,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadBeenCalledStrictlyWith(
+            mockery.assertHasBeenCalledStrictlyWith(
                 exactly = 1,
                 values[0]
             )
@@ -110,7 +110,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHadBeenCalledStrictlyWith(
+        mockery.assertHasBeenCalledStrictlyWith(
             exactly = 1,
             arguments = values
         )
@@ -128,7 +128,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadNotBeenCalled()
+            mockery.assertHasNotBeenCalled()
         }
     }
 
@@ -142,7 +142,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHadNotBeenCalled()
+        mockery.assertHasNotBeenCalled()
     }
 
     @Test
@@ -157,7 +157,7 @@ class MockeryAssertionSpec {
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadNotBeenCalledWith(values[0])
+            mockery.assertHasNotBeenCalledWith(values[0])
         }
     }
 
@@ -171,7 +171,7 @@ class MockeryAssertionSpec {
         mockery.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHadNotBeenCalledWith(fixture.fixture())
+        mockery.assertHasNotBeenCalledWith(fixture.fixture())
     }
 
     @Test
