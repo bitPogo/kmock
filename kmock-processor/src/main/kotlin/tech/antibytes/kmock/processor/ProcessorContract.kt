@@ -10,13 +10,13 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.ClassName
-import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.PropertyMockery
-import tech.antibytes.kmock.SyncFunMockery
+import tech.antibytes.kmock.mock.AsyncFunMockery
+import tech.antibytes.kmock.mock.PropertyMockery
+import tech.antibytes.kmock.mock.SyncFunMockery
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -81,7 +81,7 @@ internal interface ProcessorContract {
         )
 
         val UNIT_RELAXER = ClassName(
-            KMockContract::class.java.packageName,
+            SyncFunMockery::class.java.packageName,
             "relaxVoidFunction"
         )
 

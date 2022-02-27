@@ -5,12 +5,12 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Unit
-import tech.antibytes.kmock.AsyncFunMockery
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.PropertyMockery
-import tech.antibytes.kmock.SyncFunMockery
-import tech.antibytes.kmock.relaxVoidFunction
+import tech.antibytes.kmock.mock.AsyncFunMockery
+import tech.antibytes.kmock.mock.PropertyMockery
+import tech.antibytes.kmock.mock.SyncFunMockery
+import tech.antibytes.kmock.mock.relaxVoidFunction
 
 internal class SyncFunctionCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
