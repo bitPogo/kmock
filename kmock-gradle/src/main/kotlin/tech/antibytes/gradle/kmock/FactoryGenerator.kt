@@ -30,6 +30,12 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
             .build()
     }
 
+    private fun buildUnitRelaxedParameter(): ParameterSpec {
+        return ParameterSpec.builder("relaxUnitFun", Boolean::class)
+            .defaultValue("false")
+            .build()
+    }
+
     private fun buildVerifierParameter(): ParameterSpec {
         return ParameterSpec.builder("verifier", COLLECTOR_NAME)
             .defaultValue("Collector { _, _ -> Unit }")
@@ -51,6 +57,7 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
             .returns(type)
             .addParameter(buildVerifierParameter())
             .addParameter(buildRelaxedParameter())
+            .addParameter(buildUnitRelaxedParameter())
             .addParameter(buildFreezeParameter())
             .addModifiers(KModifier.EXPECT)
             .build()

@@ -8,6 +8,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 internal expect inline fun <reified T> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): T
 

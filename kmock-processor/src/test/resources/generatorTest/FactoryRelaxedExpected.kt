@@ -7,12 +7,13 @@ import tech.antibytes.kmock.KMockContract.Collector
 internal inline fun <reified T> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): T = when (T::class) {
     generatorTest.Relaxed::class -> generatorTest.RelaxedMock(verifier = verifier, relaxed = relaxed,
-        freeze = freeze) as T
+        relaxUnitFun = relaxUnitFun, freeze = freeze) as T
     generatorTest.RelaxedMock::class -> generatorTest.RelaxedMock(verifier = verifier, relaxed =
-    relaxed, freeze = freeze) as T
+    relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as T
     else -> throw RuntimeException("Unknown Interface ${T::class.simpleName}.")
 }
 

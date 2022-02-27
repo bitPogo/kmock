@@ -34,6 +34,17 @@ internal class KMockFactoryGenerator(
         return parameter.build()
     }
 
+    private fun buildUnitRelaxedParameter(
+        isKmp: Boolean
+    ): ParameterSpec {
+        val parameter = ParameterSpec.builder("relaxUnitFun", Boolean::class)
+        if (!isKmp) {
+            parameter.defaultValue("false")
+        }
+
+        return parameter.build()
+    }
+
     private fun buildVerifierParameter(
         isKmp: Boolean
     ): ParameterSpec {
@@ -67,24 +78,24 @@ internal class KMockFactoryGenerator(
 
             if (relaxer == null) {
                 function.addStatement(
-                    "%L::class -> %LMock(verifier = verifier, freeze = freeze) as T",
+                    "%L::class -> %LMock(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
                     qualifiedName,
                     interfaceName,
                 )
 
                 function.addStatement(
-                    "%LMock::class -> %LMock(verifier = verifier, freeze = freeze) as T",
+                    "%LMock::class -> %LMock(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
                     interfaceName,
                     interfaceName,
                 )
             } else {
                 function.addStatement(
-                    "%L::class -> %LMock(verifier = verifier, relaxed = relaxed, freeze = freeze) as T",
+                    "%L::class -> %LMock(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
                     qualifiedName,
                     interfaceName,
                 )
                 function.addStatement(
-                    "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed, freeze = freeze) as T",
+                    "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
                     interfaceName,
                     interfaceName,
                 )
@@ -109,6 +120,7 @@ internal class KMockFactoryGenerator(
             .returns(type)
             .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildRelaxedParameter(isKmp))
+            .addParameter(buildUnitRelaxedParameter(isKmp))
             .addParameter(buildFreezeParameter(isKmp))
 
         if (isKmp) {
