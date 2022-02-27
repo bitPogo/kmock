@@ -13,5 +13,5 @@ import tech.antibytes.kmock.KMockContract
 class isNotSame(
     private val illegal: Any?
 ) : KMockContract.MatcherConstraint {
-    override fun matches(value: Any?): Boolean = illegal !== value
+    override fun matches(actual: Any?): Boolean = illegal !== actual
 }

@@ -317,7 +317,7 @@ interface KMockContract {
     }
 
     fun interface MatcherConstraint {
-        fun matches(value: Any?): Boolean
+        fun matches(actual: Any?): Boolean
     }
 
     data class Reference(

@@ -14,11 +14,11 @@ import kotlin.reflect.KClass
 class any(
     private val expected: KClass<*>? = null
 ) : KMockContract.MatcherConstraint {
-    override fun matches(value: Any?): Boolean {
+    override fun matches(actual: Any?): Boolean {
         return when {
             expected == null -> true
-            value == null -> false
-            else -> value::class == expected
+            actual == null -> false
+            else -> actual::class == expected
         }
     }
 }

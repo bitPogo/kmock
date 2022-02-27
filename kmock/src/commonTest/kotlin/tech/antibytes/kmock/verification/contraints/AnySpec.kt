@@ -47,7 +47,7 @@ class AnySpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn3")
     fun `Given any is called it returns false if the given KClass and the call was null`() {
         // When
         val actual = any(Any::class).matches(null)
@@ -57,7 +57,7 @@ class AnySpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn4")
     fun `Given any is called it returns true if the given KClass and the call KClass are matching`() {
         // Given
         val value = true

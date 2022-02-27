@@ -99,7 +99,7 @@ class VerificationHandleFactorySpec {
         // Given
         val name: String = fixture.fixture()
         val mock = FunMockeryStub(name, 1)
-        val values = fixture.listFixture<String>().toTypedArray()
+        val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -109,7 +109,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        val actual = mock.hasBeenCalledWith(*(values.sorted()).toTypedArray())
+        val actual = mock.hasBeenCalledWith(*values)
 
         // Then
         actual mustBe VerificationHandle(name, listOf(0))
@@ -122,7 +122,7 @@ class VerificationHandleFactorySpec {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
-        val values = fixture.listFixture<String>().toTypedArray()
+        val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
         val builder = VerificationChainBuilderStub(captured)
         val mock = FunMockeryStub(name, 1, verificationBuilderReference = builder)
@@ -135,7 +135,7 @@ class VerificationHandleFactorySpec {
         }
 
         // When
-        mock.hasBeenCalledWith(*(values.sorted()).toTypedArray())
+        mock.hasBeenCalledWith(*values)
         val actual = captured.first()
 
         // Then

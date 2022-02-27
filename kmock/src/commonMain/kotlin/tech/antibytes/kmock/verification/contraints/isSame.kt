@@ -13,5 +13,5 @@ import tech.antibytes.kmock.KMockContract
 class isSame(
     private val expected: Any?
 ) : KMockContract.MatcherConstraint {
-    override fun matches(value: Any?): Boolean = expected === value
+    override fun matches(actual: Any?): Boolean = expected === actual
 }
