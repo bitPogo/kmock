@@ -13,10 +13,18 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
+    unitFunRelaxer: Relaxer<ReturnValue?>? = null,
     freeze: Boolean = true,
     spyOn: SideEffect? = null
 ) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>,
-    FunMockery<ReturnValue, SideEffect>(id, collector, relaxer, freeze, spyOn) {
+    FunMockery<ReturnValue, SideEffect>(
+        id = id,
+        collector = collector,
+        relaxer = relaxer,
+        unitFunRelaxer = unitFunRelaxer,
+        freeze = freeze,
+        spyOn = spyOn
+    ) {
     private fun execute(
         function: () -> ReturnValue,
         spy: (() -> ReturnValue)?,

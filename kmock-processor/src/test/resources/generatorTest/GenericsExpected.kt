@@ -7,11 +7,13 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
+import tech.antibytes.kmock.relaxVoidFunction
 
 internal class GenericsMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: Generics<K, L>? = null,
-    freeze: Boolean = true
+    freeze: Boolean = true,
+    relaxUnitFun: Boolean = false
 ) : Generics<K, L> {
     public override var template: K
         get() = _template.onGet()
@@ -19,20 +21,22 @@ internal class GenericsMock<K : Any, L>(
 
     public val _template: KMockContract.PropertyMockery<K> = if (spyOn == null) {
         PropertyMockery("generatorTest.Generics#_template", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, )
+            collector = verifier, freeze = freeze, relaxer = null)
     } else {
         PropertyMockery("generatorTest.Generics#_template", spyOnGet = { spyOn.template }, spyOnSet
-        = { spyOn.template = it; Unit }, collector = verifier, freeze = freeze, )
+        = { spyOn.template = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
     public val _foo: KMockContract.SyncFunMockery<Unit, (Any?) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->
-            foo(payload) } } else { null }, collector = verifier, freeze = freeze, )
+            foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
     public val _fooWithInt: KMockContract.SyncFunMockery<Unit, (Int) -> kotlin.Unit> =
         SyncFunMockery("generatorTest.Generics#_fooWithInt", spyOn = if (spyOn != null) { { payload ->
-            foo(payload) } } else { null }, collector = verifier, freeze = freeze, )
+            foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 

@@ -62,6 +62,8 @@ class FactoryGeneratorSpec {
             }
         }
 
+        println(actual)
+
         actual!!.normalizeSource() mustBe expected.normalizeSource()
     }
 }
