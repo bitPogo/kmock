@@ -10,21 +10,23 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
+import tech.antibytes.kmock.relaxVoidFunction
 
 internal class PropertyCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: PropertyCommon? = null,
-    freeze: Boolean = true
+    freeze: Boolean = true,
+    relaxUnitFun: Boolean = false
 ) : PropertyCommon {
     public override val foo: String
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyMockery<String> = if (spyOn == null) {
         PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = null, collector = verifier,
-            freeze = freeze, )
+            freeze = freeze, relaxer = null)
     } else {
         PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = { spyOn.foo }, collector =
-        verifier, freeze = freeze, )
+        verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -34,10 +36,10 @@ internal class PropertyCommonMock(
 
     public val _buzz: KMockContract.PropertyMockery<Any> = if (spyOn == null) {
         PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, )
+            collector = verifier, freeze = freeze, relaxer = null)
     } else {
         PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet =
-        { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, )
+        { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 

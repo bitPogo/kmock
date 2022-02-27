@@ -21,7 +21,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>?,
-    unitFunRelaxer: Relaxer<ReturnValue>?,
+    unitFunRelaxer: Relaxer<ReturnValue?>?,
     private val freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunMockery<ReturnValue, SideEffect> {
@@ -47,7 +47,7 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val arguments: IsoMutableList<Array<out Any?>?> = sharedMutableListOf()
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
-    private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(unitFunRelaxer)
+    private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
 
     private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder

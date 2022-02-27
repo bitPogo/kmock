@@ -40,6 +40,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import java.util.Locale
 
@@ -91,11 +92,22 @@ internal class KMockGenerator(
         }
     }
 
-    private fun buildRelaxer(relaxer: Relaxer?): String {
-        return if (relaxer == null) {
-            ""
+    private fun buildRelaxers(relaxer: Relaxer?, useUnitFunRelaxer: Boolean): String {
+        val unitFunRelaxerStr = if (useUnitFunRelaxer) {
+            "unitFunRelaxer = if (relaxUnitFun) { { ${UNIT_RELAXER.simpleName}() } } else { null }"
         } else {
-            "relaxer = if(relaxed) { { mockId -> ${relaxer.functionName}(mockId) } } else { null }"
+            ""
+        }
+        val relaxerStr = if (relaxer != null) {
+            "relaxer = if (relaxed) { { mockId -> ${relaxer.functionName}(mockId) } } else { null }"
+        } else {
+            "relaxer = null"
+        }
+
+        return if (unitFunRelaxerStr.isEmpty()) {
+            relaxerStr
+        } else {
+            "$unitFunRelaxerStr, $relaxerStr"
         }
     }
 
@@ -114,9 +126,13 @@ internal class KMockGenerator(
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
         freeze.defaultValue("true")
 
+        val relaxUnit = ParameterSpec.builder("relaxUnitFun", Boolean::class)
+        relaxUnit.defaultValue("false")
+
         constructor.addParameter(collector.build())
         constructor.addParameter(spy.build())
         constructor.addParameter(freeze.build())
+        constructor.addParameter(relaxUnit.build())
 
         if (relaxer != null) {
             val relaxed = ParameterSpec.builder("relaxed", Boolean::class)
@@ -188,10 +204,10 @@ internal class KMockGenerator(
                 """.trimMargin(),
                 name,
                 "null",
-                buildRelaxer(relaxer),
+                buildRelaxers(relaxer, false),
                 name,
                 "{ spyOn.$propertyName }",
-                buildRelaxer(relaxer)
+                buildRelaxers(relaxer, false)
             )
         } else {
             propertyMock.initializer(
@@ -206,11 +222,11 @@ internal class KMockGenerator(
                 name,
                 "null",
                 "null",
-                buildRelaxer(relaxer),
+                buildRelaxers(relaxer, false),
                 name,
                 "{ spyOn.$propertyName }",
                 "{ spyOn.$propertyName = it; Unit }",
-                buildRelaxer(relaxer)
+                buildRelaxers(relaxer, false)
             )
         }
     }
@@ -317,7 +333,7 @@ internal class KMockGenerator(
             mockery,
             "$qualifier#$mockeryName",
             "if (spyOn != null) { ${buildFunctionSpyInvocation(functionName, parameterNames)} } else { null }",
-            buildRelaxer(relaxer)
+            buildRelaxers(relaxer, true)
         )
     }
 
@@ -567,7 +583,7 @@ internal class KMockGenerator(
         }
 
         implementation.primaryConstructor(
-            buildConstructor(superType, relaxer,)
+            buildConstructor(superType, relaxer)
         )
 
         template.getAllProperties().forEach { ksProperty ->
@@ -626,6 +642,7 @@ internal class KMockGenerator(
         file.addImport(PROP_NAME.packageName, PROP_NAME.simpleName)
         file.addImport(SYNC_FUN_NAME.packageName, SYNC_FUN_NAME.simpleName)
         file.addImport(ASYNC_FUN_NAME.packageName, ASYNC_FUN_NAME.simpleName)
+        file.addImport(UNIT_RELAXER.packageName, UNIT_RELAXER.simpleName)
 
         if (relaxer != null) {
             file.addImport(relaxer.packageName, relaxer.functionName)

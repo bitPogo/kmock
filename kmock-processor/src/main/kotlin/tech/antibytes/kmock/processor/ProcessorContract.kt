@@ -80,6 +80,11 @@ internal interface ProcessorContract {
             KMockContract::class.java.simpleName
         )
 
+        val UNIT_RELAXER = ClassName(
+            KMockContract::class.java.packageName,
+            "relaxVoidFunction"
+        )
+
         val SYNC_FUN_NAME = ClassName(
             SyncFunMockery::class.java.packageName,
             SyncFunMockery::class.java.simpleName

@@ -9,21 +9,23 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.PropertyMockery
 import tech.antibytes.kmock.SyncFunMockery
+import tech.antibytes.kmock.relaxVoidFunction
 
 internal class PropertyPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: PropertyPlatform? = null,
-    freeze: Boolean = true
+    freeze: Boolean = true,
+    relaxUnitFun: Boolean = false
 ) : PropertyPlatform {
     public override val foo: String
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyMockery<String> = if(spyOn == null) {
+    public val _foo: KMockContract.PropertyMockery<String> = if (spyOn == null) {
         PropertyMockery("generatorTest.PropertyPlatform#_foo", spyOnGet = null, collector =
-        verifier, freeze = freeze, )
+        verifier, freeze = freeze, relaxer = null)
     } else {
         PropertyMockery("generatorTest.PropertyPlatform#_foo", spyOnGet = { spyOn.foo }, collector
-        = verifier, freeze = freeze, )
+        = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -31,12 +33,12 @@ internal class PropertyPlatformMock(
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
-    public val _buzz: KMockContract.PropertyMockery<Any> = if(spyOn == null) {
+    public val _buzz: KMockContract.PropertyMockery<Any> = if (spyOn == null) {
         PropertyMockery("generatorTest.PropertyPlatform#_buzz", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, )
+            collector = verifier, freeze = freeze, relaxer = null)
     } else {
         PropertyMockery("generatorTest.PropertyPlatform#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet
-        = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, )
+        = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 

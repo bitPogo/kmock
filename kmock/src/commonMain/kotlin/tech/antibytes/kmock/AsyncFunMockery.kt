@@ -13,7 +13,7 @@ class AsyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
-    unitFunRelaxer: Relaxer<ReturnValue>? = null,
+    unitFunRelaxer: Relaxer<ReturnValue?>? = null,
     freeze: Boolean = true,
     spyOn: SideEffect? = null
 ) : KMockContract.AsyncFunMockery<ReturnValue, SideEffect>,
