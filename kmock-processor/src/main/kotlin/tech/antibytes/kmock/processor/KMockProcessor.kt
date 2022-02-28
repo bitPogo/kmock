@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
@@ -39,11 +40,47 @@ internal class KMockProcessor(
         )
     }
 
+    private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            MockShared::class.qualifiedName!!,
+            false
+        )
+    }
+
     private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
             RelaxerAnnotation::class.qualifiedName!!,
             false
         )
+    }
+
+    private fun stubCommonSources(
+        resolver: Resolver,
+        relaxer: Relaxer?
+    ): Aggregated {
+        val annotated = fetchCommonAnnotated(resolver)
+        val aggregated = aggregator.extractInterfaces(annotated)
+
+        TODO()
+        /*mockGenerator.writeCommonMocks(
+            aggregated.extractedInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
+
+        return aggregated*/
+    }
+
+    private fun stubSharedSources(
+        resolver: Resolver,
+        relaxer: Relaxer?
+    ): Aggregated {
+        val annotated = fetchSharedAnnotated(resolver)
+        val aggregated = aggregator.extractInterfaces(annotated)
+
+        //stubGenerator.writeSharedStubs(aggregated.extractedInterfaces, aggregated.dependencies)
+
+        return aggregated
     }
 
     private fun stubPlatformSources(
@@ -53,8 +90,8 @@ internal class KMockProcessor(
     ): List<KSAnnotated> {
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
-
-        mockGenerator.writePlatformMocks(
+        TODO()
+        /*mockGenerator.writePlatformMocks(
             aggregated.extractedInterfaces,
             aggregated.dependencies,
             relaxer
@@ -67,23 +104,7 @@ internal class KMockProcessor(
             relaxer
         )
 
-        return aggregated.illFormed
-    }
-
-    private fun stubCommonSources(
-        resolver: Resolver,
-        relaxer: Relaxer?
-    ): Aggregated {
-        val annotated = fetchCommonAnnotated(resolver)
-        val aggregated = aggregator.extractInterfaces(annotated)
-
-        mockGenerator.writeCommonMocks(
-            aggregated.extractedInterfaces,
-            aggregated.dependencies,
-            relaxer
-        )
-
-        return aggregated
+        return aggregated.illFormed*/
     }
 
     @OptIn(KotlinPoetKspPreview::class)

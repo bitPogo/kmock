@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
@@ -22,6 +23,7 @@ import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockAggregator(
@@ -30,23 +32,45 @@ internal class KMockAggregator(
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation {
         val annotation = annotations.first { annotation ->
             val annotationString = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-            ANNOTATION_NAME == annotationString || ANNOTATION_COMMON_NAME == annotationString
+            ANNOTATION_NAME == annotationString ||
+                ANNOTATION_COMMON_NAME == annotationString ||
+                ANNOTATION_SHARED_NAME == annotationString
         }
 
         return annotation
     }
 
-    private fun resolveInterfaces(
-        raw: List<KSType>,
-        interfaceCollector: MutableMap<String, KSClassDeclaration>
+    private fun resolveInterface(
+        interfaze: KSDeclaration,
+        sourceIndicator: String,
+        interfaceCollector: MutableMap<String, ProcessorContract.SharedSource>
     ) {
-        raw.forEach { value ->
-            val declaration = value.declaration
-            when {
-                declaration !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
-                declaration.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${declaration.toClassName()}.")
-                else -> interfaceCollector[declaration.qualifiedName!!.asString()] = declaration
+        when {
+            interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
+            interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
+            else -> interfaceCollector[interfaze.qualifiedName!!.asString()] = ProcessorContract.SharedSource(
+                sourceIndicator,
+                interfaze
+            )
+        }
+    }
+
+    private fun resolveInterfaces(
+        raw: Map<String, MutableList<KSType>>,
+        interfaceCollector: MutableMap<String, ProcessorContract.SharedSource>
+    ) {
+        raw.forEach { (sourceIndicator, interfaces) ->
+            interfaces.forEach { value ->
+                resolveInterface(value.declaration, sourceIndicator, interfaceCollector)
             }
+        }
+    }
+
+    private fun determineSourceCategory(stub: KSAnnotation): String {
+        return if (stub.arguments.size == 2) {
+            stub.arguments.first().value as String
+        } else {
+            ""
         }
     }
 
@@ -55,17 +79,21 @@ internal class KMockAggregator(
         annotated: Sequence<KSAnnotated>
     ): ProcessorContract.Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
-        val typeContainer = mutableListOf<KSType>()
-        val interfaceCollector: MutableMap<String, KSClassDeclaration> = mutableMapOf()
+        val typeContainer = mutableMapOf<String, MutableList<KSType>>()
+        val interfaceCollector: MutableMap<String, ProcessorContract.SharedSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
-            val Stub = findKMockAnnotation(annotatedSymbol.annotations)
+            val stub = findKMockAnnotation(annotatedSymbol.annotations)
 
-            if (Stub.arguments.isEmpty()) {
+            if (stub.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
             } else {
-                typeContainer.addAll(Stub.arguments.first().value as List<KSType>)
+                val sourceIndicator = determineSourceCategory(stub)
+                val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
+
+                interfaces.addAll(stub.arguments.last().value as List<KSType>)
+                typeContainer[sourceIndicator] = interfaces
                 fileCollector.add(annotatedSymbol.containingFile!!)
             }
         }

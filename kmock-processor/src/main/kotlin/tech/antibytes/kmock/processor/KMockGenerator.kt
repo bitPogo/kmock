@@ -671,6 +671,23 @@ internal class KMockGenerator(
         }
     }
 
+    override fun writeSharedMocks(
+        sourceMarker: String,
+        interfaces: List<KSClassDeclaration>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
+        /*
+        interfaces.forEach { template ->
+            writeMock(
+                template,
+                dependencies,
+                sourceMarker,
+                relaxer
+            )
+        }*/
+    }
+
     override fun writePlatformMocks(
         interfaces: List<KSClassDeclaration>,
         dependencies: List<KSFile>,

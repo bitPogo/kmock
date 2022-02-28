@@ -28,6 +28,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -104,7 +105,11 @@ class KMockAggregatorSpec {
         } returns if (fixture.random.access { it.nextBoolean() }) {
             Mock::class.qualifiedName!!
         } else {
-            MockCommon::class.qualifiedName!!
+            if (fixture.random.access { it.nextBoolean() }) {
+                MockCommon::class.qualifiedName!!
+            } else {
+                MockShared::class.qualifiedName!!
+            }
         }
 
         every { source.annotations } returns sourceAnnotations
@@ -149,8 +154,55 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
         every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { file.parent } returns null
+        every { source.parent } returns file
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        KMockAggregator(logger).extractInterfaces(annotated)
+
+        // Then
+        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+    }
+
+    @Test
+    fun `Given extractInterfaces is called it filters all non class types and reports an error for Shared Sources`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSAnnotated = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSTypeAlias = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockShared::class.qualifiedName!!
+
+        every { source.annotations } returns sourceAnnotations
+
+        every { annotation.arguments } returns arguments
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns fixture.fixture<String>()
+        every { arguments[1].value } returns values
+        every { arguments.size } returns 2
         every { type.declaration } returns declaration
         every { file.parent } returns null
         every { source.parent } returns file
@@ -210,8 +262,75 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
         every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns selection[selector]
+
+        every { declaration.parentDeclaration } returns null
+
+        every { file.parent } returns null
+        every { source.parent } returns file
+
+        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.packageName.asString() } returns packageName
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        KMockAggregator(logger).extractInterfaces(annotated)
+
+        // Then
+        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
+    }
+
+    @Test
+    fun `Given extractInterfaces is called it filters all implementation class types and reports an error for Shared Sources`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSAnnotated = mockk()
+        val file: KSFile = mockk()
+
+        val selection = listOf(
+            ClassKind.CLASS,
+            ClassKind.ENUM_CLASS,
+            ClassKind.ENUM_ENTRY,
+            ClassKind.OBJECT,
+            ClassKind.ANNOTATION_CLASS
+        )
+
+        val selector = fixture.random.access { it.nextInt(0, selection.lastIndex) }
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockShared::class.qualifiedName!!
+
+        every { source.annotations } returns sourceAnnotations
+
+        every { annotation.arguments } returns arguments
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns fixture.fixture<String>()
+        every { arguments[1].value } returns values
+        every { arguments.size } returns 2
         every { type.declaration } returns declaration
         every { declaration.classKind } returns selection[selector]
 
@@ -268,6 +387,7 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
         every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns values
         every { type.declaration } returns declaration
@@ -287,7 +407,64 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(declaration)
+        interfaces mustBe listOf(ProcessorContract.SharedSource("", declaration))
+    }
+
+    @Test
+    fun `Given extractInterfaces is called it returns all found interfaces for SharedSources`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSAnnotated = mockk()
+        val file: KSFile = mockk()
+        val marker = fixture.fixture<String>()
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockShared::class.qualifiedName!!
+
+        every { source.annotations } returns sourceAnnotations
+
+        every { annotation.arguments } returns arguments
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns marker
+        every { arguments[1].value } returns values
+        every { arguments.size } returns 2
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
+
+        every { file.parent } returns null
+        every { source.parent } returns file
+
+        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.packageName.asString() } returns packageName
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
+
+        // Then
+        interfaces mustBe listOf(ProcessorContract.SharedSource(marker, declaration))
     }
 
     @Test
@@ -326,8 +503,69 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
         every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
+
+        every { file.parent } returns null
+        every { source.parent } returns file
+
+        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.packageName.asString() } returns packageName
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        val (_, _, sourceFiles) = KMockAggregator(logger).extractInterfaces(annotated)
+
+        // Then
+        sourceFiles mustBe listOf(file)
+    }
+
+    @Test
+    fun `Given extractInterfaces is called it returns the corresponding source files for Shared Sources`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val source: KSAnnotated = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(source)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns if (fixture.random.access { it.nextBoolean() }) {
+            Mock::class.qualifiedName!!
+        } else {
+            MockCommon::class.qualifiedName!!
+        }
+
+        every { source.annotations } returns sourceAnnotations
+
+        every { annotation.arguments } returns arguments
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns fixture.fixture<String>()
+        every { arguments[1].value } returns values
+        every { arguments.size } returns 2
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 

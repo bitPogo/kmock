@@ -14,6 +14,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.mock.AsyncFunMockery
 import tech.antibytes.kmock.mock.PropertyMockery
 import tech.antibytes.kmock.mock.SyncFunMockery
@@ -34,14 +35,30 @@ internal interface ProcessorContract {
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
+    data class SharedSource(val marker: String, val interfaze: KSClassDeclaration)
+
     data class Aggregated(
         val illFormed: List<KSAnnotated>,
-        val extractedInterfaces: List<KSClassDeclaration>,
+        val extractedInterfaces: List<SharedSource>,
         val dependencies: List<KSFile>
     )
 
+    interface InterfaceMerger {
+        fun merge(
+            interfaces1: List<KSClassDeclaration>,
+            interfaces2: List<KSClassDeclaration>
+        ): List<KSClassDeclaration>
+    }
+
     interface MockGenerator {
         fun writePlatformMocks(
+            interfaces: List<KSClassDeclaration>,
+            dependencies: List<KSFile>,
+            relaxer: Relaxer?
+        )
+
+        fun writeSharedMocks(
+            sourceMarker: String,
             interfaces: List<KSClassDeclaration>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
@@ -71,6 +88,7 @@ internal interface ProcessorContract {
     companion object {
         val ANNOTATION_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
+        val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
         val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"
