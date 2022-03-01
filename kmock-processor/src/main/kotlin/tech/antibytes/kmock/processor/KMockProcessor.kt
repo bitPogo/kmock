@@ -25,6 +25,7 @@ internal class KMockProcessor(
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val aggregator: ProcessorContract.Aggregator,
     private val options: ProcessorContract.Options,
+    private val filter: ProcessorContract.SourceFilter,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
@@ -54,6 +55,24 @@ internal class KMockProcessor(
         )
     }
 
+    private fun mergeSources(
+        rootSource: Aggregated,
+        dependentSource: Aggregated,
+        filteredInterfaces: List<ProcessorContract.InterfaceSource>
+    ): Aggregated {
+        return Aggregated(
+            illFormed = rootSource.illFormed.toMutableList().also {
+                it.addAll(dependentSource.illFormed)
+            },
+            extractedInterfaces = rootSource.extractedInterfaces.toMutableList().also {
+                it.addAll(filteredInterfaces)
+            },
+            dependencies = rootSource.dependencies.toMutableList().also {
+                it.addAll(dependentSource.dependencies)
+            }
+        )
+    }
+
     private fun stubCommonSources(
         resolver: Resolver,
         relaxer: Relaxer?
@@ -61,50 +80,63 @@ internal class KMockProcessor(
         val annotated = fetchCommonAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
 
-        TODO()
-        /*mockGenerator.writeCommonMocks(
+        mockGenerator.writeCommonMocks(
             aggregated.extractedInterfaces,
             aggregated.dependencies,
             relaxer
         )
 
-        return aggregated*/
+        return aggregated
     }
 
     private fun stubSharedSources(
         resolver: Resolver,
+        commonAggregated: Aggregated,
         relaxer: Relaxer?
     ): Aggregated {
         val annotated = fetchSharedAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
+        val filteredInterfaces = filter.filter(
+            aggregated.extractedInterfaces,
+            commonAggregated.extractedInterfaces
+        )
 
-        //stubGenerator.writeSharedStubs(aggregated.extractedInterfaces, aggregated.dependencies)
+        mockGenerator.writeSharedMocks(
+            filteredInterfaces,
+            aggregated.dependencies,
+            relaxer
+        )
 
-        return aggregated
+        return mergeSources(commonAggregated, aggregated, filteredInterfaces)
     }
 
     private fun stubPlatformSources(
         resolver: Resolver,
-        commonAggregated: Aggregated,
+        sharedAggregated: Aggregated,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
-        TODO()
-        /*mockGenerator.writePlatformMocks(
+        val filteredInterfaces = filter.filter(
             aggregated.extractedInterfaces,
+            sharedAggregated.extractedInterfaces
+        )
+        val totalAggregated = mergeSources(sharedAggregated, aggregated, filteredInterfaces)
+
+        mockGenerator.writePlatformMocks(
+            filteredInterfaces,
             aggregated.dependencies,
             relaxer
         )
 
         factoryGenerator.writeFactories(
             options,
-            commonAggregated.extractedInterfaces.toMutableList().also { it.addAll(aggregated.extractedInterfaces) },
-            commonAggregated.dependencies.toMutableList().also { it.addAll(aggregated.dependencies) },
+            totalAggregated.extractedInterfaces,
+            totalAggregated.dependencies,
             relaxer
         )
 
-        return aggregated.illFormed*/
+        return totalAggregated.illFormed
     }
 
     @OptIn(KotlinPoetKspPreview::class)
@@ -112,14 +144,12 @@ internal class KMockProcessor(
         val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
 
         val commonAggregated = stubCommonSources(resolver, relaxer)
-        val platformIll = stubPlatformSources(
+        val sharedAggregated = stubSharedSources(resolver, commonAggregated, relaxer)
+
+        return stubPlatformSources(
             resolver,
-            commonAggregated,
+            sharedAggregated,
             relaxer
         )
-
-        return platformIll.toMutableList().also {
-            it.addAll(commonAggregated.illFormed)
-        }
     }
 }

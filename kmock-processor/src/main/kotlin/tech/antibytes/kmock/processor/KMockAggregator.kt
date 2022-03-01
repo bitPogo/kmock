@@ -43,12 +43,12 @@ internal class KMockAggregator(
     private fun resolveInterface(
         interfaze: KSDeclaration,
         sourceIndicator: String,
-        interfaceCollector: MutableMap<String, ProcessorContract.SharedSource>
+        interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource>
     ) {
         when {
             interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-            else -> interfaceCollector[interfaze.qualifiedName!!.asString()] = ProcessorContract.SharedSource(
+            else -> interfaceCollector[interfaze.qualifiedName!!.asString()] = ProcessorContract.InterfaceSource(
                 sourceIndicator,
                 interfaze
             )
@@ -57,7 +57,7 @@ internal class KMockAggregator(
 
     private fun resolveInterfaces(
         raw: Map<String, MutableList<KSType>>,
-        interfaceCollector: MutableMap<String, ProcessorContract.SharedSource>
+        interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
             interfaces.forEach { value ->
@@ -80,7 +80,7 @@ internal class KMockAggregator(
     ): ProcessorContract.Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
-        val interfaceCollector: MutableMap<String, ProcessorContract.SharedSource> = mutableMapOf()
+        val interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->

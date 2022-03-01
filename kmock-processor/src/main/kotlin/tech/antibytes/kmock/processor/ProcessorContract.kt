@@ -35,37 +35,36 @@ internal interface ProcessorContract {
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
-    data class SharedSource(val marker: String, val interfaze: KSClassDeclaration)
+    data class InterfaceSource(val marker: String, val interfaze: KSClassDeclaration)
 
     data class Aggregated(
         val illFormed: List<KSAnnotated>,
-        val extractedInterfaces: List<SharedSource>,
+        val extractedInterfaces: List<InterfaceSource>,
         val dependencies: List<KSFile>
     )
 
-    interface InterfaceMerger {
-        fun merge(
-            interfaces1: List<KSClassDeclaration>,
-            interfaces2: List<KSClassDeclaration>
-        ): List<KSClassDeclaration>
+    interface SourceFilter {
+        fun filter(
+            sources: List<InterfaceSource>,
+            filteredBy: List<InterfaceSource>
+        ): List<InterfaceSource>
     }
 
     interface MockGenerator {
         fun writePlatformMocks(
-            interfaces: List<KSClassDeclaration>,
+            interfaces: List<InterfaceSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeSharedMocks(
-            sourceMarker: String,
-            interfaces: List<KSClassDeclaration>,
+            interfaces: List<InterfaceSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeCommonMocks(
-            interfaces: List<KSClassDeclaration>,
+            interfaces: List<InterfaceSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
@@ -74,7 +73,7 @@ internal interface ProcessorContract {
     interface MockFactoryGenerator {
         fun writeFactories(
             options: Options,
-            interfaces: List<KSClassDeclaration>,
+            interfaces: List<InterfaceSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
         )

@@ -407,7 +407,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.SharedSource("", declaration))
+        interfaces mustBe listOf(ProcessorContract.InterfaceSource("", declaration))
     }
 
     @Test
@@ -464,7 +464,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.SharedSource(marker, declaration))
+        interfaces mustBe listOf(ProcessorContract.InterfaceSource(marker, declaration))
     }
 
     @Test

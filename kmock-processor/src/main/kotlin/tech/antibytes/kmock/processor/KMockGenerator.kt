@@ -41,6 +41,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.InterfaceSource
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import java.util.Locale
 
@@ -623,7 +624,7 @@ internal class KMockGenerator(
     private fun writeMock(
         template: KSClassDeclaration,
         dependencies: List<KSFile>,
-        target: ProcessorContract.Target,
+        target: String,
         relaxer: Relaxer?
     ) {
         val className = "${template.simpleName.asString()}Mock"
@@ -634,8 +635,8 @@ internal class KMockGenerator(
 
         val implementation = buildMock(className, template, relaxer)
 
-        if (target.value.isNotEmpty()) {
-            file.addComment(target.value)
+        if (target.isNotEmpty()) {
+            file.addComment(target)
         }
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
@@ -657,47 +658,45 @@ internal class KMockGenerator(
     }
 
     override fun writeCommonMocks(
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         interfaces.forEach { template ->
             writeMock(
-                template,
+                template.interfaze,
                 dependencies,
-                ProcessorContract.Target.COMMON,
+                ProcessorContract.Target.COMMON.value,
                 relaxer
             )
         }
     }
 
     override fun writeSharedMocks(
-        sourceMarker: String,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        /*
         interfaces.forEach { template ->
             writeMock(
-                template,
+                template.interfaze,
                 dependencies,
-                sourceMarker,
+                template.marker,
                 relaxer
             )
-        }*/
+        }
     }
 
     override fun writePlatformMocks(
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         interfaces.forEach { template ->
             writeMock(
-                template,
+                template.interfaze,
                 dependencies,
-                ProcessorContract.Target.PLATFORM,
+                ProcessorContract.Target.PLATFORM.value,
                 relaxer
             )
         }

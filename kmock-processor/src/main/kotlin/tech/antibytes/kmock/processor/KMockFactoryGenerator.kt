@@ -8,7 +8,6 @@ package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -17,6 +16,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.InterfaceSource
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockFactoryGenerator(
@@ -67,14 +67,14 @@ internal class KMockFactoryGenerator(
 
     private fun buildMockSelector(
         function: FunSpec.Builder,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         relaxer: Relaxer?
     ): FunSpec.Builder {
         function.beginControlFlow("return when (T::class)")
 
-        interfaces.forEach { interfaze ->
-            val qualifiedName = interfaze.qualifiedName!!.asString()
-            val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
+        interfaces.forEach { source ->
+            val qualifiedName = source.interfaze.qualifiedName!!.asString()
+            val interfaceName = "${source.interfaze.packageName.asString()}.${source.interfaze.simpleName.asString()}"
 
             if (relaxer == null) {
                 function.addStatement(
@@ -109,7 +109,7 @@ internal class KMockFactoryGenerator(
 
     private fun buildMockFactory(
         isKmp: Boolean,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         relaxer: Relaxer?
     ): FunSpec {
         val factory = FunSpec.builder("kmock")
@@ -137,13 +137,13 @@ internal class KMockFactoryGenerator(
 
     private fun buildSpySelector(
         function: FunSpec.Builder,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
     ): FunSpec.Builder {
         function.beginControlFlow("return when (Mock::class)")
 
-        interfaces.forEach { interfaze ->
-            val qualifiedName = interfaze.qualifiedName!!.asString()
-            val interfaceName = "${interfaze.packageName.asString()}.${interfaze.simpleName.asString()}"
+        interfaces.forEach { source ->
+            val qualifiedName = source.interfaze.qualifiedName!!.asString()
+            val interfaceName = "${source.interfaze.packageName.asString()}.${source.interfaze.simpleName.asString()}"
             function.addStatement(
                 "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L) as Mock",
                 qualifiedName,
@@ -165,7 +165,7 @@ internal class KMockFactoryGenerator(
 
     private fun buildSpyFactory(
         isKmp: Boolean,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
     ): FunSpec {
         val factory = FunSpec.builder("kspy")
         val spy = TypeVariableName("SpyOn")
@@ -188,7 +188,7 @@ internal class KMockFactoryGenerator(
 
     override fun writeFactories(
         options: ProcessorContract.Options,
-        interfaces: List<KSClassDeclaration>,
+        interfaces: List<InterfaceSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
@@ -199,8 +199,19 @@ internal class KMockFactoryGenerator(
             )
             file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
-            file.addFunction(buildMockFactory(options.isKmp, interfaces, relaxer))
-            file.addFunction(buildSpyFactory(options.isKmp, interfaces))
+            file.addFunction(
+                buildMockFactory(
+                    options.isKmp,
+                    interfaces,
+                    relaxer
+                )
+            )
+            file.addFunction(
+                buildSpyFactory(
+                    options.isKmp,
+                    interfaces
+                )
+            )
 
             file.build().writeTo(
                 codeGenerator = codeGenerator,

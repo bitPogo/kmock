@@ -86,6 +86,26 @@ class KMockSpec {
     }
 
     @Test
+    fun `Given a annotated SharedSource is processed, it writes a stub for abstract Properties`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "PropertySharedSource.kt",
+            loadResource("/PropertySharedSource.kt")
+        )
+        val expected = loadResource("/PropertySharedExpected.kt")
+
+        // When
+        val compilerResult = compile(provider, source)
+        val actual = resolveGenerated("PropertySharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated CommonSource is processed, it writes a stub for abstract Properties`() {
         // Given
         val source = SourceFile.kotlin(
@@ -130,6 +150,26 @@ class KMockSpec {
     }
 
     @Test
+    fun `Given a annotated SharedSource is processed, it writes a stub for abstract Functions`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "SyncFunctionSharedSource.kt",
+            loadResource("/SyncFunctionSharedSource.kt")
+        )
+        val expected = loadResource("/SyncFunctionSharedExpected.kt")
+
+        // When
+        val compilerResult = compile(provider, source)
+        val actual = resolveGenerated("SyncFunctionSharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated CommonSource is processed, it writes a stub for abstract Functions`() {
         // Given
         val source = SourceFile.kotlin(
@@ -161,6 +201,26 @@ class KMockSpec {
         // When
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("AsyncFunctionPlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated SharedSource is processed, it writes a stub for abstract Suspending Functions`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "AsyncFunctionSharedSource.kt",
+            loadResource("/AsyncFunctionSharedSource.kt")
+        )
+        val expected = loadResource("/AsyncFunctionSharedExpected.kt")
+
+        // When
+        val compilerResult = compile(provider, source)
+        val actual = resolveGenerated("AsyncFunctionSharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
