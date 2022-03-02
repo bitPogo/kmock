@@ -67,7 +67,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         cleanUpTask.target.set(sourceSetName)
         cleanUpTask.targetPlatform.set(platformName)
-        cleanUpTask.indicator.set(indicator)
+        cleanUpTask.indicators.add(indicator)
         cleanUpTask.description = "Removes Contradicting Sources"
         cleanUpTask.group = "Code Generation"
 
