@@ -58,7 +58,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         platformName: String,
         sourceSetName: String,
         kspTask: String,
-        moveTask: Copy
+        moveTasks: Array<Copy>
     ): Task {
         val cleanUpTask: KMockCleanTask = project.tasks.create(
             "cleanDuplicates${sourceSetName.capitalize(Locale.ROOT)}",
@@ -71,8 +71,8 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         cleanUpTask.description = "Removes Contradicting Sources"
         cleanUpTask.group = "Code Generation"
 
-        return cleanUpTask.dependsOn(moveTask)
-            .mustRunAfter(moveTask)
+        return cleanUpTask.dependsOn(*moveTasks)
+            .mustRunAfter(*moveTasks)
             .mustRunAfter(kspTask)
     }
 
@@ -146,7 +146,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             platformName = "android",
             sourceSetName = androidDebug,
             kspTask = androidDebugKsp,
-            moveTask = copyToCommon
+            moveTasks = arrayOf(copyToCommon)
         )
 
         val cleanUpTaskRelease = createCleanUpTask(
@@ -154,7 +154,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             platformName = "android",
             sourceSetName = androidRelease,
             kspTask = androidReleaseKsp,
-            moveTask = copyToCommon
+            moveTasks = arrayOf(copyToCommon)
         )
 
         project.tasks.getByName("compileDebugUnitTestKotlinAndroid").dependsOn(
@@ -206,7 +206,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                 platform,
                 "${platform}Test",
                 kspTask,
-                copyToCommon
+                arrayOf(copyToCommon)
             )
 
             val compileTask = project.tasks.getByName(
