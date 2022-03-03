@@ -63,6 +63,8 @@ class KmpSetupConfiguratorSpec {
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
 
+        val kMockExtension: KMockExtension = mockk()
+
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
         val kspTask: Task = mockk()
@@ -70,6 +72,11 @@ class KmpSetupConfiguratorSpec {
             mockk(),
             mockk(),
         )
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns null
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -87,7 +94,6 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
@@ -103,6 +109,8 @@ class KmpSetupConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.dependsOn(any()) } returns copyTask
+        every { copyTask.mustRunAfter(any()) } returns mockk()
         every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
 
         // When
@@ -120,6 +128,9 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "COMMON SOURCE")
         }
+
+        verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinJvm") }
+        verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJvm") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
@@ -180,6 +191,8 @@ class KmpSetupConfiguratorSpec {
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
 
+        val kMockExtension: KMockExtension = mockk()
+
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
         val kspTask: Task = mockk()
@@ -188,11 +201,15 @@ class KmpSetupConfiguratorSpec {
             mockk(relaxed = true),
         )
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
 
         every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
@@ -204,6 +221,8 @@ class KmpSetupConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.dependsOn(any()) } returns copyTask
+        every { copyTask.mustRunAfter(any()) } returns mockk()
         every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
 
         // When
@@ -227,6 +246,8 @@ class KmpSetupConfiguratorSpec {
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
 
+        val kMockExtension: KMockExtension = mockk()
+
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
         val kspTask: Task = mockk()
@@ -235,9 +256,13 @@ class KmpSetupConfiguratorSpec {
             mockk(relaxed = true),
         )
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -251,6 +276,8 @@ class KmpSetupConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.dependsOn(any()) } returns copyTask
+        every { copyTask.mustRunAfter(any()) } returns mockk()
         every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
 
         // When
@@ -274,6 +301,8 @@ class KmpSetupConfiguratorSpec {
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
 
+        val kMockExtension: KMockExtension = mockk()
+
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
         val kspTask: Task = mockk()
@@ -282,9 +311,13 @@ class KmpSetupConfiguratorSpec {
             mockk(relaxed = true),
         )
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -298,6 +331,8 @@ class KmpSetupConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.dependsOn(any()) } returns copyTask
+        every { copyTask.mustRunAfter(any()) } returns mockk()
         every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
 
         // When
@@ -314,11 +349,14 @@ class KmpSetupConfiguratorSpec {
         // Given
         val project: Project = mockk()
         val sources = mapOf(
+            "android" to "kspTestKotlinAndroid",
             "jvm" to "kspTestKotlinJvm",
         )
 
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
+
+        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -329,9 +367,13 @@ class KmpSetupConfiguratorSpec {
             mockk(),
         )
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns true
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -488,8 +530,11 @@ class KmpSetupConfiguratorSpec {
         val sources = mapOf(
             "jvm" to "kspTestKotlinJvm",
         )
+
         val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
+
+        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -513,9 +558,13 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
 
-        every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        every { project.extensions } returns extensions
+        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
+
+        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -528,6 +577,8 @@ class KmpSetupConfiguratorSpec {
 
         every { kspTask.mustRunAfter(any<String>()) } returns kspTask
 
+        every { copyTask.dependsOn(any()) } returns copyTask
+        every { copyTask.mustRunAfter(any()) } returns mockk()
         every { copyTask.doLast(capture(factoryGenerator) as Action<in Task>) } returns mockk()
 
         every { delegatedCopyTask.project } returns delegatedProject

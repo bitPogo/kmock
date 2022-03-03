@@ -68,9 +68,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         collectDependencies(platformName, dependencies, dependencyCollector)
 
-        if (!platformName.startsWith("android")) {
-            sourceCollector[platformName] = kspDependency
-        }
+        sourceCollector[platformName] = kspDependency
     }
 
     override fun configure(

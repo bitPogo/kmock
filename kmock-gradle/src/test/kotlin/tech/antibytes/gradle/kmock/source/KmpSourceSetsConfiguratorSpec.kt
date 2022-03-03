@@ -23,7 +23,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockPluginContract
-import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fixture.fixture
@@ -35,14 +34,14 @@ class KmpSourceSetsConfiguratorSpec {
 
     @BeforeEach
     fun setUp() {
+        mockkObject(KmpSetupConfigurator)
         mockkObject(MainConfig)
-        mockkObject(SharedSourceCopist)
     }
 
     @AfterEach
     fun tearDown() {
+        unmockkObject(KmpSetupConfigurator)
         unmockkObject(MainConfig)
-        unmockkObject(SharedSourceCopist)
     }
 
     @Test
@@ -160,8 +159,6 @@ class KmpSourceSetsConfiguratorSpec {
 
     @Test
     fun `Given configure is called it configures PlatformTest Sources`() {
-        mockkObject(KmpSetupConfigurator)
-
         // Given
         val project: Project = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -252,14 +249,10 @@ class KmpSourceSetsConfiguratorSpec {
                 )
             )
         }
-
-        unmockkObject(KmpSetupConfigurator)
     }
 
     @Test
     fun `Given configure is called it configures PlatformTest Sources, which contain a Android Source`() {
-        mockkObject(KmpSetupConfigurator)
-
         // Given
         val project: Project = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -345,11 +338,10 @@ class KmpSourceSetsConfiguratorSpec {
             KmpSetupConfigurator.wireSharedSourceTasks(
                 project,
                 mapOf(
+                    "android" to "kspTestKotlinAndroid",
                     "jvm" to "kspTestKotlinJvm",
                 )
             )
         }
-
-        unmockkObject(KmpSetupConfigurator)
     }
 }
