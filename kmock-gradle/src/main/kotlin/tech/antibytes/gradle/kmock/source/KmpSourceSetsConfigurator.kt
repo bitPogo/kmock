@@ -37,17 +37,36 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         )
     }
 
+    private fun collectDependencies(
+        platformName: String,
+        dependencies: Set<KotlinSourceSet>,
+        dependencyCollector: MutableMap<String, Set<String>>
+    ) {
+        dependencies.forEach { dependency ->
+            val dependsOn = dependencyCollector.getOrElse(dependency.name) { mutableSetOf() }
+                .toMutableSet()
+
+            dependsOn.add(platformName)
+
+            dependencyCollector[dependency.name] = dependsOn
+        }
+    }
+
     private fun addSource(
+        dependencies: Set<KotlinSourceSet>,
         platformName: String,
         sourceCollector: MutableMap<String, String>,
-        dependencies: DependencyHandler
+        dependencyCollector: MutableMap<String, Set<String>>,
+        dependencyHandler: DependencyHandler
     ) {
         val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
         try {
-            addKspDependency(dependencies, "ksp${platformName.capitalize(Locale.ROOT)}Test")
+            addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
         } catch (e: Throwable) {
             return
         }
+
+        collectDependencies(platformName, dependencies, dependencyCollector)
 
         if (!platformName.startsWith("android")) {
             sourceCollector[platformName] = kspDependency
@@ -60,6 +79,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
         val sourceCollector: MutableMap<String, String> = mutableMapOf()
+        val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
@@ -69,7 +89,13 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     val platformName = cleanSourceName(sourceSet.name)
                     extendSourceSet(platformName, sourceSet, buildDir)
 
-                    addSource(platformName, sourceCollector, dependencies)
+                    addSource(
+                        sourceSet.dependsOn,
+                        platformName,
+                        sourceCollector,
+                        sourceDependencies,
+                        dependencies,
+                    )
                 }
             }
         }

@@ -98,13 +98,10 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val source1: KotlinSourceSet = mockk()
-        val source2: KotlinSourceSet = mockk()
         val version: String = fixture.fixture()
 
-        every { source1.name } returns "nativeTest"
-        every { source2.name } returns "appleTest"
-
+        val source1: KotlinSourceSet = mockk()
+        val source2: KotlinSourceSet = mockk()
         val sourceSets = mutableListOf(
             source1,
             source2
@@ -124,8 +121,13 @@ class KmpSourceSetsConfiguratorSpec {
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
 
+        every { source1.name } returns "nativeTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
-        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns mockk()
+
+        every { source2.name } returns "appleTest"
+        every { source2.kotlin.srcDir(any()) } returns mockk(relaxed = true)
+        every { source2.dependsOn } returns mockk(relaxed = true)
 
         every { dependencies.add(any(), any()) } throws RuntimeException()
 
@@ -167,17 +169,20 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val source1: KotlinSourceSet = mockk()
-        val source2: KotlinSourceSet = mockk()
         val version: String = fixture.fixture()
+
+        val source1: KotlinSourceSet = mockk()
+        val source1Dependencies: KotlinSourceSet = mockk()
+        val source1DependenciesName: String = fixture.fixture()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+        val source2DependenciesName: String = fixture.fixture()
 
         val sourceSets = mutableListOf(
             source1,
             source2
         )
-
-        every { source1.name } returns "jvmTest"
-        every { source2.name } returns "jsTest"
 
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
@@ -200,8 +205,15 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { dependencies.add(any(), any()) } returns mockk()
 
+        every { source1.name } returns "jvmTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source1Dependencies)
+        every { source1Dependencies.name } returns source1DependenciesName
+
+        every { source2.name } returns "jsTest"
         every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns source2DependenciesName
 
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any()) } just Runs
 
@@ -255,17 +267,20 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val source1: KotlinSourceSet = mockk()
-        val source2: KotlinSourceSet = mockk()
         val version: String = fixture.fixture()
+
+        val source1: KotlinSourceSet = mockk()
+        val source1Dependencies: KotlinSourceSet = mockk()
+        val source1DependenciesName: String = fixture.fixture()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+        val source2DependenciesName: String = fixture.fixture()
 
         val sourceSets = mutableListOf(
             source1,
             source2
         )
-
-        every { source1.name } returns "jvmTest"
-        every { source2.name } returns "androidTest"
 
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
@@ -288,8 +303,15 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { dependencies.add(any(), any()) } returns mockk()
 
+        every { source1.name } returns "jvmTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source1Dependencies)
+        every { source1Dependencies.name } returns source1DependenciesName
+
+        every { source2.name } returns "androidTest"
         every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns source2DependenciesName
 
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any()) } just Runs
 
