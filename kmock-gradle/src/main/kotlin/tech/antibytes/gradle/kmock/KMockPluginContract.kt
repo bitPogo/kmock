@@ -8,7 +8,6 @@ package tech.antibytes.gradle.kmock
 
 import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.Project
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
