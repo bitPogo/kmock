@@ -12,7 +12,7 @@ import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.StopExecutionException
 import java.util.Locale
 
-object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
+internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
     private fun guardInputs(platform: String, source: String, target: String, indicator: String) {
         if (platform.isEmpty()) {
             throw StopExecutionException("Cannot copy from invalid Platform Definition!")

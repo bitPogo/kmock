@@ -47,6 +47,13 @@ internal interface KMockPluginContract {
         ): Copy
     }
 
+    interface KmpSetupConfigurator {
+        fun wireSharedSourceTasks(
+            project: Project,
+            sourceCollector: Map<String, String>
+        )
+    }
+
     interface SourceSetConfigurator {
         fun configure(project: Project)
     }

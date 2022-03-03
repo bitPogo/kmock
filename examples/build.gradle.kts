@@ -200,6 +200,10 @@ kotlin {
 }
 
 afterEvaluate {
+    kotlin.sourceSets.all {
+        println("$name -> $dependsOn")
+    }
+
     val copyToCommon by tasks.creating(Copy::class) {
         description = "Extract Common Sources"
         group = "Code Generation"

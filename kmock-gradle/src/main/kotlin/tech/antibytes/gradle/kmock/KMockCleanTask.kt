@@ -10,7 +10,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
+internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
     init {
         indicators.set(mutableSetOf())
     }
