@@ -200,10 +200,6 @@ kotlin {
 }
 
 afterEvaluate {
-    kotlin.sourceSets.all {
-        println("$name -> $dependsOn")
-    }
-
     val copyToCommon by tasks.creating(Copy::class) {
         description = "Extract Common Sources"
         group = "Code Generation"
@@ -362,6 +358,7 @@ afterEvaluate {
     }
 
     tasks.getByName("compileTestKotlinJvm").dependsOn(cleanDuplicatesJvm, copyToCommon)
+    tasks.getByName("compileTestKotlinJvm").mustRunAfter(copyToCommon)
     tasks.getByName("compileTestKotlinJs").dependsOn(cleanDuplicatesJs, copyToCommon)
     tasks.getByName("compileTestKotlinJs").mustRunAfter(copyToCommon)
     tasks.getByName("compileTestKotlinIosX64").dependsOn(cleanDuplicatesIosX64, copyToCommon)

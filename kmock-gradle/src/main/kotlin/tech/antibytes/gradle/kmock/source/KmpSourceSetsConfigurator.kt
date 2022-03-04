@@ -100,7 +100,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         if (sourceCollector.isNotEmpty()) {
             project.afterEvaluate {
-                KmpSetupConfigurator.wireSharedSourceTasks(project, sourceCollector)
+                KmpSetupConfigurator.wireSharedSourceTasks(project, sourceCollector, sourceDependencies)
             }
         }
     }

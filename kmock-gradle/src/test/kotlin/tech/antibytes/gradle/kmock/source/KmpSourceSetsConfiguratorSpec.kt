@@ -212,7 +212,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { source2.dependsOn } returns setOf(source2Dependencies)
         every { source2Dependencies.name } returns source2DependenciesName
 
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any()) } just Runs
+        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -246,6 +246,10 @@ class KmpSourceSetsConfiguratorSpec {
                 mapOf(
                     "jvm" to "kspTestKotlinJvm",
                     "js" to "kspTestKotlinJs"
+                ),
+                mapOf(
+                    source1DependenciesName to setOf("jvm"),
+                    source2DependenciesName to setOf("js")
                 )
             )
         }
@@ -306,7 +310,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { source2.dependsOn } returns setOf(source2Dependencies)
         every { source2Dependencies.name } returns source2DependenciesName
 
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any()) } just Runs
+        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -340,6 +344,10 @@ class KmpSourceSetsConfiguratorSpec {
                 mapOf(
                     "android" to "kspTestKotlinAndroid",
                     "jvm" to "kspTestKotlinJvm",
+                ),
+                mapOf(
+                    source1DependenciesName to setOf("jvm"),
+                    source2DependenciesName to setOf("android")
                 )
             )
         }

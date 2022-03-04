@@ -49,7 +49,8 @@ internal interface KMockPluginContract {
     interface KmpSetupConfigurator {
         fun wireSharedSourceTasks(
             project: Project,
-            sourceCollector: Map<String, String>
+            kspMapping: Map<String, String>,
+            dependencies: Map<String, Set<String>>
         )
     }
 
