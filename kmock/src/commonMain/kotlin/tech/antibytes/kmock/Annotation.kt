@@ -29,6 +29,17 @@ annotation class Mock(vararg val interfaces: KClass<*>)
 annotation class MockCommon(vararg val interfaces: KClass<*>)
 
 @Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Annotation to determine which interfaces are about to be stubbed for a shared source
+ *
+ * @param marker to identify the corresponding source set
+ * @param interfaces variable amount of interfaces
+ */
+annotation class MockShared(val marker: String, vararg val interfaces: KClass<*>)
+
+@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
 @MustBeDocumented
 /**

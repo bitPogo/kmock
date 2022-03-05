@@ -28,6 +28,7 @@ group = KMockConfiguration.group
 ksp {
     arg("rootPackage", "tech.antibytes.kmock.example")
     arg("isKmp", true.toString())
+    arg("isKmp", true.toString())
 }
 
 kotlin {
@@ -83,16 +84,28 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
+        val concurrentMain by creating {
             dependencies {
                 dependsOn(commonMain)
+            }
+        }
+
+        val concurrentTest by creating {
+            dependencies {
+                dependsOn(commonTest)
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                dependsOn(concurrentMain)
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
         val androidTest by getting {
             dependencies {
                 kotlin.srcDir("build/generated/ksp/android/androidTest")
-                dependsOn(commonTest)
+                dependsOn(concurrentTest)
 
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
@@ -119,7 +132,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                dependsOn(commonMain)
+                dependsOn(concurrentMain)
                 implementation(Dependency.multiplatform.kotlin.jdk8)
             }
         }
@@ -127,7 +140,7 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/jvm/jvmTest")
 
             dependencies {
-                dependsOn(commonTest)
+                dependsOn(concurrentTest)
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
             }
@@ -135,12 +148,12 @@ kotlin {
 
         val nativeMain by creating {
             dependencies {
-                dependsOn(commonMain)
+                dependsOn(concurrentMain)
             }
         }
         val nativeTest by creating {
             dependencies {
-                dependsOn(commonTest)
+                dependsOn(concurrentTest)
             }
         }
 
@@ -173,7 +186,6 @@ kotlin {
         }
         val linuxX64Test by getting {
             kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test")
-
             dependencies {
                 dependsOn(otherTest)
             }
@@ -358,6 +370,7 @@ afterEvaluate {
     }
 
     tasks.getByName("compileTestKotlinJvm").dependsOn(cleanDuplicatesJvm, copyToCommon)
+    tasks.getByName("compileTestKotlinJvm").mustRunAfter(copyToCommon)
     tasks.getByName("compileTestKotlinJs").dependsOn(cleanDuplicatesJs, copyToCommon)
     tasks.getByName("compileTestKotlinJs").mustRunAfter(copyToCommon)
     tasks.getByName("compileTestKotlinIosX64").dependsOn(cleanDuplicatesIosX64, copyToCommon)

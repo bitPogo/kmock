@@ -10,10 +10,14 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
-abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
+internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
+    init {
+        indicators.set(mutableSetOf())
+    }
+
     private fun guardInputs() {
-        if (indicator.orNull.isNullOrEmpty()) {
-            throw StopExecutionException("Missing CleanUp Indicator!")
+        if (!indicators.isPresent || indicators.get().isEmpty()) {
+            throw StopExecutionException("Missing CleanUp Indicators!")
         }
 
         if (targetPlatform.orNull.isNullOrEmpty()) {
@@ -32,11 +36,12 @@ abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, DefaultTask() {
         val files = project.fileTree(
             "${project.buildDir.absolutePath}/generated/ksp/${targetPlatform.get()}/${target.get()}"
         ).toList()
+        val indicators: Set<String> = this.indicators.get()
 
         files.forEach { file ->
-            val indicator = file.bufferedReader().readLine()
+            val indicator = file.bufferedReader().readLine().trimStart('/').trim()
 
-            if (indicator == "// ${this.indicator.get()}") {
+            if (indicators.contains(indicator)) {
                 file.delete()
             }
         }

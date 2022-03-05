@@ -87,10 +87,11 @@ class CleanUpTaskSpec {
         // Then
         val error = assertFailsWith<StopExecutionException> {
             // When
+            task.indicators.set(null)
             task.cleanUp()
         }
 
-        error.message mustBe "Missing CleanUp Indicator!"
+        error.message mustBe "Missing CleanUp Indicators!"
     }
 
     @Test
@@ -99,13 +100,12 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set("")
         val error = assertFailsWith<StopExecutionException> {
             // When
             task.cleanUp()
         }
 
-        error.message mustBe "Missing CleanUp Indicator!"
+        error.message mustBe "Missing CleanUp Indicators!"
     }
 
     @Test
@@ -114,7 +114,7 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set(fixture.fixture<String>())
+        task.indicators.add(fixture.fixture<String>())
 
         val error = assertFailsWith<StopExecutionException> {
             // When
@@ -130,7 +130,7 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set(fixture.fixture<String>())
+        task.indicators.add(fixture.fixture<String>())
         task.targetPlatform.set("")
 
         val error = assertFailsWith<StopExecutionException> {
@@ -147,7 +147,7 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set(fixture.fixture<String>())
+        task.indicators.add(fixture.fixture<String>())
         task.targetPlatform.set(fixture.fixture<String>())
 
         val error = assertFailsWith<StopExecutionException> {
@@ -164,7 +164,7 @@ class CleanUpTaskSpec {
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
 
         // Then
-        task.indicator.set(fixture.fixture<String>())
+        task.indicators.add(fixture.fixture<String>())
         task.targetPlatform.set(fixture.fixture<String>())
         task.target.set("")
 
@@ -184,7 +184,7 @@ class CleanUpTaskSpec {
         val target = createStubs(stubs)
 
         // When
-        task.indicator.set(fixture.fixture<String>())
+        task.indicators.add(fixture.fixture<String>())
         task.targetPlatform.set("platfrom")
         task.target.set("target")
         task.cleanUp()
@@ -208,7 +208,7 @@ class CleanUpTaskSpec {
         var isClean = true
 
         // When
-        task.indicator.set(indicator)
+        task.indicators.add(indicator)
         task.targetPlatform.set("platfrom")
         task.target.set("target")
         task.cleanUp()

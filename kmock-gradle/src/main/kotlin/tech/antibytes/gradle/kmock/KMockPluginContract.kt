@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -17,11 +18,12 @@ import java.io.File
 internal interface KMockPluginContract {
     interface Extension {
         var rootPackage: String
+        var sharedSources: Map<String, Pair<String, Int>>
     }
 
     interface CleanUpTask {
         @get:Input
-        val indicator: Property<String>
+        val indicators: SetProperty<String>
 
         @get:Input
         val targetPlatform: Property<String>
@@ -41,6 +43,14 @@ internal interface KMockPluginContract {
             target: String,
             indicator: String
         ): Copy
+    }
+
+    interface KmpSetupConfigurator {
+        fun wireSharedSourceTasks(
+            project: Project,
+            kspMapping: Map<String, String>,
+            dependencies: Map<String, Set<String>>
+        )
     }
 
     interface SourceSetConfigurator {

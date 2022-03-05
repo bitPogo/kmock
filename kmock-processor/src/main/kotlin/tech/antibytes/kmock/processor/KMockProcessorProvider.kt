@@ -22,7 +22,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ProcessorContract.Options(
                 isKmp = environment.options["isKmp"] == true.toString(),
                 rootPackage = environment.options["rootPackage"]!!
-            )
+            ),
+            SourceFilter(environment.options, logger)
         )
     }
 }
