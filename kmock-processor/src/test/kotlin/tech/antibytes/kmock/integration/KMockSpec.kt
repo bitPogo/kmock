@@ -57,9 +57,7 @@ class KMockSpec {
             .getOrNull(0)?.readText()
     }
 
-    private fun String.normalizeSource(): String {
-        return this.replace(Regex("[\t ]+"), "")
-    }
+    private fun String.normalizeSource(): String = this.replace(Regex("[\t ]+"), "")
 
     @Test
     fun `Given a annotated PlatformSource is processed, it writes a stub for abstract Properties`() {

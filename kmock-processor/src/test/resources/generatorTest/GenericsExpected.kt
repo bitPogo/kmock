@@ -1,6 +1,7 @@
 package generatorTest
 
 import kotlin.Boolean
+import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -13,6 +14,7 @@ internal class GenericsMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: Generics<K, L>? = null,
     freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false
 ) : Generics<K, L> {
     public override var template: K

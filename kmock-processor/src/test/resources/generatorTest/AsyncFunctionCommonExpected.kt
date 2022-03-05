@@ -4,6 +4,7 @@ package generatorTest
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -16,6 +17,7 @@ internal class AsyncFunctionCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: AsyncFunctionCommon? = null,
     freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false
 ) : AsyncFunctionCommon {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
