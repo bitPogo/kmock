@@ -8,7 +8,6 @@ package tech.antibytes.gradle.kmock
 
 import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.Project
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Copy
@@ -19,7 +18,7 @@ import java.io.File
 internal interface KMockPluginContract {
     interface Extension {
         var rootPackage: String
-        val sharedSources: MapProperty<String, String>
+        var sharedSources: Map<String, Pair<String, Int>>
     }
 
     interface CleanUpTask {

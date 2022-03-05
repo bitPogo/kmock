@@ -48,6 +48,10 @@ internal interface ProcessorContract {
             sources: List<InterfaceSource>,
             filteredBy: List<InterfaceSource>
         ): List<InterfaceSource>
+
+        fun filterSharedSources(
+            sources: List<InterfaceSource>
+        ): List<InterfaceSource>
     }
 
     interface MockGenerator {

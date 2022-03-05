@@ -13,16 +13,31 @@ abstract class KMockExtension(
     project: Project
 ) : KMockPluginContract.Extension {
     private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+
     private var _rootPackage: String = ""
+    private var _sharedSources: Map<String, Pair<String, Int>> = emptyMap()
+
+    private fun propagateRootPackage(rootPackage: String) {
+        ksp.arg("rootPackage", rootPackage)
+    }
 
     override var rootPackage: String
         get() = _rootPackage
         set(value) {
-            propagateToKsp(value)
+            propagateRootPackage(value)
             _rootPackage = value
         }
 
-    private fun propagateToKsp(rootPackage: String) {
-        ksp.arg("rootPackage", rootPackage)
+    private fun propagatePrecedences(precedences: Map<String, Pair<String, Int>>) {
+        precedences.forEach { (_, precedenceMapping) ->
+            ksp.arg(precedenceMapping.first, precedenceMapping.second.toString())
+        }
     }
+
+    override var sharedSources: Map<String, Pair<String, Int>>
+        get() = _sharedSources
+        set(value) {
+            propagatePrecedences(value)
+            _sharedSources = value
+        }
 }

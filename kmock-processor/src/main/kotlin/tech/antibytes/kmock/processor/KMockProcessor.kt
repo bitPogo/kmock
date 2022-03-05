@@ -97,7 +97,7 @@ internal class KMockProcessor(
         val annotated = fetchSharedAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
         val filteredInterfaces = filter.filter(
-            aggregated.extractedInterfaces,
+            filter.filterSharedSources(aggregated.extractedInterfaces),
             commonAggregated.extractedInterfaces
         )
 

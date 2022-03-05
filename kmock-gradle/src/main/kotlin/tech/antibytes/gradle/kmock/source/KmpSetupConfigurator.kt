@@ -288,12 +288,11 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
     ) {
-        val indicators: MutableMap<String, String> = (
-            project.extensions
-                .getByType(KMockExtension::class.java)
-                .sharedSources
-                .orNull ?: mutableMapOf()
-            ).toMutableMap()
+        val indicators: MutableMap<String, String> = project.extensions
+            .getByType(KMockExtension::class.java)
+            .sharedSources
+            .mapValues { (_, value) -> value.first }
+            .toMutableMap()
 
         indicators[common] = indicatorCommon
         val cleanDependencies = adjustDependencies(

@@ -42,6 +42,6 @@ class KMockProcessorProviderSpec {
 
         verify(exactly = 1) { environment.logger }
         verify(exactly = 1) { environment.codeGenerator }
-        verify(exactly = 2) { environment.options }
+        verify(exactly = 3) { environment.options }
     }
 }

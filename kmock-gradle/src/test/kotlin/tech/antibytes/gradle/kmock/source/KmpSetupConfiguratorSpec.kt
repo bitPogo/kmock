@@ -76,7 +76,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns null
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -224,7 +224,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
@@ -283,9 +283,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf(
-            "otherTest" to "OTHER SOURCE"
-        )
+        every { kMockExtension.sharedSources } returns mapOf("otherTest" to Pair("OTHER SOURCE", 23))
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -446,7 +444,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
@@ -507,7 +505,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -570,7 +568,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -636,7 +634,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -837,7 +835,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources.orNull } returns mapOf<String, String>()
+        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 

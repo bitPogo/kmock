@@ -206,6 +206,7 @@ class KMockProcessorSpec {
         )
 
         every { filter.filter(any(), any()) } returns interfacesFiltered
+        every { filter.filterSharedSources(any()) } returns interfacesFiltered
 
         every { aggregator.extractRelaxer(any()) } returns relaxer
 
@@ -227,7 +228,9 @@ class KMockProcessorSpec {
         // Then
         verify(exactly = 1) { generator.writeCommonMocks(interfacesCommon, dependencies, relaxer) }
 
-        verify(exactly = 1) { filter.filter(interfacesShared, interfacesCommon) }
+        verify(exactly = 1) { filter.filter(interfacesFiltered, interfacesCommon) }
+        verify(exactly = 1) { filter.filterSharedSources(interfacesShared) }
+
         verify(exactly = 1) { generator.writeSharedMocks(interfacesFiltered, dependencies, relaxer) }
 
         verify(exactly = 1) {

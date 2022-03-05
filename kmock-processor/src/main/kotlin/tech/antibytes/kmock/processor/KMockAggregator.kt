@@ -48,7 +48,7 @@ internal class KMockAggregator(
         when {
             interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-            else -> interfaceCollector[interfaze.qualifiedName!!.asString()] = ProcessorContract.InterfaceSource(
+            else -> interfaceCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = ProcessorContract.InterfaceSource(
                 sourceIndicator,
                 interfaze
             )
