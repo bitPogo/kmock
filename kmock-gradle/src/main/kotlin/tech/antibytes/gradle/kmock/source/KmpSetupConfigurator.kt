@@ -154,11 +154,60 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         )
     }
 
+    private fun createCopyTasks(
+        project: Project,
+        indicators: Map<String, String>,
+        kspMapping: Map<String, String>,
+        dependencies: Map<String, Set<String>>
+    ): Pair<Array<Copy>, List<Set<String>>> {
+        val dependsOn: MutableList<Set<String>> = mutableListOf()
+
+        val copyTasks = indicators
+            .filter { (source, _) ->
+                source in dependencies
+            }
+            .map { (source, indicator) ->
+                selectReferenceSource(
+                    project,
+                    dependencies[source]!!,
+                    kspMapping,
+                    indicator,
+                    source
+                ).also { copySet ->
+                    if (source == "commonTest") {
+                        copySet.doLast { setUpKmpEntryPoint(this.project) }
+                    }
+
+                    dependsOn.add(dependencies[source]!!)
+                }
+            }
+            .toTypedArray()
+
+        return Pair(copyTasks, dependsOn)
+    }
+
+    private fun filterCopyTasksByDependencies(
+        platform: String,
+        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
+    ): Array<Copy> {
+        val copyTasks: MutableList<Copy> = mutableListOf()
+        val (allCopyTasks, dependencies) = copyTasksAndDependencies
+
+        allCopyTasks.forEachIndexed { idx, copyTask ->
+            if (platform in dependencies[idx]) {
+                copyTasks.add(copyTask)
+            }
+        }
+
+        return copyTasks.toTypedArray()
+    }
+
     private fun setUpAndroidTaskChain(
         project: Project,
         indicators: List<String>,
-        copyTasks: Array<Copy>,
+        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
     ) {
+        val copyTasks = filterCopyTasksByDependencies("android", copyTasksAndDependencies)
         val (cleanUpTaskDebug, cleanUpTaskRelease) = setupAndroidCleanUpTasks(
             project,
             indicators,
@@ -184,8 +233,9 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         indicators: List<String>,
         platform: String,
         kspTask: String,
-        copyTasks: Array<Copy>,
+        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
     ) {
+        val copyTasks = filterCopyTasksByDependencies(platform, copyTasksAndDependencies)
         val cleanUpTask = createCleanUpTask(
             project,
             platform,
@@ -209,39 +259,13 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         }
     }
 
-    private fun createCopyTasks(
-        project: Project,
-        indicators: Map<String, String>,
-        kspMapping: Map<String, String>,
-        dependencies: Map<String, Set<String>>
-    ): Array<Copy> {
-        return indicators
-            .filter { (source, _) ->
-                source in dependencies
-            }
-            .map { (source, indicator) ->
-                selectReferenceSource(
-                    project,
-                    dependencies[source]!!,
-                    kspMapping,
-                    indicator,
-                    source
-                ).also { copySet ->
-                    if (source == "commonTest") {
-                        copySet.doLast { setUpKmpEntryPoint(this.project) }
-                    }
-                }
-            }
-            .toTypedArray()
-    }
-
     private fun wireSharedSourceTasks(
         project: Project,
         indicators: Map<String, String>,
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
     ) {
-        val copyTasks = createCopyTasks(
+        val copyTasksAndDependencies = createCopyTasks(
             project,
             indicators,
             kspMapping,
@@ -254,7 +278,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 setUpAndroidTaskChain(
                     project,
                     indicatorMarkers,
-                    copyTasks
+                    copyTasksAndDependencies
                 )
             } else {
                 setUpTaskChain(
@@ -262,7 +286,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                     indicatorMarkers,
                     platform,
                     kspTask,
-                    copyTasks
+                    copyTasksAndDependencies
                 )
             }
         }
