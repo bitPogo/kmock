@@ -53,22 +53,76 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     }
 
     private fun addSource(
-        dependencies: Set<KotlinSourceSet>,
+        sourceSetName: String,
         platformName: String,
-        sourceCollector: MutableMap<String, String>,
+        dependencies: Set<KotlinSourceSet>,
+        kspCollector: MutableMap<String, String>,
         dependencyCollector: MutableMap<String, Set<String>>,
+        metaDependencies: MutableMap<String, Set<String>>,
         dependencyHandler: DependencyHandler
     ) {
         val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
         try {
             addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
         } catch (e: Throwable) {
+            collectDependencies(
+                sourceSetName,
+                dependencies,
+                metaDependencies
+            )
             return
         }
 
         collectDependencies(platformName, dependencies, dependencyCollector)
 
-        sourceCollector[platformName] = kspDependency
+        kspCollector[platformName] = kspDependency
+    }
+
+    private fun flattenMetaDependencies(
+        metaDependencies: MutableMap<String, Set<String>>
+    ): MutableMap<String, Set<String>> {
+        val flattenedDependencies: MutableMap<String, Set<String>> = mutableMapOf()
+
+        metaDependencies.keys.forEach { key ->
+            val values = metaDependencies[key]!!.toMutableSet()
+            var idx = 0
+
+            while (idx < values.size) {
+                val value = values.elementAt(idx)
+                if (value in metaDependencies) {
+                    values.addAll(metaDependencies[value]!!)
+                    values.remove(value)
+                } else {
+                    idx++
+                }
+            }
+
+            flattenedDependencies[key] = values
+        }
+
+        return flattenedDependencies
+    }
+
+    private fun mergeDependencies(
+        platformDependencies: Map<String, Set<String>>,
+        metaDependencies: Map<String, Set<String>>
+    ): Map<String, Set<String>> {
+        val dependencies: MutableMap<String, Set<String>> = platformDependencies.toMutableMap()
+
+        metaDependencies.forEach { (key, values) ->
+            val flattened: MutableSet<String> = mutableSetOf()
+            values.forEach { value ->
+                flattened.addAll(dependencies[value]!!)
+            }
+
+            if (key in platformDependencies) {
+                dependencies[key] = dependencies[key]!!.toMutableSet().also { it.addAll(flattened) }
+            } else {
+                dependencies[key] = flattened
+            }
+        }
+
+        return dependencies
     }
 
     override fun configure(
@@ -76,8 +130,9 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     ) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
-        val sourceCollector: MutableMap<String, String> = mutableMapOf()
+        val kspCollector: MutableMap<String, String> = mutableMapOf()
         val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
+        val metaDependencies: MutableMap<String, Set<String>> = mutableMapOf()
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
@@ -88,19 +143,30 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     extendSourceSet(platformName, sourceSet, buildDir)
 
                     addSource(
-                        sourceSet.dependsOn,
-                        platformName,
-                        sourceCollector,
-                        sourceDependencies,
-                        dependencies,
+                        sourceSetName = sourceSet.name,
+                        platformName = platformName,
+                        dependencies = sourceSet.dependsOn,
+                        kspCollector = kspCollector,
+                        dependencyCollector = sourceDependencies,
+                        metaDependencies = metaDependencies,
+                        dependencyHandler = dependencies,
                     )
                 }
             }
         }
 
-        if (sourceCollector.isNotEmpty()) {
+        val fullDependencies = mergeDependencies(
+            sourceDependencies,
+            flattenMetaDependencies(metaDependencies)
+        )
+
+        if (kspCollector.isNotEmpty()) {
             project.afterEvaluate {
-                KmpSetupConfigurator.wireSharedSourceTasks(project, sourceCollector, sourceDependencies)
+                KmpSetupConfigurator.wireSharedSourceTasks(
+                    project,
+                    kspCollector,
+                    fullDependencies
+                )
             }
         }
     }

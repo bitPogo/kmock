@@ -89,75 +89,6 @@ class KmpSourceSetsConfiguratorSpec {
     }
 
     @Test
-    fun `Given configure is called it ignores SharedTest Sources, while extending there source dirs anyways`() {
-        // Given
-        val project: Project = mockk()
-        val extensions: ExtensionContainer = mockk()
-        val dependencies: DependencyHandler = mockk()
-        val kotlin: KotlinMultiplatformExtension = mockk()
-        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
-        val path: String = fixture.fixture()
-        val version: String = fixture.fixture()
-
-        val source1: KotlinSourceSet = mockk()
-        val source2: KotlinSourceSet = mockk()
-        val sourceSets = mutableListOf(
-            source1,
-            source2
-        )
-
-        every { project.dependencies } returns dependencies
-        every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin
-        )
-
-        every { kotlin.sourceSets } returns sources
-        every { sources.iterator() } returns sourceSets.listIterator()
-        every { MainConfig.version } returns version
-
-        every { source1.name } returns "nativeTest"
-        every { source1.kotlin.srcDir(any()) } returns mockk()
-        every { source1.dependsOn } returns mockk()
-
-        every { source2.name } returns "appleTest"
-        every { source2.kotlin.srcDir(any()) } returns mockk(relaxed = true)
-        every { source2.dependsOn } returns mockk(relaxed = true)
-
-        every { dependencies.add(any(), any()) } throws RuntimeException()
-
-        // When
-        KmpSourceSetsConfigurator.configure(project)
-
-        // Then
-        verify(atLeast = 1) {
-            dependencies.add(
-                "kspNativeTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
-            )
-        }
-
-        verify(atLeast = 1) {
-            dependencies.add(
-                "kspAppleTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
-            )
-        }
-
-        verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
-        }
-
-        verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/apple/appleTest")
-        }
-    }
-
-    @Test
     fun `Given configure is called it configures PlatformTest Sources`() {
         // Given
         val project: Project = mockk()
@@ -348,6 +279,99 @@ class KmpSourceSetsConfiguratorSpec {
                 mapOf(
                     source1DependenciesName to setOf("jvm"),
                     source2DependenciesName to setOf("android")
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `Given configure is called it resolves shared source sets`() {
+        // Given
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+        val version: String = fixture.fixture()
+
+        val source1: KotlinSourceSet = mockk()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+
+        val sourceSets = mutableListOf(
+            source1,
+            source2,
+        )
+
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
+            kotlin
+        )
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+        every { MainConfig.version } returns version
+
+        every { source1.name } returns "nativeTest"
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf()
+
+        every { source2.name } returns "iosX64Test"
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns "nativeTest"
+
+        every { dependencies.add(any(), any()) } throws RuntimeException()
+        every { dependencies.add("kspIosX64Test", any()) } returns mockk()
+
+        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        // Then
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspNativeTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspIosX64Test",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(exactly = 1) {
+            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
+        }
+
+        verify(exactly = 1) {
+            source2.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test")
+        }
+
+        verify(exactly = 1) {
+            KmpSetupConfigurator.wireSharedSourceTasks(
+                project,
+                mapOf(
+                    "iosX64" to "kspTestKotlinIosX64",
+                ),
+                mapOf(
+                    "nativeTest" to setOf("iosX64"),
                 )
             )
         }
