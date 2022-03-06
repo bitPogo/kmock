@@ -7,7 +7,7 @@
 package tech.antibytes.mock
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.error.MockError
 
 class FunMockeryStub(
     override val id: String,

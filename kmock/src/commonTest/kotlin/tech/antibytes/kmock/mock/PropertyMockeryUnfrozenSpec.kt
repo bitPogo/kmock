@@ -9,7 +9,7 @@ package tech.antibytes.kmock.mock
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.error.MockError
 import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.fixture.fixture

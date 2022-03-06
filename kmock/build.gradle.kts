@@ -65,8 +65,6 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.common)
                 implementation(Dependency.multiplatform.atomicFu.common)
                 implementation(Dependency.multiplatform.stately.collections)
-
-                implementation(LocalDependency.antibytes.test.core)
             }
         }
         val commonTest by getting {
@@ -78,6 +76,7 @@ kotlin {
                 implementation(Dependency.multiplatform.stately.concurrency)
                 implementation(Dependency.multiplatform.stately.freeze)
 
+                implementation(LocalDependency.antibytes.test.core)
                 implementation(LocalDependency.antibytes.test.annotations)
                 implementation(LocalDependency.antibytes.test.coroutine)
                 implementation(LocalDependency.antibytes.test.fixture)
