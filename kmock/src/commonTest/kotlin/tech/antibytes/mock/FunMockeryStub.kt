@@ -15,6 +15,9 @@ class FunMockeryStub(
     var getArgumentsForCall: ((Int) -> Array<out Any?>?)? = null,
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null
 ) : KMockContract.SyncFunMockery<Any, () -> Any> {
+    override var throws: Throwable
+        get() = TODO("Not yet implemented")
+        set(_) {}
     override var returnValue: Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")

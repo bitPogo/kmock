@@ -26,10 +26,12 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunMockery<ReturnValue, SideEffect> {
+    private val _throws: AtomicRef<Throwable?> = atomic(null)
     private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
     private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
     private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
 
+    private var _throwsUnfrozen: Throwable? = null
     private var _returnValueUnfrozen: ReturnValue? = null
     private val _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
     private var _sideEffectUnfrozen: SideEffect? = null
@@ -55,10 +57,11 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
 
     protected enum class Provider(val value: Int) {
         NO_PROVIDER(0),
-        RETURN_VALUE(1),
-        RETURN_VALUES(2),
-        SIDE_EFFECT(3),
-        SPY(4),
+        THROWS(1),
+        RETURN_VALUE(2),
+        RETURN_VALUES(3),
+        SIDE_EFFECT(4),
+        SPY(5),
     }
 
     private fun resolveAtomicCollector(collector: Collector): Collector? {
@@ -87,6 +90,28 @@ abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
             this._provider.update { provider }
         }
     }
+
+    private fun setThrowableValue(value: Throwable) {
+        if (freeze) {
+            _throws.update { value }
+        } else {
+            _throwsUnfrozen = value
+        }
+    }
+
+    override var throws: Throwable
+        @Suppress("UNCHECKED_CAST")
+        get() {
+            return if (freeze) {
+                _throws.value
+            } else {
+                _throwsUnfrozen
+            } as Throwable
+        }
+        set(value) {
+            setProvider(Provider.THROWS)
+            setThrowableValue(value)
+        }
 
     private fun _setReturnValue(value: ReturnValue) {
         if (freeze) {
