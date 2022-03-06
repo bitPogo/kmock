@@ -2,13 +2,14 @@
 package test
 
 import kotlin.Boolean
+import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
 internal expect inline fun <reified T> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    relaxed: Boolean = false,
-    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
+    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): T
 
