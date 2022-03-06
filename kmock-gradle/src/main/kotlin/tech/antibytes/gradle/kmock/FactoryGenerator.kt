@@ -6,6 +6,7 @@
 
 package tech.antibytes.gradle.kmock
 
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -27,12 +28,18 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
     private fun buildRelaxedParameter(): ParameterSpec {
         return ParameterSpec.builder("relaxed", Boolean::class)
             .defaultValue("false")
+            .addAnnotation(
+                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+            )
             .build()
     }
 
     private fun buildUnitRelaxedParameter(): ParameterSpec {
         return ParameterSpec.builder("relaxUnitFun", Boolean::class)
             .defaultValue("false")
+            .addAnnotation(
+                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+            )
             .build()
     }
 

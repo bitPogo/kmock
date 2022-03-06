@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -31,18 +32,23 @@ internal class KMockFactoryGenerator(
             parameter.defaultValue("false")
         }
 
-        return parameter.build()
+        return parameter.addAnnotation(
+            AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        ).build()
     }
 
     private fun buildUnitRelaxedParameter(
         isKmp: Boolean
     ): ParameterSpec {
         val parameter = ParameterSpec.builder("relaxUnitFun", Boolean::class)
+
         if (!isKmp) {
             parameter.defaultValue("false")
         }
 
-        return parameter.build()
+        return parameter.addAnnotation(
+            AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        ).build()
     }
 
     private fun buildVerifierParameter(

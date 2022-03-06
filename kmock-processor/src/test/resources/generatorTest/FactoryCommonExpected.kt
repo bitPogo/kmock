@@ -1,13 +1,14 @@
 package generatorTest
 
 import kotlin.Boolean
+import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
 internal actual inline fun <reified T> kmock(
     verifier: KMockContract.Collector,
-    relaxed: Boolean,
-    relaxUnitFun: Boolean,
+    @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
+    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean
 ): T = when (T::class) {
     generatorTest.PropertyCommon::class -> generatorTest.PropertyCommonMock(verifier = verifier,
