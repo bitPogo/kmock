@@ -59,7 +59,7 @@ class PropertyMockery<Value>(
         VALUE(1),
         VALUES(2),
         SIDE_EFFECT(3),
-        SPY(3),
+        SPY(4),
     }
 
     private fun resolveAtomicCollector(collector: Collector): Collector? {
