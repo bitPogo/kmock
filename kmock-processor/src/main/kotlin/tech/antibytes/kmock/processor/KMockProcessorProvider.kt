@@ -15,8 +15,14 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val logger = environment.logger
         val generator = environment.codeGenerator
 
+        val utils = KMockFunctionUtils()
+        val relaxerGenerator = KMockRelaxerGenerator()
+
+        val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
+        val functionGenerator = KMockFunctionGenerator(utils, relaxerGenerator)
+
         return KMockProcessor(
-            KMockGenerator(logger, generator),
+            KMockGenerator(logger, generator, utils, propertyGenerator, functionGenerator),
             KMockFactoryGenerator(logger, generator),
             KMockAggregator(logger),
             ProcessorContract.Options(

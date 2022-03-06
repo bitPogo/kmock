@@ -8,8 +8,16 @@ package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
@@ -52,6 +60,42 @@ internal interface ProcessorContract {
         fun filterSharedSources(
             sources: List<InterfaceSource>
         ): List<InterfaceSource>
+    }
+
+    interface FunctionUtils {
+        fun resolveGeneric(
+            template: KSDeclaration,
+            resolver: TypeParameterResolver
+        ): Map<String, List<KSTypeReference>>?
+
+        fun mapGeneric(
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver
+        ): List<TypeVariableName>
+    }
+
+    interface RelaxerGenerator {
+        fun buildRelaxers(relaxer: Relaxer?, useUnitFunRelaxer: Boolean): String
+    }
+
+    interface PropertyGenerator {
+        fun buildPropertyBundle(
+            qualifier: String,
+            ksProperty: KSPropertyDeclaration,
+            typeResolver: TypeParameterResolver,
+            propertyNameCollector: MutableList<String> = mutableListOf(),
+            relaxer: Relaxer?
+        ): List<PropertySpec>
+    }
+
+    interface FunctionGenerator {
+        fun buildFunctionBundle(
+            qualifier: String,
+            ksFunction: KSFunctionDeclaration,
+            typeResolver: TypeParameterResolver,
+            functionNameCollector: MutableList<String>,
+            relaxer: Relaxer?
+        ): Pair<PropertySpec, FunSpec>
     }
 
     interface MockGenerator {

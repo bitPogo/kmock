@@ -6,13 +6,12 @@
 
 package tech.antibytes.kmock.processor
 
-import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.util.test.fulfils
 
-class KMockGeneratorSpec {
+class KMockFunctionUtilsSpec {
     @Test
-    fun `It fulfils MockGenerator`() {
-        KMockGenerator(mockk(), mockk(), mockk(), mockk(), mockk()) fulfils ProcessorContract.MockGenerator::class
+    fun `It fulfils FunctionUtils`() {
+        KMockFunctionUtils() fulfils ProcessorContract.FunctionUtils::class
     }
 }

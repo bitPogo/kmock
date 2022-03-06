@@ -77,18 +77,18 @@ internal class SyncFunctionOverloadMock(
                 foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                          (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
-    public val _fooWithSyncFunctionOverload:
-        KMockContract.SyncFunMockery<Unit, (SyncFunctionOverload) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.SyncFunctionOverload#_fooWithSyncFunctionOverload", spyOn = if
-                                                                                                      (spyOn != null) { { fuzz ->
-            foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
-
-    public val _fooWithLPG: KMockContract.SyncFunMockery<Unit, (LPG) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.SyncFunctionOverload#_fooWithLPG", spyOn = if (spyOn != null) {
-            { fuzz ->
+    public val _fooWithGeneratorTestSyncFunctionOverload:
+        KMockContract.SyncFunMockery<Unit, (generatorTest.SyncFunctionOverload) -> kotlin.Unit> =
+        SyncFunMockery("generatorTest.SyncFunctionOverload#_fooWithGeneratorTestSyncFunctionOverload",
+            spyOn = if (spyOn != null) { { fuzz ->
                 foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                          (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+
+    public val _fooWithGeneratorTestLPG: KMockContract.SyncFunMockery<Unit, (generatorTest.LPG) ->
+    kotlin.Unit> = SyncFunMockery("generatorTest.SyncFunctionOverload#_fooWithGeneratorTestLPG",
+        spyOn = if (spyOn != null) { { fuzz ->
+            foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
@@ -106,9 +106,9 @@ internal class SyncFunctionOverloadMock(
     public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz)
 
     public override fun <T : SyncFunctionOverload> foo(fuzz: T): Unit =
-        _fooWithSyncFunctionOverload.invoke(fuzz)
+        _fooWithGeneratorTestSyncFunctionOverload.invoke(fuzz)
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz)
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithGeneratorTestLPG.invoke(fuzz)
 
     public fun _clearMock(): Unit {
         _foo.clear()
@@ -119,7 +119,7 @@ internal class SyncFunctionOverloadMock(
         _fooWithStringGeneratorTestAbc.clear()
         _fooWithFunction1.clear()
         _fooWithAny.clear()
-        _fooWithSyncFunctionOverload.clear()
-        _fooWithLPG.clear()
+        _fooWithGeneratorTestSyncFunctionOverload.clear()
+        _fooWithGeneratorTestLPG.clear()
     }
 }
