@@ -46,9 +46,11 @@ annotation class MockShared(val marker: String, vararg val interfaces: KClass<*>
  * Annotation to determine a relaxer. The Processor will use only the first specified relaxer.
  * Note: The relaxer must match the following form or the Processor fails:
  * ```
- *   inline fun <reified T> relax(id: String): T {
+ *   inline fun <reified T> relax(id: String, mock: Any): T {
  *      ...
  *   }
  * ```
+ *
+ * The Processor will delegate the id of the mocked/stubbed function or property.
  */
 annotation class Relaxer

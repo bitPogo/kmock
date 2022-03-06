@@ -23,6 +23,7 @@ interface KMockContract {
     interface FunMockery<ReturnValue, SideEffect : Function<ReturnValue>> : Mockery<ReturnValue, Array<out Any?>?> {
         var returnValue: ReturnValue
         var returnValues: List<ReturnValue>
+        var throws: Throwable
         var sideEffect: SideEffect
     }
 

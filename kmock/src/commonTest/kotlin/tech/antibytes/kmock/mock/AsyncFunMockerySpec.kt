@@ -54,6 +54,26 @@ class AsyncFunMockerySpec {
 
     @Test
     @JsName("fn1")
+    fun `Given a throws is set it is threadsafe retrievable`(): AsyncTestReturnValue {
+        // Given
+        val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
+        val error = RuntimeException()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.throws = error
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            mockery.throws mustBe error
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a returnValue is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -73,7 +93,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn3")
     fun `Given a returnValue is set with nullable value it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any?, suspend () -> Any?>(fixture.fixture())
@@ -93,7 +113,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn4")
     fun `Given a returnValues is set with an emptyList it fails`() {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -107,7 +127,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn4")
+    @JsName("fn5")
     fun `Given a returnValues is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -127,7 +147,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn5")
+    @JsName("fn6")
     fun `Given a sideEffect is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -147,7 +167,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn7")
     fun `Given invoke is called it fails if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -165,7 +185,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn6a")
+    @JsName("fn7a")
     fun `Given invoke is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -191,7 +211,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn6b")
+    @JsName("fn7b")
     fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -217,7 +237,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn6c")
+    @JsName("fn7c")
     fun `Given invoke is called it uses the given Implementation if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
@@ -240,7 +260,31 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
+    fun `Given invoke is called it throws the given Throwable threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
+        val error = RuntimeException(fixture.fixture<String>())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.throws = error
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = assertFailsWith<RuntimeException> {
+                mockery.invoke()
+            }
+
+            // Then
+            actual mustBe error
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn9")
     fun `Given invoke is called it returns the ReturnValue threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -262,7 +306,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn10")
     fun `Given invoke is called it returns the ReturnValues threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -286,7 +330,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn11")
     fun `Given invoke is called it returns the last ReturnValue if the given List is down to one value threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -310,7 +354,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn12")
     fun `Given invoke is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend (String, Int) -> Any>(fixture.fixture())
@@ -346,7 +390,31 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn13")
+    fun `Given invoke is called it uses ReturnValue over Throws`(): AsyncTestReturnValue {
+        // Given
+        val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+        val error = RuntimeException(fixture.fixture<String>())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.returnValue = value
+            mockery.throws = error
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = mockery.invoke()
+
+            // Then
+            actual mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn14")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -370,7 +438,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn15")
     fun `Given invoke is called it uses SideEffect over ReturnValues`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -394,7 +462,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn16")
     fun `Given invoke is called it captures Arguments threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, (String) -> Any>(fixture.fixture())
@@ -421,7 +489,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn17")
     fun `Given invoke is called it captures void Arguments threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -446,7 +514,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn18")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -459,13 +527,13 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn19")
     fun `Its default call count is 0`() {
         AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn20")
     fun `Given invoke is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -488,7 +556,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn21")
     fun `Given the mockery has a Collector and invoke is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -522,7 +590,7 @@ class AsyncFunMockerySpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn19")
+    @JsName("fn22")
     fun `Given clear is called it clears the mock`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -567,7 +635,7 @@ class AsyncFunMockerySpec {
 
     @Test
     @JsOnly
-    @JsName("fn20")
+    @JsName("fn23")
     fun `Given clear is called it clears the mock for Js`(): AsyncTestReturnValue {
         // Given
         val mockery = AsyncFunMockery<Any, suspend () -> Any>(fixture.fixture())
@@ -611,7 +679,7 @@ class AsyncFunMockerySpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn24")
     fun `Given clear is called it clears the mock while leave the spy intact`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()

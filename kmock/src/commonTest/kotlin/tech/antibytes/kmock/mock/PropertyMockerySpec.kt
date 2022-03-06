@@ -376,6 +376,33 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn14")
+    fun `Given onGet is called it uses OnGetSpy over GetSideEffect`(): AsyncTestReturnValue {
+        // Given
+        val value: Any = fixture.fixture()
+        val implementation = Implementation(fooProp = value)
+        val mockery = PropertyMockery(
+            fixture.fixture(),
+            spyOnGet = implementation::foo::get
+        )
+        val sideEffect = { fixture.fixture<Any>() }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            mockery.getSideEffect = sideEffect
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = mockery.onGet()
+
+            // Then
+            actual mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn15")
     fun `Given onSet is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -405,7 +432,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn16")
     fun `Given onGet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -431,7 +458,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn17")
     fun `Given onSet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -453,7 +480,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn18")
     fun `Given onSet is called it uses the given Spy`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -477,7 +504,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn19")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -490,13 +517,13 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn20")
     fun `Its default call count is 0`() {
         PropertyMockery<Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn21")
     fun `Given onGet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -519,7 +546,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn22")
     fun `Given onSet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -538,7 +565,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn23")
     fun `Given the mockery has a Collector and onGet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -571,7 +598,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn24")
     fun `Given the mockery has a Collector and onSet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val value: Any = fixture.fixture()
@@ -601,7 +628,7 @@ class PropertyMockerySpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn24")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock`() {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -648,7 +675,7 @@ class PropertyMockerySpec {
 
     @Test
     @JsOnly
-    @JsName("fn25")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
         val mockery = PropertyMockery<Any>(fixture.fixture())
@@ -695,7 +722,7 @@ class PropertyMockerySpec {
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn27")
     fun `Given clear is called it clears the mock while repecting Spyies`() {
         // Given
         val implementation = Implementation<Any>()

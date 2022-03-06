@@ -18,6 +18,7 @@ import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Modifier
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -128,7 +129,9 @@ internal class KMockGenerator(
         freeze.defaultValue("true")
 
         val relaxUnit = ParameterSpec.builder("relaxUnitFun", Boolean::class)
-        relaxUnit.defaultValue("false")
+        relaxUnit.addAnnotation(
+            AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        ).defaultValue("false")
 
         constructor.addParameter(collector.build())
         constructor.addParameter(spy.build())

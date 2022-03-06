@@ -34,6 +34,7 @@ class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
         onEvent(arguments)
 
         return when (provider) {
+            Provider.THROWS -> throw throws
             Provider.RETURN_VALUE -> returnValue
             Provider.RETURN_VALUES -> retrieveFromValues()
             Provider.SIDE_EFFECT -> function()

@@ -3,6 +3,7 @@ package generatorTest
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -15,6 +16,7 @@ internal class PropertyPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: PropertyPlatform? = null,
     freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false
 ) : PropertyPlatform {
     public override val foo: String

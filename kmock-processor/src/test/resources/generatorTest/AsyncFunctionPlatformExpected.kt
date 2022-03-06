@@ -3,6 +3,7 @@ package generatorTest
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -15,6 +16,7 @@ internal class AsyncFunctionPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: AsyncFunctionPlatform? = null,
     freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false
 ) : AsyncFunctionPlatform {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->

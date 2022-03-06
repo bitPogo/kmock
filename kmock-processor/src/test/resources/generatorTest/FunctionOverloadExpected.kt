@@ -5,6 +5,7 @@ import kotlin.Boolean
 import kotlin.Function1
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -17,6 +18,7 @@ internal class SyncFunctionOverloadMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     spyOn: SyncFunctionOverload? = null,
     freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false
 ) : SyncFunctionOverload {
     public override val foo: Any
