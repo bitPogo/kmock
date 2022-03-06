@@ -16,7 +16,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.Relaxer
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
 class PropertyMockery<Value>(

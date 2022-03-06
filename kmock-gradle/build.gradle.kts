@@ -28,7 +28,6 @@ antiBytesPublishing {
 
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
-    implementation(LocalDependency.antibytes.gradle.util)
     implementation(LocalDependency.gradle.ksp)
     implementation(LocalDependency.square.kotlinPoet.core)
 

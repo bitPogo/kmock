@@ -15,7 +15,7 @@ import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
 abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(

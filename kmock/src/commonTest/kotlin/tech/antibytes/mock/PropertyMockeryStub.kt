@@ -8,7 +8,7 @@ package tech.antibytes.mock
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.GetOrSet
-import tech.antibytes.util.test.MockError
+import tech.antibytes.kmock.error.MockError
 
 class PropertyMockeryStub(
     override val id: String,
