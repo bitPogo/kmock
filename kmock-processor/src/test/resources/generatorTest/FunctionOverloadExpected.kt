@@ -19,7 +19,9 @@ internal class SyncFunctionOverloadMock(
     spyOn: SyncFunctionOverload? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : SyncFunctionOverload {
     public override val foo: Any
         get() = _foo.onGet()

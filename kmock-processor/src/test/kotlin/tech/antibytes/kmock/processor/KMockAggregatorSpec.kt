@@ -678,30 +678,6 @@ class KMockAggregatorSpec {
     }
 
     @Test
-    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated function is not inlined`() {
-        // Given
-        val logger: KSPLogger = mockk()
-        val source: KSFunctionDeclaration = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
-        }
-
-        every { source.modifiers } returns emptySet()
-        every { logger.error(any()) } just Runs
-
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
-
-        // When
-        KMockAggregator(logger).extractRelaxer(annotated)
-
-        // Then
-        verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
-        }
-    }
-
-    @Test
     fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated function does not take exactly 1 parameter`() {
         // Given
         val logger: KSPLogger = mockk()
@@ -709,13 +685,25 @@ class KMockAggregatorSpec {
         val annotated: Sequence<KSAnnotated> = sequence {
             yield(source)
         }
+        val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
+        val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns emptyList()
-        every { logger.error(any()) } just Runs
+        every { source.returnType.toString() } returns "Any"
+        every { parameter.type.resolve().toString() } returns "String"
 
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "String"
+
+        every { source.packageName.asString() } returns packageName
+        every { source.simpleName.asString() } returns functionName
+
+        every { logger.error(any()) } just Runs
 
         // When
         KMockAggregator(logger).extractRelaxer(annotated)
@@ -735,15 +723,25 @@ class KMockAggregatorSpec {
             yield(source)
         }
 
+        val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns listOf(parameter)
+        every { source.returnType.toString() } returns "Any"
         every { parameter.type.resolve().toString() } returns "Any"
-        every { logger.error(any()) } just Runs
 
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "Any"
+
+        every { source.packageName.asString() } returns packageName
+        every { source.simpleName.asString() } returns functionName
+
+        every { logger.error(any()) } just Runs
 
         // When
         KMockAggregator(logger).extractRelaxer(annotated)
@@ -763,19 +761,25 @@ class KMockAggregatorSpec {
             yield(source)
         }
 
+        val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
+        val typeParameter: KSTypeParameter = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
-        every { source.parameters } returns listOf(parameter)
+        every { source.parameters } returns listOf(parameter, parameter)
+        every { source.returnType.toString() } returns "Any"
         every { parameter.type.resolve().toString() } returns "String"
 
-        every { source.typeParameters } returns emptyList()
-        every { source.returnType } returns mockk()
+        every { source.typeParameters } returns listOf(typeParameter)
+        every { typeParameter.bounds } returns sequence { }
+        every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "Any"
+
+        every { source.packageName.asString() } returns packageName
+        every { source.simpleName.asString() } returns functionName
 
         every { logger.error(any()) } just Runs
-
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
         KMockAggregator(logger).extractRelaxer(annotated)
@@ -795,62 +799,29 @@ class KMockAggregatorSpec {
             yield(source)
         }
 
-        val parameter: KSValueParameter = mockk()
-        val typeParameter: KSTypeParameter = mockk()
-
         val bound: Sequence<KSTypeReference> = sequence {
             yield(mockk())
         }
 
-        every { source.modifiers } returns setOf(Modifier.INLINE)
-        every { source.parameters } returns listOf(parameter)
-        every { parameter.type.resolve().toString() } returns "String"
-
-        every { source.typeParameters } returns listOf(typeParameter)
-        every { typeParameter.bounds } returns bound
-
-        every { source.returnType } returns mockk()
-
-        every { logger.error(any()) } just Runs
-
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
-
-        // When
-        KMockAggregator(logger).extractRelaxer(annotated)
-
-        // Then
-        verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
-        }
-    }
-
-    @Test
-    fun `Given extractRelaxer is called with KSAnnotated it fails if the annotated functions typeParameter is not Refined`() {
-        // Given
-        val logger: KSPLogger = mockk()
-        val source: KSFunctionDeclaration = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
-        }
-
+        val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
         val typeParameter: KSTypeParameter = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns listOf(parameter)
+        every { source.returnType.toString() } returns "Any"
         every { parameter.type.resolve().toString() } returns "String"
 
-        every { source.returnType } returns mockk()
-
         every { source.typeParameters } returns listOf(typeParameter)
-        every { typeParameter.bounds } returns sequence { }
-        every { typeParameter.isReified } returns false
+        every { typeParameter.bounds } returns bound
+        every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "Any"
+
+        every { source.packageName.asString() } returns packageName
+        every { source.simpleName.asString() } returns functionName
 
         every { logger.error(any()) } just Runs
-
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
 
         // When
         KMockAggregator(logger).extractRelaxer(annotated)
@@ -870,21 +841,23 @@ class KMockAggregatorSpec {
             yield(source)
         }
 
+        val functionName: String = fixture.fixture()
+        val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
         val typeParameter: KSTypeParameter = mockk()
-        val returnType: KSTypeReference = mockk()
 
         every { source.modifiers } returns setOf(Modifier.INLINE)
         every { source.parameters } returns listOf(parameter)
-        every { source.returnType } returns returnType
+        every { source.returnType.toString() } returns "Any"
         every { parameter.type.resolve().toString() } returns "String"
 
         every { source.typeParameters } returns listOf(typeParameter)
         every { typeParameter.bounds } returns sequence { }
         every { typeParameter.isReified } returns true
+        every { typeParameter.toString() } returns "String"
 
-        every { source.packageName.asString() } returns fixture.fixture()
-        every { source.simpleName.asString() } returns fixture.fixture()
+        every { source.packageName.asString() } returns packageName
+        every { source.simpleName.asString() } returns functionName
 
         every { logger.error(any()) } just Runs
 

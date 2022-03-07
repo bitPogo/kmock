@@ -17,7 +17,9 @@ internal class AsyncFunctionPlatformMock(
     spyOn: AsyncFunctionPlatform? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : AsyncFunctionPlatform {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
     kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionPlatform#_foo", spyOn = if (spyOn !=

@@ -18,7 +18,9 @@ internal class SyncFunctionCommonMock(
     spyOn: SyncFunctionCommon? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : SyncFunctionCommon {
     public val _foo: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
         SyncFunMockery("generatorTest.SyncFunctionCommon#_foo", spyOn = if (spyOn != null) { { fuzz,
