@@ -8,7 +8,7 @@ package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.GetOrSet
-import tech.antibytes.kmock.verification.contraints.eq
+import tech.antibytes.kmock.verification.constraints.eq
 
 internal fun Array<out Any?>?.hasBeenCalledWithVoid(): Boolean = this == null
 

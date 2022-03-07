@@ -6,14 +6,20 @@
 
 @file:Suppress("ClassName")
 
-package tech.antibytes.kmock.verification.contraints
+package tech.antibytes.kmock.verification.constraints
 
-import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
 @OptIn(ExperimentalUnsignedTypes::class)
+/**
+ * VerificationConstraint matches if the actual and expected value are equal.
+ * @param expected the expected value.
+ * @see VerificationConstraint
+ * @author Matthias Geisler
+ */
 class eq(
     private val expected: Any?
-) : KMockContract.VerificationConstraint {
+) : VerificationConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {
             expected is Array<*> && actual is Array<*> -> expected.contentDeepEquals(actual)

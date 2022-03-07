@@ -573,18 +573,23 @@ interface KMockContract {
      */
     interface VerificationHandle {
         /**
-         * Id of the Proxy
+         * Id of the Proxy.
          */
         val id: String
 
         /**
-         * List with aggregated indices of invocation.
+         * List with aggregated indices of invocation of the refered Proxy.
          */
         val callIndices: List<Int>
     }
 
     /**
      * Constraint to for granular Argument verification.
+     * @see tech.antibytes.kmock.verification.constraints.any
+     * @see tech.antibytes.kmock.verification.constraints.eq
+     * @see tech.antibytes.kmock.verification.constraints.isNot
+     * @see tech.antibytes.kmock.verification.constraints.isNotSame
+     * @see tech.antibytes.kmock.verification.constraints.isSame
      * @author Matthias Geisler
      */
     fun interface VerificationConstraint {
@@ -647,7 +652,7 @@ interface KMockContract {
     }
 
     /**
-     * Container to which holds actual references to proxy calls. The references are ordered by their invocation.
+     * Container to which holds actual references of proxy calls. The references are ordered by their invocation.
      * @author Matthias Geisler
      */
     interface Verifier {

@@ -24,12 +24,12 @@ class VerificationSpec {
     @JsName("fn0")
     fun `Given verify is called it fails if the covered mock does not contain any call`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify {
-                VerificationHandle(Proxy.id, emptyList())
+                VerificationHandle(proxy.id, emptyList())
             }
         }
 
@@ -40,14 +40,14 @@ class VerificationSpec {
     @JsName("fn1")
     fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(atLeast = expectedCalls) {
-                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -58,14 +58,14 @@ class VerificationSpec {
     @JsName("fn2")
     fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(atMost = expectedCalls) {
-                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -76,14 +76,14 @@ class VerificationSpec {
     @JsName("fn3")
     fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(exactly = expectedCalls, atLeast = 0) {
-                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -94,14 +94,14 @@ class VerificationSpec {
     @JsName("fn4")
     fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(exactly = expectedCalls, atMost = 0) {
-                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -112,12 +112,12 @@ class VerificationSpec {
     @JsName("fn5")
     fun `Given verify is called it passes if the covered mock matches the requirements`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
 
         // When
         verify(exactly = givenCalls) {
-            VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
+            VerificationHandle(proxy.id, fixture.listFixture(size = givenCalls))
         }
     }
 
@@ -163,7 +163,7 @@ class VerificationSpec {
     @JsName("fn7")
     fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
         // Given
-        val handleProxy = FunProxyStub(
+        val handleproxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
@@ -173,7 +173,7 @@ class VerificationSpec {
         )
 
         val handle = VerificationHandle(
-            handleProxy.id,
+            handleproxy.id,
             listOf(1)
         )
 
@@ -191,7 +191,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted '${handleProxy.id}', but got '${referenceProxy.id}'."
+        error.message mustBe "Excepted '${handleproxy.id}', but got '${referenceProxy.id}'."
     }
 
     @Test
@@ -509,7 +509,7 @@ class VerificationSpec {
     @Test
     @JsName("fn15")
     fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
-        val handleProxy = FunProxyStub(
+        val handleproxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
@@ -519,7 +519,7 @@ class VerificationSpec {
         )
 
         val handle = VerificationHandle(
-            handleProxy.id,
+            handleproxy.id,
             listOf(1)
         )
 
@@ -537,7 +537,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Last referred invocation of ${handleProxy.id} was not found."
+        error.message mustBe "Last referred invocation of ${handleproxy.id} was not found."
     }
 
     @Test

@@ -10,6 +10,12 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 
+/**
+ * Container to which collects and holds actual references of proxy calls in a non freezing manner.
+ * The references are ordered by their invocation.
+ * @see Verifier
+ * @author Matthias Geisler
+ */
 class NonfreezingVerifier : KMockContract.Verifier, KMockContract.Collector {
     private val _references: MutableList<Reference> = mutableListOf()
 

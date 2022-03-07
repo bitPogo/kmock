@@ -6,13 +6,19 @@
 
 @file:Suppress("ClassName")
 
-package tech.antibytes.kmock.verification.contraints
+package tech.antibytes.kmock.verification.constraints
 
-import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
+/**
+ * VerificationConstraint matches if the actual and expected value are not equal.
+ * @param illegal value which should match.
+ * @see VerificationConstraint
+ * @author Matthias Geisler
+ */
 class isNot(
     private val illegal: Any? = null
-) : KMockContract.VerificationConstraint {
+) : VerificationConstraint {
     override fun matches(actual: Any?): Boolean {
         return !when {
             illegal is Array<*> && actual is Array<*> -> illegal.contentDeepEquals(actual)

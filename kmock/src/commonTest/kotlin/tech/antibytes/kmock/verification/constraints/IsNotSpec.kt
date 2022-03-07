@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.verification.contraints
+package tech.antibytes.kmock.verification.constraints
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.fixture.fixture
