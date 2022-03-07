@@ -15,20 +15,12 @@ internal class VerificationChainBuilder :
     KMockContract.VerificationChainBuilder,
     KMockContract.VerificationReferenceCleaner {
     private val handles = IsoMutableList<VerificationHandle>()
-    private val ensuredMocks = mutableListOf<KMockContract.Mockery<*, *>>()
 
     override fun ensureVerificationOf(vararg mocks: KMockContract.Mockery<*, *>) {
         mocks.forEach { mock ->
-            if (mock.verificationBuilderReference == null) {
-                mock.verificationBuilderReference = this
-                ensuredMocks.add(mock)
+            if (mock.verificationBuilderReference != this) {
+                throw IllegalStateException("The given mock ${mock.id} is not part of this VerificationChain.")
             }
-        }
-    }
-
-    internal fun cleanEnsuredMocks() {
-        ensuredMocks.forEach { mock ->
-            mock.verificationBuilderReference = null
         }
     }
 

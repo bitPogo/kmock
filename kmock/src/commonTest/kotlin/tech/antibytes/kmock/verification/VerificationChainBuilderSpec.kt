@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.verification
 
-import VerificationChainBuilderStub
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.mock.FunMockeryStub
 import tech.antibytes.util.test.fixture.PublicApi
@@ -17,6 +16,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class VerificationChainBuilderSpec {
     private val fixture = kotlinFixture()
@@ -75,55 +75,18 @@ class VerificationChainBuilderSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given ensureVerification it hooks in itself into a Mockery`() {
+    fun `Given ensureVerification it fails if the given mock is not part of it`() {
         // Given
         val mock = FunMockeryStub(fixture.fixture(), fixture.fixture())
 
         // When
         val container = VerificationChainBuilder()
 
-        container.ensureVerificationOf(mock)
+        val error = assertFailsWith<IllegalStateException> {
+            container.ensureVerificationOf(mock)
+        }
 
         // Then
-        mock.verificationBuilderReference mustBe container
-    }
-
-    @Test
-    @JsName("fn3")
-    fun `Given ensureVerification will not overwrite exiting hocks`() {
-        // Given
-        val builder = VerificationChainBuilderStub(mutableListOf())
-        val mock = FunMockeryStub(
-            fixture.fixture(),
-            fixture.fixture(),
-            verificationBuilderReference = builder
-        )
-
-        // When
-        val container = VerificationChainBuilder()
-
-        container.ensureVerificationOf(mock)
-
-        // Then
-        mock.verificationBuilderReference mustBe builder
-    }
-
-    @Test
-    @JsName("fn4")
-    fun `Given cleanEnsuredMocks it cleans itself from a Mock`() {
-        // Given
-        val mock = FunMockeryStub(
-            fixture.fixture(),
-            fixture.fixture(),
-        )
-
-        // When
-        val container = VerificationChainBuilder()
-
-        container.ensureVerificationOf(mock)
-        container.cleanEnsuredMocks()
-
-        // Then
-        mock.verificationBuilderReference mustBe null
+        error.message mustBe "The given mock ${mock.id} is not part of this VerificationChain."
     }
 }
