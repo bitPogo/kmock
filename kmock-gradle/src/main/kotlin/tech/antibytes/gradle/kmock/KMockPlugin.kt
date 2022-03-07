@@ -11,8 +11,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
-import tech.antibytes.gradle.util.applyIfNotExists
-import tech.antibytes.gradle.util.isKmp
+import tech.antibytes.gradle.kmock.util.applyIfNotExists
+import tech.antibytes.gradle.kmock.util.isKmp
 
 class KMockPlugin : Plugin<Project> {
     private fun configureKmp(project: Project) {
