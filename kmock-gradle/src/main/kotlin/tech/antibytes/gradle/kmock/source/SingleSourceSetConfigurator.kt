@@ -13,8 +13,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
-import tech.antibytes.gradle.util.isAndroid
-import tech.antibytes.gradle.util.isJs
+import tech.antibytes.gradle.kmock.util.isAndroid
+import tech.antibytes.gradle.kmock.util.isJs
 
 internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfigurator {
     private fun extendJvmSourceSet(project: Project, buildDir: String) {

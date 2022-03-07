@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache License, Version 2.0
  */
 
-package tech.antibytes.gradle.util
+package tech.antibytes.gradle.kmock.util
 
 import io.mockk.every
 import io.mockk.mockk
