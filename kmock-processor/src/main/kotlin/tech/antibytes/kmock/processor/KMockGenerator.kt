@@ -54,10 +54,7 @@ internal class KMockGenerator(
         }
     }
 
-    private fun buildConstructor(
-        superType: TypeName,
-        relaxer: Relaxer?,
-    ): FunSpec {
+    private fun buildConstructor(superType: TypeName): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
@@ -127,7 +124,7 @@ internal class KMockGenerator(
         }
 
         implementation.primaryConstructor(
-            buildConstructor(superType, relaxer)
+            buildConstructor(superType)
         )
 
         template.getAllProperties().forEach { ksProperty ->
@@ -146,7 +143,7 @@ internal class KMockGenerator(
 
         template.getAllFunctions().forEach { ksFunction ->
             if (ksFunction.isAbstract) {
-                val (mockery, function) = functionGenerator.buildFunctionBundle(
+                val (Proxy, function) = functionGenerator.buildFunctionBundle(
                     qualifier,
                     ksFunction,
                     typeResolver,
@@ -155,7 +152,7 @@ internal class KMockGenerator(
                 )
 
                 implementation.addFunction(function)
-                implementation.addProperty(mockery)
+                implementation.addProperty(Proxy)
             }
         }
 

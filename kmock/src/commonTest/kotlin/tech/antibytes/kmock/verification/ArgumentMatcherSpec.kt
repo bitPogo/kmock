@@ -7,10 +7,10 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.verification.contraints.eq
-import tech.antibytes.kmock.verification.contraints.isNot
-import tech.antibytes.kmock.verification.contraints.isNotSame
-import tech.antibytes.kmock.verification.contraints.isSame
+import tech.antibytes.kmock.verification.constraints.eq
+import tech.antibytes.kmock.verification.constraints.isNot
+import tech.antibytes.kmock.verification.constraints.isNotSame
+import tech.antibytes.kmock.verification.constraints.isSame
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture

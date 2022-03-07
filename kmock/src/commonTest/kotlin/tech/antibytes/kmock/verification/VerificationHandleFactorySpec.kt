@@ -9,8 +9,8 @@ package tech.antibytes.kmock.verification
 import VerificationChainBuilderStub
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.VerificationHandle
-import tech.antibytes.mock.FunMockeryStub
-import tech.antibytes.mock.PropertyMockeryStub
+import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -23,10 +23,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn0")
-    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if there were no calls`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if there were no calls`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 0)
+        val mock = FunProxyStub(name, 0)
 
         // When
         val actual = mock.hasBeenCalled()
@@ -37,10 +37,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn1")
-    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if there were calls`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if there were calls`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -59,10 +59,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn2")
-    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 0)
+        val mock = FunProxyStub(name, 0)
 
         // When
         val actual = mock.hasBeenCalledWith()
@@ -73,10 +73,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn3")
-    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -95,10 +95,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn4")
-    fun `Given hasBeenCalledWith is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
         val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
         var capturedIndex: Int? = null
@@ -118,14 +118,14 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn5")
-    fun `Given hasBeenCalledWith is called with a FunMockery it propagtes its handle`() {
+    fun `Given hasBeenCalledWith is called with a FunProxy it propagtes its handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = FunMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = FunProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -145,10 +145,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn6")
-    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 0)
+        val mock = FunProxyStub(name, 0)
 
         // When
         val actual = mock.hasBeenStrictlyCalledWith()
@@ -159,10 +159,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn7")
-    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -181,10 +181,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn8")
-    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
         val values = fixture.listFixture<String>().toTypedArray()
 
         var capturedIndex: Int? = null
@@ -204,14 +204,14 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn9")
-    fun `Given hasBeenStrictlyCalledWith is called with a FunMockery it propagates its Handle`() {
+    fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = FunMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = FunProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -232,10 +232,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn10")
-    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches`() {
+    fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 0)
+        val mock = FunProxyStub(name, 0)
 
         // When
         val actual = mock.hasBeenCalledWithout()
@@ -246,10 +246,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn11")
-    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
+    fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
         val values = fixture.listFixture<String>().toTypedArray()
 
         var capturedIndex: Int? = null
@@ -269,10 +269,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn12")
-    fun `Given hasBeenCalledWithout is called with a FunMockery it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
+    fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = FunMockeryStub(name, 1)
+        val mock = FunProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -291,13 +291,13 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn13")
-    fun `Given hasBeenCalledWithout is called with a FunMockery it propagates its Handle`() {
+    fun `Given hasBeenCalledWithout is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = FunMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = FunProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -317,10 +317,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn14")
-    fun `Given wasGotten is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
+    fun `Given wasGotten is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -339,10 +339,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn15")
-    fun `Given wasGotten is called with a PropMockery it returns a VerficationHandle which contains matches`() {
+    fun `Given wasGotten is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -361,13 +361,13 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn16")
-    fun `Given wasGotten is called with a PropMockery it it propagates its Handle`() {
+    fun `Given wasGotten is called with a PropProxy it it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = PropertyMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = PropertyProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -387,10 +387,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn17")
-    fun `Given wasSet is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
+    fun `Given wasSet is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -409,10 +409,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn18")
-    fun `Given wasSet is called with a PropMockery it returns a VerficationHandle which contains matches`() {
+    fun `Given wasSet is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -431,13 +431,13 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn19")
-    fun `Given wasSet is called with a PropMockery it propagates its Handle`() {
+    fun `Given wasSet is called with a PropProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val captured: MutableList<VerificationHandle> = mutableListOf()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = PropertyMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = PropertyProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -457,10 +457,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn20")
-    fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle while filtering mismatches`() {
+    fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -479,10 +479,10 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn21")
-    fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle while filtering mismatching Values`() {
+    fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle while filtering mismatching Values`() {
         // Given
         val name: String = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -501,11 +501,11 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn22")
-    fun `Given wasSetTo is called with a PropMockery it returns a VerficationHandle which contains matches`() {
+    fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
         val value: Any = fixture.fixture()
-        val mock = PropertyMockeryStub(name, 1)
+        val mock = PropertyProxyStub(name, 1)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->
@@ -524,7 +524,7 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn23")
-    fun `Given wasSetTo is called with a PropMockery it propagates its Handle`() {
+    fun `Given wasSetTo is called with a PropProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
         val value: Any = fixture.fixture()
@@ -532,7 +532,7 @@ class VerificationHandleFactorySpec {
         val captured: MutableList<VerificationHandle> = mutableListOf()
 
         val builder = VerificationChainBuilderStub(captured)
-        val mock = PropertyMockeryStub(name, 1, verificationBuilderReference = builder)
+        val mock = PropertyProxyStub(name, 1, verificationBuilderReference = builder)
 
         var capturedIndex: Int? = null
         mock.getArgumentsForCall = { givenIndex ->

@@ -9,5 +9,9 @@ package tech.antibytes.kmock.error
 sealed class MockError(
     message: String
 ) : RuntimeException(message) {
+    /**
+     * Indicates that a Proxy is missing a defined behaviour.
+     * @author Matthias Geisler
+     */
     class MissingStub(message: String) : MockError(message)
 }

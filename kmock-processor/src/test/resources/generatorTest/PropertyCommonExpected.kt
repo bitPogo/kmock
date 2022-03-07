@@ -8,10 +8,10 @@ import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.mock.AsyncFunMockery
-import tech.antibytes.kmock.mock.PropertyMockery
-import tech.antibytes.kmock.mock.SyncFunMockery
-import tech.antibytes.kmock.mock.relaxVoidFunction
+import tech.antibytes.kmock.proxy.AsyncFunProxy
+import tech.antibytes.kmock.proxy.PropertyProxy
+import tech.antibytes.kmock.proxy.SyncFunProxy
+import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class PropertyCommonMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
@@ -25,11 +25,11 @@ internal class PropertyCommonMock(
     public override val foo: String
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyMockery<String> = if (spyOn == null) {
-        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = null, collector = verifier,
+    public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
+        PropertyProxy("generatorTest.PropertyCommon#_foo", spyOnGet = null, collector = verifier,
             freeze = freeze, relaxer = null)
     } else {
-        PropertyMockery("generatorTest.PropertyCommon#_foo", spyOnGet = { spyOn.foo }, collector =
+        PropertyProxy("generatorTest.PropertyCommon#_foo", spyOnGet = { spyOn.foo }, collector =
         verifier, freeze = freeze, relaxer = null)
     }
 
@@ -38,12 +38,12 @@ internal class PropertyCommonMock(
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
-    public val _buzz: KMockContract.PropertyMockery<Any> = if (spyOn == null) {
-        PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = null, spyOnSet = null,
+    public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
+        PropertyProxy("generatorTest.PropertyCommon#_buzz", spyOnGet = null, spyOnSet = null,
             collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyMockery("generatorTest.PropertyCommon#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet =
-        { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("generatorTest.PropertyCommon#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet = {
+            spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 

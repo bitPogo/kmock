@@ -7,10 +7,10 @@ import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.mock.AsyncFunMockery
-import tech.antibytes.kmock.mock.PropertyMockery
-import tech.antibytes.kmock.mock.SyncFunMockery
-import tech.antibytes.kmock.mock.relaxVoidFunction
+import tech.antibytes.kmock.proxy.AsyncFunProxy
+import tech.antibytes.kmock.proxy.PropertyProxy
+import tech.antibytes.kmock.proxy.SyncFunProxy
+import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class SyncFunctionPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
@@ -21,8 +21,8 @@ internal class SyncFunctionPlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : SyncFunctionPlatform {
-    public val _foo: KMockContract.SyncFunMockery<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunMockery("generatorTest.SyncFunctionPlatform#_foo", spyOn = if (spyOn != null) { { fuzz,
+    public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+        SyncFunProxy("generatorTest.SyncFunctionPlatform#_foo", spyOn = if (spyOn != null) { { fuzz,
             ozz ->
             foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)

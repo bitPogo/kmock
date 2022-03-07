@@ -23,9 +23,9 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
-import tech.antibytes.kmock.mock.AsyncFunMockery
-import tech.antibytes.kmock.mock.PropertyMockery
-import tech.antibytes.kmock.mock.SyncFunMockery
+import tech.antibytes.kmock.proxy.AsyncFunProxy
+import tech.antibytes.kmock.proxy.PropertyProxy
+import tech.antibytes.kmock.proxy.SyncFunProxy
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -146,21 +146,21 @@ internal interface ProcessorContract {
         )
 
         val UNIT_RELAXER = ClassName(
-            SyncFunMockery::class.java.packageName,
+            SyncFunProxy::class.java.packageName,
             "relaxVoidFunction"
         )
 
         val SYNC_FUN_NAME = ClassName(
-            SyncFunMockery::class.java.packageName,
-            SyncFunMockery::class.java.simpleName
+            SyncFunProxy::class.java.packageName,
+            SyncFunProxy::class.java.simpleName
         )
         val ASYNC_FUN_NAME = ClassName(
-            AsyncFunMockery::class.java.packageName,
-            AsyncFunMockery::class.java.simpleName
+            AsyncFunProxy::class.java.packageName,
+            AsyncFunProxy::class.java.simpleName
         )
         val PROP_NAME = ClassName(
-            PropertyMockery::class.java.packageName,
-            PropertyMockery::class.java.simpleName
+            PropertyProxy::class.java.packageName,
+            PropertyProxy::class.java.simpleName
         )
     }
 }

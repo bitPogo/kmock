@@ -6,12 +6,13 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract.FunMockery
-import tech.antibytes.kmock.KMockContract.Mockery
-import tech.antibytes.kmock.KMockContract.PropertyMockery
+import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.Proxy
 
 private fun <T> traverseMockAndShare(
-    mock: Mockery<*, T>,
+    mock: Proxy<*, T>,
     action: T.() -> Boolean
 ): VerificationHandle {
     val callIndices = mutableListOf<Int>()
@@ -29,7 +30,7 @@ private fun <T> traverseMockAndShare(
 }
 
 private fun shareHandle(
-    mock: Mockery<*, *>,
+    mock: Proxy<*, *>,
     handle: VerificationHandle
 ) {
     if (mock.verificationBuilderReference != null) {
@@ -37,24 +38,67 @@ private fun shareHandle(
     }
 }
 
-fun FunMockery<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
+/**
+ * VerificationHandle Factory, which collects all invocation of an FunProxy.
+ * @return VerificationHandle
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
 
-fun FunMockery<*, *>.hasBeenCalledWith(
-    vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*values) }
+/**
+ * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
+ * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
+ * @return VerificationHandle
+ * @see KMockContract.VerificationConstraint
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.hasBeenCalledWith(
+    vararg arguments: Any?
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*arguments) }
 
-fun FunMockery<*, *>.hasBeenStrictlyCalledWith(
-    vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hasBeenStrictlyCalledWith(*values) }
+/**
+ * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
+ * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
+ * @return VerificationHandle
+ * @see KMockContract.VerificationConstraint
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.hasBeenStrictlyCalledWith(
+    vararg arguments: Any?
+): VerificationHandle = traverseMockAndShare(this) { hasBeenStrictlyCalledWith(*arguments) }
 
-fun FunMockery<*, *>.hasBeenCalledWithout(
-    vararg values: Any?
-): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithout(*values) }
+/**
+ * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
+ * @param illegal arguments/constraints which calls does not match.
+ * @return VerificationHandle
+ * @see KMockContract.VerificationConstraint
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.hasBeenCalledWithout(
+    vararg illegal: Any?
+): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithout(*illegal) }
 
-fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
+/**
+ * VerificationHandle Factory, which collects all invocation of an PropertyProxy Getter.
+ * @return VerificationHandle
+ * @author Matthias Geisler
+ */
+fun PropertyProxy<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
 
-fun PropertyMockery<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) { wasSet() }
+/**
+ * VerificationHandle Factory, which collects all invocation of an PropertyProxy Setter.
+ * @return VerificationHandle
+ * @author Matthias Geisler
+ */
+fun PropertyProxy<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) { wasSet() }
 
-fun PropertyMockery<*>.wasSetTo(
+/**
+ * VerificationHandle Factory, which collects all invocation of an PropertyProxy Setter with the given Value.
+ * @return VerificationHandle
+ * @param value argument/constraint which calls must match.
+ * @see KMockContract.VerificationConstraint
+ * @author Matthias Geisler
+ */
+fun PropertyProxy<*>.wasSetTo(
     value: Any?
 ): VerificationHandle = traverseMockAndShare(this) { wasSetTo(value) }

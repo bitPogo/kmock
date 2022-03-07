@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed
+ * Annotation to determine which interfaces are about to be stubbed/mocked
  *
  * @param interfaces variable amount of interfaces
  */
@@ -22,7 +22,7 @@ annotation class Mock(vararg val interfaces: KClass<*>)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed for commonCode
+ * Annotation to determine which interfaces are about to be stubbed/mocked for commonCode
  *
  * @param interfaces variable amount of interfaces
  */
@@ -32,7 +32,7 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed for a shared source
+ * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source
  *
  * @param marker to identify the corresponding source set
  * @param interfaces variable amount of interfaces
@@ -43,14 +43,21 @@ annotation class MockShared(val marker: String, vararg val interfaces: KClass<*>
 @Target(AnnotationTarget.FUNCTION)
 @MustBeDocumented
 /**
- * Annotation to determine a relaxer. The Processor will use only the first specified relaxer.
+ * Annotation to determine a Relaxer. The Processor will use only the first specified relaxer.
  * Note: The relaxer must match the following form or the Processor fails:
  * ```
- *   inline fun <reified T> relax(id: String, mock: Any): T {
+ *   fun <T> relax(id: String): T {
  *      ...
  *   }
  * ```
+ * or:
+ * ```
+ *  inline fun <reified T> relax(id: String): T {
+ *      ...
+ *  }
+ * ```
  *
- * The Processor will delegate the id of the mocked/stubbed function or property.
+ * The Processor will delegate the id of the Proxy which will invoke the Relaxer.
+ * @see KMockContract.Relaxer
  */
 annotation class Relaxer

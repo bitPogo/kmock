@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunMockeryStub
+import tech.antibytes.mock.FunProxyStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -56,18 +56,18 @@ class VerifierSpec {
     fun `Given add reference is called it adds a refrenence entry threadsafe`(): AsyncTestReturnValue {
         // Given
         val index: Int = fixture.fixture<Int>().absoluteValue
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
 
         val verifier = Verifier()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(mockery, index)
+            verifier.addReference(Proxy, index)
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().mockery sameAs mockery
+            verifier.references.first().Proxy sameAs Proxy
             verifier.references.first().callIndex mustBe index
         }
 
@@ -78,11 +78,11 @@ class VerifierSpec {
     @JsName("fn4")
     fun `Given clear is called it clears the verifier`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val verifier = Verifier()
 
         // When
-        verifier.addReference(mockery, fixture.fixture())
+        verifier.addReference(Proxy, fixture.fixture())
 
         verifier.clear()
 

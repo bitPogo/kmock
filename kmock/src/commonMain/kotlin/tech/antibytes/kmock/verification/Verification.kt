@@ -17,7 +17,7 @@ import tech.antibytes.kmock.KMockContract.Companion.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.Companion.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.VerificationHandle
-import tech.antibytes.kmock.KMockContract.VerificationReferenceBuilder
+import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.KMockContract.Verifier
 
 private fun formatMessage(
@@ -68,15 +68,21 @@ private infix fun VerificationHandle.mustBeAtMost(value: Int) {
 }
 
 /**
- * Verification function for a given assertion.
- * Note:<ul>
- *      <li>any boundary parameter will cause a failure in combination with wasCalledWithoutArguments if at least one argument matches.</li>
- * </ul>
- * @param exactly Int or null - the exact amount of calls. This parameter overrides atLeast and atMost. Use null to deactivate the criteria.
- * @param atLeast Int - the minimum amount of calls.
- * @param atMost Int or null - the maximum amount of calls. Use null to deactivate the criteria.
- * @param action ArgumentMatcher - Primary criteria to select VerificationHandles.
- * @throws AssertionError if it does not match the given criteria.
+ * Verifies the last produced VerificationHandle.
+ * @param exactly optional parameter which indicates the exact amount of calls.
+ * This parameter overrides atLeast and atMost.
+ * @param atLeast optional parameter which indicates the minimum amount of calls.
+ * @param atMost optional parameter which indicates the maximum amount of calls.
+ * @param action producer of VerificationHandle.
+ * @throws AssertionError if given criteria are not met.
+ * @see hasBeenCalled
+ * @see hasBeenCalledWith
+ * @see hasBeenStrictlyCalledWith
+ * @see hasBeenCalledWithout
+ * @see wasGotten
+ * @see wasSet
+ * @see wasSetTo
+ * @author Matthias Geisler
  */
 fun verify(
     exactly: Int? = null,
@@ -96,19 +102,19 @@ fun verify(
 }
 
 private fun initChainVerification(
-    scope: VerificationReferenceBuilder.() -> Any,
+    scope: VerificationInsurance.() -> Any,
     references: List<Reference>
 ): List<VerificationHandle> {
     val container = VerificationChainBuilder()
 
     references.forEach { reference ->
-        reference.mockery.verificationBuilderReference = container
+        reference.Proxy.verificationBuilderReference = container
     }
 
     scope(container)
 
     references.forEach { reference ->
-        reference.mockery.verificationBuilderReference = null
+        reference.Proxy.verificationBuilderReference = null
     }
 
     return container.toList()
@@ -135,15 +141,15 @@ private fun evaluateStrictReference(
     functionName: String,
     call: Int?
 ) {
-    if (reference.mockery.id != functionName) {
-        val message = formatMessage(MISMATCHING_FUNCTION, reference.mockery.id, functionName)
+    if (reference.Proxy.id != functionName) {
+        val message = formatMessage(MISMATCHING_FUNCTION, reference.Proxy.id, functionName)
         throw AssertionError(message)
     }
 
     if (call == null) {
         val message = formatMessage(
             NO_MATCHING_CALL_IDX,
-            reference.mockery.id
+            reference.Proxy.id
         )
 
         throw AssertionError(message)
@@ -153,15 +159,29 @@ private fun evaluateStrictReference(
         val message = formatMessage(
             MISMATCHING_CALL_IDX,
             reference.callIndex,
-            "$call of ${reference.mockery.id}"
+            "$call of ${reference.Proxy.id}"
         )
 
         throw AssertionError(message)
     }
 }
 
+/**
+ * Verifies a chain VerificationHandles. Each Handle must be in strict order of the referenced Proxy invocation
+ * and all invocations must be present.
+ * @param scope chain of VerificationHandle factory.
+ * @throws AssertionError if given criteria are not met.
+ * @see hasBeenCalled
+ * @see hasBeenCalledWith
+ * @see hasBeenStrictlyCalledWith
+ * @see hasBeenCalledWithout
+ * @see wasGotten
+ * @see wasSet
+ * @see wasSetTo
+ * @author Matthias Geisler
+ */
 fun Verifier.verifyStrictOrder(
-    scope: VerificationReferenceBuilder.() -> Any,
+    scope: VerificationInsurance.() -> Any,
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)
@@ -199,7 +219,7 @@ private fun evaluateReference(
 ): Boolean {
     return when {
         call == null -> false
-        reference.mockery.id != functionName -> false
+        reference.Proxy.id != functionName -> false
         reference.callIndex != call -> false
         else -> true
     }
@@ -219,8 +239,22 @@ private fun ensureAllHandlesAreDone(
     }
 }
 
+/**
+ * Verifies a chain VerificationHandles. Each Handle must be in order but gaps are allowed.
+ * Also the chain does not need to be exhaustive.
+ * @param scope chain of VerificationHandle factory.
+ * @throws AssertionError if given criteria are not met.
+ * @see hasBeenCalled
+ * @see hasBeenCalledWith
+ * @see hasBeenStrictlyCalledWith
+ * @see hasBeenCalledWithout
+ * @see wasGotten
+ * @see wasSet
+ * @see wasSetTo
+ * @author Matthias Geisler
+ */
 fun Verifier.verifyOrder(
-    scope: VerificationReferenceBuilder.() -> Any
+    scope: VerificationInsurance.() -> Any
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)

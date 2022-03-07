@@ -16,9 +16,9 @@ import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
-import tech.antibytes.kmock.mock.AsyncFunMockery
-import tech.antibytes.kmock.mock.PropertyMockery
-import tech.antibytes.kmock.mock.SyncFunMockery
+import tech.antibytes.kmock.proxy.AsyncFunProxy
+import tech.antibytes.kmock.proxy.PropertyProxy
+import tech.antibytes.kmock.proxy.SyncFunProxy
 import tech.antibytes.kmock.verification.Verifier
 import tech.antibytes.kmock.verification.assertHasBeenCalledStrictlyWith
 import tech.antibytes.kmock.verification.hasBeenCalledWith
@@ -165,8 +165,8 @@ class SampleControllerSpec {
 private class SampleDomainObjectManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleDomainObject {
-    val propId = PropertyMockery<String>("do#id", verifier)
-    val propValue = PropertyMockery<Int>("do#value", verifier)
+    val propId = PropertyProxy<String>("do#id", verifier)
+    val propValue = PropertyProxy<Int>("do#value", verifier)
 
     override var id: String
         get() = propId.onGet()
@@ -179,8 +179,8 @@ private class SampleDomainObjectManualStub(
 private class SampleRemoteRepositoryManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleRemoteRepository {
-    val fetch = AsyncFunMockery<SampleDomainObject, suspend (String) -> SampleDomainObject>("remote#fetch", verifier)
-    val find = SyncFunMockery<SampleDomainObject, (String) -> SampleDomainObject>("remote#find", verifier)
+    val fetch = AsyncFunProxy<SampleDomainObject, suspend (String) -> SampleDomainObject>("remote#fetch", verifier)
+    val find = SyncFunProxy<SampleDomainObject, (String) -> SampleDomainObject>("remote#find", verifier)
 
     override suspend fun fetch(url: String): SampleDomainObject = fetch.invoke(url)
 
@@ -190,9 +190,9 @@ private class SampleRemoteRepositoryManualStub(
 private class SampleLocalRepositoryManualStub(
     verifier: Collector = Collector { _, _ -> Unit }
 ) : SampleLocalRepository {
-    val store = AsyncFunMockery<SampleDomainObject, suspend (String, Int) -> SampleDomainObject>("local#store", verifier)
-    val contains = SyncFunMockery<Boolean, (String) -> Boolean>("local#contains", verifier)
-    val fetch = SyncFunMockery<SampleDomainObject, (String) -> SampleDomainObject>("local#fetch", verifier)
+    val store = AsyncFunProxy<SampleDomainObject, suspend (String, Int) -> SampleDomainObject>("local#store", verifier)
+    val contains = SyncFunProxy<Boolean, (String) -> Boolean>("local#contains", verifier)
+    val fetch = SyncFunProxy<SampleDomainObject, (String) -> SampleDomainObject>("local#fetch", verifier)
 
     override suspend fun store(id: String, value: Int): SampleDomainObject = store.invoke(id, value)
 
