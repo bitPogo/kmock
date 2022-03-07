@@ -18,7 +18,9 @@ internal class AsyncFunctionCommonMock(
     spyOn: AsyncFunctionCommon? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : AsyncFunctionCommon {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
     kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionCommon#_foo", spyOn = if (spyOn !=

@@ -16,6 +16,7 @@ internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
         } else {
             ""
         }
+
         val relaxerStr = if (relaxer != null) {
             "relaxer = if (relaxed) { { mockId -> ${relaxer.functionName}(mockId) } } else { null }"
         } else {

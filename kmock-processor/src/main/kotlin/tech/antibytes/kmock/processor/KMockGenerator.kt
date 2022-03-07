@@ -69,8 +69,10 @@ internal class KMockGenerator(
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
         freeze.defaultValue("true")
 
-        val relaxUnit = ParameterSpec.builder("relaxUnitFun", Boolean::class)
-        relaxUnit.addAnnotation(
+        val relaxUnit = ParameterSpec.builder(
+            "relaxUnitFun",
+            Boolean::class
+        ).addAnnotation(
             AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         ).defaultValue("false")
 
@@ -79,12 +81,14 @@ internal class KMockGenerator(
         constructor.addParameter(freeze.build())
         constructor.addParameter(relaxUnit.build())
 
-        if (relaxer != null) {
-            val relaxed = ParameterSpec.builder("relaxed", Boolean::class)
-            relaxed.defaultValue("false")
+        val relaxed = ParameterSpec.builder(
+            "relaxed",
+            Boolean::class
+        ).addAnnotation(
+            AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        ).defaultValue("false")
 
-            constructor.addParameter(relaxed.build())
-        }
+        constructor.addParameter(relaxed.build())
 
         return constructor.build()
     }

@@ -18,7 +18,9 @@ internal class AsyncFunctionSharedMock(
     spyOn: AsyncFunctionShared? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : AsyncFunctionShared {
     public val _foo: KMockContract.AsyncFunMockery<Any, suspend (kotlin.Int, kotlin.Any) ->
     kotlin.Any> = AsyncFunMockery("generatorTest.AsyncFunctionShared#_foo", spyOn = if (spyOn !=

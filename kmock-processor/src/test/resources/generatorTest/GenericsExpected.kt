@@ -23,7 +23,9 @@ internal class GenericsMock<K : Any, L>(
     spyOn: Generics<K, L>? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : Generics<K, L> where L : CharSequence, L : Comparable<L> {
     public override var template: K
         get() = _template.onGet()

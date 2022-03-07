@@ -19,6 +19,7 @@ internal class RelaxedMock(
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Relaxed {
     public override val buzz: String

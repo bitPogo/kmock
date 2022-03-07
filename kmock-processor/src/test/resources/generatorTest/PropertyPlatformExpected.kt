@@ -17,7 +17,9 @@ internal class PropertyPlatformMock(
     spyOn: PropertyPlatform? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false
+    relaxUnitFun: Boolean = false,
+    @Suppress("UNUSED_PARAMETER")
+    relaxed: Boolean = false
 ) : PropertyPlatform {
     public override val foo: String
         get() = _foo.onGet()
