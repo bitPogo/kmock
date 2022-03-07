@@ -1,0 +1,21 @@
+= Create a badge
+
+The badges are generate with link:https://shields.io/[Shields.io] to generate our Badges. Use the following links in order to document or update any used badge and place the resulting SVG files the projects `assets/images` folder.
+
+== Badge sources
+
+:link-badge-release: https://img.shields.io/badge/Release-0.1.0-blueviolet.svg
+Version image:{link-badge-release}[Latest release]::
+`curl {link-badge-release} -s -o badge-release-latest.svg`
+
+:link-badge-platform: https://img.shields.io/badge/Platform-Android%20•%20JVM%20•%20Js%20•%20iOS%20•%20LinuxX64%20-blue.svg
+Platform image:{link-badge-platform}[Platform]::
+`curl {link-badge-platform} -s -o badge-platform-support.svg`
+
+:link-badge-license: https://img.shields.io/badge/license-Apache_2.0-blue.svg
+License image:{link-badge-license}[License]::
+`curl {link-badge-license} -s -o badge-license.svg`
+
+== License
+
+Shields is licensed under *Creative Commons Zero v1.0 Universal* (2021-02-16)

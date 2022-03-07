@@ -19,7 +19,7 @@ endif::[]
 ++++
 <div align="center">
     <p><!-- PROJECT TITLE -->
-        <h3>Antibytes  KMock library</h3>
+        <h3>Antibytes KMock library</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
         A crossplatfrom mock framework for Kotlin Multiplatform
@@ -33,9 +33,9 @@ endif::[]
         <a href="https://github.com/bitPogo/kmock/issues">Request Feature</a>
     </p>
     <p><!-- PROJECT BADGES see badges.adoc how to change them -->
-        <a href="https://github.com/bitPogo/kmock/releases">
+        <!--<a href="https://github.com/bitPogo/kmock/releases">
             <img src="assets/images/badge-release-latest.svg" alt="Latest release"/>
-        </a>
+        </a>//-->
         <a href="https://github.com/bitPogo/kmock/actions">
             <img src="https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg" alt="Latest Version"/>
         </a>
@@ -91,17 +91,11 @@ There are several requirements for building the project.
 * Android 6.0 (API 23) to Android 11 (API 31)
 * Kotlin 1.6.10
 * Java 11 link:https://developer.android.com/studio/write/java11-support[Limitations] link:https://jakewharton.com/d8-library-desugaring/[Desugaring]
-* Gradle 7.3.3
-* link:https://developer.android.com/studio#downloads[Android Studio 7.1.0]
-* Android Emulator 23 - 31
+* Gradle 7.2
 
 === Built With
 
 * link:https://kotlinlang.org/docs/reference/mpp-intro.html[Kotlin Multiplatform]
-
-== Roadmap
-
-Will be added soon.
 
 == Changelog
 
@@ -123,10 +117,9 @@ You want to help or share a proposal? You have a specific problem? Read the foll
 
 * link:CODE-OF-CONDUCT.adoc[Code of conduct] for details on our code of conduct.
 * link:CONTRIBUTING.adoc[Contributing] for details about how to report bugs and propose features.
-* link:DEVELOPING.adoc[Developing] for details about our development process and how to build and test the project.
 
 == Copyright and License
 
-Copyright (c) 2021 Matthias Geisler (bitPogo) / All rights reserved.
+Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
 
 Please refer to our link:LICENSE[License] for further details.
