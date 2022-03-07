@@ -6,6 +6,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
+:lang: en
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -51,7 +52,7 @@ Also please check out first if an issue had been already opened with your reques
 * link:https://kotlinlang.org/[Kotlin 1.6.10]
 * link:https://gradle.org/install/][Gradle 7.2]
 
-Please note: Currently Android Studio does not work properly with Gradle 7.3+, therefore please stick to mentioned Gradle version.
+IMPORTANT: Currently Android Studio does not work properly with Gradle 7.3+, therefore please stick to mentioned Gradle version.
 
 ==== Features
 

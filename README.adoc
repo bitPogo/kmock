@@ -1,5 +1,6 @@
-= Banana-i18n-KMP
-:link-repository: https://github.com/bitPogo/kmock
+= KMock
+:link-base: https://github.com/bitPogo/
+:link-repository: {link-base}kmock/
 :project-version: 0.1.0
 :doctype: article
 :!showtitle:
@@ -8,6 +9,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
+:lang: en
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -19,13 +21,13 @@ endif::[]
 ++++
 <div align="center">
     <p><!-- PROJECT TITLE -->
-        <h3>Antibytes KMock library</h3>
+        <h3>KMock</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
-        A crossplatfrom mock framework for Kotlin Multiplatform
+        A crossplatfrom mock framework for Kotlin (Multiplatform)
     </p>
     <p><!-- PROJECT DOCUMENTATION -->
-        <a href="README.adoc"><strong>Explore the docs »</strong></a>
+        <a href="/docs/Index.adoc"><strong>Explore the docs »</strong></a>
     </p>
     <p><!-- PROJECT ISSUES/FEATURES -->
         <a href="https://github.com/bitPogo/kmock/issues">Report Bug</a>
@@ -56,42 +58,31 @@ toc::[]
 
 == About The Project
 
-This project implements the message syntax for media wiki based on the original link:https://github.com/wikimedia/banana-i18n[Banana Project]
+*Stop the war in Ukraine*
+
+Mocking for tests should work without shenanigans or frills.
+While link:https://mockk.io/[MockK] for example provides excellent support for Kotlin projects which operate on JVM, Multiplatform missing similar capabilities for quite some time.
+KMock seeks to change that to a certain extend.
+It supports for example arbitrary shared sources, spying and relaxing. +
+If you want to learn about the usage and features please visit the link:{link-repository}/docs/chapters/QuickStarter.adoc[documentation] or
+take a at the link:{link-base}kmock-playground[playground].
 
 === Dependencies
 
-The SDK has the following dependencies:
+KMock has the following dependencies:
 
-== Installation
+* link:https://developer.android.com/studio/releases/gradle-plugin[AndroidGradlePlugin (AGP) 7.1.2]
+* link:https://kotlinlang.org/docs/releases.html[Kotlin 1.6.10]
+* link:https://github.com/Kotlin/kotlinx.atomicfu[AtomicFu 0.17.1]
+* link:https://github.com/touchlab/Stately[Touchlab's Stately 1.2.1]
+* link:https://square.github.io/kotlinpoet/[Square KotlinPoet 1.10.2]
+* link:https://github.com/google/ksp[Kotlin Symbol Processing (KSP) 1.6.10-1.0.4]
+* link:https://gradle.org/[Gradle 7.2]
 
-Coming soon.
+=== Additional Requirements
 
-=== Consume GitHub Packages
-
-Coming soon.
-
-==== Setup Maven Repository
-
-Coming soon.
-
-==== Common
-
-Coming soon.
-
-==== Android
-
-Coming soon.
-
-== Building and Working with the code base
-
-There are several requirements for building the project.
-
-=== Requirements
-
-* Android 6.0 (API 23) to Android 11 (API 31)
-* Kotlin 1.6.10
-* Java 11 link:https://developer.android.com/studio/write/java11-support[Limitations] link:https://jakewharton.com/d8-library-desugaring/[Desugaring]
-* Gradle 7.2
+* Android 6.0 (API 23) to Android 12 (API 31)
+* link:https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot[Java 11]
 
 === Built With
 
@@ -103,7 +94,7 @@ See link:CHANGELOG.adoc[changelog]
 
 == Versioning
 
-We use http://semver.org/[Semantic Versioning] as a guideline for our versioning.
+This project uses http://semver.org/[Semantic Versioning] as a guideline for our versioning.
 
 Releases use this format: `{major}.{minor}.{patch}`
 
@@ -120,6 +111,6 @@ You want to help or share a proposal? You have a specific problem? Read the foll
 
 == Copyright and License
 
-Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+Copyright (c) 2022 Matthias Geisler / All rights reserved.
 
 Please refer to our link:LICENSE[License] for further details.

@@ -1,0 +1,118 @@
+:link-base: https://github.com/bitPogo/
+:link-repository: {link-base}/kmock
+:link-docs: {link-base}/kmock/docs
+:doctype: article
+:toc: macro
+:toclevels: 2
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+:lang: en
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
+
+=== Motivation and Goals
+
+Writing a mock library for a certain platform can be hard enough, but Kotlin Multiplatform takes that task a new level.
+Especially the Kotlin's current memory model does not make the job easier. +
+One noticeable early attempt to overcome those obstacles was link:https://github.com/touchlab/Karmok[Karmock], which regrettably never made it out of its pre alpha stage.
+Since the introduction of link:https://github.com/google/ksp[Kotlin Symbol Processing (KSP)] there is new hope to address the problem (at least partially)! +
+Already 2 other libraries also strive to overcome this - link:https://github.com/mockative/mockative[mockactive] and link:https://github.com/Kodein-Framework/MocKMP[MocKMP].
+Both did a remarkable job without any doubt (so you might wanna check them out) and served as inspiration! +
+However they did not offer the full extent of convenient and functionality I had in mind.
+For me such a library should be:
+
+* as easy as possible to setup without extensive configuration,
+* run on any shared source or platform source alike,
+* easy to maintain/change/test in order to provide stability,
+* reduce boilerplate code,
+* customizable to most possible and reasonable extend,
+* allowing concepts like spying or relaxing,
+* as easy as possible to use with a minimum set of instructions.
+
+In other words mocking tests should work without shenanigans or frills.
+
+==== Concept
+
+What makes KMock different form for example link:https://mockk.io/[MockK] is mainly its mindmodel.
+link:https://mockk.io/[MockK] uses the classical _record-replay-verify_ pattern, while KMock borrowed from Python's link:https://docs.python.org/3/library/unittest.mock.html[MagicMock].
+MagicMock follows _assign-run-assert_. To compare both: +
+
+.MockK example
+[source,kotlin]
+----
+@Test
+fun sampleTest() {
+    // record
+    val someInstance: SomeInterface = mockk()
+
+    every { someInstance.someProperty } returns "any"
+    every { someInstance.someMethod(any(), any()) } returns "any"
+
+    // replay
+    val someOtherInstance = SomeClass(someInstance)
+    someOtherInstance.run()
+
+    // verify
+    verify(exactly = 1) { someInstance.someProperty }
+    verify(exactly = 1) { someInstance.someMethod(any(), any()) }
+}
+----
+
+The same could be written as: +
+
+.KMock example
+[source,kotlin]
+----
+@Test
+fun sampleTest() {
+    // assign
+    val someInstance: SomeInterface = kmock()
+
+    someInstance._someProperty.returns = "any"
+    someInstance._someMethod.returns = "any"
+
+    // run
+    val someOtherInstance = SomeClass(someInstance)
+    someOtherInstance.run()
+
+    // assert
+    someInstance._someProperty.assertWasGotten(exactly = 1)
+    someInstance._someMethod.assertWasCalled(exactly = 1)
+}
+----
+
+As you can see above KMock attaches proxy parameter, which are simply assigned. +
+This implies all necessary information are available at compile time and are not resolved during runtime.
+KMock uses link:https://github.com/google/ksp[KSP] to achieve and is currently restricted to *Interfaces only*.
+The main benefits of this it reduces the amount of knowledge to acquire upfront to use it, since attaches most functionality directly to its components.
+Also you do not have to care if a method is asynchronous or synchronous, both use the same api.
+To learn about the usage please visit the link:{link-docs}/api/index.md[API] or keep reading in the link:{link-docs}/chapters/QuickStarter.adoc[documentation]. +
+If you want to try it out please checkout the link:{link-base}kmock-playground[playground].
+
+==== Main Components
+
+KMock consists of 3 main components - its runtime library, its KSP Processor and its Gradle Plugin.
+The runtime library brings in the main functionality, like verification or proxies. +
+The Processor resolves all annotated interfaces and writes all declared Mocks/Stubs. +
+Lastly the Gradle Plugin takes care of moving the generated interfaces to write place and amends the generated sources to the corresponding source sets.
+This is necessary since KSP cannot differentiate between shared sources like commonTest or iosTest.
+See link:https://github.com/google/ksp/issues/567[here] for the reason.
+
+==== What's next
+
+KMock is still in its infants, which means there is still work to do around its core concepts and implementation.
+Also due to nature of KMP needs a deeper evaluation in terms of core concept since the impact of compile time is not benchmarked yet.
+This certainly influences the Development experience and must be the main criteria to determine if and how to go on from here. +
+However besides those question the next possible steps are most likely:
+
+* allow auto mocking/stubbing in order to ease the current relaxing approach,
+* improve overloading detection,
+* allow mockking/stubbing of classes.
+
+And if you miss anything open an issue and let me know!
