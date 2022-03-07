@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.pairFixture
+import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
@@ -79,14 +79,7 @@ class ExtensionSpec {
         // Given
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk(relaxed = true)
-        val pairs: List<Pair<String, Int>> = listOf(
-            fixture.pairFixture(),
-            fixture.pairFixture()
-        )
-        val values: Map<String, Pair<String, Int>> = mapOf(
-            fixture.fixture<String>() to pairs[0],
-            fixture.fixture<String>() to pairs[1]
-        )
+        val values: Map<String, Int> = fixture.mapFixture(size = 2)
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
 
@@ -96,7 +89,7 @@ class ExtensionSpec {
 
         // Then
         extension.sharedSources mustBe values
-        verify(exactly = 1) { kspExtension.arg(pairs[0].first, pairs[0].second.toString()) }
-        verify(exactly = 1) { kspExtension.arg(pairs[1].first, pairs[1].second.toString()) }
+        verify(exactly = 1) { kspExtension.arg(values.keys.toList()[0], values.values.toList()[0].toString()) }
+        verify(exactly = 1) { kspExtension.arg(values.keys.toList()[1], values.values.toList()[1].toString()) }
     }
 }

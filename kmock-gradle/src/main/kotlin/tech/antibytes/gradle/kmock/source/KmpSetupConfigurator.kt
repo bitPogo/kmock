@@ -27,7 +27,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     }
 
     private const val common = "commonTest"
-    private const val indicatorCommon = "COMMON SOURCE"
+    private const val indicatorCommon = "common"
 
     private const val androidDebug = "androidDebugUnitTest"
     private const val androidDebugKsp = "kspDebugUnitTestKotlinAndroid"
@@ -315,7 +315,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         val indicators: MutableMap<String, String> = project.extensions
             .getByType(KMockExtension::class.java)
             .sharedSources
-            .mapValues { (_, value) -> value.first }
+            .mapValues { (sourceSetName, _) -> sourceSetName }
             .toMutableMap()
 
         indicators[common] = indicatorCommon

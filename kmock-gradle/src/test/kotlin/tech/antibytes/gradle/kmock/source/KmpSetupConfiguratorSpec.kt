@@ -138,7 +138,7 @@ class KmpSetupConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "common")
         }
 
         verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinJvm") }
@@ -147,7 +147,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
@@ -156,7 +156,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
         verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
@@ -254,7 +254,7 @@ class KmpSetupConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "jvm", "jvmTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "jvm", "jvmTest", "commonTest", "common")
         }
     }
 
@@ -285,7 +285,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources } returns mapOf("otherTest" to Pair("OTHER SOURCE", 23))
+        every { kMockExtension.sharedSources } returns mapOf("otherTest" to 23)
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -352,11 +352,11 @@ class KmpSetupConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, any(), any(), "commonTest", "common")
         }
 
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, any(), any(), "otherTest", "OTHER SOURCE")
+            SharedSourceCopist.copySharedSource(project, any(), any(), "otherTest", "otherTest")
         }
 
         verify(exactly = 1) { copyTask0.dependsOn("kspTestKotlinJvm") }
@@ -368,11 +368,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
-        verify(exactly = 1) {
-            cleanUpTasks[0].indicators.addAll(
-                listOf("OTHER SOURCE", "COMMON SOURCE")
-            )
-        }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
@@ -381,11 +377,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
         verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
-        verify(exactly = 1) {
-            cleanUpTasks[1].indicators.addAll(
-                listOf("OTHER SOURCE", "COMMON SOURCE")
-            )
-        }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
@@ -482,7 +474,7 @@ class KmpSetupConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "jvm", "jvmTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "jvm", "jvmTest", "commonTest", "common")
         }
     }
 
@@ -545,7 +537,7 @@ class KmpSetupConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "js", "jsTest", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "js", "jsTest", "commonTest", "common")
         }
     }
 
@@ -608,7 +600,7 @@ class KmpSetupConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(project, "native1", "native1Test", "commonTest", "COMMON SOURCE")
+            SharedSourceCopist.copySharedSource(project, "native1", "native1Test", "commonTest", "common")
         }
 
         verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinNative1") }
@@ -711,7 +703,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "COMMON SOURCE"
+                "common"
             )
         }
 
@@ -733,7 +725,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "COMMON SOURCE"
+                "common"
             )
         }
 
@@ -743,7 +735,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
@@ -752,7 +744,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
@@ -761,7 +753,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
@@ -832,7 +824,7 @@ class KmpSetupConfiguratorSpec {
         every { project.extensions } returns extensions
         every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
 
-        every { kMockExtension.sharedSources } returns mapOf("otherTest" to Pair("OTHER SOURCE", 23))
+        every { kMockExtension.sharedSources } returns mapOf("otherTest" to 23)
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -904,7 +896,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "COMMON SOURCE"
+                "common"
             )
         }
 
@@ -926,7 +918,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "COMMON SOURCE"
+                "common"
             )
         }
 
@@ -936,7 +928,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "otherTest",
-                "OTHER SOURCE"
+                "otherTest"
             )
         }
 
@@ -946,7 +938,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("OTHER SOURCE", "COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
@@ -955,7 +947,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("OTHER SOURCE", "COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
@@ -964,7 +956,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("OTHER SOURCE", "COMMON SOURCE")) }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
