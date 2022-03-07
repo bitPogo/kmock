@@ -48,6 +48,7 @@ interface KMockContract {
     /**
      * Wrapper for injected Relaxers, which is internally used to reference a Relaxer. The relaxer is invoke per Proxy.
      * @param ReturnValue the return type of the Relaxer.
+     * @see Relaxer
      * @author Matthias Geisler
      */
     fun interface Relaxer<ReturnValue> {
@@ -505,7 +506,7 @@ interface KMockContract {
     }
 
     /**
-     * PropertyProxies in order to stub/mock synchronous property behaviour.
+     * Proxy in order to stub/mock property behaviour.
      * @param Value the value of the Property.
      * @author Matthias Geisler
      */
