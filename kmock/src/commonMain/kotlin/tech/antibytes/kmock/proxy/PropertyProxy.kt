@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
@@ -19,14 +19,14 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
-class PropertyMockery<Value>(
+class PropertyProxy<Value>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<Value>? = null,
     private val freeze: Boolean = true,
     private val spyOnGet: (Function0<Value>)? = null,
     private val spyOnSet: (Function1<Value, Unit>)? = null
-) : KMockContract.PropertyMockery<Value> {
+) : KMockContract.PropertyProxy<Value> {
     private val provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
 
     private val _get: AtomicRef<Value?> = atomic(null)

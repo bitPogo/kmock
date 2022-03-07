@@ -12,7 +12,7 @@ import tech.antibytes.kmock.KMockContract
 
 class isNot(
     private val illegal: Any? = null
-) : KMockContract.MatcherConstraint {
+) : KMockContract.VerificationConstraint {
     override fun matches(actual: Any?): Boolean {
         return !when {
             illegal is Array<*> && actual is Array<*> -> illegal.contentDeepEquals(actual)

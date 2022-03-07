@@ -12,8 +12,8 @@ import tech.antibytes.kmock.verification.contraints.eq
 
 internal fun Array<out Any?>?.hasBeenCalledWithVoid(): Boolean = this == null
 
-private fun wrapValue(value: Any?): KMockContract.MatcherConstraint {
-    return if (value is KMockContract.MatcherConstraint) {
+private fun wrapValue(value: Any?): KMockContract.VerificationConstraint {
+    return if (value is KMockContract.VerificationConstraint) {
         value
     } else {
         eq(value)

@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunMockeryStub
+import tech.antibytes.mock.FunProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -43,15 +43,15 @@ class NonFreezingVerifierSpec {
     fun `Given add reference is called it adds a refrenence entry`() {
         // Given
         val index: Int = fixture.fixture<Int>().absoluteValue
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
 
         val verifier = NonfreezingVerifier()
 
         // When
-        verifier.addReference(mockery, index)
+        verifier.addReference(Proxy, index)
 
         // Then
-        verifier.references.first().mockery sameAs mockery
+        verifier.references.first().Proxy sameAs Proxy
         verifier.references.first().callIndex mustBe index
     }
 
@@ -59,11 +59,11 @@ class NonFreezingVerifierSpec {
     @JsName("fn4")
     fun `Given clear is called it clears the verifier`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val verifier = NonfreezingVerifier()
 
         // When
-        verifier.addReference(mockery, fixture.fixture())
+        verifier.addReference(Proxy, fixture.fixture())
 
         verifier.clear()
 

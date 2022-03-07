@@ -17,7 +17,7 @@ import tech.antibytes.kmock.KMockContract.Companion.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.Companion.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.VerificationHandle
-import tech.antibytes.kmock.KMockContract.VerificationReferenceBuilder
+import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.KMockContract.Verifier
 
 private fun formatMessage(
@@ -96,19 +96,19 @@ fun verify(
 }
 
 private fun initChainVerification(
-    scope: VerificationReferenceBuilder.() -> Any,
+    scope: VerificationInsurance.() -> Any,
     references: List<Reference>
 ): List<VerificationHandle> {
     val container = VerificationChainBuilder()
 
     references.forEach { reference ->
-        reference.mockery.verificationBuilderReference = container
+        reference.Proxy.verificationBuilderReference = container
     }
 
     scope(container)
 
     references.forEach { reference ->
-        reference.mockery.verificationBuilderReference = null
+        reference.Proxy.verificationBuilderReference = null
     }
 
     return container.toList()
@@ -135,15 +135,15 @@ private fun evaluateStrictReference(
     functionName: String,
     call: Int?
 ) {
-    if (reference.mockery.id != functionName) {
-        val message = formatMessage(MISMATCHING_FUNCTION, reference.mockery.id, functionName)
+    if (reference.Proxy.id != functionName) {
+        val message = formatMessage(MISMATCHING_FUNCTION, reference.Proxy.id, functionName)
         throw AssertionError(message)
     }
 
     if (call == null) {
         val message = formatMessage(
             NO_MATCHING_CALL_IDX,
-            reference.mockery.id
+            reference.Proxy.id
         )
 
         throw AssertionError(message)
@@ -153,7 +153,7 @@ private fun evaluateStrictReference(
         val message = formatMessage(
             MISMATCHING_CALL_IDX,
             reference.callIndex,
-            "$call of ${reference.mockery.id}"
+            "$call of ${reference.Proxy.id}"
         )
 
         throw AssertionError(message)
@@ -161,7 +161,7 @@ private fun evaluateStrictReference(
 }
 
 fun Verifier.verifyStrictOrder(
-    scope: VerificationReferenceBuilder.() -> Any,
+    scope: VerificationInsurance.() -> Any,
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)
@@ -199,7 +199,7 @@ private fun evaluateReference(
 ): Boolean {
     return when {
         call == null -> false
-        reference.mockery.id != functionName -> false
+        reference.Proxy.id != functionName -> false
         reference.callIndex != call -> false
         else -> true
     }
@@ -220,7 +220,7 @@ private fun ensureAllHandlesAreDone(
 }
 
 fun Verifier.verifyOrder(
-    scope: VerificationReferenceBuilder.() -> Any
+    scope: VerificationInsurance.() -> Any
 ) {
     val handleCalls: MutableMap<String, Int> = mutableMapOf()
     val handles = initChainVerification(scope, this.references)

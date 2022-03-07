@@ -72,9 +72,9 @@ internal class KMockPropertyGenerator(
             propertyMock.initializer(
                 """
                     |if (spyOn == null) {
-                    |   PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
                     |} else {
-                    |   PropertyMockery(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
                     |}
                 |
                 """.trimMargin(),
@@ -89,9 +89,9 @@ internal class KMockPropertyGenerator(
             propertyMock.initializer(
                 """
                 |if (spyOn == null) {
-                |   PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
                 |} else {
-                |   PropertyMockery(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
                 |}
                 |
                 """.trimMargin(),
@@ -107,7 +107,7 @@ internal class KMockPropertyGenerator(
         }
     }
 
-    private fun buildPropertyMockery(
+    private fun buildPropertyProxy(
         qualifier: String,
         propertyName: String,
         propertyType: TypeName,
@@ -116,7 +116,7 @@ internal class KMockPropertyGenerator(
     ): PropertySpec {
         val property = PropertySpec.builder(
             "_$propertyName",
-            KMockContract.PropertyMockery::class
+            KMockContract.PropertyProxy::class
                 .asClassName()
                 .parameterizedBy(propertyType),
         )
@@ -144,7 +144,7 @@ internal class KMockPropertyGenerator(
         propertyNameCollector.add("_$propertyName")
         return listOf(
             buildProperty(propertyName, propertyType, isMutable),
-            buildPropertyMockery(qualifier, propertyName, propertyType, isMutable, relaxer)
+            buildPropertyProxy(qualifier, propertyName, propertyType, isMutable, relaxer)
         )
     }
 }

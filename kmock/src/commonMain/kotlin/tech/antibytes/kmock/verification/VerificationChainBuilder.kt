@@ -11,13 +11,12 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 
 internal class VerificationChainBuilder :
-    KMockContract.VerificationReferenceBuilder,
-    KMockContract.VerificationChainBuilder,
-    KMockContract.VerificationReferenceCleaner {
+    KMockContract.VerificationInsurance,
+    KMockContract.VerificationChainBuilder {
     private val handles = IsoMutableList<VerificationHandle>()
 
-    override fun ensureVerificationOf(vararg mocks: KMockContract.Mockery<*, *>) {
-        mocks.forEach { mock ->
+    override fun ensureVerificationOf(vararg proxies: KMockContract.Proxy<*, *>) {
+        proxies.forEach { mock ->
             if (mock.verificationBuilderReference != this) {
                 throw IllegalStateException("The given mock ${mock.id} is not part of this VerificationChain.")
             }

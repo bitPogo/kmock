@@ -6,12 +6,12 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract.FunMockery
-import tech.antibytes.kmock.KMockContract.Mockery
-import tech.antibytes.kmock.KMockContract.PropertyMockery
+import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.Proxy
 
 private fun <T> traverseMockAndShare(
-    mock: Mockery<*, T>,
+    mock: Proxy<*, T>,
     action: T.() -> Boolean
 ): VerificationHandle {
     val callIndices = mutableListOf<Int>()
@@ -29,7 +29,7 @@ private fun <T> traverseMockAndShare(
 }
 
 private fun shareHandle(
-    mock: Mockery<*, *>,
+    mock: Proxy<*, *>,
     handle: VerificationHandle
 ) {
     if (mock.verificationBuilderReference != null) {
@@ -37,24 +37,24 @@ private fun shareHandle(
     }
 }
 
-fun FunMockery<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
+fun FunProxy<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
 
-fun FunMockery<*, *>.hasBeenCalledWith(
+fun FunProxy<*, *>.hasBeenCalledWith(
     vararg values: Any?
 ): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith(*values) }
 
-fun FunMockery<*, *>.hasBeenStrictlyCalledWith(
+fun FunProxy<*, *>.hasBeenStrictlyCalledWith(
     vararg values: Any?
 ): VerificationHandle = traverseMockAndShare(this) { hasBeenStrictlyCalledWith(*values) }
 
-fun FunMockery<*, *>.hasBeenCalledWithout(
+fun FunProxy<*, *>.hasBeenCalledWithout(
     vararg values: Any?
 ): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithout(*values) }
 
-fun PropertyMockery<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
+fun PropertyProxy<*>.wasGotten(): VerificationHandle = traverseMockAndShare(this) { wasGotten() }
 
-fun PropertyMockery<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) { wasSet() }
+fun PropertyProxy<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) { wasSet() }
 
-fun PropertyMockery<*>.wasSetTo(
+fun PropertyProxy<*>.wasSetTo(
     value: Any?
 ): VerificationHandle = traverseMockAndShare(this) { wasSetTo(value) }

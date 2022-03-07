@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
@@ -18,14 +18,14 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
-abstract class FunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
+abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,
     private val freeze: Boolean,
     protected val spyOn: SideEffect?
-) : KMockContract.FunMockery<ReturnValue, SideEffect> {
+) : KMockContract.FunProxy<ReturnValue, SideEffect> {
     private val _throws: AtomicRef<Throwable?> = atomic(null)
     private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
     private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()

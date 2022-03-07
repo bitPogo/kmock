@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName

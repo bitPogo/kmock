@@ -9,7 +9,7 @@ package tech.antibytes.kmock.verification
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Mockery
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 
 class Verifier : KMockContract.Verifier, KMockContract.Collector {
@@ -18,8 +18,8 @@ class Verifier : KMockContract.Verifier, KMockContract.Collector {
     override val references: List<Reference>
         get() = _references.toList()
 
-    override fun addReference(referredMock: Mockery<*, *>, referredCall: Int) {
-        _references.add(Reference(referredMock, referredCall))
+    override fun addReference(referredProxy: Proxy<*, *>, referredCall: Int) {
+        _references.add(Reference(referredProxy, referredCall))
     }
 
     override fun clear() {

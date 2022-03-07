@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
@@ -23,48 +23,48 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class PropertyMockeryUnfrozenSpec {
+class PropertyProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn1")
     fun `Given a get is set it is retrievable`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        mockery.get = value
+        Proxy.get = value
 
         // Then
-        mockery.get mustBe value
+        Proxy.get mustBe value
     }
 
     @Test
     @JsName("fn2")
     fun `Given a get is set with nullable value it is retrievable`() {
         // Given
-        val mockery = PropertyMockery<Any?>(
+        val Proxy = PropertyProxy<Any?>(
             fixture.fixture(),
         )
         val value: Any? = null
 
         // When
-        mockery.get = value
+        Proxy.get = value
 
         // Then
-        mockery.get mustBe value
+        Proxy.get mustBe value
     }
 
     @Test
     @JsName("fn3")
     fun `Given a getMany is set with an emptyList it fails`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
-            mockery.getMany = emptyList()
+            Proxy.getMany = emptyList()
         }
 
         error.message mustBe "Empty Lists are not valid as value provider."
@@ -74,42 +74,42 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn4")
     fun `Given a getMany is set it is retrievable`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture()
 
         // When
-        mockery.getMany = values
+        Proxy.getMany = values
 
         // Then
-        mockery.getMany mustBe values
+        Proxy.getMany mustBe values
     }
 
     @Test
     @JsName("fn5")
     fun `Given a getSideEffect is set it is retrievable`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val sideEffect = { fixture.fixture<Any>() }
 
         // When
-        mockery.getSideEffect = sideEffect
+        Proxy.getSideEffect = sideEffect
 
         // Then
-        mockery.getSideEffect mustBe sideEffect
+        Proxy.getSideEffect mustBe sideEffect
     }
 
     @Test
     @JsName("fn6")
     fun `Given a set is set it is retrievable`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val effect: (Any) -> Unit = { }
 
         // When
-        mockery.set = effect
+        Proxy.set = effect
 
         // Then
-        mockery.set sameAs effect
+        Proxy.set sameAs effect
     }
 
     @Test
@@ -117,12 +117,12 @@ class PropertyMockeryUnfrozenSpec {
     fun `Given onGet is called it fails if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = PropertyMockery<Any>(name, freeze = false)
+        val Proxy = PropertyProxy<Any>(name, freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
             // When
-            mockery.onGet()
+            Proxy.onGet()
         }
 
         error.message mustBe "Missing stub value for $name"
@@ -135,7 +135,7 @@ class PropertyMockeryUnfrozenSpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val mockery = PropertyMockery<Any>(
+        val Proxy = PropertyProxy<Any>(
             name,
             relaxer = { givenId ->
                 capturedId.set(givenId)
@@ -146,7 +146,7 @@ class PropertyMockeryUnfrozenSpec {
         )
 
         // When
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe value
@@ -161,7 +161,7 @@ class PropertyMockeryUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         val implementation = Implementation<Any>()
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             name,
             spyOnGet = implementation::foo::get,
             freeze = false
@@ -170,7 +170,7 @@ class PropertyMockeryUnfrozenSpec {
         implementation.fooProp = value
 
         // When
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe value
@@ -180,13 +180,13 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn8")
     fun `Given onGet is called it returns the Get Value`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: String = fixture.fixture()
 
         // When
-        mockery.get = value
+        Proxy.get = value
 
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe value
@@ -196,14 +196,14 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn9")
     fun `Given onGet is called it returns the GetMany Value`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<String> = fixture.listFixture()
 
         // When
-        mockery.getMany = values
+        Proxy.getMany = values
 
         values.forEach { value ->
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -214,14 +214,14 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn10")
     fun `Given onGet is called it returns the last GetMany Value if the given List is down to one value`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 1)
 
         // When
-        mockery.getMany = values.toList()
+        Proxy.getMany = values.toList()
 
         for (x in 0 until 10) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe values.first()
@@ -232,14 +232,14 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn11")
     fun `Given onGet is called it returns the GetSideEffect Value`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value = fixture.fixture<Any>()
         val sideEffect = { value }
 
         // When
-        mockery.getSideEffect = sideEffect
+        Proxy.getSideEffect = sideEffect
 
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe value
@@ -249,15 +249,15 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn12")
     fun `Given onGet is called it uses GetMany over Get`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
 
         // When
-        mockery.getMany = values
-        mockery.get = value
+        Proxy.getMany = values
+        Proxy.get = value
 
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe values.first()
@@ -267,16 +267,16 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn13")
     fun `Given onGet is called it uses GetSideEffect over GetMany`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
         val sideEffect = { value }
 
         // When
-        mockery.getSideEffect = sideEffect
-        mockery.getMany = values
+        Proxy.getSideEffect = sideEffect
+        Proxy.getMany = values
 
-        val actual = mockery.onGet()
+        val actual = Proxy.onGet()
 
         // Then
         actual mustBe value
@@ -286,18 +286,18 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn14")
     fun `Given onSet is called it calls the given SideEffect and delegates values`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val newValue: Any = fixture.fixture()
 
         val actualNew = AtomicReference<Any?>(null)
 
         // When
-        mockery.set = { givenNew ->
+        Proxy.set = { givenNew ->
             actualNew.set(givenNew)
         }
 
         // When
-        val actual = mockery.onSet(newValue)
+        val actual = Proxy.onSet(newValue)
 
         // Then
         actual mustBe Unit
@@ -308,15 +308,15 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn15")
     fun `Given onGet is called it sets an Arguments to capture the call`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        mockery.getMany = values.toList()
+        Proxy.getMany = values.toList()
 
-        mockery.onGet()
+        Proxy.onGet()
 
-        val actual = mockery.getArgumentsForCall(0)
+        val actual = Proxy.getArgumentsForCall(0)
 
         actual fulfils KMockContract.GetOrSet.Get::class
         actual.value mustBe null
@@ -326,13 +326,13 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn16")
     fun `Given onSet is called it sets an Arguments to capture the call`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        mockery.onSet(value)
+        Proxy.onSet(value)
 
-        val actual = mockery.getArgumentsForCall(0)
+        val actual = Proxy.getArgumentsForCall(0)
 
         actual fulfils KMockContract.GetOrSet.Set::class
         actual.value mustBe value
@@ -344,7 +344,7 @@ class PropertyMockeryUnfrozenSpec {
         // Given
         val implementation = Implementation<Any>()
 
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             fixture.fixture(),
             spyOnSet = implementation::bar::set,
             freeze = false
@@ -352,7 +352,7 @@ class PropertyMockeryUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         // When
-        mockery.onSet(value)
+        Proxy.onSet(value)
 
         implementation.barProp.value mustBe value
     }
@@ -364,7 +364,7 @@ class PropertyMockeryUnfrozenSpec {
         val name: String = fixture.fixture()
 
         // When
-        val actual = PropertyMockery<Any>(name, freeze = false).id
+        val actual = PropertyProxy<Any>(name, freeze = false).id
 
         // Then
         actual mustBe name
@@ -373,44 +373,44 @@ class PropertyMockeryUnfrozenSpec {
     @Test
     @JsName("fn19")
     fun `Its default call count is 0`() {
-        PropertyMockery<Any>(fixture.fixture(), freeze = false).calls mustBe 0
+        PropertyProxy<Any>(fixture.fixture(), freeze = false).calls mustBe 0
     }
 
     @Test
     @JsName("fn20")
     fun `Given onGet is called it increments the call counter`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        mockery.getMany = values
+        Proxy.getMany = values
 
-        mockery.onGet()
+        Proxy.onGet()
 
-        mockery.calls mustBe 1
+        Proxy.calls mustBe 1
     }
 
     @Test
     @JsName("fn21")
     fun `Given onSet is called it increments the call counter`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        mockery.onSet(value)
+        Proxy.onSet(value)
 
-        mockery.calls mustBe 1
+        Proxy.calls mustBe 1
     }
 
     @Test
     @JsName("fn22")
-    fun `Given the mockery has a Collector and onGet is called it calls the Collect`() {
+    fun `Given the Proxy has a Collector and onGet is called it calls the Collect`() {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
+        val capturedMock = AtomicReference<KMockContract.Proxy<*, *>?>(null)
         val capturedCalledIdx = AtomicReference<Int?>(null)
 
         val collector = KMockContract.Collector { referredMock, referredCall ->
@@ -419,23 +419,23 @@ class PropertyMockeryUnfrozenSpec {
         }
 
         // When
-        val mockery = PropertyMockery<Any>(fixture.fixture(), collector)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
-        mockery.getMany = values
+        Proxy.getMany = values
 
-        mockery.onGet()
+        Proxy.onGet()
 
-        capturedMock.get()?.id mustBe mockery.id
+        capturedMock.get()?.id mustBe Proxy.id
         capturedCalledIdx.get() mustBe 0
     }
 
     @Test
     @JsName("fn23")
-    fun `Given the mockery has a Collector and onSet is called it calls the Collect`() {
+    fun `Given the Proxy has a Collector and onSet is called it calls the Collect`() {
         // Given
         val value: Any = fixture.fixture()
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
+        val capturedMock = AtomicReference<KMockContract.Proxy<*, *>?>(null)
         val capturedCalledIdx = AtomicReference<Int?>(null)
 
         val collector = KMockContract.Collector { referredMock, referredCall ->
@@ -444,11 +444,11 @@ class PropertyMockeryUnfrozenSpec {
         }
 
         // When
-        val mockery = PropertyMockery<Any>(fixture.fixture(), collector)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
-        mockery.onSet(value)
+        Proxy.onSet(value)
 
-        capturedMock.get()?.id mustBe mockery.id
+        capturedMock.get()?.id mustBe Proxy.id
         capturedCalledIdx.get() mustBe 0
     }
 
@@ -457,43 +457,43 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn24")
     fun `Given clear is called it clears the mock`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
         // When
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.get mustBe null
+        Proxy.get mustBe null
 
         try {
-            mockery.getMany
+            Proxy.getMany
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
         try {
-            mockery.getSideEffect
+            Proxy.getSideEffect
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
-        mockery.set isNot sideEffect
+        Proxy.set isNot sideEffect
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -504,44 +504,44 @@ class PropertyMockeryUnfrozenSpec {
     @JsName("fn25")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture(), freeze = false)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
         // When
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.get mustBe null
+        Proxy.get mustBe null
 
         try {
-            mockery.getMany
+            Proxy.getMany
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
         try {
-            mockery.getSideEffect
+            Proxy.getSideEffect
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
-        mockery.set isNot sideEffect
+        Proxy.set isNot sideEffect
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -561,23 +561,23 @@ class PropertyMockeryUnfrozenSpec {
         implementation.fooProp = valueImp
 
         // When
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             fixture.fixture(),
             spyOnGet = implementation::foo::get,
             freeze = false
         )
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.onGet() mustBe valueImp
+        Proxy.onGet() mustBe valueImp
     }
 
     private class Implementation<T>(

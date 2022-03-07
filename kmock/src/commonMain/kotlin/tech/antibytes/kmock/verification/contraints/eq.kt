@@ -13,7 +13,7 @@ import tech.antibytes.kmock.KMockContract
 @OptIn(ExperimentalUnsignedTypes::class)
 class eq(
     private val expected: Any?
-) : KMockContract.MatcherConstraint {
+) : KMockContract.VerificationConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {
             expected is Array<*> && actual is Array<*> -> expected.contentDeepEquals(actual)

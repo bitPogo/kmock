@@ -4,21 +4,21 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
 
-class SyncFunMockery<ReturnValue, SideEffect : Function<ReturnValue>>(
+class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>? = null,
     unitFunRelaxer: Relaxer<ReturnValue?>? = null,
     freeze: Boolean = true,
     spyOn: SideEffect? = null
-) : KMockContract.SyncFunMockery<ReturnValue, SideEffect>,
-    FunMockery<ReturnValue, SideEffect>(
+) : KMockContract.SyncFunProxy<ReturnValue, SideEffect>,
+    FunProxy<ReturnValue, SideEffect>(
         id = id,
         collector = collector,
         relaxer = relaxer,

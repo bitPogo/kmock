@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
@@ -32,7 +32,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class PropertyMockerySpec {
+class PropertyProxySpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
@@ -44,25 +44,25 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn0")
-    fun `It fulfils PropMockery`() {
-        PropertyMockery<Unit>(fixture.fixture()) fulfils KMockContract.PropertyMockery::class
+    fun `It fulfils PropProxy`() {
+        PropertyProxy<Unit>(fixture.fixture()) fulfils KMockContract.PropertyProxy::class
     }
 
     @Test
     @JsName("fn1")
     fun `Given a get is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.get = value
+            Proxy.get = value
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.get mustBe value
+            Proxy.get mustBe value
         }
 
         return resolveMultiBlockCalls()
@@ -72,19 +72,19 @@ class PropertyMockerySpec {
     @JsName("fn2")
     fun `Given a get is set with nullable value it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any?>(
+        val Proxy = PropertyProxy<Any?>(
             fixture.fixture(),
         )
         val value: Any? = null
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.get = value
+            Proxy.get = value
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.get mustBe value
+            Proxy.get mustBe value
         }
 
         return resolveMultiBlockCalls()
@@ -94,11 +94,11 @@ class PropertyMockerySpec {
     @JsName("fn3")
     fun `Given a getMany is set with an emptyList it fails`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
-            mockery.getMany = emptyList()
+            Proxy.getMany = emptyList()
         }
 
         error.message mustBe "Empty Lists are not valid as value provider."
@@ -108,17 +108,17 @@ class PropertyMockerySpec {
     @JsName("fn4")
     fun `Given a getMany is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values
+            Proxy.getMany = values
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.getMany mustBe values
+            Proxy.getMany mustBe values
         }
 
         return resolveMultiBlockCalls()
@@ -128,17 +128,17 @@ class PropertyMockerySpec {
     @JsName("fn5")
     fun `Given a getSideEffect is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val sideEffect = { fixture.fixture<Any>() }
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getSideEffect = sideEffect
+            Proxy.getSideEffect = sideEffect
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.getSideEffect mustBe sideEffect
+            Proxy.getSideEffect mustBe sideEffect
         }
 
         return resolveMultiBlockCalls()
@@ -148,17 +148,17 @@ class PropertyMockerySpec {
     @JsName("fn6")
     fun `Given a set is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val effect: (Any) -> Unit = { }
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.set = effect
+            Proxy.set = effect
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.set sameAs effect
+            Proxy.set sameAs effect
         }
 
         return resolveMultiBlockCalls()
@@ -169,13 +169,13 @@ class PropertyMockerySpec {
     fun `Given onGet is called it fails if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
-        val mockery = PropertyMockery<Any>(name)
+        val Proxy = PropertyProxy<Any>(name)
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // Then
             val error = assertFailsWith<MockError.MissingStub> {
                 // When
-                mockery.onGet()
+                Proxy.onGet()
             }
 
             error.message mustBe "Missing stub value for $name"
@@ -189,7 +189,7 @@ class PropertyMockerySpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val mockery = PropertyMockery<Any>(
+        val Proxy = PropertyProxy<Any>(
             name,
             relaxer = { givenId ->
                 capturedId.set(givenId)
@@ -200,7 +200,7 @@ class PropertyMockerySpec {
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -216,7 +216,7 @@ class PropertyMockerySpec {
         val value: Any = fixture.fixture()
 
         val implementation = Implementation<Any>()
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             name,
             spyOnGet = implementation::foo::get
         )
@@ -225,7 +225,7 @@ class PropertyMockerySpec {
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -236,16 +236,16 @@ class PropertyMockerySpec {
     @JsName("fn8")
     fun `Given onGet is called it returns the Get Value threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: String = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.get = value
+            Proxy.get = value
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -258,17 +258,17 @@ class PropertyMockerySpec {
     @JsName("fn9")
     fun `Given onGet is called it returns the GetMany Value threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<String> = fixture.listFixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values
+            Proxy.getMany = values
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             values.forEach { value ->
-                val actual = mockery.onGet()
+                val actual = Proxy.onGet()
 
                 // Then
                 actual mustBe value
@@ -282,17 +282,17 @@ class PropertyMockerySpec {
     @JsName("fn10")
     fun `Given onGet is called it returns the last GetMany Value if the given List is down to one value threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 1)
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values.toList()
+            Proxy.getMany = values.toList()
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             for (x in 0 until 10) {
-                val actual = mockery.onGet()
+                val actual = Proxy.onGet()
 
                 // Then
                 actual mustBe values.first()
@@ -306,17 +306,17 @@ class PropertyMockerySpec {
     @JsName("fn11")
     fun `Given onGet is called it returns the GetSideEffect Value threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value = fixture.fixture<Any>()
         val sideEffect = { value }
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getSideEffect = sideEffect
+            Proxy.getSideEffect = sideEffect
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -329,18 +329,18 @@ class PropertyMockerySpec {
     @JsName("fn12")
     fun `Given onGet is called it uses GetMany over Get`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values
-            mockery.get = value
+            Proxy.getMany = values
+            Proxy.get = value
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe values.first()
@@ -353,19 +353,19 @@ class PropertyMockerySpec {
     @JsName("fn13")
     fun `Given onGet is called it uses GetSideEffect over GetMany`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
         val sideEffect = { value }
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getSideEffect = sideEffect
-            mockery.getMany = values
+            Proxy.getSideEffect = sideEffect
+            Proxy.getMany = values
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -380,7 +380,7 @@ class PropertyMockerySpec {
         // Given
         val value: Any = fixture.fixture()
         val implementation = Implementation(fooProp = value)
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             fixture.fixture(),
             spyOnGet = implementation::foo::get
         )
@@ -388,11 +388,11 @@ class PropertyMockerySpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getSideEffect = sideEffect
+            Proxy.getSideEffect = sideEffect
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = mockery.onGet()
+            val actual = Proxy.onGet()
 
             // Then
             actual mustBe value
@@ -405,14 +405,14 @@ class PropertyMockerySpec {
     @JsName("fn15")
     fun `Given onSet is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val newValue: Any = fixture.fixture()
 
         val actualNew = Channel<Any>()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.set = { givenNew ->
+            Proxy.set = { givenNew ->
                 testScope1.launch {
                     actualNew.send(givenNew)
                 }
@@ -421,7 +421,7 @@ class PropertyMockerySpec {
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             // When
-            val actual = mockery.onSet(newValue)
+            val actual = Proxy.onSet(newValue)
 
             // Then
             actual mustBe Unit
@@ -435,20 +435,20 @@ class PropertyMockerySpec {
     @JsName("fn16")
     fun `Given onGet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values.toList()
+            Proxy.getMany = values.toList()
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onGet()
+            Proxy.onGet()
         }
 
         runBlockingTest {
-            val actual = mockery.getArgumentsForCall(0)
+            val actual = Proxy.getArgumentsForCall(0)
 
             actual fulfils KMockContract.GetOrSet.Get::class
             actual.value mustBe null
@@ -461,16 +461,16 @@ class PropertyMockerySpec {
     @JsName("fn17")
     fun `Given onSet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onSet(value)
+            Proxy.onSet(value)
         }
 
         runBlockingTest {
-            val actual = mockery.getArgumentsForCall(0)
+            val actual = Proxy.getArgumentsForCall(0)
 
             actual fulfils KMockContract.GetOrSet.Set::class
             actual.value mustBe value
@@ -485,7 +485,7 @@ class PropertyMockerySpec {
         // Given
         val implementation = Implementation<Any>()
 
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             fixture.fixture(),
             spyOnSet = implementation::bar::set
         )
@@ -493,7 +493,7 @@ class PropertyMockerySpec {
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onSet(value)
+            Proxy.onSet(value)
         }
 
         runBlockingTest {
@@ -510,7 +510,7 @@ class PropertyMockerySpec {
         val name: String = fixture.fixture()
 
         // When
-        val actual = PropertyMockery<Any>(name).id
+        val actual = PropertyProxy<Any>(name).id
 
         // Then
         actual mustBe name
@@ -519,27 +519,27 @@ class PropertyMockerySpec {
     @Test
     @JsName("fn20")
     fun `Its default call count is 0`() {
-        PropertyMockery<Any>(fixture.fixture()).calls mustBe 0
+        PropertyProxy<Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
     @JsName("fn21")
     fun `Given onGet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values
+            Proxy.getMany = values
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onGet()
+            Proxy.onGet()
         }
 
         runBlockingTest {
-            mockery.calls mustBe 1
+            Proxy.calls mustBe 1
         }
 
         return resolveMultiBlockCalls()
@@ -549,16 +549,16 @@ class PropertyMockerySpec {
     @JsName("fn22")
     fun `Given onSet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.onSet(value)
+            Proxy.onSet(value)
         }
 
         runBlockingTest {
-            mockery.calls mustBe 1
+            Proxy.calls mustBe 1
         }
 
         return resolveMultiBlockCalls()
@@ -566,11 +566,11 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn23")
-    fun `Given the mockery has a Collector and onGet is called it calls the Collect`(): AsyncTestReturnValue {
+    fun `Given the Proxy has a Collector and onGet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
+        val capturedMock = AtomicReference<KMockContract.Proxy<*, *>?>(null)
         val capturedCalledIdx = AtomicReference<Int?>(null)
 
         val collector = KMockContract.Collector { referredMock, referredCall ->
@@ -579,18 +579,18 @@ class PropertyMockerySpec {
         }
 
         // When
-        val mockery = PropertyMockery<Any>(fixture.fixture(), collector)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
         runBlockingTestInContext(testScope1.coroutineContext) {
-            mockery.getMany = values
+            Proxy.getMany = values
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onGet()
+            Proxy.onGet()
         }
 
         runBlockingTest {
-            capturedMock.get()?.id mustBe mockery.id
+            capturedMock.get()?.id mustBe Proxy.id
             capturedCalledIdx.get() mustBe 0
         }
 
@@ -599,11 +599,11 @@ class PropertyMockerySpec {
 
     @Test
     @JsName("fn24")
-    fun `Given the mockery has a Collector and onSet is called it calls the Collect`(): AsyncTestReturnValue {
+    fun `Given the Proxy has a Collector and onSet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val value: Any = fixture.fixture()
 
-        val capturedMock = AtomicReference<KMockContract.Mockery<*, *>?>(null)
+        val capturedMock = AtomicReference<KMockContract.Proxy<*, *>?>(null)
         val capturedCalledIdx = AtomicReference<Int?>(null)
 
         val collector = KMockContract.Collector { referredMock, referredCall ->
@@ -612,14 +612,14 @@ class PropertyMockerySpec {
         }
 
         // When
-        val mockery = PropertyMockery<Any>(fixture.fixture(), collector)
+        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            mockery.onSet(value)
+            Proxy.onSet(value)
         }
 
         runBlockingTest {
-            capturedMock.get()?.id mustBe mockery.id
+            capturedMock.get()?.id mustBe Proxy.id
             capturedCalledIdx.get() mustBe 0
         }
 
@@ -631,43 +631,43 @@ class PropertyMockerySpec {
     @JsName("fn25")
     fun `Given clear is called it clears the mock`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
         // When
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.get mustBe null
+        Proxy.get mustBe null
 
         try {
-            mockery.getMany
+            Proxy.getMany
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
         try {
-            mockery.getSideEffect
+            Proxy.getSideEffect
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
-        mockery.set isNot sideEffect
+        Proxy.set isNot sideEffect
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -678,44 +678,44 @@ class PropertyMockerySpec {
     @JsName("fn26")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
-        val mockery = PropertyMockery<Any>(fixture.fixture())
+        val Proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
         // When
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.get mustBe null
+        Proxy.get mustBe null
 
         try {
-            mockery.getMany
+            Proxy.getMany
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
         try {
-            mockery.getSideEffect
+            Proxy.getSideEffect
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
-        mockery.set isNot sideEffect
+        Proxy.set isNot sideEffect
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -735,22 +735,22 @@ class PropertyMockerySpec {
         implementation.fooProp = valueImp
 
         // When
-        val mockery = PropertyMockery(
+        val Proxy = PropertyProxy(
             fixture.fixture(),
             spyOnGet = implementation::foo::get
         )
-        mockery.get = value
-        mockery.getMany = values
-        mockery.getSideEffect = { value }
-        mockery.set = sideEffect
+        Proxy.get = value
+        Proxy.getMany = values
+        Proxy.getSideEffect = { value }
+        Proxy.set = sideEffect
 
-        mockery.onGet()
-        mockery.onSet(fixture.fixture())
+        Proxy.onGet()
+        Proxy.onSet(fixture.fixture())
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.onGet() mustBe valueImp
+        Proxy.onGet() mustBe valueImp
     }
 
     private class Implementation<T>(

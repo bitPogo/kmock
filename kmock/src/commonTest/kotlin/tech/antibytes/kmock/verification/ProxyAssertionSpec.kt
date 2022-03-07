@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunMockeryStub
-import tech.antibytes.mock.PropertyMockeryStub
+import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -16,7 +16,7 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class MockeryAssertionSpec {
+class ProxyAssertionSpec {
     private val fixture = kotlinFixture()
 
     @Test
@@ -24,14 +24,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 5)
+        val Proxy = FunProxyStub(fixture.fixture(), 5)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHasBeenCalled(exactly = 1)
+            Proxy.assertHasBeenCalled(exactly = 1)
         }
     }
 
@@ -40,12 +40,12 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalled accepts if the amount of calls match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHasBeenCalled(exactly = 1)
+        Proxy.assertHasBeenCalled(exactly = 1)
     }
 
     @Test
@@ -53,14 +53,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHasBeenCalledWith(
+            Proxy.assertHasBeenCalledWith(
                 exactly = 1,
                 arguments = fixture.listFixture<String>().toTypedArray()
             )
@@ -72,11 +72,11 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
         // When
-        mockery.assertHasBeenCalledWith(
+        Proxy.assertHasBeenCalledWith(
             exactly = 1,
             values[0]
         )
@@ -87,14 +87,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHasBeenCalledStrictlyWith(
+            Proxy.assertHasBeenCalledStrictlyWith(
                 exactly = 1,
                 values[0]
             )
@@ -106,12 +106,12 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHasBeenCalledStrictlyWith(
+        Proxy.assertHasBeenCalledStrictlyWith(
             exactly = 1,
             arguments = values
         )
@@ -122,14 +122,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadNotBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHasNotBeenCalled()
+            Proxy.assertHasNotBeenCalled()
         }
     }
 
@@ -138,12 +138,12 @@ class MockeryAssertionSpec {
     fun `Given assertHadNotBeenCalled accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 0)
+        val Proxy = FunProxyStub(fixture.fixture(), 0)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHasNotBeenCalled()
+        Proxy.assertHasNotBeenCalled()
     }
 
     @Test
@@ -151,14 +151,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadNotBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHasNotBeenCalledWith(values[0])
+            Proxy.assertHasNotBeenCalledWith(values[0])
         }
     }
 
@@ -167,12 +167,12 @@ class MockeryAssertionSpec {
     fun `Given assertHadNotBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 1)
+        val Proxy = FunProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHasNotBeenCalledWith(fixture.fixture())
+        Proxy.assertHasNotBeenCalledWith(fixture.fixture())
     }
 
     @Test
@@ -180,14 +180,14 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledWithout fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 2)
+        val Proxy = FunProxyStub(fixture.fixture(), 2)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertHadBeenCalledWithout(values[0])
+            Proxy.assertHadBeenCalledWithout(values[0])
         }
     }
 
@@ -196,26 +196,26 @@ class MockeryAssertionSpec {
     fun `Given assertHadBeenCalledWithout accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val mockery = FunMockeryStub(fixture.fixture(), 2)
+        val Proxy = FunProxyStub(fixture.fixture(), 2)
 
-        mockery.getArgumentsForCall = { values }
+        Proxy.getArgumentsForCall = { values }
 
         // When
-        mockery.assertHadBeenCalledWithout(fixture.fixture())
+        Proxy.assertHadBeenCalledWithout(fixture.fixture())
     }
 
     @Test
     @JsName("fn12")
     fun `Given assertWasGotten fails if the amount of calls does not match the criteria`() {
         // Given
-        val mockery = PropertyMockeryStub(fixture.fixture(), 2)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 2)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Get }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Get }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasGotten(1)
+            Proxy.assertWasGotten(1)
         }
     }
 
@@ -223,26 +223,26 @@ class MockeryAssertionSpec {
     @JsName("fn13")
     fun `Given assertWasGotten accepts if the amount of calls does match the criteria`() {
         // Given
-        val mockery = PropertyMockeryStub(fixture.fixture(), 1)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Get }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Get }
 
         // When
-        mockery.assertWasGotten(1)
+        Proxy.assertWasGotten(1)
     }
 
     @Test
     @JsName("fn14")
     fun `Given assertWasSet fails if the amount of calls does not match the criteria`() {
         // Given
-        val mockery = PropertyMockeryStub(fixture.fixture(), 2)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 2)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Set(null) }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Set(null) }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasSet(1)
+            Proxy.assertWasSet(1)
         }
     }
 
@@ -250,26 +250,26 @@ class MockeryAssertionSpec {
     @JsName("fn15")
     fun `Given assertWasSet accepts if the amount of calls does match the criteria`() {
         // Given
-        val mockery = PropertyMockeryStub(fixture.fixture(), 1)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Set(null) }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Set(null) }
 
         // When
-        mockery.assertWasSet(1)
+        Proxy.assertWasSet(1)
     }
 
     @Test
     @JsName("fn16")
     fun `Given assertWasSetTo fails if the amount of calls does not match the criteria`() {
         // Given
-        val mockery = PropertyMockeryStub(fixture.fixture(), 2)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 2)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Set(fixture.fixture<Any>()) }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Set(fixture.fixture<Any>()) }
 
         // Then
         assertFailsWith<AssertionError> {
             // When
-            mockery.assertWasSetTo(1, fixture.fixture<Any>())
+            Proxy.assertWasSetTo(1, fixture.fixture<Any>())
         }
     }
 
@@ -278,11 +278,11 @@ class MockeryAssertionSpec {
     fun `Given assertWasSetTo accepts if the amount of calls does match the criteria`() {
         // Given
         val value: Any = fixture.fixture()
-        val mockery = PropertyMockeryStub(fixture.fixture(), 1)
+        val Proxy = PropertyProxyStub(fixture.fixture(), 1)
 
-        mockery.getArgumentsForCall = { KMockContract.GetOrSet.Set(value) }
+        Proxy.getArgumentsForCall = { KMockContract.GetOrSet.Set(value) }
 
         // When
-        mockery.assertWasSetTo(1, value)
+        Proxy.assertWasSetTo(1, value)
     }
 }

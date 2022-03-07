@@ -13,10 +13,10 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.mock.AsyncFunMockery
-import tech.antibytes.kmock.mock.PropertyMockery
-import tech.antibytes.kmock.mock.SyncFunMockery
-import tech.antibytes.kmock.mock.relaxVoidFunction
+import tech.antibytes.kmock.proxy.AsyncFunProxy
+import tech.antibytes.kmock.proxy.PropertyProxy
+import tech.antibytes.kmock.proxy.SyncFunProxy
+import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class GenericsMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
@@ -31,32 +31,32 @@ internal class GenericsMock<K : Any, L>(
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
 
-    public val _template: KMockContract.PropertyMockery<K> = if (spyOn == null) {
-        PropertyMockery("generatorTest.Generics#_template", spyOnGet = null, spyOnSet = null,
+    public val _template: KMockContract.PropertyProxy<K> = if (spyOn == null) {
+        PropertyProxy("generatorTest.Generics#_template", spyOnGet = null, spyOnSet = null,
             collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyMockery("generatorTest.Generics#_template", spyOnGet = { spyOn.template }, spyOnSet
-        = { spyOn.template = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("generatorTest.Generics#_template", spyOnGet = { spyOn.template }, spyOnSet =
+        { spyOn.template = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
-    public val _foo: KMockContract.SyncFunMockery<Unit, (Any?) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->
+    public val _foo: KMockContract.SyncFunProxy<Unit, (Any?) -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Generics#_foo", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
-    public val _fooWithInt: KMockContract.SyncFunMockery<Unit, (kotlin.Int) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.Generics#_fooWithInt", spyOn = if (spyOn != null) { { payload ->
+    public val _fooWithInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Generics#_fooWithInt", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
-    public val _buzz: KMockContract.SyncFunMockery<Unit, (L) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.Generics#_buzz", spyOn = if (spyOn != null) { { payload ->
+    public val _buzz: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Generics#_buzz", spyOn = if (spyOn != null) { { payload ->
             buzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                          (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
 
-    public val _bar: KMockContract.SyncFunMockery<Unit, (Any) -> kotlin.Unit> =
-        SyncFunMockery("generatorTest.Generics#_bar", spyOn = if (spyOn != null) { { payload ->
+    public val _bar: KMockContract.SyncFunProxy<Unit, (Any) -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Generics#_bar", spyOn = if (spyOn != null) { { payload ->
             throw IllegalArgumentException(
                 "Multi-Bound generics are not supported on function level spies (yet)."
             ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)

@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 
 class any(
     private val expected: KClass<*>? = null
-) : KMockContract.MatcherConstraint {
+) : KMockContract.VerificationConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {
             expected == null -> true

@@ -36,7 +36,7 @@ internal class KMockFunctionGenerator(
         parameterNames: List<String>,
         parameterTypes: List<TypeName>,
         returnType: TypeName,
-        mockeryName: String
+        ProxyName: String
     ): FunSpec {
         val function = FunSpec
             .builder(ksFunctionName)
@@ -58,7 +58,7 @@ internal class KMockFunctionGenerator(
         }
 
         function.returns(returnType)
-        function.addCode("return $mockeryName.invoke(${parameterNames.joinToString(", ")})")
+        function.addCode("return $ProxyName.invoke(${parameterNames.joinToString(", ")})")
 
         return function.build()
     }
@@ -99,9 +99,9 @@ internal class KMockFunctionGenerator(
 
     private fun determineFunctionInitializer(
         propertyMock: PropertySpec.Builder,
-        mockery: String,
+        Proxy: String,
         qualifier: String,
-        mockeryName: String,
+        ProxyName: String,
         functionName: String,
         parameterNames: List<String>,
         boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
@@ -109,8 +109,8 @@ internal class KMockFunctionGenerator(
     ): PropertySpec.Builder {
         return propertyMock.initializer(
             "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
-            mockery,
-            "$qualifier#$mockeryName",
+            Proxy,
+            "$qualifier#$ProxyName",
             "if (spyOn != null) { ${
             buildFunctionSpyInvocation(
                 functionName,
@@ -122,10 +122,10 @@ internal class KMockFunctionGenerator(
         )
     }
 
-    private fun buildSyncFunMockery(
+    private fun buildSyncFunProxy(
         qualifier: String,
         functionName: String,
-        mockeryName: String,
+        ProxyName: String,
         parameterNames: List<String>,
         parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
         returnType: TypeName,
@@ -133,17 +133,17 @@ internal class KMockFunctionGenerator(
     ): PropertySpec {
         val lambda = TypeVariableName("(${parameterTypes.keys.joinToString(", ")}) -> $returnType")
         val property = PropertySpec.builder(
-            mockeryName,
-            KMockContract.SyncFunMockery::class
+            ProxyName,
+            KMockContract.SyncFunProxy::class
                 .asClassName()
                 .parameterizedBy(returnType, lambda),
         )
 
         return determineFunctionInitializer(
             property,
-            "SyncFunMockery",
+            "SyncFunProxy",
             qualifier,
-            mockeryName,
+            ProxyName,
             functionName,
             parameterNames,
             parameterTypes,
@@ -151,10 +151,10 @@ internal class KMockFunctionGenerator(
         ).build()
     }
 
-    private fun buildASyncFunMockery(
+    private fun buildASyncFunProxy(
         qualifier: String,
         functionName: String,
-        mockeryName: String,
+        ProxyName: String,
         parameterNames: List<String>,
         parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
         returnType: TypeName,
@@ -162,17 +162,17 @@ internal class KMockFunctionGenerator(
     ): PropertySpec {
         val lambda = TypeVariableName("suspend (${parameterTypes.keys.joinToString(", ")}) -> $returnType")
         val property = PropertySpec.builder(
-            mockeryName,
-            KMockContract.AsyncFunMockery::class
+            ProxyName,
+            KMockContract.AsyncFunProxy::class
                 .asClassName()
                 .parameterizedBy(returnType, lambda),
         )
 
         return determineFunctionInitializer(
             property,
-            "AsyncFunMockery",
+            "AsyncFunProxy",
             qualifier,
-            mockeryName,
+            ProxyName,
             functionName,
             parameterNames,
             parameterTypes,
@@ -240,24 +240,24 @@ internal class KMockFunctionGenerator(
         return "${functionName}With${titleCasedSuffixes.joinToString("")}"
     }
 
-    private fun selectFunMockeryName(
+    private fun selectFunProxyName(
         functionName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
         parameter: List<TypeName>,
         existingFunctions: List<String>
     ): String {
-        val mockeryName = "_$functionName"
+        val ProxyName = "_$functionName"
 
-        return if (existingFunctions.contains(mockeryName)) {
+        return if (existingFunctions.contains(ProxyName)) {
             determineSuffixedFunctionName(
-                mockeryName,
+                ProxyName,
                 parameter,
                 generics,
                 typeResolver
             )
         } else {
-            mockeryName
+            ProxyName
         }
     }
 
@@ -285,7 +285,7 @@ internal class KMockFunctionGenerator(
         return "?"
     }
 
-    private fun determineMockeryParameter(
+    private fun determineProxyParameter(
         parameter: List<TypeName>,
         generics: Map<String, List<KSTypeReference>>?,
         typeResolver: TypeParameterResolver
@@ -300,7 +300,9 @@ internal class KMockFunctionGenerator(
                     @Suppress("UNCHECKED_CAST")
                     val actualType = when {
                         types !is List<*> || types.isEmpty() -> "Any?"
-                        types.size > 1 -> "Any${isNullable(types as List<KSTypeReference>)}".also { typeListing = types }
+                        types.size > 1 -> "Any${isNullable(types as List<KSTypeReference>)}".also {
+                            typeListing = types
+                        }
                         else -> (types.first() as KSTypeReference).toTypeName(typeResolver).toString()
                     }
 
@@ -329,8 +331,8 @@ internal class KMockFunctionGenerator(
             .toTypeParameterResolver(typeResolver)
         val generics = utils.resolveGeneric(ksFunction, parameterTypeResolver)
         val parameter = determineParameter(ksFunction.parameters, parameterTypeResolver)
-        val mockeryParameter = determineMockeryParameter(parameter.second, generics, parameterTypeResolver)
-        val mockeryName = selectFunMockeryName(
+        val ProxyParameter = determineProxyParameter(parameter.second, generics, parameterTypeResolver)
+        val ProxyName = selectFunProxyName(
             functionName,
             generics ?: emptyMap(),
             parameterTypeResolver,
@@ -348,32 +350,32 @@ internal class KMockFunctionGenerator(
             parameter.first,
             parameter.second,
             returnType,
-            mockeryName
+            ProxyName
         )
 
-        val mockery = if (isSuspending) {
-            buildASyncFunMockery(
+        val Proxy = if (isSuspending) {
+            buildASyncFunProxy(
                 qualifier,
                 functionName,
-                mockeryName,
+                ProxyName,
                 parameter.first,
-                mockeryParameter,
+                ProxyParameter,
                 returnType,
                 relaxer
             )
         } else {
-            buildSyncFunMockery(
+            buildSyncFunProxy(
                 qualifier,
                 functionName,
-                mockeryName,
+                ProxyName,
                 parameter.first,
-                mockeryParameter,
+                ProxyParameter,
                 returnType,
                 relaxer
             )
         }
 
-        functionNameCollector.add(mockeryName)
-        return Pair(mockery, function)
+        functionNameCollector.add(ProxyName)
+        return Pair(Proxy, function)
     }
 }

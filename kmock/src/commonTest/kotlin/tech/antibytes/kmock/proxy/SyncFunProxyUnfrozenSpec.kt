@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.mock
+package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
@@ -23,78 +23,78 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class SyncFunMockeryUnfrozenSpec {
+class SyncFunProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
-    fun `It fulfils FunMockery`() {
-        SyncFunMockery<Unit, () -> Unit>(fixture.fixture()) fulfils KMockContract.FunMockery::class
+    fun `It fulfils FunProxy`() {
+        SyncFunProxy<Unit, () -> Unit>(fixture.fixture()) fulfils KMockContract.FunProxy::class
     }
 
     @Test
     @JsName("fn1")
     fun `Given a throws is set it is retrievable`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val error = RuntimeException(fixture.fixture<String>())
 
         // When
-        mockery.throws = error
+        Proxy.throws = error
 
         // Then
-        mockery.throws mustBe error
+        Proxy.throws mustBe error
     }
 
     @Test
     @JsName("fn2")
     fun `Given a returnValue is set it is retrievable`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val value: Any = fixture.fixture()
 
         // When
-        mockery.returnValue = value
+        Proxy.returnValue = value
 
         // Then
-        mockery.returnValue mustBe value
+        Proxy.returnValue mustBe value
     }
 
     @Test
     @JsName("fn3")
     fun `Given a returnValue is set with nullable value it is retrievable`() {
         // Given
-        val mockery = SyncFunMockery<Any?, Function0<Any?>>(
+        val Proxy = SyncFunProxy<Any?, Function0<Any?>>(
             fixture.fixture(),
             freeze = false
         )
         val value: Any? = null
 
         // When
-        mockery.returnValue = value
+        Proxy.returnValue = value
 
         // Then
-        mockery.returnValue mustBe value
+        Proxy.returnValue mustBe value
     }
 
     @Test
     @JsName("fn4")
     fun `Given a returnValues is set with an emptyList it fails`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
-            mockery.returnValues = emptyList()
+            Proxy.returnValues = emptyList()
         }
 
         error.message mustBe "Empty Lists are not valid as value provider."
@@ -104,34 +104,34 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn5")
     fun `Given a returnValues is set it is retrievable`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val values: List<Any> = fixture.listFixture()
 
         // When
-        mockery.returnValues = values
+        Proxy.returnValues = values
 
         // Then
-        mockery.returnValues mustBe values
+        Proxy.returnValues mustBe values
     }
 
     @Test
     @JsName("fn6")
     fun `Given a sideEffect is set it is retrievable`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val effect: () -> Any = { fixture.fixture() }
 
         // When
-        mockery.sideEffect = effect
+        Proxy.sideEffect = effect
 
         // Then
-        mockery.sideEffect sameAs effect
+        Proxy.sideEffect sameAs effect
     }
 
     @Test
@@ -139,12 +139,12 @@ class SyncFunMockeryUnfrozenSpec {
     fun `Given invoke is called it fails if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val mockery = SyncFunMockery<Any, () -> Any>(name)
+        val Proxy = SyncFunProxy<Any, () -> Any>(name)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
             // When
-            mockery.invoke()
+            Proxy.invoke()
         }
 
         error.message mustBe "Missing stub value for $name"
@@ -157,7 +157,7 @@ class SyncFunMockeryUnfrozenSpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val mockery = SyncFunMockery<Any, () -> Any>(
+        val Proxy = SyncFunProxy<Any, () -> Any>(
             name,
             relaxer = { givenId ->
                 capturedId.set(givenId)
@@ -168,7 +168,7 @@ class SyncFunMockeryUnfrozenSpec {
         )
 
         // When
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe value
@@ -182,7 +182,7 @@ class SyncFunMockeryUnfrozenSpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val mockery = SyncFunMockery<Any, () -> Unit>(
+        val Proxy = SyncFunProxy<Any, () -> Unit>(
             name,
             unitFunRelaxer = { givenId ->
                 capturedId.set(givenId)
@@ -192,7 +192,7 @@ class SyncFunMockeryUnfrozenSpec {
         )
 
         // When
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe value
@@ -208,14 +208,14 @@ class SyncFunMockeryUnfrozenSpec {
         val implementation = Implementation<Any>()
         implementation.fun0 = { value }
 
-        val mockery = SyncFunMockery<Any, () -> Any>(
+        val Proxy = SyncFunProxy<Any, () -> Any>(
             name,
             spyOn = implementation::fun0,
             freeze = false
         )
 
         // When
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe value
@@ -225,17 +225,17 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn8")
     fun `Given invoke is called it throws Throws threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val error = RuntimeException(fixture.fixture<String>())
 
         // When
-        mockery.throws = error
+        Proxy.throws = error
 
         val actual = assertFailsWith<RuntimeException> {
-            mockery.invoke()
+            Proxy.invoke()
         }
 
         // Then
@@ -246,16 +246,16 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn9")
     fun `Given invoke is called it returns the ReturnValue threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val value: String = fixture.fixture()
 
         // When
-        mockery.returnValue = value
+        Proxy.returnValue = value
 
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
         // Then
         actual mustBe value
     }
@@ -264,17 +264,17 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn10")
     fun `Given invoke is called it returns the ReturnValues threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        mockery.returnValues = values.toList()
+        Proxy.returnValues = values.toList()
 
         values.forEach { value ->
-            val actual = mockery.invoke()
+            val actual = Proxy.invoke()
 
             // Then
             actual mustBe value
@@ -285,17 +285,17 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn11")
     fun `Given invoke is called it returns the last ReturnValue if the given List is down to one value threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val values: List<Any> = fixture.listFixture(size = 1)
 
         // When
-        mockery.returnValues = values.toList()
+        Proxy.returnValues = values.toList()
 
         for (x in 0 until 10) {
-            val actual = mockery.invoke()
+            val actual = Proxy.invoke()
 
             // Then
             actual mustBe values.first()
@@ -306,7 +306,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn12")
     fun `Given invoke is called it calls the given SideEffect and delegates values threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, (String, Int) -> Any>(fixture.fixture())
+        val Proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -316,14 +316,14 @@ class SyncFunMockeryUnfrozenSpec {
 
         // When
 
-        mockery.sideEffect = { givenArg0, givenArg1 ->
+        Proxy.sideEffect = { givenArg0, givenArg1 ->
             actualArgument0 = givenArg0
             actualArgument1 = givenArg1
 
             expected
         }
 
-        val actual = mockery.invoke(argument0, argument1)
+        val actual = Proxy.invoke(argument0, argument1)
 
         // Then
         actual mustBe expected
@@ -335,7 +335,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn13")
     fun `Given invoke is called it uses ReturnValue over Throws`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
@@ -343,10 +343,10 @@ class SyncFunMockeryUnfrozenSpec {
         val error = RuntimeException(fixture.fixture<String>())
 
         // When
-        mockery.returnValue = value
-        mockery.throws = error
+        Proxy.returnValue = value
+        Proxy.throws = error
 
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe value
@@ -356,7 +356,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn14")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
@@ -364,10 +364,10 @@ class SyncFunMockeryUnfrozenSpec {
         val values: List<Any> = fixture.listFixture(size = 2)
 
         // When
-        mockery.returnValue = value
-        mockery.returnValues = values
+        Proxy.returnValue = value
+        Proxy.returnValues = values
 
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe values.first()
@@ -377,7 +377,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn15")
     fun `Given invoke is called it uses SideEffect over ReturnValues`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
@@ -385,10 +385,10 @@ class SyncFunMockeryUnfrozenSpec {
         val values: List<Any> = fixture.listFixture(size = 2)
 
         // When
-        mockery.sideEffect = { expected }
-        mockery.returnValues = values
+        Proxy.sideEffect = { expected }
+        Proxy.returnValues = values
 
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
 
         // Then
         actual mustBe expected
@@ -398,16 +398,16 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn16")
     fun `Given invoke is called it captures Arguments`() {
         // Given
-        val mockery = SyncFunMockery<Any, (String) -> Any>(fixture.fixture(), freeze = false)
+        val Proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 5)
         val argument: String = fixture.fixture()
 
         // When
-        mockery.returnValues = values.toList()
+        Proxy.returnValues = values.toList()
 
-        mockery.invoke(argument)
+        Proxy.invoke(argument)
 
-        val actual = mockery.getArgumentsForCall(0)
+        val actual = Proxy.getArgumentsForCall(0)
 
         actual!!.size mustBe 1
         actual[0] mustBe argument
@@ -417,17 +417,17 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn17")
     fun `Given invoke is called it captures void Arguments`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        mockery.returnValues = values
-        mockery.invoke()
+        Proxy.returnValues = values
+        Proxy.invoke()
 
-        val actual = mockery.getArgumentsForCall(0)
+        val actual = Proxy.getArgumentsForCall(0)
 
         actual mustBe null
     }
@@ -439,7 +439,7 @@ class SyncFunMockeryUnfrozenSpec {
         val name: String = fixture.fixture()
 
         // When
-        val actual = SyncFunMockery<Any, () -> Any>(name, freeze = false).id
+        val actual = SyncFunProxy<Any, () -> Any>(name, freeze = false).id
 
         // Then
         actual mustBe name
@@ -448,33 +448,33 @@ class SyncFunMockeryUnfrozenSpec {
     @Test
     @JsName("fn19")
     fun `Its default call count is 0`() {
-        SyncFunMockery<Any, () -> Any>(fixture.fixture(), freeze = false).calls mustBe 0
+        SyncFunProxy<Any, () -> Any>(fixture.fixture(), freeze = false).calls mustBe 0
     }
 
     @Test
     @JsName("fn20")
     fun `Given invoke is called it increments the call counter threadsafe`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        mockery.returnValues = values
-        mockery.invoke()
+        Proxy.returnValues = values
+        Proxy.invoke()
 
-        mockery.calls mustBe 1
+        Proxy.calls mustBe 1
     }
 
     @Test
     @JsName("fn21")
-    fun `Given the mockery has a Collector and invoke is called it calls the Collect`() {
+    fun `Given the Proxy has a Collector and invoke is called it calls the Collect`() {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
 
-        var capturedMock: KMockContract.Mockery<*, *>? = null
+        var capturedMock: KMockContract.Proxy<*, *>? = null
         var capturedCalledIdx: Int? = null
 
         val collector = Collector { referredMock, referredCall ->
@@ -483,13 +483,13 @@ class SyncFunMockeryUnfrozenSpec {
         }
 
         // When
-        val mockery = SyncFunMockery<Any, () -> Any>(fixture.fixture(), collector, freeze = false)
+        val Proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture(), collector, freeze = false)
 
-        mockery.returnValues = values
-        mockery.invoke()
+        Proxy.returnValues = values
+        Proxy.invoke()
 
         // Then
-        capturedMock?.id mustBe mockery.id
+        capturedMock?.id mustBe Proxy.id
         capturedCalledIdx mustBe 0
     }
 
@@ -498,7 +498,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn22")
     fun `Given clear is called it clears the mock`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
@@ -508,33 +508,33 @@ class SyncFunMockeryUnfrozenSpec {
             fixture.fixture()
         }
 
-        mockery.returnValue = value
-        mockery.returnValues = values
-        mockery.sideEffect = sideEffect
+        Proxy.returnValue = value
+        Proxy.returnValues = values
+        Proxy.sideEffect = sideEffect
 
         // When
-        mockery.invoke()
+        Proxy.invoke()
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.returnValue mustBe null
+        Proxy.returnValue mustBe null
         try {
-            mockery.returnValues
+            Proxy.returnValues
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
         try {
-            mockery.sideEffect mustBe null
+            Proxy.sideEffect mustBe null
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -545,7 +545,7 @@ class SyncFunMockeryUnfrozenSpec {
     @JsName("fn23")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
-        val mockery = SyncFunMockery<Any, Function0<Any>>(
+        val Proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
             freeze = false
         )
@@ -555,33 +555,33 @@ class SyncFunMockeryUnfrozenSpec {
             fixture.fixture()
         }
 
-        mockery.returnValue = value
-        mockery.returnValues = values
-        mockery.sideEffect = sideEffect
+        Proxy.returnValue = value
+        Proxy.returnValues = values
+        Proxy.sideEffect = sideEffect
 
         // When
-        mockery.invoke()
+        Proxy.invoke()
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        mockery.returnValue mustBe null
+        Proxy.returnValue mustBe null
         try {
-            mockery.returnValues
+            Proxy.returnValues
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
         try {
-            mockery.sideEffect mustBe null
+            Proxy.sideEffect mustBe null
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
-        mockery.calls mustBe 0
+        Proxy.calls mustBe 0
 
         try {
-            mockery.getArgumentsForCall(0)
+            Proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -600,7 +600,7 @@ class SyncFunMockeryUnfrozenSpec {
             fixture.fixture()
         }
 
-        val mockery = SyncFunMockery<Any, () -> Any>(
+        val Proxy = SyncFunProxy<Any, () -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun0,
             freeze = false
@@ -608,17 +608,17 @@ class SyncFunMockeryUnfrozenSpec {
 
         implementation.fun0 = { valueImpl }
 
-        mockery.returnValue = value
-        mockery.returnValues = values
-        mockery.sideEffect = sideEffect
+        Proxy.returnValue = value
+        Proxy.returnValues = values
+        Proxy.sideEffect = sideEffect
 
         // When
-        mockery.invoke()
+        Proxy.invoke()
 
-        mockery.clear()
+        Proxy.clear()
 
         // Then
-        val actual = mockery.invoke()
+        val actual = Proxy.invoke()
         actual mustBe valueImpl
     }
 

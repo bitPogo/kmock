@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.mock.FunMockeryStub
+import tech.antibytes.mock.FunProxyStub
 import tech.antibytes.mock.VerifierStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -24,12 +24,12 @@ class VerificationSpec {
     @JsName("fn0")
     fun `Given verify is called it fails if the covered mock does not contain any call`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify {
-                VerificationHandle(mockery.id, emptyList())
+                VerificationHandle(Proxy.id, emptyList())
             }
         }
 
@@ -40,14 +40,14 @@ class VerificationSpec {
     @JsName("fn1")
     fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(atLeast = expectedCalls) {
-                VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -58,14 +58,14 @@ class VerificationSpec {
     @JsName("fn2")
     fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(atMost = expectedCalls) {
-                VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -76,14 +76,14 @@ class VerificationSpec {
     @JsName("fn3")
     fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(exactly = expectedCalls, atLeast = 0) {
-                VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -94,14 +94,14 @@ class VerificationSpec {
     @JsName("fn4")
     fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
         // When
         val error = assertFailsWith<AssertionError> {
             verify(exactly = expectedCalls, atMost = 0) {
-                VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+                VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
             }
         }
 
@@ -112,12 +112,12 @@ class VerificationSpec {
     @JsName("fn5")
     fun `Given verify is called it passes if the covered mock matches the requirements`() {
         // Given
-        val mockery = FunMockeryStub(fixture.fixture(), fixture.fixture())
+        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
 
         // When
         verify(exactly = givenCalls) {
-            VerificationHandle(mockery.id, fixture.listFixture(size = givenCalls))
+            VerificationHandle(Proxy.id, fixture.listFixture(size = givenCalls))
         }
     }
 
@@ -128,8 +128,8 @@ class VerificationSpec {
         val verifierLower = VerifierStub(emptyList())
         val verifierUpper = VerifierStub(
             listOf(
-                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
-                Reference(FunMockeryStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
+                Reference(FunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
+                Reference(FunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
             )
         )
         val handle = VerificationHandle(fixture.fixture(), fixture.listFixture())
@@ -163,22 +163,22 @@ class VerificationSpec {
     @JsName("fn7")
     fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
         // Given
-        val handleMockery = FunMockeryStub(
+        val handleProxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
 
         val handle = VerificationHandle(
-            handleMockery.id,
+            handleProxy.id,
             listOf(1)
         )
 
         val verifier = VerifierStub(
-            listOf(Reference(referenceMockery, 0))
+            listOf(Reference(referenceProxy, 0))
         )
 
         // Then
@@ -191,7 +191,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted '${handleMockery.id}', but got '${referenceMockery.id}'."
+        error.message mustBe "Excepted '${handleProxy.id}', but got '${referenceProxy.id}'."
     }
 
     @Test
@@ -201,7 +201,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 0
         val actualCallIdx = 1
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -212,7 +212,7 @@ class VerificationSpec {
         )
 
         val verifier = VerifierStub(
-            listOf(Reference(referenceMockery, actualCallIdx))
+            listOf(Reference(referenceProxy, actualCallIdx))
         )
 
         // Then
@@ -235,7 +235,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 1
         val actualCallIdx = 2
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -250,8 +250,8 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, 0),
-                Reference(referenceMockery, actualCallIdx)
+                Reference(referenceProxy, 0),
+                Reference(referenceProxy, actualCallIdx)
             )
         )
 
@@ -276,7 +276,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 1
         val actualCallIdx = 2
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -297,8 +297,8 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, 0),
-                Reference(referenceMockery, actualCallIdx)
+                Reference(referenceProxy, 0),
+                Reference(referenceProxy, actualCallIdx)
             )
         )
 
@@ -322,7 +322,7 @@ class VerificationSpec {
         // Given
         val name: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -350,9 +350,9 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, 0),
-                Reference(referenceMockery, expectedCallIdx - 1),
-                Reference(referenceMockery, expectedCallIdx),
+                Reference(referenceProxy, 0),
+                Reference(referenceProxy, expectedCallIdx - 1),
+                Reference(referenceProxy, expectedCallIdx),
             )
         )
 
@@ -378,11 +378,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceMockery1 = FunMockeryStub(
+        val referenceProxy1 = FunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceMockery2 = FunMockeryStub(
+        val referenceProxy2 = FunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -410,9 +410,9 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery1, 0),
-                Reference(referenceMockery2, 0),
-                Reference(referenceMockery1, expectedCallIdx),
+                Reference(referenceProxy1, 0),
+                Reference(referenceProxy2, 0),
+                Reference(referenceProxy1, expectedCallIdx),
             )
         )
 
@@ -438,11 +438,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 1
-        val referenceMockery1 = FunMockeryStub(
+        val referenceProxy1 = FunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceMockery2 = FunMockeryStub(
+        val referenceProxy2 = FunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -470,9 +470,9 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery1, 0),
-                Reference(referenceMockery2, 0),
-                Reference(referenceMockery1, expectedCallIdx),
+                Reference(referenceProxy1, 0),
+                Reference(referenceProxy2, 0),
+                Reference(referenceProxy1, expectedCallIdx),
             )
         )
 
@@ -509,22 +509,22 @@ class VerificationSpec {
     @Test
     @JsName("fn15")
     fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
-        val handleMockery = FunMockeryStub(
+        val handleProxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
 
         val handle = VerificationHandle(
-            handleMockery.id,
+            handleProxy.id,
             listOf(1)
         )
 
         val verifier = VerifierStub(
-            listOf(Reference(referenceMockery, 0))
+            listOf(Reference(referenceProxy, 0))
         )
 
         // Then
@@ -537,7 +537,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Last referred invocation of ${handleMockery.id} was not found."
+        error.message mustBe "Last referred invocation of ${handleProxy.id} was not found."
     }
 
     @Test
@@ -546,7 +546,7 @@ class VerificationSpec {
         // Given
         val name: String = fixture.fixture()
         val expectedCallIdx = 0
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -557,7 +557,7 @@ class VerificationSpec {
         )
 
         val verifier = VerifierStub(
-            listOf(Reference(referenceMockery, expectedCallIdx))
+            listOf(Reference(referenceProxy, expectedCallIdx))
         )
 
         // When
@@ -575,7 +575,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 1
         val expectedCallIdx2 = 0
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -592,8 +592,8 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, expectedCallIdx1),
-                Reference(referenceMockery, expectedCallIdx2)
+                Reference(referenceProxy, expectedCallIdx1),
+                Reference(referenceProxy, expectedCallIdx2)
             )
         )
 
@@ -618,7 +618,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 0
         val expectedCallIdx2 = 1
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -635,8 +635,8 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, expectedCallIdx1),
-                Reference(referenceMockery, expectedCallIdx2)
+                Reference(referenceProxy, expectedCallIdx1),
+                Reference(referenceProxy, expectedCallIdx2)
             )
         )
 
@@ -657,7 +657,7 @@ class VerificationSpec {
         val expectedCallIdx1 = 2
         val expectedCallIdx2 = 3
 
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -681,10 +681,10 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, 0),
-                Reference(referenceMockery, 1),
-                Reference(referenceMockery, expectedCallIdx1),
-                Reference(referenceMockery, expectedCallIdx2)
+                Reference(referenceProxy, 0),
+                Reference(referenceProxy, 1),
+                Reference(referenceProxy, expectedCallIdx1),
+                Reference(referenceProxy, expectedCallIdx2)
             )
         )
 
@@ -704,7 +704,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 3
         val expectedCallIdx2 = 2
-        val referenceMockery = FunMockeryStub(
+        val referenceProxy = FunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -725,8 +725,8 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery, expectedCallIdx1),
-                Reference(referenceMockery, expectedCallIdx2)
+                Reference(referenceProxy, expectedCallIdx1),
+                Reference(referenceProxy, expectedCallIdx2)
             )
         )
 
@@ -751,11 +751,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceMockery1 = FunMockeryStub(
+        val referenceProxy1 = FunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceMockery2 = FunMockeryStub(
+        val referenceProxy2 = FunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -783,9 +783,9 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery1, 0),
-                Reference(referenceMockery2, 0),
-                Reference(referenceMockery1, expectedCallIdx),
+                Reference(referenceProxy1, 0),
+                Reference(referenceProxy2, 0),
+                Reference(referenceProxy1, expectedCallIdx),
             )
         )
 
@@ -806,11 +806,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceMockery1 = FunMockeryStub(
+        val referenceProxy1 = FunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceMockery2 = FunMockeryStub(
+        val referenceProxy2 = FunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -838,9 +838,9 @@ class VerificationSpec {
 
         val verifier = VerifierStub(
             listOf(
-                Reference(referenceMockery1, 0),
-                Reference(referenceMockery2, 0),
-                Reference(referenceMockery1, expectedCallIdx),
+                Reference(referenceProxy1, 0),
+                Reference(referenceProxy2, 0),
+                Reference(referenceProxy1, expectedCallIdx),
             )
         )
 

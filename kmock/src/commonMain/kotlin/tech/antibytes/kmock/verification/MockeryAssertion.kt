@@ -7,9 +7,9 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.FunMockery
+import tech.antibytes.kmock.KMockContract.FunProxy
 
-fun FunMockery<*, *>.assertHasBeenCalled(
+fun FunProxy<*, *>.assertHasBeenCalled(
     exactly: Int,
 ) {
     verify(exactly = exactly) {
@@ -17,7 +17,7 @@ fun FunMockery<*, *>.assertHasBeenCalled(
     }
 }
 
-fun FunMockery<*, *>.assertHasBeenCalledWith(
+fun FunProxy<*, *>.assertHasBeenCalledWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
@@ -26,7 +26,7 @@ fun FunMockery<*, *>.assertHasBeenCalledWith(
     }
 }
 
-fun FunMockery<*, *>.assertHasBeenCalledStrictlyWith(
+fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
@@ -35,25 +35,25 @@ fun FunMockery<*, *>.assertHasBeenCalledStrictlyWith(
     }
 }
 
-fun FunMockery<*, *>.assertHasNotBeenCalled() {
+fun FunProxy<*, *>.assertHasNotBeenCalled() {
     verify(exactly = 0) {
         this.hasBeenCalledWith()
     }
 }
 
-fun FunMockery<*, *>.assertHasNotBeenCalledWith(vararg illegal: Any?) {
+fun FunProxy<*, *>.assertHasNotBeenCalledWith(vararg illegal: Any?) {
     verify(exactly = 0) {
         this.hasBeenCalledWith(*illegal)
     }
 }
 
 /**
- * Assertion call for a FunMockery
+ * Assertion call for a FunProxy
  * Fails if a given argument is referenced in a call
  * @param arguments variable amount of nullable Any typed argument
  * @throws AssertionError if a call contains a at least one given argument.
  */
-fun FunMockery<*, *>.assertHadBeenCalledWithout(
+fun FunProxy<*, *>.assertHadBeenCalledWithout(
     vararg arguments: Any?
 ) {
     verify(atMost = 100) {
@@ -61,14 +61,14 @@ fun FunMockery<*, *>.assertHadBeenCalledWithout(
     }
 }
 
-fun KMockContract.PropertyMockery<*>.assertWasGotten(exactly: Int) {
+fun KMockContract.PropertyProxy<*>.assertWasGotten(exactly: Int) {
     verify(exactly = exactly) { this.wasGotten() }
 }
 
-fun KMockContract.PropertyMockery<*>.assertWasSet(exactly: Int) {
+fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
     verify(exactly = exactly) { this.wasSet() }
 }
 
-fun KMockContract.PropertyMockery<*>.assertWasSetTo(exactly: Int, value: Any?) {
+fun KMockContract.PropertyProxy<*>.assertWasSetTo(exactly: Int, value: Any?) {
     verify(exactly = exactly) { this.wasSetTo(value) }
 }

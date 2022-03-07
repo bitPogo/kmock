@@ -10,12 +10,12 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.error.MockError
 
-class PropertyMockeryStub(
+class PropertyProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> GetOrSet)? = null,
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null
-) : KMockContract.PropertyMockery<Any> {
+) : KMockContract.PropertyProxy<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {
             throw MockError.MissingStub("Missing sideeffect getArgumentsForCall")
