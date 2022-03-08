@@ -46,6 +46,13 @@ internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
         return this
     }
 
+    override fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChain<ReturnValue, SideEffect> {
+        onAdd.value.invoke()
+        resolveSideEffect().addAll(sideEffect)
+
+        return this
+    }
+
     override fun clear() {
         resolveSideEffect().clear()
     }

@@ -73,6 +73,13 @@ interface KMockContract {
          * @return SideEffectChainBuilder the current builder.
          */
         fun add(sideEffect: SideEffect): SideEffectChainBuilder<ReturnValue, SideEffect>
+
+        /**
+         * Adds a multiple SideEffects to chain.
+         * @param sideEffect the given SideEffect.
+         * @return SideEffectChainBuilder the current builder.
+         */
+        fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**
