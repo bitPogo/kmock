@@ -38,40 +38,34 @@ internal class SyncFunctionOverloadMock(
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithIntAny", spyOn = if (spyOn != null)
     { { fuzz, ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
         = SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithAnyInt", spyOn = if (spyOn != null)
     { { fuzz, ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> = SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithAnyString", spyOn = if
                                                                                                    (spyOn != null) { { fuzz, ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
     kotlin.Any> = SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithStringAny", spyOn = if
                                                                                                    (spyOn != null) { { fuzz, ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithStringGeneratorTestAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
         generatorTest.Abc) -> kotlin.Any> =
         SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithStringGeneratorTestAbc", spyOn = if
                                                                                                       (spyOn != null) { { fuzz, ozz ->
-            foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                          (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+            foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
         SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithFunction1", spyOn = if (spyOn !=
             null) { { fuzz ->
-            foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+            foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (Any?) -> kotlin.Unit> =
         SyncFunProxy("generatorTest.SyncFunctionOverload#_fooWithAny", spyOn = if (spyOn != null) { {

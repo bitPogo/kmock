@@ -11,6 +11,7 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -28,6 +29,12 @@ internal class KMockFunctionGenerator(
     private val utils: ProcessorContract.FunctionUtils,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
+    private data class ReturnType(
+        val actualType: TypeName,
+        val referenceType: TypeName,
+        val isMultiBound: Boolean
+    )
+
     private fun buildFunction(
         ksFunctionName: String,
         generics: Map<String, List<KSTypeReference>>?,
@@ -35,7 +42,7 @@ internal class KMockFunctionGenerator(
         isSuspending: Boolean,
         parameterNames: List<String>,
         parameterTypes: List<TypeName>,
-        returnType: TypeName,
+        returnType: ReturnType,
         ProxyName: String
     ): FunSpec {
         val function = FunSpec
@@ -57,8 +64,20 @@ internal class KMockFunctionGenerator(
             )
         }
 
-        function.returns(returnType)
-        function.addCode("return $ProxyName.invoke(${parameterNames.joinToString(", ")})")
+        function.returns(returnType.referenceType)
+
+        val cast = if (returnType.actualType != returnType.referenceType) {
+            function.addAnnotation(
+                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+            )
+            " as ${returnType.referenceType}"
+        } else {
+            ""
+        }
+
+        function.addCode(
+            "return $ProxyName.invoke(${parameterNames.joinToString(", ")})$cast"
+        )
 
         return function.build()
     }
@@ -67,8 +86,9 @@ internal class KMockFunctionGenerator(
         functionName: String,
         parameter: String,
         boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
+        returnType: ReturnType
     ): String {
-        var isMultiBoundary = false
+        var isMultiBoundary = returnType.isMultiBound
 
         boundaries.values.forEach { types ->
             if (types is List) {
@@ -86,14 +106,15 @@ internal class KMockFunctionGenerator(
     private fun buildFunctionSpyInvocation(
         functionName: String,
         parameterNames: List<String>,
-        boundaries: Map<TypeVariableName, List<KSTypeReference>?>
+        boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
+        returnType: ReturnType
     ): String {
         val parameter = parameterNames.joinToString(", ")
 
         return if (parameter.isEmpty()) {
-            "{ $functionName() }"
+            "{ ${guardMultiBoundaries(functionName, "", boundaries, returnType)} }"
         } else {
-            "{ $parameter ->\n${guardMultiBoundaries(functionName, parameter, boundaries)} }"
+            "{ $parameter ->\n${guardMultiBoundaries(functionName, parameter, boundaries, returnType)} }"
         }
     }
 
@@ -105,6 +126,7 @@ internal class KMockFunctionGenerator(
         functionName: String,
         parameterNames: List<String>,
         boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
+        returnType: ReturnType,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec.Builder {
         return propertyMock.initializer(
@@ -115,10 +137,14 @@ internal class KMockFunctionGenerator(
             buildFunctionSpyInvocation(
                 functionName,
                 parameterNames,
-                boundaries
+                boundaries,
+                returnType
             )
             } } else { null }",
-            relaxerGenerator.buildRelaxers(relaxer, true)
+            relaxerGenerator.buildRelaxers(
+                relaxer,
+                returnType.actualType.toString() == "kotlin.Unit"
+            )
         )
     }
 
@@ -128,15 +154,17 @@ internal class KMockFunctionGenerator(
         ProxyName: String,
         parameterNames: List<String>,
         parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: TypeName,
+        returnType: ReturnType,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec {
-        val lambda = TypeVariableName("(${parameterTypes.keys.joinToString(", ")}) -> $returnType")
+        val lambda = TypeVariableName(
+            "(${parameterTypes.keys.joinToString(", ")}) -> ${returnType.actualType}"
+        )
         val property = PropertySpec.builder(
             ProxyName,
             KMockContract.SyncFunProxy::class
                 .asClassName()
-                .parameterizedBy(returnType, lambda),
+                .parameterizedBy(returnType.actualType, lambda),
         )
 
         return determineFunctionInitializer(
@@ -147,6 +175,7 @@ internal class KMockFunctionGenerator(
             functionName,
             parameterNames,
             parameterTypes,
+            returnType,
             relaxer
         ).build()
     }
@@ -157,15 +186,17 @@ internal class KMockFunctionGenerator(
         ProxyName: String,
         parameterNames: List<String>,
         parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: TypeName,
+        returnType: ReturnType,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec {
-        val lambda = TypeVariableName("suspend (${parameterTypes.keys.joinToString(", ")}) -> $returnType")
+        val lambda = TypeVariableName(
+            "suspend (${parameterTypes.keys.joinToString(", ")}) -> ${returnType.actualType}"
+        )
         val property = PropertySpec.builder(
             ProxyName,
             KMockContract.AsyncFunProxy::class
                 .asClassName()
-                .parameterizedBy(returnType, lambda),
+                .parameterizedBy(returnType.actualType, lambda),
         )
 
         return determineFunctionInitializer(
@@ -176,6 +207,7 @@ internal class KMockFunctionGenerator(
             functionName,
             parameterNames,
             parameterTypes,
+            returnType,
             relaxer
         ).build()
     }
@@ -318,6 +350,40 @@ internal class KMockFunctionGenerator(
         return typeMapping
     }
 
+    private fun resolveGenericReturnValue(
+        returnType: TypeName,
+        generics: Map<String, List<KSTypeReference>>,
+        parameterTypeResolver: TypeParameterResolver
+    ): Pair<TypeName, Boolean> {
+        val key = returnType.toString()
+        return when {
+            !generics.containsKey(key) -> Pair(returnType, false)
+            generics[key]!!.isEmpty() -> Pair(TypeVariableName("Any?"), false)
+            generics[key]!!.size > 1 -> Pair(TypeVariableName("Any${isNullable(generics[key]!!)}"), true)
+            else -> Pair(generics[key]!!.first().toTypeName(parameterTypeResolver), false)
+        }
+    }
+
+    private fun resolveReturnValue(
+        returnValue: KSTypeReference,
+        generics: Map<String, List<KSTypeReference>>?,
+        parameterTypeResolver: TypeParameterResolver
+    ): ReturnType {
+        val typeName = returnValue.toTypeName(parameterTypeResolver)
+
+        return if (generics == null) {
+            ReturnType(typeName, typeName, false)
+        } else {
+            val (actualType, multiBound) = resolveGenericReturnValue(
+                typeName,
+                generics,
+                parameterTypeResolver
+            )
+
+            ReturnType(actualType, typeName, multiBound)
+        }
+    }
+    
     override fun buildFunctionBundle(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
@@ -331,8 +397,8 @@ internal class KMockFunctionGenerator(
             .toTypeParameterResolver(typeResolver)
         val generics = utils.resolveGeneric(ksFunction, parameterTypeResolver)
         val parameter = determineParameter(ksFunction.parameters, parameterTypeResolver)
-        val ProxyParameter = determineProxyParameter(parameter.second, generics, parameterTypeResolver)
-        val ProxyName = selectFunProxyName(
+        val proxyParameter = determineProxyParameter(parameter.second, generics, parameterTypeResolver)
+        val proxyName = selectFunProxyName(
             functionName,
             generics ?: emptyMap(),
             parameterTypeResolver,
@@ -340,7 +406,12 @@ internal class KMockFunctionGenerator(
             functionNameCollector
         )
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
-        val returnType = ksFunction.returnType!!.toTypeName(parameterTypeResolver)
+
+        val returnType = resolveReturnValue(
+            ksFunction.returnType!!,
+            generics,
+            parameterTypeResolver
+        )
 
         val function = buildFunction(
             ksFunction.simpleName.asString(),
@@ -350,16 +421,16 @@ internal class KMockFunctionGenerator(
             parameter.first,
             parameter.second,
             returnType,
-            ProxyName
+            proxyName
         )
 
         val Proxy = if (isSuspending) {
             buildASyncFunProxy(
                 qualifier,
                 functionName,
-                ProxyName,
+                proxyName,
                 parameter.first,
-                ProxyParameter,
+                proxyParameter,
                 returnType,
                 relaxer
             )
@@ -367,15 +438,15 @@ internal class KMockFunctionGenerator(
             buildSyncFunProxy(
                 qualifier,
                 functionName,
-                ProxyName,
+                proxyName,
                 parameter.first,
-                ProxyParameter,
+                proxyParameter,
                 returnType,
                 relaxer
             )
         }
 
-        functionNameCollector.add(ProxyName)
+        functionNameCollector.add(proxyName)
         return Pair(Proxy, function)
     }
 }
