@@ -31,7 +31,7 @@ class AsyncFunProxyUnfrozenSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils FunProxy`() {
-        AsyncFunProxy<Unit, suspend () -> Unit>(fixture.fixture()) fulfils KMockContract.FunProxy::class
+        AsyncFunProxy<Unit, suspend () -> Unit>(fixture.fixture(), freeze = false) fulfils KMockContract.FunProxy::class
     }
 
     @Test
@@ -66,7 +66,7 @@ class AsyncFunProxyUnfrozenSpec {
     @JsName("fn3")
     fun `Given a returnValue is set with nullable value it is retrievable`() = runBlockingTest {
         // Given
-        val proxy = AsyncFunProxy<Any?, suspend () -> Any?>(fixture.fixture())
+        val proxy = AsyncFunProxy<Any?, suspend () -> Any?>(fixture.fixture(), freeze = false)
         val value: Any? = null
 
         // When
@@ -123,7 +123,7 @@ class AsyncFunProxyUnfrozenSpec {
     fun `Given invoke is called it fails if no ReturnValue Provider is set`() = runBlockingTest {
         // Given
         val name: String = fixture.fixture()
-        val proxy = AsyncFunProxy<Any, suspend () -> Any>(name)
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(name, freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
@@ -172,7 +172,8 @@ class AsyncFunProxyUnfrozenSpec {
                 capturedId.set(givenId)
 
                 value
-            }
+            },
+            freeze = false
         )
 
         // When
@@ -590,7 +591,8 @@ class AsyncFunProxyUnfrozenSpec {
 
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun0
+            spyOn = implementation::fun0,
+            freeze = false
         )
 
         implementation.fun0 = { valueImpl }
