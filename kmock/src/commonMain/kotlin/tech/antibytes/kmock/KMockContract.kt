@@ -8,7 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.error.MockError
 
-interface KMockContract {
+object KMockContract {
     /**
      * Base Proxy definition
      * @param ReturnValue the return value of the Proxy.
@@ -61,6 +61,51 @@ interface KMockContract {
     }
 
     /**
+     * Builder for chained SideEffects.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @author Matthias Geisler
+     */
+    interface SideEffectChainBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
+        /**
+         * Adds a SideEffect to chain.
+         * @param sideEffect the given SideEffect.
+         * @return SideEffectChainBuilder the current builder.
+         */
+        fun add(sideEffect: SideEffect): SideEffectChainBuilder<ReturnValue, SideEffect>
+
+        /**
+         * Adds a multiple SideEffects to chain.
+         * @param sideEffect the given SideEffect.
+         * @return SideEffectChainBuilder the current builder.
+         */
+        fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChainBuilder<ReturnValue, SideEffect>
+    }
+
+    /**
+     * Container for chained SideEffects. If the given Container has
+     * a smaller size than the actual invocation the last value of is repeatably used.
+     * It acts in a FIFO manner.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @see SideEffectChainBuilder
+     * @author Matthias Geisler
+     */
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+        /**
+         * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
+         * @return SideEffect a previous stored SideEffect.
+         * @throws IllegalStateException if no SideEffect was stored previously.
+         */
+        fun next(): SideEffect
+
+        /**
+         * Clears the chain
+         */
+        fun clear()
+    }
+
+    /**
      * Shared Properties of synchronous and asynchronous functions Proxies.
      * @param ReturnValue the return value of the Function.
      * @param SideEffect the function signature.
@@ -93,6 +138,11 @@ interface KMockContract {
          * @throws NullPointerException on get if no value was set.
          */
         var sideEffect: SideEffect
+
+        /**
+         * SideEffectChainBuilder to chain multiple SideEffects.
+         */
+        val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**
@@ -667,15 +717,13 @@ interface KMockContract {
         fun clear()
     }
 
-    companion object {
-        const val NOT_CALLED = "Call not found."
-        const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-        const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-        const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
-        const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
-        const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-        const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
-        const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
-        const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
-    }
+    const val NOT_CALLED = "Call not found."
+    const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
+    const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
+    const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
+    const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
+    const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
+    const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
+    const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
+    const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
 }

@@ -37,22 +37,22 @@ class SyncFunProxyInvocationsSpec {
     @JsName("fn1")
     fun `Given invoke is called it calls the given SideEffect with 0 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
         val expected: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = {
+            proxy.sideEffect = {
                 expected
             }
         }
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
-            val actual = Proxy.invoke()
+            val actual = proxy.invoke()
 
             // Then
             actual mustBe expected
-            Proxy.getArgumentsForCall(0) mustBe null
+            proxy.getArgumentsForCall(0) mustBe null
         }
 
         return resolveMultiBlockCalls()
@@ -60,11 +60,36 @@ class SyncFunProxyInvocationsSpec {
 
     @Test
     @JsName("fn2")
+    fun `Given invoke is called it calls the given SideEffectChain with 0 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val expected: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add {
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            val actual = proxy.invoke()
+
+            // Then
+            actual mustBe expected
+            proxy.getArgumentsForCall(0) mustBe null
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn3")
     fun `Given invoke is called it calls the given Spy with 0 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val expected: Any = fixture.fixture()
         val implementation = Implementation<Any>()
-        val Proxy = SyncFunProxy<Any, () -> Any>(
+        val proxy = tech.antibytes.kmock.proxy.SyncFunProxy<kotlin.Any, () -> kotlin.Any>(
             fixture.fixture(),
             spyOn = implementation::fun0
         )
@@ -77,21 +102,21 @@ class SyncFunProxyInvocationsSpec {
         }
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
-            val actual = Proxy.invoke()
+            val actual = proxy.invoke()
 
             // Then
             actual mustBe expected
-            Proxy.getArgumentsForCall(0) mustBe null
+            proxy.getArgumentsForCall(0) mustBe null
         }
 
         return resolveMultiBlockCalls()
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn4")
     fun `Given invoke is called it calls the given SideEffect with 1 Argument and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
 
@@ -99,7 +124,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0 ->
+            proxy.sideEffect = { givenArg0 ->
                 actualArgument0.set(givenArg0)
 
                 expected
@@ -108,13 +133,13 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0)
+            val actual = proxy.invoke(argument0)
 
             // Then
             actual mustBe expected
             actualArgument0.get() mustBe argument0
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments?.size mustBe 1
             arguments!![0] mustBe argument0
         }
@@ -123,14 +148,49 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn4")
+    @JsName("fn5")
+    fun `Given invoke is called it calls the given SideEffectChain with 1 Argument and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0 ->
+                actualArgument0.set(givenArg0)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments?.size mustBe 1
+            arguments!![0] mustBe argument0
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn6")
     fun `Given invoke is called it calls the given Spy with 1 Argument and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
         val implementation = Implementation<Any>()
 
-        val Proxy = SyncFunProxy<Any, (String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun1
         )
@@ -148,13 +208,13 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0)
+            val actual = proxy.invoke(argument0)
 
             // Then
             actual mustBe expected
             actualArgument0.get() mustBe argument0
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments?.size mustBe 1
             arguments!![0] mustBe argument0
         }
@@ -163,10 +223,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn5")
+    @JsName("fn7")
     fun `Given invoke is called it calls the given SideEffect with 2 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -176,7 +236,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1 ->
+            proxy.sideEffect = { givenArg0, givenArg1 ->
 
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
@@ -187,14 +247,14 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1)
+            val actual = proxy.invoke(argument0, argument1)
 
             // Then
             actual mustBe expected
             actualArgument0.get() mustBe argument0
             actualArgument1.get() mustBe argument1
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 2
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -204,7 +264,48 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn8")
+    fun `Given invoke is called it calls the given SideEffectChain with 2 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1 ->
+
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 2
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn9")
     fun `Given invoke is called it calls the given Spy with 2 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -212,7 +313,7 @@ class SyncFunProxyInvocationsSpec {
         val argument1: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
 
-        val Proxy = SyncFunProxy<Any, (String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun2
         )
@@ -233,14 +334,14 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1)
+            val actual = proxy.invoke(argument0, argument1)
 
             // Then
             actual mustBe expected
             actualArgument0.get() mustBe argument0
             actualArgument1.get() mustBe argument1
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 2
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -250,10 +351,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn10")
     fun `Given invoke is called it calls the given SideEffect with 3 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -265,7 +366,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -276,7 +377,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2)
+            val actual = proxy.invoke(argument0, argument1, argument2)
 
             // Then
             actual mustBe expected
@@ -284,7 +385,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument1.get() mustBe argument1
             actualArgument2.get() mustBe argument2
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 3
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -295,7 +396,52 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn11")
+    fun `Given invoke is called it calls the given SideEffectChain with 3 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1, argument2)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 3
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn12")
     fun `Given invoke is called it calls the given Spy with 3 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -308,7 +454,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument1 = AtomicReference<Int?>(null)
         val actualArgument2 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun3
         )
@@ -326,7 +472,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2)
+            val actual = proxy.invoke(argument0, argument1, argument2)
 
             // Then
             actual mustBe expected
@@ -334,7 +480,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument1.get() mustBe argument1
             actualArgument2.get() mustBe argument2
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 3
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -345,10 +491,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn13")
     fun `Given invoke is called it calls the given SideEffect with 4 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -362,7 +508,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -374,7 +520,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3)
 
             // Then
             actual mustBe expected
@@ -383,7 +529,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument2.get() mustBe argument2
             actualArgument3.get() mustBe argument3
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 4
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -395,7 +541,57 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn14")
+    fun `Given invoke is called it calls the given SideEffectChain with 4 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 4
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn15")
     fun `Given invoke is called it calls the given Spy with 4 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -406,7 +602,7 @@ class SyncFunProxyInvocationsSpec {
         val argument3: Int = fixture.fixture()
         val expected: Any = fixture.fixture()
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun4
         )
@@ -430,7 +626,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3)
 
             // Then
             actual mustBe expected
@@ -439,7 +635,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument2.get() mustBe argument2
             actualArgument3.get() mustBe argument3
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 4
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -451,10 +647,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn16")
     fun `Given invoke is called it calls the given SideEffect with 5 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -470,7 +666,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument4 = AtomicReference<String?>(null)
 
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -483,7 +679,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTest {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4)
             actual mustBe expected
 
             // Then
@@ -493,7 +689,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument3.get() mustBe argument3
             actualArgument4.get() mustBe argument4
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 5
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -506,7 +702,62 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn17")
+    fun `Given invoke is called it calls the given SideEffectChain with 5 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+
+                expected
+            }
+        }
+
+        runBlockingTest {
+            // When
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4)
+            actual mustBe expected
+
+            // Then
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 5
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn18")
     fun `Given invoke is called it calls the given Spy with 5 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -525,7 +776,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument3 = AtomicReference<Int?>(null)
         val actualArgument4 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun5
         )
@@ -544,7 +795,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTest {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4)
             actual mustBe expected
 
             // Then
@@ -554,7 +805,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument3.get() mustBe argument3
             actualArgument4.get() mustBe argument4
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 5
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -567,10 +818,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn19")
     fun `Given invoke is called it calls the given SideEffect with 6 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -589,7 +840,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -603,7 +854,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
 
             // Then
             actual mustBe expected
@@ -614,7 +865,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument4.get() mustBe argument4
             actualArgument5.get() mustBe argument5
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 6
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -628,7 +879,68 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn20")
+    fun `Given invoke is called it calls the given SideEffectChain with 6 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 6
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn21")
     fun `Given invoke is called it calls the given Spy with 6 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -649,7 +961,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument4 = AtomicReference<String?>(null)
         val actualArgument5 = AtomicReference<Int?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun6
         )
@@ -670,7 +982,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
 
             // Then
             actual mustBe expected
@@ -681,7 +993,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument4.get() mustBe argument4
             actualArgument5.get() mustBe argument5
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 6
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -695,10 +1007,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn22")
     fun `Given invoke is called it calls the given SideEffect with 7 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -719,7 +1031,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestWithTimeoutInScope(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -734,7 +1046,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
 
             // Then
             actual mustBe expected
@@ -746,7 +1058,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument5.get() mustBe argument5
             actualArgument6.get() mustBe argument6
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 7
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -761,7 +1073,73 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn23")
+    fun `Given invoke is called it calls the given SideEffectChain with 7 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestWithTimeoutInScope(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 7
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn24")
     fun `Given invoke is called it calls the given Spy with 7 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -784,7 +1162,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument5 = AtomicReference<Int?>(null)
         val actualArgument6 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun7
         )
@@ -806,7 +1184,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
+            val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
 
             // Then
             actual mustBe expected
@@ -818,7 +1196,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument5.get() mustBe argument5
             actualArgument6.get() mustBe argument6
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 7
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -833,10 +1211,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn25")
     fun `Given invoke is called it calls the given SideEffect with 8 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -859,7 +1237,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -875,7 +1253,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -897,7 +1275,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument6.get() mustBe argument6
             actualArgument7.get() mustBe argument7
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 8
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -913,7 +1291,87 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn26")
+    fun `Given invoke is called it calls the given SideEffectChain with 8 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 8
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn27")
     fun `Given invoke is called it calls the given Spy with 8 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -938,7 +1396,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument6 = AtomicReference<String?>(null)
         val actualArgument7 = AtomicReference<Int?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun8
         )
@@ -961,7 +1419,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -983,7 +1441,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument6.get() mustBe argument6
             actualArgument7.get() mustBe argument7
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 8
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -999,10 +1457,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn28")
     fun `Given invoke is called it calls the given SideEffect with 9 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
         val argument2: String = fixture.fixture()
@@ -1027,7 +1485,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -1044,7 +1502,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1068,7 +1526,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument7.get() mustBe argument7
             actualArgument8.get() mustBe argument8
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 9
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1085,7 +1543,93 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn29")
+    fun `Given invoke is called it calls the given SideEffectChain with 9 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+        val argument8: String = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+        val actualArgument8 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+                actualArgument8.set(givenArg8)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7,
+                argument8
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+            actualArgument8.get() mustBe argument8
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 9
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+            arguments[8] mustBe argument8
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn30")
     fun `Given invoke is called it calls the given Spy with 9 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -1112,7 +1656,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument7 = AtomicReference<Int?>(null)
         val actualArgument8 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun9
         )
@@ -1136,7 +1680,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1160,7 +1704,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument7.get() mustBe argument7
             actualArgument8.get() mustBe argument8
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 9
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1177,10 +1721,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn31")
     fun `Given invoke is called it calls the given SideEffect with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1209,7 +1753,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -1227,7 +1771,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1253,7 +1797,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument8.get() mustBe argument8
             actualArgument9.get() mustBe argument9
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 10
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1271,7 +1815,101 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn32")
+    fun `Given invoke is called it calls the given SideEffectChain with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+            fixture.fixture()
+        )
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+        val argument8: String = fixture.fixture()
+        val argument9: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+        val actualArgument8 = AtomicReference<String?>(null)
+        val actualArgument9 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+                actualArgument8.set(givenArg8)
+                actualArgument9.set(givenArg9)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7,
+                argument8,
+                argument9
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+            actualArgument8.get() mustBe argument8
+            actualArgument9.get() mustBe argument9
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 10
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+            arguments[8] mustBe argument8
+            arguments[9] mustBe argument9
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn33")
     fun `Given invoke is called it calls the given Spy with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -1300,7 +1938,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument8 = AtomicReference<String?>(null)
         val actualArgument9 = AtomicReference<Int?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun10
         )
@@ -1325,7 +1963,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1351,7 +1989,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument8.get() mustBe argument8
             actualArgument9.get() mustBe argument9
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 10
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1369,10 +2007,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn34")
     fun `Given invoke is called it calls the given SideEffect with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1403,7 +2041,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -1423,7 +2061,7 @@ class SyncFunProxyInvocationsSpec {
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
 
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1451,7 +2089,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument9.get() mustBe argument9
             actualArgument10.get() mustBe argument10
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 11
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1470,7 +2108,108 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn35")
+    fun `Given invoke is called it calls the given SideEffectChain with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+            fixture.fixture()
+        )
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+        val argument8: String = fixture.fixture()
+        val argument9: Int = fixture.fixture()
+        val argument10: String = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+        val actualArgument8 = AtomicReference<String?>(null)
+        val actualArgument9 = AtomicReference<Int?>(null)
+        val actualArgument10 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+                actualArgument8.set(givenArg8)
+                actualArgument9.set(givenArg9)
+                actualArgument10.set(givenArg10)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7,
+                argument8,
+                argument9,
+                argument10
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+            actualArgument8.get() mustBe argument8
+            actualArgument9.get() mustBe argument9
+            actualArgument10.get() mustBe argument10
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 11
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+            arguments[8] mustBe argument8
+            arguments[9] mustBe argument9
+            arguments[10] mustBe argument10
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn36")
     fun `Given invoke is called it calls the given Spy with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -1501,7 +2240,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument9 = AtomicReference<Int?>(null)
         val actualArgument10 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun11
         )
@@ -1528,7 +2267,7 @@ class SyncFunProxyInvocationsSpec {
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
 
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1556,7 +2295,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument9.get() mustBe argument9
             actualArgument10.get() mustBe argument10
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 11
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1575,10 +2314,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn25")
+    @JsName("fn37")
     fun `Given invoke is called it calls the given SideEffect with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1611,7 +2350,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -1631,7 +2370,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1661,7 +2400,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument10.get() mustBe argument10
             actualArgument11.get() mustBe argument11
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 12
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1681,7 +2420,113 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn38")
+    fun `Given invoke is called it calls the given SideEffectChain with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+            fixture.fixture()
+        )
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+        val argument8: String = fixture.fixture()
+        val argument9: Int = fixture.fixture()
+        val argument10: String = fixture.fixture()
+        val argument11: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+        val actualArgument8 = AtomicReference<String?>(null)
+        val actualArgument9 = AtomicReference<Int?>(null)
+        val actualArgument10 = AtomicReference<String?>(null)
+        val actualArgument11 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+                actualArgument8.set(givenArg8)
+                actualArgument9.set(givenArg9)
+                actualArgument10.set(givenArg10)
+                actualArgument11.set(givenArg11)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7,
+                argument8,
+                argument9,
+                argument10,
+                argument11
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+            actualArgument8.get() mustBe argument8
+            actualArgument9.get() mustBe argument9
+            actualArgument10.get() mustBe argument10
+            actualArgument11.get() mustBe argument11
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 12
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+            arguments[8] mustBe argument8
+            arguments[9] mustBe argument9
+            arguments[10] mustBe argument10
+            arguments[11] mustBe argument11
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn39")
     fun `Given invoke is called it calls the given Spy with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -1714,7 +2559,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument10 = AtomicReference<String?>(null)
         val actualArgument11 = AtomicReference<Int?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun12
         )
@@ -1741,7 +2586,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1771,7 +2616,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument10.get() mustBe argument10
             actualArgument11.get() mustBe argument11
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 12
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1791,10 +2636,10 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn27")
+    @JsName("fn40")
     fun `Given invoke is called it calls the given SideEffect with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture()
         )
         val argument0: String = fixture.fixture()
@@ -1829,7 +2674,7 @@ class SyncFunProxyInvocationsSpec {
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            Proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11, givenArg12 ->
+            proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11, givenArg12 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
                 actualArgument2.set(givenArg2)
@@ -1850,7 +2695,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1882,7 +2727,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument11.get() mustBe argument11
             actualArgument12.get() mustBe argument12
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 13
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -1903,7 +2748,119 @@ class SyncFunProxyInvocationsSpec {
     }
 
     @Test
-    @JsName("fn28")
+    @JsName("fn41")
+    fun `Given invoke is called it calls the given SideEffectChain with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+            fixture.fixture()
+        )
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+        val argument2: String = fixture.fixture()
+        val argument3: Int = fixture.fixture()
+        val argument4: String = fixture.fixture()
+        val argument5: Int = fixture.fixture()
+        val argument6: String = fixture.fixture()
+        val argument7: Int = fixture.fixture()
+        val argument8: String = fixture.fixture()
+        val argument9: Int = fixture.fixture()
+        val argument10: String = fixture.fixture()
+        val argument11: Int = fixture.fixture()
+        val argument12: String = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+        val actualArgument4 = AtomicReference<String?>(null)
+        val actualArgument5 = AtomicReference<Int?>(null)
+        val actualArgument6 = AtomicReference<String?>(null)
+        val actualArgument7 = AtomicReference<Int?>(null)
+        val actualArgument8 = AtomicReference<String?>(null)
+        val actualArgument9 = AtomicReference<Int?>(null)
+        val actualArgument10 = AtomicReference<String?>(null)
+        val actualArgument11 = AtomicReference<Int?>(null)
+        val actualArgument12 = AtomicReference<String?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6, givenArg7, givenArg8, givenArg9, givenArg10, givenArg11, givenArg12 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+                actualArgument2.set(givenArg2)
+                actualArgument3.set(givenArg3)
+                actualArgument4.set(givenArg4)
+                actualArgument5.set(givenArg5)
+                actualArgument6.set(givenArg6)
+                actualArgument7.set(givenArg7)
+                actualArgument8.set(givenArg8)
+                actualArgument9.set(givenArg9)
+                actualArgument10.set(givenArg10)
+                actualArgument11.set(givenArg11)
+                actualArgument12.set(givenArg12)
+
+                expected
+            }
+        }
+
+        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(
+                argument0,
+                argument1,
+                argument2,
+                argument3,
+                argument4,
+                argument5,
+                argument6,
+                argument7,
+                argument8,
+                argument9,
+                argument10,
+                argument11,
+                argument12
+            )
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+            actualArgument2.get() mustBe argument2
+            actualArgument3.get() mustBe argument3
+            actualArgument4.get() mustBe argument4
+            actualArgument5.get() mustBe argument5
+            actualArgument6.get() mustBe argument6
+            actualArgument7.get() mustBe argument7
+            actualArgument8.get() mustBe argument8
+            actualArgument9.get() mustBe argument9
+            actualArgument10.get() mustBe argument10
+            actualArgument11.get() mustBe argument11
+            actualArgument12.get() mustBe argument12
+
+            val arguments = proxy.getArgumentsForCall(0)
+            arguments!!.size mustBe 13
+            arguments[0] mustBe argument0
+            arguments[1] mustBe argument1
+            arguments[2] mustBe argument2
+            arguments[3] mustBe argument3
+            arguments[4] mustBe argument4
+            arguments[5] mustBe argument5
+            arguments[6] mustBe argument6
+            arguments[7] mustBe argument7
+            arguments[8] mustBe argument8
+            arguments[9] mustBe argument9
+            arguments[10] mustBe argument10
+            arguments[11] mustBe argument11
+            arguments[12] mustBe argument12
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn42")
     fun `Given invoke is called it calls the given Spy with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -1938,7 +2895,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument11 = AtomicReference<Int?>(null)
         val actualArgument12 = AtomicReference<String?>(null)
 
-        val Proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
+        val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
             spyOn = implementation::fun13
         )
@@ -1966,7 +2923,7 @@ class SyncFunProxyInvocationsSpec {
 
         runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
             // When
-            val actual = Proxy.invoke(
+            val actual = proxy.invoke(
                 argument0,
                 argument1,
                 argument2,
@@ -1998,7 +2955,7 @@ class SyncFunProxyInvocationsSpec {
             actualArgument11.get() mustBe argument11
             actualArgument12.get() mustBe argument12
 
-            val arguments = Proxy.getArgumentsForCall(0)
+            val arguments = proxy.getArgumentsForCall(0)
             arguments!!.size mustBe 13
             arguments[0] mustBe argument0
             arguments[1] mustBe argument1
@@ -2018,7 +2975,7 @@ class SyncFunProxyInvocationsSpec {
         return resolveMultiBlockCalls()
     }
 
-    @JsName("ImplementationFunSync")
+    @JsName("ImplementationFunAsync")
     private class Implementation<T> {
         private val _fun0: AtomicRef<(() -> T)?> = atomic(null)
         private val _fun1: AtomicRef<((Any?) -> T)?> = atomic(null)

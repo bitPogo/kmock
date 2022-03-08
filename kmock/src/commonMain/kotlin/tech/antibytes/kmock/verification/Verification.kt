@@ -6,16 +6,16 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract.Companion.CALL_NOT_FOUND
-import tech.antibytes.kmock.KMockContract.Companion.MISMATCHING_CALL_IDX
-import tech.antibytes.kmock.KMockContract.Companion.MISMATCHING_FUNCTION
-import tech.antibytes.kmock.KMockContract.Companion.NOTHING_TO_STRICTLY_VERIFY
-import tech.antibytes.kmock.KMockContract.Companion.NOTHING_TO_VERIFY
-import tech.antibytes.kmock.KMockContract.Companion.NOT_CALLED
-import tech.antibytes.kmock.KMockContract.Companion.NO_MATCHING_CALL_IDX
-import tech.antibytes.kmock.KMockContract.Companion.TOO_LESS_CALLS
-import tech.antibytes.kmock.KMockContract.Companion.TOO_MANY_CALLS
+import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
+import tech.antibytes.kmock.KMockContract.MISMATCHING_CALL_IDX
+import tech.antibytes.kmock.KMockContract.MISMATCHING_FUNCTION
+import tech.antibytes.kmock.KMockContract.NOTHING_TO_STRICTLY_VERIFY
+import tech.antibytes.kmock.KMockContract.NOTHING_TO_VERIFY
+import tech.antibytes.kmock.KMockContract.NOT_CALLED
+import tech.antibytes.kmock.KMockContract.NO_MATCHING_CALL_IDX
 import tech.antibytes.kmock.KMockContract.Reference
+import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
+import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.KMockContract.Verifier

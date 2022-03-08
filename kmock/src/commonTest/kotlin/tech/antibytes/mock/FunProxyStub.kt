@@ -27,6 +27,8 @@ class FunProxyStub(
     override var sideEffect: () -> Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
+    override val sideEffects: KMockContract.SideEffectChainBuilder<Any, () -> Any>
+        get() = TODO("Not yet implemented")
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? {
         return if (getArgumentsForCall == null) {

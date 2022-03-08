@@ -30,41 +30,41 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn1")
     fun `Given a get is set it is retrievable`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        Proxy.get = value
+        proxy.get = value
 
         // Then
-        Proxy.get mustBe value
+        proxy.get mustBe value
     }
 
     @Test
     @JsName("fn2")
     fun `Given a get is set with nullable value it is retrievable`() {
         // Given
-        val Proxy = PropertyProxy<Any?>(
+        val proxy = PropertyProxy<Any?>(
             fixture.fixture(),
         )
         val value: Any? = null
 
         // When
-        Proxy.get = value
+        proxy.get = value
 
         // Then
-        Proxy.get mustBe value
+        proxy.get mustBe value
     }
 
     @Test
     @JsName("fn3")
     fun `Given a getMany is set with an emptyList it fails`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
-            Proxy.getMany = emptyList()
+            proxy.getMany = emptyList()
         }
 
         error.message mustBe "Empty Lists are not valid as value provider."
@@ -74,42 +74,42 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn4")
     fun `Given a getMany is set it is retrievable`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture()
 
         // When
-        Proxy.getMany = values
+        proxy.getMany = values
 
         // Then
-        Proxy.getMany mustBe values
+        proxy.getMany mustBe values
     }
 
     @Test
     @JsName("fn5")
     fun `Given a getSideEffect is set it is retrievable`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val sideEffect = { fixture.fixture<Any>() }
 
         // When
-        Proxy.getSideEffect = sideEffect
+        proxy.getSideEffect = sideEffect
 
         // Then
-        Proxy.getSideEffect mustBe sideEffect
+        proxy.getSideEffect mustBe sideEffect
     }
 
     @Test
     @JsName("fn6")
     fun `Given a set is set it is retrievable`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val effect: (Any) -> Unit = { }
 
         // When
-        Proxy.set = effect
+        proxy.set = effect
 
         // Then
-        Proxy.set sameAs effect
+        proxy.set sameAs effect
     }
 
     @Test
@@ -117,12 +117,12 @@ class PropertyProxyUnfrozenSpec {
     fun `Given onGet is called it fails if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val Proxy = PropertyProxy<Any>(name, freeze = false)
+        val proxy = PropertyProxy<Any>(name, freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
             // When
-            Proxy.onGet()
+            proxy.onGet()
         }
 
         error.message mustBe "Missing stub value for $name"
@@ -135,7 +135,7 @@ class PropertyProxyUnfrozenSpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val Proxy = PropertyProxy<Any>(
+        val proxy = PropertyProxy<Any>(
             name,
             relaxer = { givenId ->
                 capturedId.set(givenId)
@@ -146,7 +146,7 @@ class PropertyProxyUnfrozenSpec {
         )
 
         // When
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe value
@@ -161,7 +161,7 @@ class PropertyProxyUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         val implementation = Implementation<Any>()
-        val Proxy = PropertyProxy(
+        val proxy = PropertyProxy(
             name,
             spyOnGet = implementation::foo::get,
             freeze = false
@@ -170,7 +170,7 @@ class PropertyProxyUnfrozenSpec {
         implementation.fooProp = value
 
         // When
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe value
@@ -180,13 +180,13 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn8")
     fun `Given onGet is called it returns the Get Value`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: String = fixture.fixture()
 
         // When
-        Proxy.get = value
+        proxy.get = value
 
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe value
@@ -196,14 +196,14 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn9")
     fun `Given onGet is called it returns the GetMany Value`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<String> = fixture.listFixture()
 
         // When
-        Proxy.getMany = values
+        proxy.getMany = values
 
         values.forEach { value ->
-            val actual = Proxy.onGet()
+            val actual = proxy.onGet()
 
             // Then
             actual mustBe value
@@ -214,14 +214,14 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn10")
     fun `Given onGet is called it returns the last GetMany Value if the given List is down to one value`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 1)
 
         // When
-        Proxy.getMany = values.toList()
+        proxy.getMany = values.toList()
 
         for (x in 0 until 10) {
-            val actual = Proxy.onGet()
+            val actual = proxy.onGet()
 
             // Then
             actual mustBe values.first()
@@ -232,14 +232,14 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn11")
     fun `Given onGet is called it returns the GetSideEffect Value`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value = fixture.fixture<Any>()
         val sideEffect = { value }
 
         // When
-        Proxy.getSideEffect = sideEffect
+        proxy.getSideEffect = sideEffect
 
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe value
@@ -249,15 +249,15 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn12")
     fun `Given onGet is called it uses GetMany over Get`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
 
         // When
-        Proxy.getMany = values
-        Proxy.get = value
+        proxy.getMany = values
+        proxy.get = value
 
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe values.first()
@@ -267,16 +267,16 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn13")
     fun `Given onGet is called it uses GetSideEffect over GetMany`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
         val sideEffect = { value }
 
         // When
-        Proxy.getSideEffect = sideEffect
-        Proxy.getMany = values
+        proxy.getSideEffect = sideEffect
+        proxy.getMany = values
 
-        val actual = Proxy.onGet()
+        val actual = proxy.onGet()
 
         // Then
         actual mustBe value
@@ -286,18 +286,18 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn14")
     fun `Given onSet is called it calls the given SideEffect and delegates values`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val newValue: Any = fixture.fixture()
 
         val actualNew = AtomicReference<Any?>(null)
 
         // When
-        Proxy.set = { givenNew ->
+        proxy.set = { givenNew ->
             actualNew.set(givenNew)
         }
 
         // When
-        val actual = Proxy.onSet(newValue)
+        val actual = proxy.onSet(newValue)
 
         // Then
         actual mustBe Unit
@@ -308,15 +308,15 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn15")
     fun `Given onGet is called it sets an Arguments to capture the call`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        Proxy.getMany = values.toList()
+        proxy.getMany = values.toList()
 
-        Proxy.onGet()
+        proxy.onGet()
 
-        val actual = Proxy.getArgumentsForCall(0)
+        val actual = proxy.getArgumentsForCall(0)
 
         actual fulfils KMockContract.GetOrSet.Get::class
         actual.value mustBe null
@@ -326,13 +326,13 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn16")
     fun `Given onSet is called it sets an Arguments to capture the call`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        Proxy.onSet(value)
+        proxy.onSet(value)
 
-        val actual = Proxy.getArgumentsForCall(0)
+        val actual = proxy.getArgumentsForCall(0)
 
         actual fulfils KMockContract.GetOrSet.Set::class
         actual.value mustBe value
@@ -344,7 +344,7 @@ class PropertyProxyUnfrozenSpec {
         // Given
         val implementation = Implementation<Any>()
 
-        val Proxy = PropertyProxy(
+        val proxy = PropertyProxy(
             fixture.fixture(),
             spyOnSet = implementation::bar::set,
             freeze = false
@@ -352,7 +352,7 @@ class PropertyProxyUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         // When
-        Proxy.onSet(value)
+        proxy.onSet(value)
 
         implementation.barProp.value mustBe value
     }
@@ -380,28 +380,28 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn20")
     fun `Given onGet is called it increments the call counter`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val values: List<Any> = fixture.listFixture(size = 5)
 
         // When
-        Proxy.getMany = values
+        proxy.getMany = values
 
-        Proxy.onGet()
+        proxy.onGet()
 
-        Proxy.calls mustBe 1
+        proxy.calls mustBe 1
     }
 
     @Test
     @JsName("fn21")
     fun `Given onSet is called it increments the call counter`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
 
         // When
-        Proxy.onSet(value)
+        proxy.onSet(value)
 
-        Proxy.calls mustBe 1
+        proxy.calls mustBe 1
     }
 
     @Test
@@ -419,13 +419,13 @@ class PropertyProxyUnfrozenSpec {
         }
 
         // When
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
-        Proxy.getMany = values
+        proxy.getMany = values
 
-        Proxy.onGet()
+        proxy.onGet()
 
-        capturedMock.get()?.id mustBe Proxy.id
+        capturedMock.get()?.id mustBe proxy.id
         capturedCalledIdx.get() mustBe 0
     }
 
@@ -444,11 +444,11 @@ class PropertyProxyUnfrozenSpec {
         }
 
         // When
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), collector)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
-        Proxy.onSet(value)
+        proxy.onSet(value)
 
-        capturedMock.get()?.id mustBe Proxy.id
+        capturedMock.get()?.id mustBe proxy.id
         capturedCalledIdx.get() mustBe 0
     }
 
@@ -457,43 +457,43 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn24")
     fun `Given clear is called it clears the mock`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        Proxy.get = value
-        Proxy.getMany = values
-        Proxy.getSideEffect = { value }
-        Proxy.set = sideEffect
+        proxy.get = value
+        proxy.getMany = values
+        proxy.getSideEffect = { value }
+        proxy.set = sideEffect
 
-        Proxy.onGet()
-        Proxy.onSet(fixture.fixture())
+        proxy.onGet()
+        proxy.onSet(fixture.fixture())
 
         // When
-        Proxy.clear()
+        proxy.clear()
 
         // Then
-        Proxy.get mustBe null
+        proxy.get mustBe null
 
         try {
-            Proxy.getMany
+            proxy.getMany
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
         try {
-            Proxy.getSideEffect
+            proxy.getSideEffect
         } catch (error: Throwable) {
             (error is NullPointerException) mustBe true
         }
 
-        Proxy.set isNot sideEffect
+        proxy.set isNot sideEffect
 
-        Proxy.calls mustBe 0
+        proxy.calls mustBe 0
 
         try {
-            Proxy.getArgumentsForCall(0)
+            proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -504,44 +504,44 @@ class PropertyProxyUnfrozenSpec {
     @JsName("fn25")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
-        val Proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
+        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: (Any) -> Unit = { }
 
-        Proxy.get = value
-        Proxy.getMany = values
-        Proxy.getSideEffect = { value }
-        Proxy.set = sideEffect
+        proxy.get = value
+        proxy.getMany = values
+        proxy.getSideEffect = { value }
+        proxy.set = sideEffect
 
-        Proxy.onGet()
-        Proxy.onSet(fixture.fixture())
+        proxy.onGet()
+        proxy.onSet(fixture.fixture())
 
         // When
 
-        Proxy.clear()
+        proxy.clear()
 
         // Then
-        Proxy.get mustBe null
+        proxy.get mustBe null
 
         try {
-            Proxy.getMany
+            proxy.getMany
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
         try {
-            Proxy.getSideEffect
+            proxy.getSideEffect
         } catch (error: Throwable) {
             (error is ClassCastException) mustBe true
         }
 
-        Proxy.set isNot sideEffect
+        proxy.set isNot sideEffect
 
-        Proxy.calls mustBe 0
+        proxy.calls mustBe 0
 
         try {
-            Proxy.getArgumentsForCall(0)
+            proxy.getArgumentsForCall(0)
         } catch (error: Throwable) {
             (error is IndexOutOfBoundsException) mustBe true
         }
@@ -561,23 +561,23 @@ class PropertyProxyUnfrozenSpec {
         implementation.fooProp = valueImp
 
         // When
-        val Proxy = PropertyProxy(
+        val proxy = PropertyProxy(
             fixture.fixture(),
             spyOnGet = implementation::foo::get,
             freeze = false
         )
-        Proxy.get = value
-        Proxy.getMany = values
-        Proxy.getSideEffect = { value }
-        Proxy.set = sideEffect
+        proxy.get = value
+        proxy.getMany = values
+        proxy.getSideEffect = { value }
+        proxy.set = sideEffect
 
-        Proxy.onGet()
-        Proxy.onSet(fixture.fixture())
+        proxy.onGet()
+        proxy.onSet(fixture.fixture())
 
-        Proxy.clear()
+        proxy.clear()
 
         // Then
-        Proxy.onGet() mustBe valueImp
+        proxy.onGet() mustBe valueImp
     }
 
     private class Implementation<T>(
