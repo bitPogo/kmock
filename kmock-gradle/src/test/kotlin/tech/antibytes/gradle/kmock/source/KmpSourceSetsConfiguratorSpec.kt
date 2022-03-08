@@ -296,9 +296,7 @@ class KmpSourceSetsConfiguratorSpec {
         val version: String = fixture.fixture()
 
         val source1: KotlinSourceSet = mockk()
-
         val source2: KotlinSourceSet = mockk()
-        val source2Dependencies: KotlinSourceSet = mockk()
 
         val sourceSets = mutableListOf(
             source1,
@@ -330,8 +328,7 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { source2.name } returns "iosX64Test"
         every { source2.kotlin.srcDir(any()) } returns mockk()
-        every { source2.dependsOn } returns setOf(source2Dependencies)
-        every { source2Dependencies.name } returns "nativeTest"
+        every { source2.dependsOn } returns setOf(source1)
 
         every { dependencies.add(any(), any()) } throws RuntimeException()
         every { dependencies.add("kspIosX64Test", any()) } returns mockk()
@@ -372,6 +369,207 @@ class KmpSourceSetsConfiguratorSpec {
                 ),
                 mapOf(
                     "nativeTest" to setOf("iosX64"),
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `Given configure is called it resolves deep shared source sets`() {
+        // Given
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+        val version: String = fixture.fixture()
+
+        val source0: KotlinSourceSet = mockk()
+        val source1: KotlinSourceSet = mockk()
+        val source2: KotlinSourceSet = mockk()
+        val source3: KotlinSourceSet = mockk()
+        val source4: KotlinSourceSet = mockk()
+        val source5: KotlinSourceSet = mockk()
+        val source6: KotlinSourceSet = mockk()
+        val source7: KotlinSourceSet = mockk()
+
+        val sourceSets = mutableListOf(
+            source0,
+            source1,
+            source2,
+            source3,
+            source4,
+            source5,
+            source6,
+            source7
+        )
+
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
+            kotlin
+        )
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project
+        )
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+        every { MainConfig.version } returns version
+
+        every { source0.name } returns "commonTest"
+        every { source0.kotlin.srcDir(any()) } returns mockk()
+        every { source0.dependsOn } returns setOf()
+
+        every { source1.name } returns "concurrentTest"
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source0)
+
+        every { source2.name } returns "nativeTest"
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source1, source0)
+
+        every { source3.name } returns "iosTest"
+        every { source3.kotlin.srcDir(any()) } returns mockk()
+        every { source3.dependsOn } returns setOf(source2, source0)
+
+        every { source4.name } returns "iosX64Test"
+        every { source4.kotlin.srcDir(any()) } returns mockk()
+        every { source4.dependsOn } returns setOf(source3, source0)
+
+        every { source5.name } returns "iosArm32Test"
+        every { source5.kotlin.srcDir(any()) } returns mockk()
+        every { source5.dependsOn } returns setOf(source3, source0)
+
+        every { source6.name } returns "linuxX64Test"
+        every { source6.kotlin.srcDir(any()) } returns mockk()
+        every { source6.dependsOn } returns setOf(source2, source0)
+
+        every { source7.name } returns "jvmTest"
+        every { source7.kotlin.srcDir(any()) } returns mockk()
+        every { source7.dependsOn } returns setOf(source1, source0)
+
+        every { dependencies.add(any(), any()) } throws RuntimeException()
+        every { dependencies.add("kspIosX64Test", any()) } returns mockk()
+        every { dependencies.add("kspIosArm32Test", any()) } returns mockk()
+        every { dependencies.add("kspLinuxX64Test", any()) } returns mockk()
+        every { dependencies.add("kspJvmTest", any()) } returns mockk()
+
+        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        // Then
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspCommonTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspConcurrentTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspNativeTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspIosTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspIosX64Test",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspIosArm32Test",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspLinuxX64Test",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspJvmTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(exactly = 1) {
+            source0.kotlin.srcDir("$path/generated/ksp/common/commonTest")
+        }
+
+        verify(exactly = 1) {
+            source1.kotlin.srcDir("$path/generated/ksp/concurrent/concurrentTest")
+        }
+
+        verify(exactly = 1) {
+            source2.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
+        }
+
+        verify(exactly = 1) {
+            source3.kotlin.srcDir("$path/generated/ksp/ios/iosTest")
+        }
+
+        verify(exactly = 1) {
+            source4.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test")
+        }
+
+        verify(exactly = 1) {
+            source5.kotlin.srcDir("$path/generated/ksp/iosArm32/iosArm32Test")
+        }
+
+        verify(exactly = 1) {
+            source6.kotlin.srcDir("$path/generated/ksp/linuxX64/linuxX64Test")
+        }
+
+        verify(exactly = 1) {
+            source7.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
+        }
+
+        verify(exactly = 1) {
+            KmpSetupConfigurator.wireSharedSourceTasks(
+                project,
+                mapOf(
+                    "iosX64" to "kspTestKotlinIosX64",
+                    "iosArm32" to "kspTestKotlinIosArm32",
+                    "linuxX64" to "kspTestKotlinLinuxX64",
+                    "jvm" to "kspTestKotlinJvm",
+                ),
+                mapOf(
+                    "commonTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
+                    "concurrentTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
+                    "nativeTest" to setOf("linuxX64", "iosX64", "iosArm32"),
+                    "iosTest" to setOf("iosX64", "iosArm32"),
                 )
             )
         }

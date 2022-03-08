@@ -49,7 +49,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         )
 
         cleanUpTask.target.set(sourceSetName)
-        cleanUpTask.targetPlatform.set(platformName)
+        cleanUpTask.platform.set(platformName)
         cleanUpTask.indicators.addAll(indicators)
         cleanUpTask.description = "Removes Contradicting Sources"
         cleanUpTask.group = "Code Generation"

@@ -81,7 +81,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
@@ -91,7 +91,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
@@ -146,7 +146,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJs") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -155,7 +155,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
-        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
         verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -290,7 +290,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
@@ -300,7 +300,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
@@ -367,7 +367,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { copyTask1.mustRunAfter("kspTestKotlinJvm") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
@@ -376,7 +376,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
-        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("js") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
         verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0)) }
@@ -640,7 +640,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
@@ -650,7 +650,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
@@ -660,7 +660,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[2].group = any() } just Runs
         every { cleanUpTasks[2].description = any() } just Runs
         every { cleanUpTasks[2].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[2].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
         every { cleanUpTasks[2].dependsOn(*anyVararg()) } returns cleanUpTasks[2]
@@ -734,7 +734,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJvm") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
@@ -743,7 +743,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
@@ -752,7 +752,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("common")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }
@@ -829,7 +829,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
@@ -839,7 +839,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
@@ -849,7 +849,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[2].group = any() } just Runs
         every { cleanUpTasks[2].description = any() } just Runs
         every { cleanUpTasks[2].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[2].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
         every { cleanUpTasks[2].dependsOn(*anyVararg()) } returns cleanUpTasks[2]
@@ -937,7 +937,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { copyTask0.mustRunAfter("kspTestKotlinJvm") }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[0].targetPlatform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
@@ -946,7 +946,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[1].targetPlatform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
@@ -955,7 +955,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[2].targetPlatform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
         verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("otherTest", "common")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask0) }
@@ -1028,7 +1028,7 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
         every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].targetPlatform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
         every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
         every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]

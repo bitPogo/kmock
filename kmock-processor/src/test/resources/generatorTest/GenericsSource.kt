@@ -11,9 +11,15 @@ import tech.antibytes.kmock.Mock
 @Mock(Generics::class)
 interface Generics<K, L> where L : CharSequence, L : Comparable<L>, K : Any {
     var template: K
+    fun <T> foo(): T
+    fun <T> buss(): T where T : CharSequence?, T : Map<String, Comparable<T>>?
+    fun <T : Int> bla(): T
     fun <T> foo(payload: T)
     fun <T : L> buzz(payload: T)
     fun <T> bar(payload: T) where T : CharSequence?, T : Map<String, Comparable<List<Array<T>>>>
     fun <K : Int> foo(payload: K)
+    fun <K : Int> fuzz(payload: K): K
+    fun <K : L> ozz(): K
+    fun <T> ozz(payload: T) where T : CharSequence?, T : Map<String, Comparable<List<Array<T>>>>?
 }
 

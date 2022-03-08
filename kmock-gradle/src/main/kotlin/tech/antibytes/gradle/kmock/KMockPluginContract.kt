@@ -35,7 +35,7 @@ internal interface KMockPluginContract {
         val indicators: SetProperty<String>
 
         @get:Input
-        val targetPlatform: Property<String>
+        val platform: Property<String>
 
         @get:Input
         val target: Property<String>

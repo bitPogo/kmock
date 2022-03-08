@@ -20,7 +20,7 @@ internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, Defaul
             throw StopExecutionException("Missing CleanUp Indicators!")
         }
 
-        if (targetPlatform.orNull.isNullOrEmpty()) {
+        if (platform.orNull.isNullOrEmpty()) {
             throw StopExecutionException("Missing CleanUp Target Platform!")
         }
 
@@ -34,7 +34,7 @@ internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, Defaul
         guardInputs()
 
         val files = project.fileTree(
-            "${project.buildDir.absolutePath}/generated/ksp/${targetPlatform.get()}/${target.get()}"
+            "${project.buildDir.absolutePath}/generated/ksp/${platform.get()}/${target.get()}"
         ).toList()
         val indicators: Set<String> = this.indicators.get()
 

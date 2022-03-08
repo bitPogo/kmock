@@ -684,7 +684,8 @@ class VerificationSpec {
                 Reference(referenceProxy, 0),
                 Reference(referenceProxy, 1),
                 Reference(referenceProxy, expectedCallIdx1),
-                Reference(referenceProxy, expectedCallIdx2)
+                Reference(referenceProxy, expectedCallIdx2),
+                Reference(referenceProxy, 4),
             )
         )
 
