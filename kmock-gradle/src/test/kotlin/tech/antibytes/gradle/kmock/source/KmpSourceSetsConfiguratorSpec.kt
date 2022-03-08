@@ -392,6 +392,7 @@ class KmpSourceSetsConfiguratorSpec {
         val source4: KotlinSourceSet = mockk()
         val source5: KotlinSourceSet = mockk()
         val source6: KotlinSourceSet = mockk()
+        val source7: KotlinSourceSet = mockk()
 
         val sourceSets = mutableListOf(
             source0,
@@ -400,7 +401,8 @@ class KmpSourceSetsConfiguratorSpec {
             source3,
             source4,
             source5,
-            source6
+            source6,
+            source7
         )
 
         every { project.dependencies } returns dependencies
@@ -450,10 +452,15 @@ class KmpSourceSetsConfiguratorSpec {
         every { source6.kotlin.srcDir(any()) } returns mockk()
         every { source6.dependsOn } returns setOf(source2, source0)
 
+        every { source7.name } returns "jvmTest"
+        every { source7.kotlin.srcDir(any()) } returns mockk()
+        every { source7.dependsOn } returns setOf(source1, source0)
+
         every { dependencies.add(any(), any()) } throws RuntimeException()
         every { dependencies.add("kspIosX64Test", any()) } returns mockk()
         every { dependencies.add("kspIosArm32Test", any()) } returns mockk()
         every { dependencies.add("kspLinuxX64Test", any()) } returns mockk()
+        every { dependencies.add("kspJvmTest", any()) } returns mockk()
 
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
@@ -510,6 +517,13 @@ class KmpSourceSetsConfiguratorSpec {
             )
         }
 
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspJvmTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
         verify(exactly = 1) {
             source0.kotlin.srcDir("$path/generated/ksp/common/commonTest")
         }
@@ -539,18 +553,23 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
+            source7.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
+        }
+
+        verify(exactly = 1) {
             KmpSetupConfigurator.wireSharedSourceTasks(
                 project,
                 mapOf(
                     "iosX64" to "kspTestKotlinIosX64",
                     "iosArm32" to "kspTestKotlinIosArm32",
                     "linuxX64" to "kspTestKotlinLinuxX64",
+                    "jvm" to "kspTestKotlinJvm",
                 ),
                 mapOf(
-                    "commonTest" to setOf("iosX64", "iosArm32", "linuxX64"),
-                    "concurrentTest" to setOf("iosX64", "iosArm32", "linuxX64"),
-                    "nativeTest" to setOf("iosX64", "iosArm32", "linuxX64"),
-                    "iosTest" to setOf("iosX64"),
+                    "commonTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
+                    "concurrentTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
+                    "nativeTest" to setOf("linuxX64", "iosX64", "iosArm32"),
+                    "iosTest" to setOf("iosX64", "iosArm32"),
                 )
             )
         }
