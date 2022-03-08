@@ -16,10 +16,10 @@ import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.KMockPluginContract.CleanUpTask
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
 import kotlin.test.assertFailsWith
-import tech.antibytes.util.test.fulfils
 
 class CleanUpTaskSpec {
     @TempDir

@@ -383,7 +383,7 @@ internal class KMockFunctionGenerator(
             ReturnType(actualType, typeName, multiBound)
         }
     }
-    
+
     override fun buildFunctionBundle(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
