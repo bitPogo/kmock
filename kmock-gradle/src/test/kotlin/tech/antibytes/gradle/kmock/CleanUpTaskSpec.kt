@@ -16,10 +16,10 @@ import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.KMockPluginContract.CleanUpTask
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
 import kotlin.test.assertFailsWith
+import tech.antibytes.util.test.fulfils
 
 class CleanUpTaskSpec {
     @TempDir
@@ -131,7 +131,7 @@ class CleanUpTaskSpec {
 
         // Then
         task.indicators.add(fixture.fixture<String>())
-        task.targetPlatform.set("")
+        task.platform.set("")
 
         val error = assertFailsWith<StopExecutionException> {
             // When
@@ -148,7 +148,7 @@ class CleanUpTaskSpec {
 
         // Then
         task.indicators.add(fixture.fixture<String>())
-        task.targetPlatform.set(fixture.fixture<String>())
+        task.platform.set(fixture.fixture<String>())
 
         val error = assertFailsWith<StopExecutionException> {
             // When
@@ -165,7 +165,7 @@ class CleanUpTaskSpec {
 
         // Then
         task.indicators.add(fixture.fixture<String>())
-        task.targetPlatform.set(fixture.fixture<String>())
+        task.platform.set(fixture.fixture<String>())
         task.target.set("")
 
         val error = assertFailsWith<StopExecutionException> {
@@ -185,7 +185,7 @@ class CleanUpTaskSpec {
 
         // When
         task.indicators.add(fixture.fixture<String>())
-        task.targetPlatform.set("platfrom")
+        task.platform.set("platfrom")
         task.target.set("target")
         task.cleanUp()
 
@@ -209,7 +209,7 @@ class CleanUpTaskSpec {
 
         // When
         task.indicators.add(indicator)
-        task.targetPlatform.set("platfrom")
+        task.platform.set("platform")
         task.target.set("target")
         task.cleanUp()
 
@@ -221,6 +221,6 @@ class CleanUpTaskSpec {
             }
         }
 
-        isClean mustBe false
+        isClean mustBe true
     }
 }
