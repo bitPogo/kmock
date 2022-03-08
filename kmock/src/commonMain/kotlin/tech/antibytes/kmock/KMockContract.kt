@@ -61,6 +61,49 @@ interface KMockContract {
     }
 
     /**
+     * Builder for chained SideEffects.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @author Matthias Geisler
+     */
+    interface SideEffectChainBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
+        /**
+         * Adds a SideEffect to chain.
+         * @param sideEffect the given SideEffect.
+         * @return SideEffectChainBuilder the current builder.
+         */
+        fun add(sideEffect: SideEffect): SideEffectChainBuilder<ReturnValue, SideEffect>
+    }
+
+    /**
+     * Container for chained SideEffects. If the given Container has
+     * a smaller size than the actual invocation the last value of is repeatably used.
+     * It acts in a FIFO manner.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @see SideEffectChainBuilder
+     * @author Matthias Geisler
+     */
+    interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+        /**
+         * Current size of the chain
+         */
+        val size: Int
+
+        /**
+         * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
+         * @return SideEffect a previous stored SideEffect.
+         * @throws IllegalStateException if no SideEffect was stored previously.
+         */
+        fun next(): SideEffect
+
+        /**
+         * Clears the chain
+         */
+        fun clear()
+    }
+
+    /**
      * Shared Properties of synchronous and asynchronous functions Proxies.
      * @param ReturnValue the return value of the Function.
      * @param SideEffect the function signature.
@@ -93,6 +136,11 @@ interface KMockContract {
          * @throws NullPointerException on get if no value was set.
          */
         var sideEffect: SideEffect
+
+        /**
+         * SideEffectChainBuilder to chain multiple SideEffects.
+         */
+        val sideEffectChain: SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**
