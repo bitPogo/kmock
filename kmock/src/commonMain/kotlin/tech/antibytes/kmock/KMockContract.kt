@@ -8,7 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.error.MockError
 
-interface KMockContract {
+object KMockContract {
     /**
      * Base Proxy definition
      * @param ReturnValue the return value of the Proxy.
@@ -91,7 +91,7 @@ interface KMockContract {
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
      */
-    interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
@@ -717,15 +717,13 @@ interface KMockContract {
         fun clear()
     }
 
-    companion object {
-        const val NOT_CALLED = "Call not found."
-        const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-        const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-        const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
-        const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
-        const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-        const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
-        const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
-        const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
-    }
+    const val NOT_CALLED = "Call not found."
+    const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
+    const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
+    const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
+    const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
+    const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
+    const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
+    const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
+    const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
 }
