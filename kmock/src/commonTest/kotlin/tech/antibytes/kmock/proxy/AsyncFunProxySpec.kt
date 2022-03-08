@@ -391,6 +391,42 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn13")
+    fun `Given invoke is called it calls the given SideEffects and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { givenArg0, givenArg1 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+
+                expected
+            }
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1)
+
+            // Then
+            actual mustBe expected
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn14")
     fun `Given invoke is called it uses ReturnValue over Throws`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -414,7 +450,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn15")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -438,7 +474,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn16")
     fun `Given invoke is called it uses SideEffect over ReturnValues`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -462,7 +498,31 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn17")
+    fun `Given invoke is called it uses SideEffects over SideEffect`(): AsyncTestReturnValue {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val expected: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture(size = 2)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffects.add { expected }
+            proxy.sideEffect = { values }
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = proxy.invoke()
+
+            // Then
+            actual mustBe expected
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn18")
     fun `Given invoke is called it captures Arguments threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, (String) -> Any>(fixture.fixture())
@@ -489,7 +549,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn19")
     fun `Given invoke is called it captures void Arguments threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -514,7 +574,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn20")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -527,13 +587,13 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn21")
     fun `Its default call count is 0`() {
         AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture()).calls mustBe 0
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn22")
     fun `Given invoke is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -556,7 +616,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn23")
     fun `Given the Proxy has a Collector and invoke is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -590,7 +650,7 @@ class AsyncFunProxySpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn22")
+    @JsName("fn24")
     fun `Given clear is called it clears the mock`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -599,10 +659,14 @@ class AsyncFunProxySpec {
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
+        val sideEffectChained: suspend () -> Any = {
+            fixture.fixture()
+        }
 
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         return runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.invoke()
@@ -611,31 +675,19 @@ class AsyncFunProxySpec {
 
             proxy.returnValue mustBe null
 
-            try {
-                proxy.returnValues
-            } catch (error: Throwable) {
-                (error is NullPointerException) mustBe true
-            }
-
-            try {
-                proxy.sideEffect mustBe null
-            } catch (error: Throwable) {
-                (error is NullPointerException) mustBe true
-            }
+            assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
+            assertFailsWith<NullPointerException> { proxy.sideEffect }
+            assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
             proxy.calls mustBe 0
 
-            try {
-                proxy.getArgumentsForCall(0)
-            } catch (error: Throwable) {
-                (error is IndexOutOfBoundsException) mustBe true
-            }
+            assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
         }
     }
 
     @Test
     @JsOnly
-    @JsName("fn23")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock for Js`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -644,10 +696,14 @@ class AsyncFunProxySpec {
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
+        val sideEffectChained: suspend () -> Any = {
+            fixture.fixture()
+        }
 
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         return runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.invoke()
@@ -656,30 +712,18 @@ class AsyncFunProxySpec {
 
             proxy.returnValue mustBe null
 
-            try {
-                proxy.returnValues
-            } catch (error: Throwable) {
-                (error is ClassCastException) mustBe true
-            }
-
-            try {
-                proxy.sideEffect mustBe null
-            } catch (error: Throwable) {
-                (error is ClassCastException) mustBe true
-            }
+            assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
+            assertFailsWith<ClassCastException> { proxy.sideEffect }
+            assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
             proxy.calls mustBe 0
 
-            try {
-                proxy.getArgumentsForCall(0)
-            } catch (error: Throwable) {
-                (error is IndexOutOfBoundsException) mustBe true
-            }
+            assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
         }
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock while leave the spy intact`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
@@ -688,6 +732,9 @@ class AsyncFunProxySpec {
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: suspend () -> Any = {
+            fixture.fixture()
+        }
+        val sideEffectChained: suspend () -> Any = {
             fixture.fixture()
         }
 
@@ -701,6 +748,7 @@ class AsyncFunProxySpec {
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         return runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.invoke()

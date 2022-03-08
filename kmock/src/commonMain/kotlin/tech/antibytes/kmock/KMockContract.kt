@@ -86,11 +86,6 @@ interface KMockContract {
      */
     interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
-         * Current size of the chain
-         */
-        val size: Int
-
-        /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
          * @throws IllegalStateException if no SideEffect was stored previously.
@@ -140,7 +135,7 @@ interface KMockContract {
         /**
          * SideEffectChainBuilder to chain multiple SideEffects.
          */
-        val sideEffectChain: SideEffectChainBuilder<ReturnValue, SideEffect>
+        val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**

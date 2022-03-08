@@ -15,6 +15,7 @@ import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
+import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
@@ -35,6 +36,10 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     private var _returnValueUnfrozen: ReturnValue? = null
     private val _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
     private var _sideEffectUnfrozen: SideEffect? = null
+
+    private val _sideEffects = SideEffectChain<ReturnValue, SideEffect>(freeze) {
+        setProvider(Provider.SIDE_EFFECT_CHAIN)
+    }
 
     private val _calls: AtomicInt = atomic(0)
     private val _provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
@@ -61,7 +66,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         RETURN_VALUE(2),
         RETURN_VALUES(3),
         SIDE_EFFECT(4),
-        SPY(5),
+        SIDE_EFFECT_CHAIN(5),
+        SPY(6),
     }
 
     private fun resolveAtomicCollector(collector: Collector): Collector? {
@@ -185,6 +191,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             _setSideEffect(value)
         }
 
+    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = _sideEffects
+
     override val calls: Int
         get() = _calls.value
 
@@ -203,6 +211,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             ?: relaxer.value?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")
     }
+
+    protected fun retrieveSideEffect(): SideEffect = _sideEffects.next()
 
     private fun guardArguments(arguments: Array<out Any?>): Array<out Any?>? {
         return if (arguments.isEmpty()) {
@@ -252,6 +262,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             _returnValuesUnfrozen.clear()
             _sideEffectUnfrozen = null
         }
+
+        _sideEffects.clear()
     }
 
     override fun clear() {

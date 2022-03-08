@@ -16,9 +16,6 @@ internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val freeze: Boolean = true,
     onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
-    override val size: Int
-        get() = resolveSideEffect().size
-
     private val onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
 
     private val sideEffects: IsoMutableList<SideEffect> = sharedMutableListOf()

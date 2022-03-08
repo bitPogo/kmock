@@ -305,6 +305,36 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn13")
+    fun `Given invoke is called it calls the given SideEffects and delegates values`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(fixture.fixture(), freeze = false)
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+
+        val expected: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+
+        // When
+        proxy.sideEffects.add { givenArg0, givenArg1 ->
+            actualArgument0.set(givenArg0)
+            actualArgument1.set(givenArg1)
+
+            expected
+        }
+
+        // When
+        val actual = proxy.invoke(argument0, argument1)
+
+        // Then
+        actual mustBe expected
+        actualArgument0.get() mustBe argument0
+        actualArgument1.get() mustBe argument1
+    }
+
+    @Test
+    @JsName("fn14")
     fun `Given invoke is called it uses ReturnValue over Throws`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -322,7 +352,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn15")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -340,7 +370,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn16")
     fun `Given invoke is called it uses SideEffect over ReturnValues`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -358,7 +388,25 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn17")
+    fun `Given invoke is called it uses SideEffects over SideEffect`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val expected: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture(size = 2)
+
+        // When
+        proxy.sideEffects.add { expected }
+        proxy.sideEffect = { values }
+
+        val actual = proxy.invoke()
+
+        // Then
+        actual mustBe expected
+    }
+
+    @Test
+    @JsName("fn18")
     fun `Given invoke is called it captures Arguments`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
@@ -378,7 +426,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn19")
     fun `Given invoke is called it captures void Arguments`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -396,7 +444,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn20")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -409,13 +457,13 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn21")
     fun `Its default call count is 0`() {
         AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false).calls mustBe 0
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn22")
     fun `Given invoke is called it increments the call counter`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -430,7 +478,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn23")
     fun `Given the Proxy has a Collector and invoke is called it calls the Collect`() = runBlockingTest {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5) // NOTE: These values get frozen
@@ -456,7 +504,7 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn22")
+    @JsName("fn24")
     fun `Given clear is called it clears the mock`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -465,10 +513,14 @@ class AsyncFunProxyUnfrozenSpec {
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
+        val sideEffectChained: suspend () -> Any = {
+            fixture.fixture()
+        }
 
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         proxy.invoke()
 
@@ -476,30 +528,18 @@ class AsyncFunProxyUnfrozenSpec {
 
         proxy.returnValue mustBe null
 
-        try {
-            proxy.returnValues
-        } catch (error: Throwable) {
-            (error is NullPointerException) mustBe true
-        }
-
-        try {
-            proxy.sideEffect mustBe null
-        } catch (error: Throwable) {
-            (error is NullPointerException) mustBe true
-        }
+        assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
+        assertFailsWith<NullPointerException> { proxy.sideEffect }
+        assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
 
-        try {
-            proxy.getArgumentsForCall(0)
-        } catch (error: Throwable) {
-            (error is IndexOutOfBoundsException) mustBe true
-        }
+        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
     @JsOnly
-    @JsName("fn23")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock for Js`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -508,10 +548,14 @@ class AsyncFunProxyUnfrozenSpec {
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
+        val sideEffectChained: suspend () -> Any = {
+            fixture.fixture()
+        }
 
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         proxy.invoke()
 
@@ -519,29 +563,17 @@ class AsyncFunProxyUnfrozenSpec {
 
         proxy.returnValue mustBe null
 
-        try {
-            proxy.returnValues
-        } catch (error: Throwable) {
-            (error is ClassCastException) mustBe true
-        }
-
-        try {
-            proxy.sideEffect mustBe null
-        } catch (error: Throwable) {
-            (error is ClassCastException) mustBe true
-        }
+        assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
+        assertFailsWith<ClassCastException> { proxy.sideEffect }
+        assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
 
-        try {
-            proxy.getArgumentsForCall(0)
-        } catch (error: Throwable) {
-            (error is IndexOutOfBoundsException) mustBe true
-        }
+        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock while leave the spy intact`() = runBlockingTest {
         // Given
         val implementation = Implementation<Any>()
@@ -550,6 +582,9 @@ class AsyncFunProxyUnfrozenSpec {
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: suspend () -> Any = {
+            fixture.fixture()
+        }
+        val sideEffectChained: suspend () -> Any = {
             fixture.fixture()
         }
 
@@ -563,6 +598,7 @@ class AsyncFunProxyUnfrozenSpec {
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
+        proxy.sideEffects.add(sideEffectChained)
 
         proxy.invoke()
 
