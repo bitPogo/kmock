@@ -7,11 +7,12 @@
 package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Modifier
-import com.google.devtools.ksp.symbol.Nullability
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -22,196 +23,16 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
-import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.AsyncFunProxy
+import tech.antibytes.kmock.KMockContract.SyncFunProxy
+import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import java.util.Locale
+import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
-    private val utils: ProcessorContract.FunctionUtils,
+    private val genericResolver: ProcessorContract.GenericResolver,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
-    private data class ReturnType(
-        val actualType: TypeName,
-        val referenceType: TypeName,
-        val isMultiBound: Boolean
-    )
-
-    private fun buildFunction(
-        ksFunctionName: String,
-        generics: Map<String, List<KSTypeReference>>?,
-        typeResolver: TypeParameterResolver,
-        isSuspending: Boolean,
-        parameterNames: List<String>,
-        parameterTypes: List<TypeName>,
-        returnType: ReturnType,
-        ProxyName: String
-    ): FunSpec {
-        val function = FunSpec
-            .builder(ksFunctionName)
-            .addModifiers(KModifier.OVERRIDE)
-
-        if (generics != null) {
-            function.typeVariables.addAll(utils.mapGeneric(generics, typeResolver))
-        }
-
-        if (isSuspending) {
-            function.addModifiers(KModifier.SUSPEND)
-        }
-
-        parameterNames.forEachIndexed { idx, parameter ->
-            function.addParameter(
-                parameter,
-                parameterTypes[idx]
-            )
-        }
-
-        function.returns(returnType.referenceType)
-
-        val cast = if (returnType.actualType != returnType.referenceType) {
-            function.addAnnotation(
-                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
-            )
-            " as ${returnType.referenceType}"
-        } else {
-            ""
-        }
-
-        function.addCode(
-            "return $ProxyName.invoke(${parameterNames.joinToString(", ")})$cast"
-        )
-
-        return function.build()
-    }
-
-    private fun guardMultiBoundaries(
-        functionName: String,
-        parameter: String,
-        boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: ReturnType
-    ): String {
-        var isMultiBoundary = returnType.isMultiBound
-
-        boundaries.values.forEach { types ->
-            if (types is List) {
-                isMultiBoundary = true
-            }
-        }
-
-        return if (isMultiBoundary) {
-            "throw IllegalArgumentException(\n\"Multi-Bound generics are not supported on function level spies (yet).\"\n)"
-        } else {
-            "$functionName($parameter)"
-        }
-    }
-
-    private fun buildFunctionSpyInvocation(
-        functionName: String,
-        parameterNames: List<String>,
-        boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: ReturnType
-    ): String {
-        val parameter = parameterNames.joinToString(", ")
-
-        return if (parameter.isEmpty()) {
-            "{ ${guardMultiBoundaries(functionName, "", boundaries, returnType)} }"
-        } else {
-            "{ $parameter ->\n${guardMultiBoundaries(functionName, parameter, boundaries, returnType)} }"
-        }
-    }
-
-    private fun determineFunctionInitializer(
-        propertyMock: PropertySpec.Builder,
-        Proxy: String,
-        qualifier: String,
-        ProxyName: String,
-        functionName: String,
-        parameterNames: List<String>,
-        boundaries: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: ReturnType,
-        relaxer: ProcessorContract.Relaxer?
-    ): PropertySpec.Builder {
-        return propertyMock.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
-            Proxy,
-            "$qualifier#$ProxyName",
-            "if (spyOn != null) { ${
-            buildFunctionSpyInvocation(
-                functionName,
-                parameterNames,
-                boundaries,
-                returnType
-            )
-            } } else { null }",
-            relaxerGenerator.buildRelaxers(
-                relaxer,
-                returnType.actualType.toString() == "kotlin.Unit"
-            )
-        )
-    }
-
-    private fun buildSyncFunProxy(
-        qualifier: String,
-        functionName: String,
-        ProxyName: String,
-        parameterNames: List<String>,
-        parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: ReturnType,
-        relaxer: ProcessorContract.Relaxer?
-    ): PropertySpec {
-        val lambda = TypeVariableName(
-            "(${parameterTypes.keys.joinToString(", ")}) -> ${returnType.actualType}"
-        )
-        val property = PropertySpec.builder(
-            ProxyName,
-            KMockContract.SyncFunProxy::class
-                .asClassName()
-                .parameterizedBy(returnType.actualType, lambda),
-        )
-
-        return determineFunctionInitializer(
-            property,
-            "SyncFunProxy",
-            qualifier,
-            ProxyName,
-            functionName,
-            parameterNames,
-            parameterTypes,
-            returnType,
-            relaxer
-        ).build()
-    }
-
-    private fun buildASyncFunProxy(
-        qualifier: String,
-        functionName: String,
-        ProxyName: String,
-        parameterNames: List<String>,
-        parameterTypes: Map<TypeVariableName, List<KSTypeReference>?>,
-        returnType: ReturnType,
-        relaxer: ProcessorContract.Relaxer?
-    ): PropertySpec {
-        val lambda = TypeVariableName(
-            "suspend (${parameterTypes.keys.joinToString(", ")}) -> ${returnType.actualType}"
-        )
-        val property = PropertySpec.builder(
-            ProxyName,
-            KMockContract.AsyncFunProxy::class
-                .asClassName()
-                .parameterizedBy(returnType.actualType, lambda),
-        )
-
-        return determineFunctionInitializer(
-            property,
-            "AsyncFunProxy",
-            qualifier,
-            ProxyName,
-            functionName,
-            parameterNames,
-            parameterTypes,
-            returnType,
-            relaxer
-        ).build()
-    }
-
     private fun String.titleCase(): String {
         return this.replaceFirstChar {
             if (it.isLowerCase()) {
@@ -222,35 +43,44 @@ internal class KMockFunctionGenerator(
         }
     }
 
-    private fun determineGenericName(
-        bounds: List<KSTypeReference>?,
+    private fun resolveGenericName(
+        boundaries: List<KSTypeReference>?,
         typeResolver: TypeParameterResolver
     ): String? {
-        return if (bounds.isNullOrEmpty()) {
+        return if (boundaries.isNullOrEmpty()) {
             null
         } else {
-            bounds.joinToString("") { typeName ->
-                typeName.toTypeName(typeResolver)
-                    .toString()
-                    .replace("?", "")
-                    .replace("kotlin.", "")
+            boundaries.joinToString("") { typeName ->
+                typeName.toTypeName(typeResolver).toString()
             }
         }
     }
 
-    private fun determineSuffixedFunctionName(
-        functionName: String,
-        parameter: List<TypeName>,
+    private fun determineGenericName(
+        name: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): String {
-        val titleCasedSuffixes: MutableList<String> = mutableListOf()
-        parameter.forEach { suffix ->
+        var currentName = name
+
+        do {
+            currentName = resolveGenericName(generics[currentName], typeResolver) ?: "Any"
+        } while (currentName in generics)
+
+        return currentName
+    }
+
+    private fun resolveProxySuffixFromArguments(
+        arguments: Collection<TypeName>,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): List<String> {
+        return arguments.map { suffix ->
             suffix
                 .toString()
                 .let { name ->
                     if (name in generics) {
-                        determineGenericName(generics[name], typeResolver) ?: "Any"
+                        determineGenericName(name, generics, typeResolver)
                     } else {
                         name
                     }
@@ -266,7 +96,20 @@ internal class KMockFunctionGenerator(
                         name
                     }
                 }
-                .also { suffixCased -> titleCasedSuffixes.add(suffixCased) }
+                .replace("?", "")
+        }
+    }
+
+    private fun determineSuffixedProxyName(
+        functionName: String,
+        arguments: Collection<TypeName>,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): String {
+        val titleCasedSuffixes = if (arguments.isNotEmpty()) {
+            resolveProxySuffixFromArguments(arguments, generics, typeResolver)
+        } else {
+            listOf("Void")
         }
 
         return "${functionName}With${titleCasedSuffixes.joinToString("")}"
@@ -276,177 +119,385 @@ internal class KMockFunctionGenerator(
         functionName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
-        parameter: List<TypeName>,
-        existingFunctions: List<String>
+        arguments: Collection<TypeName>,
+        existingProxies: List<String>
     ): String {
-        val ProxyName = "_$functionName"
+        val proxyName = "_$functionName"
 
-        return if (existingFunctions.contains(ProxyName)) {
-            determineSuffixedFunctionName(
-                ProxyName,
-                parameter,
+        return if (existingProxies.contains(proxyName)) {
+            determineSuffixedProxyName(
+                proxyName,
+                arguments,
                 generics,
                 typeResolver
             )
         } else {
-            ProxyName
+            proxyName
         }
     }
 
     private fun determineParameter(
         parameters: List<KSValueParameter>,
         parameterTypeResolver: TypeParameterResolver
-    ): Pair<List<String>, List<TypeName>> {
-        val nameCollector: MutableList<String> = mutableListOf()
-        val typeCollector: MutableList<TypeName> = mutableListOf()
-        parameters.forEach { parameter ->
-            nameCollector.add(parameter.name!!.asString())
-            typeCollector.add(parameter.type.toTypeName(parameterTypeResolver))
+    ): Map<String, TypeName> {
+        return parameters.associate { parameter ->
+            parameter.name!!.asString() to parameter.type.toTypeName(parameterTypeResolver)
         }
-
-        return Pair(nameCollector, typeCollector)
     }
 
-    private fun isNullable(bounds: List<KSTypeReference>): String {
-        bounds.forEach { bound ->
-            if (bound.resolve().nullability != Nullability.NULLABLE) {
-                return ""
-            }
+    private fun determineProxyType(suspending: Boolean): Pair<KClass<*>, String> {
+        return if (suspending) {
+            Pair(AsyncFunProxy::class, "suspend ")
+        } else {
+            Pair(SyncFunProxy::class, "")
         }
-
-        return "?"
     }
 
-    private fun determineProxyParameter(
-        parameter: List<TypeName>,
+    private fun resolveProxyGenerics(
         generics: Map<String, List<KSTypeReference>>?,
         typeResolver: TypeParameterResolver
-    ): Map<TypeVariableName, List<KSTypeReference>?> {
-        val typeMapping: MutableMap<TypeVariableName, List<KSTypeReference>?> = mutableMapOf()
+    ): Map<String, GenericDeclaration>? {
+        return if (generics == null) {
+            null
+        } else {
+            genericResolver.mapProxyGenerics(generics, typeResolver)
+        }
+    }
 
-        if (generics != null) {
-            parameter.forEach { type ->
-                var typeListing: List<KSTypeReference>? = null
+    private fun assignNullability(nullable: Boolean): String {
+        return if (nullable) {
+            "?"
+        } else {
+            ""
+        }
+    }
 
-                generics.getOrElse(type.toString()) { type }.let { types ->
-                    @Suppress("UNCHECKED_CAST")
-                    val actualType = when {
-                        types !is List<*> || types.isEmpty() -> "Any?"
-                        types.size > 1 -> "Any${isNullable(types as List<KSTypeReference>)}".also {
-                            typeListing = types
-                        }
-                        else -> (types.first() as KSTypeReference).toTypeName(typeResolver).toString()
-                    }
+    private fun resolveGenericProxyType(
+        typeName: TypeName,
+        generic: GenericDeclaration?
+    ): TypeName {
+        return when {
+            generic == null -> typeName
+            generic.types.size > 1 -> TypeVariableName("Any${assignNullability(generic.nullable)}")
+            else -> generic.types.first()
+        }
+    }
 
-                    typeMapping[TypeVariableName(actualType)] = typeListing
+    private fun mapGenericProxyType(
+        typeName: TypeName,
+        proxyGenericTypes: Map<String, GenericDeclaration>,
+    ): Pair<TypeName, GenericDeclaration?> {
+        val isNullable = typeName.isNullable
+        val generic = proxyGenericTypes[typeName.toString().trimEnd('?')]
+
+        val actualTypeName = resolveGenericProxyType(
+            typeName,
+            generic
+        )
+
+        return actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable) to generic
+    }
+
+    private fun determineProxyReturnType(
+        returnType: KSType,
+        proxyGenericTypes: Map<String, GenericDeclaration>?,
+        typeResolver: TypeParameterResolver,
+    ): Pair<TypeName, GenericDeclaration?> {
+        val typeName = returnType.toTypeName(typeResolver)
+
+        return if (proxyGenericTypes == null) {
+            typeName to null
+        } else {
+            mapGenericProxyType(typeName, proxyGenericTypes)
+        }
+    }
+
+    private fun resolveGenericArgumentTypes(
+        proxyGenericTypes: Map<String, GenericDeclaration>,
+        argumentTypes: Collection<TypeName>,
+    ): List<Pair<TypeName, GenericDeclaration?>> {
+        return argumentTypes.map { typeName -> mapGenericProxyType(typeName, proxyGenericTypes) }
+    }
+
+    private fun determineProxyArgumentTypes(
+        proxyGenericTypes: Map<String, GenericDeclaration>?,
+        argumentTypes: Collection<TypeName>,
+    ): List<Pair<TypeName, GenericDeclaration?>> {
+        return if (proxyGenericTypes == null) {
+            argumentTypes.map { typeName -> typeName to null }
+        } else {
+            resolveGenericArgumentTypes(proxyGenericTypes, argumentTypes)
+        }
+    }
+
+    private fun buildSideEffectSignature(
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: TypeName,
+        prefix: String
+    ): TypeName {
+        val argumentTypeName = proxyArguments.map { argument -> argument.first }
+
+        return TypeVariableName(
+            "$prefix(${argumentTypeName.joinToString(", ")}) -> $proxyReturnType"
+        )
+    }
+
+    private fun determineSpyConstrains(
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+    ): Boolean {
+        var isRecursive = proxyReturnType.second?.recursive ?: false
+
+        proxyArguments.forEach { (_, genericDeclaration) ->
+            isRecursive = isRecursive || genericDeclaration?.recursive ?: false
+        }
+
+        return isRecursive
+    }
+
+    private fun buildSpyArgumentCasts(
+        body: StringBuilder,
+        spyArgumentNames: Set<String>,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>
+    ) {
+        var idx = 0
+        val argumentNames = spyArgumentNames.toList()
+        proxyArguments.forEach { (_, generic) ->
+            if (generic != null && generic.types.size >= 2) {
+                generic.types.forEach { type ->
+
+                    body.append("@Suppress(\"UNCHECKED_CAST\")\n")
+                        .append("${argumentNames[idx]} as $type\n")
                 }
             }
-        } else {
-            parameter.forEach { type ->
-                typeMapping[TypeVariableName(type.toString())] = null
-            }
-        }
 
-        return typeMapping
-    }
-
-    private fun resolveGenericReturnValue(
-        returnType: TypeName,
-        generics: Map<String, List<KSTypeReference>>,
-        parameterTypeResolver: TypeParameterResolver
-    ): Pair<TypeName, Boolean> {
-        val key = returnType.toString()
-        return when {
-            !generics.containsKey(key) -> Pair(returnType, false)
-            generics[key]!!.isEmpty() -> Pair(TypeVariableName("Any?"), false)
-            generics[key]!!.size > 1 -> Pair(TypeVariableName("Any${isNullable(generics[key]!!)}"), true)
-            else -> Pair(generics[key]!!.first().toTypeName(parameterTypeResolver), false)
+            idx += 1
         }
     }
 
-    private fun resolveReturnValue(
-        returnValue: KSTypeReference,
-        generics: Map<String, List<KSTypeReference>>?,
-        parameterTypeResolver: TypeParameterResolver
-    ): ReturnType {
-        val typeName = returnValue.toTypeName(parameterTypeResolver)
+    private fun buildSpyBody(
+        spyName: String,
+        spyArgumentNames: Set<String>,
+        spyArguments: String,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+    ): String {
+        val isRecursive = determineSpyConstrains(proxyArguments, proxyReturnType)
 
-        return if (generics == null) {
-            ReturnType(typeName, typeName, false)
+        return if (isRecursive) {
+            "throw IllegalArgumentException(\n\"Recursive generics are not supported on function level spies (yet).\"\n)"
         } else {
-            val (actualType, multiBound) = resolveGenericReturnValue(
-                typeName,
-                generics,
-                parameterTypeResolver
+            val body = StringBuilder(1)
+
+            buildSpyArgumentCasts(body, spyArgumentNames, proxyArguments)
+
+            body.append("$spyName($spyArguments)").toString()
+        }
+    }
+
+    private fun buildFunctionSpyInvocation(
+        spyName: String,
+        spyArgumentNames: Set<String>,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+    ): String {
+        val spyArguments = spyArgumentNames.joinToString(", ")
+        val spyBody = buildSpyBody(
+            spyName,
+            spyArgumentNames,
+            spyArguments,
+            proxyArguments,
+            proxyReturnType
+        )
+
+        return if (spyArgumentNames.isEmpty()) {
+            "{ $spyBody }"
+        } else {
+            "{ $spyArguments ->\n$spyBody }"
+        }
+    }
+
+    private fun buildProxyInitializer(
+        proxySpec: PropertySpec.Builder,
+        qualifier: String,
+        proxyName: String,
+        proxyType: ClassName,
+        spyName: String,
+        spyArgumentNames: Set<String>,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+        relaxer: ProcessorContract.Relaxer?
+    ): PropertySpec.Builder {
+        return proxySpec.initializer(
+            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
+            proxyType.simpleName,
+            "$qualifier#$proxyName",
+            "if (spyOn != null) { ${
+            buildFunctionSpyInvocation(
+                spyName,
+                spyArgumentNames,
+                proxyArguments,
+                proxyReturnType
             )
+            } } else { null }",
+            relaxerGenerator.buildRelaxers(
+                relaxer,
+                proxyReturnType.first.toString() == "kotlin.Unit"
+            )
+        )
+    }
 
-            ReturnType(actualType, typeName, multiBound)
+    private fun buildProxy(
+        qualifier: String,
+        proxyName: String,
+        spyName: String,
+        generics: Map<String, List<KSTypeReference>>?,
+        arguments: Map<String, TypeName>,
+        returnType: KSType,
+        typeResolver: TypeParameterResolver,
+        suspending: Boolean,
+        relaxer: ProcessorContract.Relaxer?
+    ): Pair<PropertySpec, TypeName> {
+        val (proxyType, sideEffectPrefix) = determineProxyType(suspending)
+        val proxyGenericTypes = resolveProxyGenerics(generics, typeResolver)
+
+        val proxyArguments = determineProxyArgumentTypes(
+            proxyGenericTypes,
+            arguments.values,
+        )
+
+        val proxyReturnType = determineProxyReturnType(
+            returnType,
+            proxyGenericTypes,
+            typeResolver
+        )
+
+        val sideEffect = buildSideEffectSignature(
+            proxyArguments,
+            proxyReturnType.first,
+            sideEffectPrefix
+        )
+
+        val proxyClass = proxyType.asClassName()
+
+        return Pair(
+            PropertySpec.builder(
+                proxyName,
+                proxyClass.parameterizedBy(proxyReturnType.first, sideEffect)
+            ).let { proxySpec ->
+                buildProxyInitializer(
+                    proxySpec = proxySpec,
+                    qualifier = qualifier,
+                    proxyName = proxyName,
+                    proxyType = proxyClass,
+                    spyName = spyName,
+                    spyArgumentNames = arguments.keys,
+                    proxyArguments = proxyArguments,
+                    proxyReturnType = proxyReturnType,
+                    relaxer = relaxer
+                )
+            }.build(),
+            proxyReturnType.first
+        )
+    }
+
+    private fun buildFunction(
+        functionName: String,
+        proxyName: String,
+        generics: Map<String, List<KSTypeReference>>?,
+        isSuspending: Boolean,
+        arguments: Map<String, TypeName>,
+        rawReturnType: KSType,
+        proxyReturnType: TypeName,
+        typeResolver: TypeParameterResolver,
+    ): FunSpec {
+        val returnType = rawReturnType.toTypeName(typeResolver)
+
+        val function = FunSpec
+            .builder(functionName)
+            .addModifiers(KModifier.OVERRIDE)
+
+        if (generics != null) {
+            function.typeVariables.addAll(
+                this.genericResolver.mapDeclaredGenerics(generics, typeResolver)
+            )
         }
+
+        if (isSuspending) {
+            function.addModifiers(KModifier.SUSPEND)
+        }
+
+        arguments.forEach { (argumentName, argumentType) ->
+            function.addParameter(
+                argumentName,
+                argumentType
+            )
+        }
+
+        function.returns(returnType)
+
+        val cast = if (returnType != proxyReturnType) {
+            function.addAnnotation(
+                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+            )
+            " as $returnType"
+        } else {
+            ""
+        }
+
+        function.addCode(
+            "return $proxyName.invoke(${arguments.keys.joinToString(", ")})$cast"
+        )
+
+        return function.build()
     }
 
     override fun buildFunctionBundle(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
-        functionNameCollector: MutableList<String>,
+        existingProxies: List<String>,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, FunSpec> {
         val functionName = ksFunction.simpleName.asString()
         val parameterTypeResolver = ksFunction
             .typeParameters
             .toTypeParameterResolver(typeResolver)
-        val generics = utils.resolveGeneric(ksFunction, parameterTypeResolver)
-        val parameter = determineParameter(ksFunction.parameters, parameterTypeResolver)
-        val proxyParameter = determineProxyParameter(parameter.second, generics, parameterTypeResolver)
+        val generics = genericResolver.extractGenerics(ksFunction, parameterTypeResolver)
+        val arguments = determineParameter(ksFunction.parameters, parameterTypeResolver)
         val proxyName = selectFunProxyName(
-            functionName,
-            generics ?: emptyMap(),
-            parameterTypeResolver,
-            parameter.second,
-            functionNameCollector
+            functionName = functionName,
+            generics = generics ?: emptyMap(),
+            typeResolver = parameterTypeResolver,
+            arguments = arguments.values,
+            existingProxies = existingProxies
         )
+        val returnType = ksFunction.returnType!!.resolve()
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
 
-        val returnType = resolveReturnValue(
-            ksFunction.returnType!!,
-            generics,
-            parameterTypeResolver
+        val (proxy, proxyReturnType) = buildProxy(
+            qualifier = qualifier,
+            proxyName = proxyName,
+            spyName = functionName,
+            generics = generics,
+            arguments = arguments,
+            returnType = returnType,
+            typeResolver = parameterTypeResolver,
+            suspending = isSuspending,
+            relaxer = relaxer
         )
 
         val function = buildFunction(
-            ksFunction.simpleName.asString(),
-            generics,
-            parameterTypeResolver,
-            isSuspending,
-            parameter.first,
-            parameter.second,
-            returnType,
-            proxyName
+            functionName = functionName,
+            proxyName = proxyName,
+            generics = generics,
+            isSuspending = isSuspending,
+            arguments = arguments,
+            rawReturnType = returnType,
+            proxyReturnType = proxyReturnType,
+            typeResolver = parameterTypeResolver
         )
 
-        val Proxy = if (isSuspending) {
-            buildASyncFunProxy(
-                qualifier,
-                functionName,
-                proxyName,
-                parameter.first,
-                proxyParameter,
-                returnType,
-                relaxer
-            )
-        } else {
-            buildSyncFunProxy(
-                qualifier,
-                functionName,
-                proxyName,
-                parameter.first,
-                proxyParameter,
-                returnType,
-                relaxer
-            )
-        }
-
-        functionNameCollector.add(proxyName)
-        return Pair(Proxy, function)
+        return Pair(proxy, function)
     }
 }
