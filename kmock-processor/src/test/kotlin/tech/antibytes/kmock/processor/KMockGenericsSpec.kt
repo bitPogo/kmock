@@ -9,9 +9,9 @@ package tech.antibytes.kmock.processor
 import org.junit.jupiter.api.Test
 import tech.antibytes.util.test.fulfils
 
-class KMockFunctionUtilsSpec {
+class KMockGenericsSpec {
     @Test
     fun `It fulfils FunctionUtils`() {
-        KMockFunctionUtils() fulfils ProcessorContract.FunctionUtils::class
+        KMockGenerics fulfils ProcessorContract.GenericResolver::class
     }
 }

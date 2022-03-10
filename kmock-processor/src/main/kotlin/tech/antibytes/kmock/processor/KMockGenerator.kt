@@ -36,7 +36,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 internal class KMockGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
-    private val utils: ProcessorContract.FunctionUtils,
+    private val generics: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
     private val functionGenerator: ProcessorContract.FunctionGenerator
 ) : ProcessorContract.MockGenerator {
@@ -118,9 +118,11 @@ internal class KMockGenerator(
         implementation.addSuperinterface(superType)
         implementation.addModifiers(KModifier.INTERNAL)
 
-        val generics = utils.resolveGeneric(template, typeResolver)
+        val generics = generics.extractGenerics(template, typeResolver)
         if (generics != null) {
-            implementation.typeVariables.addAll(utils.mapGeneric(generics, typeResolver))
+            implementation.typeVariables.addAll(
+                this.generics.mapDeclaredGenerics(generics, typeResolver)
+            )
         }
 
         implementation.primaryConstructor(
@@ -129,21 +131,24 @@ internal class KMockGenerator(
 
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isAbstract()) {
-                implementation.addProperties(
-                    propertyGenerator.buildPropertyBundle(
-                        qualifier,
-                        ksProperty,
-                        typeResolver,
-                        proxyNameCollector,
-                        relaxer
-                    )
+                val (proxy, property) = propertyGenerator.buildPropertyBundle(
+                    qualifier,
+                    ksProperty,
+                    typeResolver,
+                    proxyNameCollector,
+                    relaxer
                 )
+
+                proxyNameCollector.add(proxy.name)
+
+                implementation.addProperty(property)
+                implementation.addProperty(proxy)
             }
         }
 
         template.getAllFunctions().forEach { ksFunction ->
             if (ksFunction.isAbstract) {
-                val (Proxy, function) = functionGenerator.buildFunctionBundle(
+                val (proxy, function) = functionGenerator.buildFunctionBundle(
                     qualifier,
                     ksFunction,
                     typeResolver,
@@ -151,8 +156,10 @@ internal class KMockGenerator(
                     relaxer
                 )
 
+                proxyNameCollector.add(proxy.name)
+
                 implementation.addFunction(function)
-                implementation.addProperty(Proxy)
+                implementation.addProperty(proxy)
             }
         }
 

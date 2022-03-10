@@ -60,7 +60,7 @@ internal class KMockPropertyGenerator(
     }
 
     private fun determinePropertyInitializer(
-        propertyMock: PropertySpec.Builder,
+        propertyProxy: PropertySpec.Builder,
         qualifier: String,
         propertyName: String,
         isMutable: Boolean,
@@ -69,7 +69,7 @@ internal class KMockPropertyGenerator(
         val name = "$qualifier#_$propertyName"
 
         return if (!isMutable) {
-            propertyMock.initializer(
+            propertyProxy.initializer(
                 """
                     |if (spyOn == null) {
                     |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
@@ -86,7 +86,7 @@ internal class KMockPropertyGenerator(
                 relaxerGenerator.buildRelaxers(relaxer, false)
             )
         } else {
-            propertyMock.initializer(
+            propertyProxy.initializer(
                 """
                 |if (spyOn == null) {
                 |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
@@ -134,17 +134,16 @@ internal class KMockPropertyGenerator(
         qualifier: String,
         ksProperty: KSPropertyDeclaration,
         typeResolver: TypeParameterResolver,
-        propertyNameCollector: MutableList<String>,
+        existingProxies: List<String>,
         relaxer: ProcessorContract.Relaxer?
-    ): List<PropertySpec> {
+    ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(typeResolver)
         val isMutable = ksProperty.isMutable
 
-        propertyNameCollector.add("_$propertyName")
-        return listOf(
+        return Pair(
+            buildPropertyProxy(qualifier, propertyName, propertyType, isMutable, relaxer),
             buildProperty(propertyName, propertyType, isMutable),
-            buildPropertyProxy(qualifier, propertyName, propertyType, isMutable, relaxer)
         )
     }
 }

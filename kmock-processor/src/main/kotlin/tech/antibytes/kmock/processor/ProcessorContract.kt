@@ -16,6 +16,7 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
@@ -62,16 +63,27 @@ internal interface ProcessorContract {
         ): List<InterfaceSource>
     }
 
-    interface FunctionUtils {
-        fun resolveGeneric(
+    data class GenericDeclaration(
+        val types: List<TypeName>,
+        val recursive: Boolean,
+        val nullable: Boolean
+    )
+
+    interface GenericResolver {
+        fun extractGenerics(
             template: KSDeclaration,
             resolver: TypeParameterResolver
         ): Map<String, List<KSTypeReference>>?
 
-        fun mapGeneric(
+        fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
         ): List<TypeVariableName>
+
+        fun mapProxyGenerics(
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver
+        ): Map<String, GenericDeclaration>
     }
 
     interface RelaxerGenerator {
@@ -83,9 +95,9 @@ internal interface ProcessorContract {
             qualifier: String,
             ksProperty: KSPropertyDeclaration,
             typeResolver: TypeParameterResolver,
-            propertyNameCollector: MutableList<String> = mutableListOf(),
+            existingProxies: List<String> = mutableListOf(),
             relaxer: Relaxer?
-        ): List<PropertySpec>
+        ): Pair<PropertySpec, PropertySpec>
     }
 
     interface FunctionGenerator {
@@ -93,7 +105,7 @@ internal interface ProcessorContract {
             qualifier: String,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
-            functionNameCollector: MutableList<String>,
+            existingProxies: List<String>,
             relaxer: Relaxer?
         ): Pair<PropertySpec, FunSpec>
     }
