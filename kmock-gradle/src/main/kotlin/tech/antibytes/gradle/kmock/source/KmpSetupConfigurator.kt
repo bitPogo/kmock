@@ -25,7 +25,6 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     }
 
     private const val common = "commonTest"
-    private const val indicatorCommon = "common"
 
     private const val androidDebug = "androidDebugUnitTest"
     private const val androidDebugKsp = "kspDebugUnitTestKotlinAndroid"
@@ -33,7 +32,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     private const val androidRelease = "androidReleaseUnitTest"
     private const val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
 
-    private val renaming = mapOf("MockFactoryCommonEntry" to "MockFactory")
+    private val renaming = mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
 
     private fun createCleanUpTask(
         project: Project,
@@ -284,7 +283,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         val cleanDependencies = dependencies.toMutableMap()
 
         dependencies.keys.forEach { sourceName ->
-            if (sourceName !in indicators && sourceName != "commonTest") {
+            if (sourceName !in indicators && sourceName != common) {
                 cleanDependencies.remove(sourceName)
             }
         }
@@ -303,7 +302,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
             .mapValues { (sourceSetName, _) -> sourceSetName }
             .toMutableMap()
 
-        indicators[common] = indicatorCommon
+        indicators[common] = common
         val cleanDependencies = adjustDependencies(
             indicators,
             dependencies
