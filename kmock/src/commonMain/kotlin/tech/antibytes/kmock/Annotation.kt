@@ -34,10 +34,10 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
 /**
  * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source
  *
- * @param marker to identify the corresponding source set
+ * @param sourceSetName to identify the corresponding source set
  * @param interfaces variable amount of interfaces
  */
-annotation class MockShared(val marker: String, vararg val interfaces: KClass<*>)
+annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)

@@ -23,6 +23,7 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
+    private val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator,
     private val aggregator: ProcessorContract.Aggregator,
     private val options: ProcessorContract.Options,
     private val filter: ProcessorContract.SourceFilter,
@@ -86,6 +87,11 @@ internal class KMockProcessor(
             relaxer
         )
 
+        entryPointGenerator.generate(
+            options,
+            aggregated.extractedInterfaces
+        )
+
         return aggregated
     }
 
@@ -143,8 +149,12 @@ internal class KMockProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
 
-        val commonAggregated = stubCommonSources(resolver, relaxer)
-        val sharedAggregated = stubSharedSources(resolver, commonAggregated, relaxer)
+        val sharedAggregated = if (options.isKmp) {
+            val commonAggregated = stubCommonSources(resolver, relaxer)
+            stubSharedSources(resolver, commonAggregated, relaxer)
+        } else {
+            Aggregated(emptyList(), emptyList(), emptyList())
+        }
 
         return stubPlatformSources(
             resolver,

@@ -33,7 +33,8 @@ class KMockProcessorSpec {
             mockk(),
             mockk(),
             mockk(),
-            ProcessorContract.Options(fixture.fixture(), fixture.fixture()),
+            mockk(),
+            ProcessorContract.Options(true, fixture.fixture()),
             mockk(relaxed = true),
         ) fulfils SymbolProcessor::class
     }
@@ -56,8 +57,9 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(fixture.fixture(), fixture.fixture()),
+            ProcessorContract.Options(true, fixture.fixture()),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -85,8 +87,9 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(fixture.fixture(), fixture.fixture()),
+            ProcessorContract.Options(true, fixture.fixture()),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -97,7 +100,7 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process it returns all aggregated and merges illegal sources`() {
+    fun `Given process is called it returns all aggregated and merges illegal sources`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
@@ -124,8 +127,9 @@ class KMockProcessorSpec {
         val actual = KMockProcessor(
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(fixture.fixture(), fixture.fixture()),
+            ProcessorContract.Options(true, fixture.fixture()),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -138,7 +142,7 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process it and resolves the Relaxer`() {
+    fun `Given process is called it and resolves the Relaxer`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
@@ -162,8 +166,9 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(fixture.fixture(), fixture.fixture()),
+            ProcessorContract.Options(true, fixture.fixture()),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -173,14 +178,15 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process it delegates captured Stubs to the StubGenerator`() {
+    fun `Given process is called it delegates captured Stubs to the StubGenerator`() {
         // Given
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
-        val options = ProcessorContract.Options(fixture.fixture(), fixture.fixture())
+        val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator = mockk()
+        val options = ProcessorContract.Options(true, fixture.fixture())
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
@@ -215,11 +221,13 @@ class KMockProcessorSpec {
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
+        every { entryPointGenerator.generate(any(), any()) } just Runs
 
         // When
         KMockProcessor(
             generator,
             factoryGenerator,
+            entryPointGenerator,
             aggregator,
             options,
             filter,
@@ -258,6 +266,94 @@ class KMockProcessorSpec {
                 },
                 relaxer
             )
+        }
+
+        verify(exactly = 1) {
+            entryPointGenerator.generate(options, interfacesCommon)
+        }
+    }
+
+    @Test
+    fun `Given process is called it delegates it delegates only Platform sources`() {
+        // Given
+        val resolver: Resolver = mockk()
+        val annotated: Sequence<KSAnnotated> = sequence {}
+        val aggregator: ProcessorContract.Aggregator = mockk()
+        val generator: ProcessorContract.MockGenerator = mockk()
+        val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
+        val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator = mockk()
+        val options = ProcessorContract.Options(false, fixture.fixture())
+        val filter: ProcessorContract.SourceFilter = mockk()
+        val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
+
+        val illegal: List<KSAnnotated> = listOf(mockk())
+
+        val interfacesCommon: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesPlatform: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesFiltered: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+
+        val dependencies: List<KSFile> = listOf(mockk())
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            aggregator.extractInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegal, interfacesPlatform, dependencies)
+
+        every { filter.filter(any(), any()) } returns interfacesFiltered
+        every { filter.filterSharedSources(any()) } returns interfacesFiltered
+
+        every { aggregator.extractRelaxer(any()) } returns relaxer
+
+        every { generator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { generator.writeSharedMocks(any(), any(), any()) } just Runs
+        every { generator.writePlatformMocks(any(), any(), any()) } just Runs
+
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
+        every { entryPointGenerator.generate(any(), any()) } just Runs
+
+        // When
+        KMockProcessor(
+            generator,
+            factoryGenerator,
+            entryPointGenerator,
+            aggregator,
+            options,
+            filter,
+        ).process(resolver)
+
+        // Then
+        verify(exactly = 1) { aggregator.extractInterfaces(any()) }
+        verify(exactly = 0) { generator.writeCommonMocks(any(), any(), any()) }
+
+        verify(exactly = 1) { filter.filter(any(), any()) }
+        verify(exactly = 0) { filter.filterSharedSources(any()) }
+
+        verify(exactly = 0) { generator.writeSharedMocks(any(), any(), any()) }
+
+        verify(exactly = 1) {
+            filter.filter(
+                interfacesPlatform,
+                emptyList()
+            )
+        }
+        verify(exactly = 1) { generator.writePlatformMocks(interfacesFiltered, dependencies, relaxer) }
+
+        verify(exactly = 1) {
+            factoryGenerator.writeFactories(
+                options,
+                listOf(
+                    interfacesFiltered.first(),
+                ),
+                dependencies,
+                relaxer
+            )
+        }
+
+        verify(exactly = 0) {
+            entryPointGenerator.generate(options, interfacesCommon)
         }
     }
 }

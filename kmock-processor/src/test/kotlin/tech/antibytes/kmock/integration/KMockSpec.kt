@@ -93,7 +93,7 @@ class KMockSpec {
         val expected = loadResource("/PropertySharedExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("PropertySharedMock.kt")
 
         // Then
@@ -112,19 +112,23 @@ class KMockSpec {
         )
         val expected = loadResource("/PropertyCommonExpected.kt")
         val expectedFactory = loadResource("/FactoryCommonExpected.kt")
+        val expectedCommonFactory = loadResource("/FactoryCommonEntryPointExpected.kt")
 
         // When
         val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("PropertyCommonMock.kt")
         val actualFactory = resolveGenerated("MockFactory.kt")
+        val actualCommonFactory = resolveGenerated("MockFactoryCommonEntry.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
         actualFactory isNot null
+        actualCommonFactory isNot null
 
         actual!!.normalizeSource() mustBe expected.normalizeSource()
         actualFactory!!.normalizeSource() mustBe expectedFactory.normalizeSource()
+        actualCommonFactory!!.normalizeSource() mustBe expectedCommonFactory.normalizeSource()
     }
 
     @Test
@@ -157,7 +161,7 @@ class KMockSpec {
         val expected = loadResource("/SyncFunctionSharedExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("SyncFunctionSharedMock.kt")
 
         // Then
@@ -177,7 +181,7 @@ class KMockSpec {
         val expected = loadResource("/SyncFunctionCommonExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("SyncFunctionCommonMock.kt")
 
         // Then
@@ -217,7 +221,7 @@ class KMockSpec {
         val expected = loadResource("/AsyncFunctionSharedExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("AsyncFunctionSharedMock.kt")
 
         // Then
@@ -237,7 +241,7 @@ class KMockSpec {
         val expected = loadResource("/AsyncFunctionCommonExpected.kt")
 
         // When
-        val compilerResult = compile(provider, source)
+        val compilerResult = compile(provider, source, true)
         val actual = resolveGenerated("AsyncFunctionCommonMock.kt")
 
         // Then

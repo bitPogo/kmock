@@ -1,5 +1,5 @@
-// COMMON SOURCE
-package test
+// commonTest
+package generatorTest
 
 import kotlin.Boolean
 import kotlin.Suppress

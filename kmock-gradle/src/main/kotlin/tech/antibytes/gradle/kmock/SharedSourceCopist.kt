@@ -46,7 +46,8 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         platform: String,
         source: String,
         target: String,
-        indicator: String
+        indicator: String,
+        rename: Map<String, String>,
     ) {
         val capitalTarget = target.capitalize(Locale.ROOT)
 
@@ -57,6 +58,13 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             .into("$buildDir/generated/ksp/$target/${target}Test")
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
+            .rename { fileName ->
+                if (fileName is String && fileName in rename) {
+                    rename[fileName]!!
+                } else {
+                    fileName
+                }
+            }
     }
 
     override fun copySharedSource(
@@ -64,7 +72,8 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         platform: String,
         source: String,
         target: String,
-        indicator: String
+        indicator: String,
+        rename: Map<String, String>
     ): Copy {
         guardInputs(platform, source, target, indicator)
 
@@ -77,7 +86,8 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             buildDir = buildDir,
             source = source.substringBeforeLast("Test"),
             target = target.substringBeforeLast("Test"),
-            indicator = indicator
+            indicator = indicator,
+            rename = rename,
         )
 
         return task

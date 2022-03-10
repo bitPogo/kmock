@@ -10,12 +10,10 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.getByName
-import tech.antibytes.gradle.kmock.FactoryGenerator
 import tech.antibytes.gradle.kmock.KMockCleanTask
 import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.SharedSourceCopist
-import java.io.File
 import java.util.Locale
 
 internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator {
@@ -34,6 +32,8 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
 
     private const val androidRelease = "androidReleaseUnitTest"
     private const val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
+
+    private val renaming = mapOf("MockFactoryCommonEntry" to "MockFactory")
 
     private fun createCleanUpTask(
         project: Project,
@@ -128,7 +128,8 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 platform = precedence.mapping!!.first,
                 source = precedence.mapping!!.second,
                 target = target,
-                indicator = indicator
+                indicator = indicator,
+                rename = renaming
             )
         } else {
             SharedSourceCopist.copySharedSource(
@@ -136,22 +137,10 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 platform = dependencies.first(),
                 source = dependencies.first() + "Test",
                 target = target,
-                indicator = indicator
+                indicator = indicator,
+                rename = renaming
             )
         }.also { copy -> setCopyTaskDependencies(copy, kspTask) }
-    }
-
-    private fun setUpKmpEntryPoint(project: Project) {
-        val extension: KMockExtension = project.extensions.getByType(KMockExtension::class.java)
-
-        val kspCommon: File = project.file(
-            "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest/kotlin"
-        )
-
-        FactoryGenerator.generate(
-            kspCommon,
-            extension.rootPackage
-        )
     }
 
     private fun createCopyTasks(
@@ -174,10 +163,6 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                     indicator,
                     source
                 ).also { copySet ->
-                    if (source == "commonTest") {
-                        copySet.doLast { setUpKmpEntryPoint(this.project) }
-                    }
-
                     dependsOn.add(dependencies[source]!!)
                 }
             }

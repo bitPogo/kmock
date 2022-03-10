@@ -4,27 +4,22 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.gradle.kmock
+package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.processing.CodeGenerator
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
-import org.gradle.api.tasks.StopExecutionException
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.COLLECTOR_NAME
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMOCK_CONTRACT
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TARGET
-import java.io.File
+import com.squareup.kotlinpoet.ksp.writeTo
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 
-internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
-    private fun guardPackageName(rootPackage: String) {
-        if (rootPackage.isEmpty()) {
-            throw StopExecutionException("Missing package definition!")
-        }
-    }
-
+internal class KMockCommonEntryPointGenerator(
+    private val codeGenerator: CodeGenerator,
+) : ProcessorContract.MockFactoryCommonEntryPointGenerator {
     private fun buildRelaxedParameter(): ParameterSpec {
         return ParameterSpec.builder("relaxed", Boolean::class)
             .defaultValue("false")
@@ -91,19 +86,25 @@ internal object FactoryGenerator : KMockPluginContract.FactoryGenerator {
             .build()
     }
 
-    override fun generate(targetDir: File, rootPackage: String) {
-        guardPackageName(rootPackage)
+    override fun generate(
+        options: ProcessorContract.Options,
+        interfaces: List<ProcessorContract.InterfaceSource>,
+    ) {
+        if (options.isKmp && interfaces.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+            val file = FileSpec.builder(
+                options.rootPackage,
+                "MockFactoryCommonEntry"
+            )
+            file.addComment(ProcessorContract.Target.COMMON.value)
+            file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
-        val file = FileSpec.builder(
-            rootPackage,
-            "MockFactory"
-        )
-        file.addComment(TARGET)
-        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+            file.addFunction(buildMockFactory())
+            file.addFunction(buildSpyFactory())
 
-        file.addFunction(buildMockFactory())
-        file.addFunction(buildSpyFactory())
-
-        file.build().writeTo(targetDir)
+            file.build().writeTo(
+                codeGenerator = codeGenerator,
+                aggregating = false,
+            )
+        }
     }
 }
