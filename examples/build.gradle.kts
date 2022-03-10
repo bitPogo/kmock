@@ -229,6 +229,13 @@ afterEvaluate {
                 false
             }
         }
+        this.rename { fileName ->
+            if (fileName is String && fileName == "MockFactoryCommonEntry") {
+                "MockFactory"
+            } else {
+                fileName
+            }
+        }
     }
 
     val cleanDuplicatesJvm by tasks.creating(DefaultTask::class) {

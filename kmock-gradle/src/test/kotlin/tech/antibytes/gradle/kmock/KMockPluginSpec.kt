@@ -182,7 +182,6 @@ class KMockPluginSpec {
     @Test
     fun `Given apply is called it delegates it sets up KSP and builds the Kmp Factories`() {
         mockkObject(KmpSourceSetsConfigurator)
-        mockkObject(FactoryGenerator)
 
         // Given
         val kmock = KMockPlugin()
@@ -224,6 +223,5 @@ class KMockPluginSpec {
         verify(exactly = 1) { kspExtension.arg("isKmp", "true") }
 
         unmockkObject(KmpSourceSetsConfigurator)
-        unmockkObject(FactoryGenerator)
     }
 }
