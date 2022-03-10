@@ -1,4 +1,4 @@
-// COMMON SOURCE
+// commonTest
 package generatorTest
 
 import kotlin.Any

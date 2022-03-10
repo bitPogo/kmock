@@ -23,6 +23,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         return KMockProcessor(
             KMockGenerator(logger, generator, KMockGenerics, propertyGenerator, functionGenerator),
             KMockFactoryGenerator(logger, generator),
+            KMockCommonEntryPointGenerator(generator),
             KMockAggregator(logger),
             ProcessorContract.Options(
                 isKmp = environment.options["isKmp"] == true.toString(),

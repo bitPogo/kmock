@@ -139,8 +139,15 @@ internal interface ProcessorContract {
         )
     }
 
+    interface MockFactoryCommonEntryPointGenerator {
+        fun generate(
+            options: Options,
+            interfaces: List<InterfaceSource>,
+        )
+    }
+
     enum class Target(val value: String) {
-        COMMON("COMMON SOURCE"),
+        COMMON("commonTest"),
         PLATFORM("")
     }
 

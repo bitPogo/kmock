@@ -74,7 +74,7 @@ internal interface KMockPluginContract {
     }
 
     companion object {
-        const val TARGET = "COMMON SOURCE"
+        const val TARGET = "commonTest"
         val COLLECTOR_NAME = ClassName(
             "tech.antibytes.kmock",
             "KMockContract.Collector"

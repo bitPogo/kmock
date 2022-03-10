@@ -1,4 +1,4 @@
-// COMMON SOURCE
+// commonTest
 package test
 
 import kotlin.Boolean
