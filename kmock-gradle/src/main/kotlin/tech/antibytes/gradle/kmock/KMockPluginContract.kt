@@ -19,13 +19,6 @@ internal interface KMockPluginContract {
          * The invoking projects root package name
          */
         var rootPackage: String
-
-        /**
-         * Declaration of Shared Sources (e.g. nativeTest) except commonTest.
-         * The mapping must provide the source set name as key
-         * and as value its precedence.
-         */
-        var sharedSources: Map<String, Int>
     }
 
     interface CleanUpTask {

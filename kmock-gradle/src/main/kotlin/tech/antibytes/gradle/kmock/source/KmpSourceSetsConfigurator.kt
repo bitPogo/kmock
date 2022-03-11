@@ -6,6 +6,7 @@
 
 package tech.antibytes.gradle.kmock.source
 
+import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -78,9 +79,32 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         kspCollector[platformName] = kspDependency
     }
 
+    private fun setPrecedence(
+        sourceSetName: String,
+        precedences: MutableMap<String, Int>
+    ) {
+        if (sourceSetName in precedences) {
+            precedences[sourceSetName] = precedences[sourceSetName]!! - 1
+        } else {
+            precedences[sourceSetName] = 0
+        }
+    }
+
+    private fun propagatePrecedences(
+        project: Project,
+        precedences: Map<String, Int>
+    ) {
+        val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+
+        precedences.forEach { (sourceSet, precedence) ->
+            ksp.arg(sourceSet, precedence.toString())
+        }
+    }
+
     private fun flattenMetaDependencies(
         platformDependencies: Map<String, Set<String>>,
-        metaDependencies: MutableMap<String, Set<String>>
+        metaDependencies: Map<String, Set<String>>,
+        precedences: MutableMap<String, Int>
     ): MutableMap<String, Set<String>> {
         val flattenedDependencies: MutableMap<String, Set<String>> = mutableMapOf()
 
@@ -98,15 +122,24 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     inMeta && inPlatform -> {
                         dependencies.addAll(metaDependencies[sourceSet]!!)
                         dependencies.addAll(platformDependencies[sourceSet]!!)
+
                         dependencies.remove(sourceSet)
+
+                        setPrecedence(sourceSet, precedences)
                     }
                     inMeta -> {
                         dependencies.addAll(metaDependencies[sourceSet]!!)
+
                         dependencies.remove(sourceSet)
+
+                        setPrecedence(sourceSet, precedences)
                     }
                     inPlatform -> {
                         dependencies.addAll(platformDependencies[sourceSet]!!)
+
                         dependencies.remove(sourceSet)
+
+                        setPrecedence(sourceSet, precedences)
                     }
                     else -> idx++
                 }
@@ -143,6 +176,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val kspCollector: MutableMap<String, String> = mutableMapOf()
         val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
         val metaDependencies: MutableMap<String, Set<String>> = mutableMapOf()
+        val precedences: MutableMap<String, Int> = mutableMapOf()
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
@@ -167,10 +201,12 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         val allDependencies = mergeDependencies(
             sourceDependencies,
-            flattenMetaDependencies(sourceDependencies, metaDependencies)
+            flattenMetaDependencies(sourceDependencies, metaDependencies, precedences)
         )
 
         if (kspCollector.isNotEmpty()) {
+            propagatePrecedences(project, precedences)
+
             project.afterEvaluate {
                 KmpSetupConfigurator.wireSharedSourceTasks(
                     project,

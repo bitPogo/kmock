@@ -11,7 +11,6 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.getByName
 import tech.antibytes.gradle.kmock.KMockCleanTask
-import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import java.util.Locale
@@ -161,9 +160,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                     kspMapping,
                     indicator,
                     source
-                ).also { copySet ->
-                    dependsOn.add(dependencies[source]!!)
-                }
+                ).also { dependsOn.add(dependencies[source]!!) }
             }
             .toTypedArray()
 
@@ -296,10 +293,8 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
     ) {
-        val indicators: MutableMap<String, String> = project.extensions
-            .getByType(KMockExtension::class.java)
-            .sharedSources
-            .mapValues { (sourceSetName, _) -> sourceSetName.toUpperCase(Locale.ROOT) }
+        val indicators: MutableMap<String, String> = dependencies.keys
+            .associateWith { sourceSetName -> sourceSetName.toUpperCase(Locale.ROOT) }
             .toMutableMap()
 
         indicators[common] = common.toUpperCase(Locale.ROOT)

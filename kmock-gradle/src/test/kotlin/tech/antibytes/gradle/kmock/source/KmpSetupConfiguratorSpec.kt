@@ -16,14 +16,12 @@ import io.mockk.verify
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.getByName
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockCleanTask
-import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import tech.antibytes.util.test.fixture.fixture
@@ -57,10 +55,7 @@ class KmpSetupConfiguratorSpec {
             "js" to "kspTestKotlinJs"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -69,11 +64,6 @@ class KmpSetupConfiguratorSpec {
             mockk(),
             mockk(),
         )
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -207,10 +197,7 @@ class KmpSetupConfiguratorSpec {
             "js" to "kspTestKotlinJs"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -224,11 +211,6 @@ class KmpSetupConfiguratorSpec {
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
 
@@ -278,10 +260,7 @@ class KmpSetupConfiguratorSpec {
             "js" to "kspTestKotlinJs"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask0: Copy = mockk()
         val copyTask1: Copy = mockk()
@@ -292,11 +271,6 @@ class KmpSetupConfiguratorSpec {
             mockk(),
             mockk(),
         )
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns mapOf("otherTest" to 23)
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -393,16 +367,16 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask0, copyTask1)) }
+        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
         verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
@@ -425,7 +399,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(atLeast = 1) {
             compileTask.dependsOn(
-                *arrayOf(copyTask1, copyTask0),
+                *arrayOf(copyTask0, copyTask1),
             )
         }
 
@@ -449,10 +423,7 @@ class KmpSetupConfiguratorSpec {
             "js" to "kspTestKotlinJs"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -466,11 +437,6 @@ class KmpSetupConfiguratorSpec {
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
 
@@ -519,10 +485,7 @@ class KmpSetupConfiguratorSpec {
             "js" to "kspTestKotlinJs"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -534,11 +497,6 @@ class KmpSetupConfiguratorSpec {
 
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -589,10 +547,7 @@ class KmpSetupConfiguratorSpec {
             "native2" to "kspTestKotlinNative2"
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -604,11 +559,6 @@ class KmpSetupConfiguratorSpec {
 
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
@@ -661,10 +611,7 @@ class KmpSetupConfiguratorSpec {
             "jvm" to "kspTestKotlinJvm",
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask: Copy = mockk()
         val compileTask: Task = mockk()
@@ -677,11 +624,6 @@ class KmpSetupConfiguratorSpec {
 
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns true
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns emptyMap()
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -850,10 +792,7 @@ class KmpSetupConfiguratorSpec {
             "jvm" to "kspTestKotlinJvm",
         )
 
-        val extensions: ExtensionContainer = mockk()
         val path: String = fixture.fixture()
-
-        val kMockExtension: KMockExtension = mockk()
 
         val copyTask0: Copy = mockk()
         val copyTask1: Copy = mockk()
@@ -868,11 +807,6 @@ class KmpSetupConfiguratorSpec {
 
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns true
-
-        every { project.extensions } returns extensions
-        every { extensions.getByType(KMockExtension::class.java) } returns kMockExtension
-
-        every { kMockExtension.sharedSources } returns mapOf("otherTest" to 23)
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -989,25 +923,25 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask0, copyTask1)) }
+        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
         verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask1, copyTask0)) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
+        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0, copyTask1)) }
+        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
         verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources" }
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
