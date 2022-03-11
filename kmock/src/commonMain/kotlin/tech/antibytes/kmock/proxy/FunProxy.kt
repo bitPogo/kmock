@@ -19,6 +19,9 @@ import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
+/**
+ * @suppress
+ */
 abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
     collector: Collector = Collector { _, _ -> Unit },

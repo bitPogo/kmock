@@ -21,6 +21,7 @@ import kotlin.math.max
 
 /**
  * Proxy in order to stub/mock property behaviour.
+ * @constructor Creates a PropertyProxy
  * @param Value the value of the Property.
  * @param id a unique identifier for this Proxy.
  * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.

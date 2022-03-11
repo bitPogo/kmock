@@ -7,13 +7,13 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.error.MockError
+import tech.antibytes.kmock.error.MockError.MissingCall
 
 /**
  * Retrieves arguments of a call at a given index for a given type of FunProxy.
  * @param T the type to look out for.
  * @param callIndex the index to look at.
- * @throws MockError.MissingCall if there is no call recorded at given index
+ * @throws MissingCall if there is no call recorded at given index
  * @return List of T
  */
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
@@ -23,7 +23,7 @@ inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
 /**
  * Retrieves arguments for given type of FunProxy.
  * @param T the type to look out for.
- * @throws MockError.MissingCall if there is no call recorded at given index
+ * @throws MissingCall if there is no call recorded at given index
  * @return List of T
  */
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsByType(): List<T> {
@@ -41,7 +41,7 @@ inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsByType(
 /**
  * Retrieves arguments for given type of FunProxy, while boxing them in sub lists for each call.
  * @param T the type to look out for.
- * @throws MockError.MissingCall if there is no call recorded at given index
+ * @throws MissingCall if there is no call recorded at given index
  * @return List of List of T
  */
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsBoxedByType(): List<List<T>> {

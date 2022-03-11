@@ -6,8 +6,18 @@
 
 package tech.antibytes.kmock
 
-import tech.antibytes.kmock.error.MockError
+import tech.antibytes.kmock.error.MockError.MissingCall
+import tech.antibytes.kmock.error.MockError.MissingStub
+import tech.antibytes.kmock.verification.constraints.any
+import tech.antibytes.kmock.verification.constraints.eq
+import tech.antibytes.kmock.verification.constraints.isNot
+import tech.antibytes.kmock.verification.constraints.isNotSame
+import tech.antibytes.kmock.verification.constraints.isSame
 
+/**
+ * Contract Container of KMock
+ * @author Matthias Geisler
+ */
 object KMockContract {
     /**
      * Base Proxy definition
@@ -22,7 +32,7 @@ object KMockContract {
         val id: String
 
         /**
-         * Counter of the actual invocation of the proxy.
+         * Counter of the actual invocations of the proxy.
          */
         val calls: Int
 
@@ -35,7 +45,7 @@ object KMockContract {
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
-         * @throws MockError.MissingCall if the callIndex is invalid.
+         * @throws MissingCall if the callIndex is invalid.
          */
         fun getArgumentsForCall(callIndex: Int): Arguments
 
@@ -122,7 +132,7 @@ object KMockContract {
          * Setter/Getter in order to set/get a List of ReturnValues of the function. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws NullPointerException on get if no value was set.
-         * @throws MockError.MissingStub if the given List is empty.
+         * @throws MissingStub if the given List is empty.
          */
         var returnValues: List<ReturnValue>
 
@@ -154,20 +164,20 @@ object KMockContract {
     interface SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : FunProxy<ReturnValue, SideEffect> {
 
         /**
-         * Invocation of function without arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions without arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun invoke(): ReturnValue
 
         /**
-         * Invocation of function with 1 argument. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 1 argument. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0> invoke(arg0: Arg0): ReturnValue
 
         /**
-         * Invocation of function with 2 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 2 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1> invoke(
             arg0: Arg0,
@@ -175,8 +185,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 3 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 3 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
@@ -185,8 +195,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 4 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 4 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
@@ -196,8 +206,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 5 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 5 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
@@ -208,8 +218,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 6 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 6 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
@@ -221,8 +231,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 7 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 7 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
@@ -235,8 +245,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 8 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 8 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
@@ -250,8 +260,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 9 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 9 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
@@ -266,8 +276,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 10 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 10 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
@@ -283,8 +293,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 11 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 11 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
@@ -301,8 +311,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 12 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 12 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
@@ -320,8 +330,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 13 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 13 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
@@ -349,20 +359,20 @@ object KMockContract {
     interface AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : FunProxy<ReturnValue, SideEffect> {
 
         /**
-         * Invocation of function without arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions without arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun invoke(): ReturnValue
 
         /**
-         * Invocation of function with 1 argument. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 1 argument. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0> invoke(arg0: Arg0): ReturnValue
 
         /**
-         * Invocation of function with 2 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 2 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1> invoke(
             arg0: Arg0,
@@ -370,8 +380,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 3 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 3 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
@@ -380,8 +390,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 4 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 4 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
@@ -391,8 +401,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 5 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 5 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
@@ -403,8 +413,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 6 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 6 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
@@ -416,8 +426,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 7 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 7 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
@@ -430,8 +440,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 8 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 8 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
@@ -445,8 +455,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 9 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 9 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
@@ -461,8 +471,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 10 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 10 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
@@ -478,8 +488,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 11 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 11 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
@@ -496,8 +506,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 12 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 12 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
@@ -515,8 +525,8 @@ object KMockContract {
         ): ReturnValue
 
         /**
-         * Invocation of function with 13 arguments. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * Invocation for functions with 13 arguments. This is meant for internal use only.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
@@ -571,7 +581,7 @@ object KMockContract {
          * Setter/Getter in order to set/get a List of Values of the property. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws NullPointerException on get if no value was set.
-         * @throws MockError.MissingStub if the given List is empty.
+         * @throws MissingStub if the given List is empty.
          */
         var getMany: List<Value>
 
@@ -585,26 +595,25 @@ object KMockContract {
         /**
          * Setter/Getter in order to set/get custom SideEffect for the properties setter. SideEffects can be for fine grained behaviour of a Proxy
          * on invocation.
-         * @param Value the delegated value.
          * @throws NullPointerException on get if no value was set.
          */
         var set: (Value) -> Unit
 
         /**
          * Invocation of property getter. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun onGet(): Value
 
         /**
          * Invocation of property setter. This is meant for internal use only.
-         * @throws MockError.MissingStub if no behaviour instruction was given.
+         * @throws MissingStub if no behaviour instruction was given.
          */
         fun onSet(value: Value)
     }
 
     /**
-     * Collector of Proxy invocations.
+     * Collector of a Proxy invocations.
      * @author Matthias Geisler
      */
     fun interface Collector {
@@ -634,12 +643,12 @@ object KMockContract {
     }
 
     /**
-     * Constraint to for granular Argument verification.
-     * @see tech.antibytes.kmock.verification.constraints.any
-     * @see tech.antibytes.kmock.verification.constraints.eq
-     * @see tech.antibytes.kmock.verification.constraints.isNot
-     * @see tech.antibytes.kmock.verification.constraints.isNotSame
-     * @see tech.antibytes.kmock.verification.constraints.isSame
+     * Constraint for granular Argument verification.
+     * @see any
+     * @see eq
+     * @see isNot
+     * @see isNotSame
+     * @see isSame
      * @author Matthias Geisler
      */
     fun interface VerificationConstraint {
@@ -689,7 +698,7 @@ object KMockContract {
         /**
          * Adds a VerificationHandle to the Chain.
          * Meant for internal usage only!
-         * @param VerificationHandle a handle which will be used for verification
+         * @param handle a VerificationHandle which will be used for verification
          */
         fun add(handle: VerificationHandle)
 
@@ -702,7 +711,7 @@ object KMockContract {
     }
 
     /**
-     * Container to which holds actual references of proxy calls. The references are ordered by their invocation.
+     * Container which holds actual references of proxy calls. The references are ordered by their invocation.
      * @author Matthias Geisler
      */
     interface Verifier {
@@ -717,13 +726,13 @@ object KMockContract {
         fun clear()
     }
 
-    const val NOT_CALLED = "Call not found."
-    const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-    const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-    const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
-    const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
-    const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-    const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
-    const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
-    const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
+    internal const val NOT_CALLED = "Call not found."
+    internal const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
+    internal const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
+    internal const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
+    internal const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
+    internal const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
+    internal const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
+    internal const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
+    internal const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
 }

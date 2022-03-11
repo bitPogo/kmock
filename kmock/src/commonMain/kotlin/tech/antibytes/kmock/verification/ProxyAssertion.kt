@@ -8,6 +8,7 @@ package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
 /**
  * Asserts that invocations of a FunProxy happened.
@@ -32,7 +33,7 @@ fun FunProxy<*, *>.assertHasBeenCalled(
  * @throws AssertionError if the amount of calls does not match the expected amount.
  * @see FunProxy
  * @see verify
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.assertHasBeenCalledWith(
@@ -51,7 +52,7 @@ fun FunProxy<*, *>.assertHasBeenCalledWith(
  * @throws AssertionError if the amount of calls does not match the expected amount.
  * @see FunProxy
  * @see verify
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
@@ -82,7 +83,7 @@ fun FunProxy<*, *>.assertHasNotBeenCalled() {
  * @throws AssertionError if at least one call contains a given argument.
  * @see FunProxy
  * @see verify
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.assertHasBeenCalledWithout(
@@ -99,7 +100,7 @@ fun FunProxy<*, *>.assertHasBeenCalledWithout(
  * @throws AssertionError if the amount of calls does not match the expected amount.
  * @see FunProxy
  * @see verify
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.assertHasBeenCalledStrictlyWithout(vararg illegal: Any?) {
@@ -139,7 +140,7 @@ fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
  * @throws AssertionError if at least one call contains a given argument.
  * @see FunProxy
  * @see verify
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun KMockContract.PropertyProxy<*>.assertWasSetTo(exactly: Int, value: Any?) {

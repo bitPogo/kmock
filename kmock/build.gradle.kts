@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -19,6 +20,8 @@ plugins {
     id("tech.antibytes.gradle.coverage")
 
     id("kotlinx-atomicfu")
+
+    id("org.jetbrains.dokka") version "1.6.10"
 }
 
 group = KMockConfiguration.group
@@ -188,3 +191,30 @@ kotlin {
         }
     }
 }
+
+tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
+    outputDirectory.set(buildDir.resolve("dokka"))
+
+    moduleName.set("KMock")
+    offlineMode.set(false)
+    suppressObviousFunctions.set(true)
+
+    dokkaSourceSets {
+        configureEach {
+            reportUndocumented.set(true)
+            skipEmptyPackages.set(true)
+            jdkVersion.set(8)
+            noStdlibLink.set(false)
+            noJdkLink.set(false)
+            noAndroidSdkLink.set(false)
+        }
+    }
+}
+
+val dokkaGfm by tasks.getting(DokkaTask::class) {
+    outputDirectory.set(
+        rootDir.resolve("docs/api")
+    )
+}
+
+

@@ -12,9 +12,11 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed/mocked
+ * Determines which interfaces should be stubbed/mocked
  *
- * @param interfaces variable amount of interfaces
+ * @param interfaces variable amount of interfaces.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
  */
 annotation class Mock(vararg val interfaces: KClass<*>)
 
@@ -22,9 +24,11 @@ annotation class Mock(vararg val interfaces: KClass<*>)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed/mocked for CommonCode.
+ * Determines which interfaces should be stubbed/mocked for CommonCode.
  *
  * @param interfaces variable amount of interfaces.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
  */
 annotation class MockCommon(vararg val interfaces: KClass<*>)
 
@@ -32,10 +36,13 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source.
+ * Determines which interfaces should be stubbed/mocked for a shared source.
  *
  * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest).
  * @param interfaces variable amount of interfaces.
+ * @property sourceSetName which will be propagated to the (KSP) processor.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
  */
 annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
 
@@ -43,7 +50,7 @@ annotation class MockShared(val sourceSetName: String, vararg val interfaces: KC
 @Target(AnnotationTarget.FUNCTION)
 @MustBeDocumented
 /**
- * Annotation to determine a Relaxer. The Processor will use only the first specified relaxer.
+ * Determines a Relaxer (optional). The Processor will use only the first specified relaxer.
  * Note: The relaxer must match the following form or the Processor fails:
  * ```
  *   fun <T> relax(id: String): T {
@@ -59,5 +66,6 @@ annotation class MockShared(val sourceSetName: String, vararg val interfaces: KC
  *
  * The Processor will delegate the id of the Proxy which will invoke the Relaxer.
  * @see KMockContract.Relaxer
+ * @author Matthias Geisler
  */
 annotation class Relaxer

@@ -12,7 +12,8 @@ import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
 /**
  * VerificationConstraint matches if the actual and expected value are not equal.
- * @param illegal value which should match.
+ * @param illegal value which should not match.
+ * @property illegal value which should not match.
  * @see VerificationConstraint
  * @author Matthias Geisler
  */

@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 /**
- * Relaxer for Functions which return Unit
+ * Relaxer for functions which return Unit
  * @param T actual type of the return value.
  */
 inline fun <reified T> relaxVoidFunction(): T? {

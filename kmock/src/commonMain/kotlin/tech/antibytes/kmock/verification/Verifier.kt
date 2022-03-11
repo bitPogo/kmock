@@ -13,7 +13,7 @@ import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 
 /**
- * Container to which collects and holds actual references of proxy calls in a freezing manner.
+ * Container which collects and holds actual references of proxy calls in a freezing manner.
  * The references are ordered by their invocation.
  * This is intended as default mode for Verification.
  * @author Matthias Geisler

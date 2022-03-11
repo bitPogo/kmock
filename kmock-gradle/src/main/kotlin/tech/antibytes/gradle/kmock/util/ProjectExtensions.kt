@@ -8,7 +8,7 @@ package tech.antibytes.gradle.kmock.util
 
 import org.gradle.api.Project
 
-fun Project.applyIfNotExists(vararg pluginNames: String) {
+internal fun Project.applyIfNotExists(vararg pluginNames: String) {
     pluginNames.forEach { pluginName ->
         if (!this.plugins.hasPlugin(pluginName)) {
             this.plugins.apply(pluginName)
@@ -16,7 +16,7 @@ fun Project.applyIfNotExists(vararg pluginNames: String) {
     }
 }
 
-fun Project.isKmp(): Boolean {
+internal fun Project.isKmp(): Boolean {
     return this.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
 }
 
