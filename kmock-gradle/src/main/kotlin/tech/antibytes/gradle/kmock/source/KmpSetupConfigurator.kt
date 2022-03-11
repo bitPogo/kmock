@@ -299,10 +299,10 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         val indicators: MutableMap<String, String> = project.extensions
             .getByType(KMockExtension::class.java)
             .sharedSources
-            .mapValues { (sourceSetName, _) -> sourceSetName }
+            .mapValues { (sourceSetName, _) -> sourceSetName.toUpperCase(Locale.ROOT) }
             .toMutableMap()
 
-        indicators[common] = common
+        indicators[common] = common.toUpperCase(Locale.ROOT)
         val cleanDependencies = adjustDependencies(
             indicators,
             dependencies

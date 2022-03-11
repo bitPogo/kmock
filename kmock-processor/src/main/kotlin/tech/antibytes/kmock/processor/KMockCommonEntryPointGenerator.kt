@@ -95,7 +95,7 @@ internal class KMockCommonEntryPointGenerator(
                 options.rootPackage,
                 "MockFactoryCommonEntry"
             )
-            file.addComment(ProcessorContract.Target.COMMON.value)
+            file.addComment(ProcessorContract.Target.COMMON.value.uppercase())
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
             file.addFunction(buildMockFactory())

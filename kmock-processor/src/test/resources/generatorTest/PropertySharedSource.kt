@@ -8,7 +8,7 @@ package generatorTest
 
 import tech.antibytes.kmock.MockShared
 
-@MockShared("TEST", PropertyShared::class)
+@MockShared("TesT", PropertyShared::class)
 interface PropertyShared {
     val foo: String
     val bar: Int

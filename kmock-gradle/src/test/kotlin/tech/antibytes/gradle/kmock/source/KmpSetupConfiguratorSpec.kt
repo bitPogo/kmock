@@ -140,7 +140,7 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 any(),
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -151,7 +151,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
@@ -160,7 +160,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
@@ -263,7 +263,7 @@ class KmpSetupConfiguratorSpec {
                 "jvm",
                 "jvmTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -368,7 +368,7 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 any(),
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -379,7 +379,7 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 any(),
                 "otherTest",
-                "otherTest",
+                "OTHERTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -393,7 +393,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
@@ -402,7 +402,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
@@ -504,7 +504,7 @@ class KmpSetupConfiguratorSpec {
                 "jvm",
                 "jvmTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -574,7 +574,7 @@ class KmpSetupConfiguratorSpec {
                 "js",
                 "jsTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -644,7 +644,7 @@ class KmpSetupConfiguratorSpec {
                 "native1",
                 "native1Test",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -749,7 +749,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -772,7 +772,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -783,7 +783,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
@@ -792,7 +792,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
@@ -801,7 +801,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
@@ -944,7 +944,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -967,7 +967,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "commonTest",
-                "commonTest",
+                "COMMONTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -978,7 +978,7 @@ class KmpSetupConfiguratorSpec {
                 "android",
                 "androidDebugUnitTest",
                 "otherTest",
-                "otherTest",
+                "OTHERTEST",
                 mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
@@ -989,7 +989,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("otherTest", "commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
@@ -998,7 +998,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("otherTest", "commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask1, copyTask0)) }
         verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
@@ -1007,7 +1007,7 @@ class KmpSetupConfiguratorSpec {
 
         verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
         verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("otherTest", "commonTest")) }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("OTHERTEST", "COMMONTEST")) }
         verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask0) }
         verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
