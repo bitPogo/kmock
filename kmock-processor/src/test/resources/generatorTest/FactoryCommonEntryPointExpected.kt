@@ -1,4 +1,4 @@
-// commonTest
+// COMMONTEST
 package generatorTest
 
 import kotlin.Boolean

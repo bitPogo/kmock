@@ -15,7 +15,6 @@ abstract class KMockExtension(
     private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
 
     private var _rootPackage: String = ""
-    private var _sharedSources: Map<String, Int> = emptyMap()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -33,11 +32,4 @@ abstract class KMockExtension(
             ksp.arg(sourceSet, precedence.toString())
         }
     }
-
-    override var sharedSources: Map<String, Int>
-        get() = _sharedSources
-        set(value) {
-            propagatePrecedences(value)
-            _sharedSources = value
-        }
 }

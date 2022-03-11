@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed/mocked
+ * Annotation to determine which interfaces are about to be stubbed/mocked.
  *
  * @param interfaces variable amount of interfaces
  */
@@ -32,10 +32,10 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source
+ * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source.
  *
- * @param sourceSetName to identify the corresponding source set
- * @param interfaces variable amount of interfaces
+ * @param sourceSetName to bind the given interface to a sourceSet (eg. nativeTest).
+ * @param interfaces variable amount of interfaces.
  */
 annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
 

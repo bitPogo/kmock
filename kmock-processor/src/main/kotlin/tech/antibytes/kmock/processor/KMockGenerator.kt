@@ -32,6 +32,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
 import tech.antibytes.kmock.processor.ProcessorContract.InterfaceSource
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import java.util.Locale
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
@@ -183,7 +184,7 @@ internal class KMockGenerator(
         val implementation = buildMock(className, template, relaxer)
 
         if (target.isNotEmpty()) {
-            file.addComment(target)
+            file.addComment(target.uppercase(Locale.getDefault()))
         }
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)

@@ -85,34 +85,34 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val flattenedDependencies: MutableMap<String, Set<String>> = mutableMapOf()
 
         metaDependencies.keys.forEach { key ->
-            val values = metaDependencies[key]!!.toMutableSet()
+            val dependencies = metaDependencies[key]!!.toMutableSet()
             var idx = 0
 
-            while (idx < values.size) {
-                val value = values.elementAt(idx)
+            while (idx < dependencies.size) {
+                val sourceSetName = dependencies.elementAt(idx)
 
-                val inMeta = value in metaDependencies
-                val inPlatform = value in platformDependencies
+                val inMeta = sourceSetName in metaDependencies
+                val inPlatform = sourceSetName in platformDependencies
 
                 when {
                     inMeta && inPlatform -> {
-                        values.addAll(metaDependencies[value]!!)
-                        values.addAll(platformDependencies[value]!!)
-                        values.remove(value)
+                        dependencies.addAll(metaDependencies[sourceSetName]!!)
+                        dependencies.addAll(platformDependencies[sourceSetName]!!)
+                        dependencies.remove(sourceSetName)
                     }
                     inMeta -> {
-                        values.addAll(metaDependencies[value]!!)
-                        values.remove(value)
+                        dependencies.addAll(metaDependencies[sourceSetName]!!)
+                        dependencies.remove(sourceSetName)
                     }
                     inPlatform -> {
-                        values.addAll(platformDependencies[value]!!)
-                        values.remove(value)
+                        dependencies.addAll(platformDependencies[sourceSetName]!!)
+                        dependencies.remove(sourceSetName)
                     }
                     else -> idx++
                 }
             }
 
-            flattenedDependencies[key] = values
+            flattenedDependencies[key] = dependencies
         }
 
         return flattenedDependencies
@@ -165,7 +165,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
         }
 
-        val fullDependencies = mergeDependencies(
+        val allDependencies = mergeDependencies(
             sourceDependencies,
             flattenMetaDependencies(sourceDependencies, metaDependencies)
         )
@@ -175,7 +175,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                 KmpSetupConfigurator.wireSharedSourceTasks(
                     project,
                     kspCollector,
-                    fullDependencies
+                    allDependencies
                 )
             }
         }
