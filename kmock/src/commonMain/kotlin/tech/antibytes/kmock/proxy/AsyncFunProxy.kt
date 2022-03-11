@@ -12,6 +12,7 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 
 /**
  * Asynchronous function Proxy in order to stub/mock asynchronous function behaviour.
+ * @constructor Creates an AsyncFunProxy
  * @param ReturnValue return value of the Proxy.
  * @param SideEffect the function signature.
  * @param id a unique identifier for this Proxy.

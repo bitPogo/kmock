@@ -10,7 +10,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Proxy
 
 /**
- * Placeholder Collector for Proxies
+ * Placeholder Collector for Proxies.
  * @see Collector
  * @author Matthias Geisler
  */

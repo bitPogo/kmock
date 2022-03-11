@@ -13,7 +13,8 @@ import tech.antibytes.kmock.KMockContract.VerificationConstraint
 @OptIn(ExperimentalUnsignedTypes::class)
 /**
  * VerificationConstraint matches if the actual and expected value are equal.
- * @param expected the expected value.
+ * @param expected the expected value which should match.
+ * @property expected the expected value which should match.
  * @see VerificationConstraint
  * @author Matthias Geisler
  */

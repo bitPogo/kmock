@@ -12,7 +12,8 @@ import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
 /**
  * VerificationConstraint matches if the actual and expected value are identical.
- * @param expected value.
+ * @param expected the expected value which should match.
+ * @property expected the expected value which should match.
  * @see VerificationConstraint
  * @author Matthias Geisler
  */

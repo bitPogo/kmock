@@ -6,10 +6,10 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
+import tech.antibytes.kmock.KMockContract.VerificationConstraint
 
 private fun <T> traverseMockAndShare(
     proxy: Proxy<*, T>,
@@ -49,7 +49,7 @@ fun FunProxy<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(th
  * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
  * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
  * @return VerificationHandle
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.hasBeenCalledWith(
@@ -60,7 +60,7 @@ fun FunProxy<*, *>.hasBeenCalledWith(
  * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
  * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
  * @return VerificationHandle
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.hasBeenStrictlyCalledWith(
@@ -71,7 +71,7 @@ fun FunProxy<*, *>.hasBeenStrictlyCalledWith(
  * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
  * @param illegal arguments/constraints which calls does not match.
  * @return VerificationHandle
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun FunProxy<*, *>.hasBeenCalledWithout(
@@ -96,7 +96,7 @@ fun PropertyProxy<*>.wasSet(): VerificationHandle = traverseMockAndShare(this) {
  * VerificationHandle Factory, which collects all invocation of an PropertyProxy Setter with the given Value.
  * @return VerificationHandle
  * @param value argument/constraint which calls must match.
- * @see KMockContract.VerificationConstraint
+ * @see VerificationConstraint
  * @author Matthias Geisler
  */
 fun PropertyProxy<*>.wasSetTo(

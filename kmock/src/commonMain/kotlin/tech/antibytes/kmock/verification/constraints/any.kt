@@ -15,6 +15,8 @@ import kotlin.reflect.KClass
  * VerificationConstraint which allows any value including null.
  * @param expected KClass of the expected value. If set the matcher is restricted to the given class type (excluding null).
  * If null any value (type) is accepted. Default is null.
+ * @property expected KClass of the expected value. If set the matcher is restricted to the given class type (excluding null).
+ * If null any value (type) is accepted. Default is null.
  * @see VerificationConstraint
  * @author Matthias Geisler
  */
