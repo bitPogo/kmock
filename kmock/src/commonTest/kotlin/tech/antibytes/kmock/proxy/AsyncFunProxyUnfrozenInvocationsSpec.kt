@@ -42,7 +42,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         // Then
         actual mustBe expected
-        proxy.getArgumentsForCall(0) mustBe null
+        proxy.getArgumentsForCall(0).toList() mustBe arrayOf<Any>().toList()
     }
 
     @Test
@@ -61,7 +61,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         // Then
         actual mustBe expected
-        proxy.getArgumentsForCall(0) mustBe null
+        proxy.getArgumentsForCall(0).toList() mustBe arrayOf<Any>().toList()
     }
 
     @Test
@@ -85,7 +85,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         // Then
         actual mustBe expected
-        proxy.getArgumentsForCall(0) mustBe null
+        proxy.getArgumentsForCall(0).toList() mustBe arrayOf<Any>().toList()
     }
 
     @Test
@@ -116,8 +116,8 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument0.get() mustBe argument0
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments?.size mustBe 1
-        arguments!![0] mustBe argument0
+        arguments.size mustBe 1
+        arguments[0] mustBe argument0
     }
 
     @Test
@@ -148,8 +148,8 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument0.get() mustBe argument0
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments?.size mustBe 1
-        arguments!![0] mustBe argument0
+        arguments.size mustBe 1
+        arguments[0] mustBe argument0
     }
 
     @Test
@@ -183,8 +183,8 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument0.get() mustBe argument0
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments?.size mustBe 1
-        arguments!![0] mustBe argument0
+        arguments.size mustBe 1
+        arguments[0] mustBe argument0
     }
 
     @Test
@@ -219,7 +219,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument1.get() mustBe argument1
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 2
+        arguments.size mustBe 2
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
     }
@@ -256,7 +256,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument1.get() mustBe argument1
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 2
+        arguments.size mustBe 2
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
     }
@@ -297,7 +297,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument1.get() mustBe argument1
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 2
+        arguments.size mustBe 2
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
     }
@@ -339,7 +339,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument2.get() mustBe argument2
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 3
+        arguments.size mustBe 3
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -382,7 +382,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument2.get() mustBe argument2
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 3
+        arguments.size mustBe 3
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -427,7 +427,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument2.get() mustBe argument2
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 3
+        arguments.size mustBe 3
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -473,7 +473,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument3.get() mustBe argument3
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 4
+        arguments.size mustBe 4
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -520,7 +520,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument3.get() mustBe argument3
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 4
+        arguments.size mustBe 4
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -570,7 +570,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument3.get() mustBe argument3
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 4
+        arguments.size mustBe 4
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -621,7 +621,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument4.get() mustBe argument4
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 5
+        arguments.size mustBe 5
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -673,7 +673,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument4.get() mustBe argument4
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 5
+        arguments.size mustBe 5
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -729,7 +729,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument4.get() mustBe argument4
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 5
+        arguments.size mustBe 5
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -786,7 +786,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument5.get() mustBe argument5
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 6
+        arguments.size mustBe 6
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -844,7 +844,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument5.get() mustBe argument5
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 6
+        arguments.size mustBe 6
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -906,7 +906,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument5.get() mustBe argument5
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 6
+        arguments.size mustBe 6
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -967,7 +967,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument6.get() mustBe argument6
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 7
+        arguments.size mustBe 7
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1029,7 +1029,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument6.get() mustBe argument6
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 7
+        arguments.size mustBe 7
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1095,7 +1095,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument6.get() mustBe argument6
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 7
+        arguments.size mustBe 7
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1170,7 +1170,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument7.get() mustBe argument7
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 8
+        arguments.size mustBe 8
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1246,7 +1246,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument7.get() mustBe argument7
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 8
+        arguments.size mustBe 8
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1326,7 +1326,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument7.get() mustBe argument7
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 8
+        arguments.size mustBe 8
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1407,7 +1407,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument8.get() mustBe argument8
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 9
+        arguments.size mustBe 9
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1489,7 +1489,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument8.get() mustBe argument8
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 9
+        arguments.size mustBe 9
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1575,7 +1575,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument8.get() mustBe argument8
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 9
+        arguments.size mustBe 9
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1663,7 +1663,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument9.get() mustBe argument9
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 10
+        arguments.size mustBe 10
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1752,7 +1752,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument9.get() mustBe argument9
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 10
+        arguments.size mustBe 10
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1844,7 +1844,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument9.get() mustBe argument9
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 10
+        arguments.size mustBe 10
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -1937,7 +1937,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument10.get() mustBe argument10
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 11
+        arguments.size mustBe 11
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2031,7 +2031,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument10.get() mustBe argument10
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 11
+        arguments.size mustBe 11
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2129,7 +2129,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument10.get() mustBe argument10
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 11
+        arguments.size mustBe 11
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2228,7 +2228,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument11.get() mustBe argument11
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 12
+        arguments.size mustBe 12
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2328,7 +2328,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument11.get() mustBe argument11
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 12
+        arguments.size mustBe 12
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2432,7 +2432,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument11.get() mustBe argument11
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 12
+        arguments.size mustBe 12
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2538,7 +2538,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument12.get() mustBe argument12
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 13
+        arguments.size mustBe 13
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2645,7 +2645,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument12.get() mustBe argument12
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 13
+        arguments.size mustBe 13
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2
@@ -2755,7 +2755,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         actualArgument12.get() mustBe argument12
 
         val arguments = proxy.getArgumentsForCall(0)
-        arguments!!.size mustBe 13
+        arguments.size mustBe 13
         arguments[0] mustBe argument0
         arguments[1] mustBe argument1
         arguments[2] mustBe argument2

@@ -12,29 +12,29 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 
 private fun <T> traverseMockAndShare(
-    mock: Proxy<*, T>,
+    proxy: Proxy<*, T>,
     action: T.() -> Boolean
 ): VerificationHandle {
     val callIndices = mutableListOf<Int>()
 
-    for (idx in 0 until mock.calls) {
-        if (action(mock.getArgumentsForCall(idx))) {
+    for (idx in 0 until proxy.calls) {
+        if (action(proxy.getArgumentsForCall(idx))) {
             callIndices.add(idx)
         }
     }
 
-    val handle = VerificationHandle(mock.id, callIndices)
-    shareHandle(mock, handle)
+    val handle = VerificationHandle(proxy.id, callIndices)
+    shareHandle(proxy, handle)
 
     return handle
 }
 
 private fun shareHandle(
-    mock: Proxy<*, *>,
+    proxy: Proxy<*, *>,
     handle: VerificationHandle
 ) {
-    if (mock.verificationBuilderReference != null) {
-        mock.verificationBuilderReference!!.add(handle)
+    if (proxy.verificationBuilderReference != null) {
+        proxy.verificationBuilderReference!!.add(handle)
     }
 }
 

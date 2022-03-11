@@ -224,14 +224,14 @@ afterEvaluate {
         this.exclude { details: FileTreeElement ->
             if (details.file.isFile) {
                 val indicator = details.file.bufferedReader().readLine()
-                indicator != "// commonTest"
+                indicator != "// COMMONTEST"
             } else {
                 false
             }
         }
         this.rename { fileName ->
-            if (fileName is String && fileName == "MockFactoryCommonEntry") {
-                "MockFactory"
+            if (fileName is String && fileName == "MockFactoryCommonEntry.kt") {
+                "MockFactory.kt"
             } else {
                 fileName
             }
@@ -253,7 +253,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }
@@ -276,7 +276,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }
@@ -299,7 +299,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }
@@ -322,7 +322,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }
@@ -345,7 +345,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }
@@ -368,7 +368,7 @@ afterEvaluate {
                 if (!file.absolutePath.contains("commonTest")) {
                     val indicator = file.bufferedReader().readLine()
 
-                    if (indicator == "// commonTest") {
+                    if (indicator == "// COMMONTEST") {
                         file.delete()
                     }
                 }

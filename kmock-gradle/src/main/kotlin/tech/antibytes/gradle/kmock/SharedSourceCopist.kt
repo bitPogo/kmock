@@ -59,7 +59,7 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
             .rename { fileName ->
-                if (fileName is String && fileName in rename) {
+                if (fileName in rename) {
                     rename[fileName]!!
                 } else {
                     fileName

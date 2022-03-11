@@ -35,6 +35,12 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn0_a")
+    fun `It fulfils AsyncFunProxy`() {
+        AsyncFunProxy<Unit, suspend () -> Unit>(fixture.fixture(), freeze = false) fulfils KMockContract.AsyncFunProxy::class
+    }
+
+    @Test
     @JsName("fn1")
     fun `Given a throws is set it is retrievable`() = runBlockingTest {
         // Given
@@ -408,6 +414,22 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn18")
+    fun `Given invoke is called it fails if no Arguments were captured`() = runBlockingTest {
+        // Given
+        val id: String = fixture.fixture()
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(id)
+
+        // Then
+        val error = assertFailsWith<MockError.MissingCall> {
+            // When
+            proxy.getArgumentsForCall(0)
+        }
+
+        error.message mustBe "0 was not found for $id!"
+    }
+
+    @Test
+    @JsName("fn19")
     fun `Given invoke is called it captures Arguments`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
@@ -422,12 +444,12 @@ class AsyncFunProxyUnfrozenSpec {
         val actual = proxy.getArgumentsForCall(0)
 
         // Then
-        actual!!.size mustBe 1
+        actual.size mustBe 1
         actual[0] mustBe argument
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn20")
     fun `Given invoke is called it captures void Arguments`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -441,11 +463,11 @@ class AsyncFunProxyUnfrozenSpec {
         val actual = proxy.getArgumentsForCall(0)
 
         // Then
-        actual mustBe null
+        actual.toList() mustBe arrayOf<Any>().toList()
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn21")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -458,13 +480,13 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn22")
     fun `Its default call count is 0`() {
         AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false).calls mustBe 0
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn23")
     fun `Given invoke is called it increments the call counter`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -479,7 +501,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn24")
     fun `Given the Proxy has a Collector and invoke is called it calls the Collect`() = runBlockingTest {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5) // NOTE: These values get frozen
@@ -505,7 +527,7 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn24")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -535,12 +557,12 @@ class AsyncFunProxyUnfrozenSpec {
 
         proxy.calls mustBe 0
 
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
     @JsOnly
-    @JsName("fn25")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock for Js`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -570,11 +592,11 @@ class AsyncFunProxyUnfrozenSpec {
 
         proxy.calls mustBe 0
 
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn27")
     fun `Given clear is called it clears the mock while leave the spy intact`() = runBlockingTest {
         // Given
         val implementation = Implementation<Any>()

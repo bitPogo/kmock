@@ -52,7 +52,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         null
     }
 
-    private val arguments: IsoMutableList<Array<out Any?>?> = sharedMutableListOf()
+    private val arguments: IsoMutableList<Array<out Any?>> = sharedMutableListOf()
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
     private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
@@ -214,17 +214,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
 
     protected fun retrieveSideEffect(): SideEffect = _sideEffects.next()
 
-    private fun guardArguments(arguments: Array<out Any?>): Array<out Any?>? {
-        return if (arguments.isEmpty()) {
-            null
-        } else {
-            arguments
-        }
-    }
-
-    private fun captureArguments(arguments: Array<out Any?>) {
-        this.arguments.add(guardArguments(arguments))
-    }
+    private fun captureArguments(arguments: Array<out Any?>) = this.arguments.add(arguments)
 
     private fun incrementInvocations() {
         this._calls.incrementAndGet()
@@ -250,7 +240,11 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         incrementInvocations()
     }
 
-    override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? = arguments[callIndex]
+    override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
+        return arguments.getOrElse(callIndex) {
+            throw throw MockError.MissingCall("$callIndex was not found for $id!")
+        }
+    }
 
     private fun clearValueHolders() {
         if (freeze) {

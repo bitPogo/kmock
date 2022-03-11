@@ -12,7 +12,7 @@ import tech.antibytes.kmock.error.MockError
 class FunProxyStub(
     override val id: String,
     override val calls: Int,
-    var getArgumentsForCall: ((Int) -> Array<out Any?>?)? = null,
+    var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
     override var throws: Throwable
@@ -30,7 +30,7 @@ class FunProxyStub(
     override val sideEffects: KMockContract.SideEffectChainBuilder<Any, () -> Any>
         get() = TODO("Not yet implemented")
 
-    override fun getArgumentsForCall(callIndex: Int): Array<out Any?>? {
+    override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
         return if (getArgumentsForCall == null) {
             throw MockError.MissingStub("Missing sideeffect getArgumentsForCall")
         } else {
