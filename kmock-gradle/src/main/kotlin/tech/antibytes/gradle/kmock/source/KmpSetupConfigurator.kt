@@ -242,50 +242,35 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
 
     private fun wireSharedSourceTasks(
         project: Project,
-        indicators: Map<String, String>,
+        indicatorMapping: Map<String, String>,
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
     ) {
         val copyTasksAndDependencies = createCopyTasks(
             project,
-            indicators,
+            indicatorMapping,
             kspMapping,
             dependencies
         )
 
-        val indicatorMarkers = indicators.values.toList()
+        val indicators = indicatorMapping.values.toList()
         kspMapping.forEach { (platform, kspTask) ->
             if (platform == "android") {
                 setUpAndroidTaskChain(
                     project,
-                    indicatorMarkers,
+                    indicators,
                     copyTasksAndDependencies
                 )
             } else {
                 setUpTaskChain(
                     project,
-                    indicatorMarkers,
+                    indicators,
                     platform,
                     kspTask,
                     copyTasksAndDependencies
                 )
             }
         }
-    }
-
-    private fun adjustDependencies(
-        indicators: Map<String, String>,
-        dependencies: Map<String, Set<String>>
-    ): Map<String, Set<String>> {
-        val cleanDependencies = dependencies.toMutableMap()
-
-        dependencies.keys.forEach { sourceName ->
-            if (sourceName !in indicators && sourceName != common) {
-                cleanDependencies.remove(sourceName)
-            }
-        }
-
-        return cleanDependencies
     }
 
     override fun wireSharedSourceTasks(
@@ -298,16 +283,12 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
             .toMutableMap()
 
         indicators[common] = common.toUpperCase(Locale.ROOT)
-        val cleanDependencies = adjustDependencies(
-            indicators,
-            dependencies
-        )
 
         wireSharedSourceTasks(
             project,
             indicators,
             kspMapping,
-            cleanDependencies
+            dependencies
         )
     }
 }
