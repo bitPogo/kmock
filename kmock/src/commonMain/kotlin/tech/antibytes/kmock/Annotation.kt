@@ -34,7 +34,7 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
 /**
  * Annotation to determine which interfaces are about to be stubbed/mocked for a shared source.
  *
- * @param sourceSetName to bind the given interface to a sourceSet (eg. nativeTest).
+ * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest).
  * @param interfaces variable amount of interfaces.
  */
 annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)

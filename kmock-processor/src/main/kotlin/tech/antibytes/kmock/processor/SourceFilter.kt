@@ -32,9 +32,9 @@ internal class SourceFilter(
         }
     }
 
-    private fun resolvePrecedence(marker: String): Int {
-        return precedences.getOrElse(marker) {
-            logger.error("No SharedSource defined for $marker.")
+    private fun resolvePrecedence(indicator: String): Int {
+        return precedences.getOrElse(indicator) {
+            logger.error("No SharedSource defined for $indicator.")
             -1
         }
     }

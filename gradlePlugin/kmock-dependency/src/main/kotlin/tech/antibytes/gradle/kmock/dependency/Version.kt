@@ -30,7 +30,7 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        val test = "c3e5acf"
+        const val test = "c3e5acf"
     }
 
     val google = Google
@@ -51,11 +51,11 @@ object Version {
         /**
          * [Kotlin Poet](https://square.github.io/kotlinpoet/)
          */
-        val kotlinPoet = "1.10.2"
+        const val kotlinPoet = "1.10.2"
     }
 
     /**
      * [Compiler Test](https://github.com/tschuchortdev/kotlin-compile-testing)
      */
-    val compilerTest = "1.4.7"
+    const val compilerTest = "1.4.7"
 }

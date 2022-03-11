@@ -6,6 +6,7 @@
 
 package tech.antibytes.gradle.kmock.source
 
+import com.google.devtools.ksp.gradle.KspExtension
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -99,6 +100,8 @@ class KmpSourceSetsConfiguratorSpec {
         val path: String = fixture.fixture()
         val version: String = fixture.fixture()
 
+        val kspExtension: KspExtension = mockk()
+
         val source1: KotlinSourceSet = mockk()
         val source1Dependencies: KotlinSourceSet = mockk()
         val source1DependenciesName: String = fixture.fixture()
@@ -143,6 +146,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { source2.dependsOn } returns setOf(source2Dependencies)
         every { source2Dependencies.name } returns source2DependenciesName
 
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
+
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
@@ -184,6 +190,8 @@ class KmpSourceSetsConfiguratorSpec {
                 )
             )
         }
+
+        verify(exactly = 0) { kspExtension.arg(any(), any()) }
     }
 
     @Test
@@ -196,6 +204,8 @@ class KmpSourceSetsConfiguratorSpec {
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
         val version: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
 
         val source1: KotlinSourceSet = mockk()
         val source1Dependencies: KotlinSourceSet = mockk()
@@ -241,6 +251,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { source2.dependsOn } returns setOf(source2Dependencies)
         every { source2Dependencies.name } returns source2DependenciesName
 
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
+
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
@@ -282,6 +295,8 @@ class KmpSourceSetsConfiguratorSpec {
                 )
             )
         }
+
+        verify(exactly = 0) { kspExtension.arg(any(), any()) }
     }
 
     @Test
@@ -294,6 +309,8 @@ class KmpSourceSetsConfiguratorSpec {
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
         val version: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
 
         val source1: KotlinSourceSet = mockk()
         val source2: KotlinSourceSet = mockk()
@@ -332,6 +349,9 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { dependencies.add(any(), any()) } throws RuntimeException()
         every { dependencies.add("kspIosX64Test", any()) } returns mockk()
+
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
 
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
@@ -372,6 +392,8 @@ class KmpSourceSetsConfiguratorSpec {
                 )
             )
         }
+
+        verify(exactly = 0) { kspExtension.arg(any(), any()) }
     }
 
     @Test
@@ -384,6 +406,8 @@ class KmpSourceSetsConfiguratorSpec {
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
         val version: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
 
         val source0: KotlinSourceSet = mockk()
         val source1: KotlinSourceSet = mockk()
@@ -461,6 +485,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { dependencies.add("kspIosArm32Test", any()) } returns mockk()
         every { dependencies.add("kspLinuxX64Test", any()) } returns mockk()
         every { dependencies.add("kspJvmTest", any()) } returns mockk()
+
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
 
         every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
@@ -573,5 +600,9 @@ class KmpSourceSetsConfiguratorSpec {
                 )
             )
         }
+
+        verify(exactly = 1) { kspExtension.arg("concurrentTest", "0") }
+        verify(exactly = 1) { kspExtension.arg("nativeTest", "-1") }
+        verify(exactly = 1) { kspExtension.arg("iosTest", "-2") }
     }
 }
