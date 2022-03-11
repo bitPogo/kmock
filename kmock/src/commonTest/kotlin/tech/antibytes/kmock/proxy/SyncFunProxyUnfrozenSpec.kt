@@ -33,6 +33,12 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn0_a")
+    fun `It fulfils SyncFunProxy`() {
+        SyncFunProxy<Unit, () -> Unit>(fixture.fixture(), freeze = false) fulfils KMockContract.SyncFunProxy::class
+    }
+
+    @Test
     @JsName("fn1")
     fun `Given a throws is set it is retrievable`() {
         // Given
@@ -447,6 +453,22 @@ class SyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn18")
+    fun `Given invoke is called it fails if no Arguments were captured`() {
+        // Given
+        val id: String = fixture.fixture()
+        val proxy = SyncFunProxy<Any, suspend () -> Any>(id, freeze = true)
+
+        // When
+        val error = assertFailsWith<MockError.MissingCall> {
+            proxy.getArgumentsForCall(0)
+        }
+
+        // Then
+        error.message mustBe "0 was not found for $id!"
+    }
+
+    @Test
+    @JsName("fn19")
     fun `Given invoke is called it captures Arguments`() {
         // Given
         val proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
@@ -460,12 +482,12 @@ class SyncFunProxyUnfrozenSpec {
 
         val actual = proxy.getArgumentsForCall(0)
 
-        actual!!.size mustBe 1
+        actual.size mustBe 1
         actual[0] mustBe argument
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn20")
     fun `Given invoke is called it captures void Arguments`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -480,11 +502,11 @@ class SyncFunProxyUnfrozenSpec {
 
         val actual = proxy.getArgumentsForCall(0)
 
-        actual mustBe null
+        actual.toList() mustBe arrayOf<Any>().toList()
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn21")
     fun `It reflects the given id`() {
         // Given
         val name: String = fixture.fixture()
@@ -497,13 +519,13 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn22")
     fun `Its default call count is 0`() {
         SyncFunProxy<Any, () -> Any>(fixture.fixture(), freeze = false).calls mustBe 0
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn23")
     fun `Given invoke is called it increments the call counter threadsafe`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -520,7 +542,7 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn24")
     fun `Given the Proxy has a Collector and invoke is called it calls the Collect`() {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -546,7 +568,7 @@ class SyncFunProxyUnfrozenSpec {
 
     @Test
     @IgnoreJs
-    @JsName("fn24")
+    @JsName("fn25")
     fun `Given clear is called it clears the mock`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -581,12 +603,12 @@ class SyncFunProxyUnfrozenSpec {
 
         proxy.calls mustBe 0
 
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
     @JsOnly
-    @JsName("fn25")
+    @JsName("fn26")
     fun `Given clear is called it clears the mock for Js`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -621,11 +643,11 @@ class SyncFunProxyUnfrozenSpec {
 
         proxy.calls mustBe 0
 
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn27")
     fun `Given clear is called it clears the mock while leave the spy intact`() {
         // Given
         val implementation = Implementation<Any>()

@@ -14,4 +14,10 @@ sealed class MockError(
      * @author Matthias Geisler
      */
     class MissingStub(message: String) : MockError(message)
+
+    /**
+     * Indicates that a Proxy was not called.
+     * @author Matthias Geisler
+     */
+    class MissingCall(message: String) : MockError(message)
 }

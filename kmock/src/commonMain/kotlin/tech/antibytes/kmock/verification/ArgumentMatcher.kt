@@ -10,7 +10,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.verification.constraints.eq
 
-internal fun Array<out Any?>?.hasBeenCalledWithVoid(): Boolean = this == null
+internal fun Array<out Any?>.hasBeenCalledWithVoid(): Boolean = this.isEmpty()
 
 private fun wrapValue(value: Any?): KMockContract.VerificationConstraint {
     return if (value is KMockContract.VerificationConstraint) {
@@ -20,9 +20,9 @@ private fun wrapValue(value: Any?): KMockContract.VerificationConstraint {
     }
 }
 
-internal fun Array<out Any?>?.hasBeenCalledWith(vararg values: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenCalledWith(vararg values: Any?): Boolean {
     return when {
-        this == null -> values.isEmpty()
+        this.isEmpty() -> values.isEmpty()
         values.isEmpty() -> true
         else -> {
             var lastMatch = 0
@@ -51,14 +51,12 @@ internal fun Array<out Any?>?.hasBeenCalledWith(vararg values: Any?): Boolean {
     }
 }
 
-internal fun Array<out Any?>?.hasBeenStrictlyCalledWith(vararg values: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenStrictlyCalledWith(vararg values: Any?): Boolean {
     return when {
-        this == null && values.isEmpty() -> true
-        this == null -> false
+        this.isEmpty() && values.isEmpty() -> true
         values.size != this.size -> false
         else -> {
-
-            for (idx in values.indices) {
+            for (idx in this.indices) {
                 val expected = wrapValue(values[idx])
 
                 if (!expected.matches(this[idx])) {
@@ -71,8 +69,8 @@ internal fun Array<out Any?>?.hasBeenStrictlyCalledWith(vararg values: Any?): Bo
     }
 }
 
-internal fun Array<out Any?>?.hasBeenCalledWithout(vararg values: Any?): Boolean {
-    return if (this == null) {
+internal fun Array<out Any?>.hasBeenCalledWithout(vararg values: Any?): Boolean {
+    return if (this.isEmpty()) {
         values.isNotEmpty()
     } else {
         for (value in values) {

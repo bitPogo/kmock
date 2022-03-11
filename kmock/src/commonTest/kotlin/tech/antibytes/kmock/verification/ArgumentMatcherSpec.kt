@@ -25,7 +25,7 @@ class ArgumentMatcherSpec {
     @JsName("fn0")
     fun `Given hasBeenCalledWithVoid is called it returns true if the Array is null`() {
         // Given
-        val array: Array<out Any?>? = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWithVoid()
@@ -51,7 +51,7 @@ class ArgumentMatcherSpec {
     @JsName("fn2")
     fun `Given hasBeenCalledWith is called with an Argument it returns true if the Array is null and the Arguments are empty`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWith()
@@ -116,7 +116,7 @@ class ArgumentMatcherSpec {
     @JsName("fn7")
     fun `Given hasBeenCalledWith is called without Arguments void it returns true if the Array is null`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWith()
@@ -129,7 +129,7 @@ class ArgumentMatcherSpec {
     @JsName("fn8")
     fun `Given hasBeenCalledWith is called with Arguments it returns false if the Array is null`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWith(fixture.listFixture<String>(), fixture.listFixture<String>())
@@ -183,7 +183,7 @@ class ArgumentMatcherSpec {
     @JsName("fn12")
     fun `Given hasBeenStrictlyCalledWith is called with an Argument it returns true if the Array is null and no values were given`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenStrictlyCalledWith()
@@ -196,7 +196,7 @@ class ArgumentMatcherSpec {
     @JsName("fn13")
     fun `Given hasBeenStrictlyCalledWith is called with an Argument it returns false if the Array is null and values were given`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenStrictlyCalledWith(fixture.fixture<Any>())
@@ -263,7 +263,7 @@ class ArgumentMatcherSpec {
     @JsName("fn18")
     fun `Given hasBeenCalledWithout is called with an Argument it returns false if the Array contains no Argument`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWithout()
@@ -276,7 +276,7 @@ class ArgumentMatcherSpec {
     @JsName("fn19")
     fun `Given hasBeenCalledWithout is called with an Argument it returns true if the Array contains Arguments`() {
         // Given
-        val array = null
+        val array: Array<out Any?> = arrayOf()
 
         // When
         val actual = array.hasBeenCalledWithout(fixture.listFixture<String>().toTypedArray())

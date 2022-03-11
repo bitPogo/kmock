@@ -35,7 +35,7 @@ object KMockContract {
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
-         * @throws IndexOutOfBoundsException if the invocationIndex is invalid.
+         * @throws MockError.MissingCall if the callIndex is invalid.
          */
         fun getArgumentsForCall(callIndex: Int): Arguments
 
@@ -111,7 +111,7 @@ object KMockContract {
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
-    interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>?> {
+    interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
         /**
          * Setter/Getter in order to set/get constant ReturnValue of the function.
          * @throws NullPointerException on get if no value was set.
