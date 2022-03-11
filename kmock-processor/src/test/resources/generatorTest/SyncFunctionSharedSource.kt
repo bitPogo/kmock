@@ -8,7 +8,7 @@ package generatorTest
 
 import tech.antibytes.kmock.MockShared
 
-@MockShared("TEST", SyncFunctionShared::class)
+@MockShared("Test", SyncFunctionShared::class)
 interface SyncFunctionShared {
     fun foo(fuzz: Int, ozz: Any): Any
 

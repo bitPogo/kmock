@@ -8,7 +8,7 @@ package generatorTest
 
 import tech.antibytes.kmock.MockShared
 
-@MockShared("TEST", AsyncFunctionShared::class)
+@MockShared("test", AsyncFunctionShared::class)
 interface AsyncFunctionShared {
     suspend fun foo(fuzz: Int, ozz: Any): Any
 

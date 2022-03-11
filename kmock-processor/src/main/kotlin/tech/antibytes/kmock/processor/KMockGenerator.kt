@@ -183,7 +183,7 @@ internal class KMockGenerator(
         val implementation = buildMock(className, template, relaxer)
 
         if (target.isNotEmpty()) {
-            file.addComment(target)
+            file.addComment(target.uppercase())
         }
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
