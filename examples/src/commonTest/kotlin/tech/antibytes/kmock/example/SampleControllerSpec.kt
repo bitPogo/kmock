@@ -185,6 +185,9 @@ private class SampleRemoteRepositoryManualStub(
     override suspend fun fetch(url: String): SampleDomainObject = fetch.invoke(url)
 
     override fun find(id: String): SampleDomainObject = find.invoke(id)
+    override suspend fun doSomething() {
+        TODO()
+    }
 }
 
 private class SampleLocalRepositoryManualStub(

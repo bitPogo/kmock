@@ -50,7 +50,7 @@ Also please check out first if an issue had been already opened with your reques
 * link:https://developer.android.com/studio#downloads[Android Studio 2021.1.1 Patch 2 or later]
 * link:https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot[Java 11]
 * link:https://kotlinlang.org/[Kotlin 1.6.10]
-* link:https://gradle.org/install/][Gradle 7.2]
+* link:https://gradle.org/install/[Gradle 7.2]
 
 IMPORTANT: Currently Android Studio does not work properly with Gradle 7.3+, therefore please stick to mentioned Gradle version.
 

@@ -8,17 +8,17 @@
 
 package tech.antibytes.kmock.verification.constraints
 
-import tech.antibytes.kmock.KMockContract.VerificationConstraint
+import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 
 /**
  * VerificationConstraint matches if the actual and expected value are not identical.
  * @param illegal value which should not match.
  * @property illegal value which should not match.
- * @see VerificationConstraint
+ * @see ArgumentConstraint
  * @author Matthias Geisler
  */
 class isNotSame(
     private val illegal: Any?
-) : VerificationConstraint {
+) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = illegal !== actual
 }

@@ -8,7 +8,7 @@
 
 package tech.antibytes.kmock.verification.constraints
 
-import tech.antibytes.kmock.KMockContract.VerificationConstraint
+import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 import kotlin.reflect.KClass
 
 /**
@@ -17,12 +17,12 @@ import kotlin.reflect.KClass
  * If null any value (type) is accepted. Default is null.
  * @property expected KClass of the expected value. If set the matcher is restricted to the given class type (excluding null).
  * If null any value (type) is accepted. Default is null.
- * @see VerificationConstraint
+ * @see ArgumentConstraint
  * @author Matthias Geisler
  */
 class any(
     private val expected: KClass<*>? = null
-) : VerificationConstraint {
+) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {
             expected == null -> true

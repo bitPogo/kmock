@@ -21,7 +21,7 @@ class IsNotSpec {
     @Test
     @JsName("fn0")
     fun `isNot fulfils MatcherConstraint`() {
-        isNot(fixture.fixture()) fulfils KMockContract.VerificationConstraint::class
+        isNot(fixture.fixture()) fulfils KMockContract.ArgumentConstraint::class
     }
 
     @Test

@@ -20,5 +20,6 @@ interface Relaxed {
 
     fun foo(payload: Any): String
     suspend fun bar(payload: Any): String
+    fun buzz()
 }
 

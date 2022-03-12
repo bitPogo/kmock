@@ -115,7 +115,7 @@ internal class KMockGenerator(
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
 
-            if (name in nameCollector) {
+            if (name in nameCollector || "_$name" in nameCollector) {
                 overloadedMethods.add("_$name")
             } else {
                 nameCollector.add(name)

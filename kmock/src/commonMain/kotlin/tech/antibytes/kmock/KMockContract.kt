@@ -38,6 +38,7 @@ object KMockContract {
 
         /**
          * Reference to its correspondent VerificationChain. This Property is intended for internal use only!
+         * @suppress
          */
         var verificationBuilderReference: VerificationChainBuilder?
 
@@ -143,7 +144,7 @@ object KMockContract {
         var throws: Throwable
 
         /**
-         * Setter/Getter in order to set/get custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
+         * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
@@ -166,18 +167,24 @@ object KMockContract {
         /**
          * Invocation for functions without arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun invoke(): ReturnValue
 
         /**
          * Invocation for functions with 1 argument. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0> invoke(arg0: Arg0): ReturnValue
 
         /**
          * Invocation for functions with 2 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0, Arg1> invoke(
             arg0: Arg0,
@@ -187,6 +194,8 @@ object KMockContract {
         /**
          * Invocation for functions with 3 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
@@ -197,6 +206,8 @@ object KMockContract {
         /**
          * Invocation for functions with 4 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
@@ -208,6 +219,8 @@ object KMockContract {
         /**
          * Invocation for functions with 5 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
@@ -220,6 +233,8 @@ object KMockContract {
         /**
          * Invocation for functions with 6 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
@@ -233,6 +248,7 @@ object KMockContract {
         /**
          * Invocation for functions with 7 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
@@ -247,6 +263,7 @@ object KMockContract {
         /**
          * Invocation for functions with 8 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
@@ -262,6 +279,7 @@ object KMockContract {
         /**
          * Invocation for functions with 9 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
@@ -278,6 +296,7 @@ object KMockContract {
         /**
          * Invocation for functions with 10 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
@@ -295,6 +314,7 @@ object KMockContract {
         /**
          * Invocation for functions with 11 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
@@ -313,6 +333,7 @@ object KMockContract {
         /**
          * Invocation for functions with 12 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
@@ -332,6 +353,7 @@ object KMockContract {
         /**
          * Invocation for functions with 13 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
@@ -361,18 +383,21 @@ object KMockContract {
         /**
          * Invocation for functions without arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun invoke(): ReturnValue
 
         /**
          * Invocation for functions with 1 argument. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0> invoke(arg0: Arg0): ReturnValue
 
         /**
          * Invocation for functions with 2 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1> invoke(
             arg0: Arg0,
@@ -382,6 +407,7 @@ object KMockContract {
         /**
          * Invocation for functions with 3 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
@@ -392,6 +418,7 @@ object KMockContract {
         /**
          * Invocation for functions with 4 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
@@ -403,6 +430,7 @@ object KMockContract {
         /**
          * Invocation for functions with 5 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
@@ -415,6 +443,7 @@ object KMockContract {
         /**
          * Invocation for functions with 6 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
@@ -428,6 +457,7 @@ object KMockContract {
         /**
          * Invocation for functions with 7 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
@@ -442,6 +472,7 @@ object KMockContract {
         /**
          * Invocation for functions with 8 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
@@ -457,6 +488,7 @@ object KMockContract {
         /**
          * Invocation for functions with 9 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
@@ -473,6 +505,7 @@ object KMockContract {
         /**
          * Invocation for functions with 10 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
@@ -490,6 +523,7 @@ object KMockContract {
         /**
          * Invocation for functions with 11 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
@@ -508,6 +542,7 @@ object KMockContract {
         /**
          * Invocation for functions with 12 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
@@ -527,6 +562,7 @@ object KMockContract {
         /**
          * Invocation for functions with 13 arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
@@ -602,12 +638,14 @@ object KMockContract {
         /**
          * Invocation of property getter. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun onGet(): Value
 
         /**
          * Invocation of property setter. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
+         * @suppress
          */
         fun onSet(value: Value)
     }
@@ -621,6 +659,7 @@ object KMockContract {
          * Collects a invocation of a Proxy. Meant for internal use only.
          * @param referredProxy the proxy it is referring to.
          * @param referredCall the invocation index of the Proxy it refers to.
+         * @suppress
          */
         fun addReference(referredProxy: Proxy<*, *>, referredCall: Int)
     }
@@ -651,7 +690,7 @@ object KMockContract {
      * @see isSame
      * @author Matthias Geisler
      */
-    fun interface VerificationConstraint {
+    fun interface ArgumentConstraint {
         /**
          * Resolves if the constraint matches the given Proxy Argument.
          * @param actual arbitrary argument provided by an Proxy.
@@ -683,7 +722,7 @@ object KMockContract {
      */
     fun interface VerificationInsurance {
         /**
-         * Ensures that given Proxies are covered by the VerificationChain.
+         * Ensures that given Proxies are covered by the VerificationChain. Use this method with caution!
          * @throws IllegalStateException if a given Proxy is not covered by a VerificationChain.
          */
         fun ensureVerificationOf(vararg proxies: Proxy<*, *>)

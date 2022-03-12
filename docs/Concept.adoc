@@ -1,9 +1,14 @@
-:link-base: https://github.com/bitPogo/
+= KMock
+:link-base: https://github.com/bitPogo
 :link-repository: {link-base}/kmock
-:link-docs: {link-base}/kmock/docs
+:link-docs: {link-repository}/tree/main/docs
+:link-api: {link-docs}/api
 :doctype: article
+:author: Matthias Geisler
+:revnumber: 1.0
+:project-version: 0.1.0
 :toc: macro
-:toclevels: 2
+:toclevels: 3
 :toc-title:
 :icons: font
 :imagesdir: assets/images
@@ -16,10 +21,15 @@ ifdef::env-github[]
 :tip-caption: :bulb:
 endif::[]
 
-=== Motivation and Goals
+[discrete]
+== Table Of Contents
 
-Writing a mock library for a certain platform can be hard enough, but Kotlin Multiplatform takes that task a new level.
-Especially the Kotlin's current memory model does not make the job easier. +
+toc::[]
+
+== Motivation and Goals
+
+Writing a mock library for a certain platform can be hard enough, but Kotlin Multiplatform takes that task to a new level.
+Especially the Kotlin's current Memory Model does not make the job easier. +
 One noticeable early attempt to overcome those obstacles was link:https://github.com/touchlab/Karmok[Karmock], which regrettably never made it out of its pre alpha stage.
 Since the introduction of link:https://github.com/google/ksp[Kotlin Symbol Processing (KSP)] there is new hope to address the problem (at least partially)! +
 Already 2 other libraries also strive to overcome this - link:https://github.com/mockative/mockative[mockactive] and link:https://github.com/Kodein-Framework/MocKMP[MocKMP].
@@ -37,11 +47,12 @@ For me such a library should be:
 
 In other words mocking tests should work without shenanigans or frills.
 
-==== Concept
+=== Concept
 
-What makes KMock different form for example link:https://mockk.io/[MockK] is mainly its mindmodel.
-link:https://mockk.io/[MockK] uses the classical _record-replay-verify_ pattern, while KMock borrowed from Python's link:https://docs.python.org/3/library/unittest.mock.html[MagicMock].
-MagicMock follows _assign-run-assert_. To compare both: +
+What makes KMock different form others is mainly its mindmodel.
+link:https://mockk.io/[MockK] for example uses the classical _record-replay-verify_ pattern, while KMock borrowed from Python's link:https://docs.python.org/3/library/unittest.mock.html[MagicMock].
+MagicMock follows _arrange-act-assert_ (aka 3A or AAA), which KMock follows too. +
+To compare both: +
 
 .MockK example
 [source,kotlin]
@@ -71,13 +82,13 @@ The same could be written as: +
 ----
 @Test
 fun sampleTest() {
-    // assign
+    // arrange
     val someInstance: SomeInterface = kmock()
 
     someInstance._someProperty.returns = "any"
     someInstance._someMethod.returns = "any"
 
-    // run
+    // act
     val someOtherInstance = SomeClass(someInstance)
     someOtherInstance.run()
 
@@ -87,32 +98,32 @@ fun sampleTest() {
 }
 ----
 
-As you can see above KMock attaches proxy parameter, which are simply assigned. +
+As you can see above KMock attaches Proxy Properties, which are simply assigned. +
 This implies all necessary information are available at compile time and are not resolved during runtime.
-KMock uses link:https://github.com/google/ksp[KSP] to achieve and is currently restricted to *Interfaces only*.
-The main benefits of this it reduces the amount of knowledge to acquire upfront to use it, since attaches most functionality directly to its components.
-Also you do not have to care if a method is asynchronous or synchronous, both use the same api.
-To learn about the usage please visit the link:{link-docs}/api/index.md[API] or keep reading in the link:{link-docs}/chapters/QuickStarter.adoc[documentation]. +
-If you want to try it out please checkout the link:{link-base}kmock-playground[playground].
+KMock uses link:https://github.com/google/ksp[KSP] to achieve that and is currently restricted to *Interfaces only*. +
+The main benefit of this mindmodel is the reduction of knowledge you need to acquire upfront.
+Your IDE or Editor will help you with that due to the power of autocompletion. +
+Also you do not have to care if a method is asynchronous or synchronous while interacting with them - both goes through the same API.
+If you want to try it out directly please checkout the link:{link-base}/kmock-playground[Playground].
+If you want learn more about the concrete usage, please continue reading in the link:StarterGuide.adoc[Starter Guide].
 
-==== Main Components
+=== Main Components
 
 KMock consists of 3 main components - its runtime library, its KSP Processor and its Gradle Plugin.
-The runtime library brings in the main functionality, like verification or proxies. +
-The Processor resolves all annotated interfaces and writes all declared Mocks/Stubs. +
-Lastly the Gradle Plugin takes care of moving the generated interfaces to write place and amends the generated sources to the corresponding source sets.
-This is necessary since KSP cannot differentiate between shared sources like commonTest or iosTest.
-See link:https://github.com/google/ksp/issues/567[here] for the reason.
+The runtime library brings in the main functionality, like Verification or Proxies. +
+The Processor resolves all annotated Interfaces and writes all necessary Mocks. +
+Lastly the Gradle Plugin takes care of moving the generated Mocks to the right place and makes them available to the source sets.
+This Plugin is mainly necessary since KSP cannot differentiate between shared sources like commonTest or iosTest by its own.
+See link:https://github.com/google/ksp/issues/567[here] for more.
 
-==== What's next
+=== What's next
 
 KMock is still in its infants, which means there is still work to do around its core concepts and implementation.
-Also due to nature of KMP needs a deeper evaluation in terms of core concept since the impact of compile time is not benchmarked yet.
-This certainly influences the Development experience and must be the main criteria to determine if and how to go on from here. +
+Also due to nature of KMP it needs a deeper evaluation especially in regards to the impact of compile time.
+This certainly influences the development experience and must be the main criteria to determine if and how to go on from here. +
 However besides those question the next possible steps are most likely:
 
-* allow auto mocking/stubbing in order to ease the current relaxing approach,
-* improve overloading detection,
-* allow mockking/stubbing of classes.
+* allow mocking of classes,
+* reduce needed boilerplate code for relaxation.
 
 And if you miss anything open an issue and let me know!

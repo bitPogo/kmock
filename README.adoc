@@ -1,6 +1,7 @@
 = KMock
-:link-base: https://github.com/bitPogo/
-:link-repository: {link-base}kmock/
+:link-base: https://github.com/bitPogo
+:link-repository: {link-base}/kmock
+:link-docs: {link-repository}/tree/main/docs
 :project-version: 0.1.0
 :doctype: article
 :!showtitle:
@@ -24,10 +25,10 @@ endif::[]
         <h3>KMock</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
-        A crossplatfrom mock framework for Kotlin (Multiplatform)
+        A mock library for Kotlin Multiplatform
     </p>
     <p><!-- PROJECT DOCUMENTATION -->
-        <a href="/docs/Index.adoc"><strong>Explore the docs »</strong></a>
+        <a href="https://github.com/bitPogo/kmock/tree/main/docs"><strong>Explore the docs »</strong></a>
     </p>
     <p><!-- PROJECT ISSUES/FEATURES -->
         <a href="https://github.com/bitPogo/kmock/issues">Report Bug</a>
@@ -52,20 +53,17 @@ endif::[]
 ++++
 
 [discrete]
-=== Table Of Contents
+== Table Of Contents
 
 toc::[]
 
 == About The Project
-
-*Stop the war in Ukraine*
-
 Mocking for tests should work without shenanigans or frills.
 While link:https://mockk.io/[MockK] for example provides excellent support for Kotlin projects which operate on JVM, Multiplatform missing similar capabilities for quite some time.
 KMock seeks to change that to a certain extend.
 It supports for example arbitrary shared sources, spying and relaxing. +
-If you want to learn about the usage and features please visit the link:{link-repository}/docs/chapters/QuickStarter.adoc[documentation] or
-take a at the link:{link-base}kmock-playground[playground].
+If you want to learn about the usage and features please visit the link:{link-docs}/StarterGuide.adoc[Starter Guide] or
+take a look at the link:{link-base}/kmock-playground[Playground].
 
 === Dependencies
 

@@ -18,7 +18,7 @@ import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
 
-class ArgumentMatcherSpec {
+class ArgumentConstrainsSpec {
     private val fixture = kotlinFixture()
 
     @Test

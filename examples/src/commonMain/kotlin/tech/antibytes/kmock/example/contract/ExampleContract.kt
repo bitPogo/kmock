@@ -17,6 +17,7 @@ interface ExampleContract {
     interface SampleRemoteRepository {
         suspend fun fetch(url: String): SampleDomainObject
         fun find(id: String): SampleDomainObject
+        suspend fun doSomething()
     }
 
     interface SampleLocalRepository {
