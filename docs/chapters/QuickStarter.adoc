@@ -1,0 +1,238 @@
+:link-base: https://github.com/bitPogo/
+:link-repository: {link-base}/kmock
+:link-docs: {link-base}/kmock/docs
+:doctype: article
+:toc: macro
+:toclevels: 2
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+:lang: en
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
+
+=== Quickstart
+
+NOTE: KMock is still a work in progress. All artifacts are currently only consumable as snapshots. Also changes may fly in on short notice.
+
+=== Preparation
+
+In order to consume KMock snapshots please add the following code:
+
+[source, kotlin]
+----
+repositories {
+    ...
+    maven {
+        setUrl("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
+        content {
+            includeGroup("tech.antibytes.kmock")
+        }
+    }
+}
+----
+
+==== Installation for JVM Projects
+
+[source, kotlin]
+----
+plugins {
+    ...
+    id("tech.antibytes.kmock.kmock-gradle")
+}
+
+kmock {
+    rootPackage = "my.root.package"
+}
+
+dependencies {
+    ...
+    testImplementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+    ...
+}
+
+...
+
+----
+
+==== Installation for Kotlin Js Projects
+
+[source, kotlin]
+----
+plugins {
+    id("org.jetbrains.kotlin.js")
+
+    ...
+
+    id("tech.antibytes.kmock.kmock-gradle") apply false
+}
+
+kotlin {
+    ...
+}
+
+plugins.apply("tech.antibytes.kmock.kmock-gradle")
+
+project.extensions.configure<KMockExtension>(KMockExtension::class.java) {
+    rootPackage = "my.root.package"
+}
+
+dependencies {
+    ...
+
+    testImplementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+
+    ...
+}
+
+----
+
+==== Installation for Multi-Platform Projects
+
+[source, kotlin]
+----
+plugins {
+    ...
+
+    id("tech.antibytes.kmock.kmock-gradle") apply false
+}
+
+kotlin {
+    ...
+
+    sourceSets {
+        ...
+        val commonTest by getting {
+            dependencies {
+                ...
+                implementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+                ...
+            }
+        }
+        ...
+    }
+    ...
+}
+
+plugins.apply("tech.antibytes.kmock.kmock-gradle")
+
+project.extensions.configure<KMockExtension>("kmock") {
+    rootPackage = "my.root.package"
+}
+
+...
+
+----
+
+IMPORTANT: The plugin must be applied for KMP or KJs projects after invocation of the Kotlin plugin and the definition of its sources.
+This is due to the fact that Kotlin brings its own source set system and KSP must be configured during the evaluation of the project.
+
+==== Declaring Mocks
+Mocks can be either declared in a central place or per test set.
+The latter is recommended in order to follow link:https://enterprisecraftsmanship.com/posts/dry-damp-unit-tests/[DAMP unit tests] principle.
+You declare Mocks as followed:
+
+.Declare Mocks for Common Code
+[source, kotlin]
+----
+...
+import tech.antibytes.kmock.MockCommon
+...
+
+@MockCommon(
+    SampleInterface::class,
+    OtherSampleInterface::class,
+    ...
+)
+class SampleUnitTest {
+    ...
+}
+
+----
+
+.Declare Mocks for arbitrary Shared Code
+[source, kotlin]
+----
+...
+import tech.antibytes.kmock.MockShared
+...
+
+@MockShared(
+    "sourceSetTest",
+    SampleInterface::class,
+    OtherSampleInterface::class,
+    ...
+)
+class SampleUnitTest {
+    ...
+}
+
+----
+
+.Declare Mocks for Platform Code
+[source, kotlin]
+----
+...
+import tech.antibytes.kmock.Mock
+...
+
+@Mock(
+    SampleInterface::class,
+    OtherSampleInterface::class,
+    ...
+)
+class SampleUnitTest {
+    ...
+}
+
+----
+
+IMPORTANT: You need to declare the name of the source set if you use arbitrary shared sources like native.
+For example if you need to mock sources in `nativeTest` use it as the `sourceSetName`.
+
+NOTE: KMock allows currently *only* mocks/stubs for *interfaces*.
+
+==== Using KMock
+
+Once you the cleared mocks please run your test suite even if you have no meaningful tests defined in order to generate the mocks.
+This will allow you to use autocompletion in your Editor or IDE.
+After that you can start to write your tests:
+
+.KMock example
+[source,kotlin]
+----
+@Test
+fun sampleTest() {
+    // assign
+    val someInstance: SomeInterface = kmock()
+
+    someInstance._someProperty.returns = "any"
+    someInstance._someMethod.returns = "any"
+
+    // run
+    val someOtherInstance = SomeClass(someInstance)
+    someOtherInstance.run()
+
+    // assert
+    someInstance._someProperty.assertWasGotten(exactly = 1)
+    someInstance._someMethod.assertWasCalled(exactly = 1)
+}
+----
+
+KMock will generate proxy properties and attaches them to the mock class.
+It uses the given interface public methods or properties as templates.
+All proxy properties are using `_` as prefix followed by the templates name.
+
+NOTE: If the template is a method, which is overloaded KMock will attach the Parameter types to the name at first point when an overload is detected.
+While KMock does not differentiate between asynchronous and synchronous methods, it does between properties and methods.
+
+Please visit the link:{link-docs}/api/-k-mock/tech.antibytes.kmock.proxy/index.md[API] to learn more about the specifics.
+
+==== Spying
+
+==== Relaxing
