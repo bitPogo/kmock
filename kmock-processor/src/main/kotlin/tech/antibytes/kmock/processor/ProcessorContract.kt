@@ -95,7 +95,6 @@ internal interface ProcessorContract {
             qualifier: String,
             ksProperty: KSPropertyDeclaration,
             typeResolver: TypeParameterResolver,
-            existingProxies: List<String> = mutableListOf(),
             relaxer: Relaxer?
         ): Pair<PropertySpec, PropertySpec>
     }
@@ -105,7 +104,7 @@ internal interface ProcessorContract {
             qualifier: String,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
-            existingProxies: List<String>,
+            existingProxies: Set<String>,
             relaxer: Relaxer?
         ): Pair<PropertySpec, FunSpec>
     }
