@@ -417,16 +417,18 @@ class KmpSourceSetsConfiguratorSpec {
         val source5: KotlinSourceSet = mockk()
         val source6: KotlinSourceSet = mockk()
         val source7: KotlinSourceSet = mockk()
+        val source8: KotlinSourceSet = mockk()
 
         val sourceSets = mutableListOf(
-            source0,
             source1,
-            source2,
             source3,
+            source2,
+            source0,
             source4,
             source5,
             source6,
-            source7
+            source7,
+            source8,
         )
 
         every { project.dependencies } returns dependencies
@@ -454,7 +456,7 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { source1.name } returns "concurrentTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
-        every { source1.dependsOn } returns setOf(source0)
+        every { source1.dependsOn } returns setOf(source8)
 
         every { source2.name } returns "nativeTest"
         every { source2.kotlin.srcDir(any()) } returns mockk()
@@ -480,6 +482,10 @@ class KmpSourceSetsConfiguratorSpec {
         every { source7.kotlin.srcDir(any()) } returns mockk()
         every { source7.dependsOn } returns setOf(source1, source0)
 
+        every { source8.name } returns "metaTest"
+        every { source8.kotlin.srcDir(any()) } returns mockk()
+        every { source8.dependsOn } returns setOf(source0)
+
         every { dependencies.add(any(), any()) } throws RuntimeException()
         every { dependencies.add("kspIosX64Test", any()) } returns mockk()
         every { dependencies.add("kspIosArm32Test", any()) } returns mockk()
@@ -498,6 +504,13 @@ class KmpSourceSetsConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspCommonTest",
+                "tech.antibytes.kmock:kmock-processor:$version"
+            )
+        }
+
+        verify(atLeast = 1) {
+            dependencies.add(
+                "kspMetaTest",
                 "tech.antibytes.kmock:kmock-processor:$version"
             )
         }
@@ -556,6 +569,10 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
+            source8.kotlin.srcDir("$path/generated/ksp/meta/metaTest")
+        }
+
+        verify(exactly = 1) {
             source1.kotlin.srcDir("$path/generated/ksp/concurrent/concurrentTest")
         }
 
@@ -594,6 +611,7 @@ class KmpSourceSetsConfiguratorSpec {
                 ),
                 mapOf(
                     "commonTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
+                    "metaTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
                     "concurrentTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
                     "nativeTest" to setOf("linuxX64", "iosX64", "iosArm32"),
                     "iosTest" to setOf("iosX64", "iosArm32"),
@@ -601,8 +619,9 @@ class KmpSourceSetsConfiguratorSpec {
             )
         }
 
-        verify(exactly = 1) { kspExtension.arg("concurrentTest", "0") }
-        verify(exactly = 1) { kspExtension.arg("nativeTest", "-1") }
-        verify(exactly = 1) { kspExtension.arg("iosTest", "-2") }
+        verify(exactly = 1) { kspExtension.arg("metaTest", "0") }
+        verify(exactly = 1) { kspExtension.arg("concurrentTest", "-1") }
+        verify(exactly = 1) { kspExtension.arg("nativeTest", "-3") }
+        verify(exactly = 1) { kspExtension.arg("iosTest", "-5") }
     }
 }
