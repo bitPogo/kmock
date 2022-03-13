@@ -6,6 +6,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
+:lang: en
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -23,7 +24,8 @@ toc::[]
 
 == Code Of Conduct
 
-This project adheres to the Contributor Covenant link:CODE-OF-CONDUCT.adoc[Code Of Conduct]. By participating, you are expected to uphold this code.
+This project adheres to the Contributor Covenant link:CODE-OF-CONDUCT.adoc[Code Of Conduct].
+By participating, you are expected to uphold this code.
 
 == Issues
 
@@ -41,14 +43,62 @@ Also please check out first if an issue had been already opened with your reques
 
 == Contribute Code
 
+=== Development Process
+
+=== Prerequisites
+
+* link:https://developer.android.com/studio#downloads[Android Studio 2021.1.1 Patch 2 or later]
+* link:https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot[Java 11]
+* link:https://kotlinlang.org/[Kotlin 1.6.10]
+* link:https://gradle.org/install/[Gradle 7.2]
+
+IMPORTANT: Currently Android Studio does not work properly with Gradle 7.3+, therefore please stick to mentioned Gradle version.
+
+==== Features
+
+Every change has to branch of from `main` and use this branch naming convention:
+
+* `feature/{type_of_change}-{short_description}`
+
+`main` must be always in releasable state.
+
+===== Type Of Change
+
+- *add* for new features or functionality
+- *change* for changes in existing features or functionality
+- *remove* for removed features or functionality
+- *fix* for any bug fixes
+- *bump* for dependency updates
+- *security* in case of vulnerabilities
+
+Examples:
+
+- `feature/SDK-456/add-awesome-hashing-algorithm`
+- `feature/add-awesome-hashing-algorithm`
+- `feature/remove-not-so-awesome-algorithm`
+- `feature/fix-algorithm-corner-case`
+- `feature/bump-lib-to-1.3.0`
+
+==== Release
+
+A release branches of from `main` branch with following pattern:
+
+* `release/{major}.{minor}(.{patch})/prepare-{major}.{minor}.{patch}` while patch is optional
+
+Add following changes:
+
+* Update CHANGELOG.adoc by creating a new Unreleased section and change current unreleased to release version
+* Update README.adoc `project-version` to release version
+* Update the latest release badge link:assets/images/badges.adoc[HowTo]
+
+Releases are automatically created when a tag in the form of `v{major}.{minor}.{patch}` is added.
+
+
 === Pull Request
 
 link:{link-repository}/pulls[Pull requests] are always welcome and great way to contribute to the project.
 
-If you contribute, you have:
-
-* made clear which problem you're trying to solve
-* followed our link:DEVELOPING.adoc[Development process]
+If you contribute, you have make clear which problem you are attempt solve or what is nature of your improvement.
 
 ==== Create Pull Request
 

@@ -21,7 +21,7 @@ class EqualSpec {
     @Test
     @JsName("fn0")
     fun `eq fulfils MatcherConstraint`() {
-        eq(fixture.fixture()) fulfils KMockContract.VerificationConstraint::class
+        eq(fixture.fixture()) fulfils KMockContract.ArgumentConstraint::class
     }
 
     @Test

@@ -103,6 +103,28 @@ internal class KMockGenerator(
         return function.build()
     }
 
+    private fun aggregateOverloading(template: KSClassDeclaration): Set<String> {
+        val nameCollector: MutableList<String> = mutableListOf()
+        val overloadedMethods: MutableSet<String> = mutableSetOf()
+
+        template.getAllProperties().forEach { ksProperty ->
+            val name = ksProperty.simpleName.asString()
+            nameCollector.add(name)
+        }
+
+        template.getAllFunctions().forEach { ksFunction ->
+            val name = ksFunction.simpleName.asString()
+
+            if (name in nameCollector || "_$name" in nameCollector) {
+                overloadedMethods.add("_$name")
+            } else {
+                nameCollector.add(name)
+            }
+        }
+
+        return overloadedMethods
+    }
+
     private fun buildMock(
         className: String,
         template: KSClassDeclaration,
@@ -111,9 +133,8 @@ internal class KMockGenerator(
         val implementation = TypeSpec.classBuilder(className)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val qualifier = template.qualifiedName!!.asString()
-
-        val proxyNameCollector: MutableList<String> = mutableListOf()
         val superType = resolveType(template, typeResolver)
+        val proxyNameCollector: MutableList<String> = mutableListOf()
 
         implementation.addSuperinterface(superType)
         implementation.addModifiers(KModifier.INTERNAL)
@@ -125,6 +146,8 @@ internal class KMockGenerator(
             )
         }
 
+        val overloadedMethods = aggregateOverloading(template)
+
         implementation.primaryConstructor(
             buildConstructor(superType)
         )
@@ -135,12 +158,10 @@ internal class KMockGenerator(
                     qualifier,
                     ksProperty,
                     typeResolver,
-                    proxyNameCollector,
                     relaxer
                 )
 
                 proxyNameCollector.add(proxy.name)
-
                 implementation.addProperty(property)
                 implementation.addProperty(proxy)
             }
@@ -152,12 +173,11 @@ internal class KMockGenerator(
                     qualifier,
                     ksFunction,
                     typeResolver,
-                    proxyNameCollector,
+                    overloadedMethods,
                     relaxer
                 )
 
                 proxyNameCollector.add(proxy.name)
-
                 implementation.addFunction(function)
                 implementation.addProperty(proxy)
             }

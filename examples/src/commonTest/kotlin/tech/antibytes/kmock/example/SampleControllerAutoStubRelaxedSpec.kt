@@ -21,6 +21,7 @@ import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.hasBeenCalled
 import tech.antibytes.kmock.verification.hasBeenCalledWith
 import tech.antibytes.kmock.verification.hasBeenCalledWithout
 import tech.antibytes.kmock.verification.hasBeenStrictlyCalledWith
@@ -104,6 +105,7 @@ class SampleControllerAutoStubRelaxedSpec {
         val controller = SampleController(local, remote)
         return runBlockingTestWithTimeout {
             val actual = controller.fetchAndStore(url)
+            remote.doSomething()
 
             // Then
             actual mustBe domainObject
@@ -118,6 +120,7 @@ class SampleControllerAutoStubRelaxedSpec {
                 domainObject._id.wasGotten()
                 domainObject._value.wasGotten()
                 local._store.hasBeenCalledWith(id[1])
+                remote._doSomething.hasBeenCalled()
             }
 
             verifier.verifyOrder {
@@ -135,7 +138,7 @@ class SampleControllerAutoStubRelaxedSpec {
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
 
-        domainObject._id.get = id
+        // domainObject._id.get = id
 
         remote._find.returnValue = domainObject
         local._contains.sideEffect = { true }
@@ -155,14 +158,14 @@ class SampleControllerAutoStubRelaxedSpec {
             delay(20)
 
             verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 1) { local._fetch.hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 1) { local._fetch.hasBeenCalled() }
             verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
-                local._fetch.hasBeenStrictlyCalledWith(id)
+                local._fetch.hasBeenCalled()
                 domainObject._id.wasSet()
             }
 

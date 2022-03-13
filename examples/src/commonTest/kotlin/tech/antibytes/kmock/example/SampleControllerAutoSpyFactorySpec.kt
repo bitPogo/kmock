@@ -58,7 +58,7 @@ class SampleControllerAutoSpyFactorySpec {
     private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
     private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
     private val domainObjectInstance = DomainObject("test", 21)
-    private val domainObject: SampleDomainObjectMock = kspy(
+    private val domainObject: SampleDomainObjectMock = `kspy`(
         domainObjectInstance,
         verifier,
     )

@@ -20,7 +20,7 @@ class AnySpec {
     @Test
     @JsName("fn0")
     fun `any fulfils MatcherConstraint`() {
-        any() fulfils KMockContract.VerificationConstraint::class
+        any() fulfils KMockContract.ArgumentConstraint::class
     }
 
     @Test

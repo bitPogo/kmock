@@ -134,7 +134,6 @@ internal class KMockPropertyGenerator(
         qualifier: String,
         ksProperty: KSPropertyDeclaration,
         typeResolver: TypeParameterResolver,
-        existingProxies: List<String>,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()

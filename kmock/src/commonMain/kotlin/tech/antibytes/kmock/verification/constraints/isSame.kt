@@ -8,17 +8,17 @@
 
 package tech.antibytes.kmock.verification.constraints
 
-import tech.antibytes.kmock.KMockContract.VerificationConstraint
+import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 
 /**
  * VerificationConstraint matches if the actual and expected value are identical.
  * @param expected the expected value which should match.
  * @property expected the expected value which should match.
- * @see VerificationConstraint
+ * @see ArgumentConstraint
  * @author Matthias Geisler
  */
 class isSame(
     private val expected: Any?
-) : VerificationConstraint {
+) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = expected === actual
 }

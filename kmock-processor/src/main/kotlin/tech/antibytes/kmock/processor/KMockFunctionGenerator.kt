@@ -120,11 +120,11 @@ internal class KMockFunctionGenerator(
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
         arguments: Collection<TypeName>,
-        existingProxies: List<String>
+        existingProxies: Set<String>
     ): String {
         val proxyName = "_$functionName"
 
-        return if (existingProxies.contains(proxyName)) {
+        return if (proxyName in existingProxies) {
             determineSuffixedProxyName(
                 proxyName,
                 arguments,
@@ -456,7 +456,7 @@ internal class KMockFunctionGenerator(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
-        existingProxies: List<String>,
+        existingProxies: Set<String>,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, FunSpec> {
         val functionName = ksFunction.simpleName.asString()

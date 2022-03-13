@@ -8,6 +8,7 @@ import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URL
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -207,14 +208,16 @@ tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
             noStdlibLink.set(false)
             noJdkLink.set(false)
             noAndroidSdkLink.set(false)
+
+            sourceLink {
+                localDirectory.set(rootDir.resolve("docs/api"))
+
+                remoteUrl.set(
+                    URL("https://github.com/bitPogo/kmock/blob/main/docs/api")
+                )
+
+                remoteLineSuffix.set("#L")
+            }
         }
     }
 }
-
-val dokkaGfm by tasks.getting(DokkaTask::class) {
-    outputDirectory.set(
-        rootDir.resolve("docs/api")
-    )
-}
-
-

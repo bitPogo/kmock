@@ -6,6 +6,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
+:lang: en
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:

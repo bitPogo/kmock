@@ -45,13 +45,22 @@ internal class RelaxedMock(
             bar(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
         { { mockId -> relaxed(mockId) } } else { null })
 
+    public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Relaxed#_buzzWithVoid", spyOn = if (spyOn != null) { { buzz() } }
+        else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
+        } else { null })
+
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 
     public override suspend fun bar(payload: Any): String = _bar.invoke(payload)
+
+    public override fun buzz(): Unit = _buzzWithVoid.invoke()
 
     public fun _clearMock(): Unit {
         _buzz.clear()
         _foo.clear()
         _bar.clear()
+        _buzzWithVoid.clear()
     }
 }

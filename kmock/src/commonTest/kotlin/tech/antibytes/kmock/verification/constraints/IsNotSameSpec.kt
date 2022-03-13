@@ -20,7 +20,7 @@ class IsNotSameSpec {
     @Test
     @JsName("fn0")
     fun `isNotSame fulfils MatcherConstraint`() {
-        isNotSame(fixture.fixture()) fulfils KMockContract.VerificationConstraint::class
+        isNotSame(fixture.fixture()) fulfils KMockContract.ArgumentConstraint::class
     }
 
     @Test
