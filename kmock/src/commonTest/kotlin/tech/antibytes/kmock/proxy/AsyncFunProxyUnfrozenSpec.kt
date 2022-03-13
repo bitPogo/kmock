@@ -15,6 +15,7 @@ import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
+import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -210,6 +211,83 @@ class AsyncFunProxyUnfrozenSpec {
 
         // Then
         actual mustBe value
+    }
+
+    @Test
+    @JsName("fn7d")
+    fun `Given invoke with 0 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(Any())
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            },
+            freeze = false
+        )
+
+        // When
+        val actual = proxy.invoke()
+
+        // Then
+        actual mustBe value
+        capturedArgument.value mustBe null
+    }
+
+    @Test
+    @JsName("fn7e")
+    fun `Given invoke with arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val argument: Any = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(null)
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            },
+            freeze = false
+        )
+
+        // When
+        val actual = proxy.invoke(argument)
+
+        // Then
+        actual mustBe value
+        capturedArgument.value sameAs argument
+    }
+
+    @Test
+    @JsName("fn7e")
+    fun `Given invoke with more then 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val argument: Any = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(null)
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            },
+            freeze = false
+        )
+
+        // When
+        val actual = proxy.invoke(argument)
+
+        // Then
+        actual mustBe value
+        capturedArgument.value sameAs argument
     }
 
     @Test

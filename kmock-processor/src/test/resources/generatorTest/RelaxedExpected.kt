@@ -3,6 +3,7 @@ package generatorTest
 import generatorTest.relaxed
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -49,7 +50,22 @@ internal class RelaxedMock(
         SyncFunProxy("generatorTest.Relaxed#_buzzWithVoid", spyOn = if (spyOn != null) { { buzz() } }
         else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
             relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-        } else { null })
+        } else { null }, buildInRelaxer = null)
+
+    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+        SyncFunProxy("generatorTest.Relaxed#_toString", spyOn = if (spyOn != null) { { toString() } }
+        else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null, relaxer = null,
+            buildInRelaxer = { super.toString() })
+
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+        SyncFunProxy("generatorTest.Relaxed#_equals", spyOn = if (spyOn != null) { { other ->
+            equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null,
+            relaxer = null, buildInRelaxer = { other -> super.equals(other) })
+
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+        SyncFunProxy("generatorTest.Relaxed#_hashCode", spyOn = if (spyOn != null) { { hashCode() } }
+        else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null, relaxer = null,
+            buildInRelaxer = { super.hashCode() })
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 
@@ -57,10 +73,19 @@ internal class RelaxedMock(
 
     public override fun buzz(): Unit = _buzzWithVoid.invoke()
 
+    public override fun toString(): String = _toString.invoke()
+
+    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+
+    public override fun hashCode(): Int = _hashCode.invoke()
+
     public fun _clearMock(): Unit {
         _buzz.clear()
         _foo.clear()
         _bar.clear()
         _buzzWithVoid.clear()
+        _toString.clear()
+        _equals.clear()
+        _hashCode.clear()
     }
 }

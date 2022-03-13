@@ -11,6 +11,7 @@ import tech.antibytes.kmock.Mock
 @Mock(SyncFunctionOverload::class)
 interface SyncFunctionOverload {
     val foo: Any
+    var hashCode: Int
     fun foo(fuzz: Int, ozz: Any): Any
     fun foo(fuzz: Any, ozz: Int): Any
     fun foo(fuzz: Any, ozz: String): Any

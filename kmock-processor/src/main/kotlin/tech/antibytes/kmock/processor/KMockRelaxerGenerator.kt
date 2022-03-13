@@ -9,10 +9,16 @@ package tech.antibytes.kmock.processor
 internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
     override fun buildRelaxers(
         relaxer: ProcessorContract.Relaxer?,
-        useUnitFunRelaxer: Boolean
+        isFunction: Boolean
     ): String {
-        val unitFunRelaxerStr = if (useUnitFunRelaxer) {
+        val unitFunRelaxerStr = if (isFunction) {
             "unitFunRelaxer = if (relaxUnitFun) { { ${ProcessorContract.UNIT_RELAXER.simpleName}() } } else { null }"
+        } else {
+            ""
+        }
+
+        val buildInRelaxerStr = if (isFunction) {
+            "buildInRelaxer = null"
         } else {
             ""
         }
@@ -26,7 +32,7 @@ internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
         return if (unitFunRelaxerStr.isEmpty()) {
             relaxerStr
         } else {
-            "$unitFunRelaxerStr, $relaxerStr"
+            "$unitFunRelaxerStr, $relaxerStr, $buildInRelaxerStr"
         }
     }
 }

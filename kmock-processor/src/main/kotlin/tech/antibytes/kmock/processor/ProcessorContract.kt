@@ -109,6 +109,13 @@ internal interface ProcessorContract {
         ): Pair<PropertySpec, FunSpec>
     }
 
+    interface BuildInFunctionGenerator {
+        fun buildFunctionBundles(
+            qualifier: String,
+            existingProxies: Set<String>
+        ): Pair<List<PropertySpec>, List<FunSpec>>
+    }
+
     interface MockGenerator {
         fun writePlatformMocks(
             interfaces: List<InterfaceSource>,

@@ -260,6 +260,86 @@ class AsyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn7d")
+    fun `Given invoke with 0 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(Any())
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            }
+        )
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = proxy.invoke()
+
+            // Then
+            actual mustBe value
+            capturedArgument.value mustBe null
+        }
+    }
+
+    @Test
+    @JsName("fn7e")
+    fun `Given invoke with 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val argument: Any = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(null)
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            }
+        )
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument)
+
+            // Then
+            actual mustBe value
+            capturedArgument.value sameAs argument
+        }
+    }
+
+    @Test
+    @JsName("fn7f")
+    fun `Given invoke with more then 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`(): AsyncTestReturnValue {
+        // Given
+        val name: String = fixture.fixture()
+        val argument: Any = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val capturedArgument = AtomicReference<Any?>(null)
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            buildInRelaxer = { givenArgument ->
+                capturedArgument.set(givenArgument)
+
+                value
+            }
+        )
+
+        return runBlockingTestInContext(testScope1.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument, fixture.fixture<Any>())
+
+            // Then
+            actual mustBe value
+            capturedArgument.value sameAs argument
+        }
+    }
+
+    @Test
     @JsName("fn8")
     fun `Given invoke is called it throws the given Throwable threadsafe`(): AsyncTestReturnValue {
         // Given

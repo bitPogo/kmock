@@ -13,6 +13,7 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -21,6 +22,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 
 internal object KMockGenerics : GenericResolver {
+    private val any = Any::class.asTypeName()
+
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
 
     override fun extractGenerics(
@@ -63,7 +66,7 @@ internal object KMockGenerics : GenericResolver {
         return if (type == null && root == typeNameStr) {
             GenericDeclaration(
                 types = listOf(
-                    TypeVariableName("Any").copy(nullable = rootNullability)
+                    any.copy(nullable = rootNullability)
                 ),
                 nullable = rootNullability,
                 recursive = true
@@ -139,7 +142,7 @@ internal object KMockGenerics : GenericResolver {
                 typeResolver = typeResolver
             )
         } else {
-            val nestGeneric = determineType(
+            val nestedGeneric = determineType(
                 root = root,
                 rootNullability = rootNullability,
                 types = type.arguments.map { ksTypeArgument -> ksTypeArgument.type!! },
@@ -150,14 +153,14 @@ internal object KMockGenerics : GenericResolver {
 
             mergeNestedGeneric(
                 type,
-                nestGeneric
+                nestedGeneric
             )
         }
     }
 
     private fun resolveNullableAny(): GenericDeclaration {
         return GenericDeclaration(
-            types = listOf(TypeVariableName("Any?")),
+            types = listOf(any.copy(nullable = true)),
             recursive = false,
             nullable = true
         )

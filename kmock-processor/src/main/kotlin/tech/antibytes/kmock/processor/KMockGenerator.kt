@@ -40,7 +40,8 @@ internal class KMockGenerator(
     private val codeGenerator: CodeGenerator,
     private val generics: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
-    private val functionGenerator: ProcessorContract.FunctionGenerator
+    private val functionGenerator: ProcessorContract.FunctionGenerator,
+    private val buildInGenerator: ProcessorContract.BuildInFunctionGenerator
 ) : ProcessorContract.MockGenerator {
     private fun resolveType(
         template: KSClassDeclaration,
@@ -189,6 +190,14 @@ internal class KMockGenerator(
                 implementation.addFunction(function)
                 implementation.addProperty(proxy)
             }
+        }
+
+        val (proxies, functions) = buildInGenerator.buildFunctionBundles(qualifier, overloadedMethods)
+
+        implementation.addFunctions(functions)
+        proxies.forEach { proxy ->
+            proxyNameCollector.add(proxy.name)
+            implementation.addProperty(proxy)
         }
 
         implementation.addFunction(buildClear(proxyNameCollector))

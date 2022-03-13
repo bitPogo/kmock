@@ -59,16 +59,32 @@ object KMockContract {
     /**
      * Wrapper for injected Relaxers, which is internally used to reference a Relaxer. The relaxer is invoke per Proxy.
      * @param ReturnValue the return type of the Relaxer.
-     * @see Relaxer
+     * @see tech.antibytes.kmock.Relaxer
      * @author Matthias Geisler
      */
     fun interface Relaxer<ReturnValue> {
         /**
          * Invokes the injected Relaxer.
-         * @param id a Proxy#Id in order to enable fine grained differentiation between overlapping types.
+         * @param id of the invoking Proxy in order to enable fine grained differentiation between overlapping types.
          * @return the given Relaxer Type.
          */
         fun relax(id: String): ReturnValue
+    }
+
+    /**
+     * Wrapper for build-in functions, which are internally used as Relaxer. Meant for internal usage only!.
+     * @param Parameter parameter supported by the build-in function.
+     * @param ReturnValue the return type of the Relaxer.
+     * @see Relaxer
+     * @author Matthias Geisler
+     */
+    fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
+        /**
+         * Invokes the injected Relaxer.
+         * @param payload which is supported by the invoked build-in function.
+         * @return the given Relaxer Type.
+         */
+        fun relax(payload: Parameter): ReturnValue
     }
 
     /**

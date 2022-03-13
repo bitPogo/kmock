@@ -284,8 +284,6 @@ class KMockSpec {
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("GenericsMock.kt")
 
-        println(actual)
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null

@@ -15,6 +15,7 @@ import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.Relaxer
+import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
@@ -27,6 +28,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,
+    buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
     private val freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
@@ -59,6 +61,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
 
     private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
+
+    private val buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
 
     private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
@@ -209,8 +213,9 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         }
     }
 
-    protected fun invokeRelaxerOrFail(): ReturnValue {
-        return unitFunRelaxer.value?.relax(id)
+    protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
+        return buildInRelaxer.value?.relax(payload)
+            ?: unitFunRelaxer.value?.relax(id)
             ?: relaxer.value?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")
     }
