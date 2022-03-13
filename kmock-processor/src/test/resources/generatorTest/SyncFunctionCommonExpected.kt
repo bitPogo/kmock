@@ -27,9 +27,17 @@ internal class SyncFunctionCommonMock(
             ozz ->
             foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
+    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+        SyncFunProxy("generatorTest.SyncFunctionCommon#_bar", spyOn = if (spyOn != null) { { buzz,
+            bozz ->
+            bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
+
+    public override fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
 
     public fun _clearMock(): Unit {
         _foo.clear()
+        _bar.clear()
     }
 }

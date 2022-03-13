@@ -3,6 +3,7 @@ package generatorTest
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -34,6 +35,18 @@ internal class PropertySharedMock(
     }
 
 
+    public override val bar: Int
+        get() = _bar.onGet()
+
+    public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
+        PropertyProxy("generatorTest.PropertyShared#_bar", spyOnGet = null, collector = verifier,
+            freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("generatorTest.PropertyShared#_bar", spyOnGet = { spyOn.bar }, collector =
+        verifier, freeze = freeze, relaxer = null)
+    }
+
+
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
@@ -49,6 +62,7 @@ internal class PropertySharedMock(
 
     public fun _clearMock(): Unit {
         _foo.clear()
+        _bar.clear()
         _buzz.clear()
     }
 }

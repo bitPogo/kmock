@@ -6,10 +6,12 @@
 
 package tech.antibytes.kmock.processor
 
-import com.google.devtools.ksp.isAbstract
+import com.google.devtools.ksp.isOpen
+import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
@@ -125,6 +127,10 @@ internal class KMockGenerator(
         return overloadedMethods
     }
 
+    private fun KSDeclaration.isPublicOpen(): Boolean {
+        return this.isPublic() && this.isOpen()
+    }
+
     private fun buildMock(
         className: String,
         template: KSClassDeclaration,
@@ -153,7 +159,7 @@ internal class KMockGenerator(
         )
 
         template.getAllProperties().forEach { ksProperty ->
-            if (ksProperty.isAbstract()) {
+            if (ksProperty.isPublicOpen()) {
                 val (proxy, property) = propertyGenerator.buildPropertyBundle(
                     qualifier,
                     ksProperty,
@@ -168,7 +174,9 @@ internal class KMockGenerator(
         }
 
         template.getAllFunctions().forEach { ksFunction ->
-            if (ksFunction.isAbstract) {
+            val name = ksFunction.simpleName.asString()
+
+            if (ksFunction.isPublicOpen() && name != "equals" && name != "toString" && name != "hashCode") {
                 val (proxy, function) = functionGenerator.buildFunctionBundle(
                     qualifier,
                     ksFunction,
