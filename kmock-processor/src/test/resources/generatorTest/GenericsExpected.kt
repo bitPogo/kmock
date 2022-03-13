@@ -274,6 +274,20 @@ internal class GenericsMock<K : Any, L>(
                 "Recursive generics are not supported on function level spies (yet)."
             ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
+    public val _issWithAnyGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any?, Any) ->
+    kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_issWithAnyGeneratorTestSomeGeneric",
+        spyOn = if (spyOn != null) { { arg0, arg1 ->
+            @Suppress("UNCHECKED_CAST")
+            arg1 as generatorTest.SomeGeneric<kotlin.String>
+            @Suppress("UNCHECKED_CAST")
+            arg1 as kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>
+            iss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+
+    public val _issWithAny: KMockContract.SyncFunProxy<Any, (Any?) -> Any> =
+        SyncFunProxy("generatorTest.Generics#_issWithAny", spyOn = if (spyOn != null) { { arg0 ->
+            iss(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
@@ -384,6 +398,13 @@ internal class GenericsMock<K : Any, L>(
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<R>>> = _kssWithGeneratorTestSomeGeneric.invoke(arg0) as R
 
+    public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
+    Comparable<List<Array<T>>> = _issWithAnyGeneratorTestSomeGeneric.invoke(arg0, arg1)
+
+    @Suppress("UNCHECKED_CAST")
+    public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
+    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0) as R
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -422,5 +443,7 @@ internal class GenericsMock<K : Any, L>(
         _ossWithAny.clear()
         _kssWithGeneratorTestSomeGenericGeneratorTestSomeGeneric.clear()
         _kssWithGeneratorTestSomeGeneric.clear()
+        _issWithAnyGeneratorTestSomeGeneric.clear()
+        _issWithAny.clear()
     }
 }
