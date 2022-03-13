@@ -56,7 +56,7 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             Provider.RETURN_VALUES -> retrieveFromValues()
             Provider.SIDE_EFFECT -> function()
             Provider.SIDE_EFFECT_CHAIN -> chainFunction()
-            Provider.SPY -> spy!!()
+            Provider.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
             else -> invokeRelaxerOrFail()
         }
     }
@@ -73,9 +73,10 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke()
         }
 
-        val spyOn = {
-            (spyOn as () -> ReturnValue)
-                .invoke()
+        val spyOn = if (spyOn is SideEffect) {
+            { (spyOn as () -> ReturnValue).invoke() }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn)
@@ -93,9 +94,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0) -> ReturnValue)
-                .invoke(arg0)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0) -> ReturnValue)
+                    .invoke(arg0)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0)
@@ -113,9 +118,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1) -> ReturnValue)
-                .invoke(arg0, arg1)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1) -> ReturnValue)
+                    .invoke(arg0, arg1)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1)
@@ -133,9 +142,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2) -> ReturnValue)
-                .invoke(arg0, arg1, arg2)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2)
@@ -153,9 +166,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3)
@@ -179,9 +196,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4)
@@ -206,9 +227,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5)
@@ -234,9 +259,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
@@ -263,9 +292,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
@@ -293,9 +326,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
@@ -324,9 +361,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+            }
+        } else {
+            null
         }
 
         return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
@@ -356,9 +397,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+            }
+        } else {
+            null
         }
 
         return execute(
@@ -404,9 +449,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+            }
+        } else {
+            null
         }
 
         return execute(
@@ -454,9 +503,13 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
         }
 
-        val spyOn = {
-            (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
-                .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+        val spyOn = if (spyOn is SideEffect) {
+            {
+                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
+                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+            }
+        } else {
+            null
         }
 
         return execute(
