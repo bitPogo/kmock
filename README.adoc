@@ -25,7 +25,7 @@ endif::[]
         <h3>KMock</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
-        A mock library for Kotlin Multiplatform
+        A humble mocking library for Kotlin, KotlinJS and Kotlin Multiplatform using Kotlin Symbol Processing (KSP).
     </p>
     <p><!-- PROJECT DOCUMENTATION -->
         <a href="https://github.com/bitPogo/kmock/tree/main/docs"><strong>Explore the docs »</strong></a>

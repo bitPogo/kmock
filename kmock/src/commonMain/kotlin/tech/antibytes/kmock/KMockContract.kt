@@ -72,8 +72,8 @@ object KMockContract {
     }
 
     /**
-     * Wrapper for build-in functions, which are internally used as Relaxer. Meant for internal usage only!.
-     * @param Parameter parameter supported by the build-in function.
+     * Wrapper for build-in methods, which are internally used as Relaxer. Meant for internal usage only!.
+     * @param Parameter parameter supported by the build-in method.
      * @param ReturnValue the return type of the Relaxer.
      * @see Relaxer
      * @author Matthias Geisler
@@ -81,7 +81,7 @@ object KMockContract {
     fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
         /**
          * Invokes the injected Relaxer.
-         * @param payload which is supported by the invoked build-in function.
+         * @param payload which is supported by the invoked build-in method.
          * @return the given Relaxer Type.
          */
         fun relax(payload: Parameter): ReturnValue
@@ -140,7 +140,7 @@ object KMockContract {
      */
     interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
         /**
-         * Marks the proxy as ignore during verification (e.g. build-in functions). Meant for internal usage only!
+         * Marks the proxy as ignore during verification (e.g. build-in methods). Meant for internal usage only!
          */
         val ignorableForVerification: Boolean
 
