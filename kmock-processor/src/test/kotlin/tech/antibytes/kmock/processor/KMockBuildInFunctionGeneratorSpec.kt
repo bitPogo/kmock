@@ -12,6 +12,6 @@ import tech.antibytes.util.test.fulfils
 class KMockBuildInFunctionGeneratorSpec {
     @Test
     fun `It fulfils BuildInFunctionGenerator`() {
-        KMockBuildInFunctionGenerator fulfils ProcessorContract.FunctionGenerator::class
+        KMockBuildInFunctionGenerator fulfils ProcessorContract.BuildInFunctionGenerator::class
     }
 }

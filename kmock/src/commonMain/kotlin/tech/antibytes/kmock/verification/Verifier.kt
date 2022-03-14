@@ -8,8 +8,6 @@ package tech.antibytes.kmock.verification
 
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
-import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 
 /**

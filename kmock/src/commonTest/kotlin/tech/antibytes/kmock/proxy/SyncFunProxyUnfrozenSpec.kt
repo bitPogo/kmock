@@ -13,7 +13,6 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
 import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
-import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -50,7 +49,7 @@ class SyncFunProxyUnfrozenSpec {
     fun `It is can be ignored for verfication if told to`() {
         SyncFunProxy<Unit, () -> Unit>(
             fixture.fixture(),
-            ignorableDuringVerification = true,
+            ignorableForVerification = true,
             freeze = false
         ).ignorableForVerification mustBe true
     }
@@ -297,8 +296,8 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn7e")
-    fun `Given invoke with more then 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() {
+    @JsName("fn7f")
+    fun `Given invoke with more than 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() {
         // Given
         val name: String = fixture.fixture()
         val argument: Any = fixture.fixture()

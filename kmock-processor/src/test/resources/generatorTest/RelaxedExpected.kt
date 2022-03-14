@@ -53,19 +53,20 @@ internal class RelaxedMock(
         } else { null }, buildInRelaxer = null)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        SyncFunProxy("generatorTest.Relaxed#_toString", spyOn = if (spyOn != null) { { toString() } }
-        else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null, relaxer = null,
-            buildInRelaxer = { super.toString() })
+        SyncFunProxy("generatorTest.Relaxed#_toString", spyOn = if (spyOn != null) { {
+            spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
         SyncFunProxy("generatorTest.Relaxed#_equals", spyOn = if (spyOn != null) { { other ->
-            equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null,
-            relaxer = null, buildInRelaxer = { other -> super.equals(other) })
+            spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
+            ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("generatorTest.Relaxed#_hashCode", spyOn = if (spyOn != null) { { hashCode() } }
-        else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = null, relaxer = null,
-            buildInRelaxer = { super.hashCode() })
+        SyncFunProxy("generatorTest.Relaxed#_hashCode", spyOn = if (spyOn != null) { {
+            spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 

@@ -8,8 +8,8 @@ package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
+import tech.antibytes.kmock.KMockContract.Relaxer
 
 /**
  * Asynchronous function Proxy in order to stub/mock asynchronous function behaviour.

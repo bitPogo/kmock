@@ -65,10 +65,9 @@ class SyncFunProxySpec {
     fun `It is can be ignored for verfication if told to`() {
         SyncFunProxy<Unit, () -> Unit>(
             fixture.fixture(),
-            ignorableDuringVerification = true
+            ignorableForVerification = true
         ).ignorableForVerification mustBe true
     }
-
 
     @Test
     @JsName("fn1")

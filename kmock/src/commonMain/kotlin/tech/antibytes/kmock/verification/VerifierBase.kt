@@ -8,8 +8,8 @@ package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Proxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.KMockContract.Reference
+import tech.antibytes.kmock.KMockContract.SyncFunProxy
 
 /**
  * @suppress

@@ -98,7 +98,7 @@ class VerifierSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn5")
     fun `Given addReference is called it always adds AsyncFunProxies`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
@@ -123,7 +123,7 @@ class VerifierSpec {
     fun `Given addReference is called it adds SyncFunProxies if they are not marked for ignoring`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxyStub(
-            fixture.fixture(), 
+            fixture.fixture(),
             fixture.fixture()
         )
 
@@ -143,7 +143,7 @@ class VerifierSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn7")
     fun `Given addReference is called it ignores SyncFunProxies if they are marked for ignoring`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxyStub(
@@ -168,7 +168,7 @@ class VerifierSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
     fun `Given addReference is called it adds SyncFunProxies if they are marked for ignoring but are overruled by the Verifier`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxyStub(
@@ -193,7 +193,7 @@ class VerifierSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn9")
     fun `Given clear is called it clears the verifier`() {
         // Given
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())

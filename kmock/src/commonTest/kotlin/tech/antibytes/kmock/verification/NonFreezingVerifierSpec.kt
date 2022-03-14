@@ -10,9 +10,6 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.mock.AsyncFunProxyStub
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.mock.SyncFunProxyStub
-import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
-import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
-import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -45,7 +42,7 @@ class NonFreezingVerifierSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given add reference is called it adds a refrenence entry`() {
+    fun `Given addReference is called it adds a refrenence entry threadsafe`() {
         // Given
         val index: Int = fixture.fixture<Int>().absoluteValue
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
@@ -76,7 +73,7 @@ class NonFreezingVerifierSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn5")
     fun `Given addReference is called it always adds AsyncFunProxies`() {
         // Given
         val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
@@ -109,7 +106,7 @@ class NonFreezingVerifierSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn7")
     fun `Given addReference is called it ignores SyncFunProxies if they are marked for ignoring`() {
         // Given
         val proxy = SyncFunProxyStub(
@@ -122,13 +119,13 @@ class NonFreezingVerifierSpec {
 
         // When
         verifier.addReference(proxy, fixture.fixture())
-        
+
         // Then
         verifier.references.firstOrNull() mustBe null
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
     fun `Given addReference is called it adds SyncFunProxies if they are marked for ignoring but are overruled by the Verifier`() {
         // Given
         val proxy = SyncFunProxyStub(
@@ -145,9 +142,9 @@ class NonFreezingVerifierSpec {
         // Then
         verifier.references.first().Proxy mustBe proxy
     }
-    
+
     @Test
-    @JsName("fn8")
+    @JsName("fn9")
     fun `Given clear is called it clears the verifier`() {
         // Given
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())

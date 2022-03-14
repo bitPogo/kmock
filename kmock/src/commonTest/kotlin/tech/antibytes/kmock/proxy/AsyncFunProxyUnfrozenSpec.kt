@@ -15,7 +15,6 @@ import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
-import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -281,8 +280,8 @@ class AsyncFunProxyUnfrozenSpec {
         }
 
     @Test
-    @JsName("fn7e")
-    fun `Given invoke with more then 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() =
+    @JsName("fn7f")
+    fun `Given invoke with more than 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() =
         runBlockingTest {
             // Given
             val name: String = fixture.fixture()

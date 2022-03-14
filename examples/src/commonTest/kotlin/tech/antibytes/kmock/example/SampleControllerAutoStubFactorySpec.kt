@@ -157,8 +157,8 @@ class SampleControllerAutoStubFactorySpec {
     }
 
     @Test
-    @JsName("fn3")
-    fun `Given a mocked DomainObject it does strange things`(): AsyncTestReturnValue {
+    @JsName("fnx3")
+    fun `Given a mocked DomainObject it does strange things`() {
         // Given
         val id = fixture.fixture<String>()
 

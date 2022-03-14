@@ -14,8 +14,8 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
+import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max

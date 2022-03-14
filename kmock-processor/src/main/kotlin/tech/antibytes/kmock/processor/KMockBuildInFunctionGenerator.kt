@@ -14,8 +14,8 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
-import tech.antibytes.kmock.processor.ProcessorContract.BuildInFunctionGenerator
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
+import tech.antibytes.kmock.processor.ProcessorContract.BuildInFunctionGenerator
 
 internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
     private val buildIns = mapOf(
@@ -69,7 +69,7 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         spyName: String,
         spyArgumentName: String,
     ): String {
-        val spyBody = "$spyName($spyArgumentName)"
+        val spyBody = "spyOn.$spyName($spyArgumentName)"
 
         return if (spyArgumentName.isEmpty()) {
             "{ $spyBody }"
@@ -102,14 +102,14 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         val argumentName = resolveArgumentName(functionName)
 
         return proxySpec.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
+            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L, ignorableForVerification = true)",
             SyncFunProxy::class.simpleName,
             "$qualifier#$proxyName",
             "if (spyOn != null) { ${
-                buildFunctionSpyInvocation(
-                    spyName = functionName,
-                    spyArgumentName = argumentName,
-                )
+            buildFunctionSpyInvocation(
+                spyName = functionName,
+                spyArgumentName = argumentName,
+            )
             } } else { null }",
             buildRelaxer(functionName, argumentName)
         )

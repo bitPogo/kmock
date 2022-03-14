@@ -9,8 +9,8 @@ package tech.antibytes.kmock.verification
 import VerificationChainBuilderStub
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.VerificationHandle
-import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.mock.PropertyProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
