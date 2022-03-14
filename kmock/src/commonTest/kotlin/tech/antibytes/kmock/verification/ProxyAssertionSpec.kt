@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunProxyStub
 import tech.antibytes.mock.PropertyProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -24,7 +24,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 5)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 5)
 
         proxy.getArgumentsForCall = { values }
 
@@ -40,7 +40,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalled accepts if the amount of calls match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
 
@@ -53,7 +53,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
 
@@ -72,7 +72,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
         // When
@@ -87,7 +87,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
 
@@ -106,7 +106,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
 
@@ -122,7 +122,7 @@ class ProxyAssertionSpec {
     fun `Given assertHadNotBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 1)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
 
         proxy.getArgumentsForCall = { values }
 
@@ -138,7 +138,7 @@ class ProxyAssertionSpec {
     fun `Given assertHadNotBeenCalled accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 0)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 0)
 
         proxy.getArgumentsForCall = { values }
 
@@ -151,7 +151,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledWithout fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 2)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 2)
 
         proxy.getArgumentsForCall = { values }
 
@@ -167,7 +167,7 @@ class ProxyAssertionSpec {
     fun `Given assertHasBeenCalledWithout accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
-        val proxy = FunProxyStub(fixture.fixture(), 2)
+        val proxy = SyncFunProxyStub(fixture.fixture(), 2)
 
         proxy.getArgumentsForCall = { values }
 

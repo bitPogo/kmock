@@ -59,16 +59,32 @@ object KMockContract {
     /**
      * Wrapper for injected Relaxers, which is internally used to reference a Relaxer. The relaxer is invoke per Proxy.
      * @param ReturnValue the return type of the Relaxer.
-     * @see Relaxer
+     * @see tech.antibytes.kmock.Relaxer
      * @author Matthias Geisler
      */
     fun interface Relaxer<ReturnValue> {
         /**
          * Invokes the injected Relaxer.
-         * @param id a Proxy#Id in order to enable fine grained differentiation between overlapping types.
+         * @param id of the invoking Proxy in order to enable fine grained differentiation between overlapping types.
          * @return the given Relaxer Type.
          */
         fun relax(id: String): ReturnValue
+    }
+
+    /**
+     * Wrapper for build-in methods, which are internally used as Relaxer. Meant for internal usage only!.
+     * @param Parameter parameter supported by the build-in method.
+     * @param ReturnValue the return type of the Relaxer.
+     * @see Relaxer
+     * @author Matthias Geisler
+     */
+    fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
+        /**
+         * Invokes the injected Relaxer.
+         * @param payload which is supported by the invoked build-in method.
+         * @return the given Relaxer Type.
+         */
+        fun relax(payload: Parameter): ReturnValue
     }
 
     /**
@@ -123,6 +139,11 @@ object KMockContract {
      * @author Matthias Geisler
      */
     interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
+        /**
+         * Marks the proxy as ignore during verification (e.g. build-in methods). Meant for internal usage only!
+         */
+        val ignorableForVerification: Boolean
+
         /**
          * Setter/Getter in order to set/get constant ReturnValue of the function.
          * @throws NullPointerException on get if no value was set.

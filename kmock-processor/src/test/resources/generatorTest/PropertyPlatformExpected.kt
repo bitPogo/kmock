@@ -2,6 +2,7 @@ package generatorTest
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -33,6 +34,18 @@ internal class PropertyPlatformMock(
     }
 
 
+    public override val bar: Int
+        get() = _bar.onGet()
+
+    public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
+        PropertyProxy("generatorTest.PropertyPlatform#_bar", spyOnGet = null, collector = verifier,
+            freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("generatorTest.PropertyPlatform#_bar", spyOnGet = { spyOn.bar }, collector =
+        verifier, freeze = freeze, relaxer = null)
+    }
+
+
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
@@ -46,8 +59,34 @@ internal class PropertyPlatformMock(
     }
 
 
+    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+        SyncFunProxy("generatorTest.PropertyPlatform#_toString", spyOn = if (spyOn != null) { {
+            spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
+
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+        SyncFunProxy("generatorTest.PropertyPlatform#_equals", spyOn = if (spyOn != null) { { other ->
+            spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
+            ignorableForVerification = true)
+
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+        SyncFunProxy("generatorTest.PropertyPlatform#_hashCode", spyOn = if (spyOn != null) { {
+            spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
+
+    public override fun toString(): String = _toString.invoke()
+
+    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+
+    public override fun hashCode(): Int = _hashCode.invoke()
+
     public fun _clearMock(): Unit {
         _foo.clear()
+        _bar.clear()
         _buzz.clear()
+        _toString.clear()
+        _equals.clear()
+        _hashCode.clear()
     }
 }

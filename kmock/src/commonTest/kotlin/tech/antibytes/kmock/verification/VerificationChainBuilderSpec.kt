@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.PublicApi
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -77,7 +77,7 @@ class VerificationChainBuilderSpec {
     @JsName("fn2")
     fun `Given ensureVerification it fails if the given mock is not part of it`() {
         // Given
-        val mock = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val mock = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
         // When
         val container = VerificationChainBuilder()

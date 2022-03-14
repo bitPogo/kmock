@@ -6,7 +6,7 @@
 
 package tech.antibytes.kmock.proxy
 
-import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -23,7 +23,7 @@ class FunProxyArgumentRetrievalSpec {
     fun `Given getArgumentsByType is called it progates errors`() {
         // Given
         val error = RuntimeException()
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             0,
             getArgumentsForCall = { throw error }
@@ -55,7 +55,7 @@ class FunProxyArgumentRetrievalSpec {
             it.shuffle()
         }
 
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             0,
             getArgumentsForCall = { givenIdx ->
@@ -81,7 +81,7 @@ class FunProxyArgumentRetrievalSpec {
 
         var counter = 2
 
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             4,
             getArgumentsForCall = {
@@ -124,7 +124,7 @@ class FunProxyArgumentRetrievalSpec {
             arguments
         )
 
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             3,
             getArgumentsForCall = {
@@ -152,7 +152,7 @@ class FunProxyArgumentRetrievalSpec {
 
         var counter = 2
 
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             4,
             getArgumentsForCall = {
@@ -195,7 +195,7 @@ class FunProxyArgumentRetrievalSpec {
             arguments
         )
 
-        val proxy = FunProxyStub(
+        val proxy = SyncFunProxyStub(
             fixture.fixture(),
             3,
             getArgumentsForCall = {

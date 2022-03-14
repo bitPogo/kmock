@@ -58,7 +58,7 @@ class SampleControllerAutoSpyFactorySpec {
     private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
     private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
     private val domainObjectInstance = DomainObject("test", 21)
-    private val domainObject: SampleDomainObjectMock = `kspy`(
+    private val domainObject: SampleDomainObjectMock = kspy(
         domainObjectInstance,
         verifier,
     )
@@ -88,11 +88,12 @@ class SampleControllerAutoSpyFactorySpec {
 
         // When
         val controller = SampleController(local, remote)
+
         return runBlockingTestWithTimeout {
             val actual = controller.fetchAndStore(url)
 
             // Then
-            actual mustBe domainObject
+            actual.hashCode() mustBe domainObject.hashCode()
 
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith() }
@@ -137,7 +138,7 @@ class SampleControllerAutoSpyFactorySpec {
         return runBlockingTestWithTimeoutInScope(defaultTestContext) {
             // When
             controller.find(idOrg)
-                .onEach { actual -> actual mustBe doRef.get() }
+                .onEach { actual -> actual.hashCode() mustBe doRef.get().hashCode() }
                 .launchIn(CoroutineScope(contextRef.get()))
 
             delay(20)

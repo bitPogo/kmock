@@ -40,14 +40,15 @@ internal class GenericsMock<K : Any, L>(
     }
 
 
-    public val _fooWithVoid: KMockContract.SyncFunProxy<Any?, () -> Any?> =
+    public val _fooWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
         SyncFunProxy("generatorTest.Generics#_fooWithVoid", spyOn = if (spyOn != null) { { foo() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (Any?) -> kotlin.Unit> =
+    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         SyncFunProxy("generatorTest.Generics#_fooWithAny", spyOn = if (spyOn != null) { { payload ->
             foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+        null)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         SyncFunProxy("generatorTest.Generics#_blaWithVoid", spyOn = if (spyOn != null) { { bla() } }
@@ -56,14 +57,16 @@ internal class GenericsMock<K : Any, L>(
     public val _blaWithInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
         SyncFunProxy("generatorTest.Generics#_blaWithInt", spyOn = if (spyOn != null) { { payload ->
             bla(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+        null)
 
     public val _barWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) ->
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_barWithCollectionsList", spyOn = if
                                                                                                   (spyOn != null) { { payload ->
         bar(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
@@ -76,7 +79,8 @@ internal class GenericsMock<K : Any, L>(
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_blubbWithCollectionsList", spyOn = if
                                                                                                     (spyOn != null) { { payload ->
         blubb(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _blubbWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () ->
@@ -89,7 +93,8 @@ internal class GenericsMock<K : Any, L>(
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_bussWithCollectionsList", spyOn = if
                                                                                                    (spyOn != null) { { payload ->
         buss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _bussWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
@@ -102,7 +107,8 @@ internal class GenericsMock<K : Any, L>(
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_bossWithCollectionsList", spyOn = if
                                                                                                    (spyOn != null) { { payload ->
         boss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _bossWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>, () ->
@@ -115,7 +121,8 @@ internal class GenericsMock<K : Any, L>(
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_buzzWithT", spyOn = if (spyOn != null) {
         { payload ->
             buzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _buzzWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
@@ -126,41 +133,42 @@ internal class GenericsMock<K : Any, L>(
     public val _ozzWithL: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
         SyncFunProxy("generatorTest.Generics#_ozzWithL", spyOn = if (spyOn != null) { { payload ->
             ozz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+        null)
 
     public val _ozzWithVoid: KMockContract.SyncFunProxy<L, () -> L> =
         SyncFunProxy("generatorTest.Generics#_ozzWithVoid", spyOn = if (spyOn != null) { { ozz() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _brassWithComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any>>>) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) ->
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_brassWithComparable", spyOn = if (spyOn
         != null) { { payload ->
         throw IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
         ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-    { { relaxVoidFunction() } } else { null }, relaxer = null)
+    { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any>>>, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any>>>> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>> =
         SyncFunProxy("generatorTest.Generics#_brassWithVoid", spyOn = if (spyOn != null) { { throw
         IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
         ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _blissWithComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_blissWithComparable", spyOn = if (spyOn
         != null) { { payload ->
         throw IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
         ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-    { { relaxVoidFunction() } } else { null }, relaxer = null)
+    { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _blissWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
         SyncFunProxy("generatorTest.Generics#_blissWithVoid", spyOn = if (spyOn != null) { { throw
         IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
@@ -171,14 +179,15 @@ internal class GenericsMock<K : Any, L>(
         kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_lossWithCollectionsMap", spyOn = if
                                                                                                   (spyOn != null) { { payload ->
         loss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
         kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
         SyncFunProxy("generatorTest.Generics#_lossWithVoid", spyOn = if (spyOn != null) { { loss() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _uzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any) ->
+    public val _uzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_uzzWithGeneratorTestSomeGeneric", spyOn =
     if (spyOn != null) { { payload ->
         @Suppress("UNCHECKED_CAST")
@@ -186,13 +195,14 @@ internal class GenericsMock<K : Any, L>(
         @Suppress("UNCHECKED_CAST")
         payload as kotlin.collections.List<kotlin.String>
         uzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
-    public val _uzzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
+    public val _uzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         SyncFunProxy("generatorTest.Generics#_uzzWithVoid", spyOn = if (spyOn != null) { { uzz() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _lzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any) ->
+    public val _lzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_lzzWithGeneratorTestSomeGeneric", spyOn =
     if (spyOn != null) { { payload ->
         @Suppress("UNCHECKED_CAST")
@@ -200,13 +210,14 @@ internal class GenericsMock<K : Any, L>(
         @Suppress("UNCHECKED_CAST")
         payload as kotlin.collections.List<kotlin.String>?
         lzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
-    public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
+    public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         SyncFunProxy("generatorTest.Generics#_lzzWithVoid", spyOn = if (spyOn != null) { { lzz() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _tzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any?) ->
+    public val _tzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) ->
     kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_tzzWithGeneratorTestSomeGeneric", spyOn =
     if (spyOn != null) { { payload ->
         @Suppress("UNCHECKED_CAST")
@@ -214,13 +225,14 @@ internal class GenericsMock<K : Any, L>(
         @Suppress("UNCHECKED_CAST")
         payload as kotlin.collections.List<kotlin.String>?
         tzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
-    public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> Any?> =
+    public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
         SyncFunProxy("generatorTest.Generics#_tzzWithVoid", spyOn = if (spyOn != null) { { tzz() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _rzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any) ->
+    public val _rzzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_rzzWithGeneratorTestSomeGeneric", spyOn =
     if (spyOn != null) { { payload ->
         @Suppress("UNCHECKED_CAST")
@@ -228,65 +240,85 @@ internal class GenericsMock<K : Any, L>(
         @Suppress("UNCHECKED_CAST")
         payload as kotlin.collections.Map<kotlin.String, kotlin.String>
         rzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
-    public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
+    public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         SyncFunProxy("generatorTest.Generics#_rzzWithVoid", spyOn = if (spyOn != null) { { rzz() } }
         else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _izzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any) ->
+    public val _izzWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_izzWithGeneratorTestSomeGeneric", spyOn =
     if (spyOn != null) { { payload ->
         throw IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
         ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-    { { relaxVoidFunction() } } else { null }, relaxer = null)
+    { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
-    public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
+    public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         SyncFunProxy("generatorTest.Generics#_izzWithVoid", spyOn = if (spyOn != null) { { throw
         IllegalArgumentException(
             "Recursive generics are not supported on function level spies (yet)."
         ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _ossWithAnyAny: KMockContract.SyncFunProxy<Unit, (Any?, Any?) -> kotlin.Unit> =
-        SyncFunProxy("generatorTest.Generics#_ossWithAnyAny", spyOn = if (spyOn != null) { { arg0,
-            arg1 ->
-            oss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+    public val _ossWithAnyAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
+    kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_ossWithAnyAny", spyOn = if (spyOn !=
+        null) { { arg0, arg1 ->
+        oss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                       (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+    null)
 
-    public val _ossWithAny: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
+    public val _ossWithAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
         SyncFunProxy("generatorTest.Generics#_ossWithAny", spyOn = if (spyOn != null) { { arg0 ->
             oss(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _kssWithGeneratorTestSomeGenericGeneratorTestSomeGeneric:
-        KMockContract.SyncFunProxy<Unit, (Any, Any) -> kotlin.Unit> =
+        KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("generatorTest.Generics#_kssWithGeneratorTestSomeGenericGeneratorTestSomeGeneric",
             spyOn = if (spyOn != null) { { arg0, arg1 ->
                 throw IllegalArgumentException(
                     "Recursive generics are not supported on function level spies (yet)."
                 ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-            { { relaxVoidFunction() } } else { null }, relaxer = null)
+            { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
-    public val _kssWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        SyncFunProxy("generatorTest.Generics#_kssWithGeneratorTestSomeGeneric", spyOn = if (spyOn !=
-            null) { { arg0 ->
-            throw IllegalArgumentException(
-                "Recursive generics are not supported on function level spies (yet)."
-            ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+    public val _kssWithGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
+    kotlin.Any> = SyncFunProxy("generatorTest.Generics#_kssWithGeneratorTestSomeGeneric", spyOn =
+    if (spyOn != null) { { arg0 ->
+        throw IllegalArgumentException(
+            "Recursive generics are not supported on function level spies (yet)."
+        ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _issWithAnyGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (Any?, Any) ->
-    kotlin.Unit> = SyncFunProxy("generatorTest.Generics#_issWithAnyGeneratorTestSomeGeneric",
-        spyOn = if (spyOn != null) { { arg0, arg1 ->
+    public val _issWithAnyGeneratorTestSomeGeneric: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
+        kotlin.Any) -> kotlin.Unit> =
+        SyncFunProxy("generatorTest.Generics#_issWithAnyGeneratorTestSomeGeneric", spyOn = if (spyOn
+            != null) { { arg0, arg1 ->
             @Suppress("UNCHECKED_CAST")
             arg1 as generatorTest.SomeGeneric<kotlin.String>
             @Suppress("UNCHECKED_CAST")
-            arg1 as kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>
+            arg1 as kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>
             iss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null)
+                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+        null)
 
-    public val _issWithAny: KMockContract.SyncFunProxy<Any, (Any?) -> Any> =
+    public val _issWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
         SyncFunProxy("generatorTest.Generics#_issWithAny", spyOn = if (spyOn != null) { { arg0 ->
             iss(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
+    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+        SyncFunProxy("generatorTest.Generics#_toString", spyOn = if (spyOn != null) { {
+            spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
+
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+        SyncFunProxy("generatorTest.Generics#_equals", spyOn = if (spyOn != null) { { other ->
+            spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
+            ignorableForVerification = true)
+
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+        SyncFunProxy("generatorTest.Generics#_hashCode", spyOn = if (spyOn != null) { {
+            spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
+        null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
@@ -405,6 +437,12 @@ internal class GenericsMock<K : Any, L>(
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _issWithAny.invoke(arg0) as R
 
+    public override fun toString(): String = _toString.invoke()
+
+    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+
+    public override fun hashCode(): Int = _hashCode.invoke()
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -445,5 +483,8 @@ internal class GenericsMock<K : Any, L>(
         _kssWithGeneratorTestSomeGeneric.clear()
         _issWithAnyGeneratorTestSomeGeneric.clear()
         _issWithAny.clear()
+        _toString.clear()
+        _equals.clear()
+        _hashCode.clear()
     }
 }

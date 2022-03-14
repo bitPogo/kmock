@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
@@ -24,7 +24,7 @@ class NoopCollectorSpec {
     @JsName("fn1")
     fun `addReference is called with a Proxy and call index it does nothing`() {
         val actual = NoopCollector.addReference(
-            FunProxyStub("", -23),
+            SyncFunProxyStub("", -23),
             23
         )
 

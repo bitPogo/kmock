@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.mock.VerifierStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -24,7 +24,7 @@ class VerificationSpec {
     @JsName("fn0")
     fun `Given verify is called it fails if the covered mock does not contain any call`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
         // When
         val error = assertFailsWith<AssertionError> {
@@ -40,7 +40,7 @@ class VerificationSpec {
     @JsName("fn1")
     fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
@@ -58,7 +58,7 @@ class VerificationSpec {
     @JsName("fn2")
     fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
@@ -76,7 +76,7 @@ class VerificationSpec {
     @JsName("fn3")
     fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 1
         val expectedCalls = 3
 
@@ -94,7 +94,7 @@ class VerificationSpec {
     @JsName("fn4")
     fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
         val expectedCalls = 1
 
@@ -112,7 +112,7 @@ class VerificationSpec {
     @JsName("fn5")
     fun `Given verify is called it passes if the covered mock matches the requirements`() {
         // Given
-        val proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
         val givenCalls = 3
 
         // When
@@ -128,8 +128,8 @@ class VerificationSpec {
         val verifierLower = VerifierStub(emptyList())
         val verifierUpper = VerifierStub(
             listOf(
-                Reference(FunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
-                Reference(FunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
+                Reference(SyncFunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture()),
+                Reference(SyncFunProxyStub(fixture.fixture(), fixture.fixture()), fixture.fixture())
             )
         )
         val handle = VerificationHandle(fixture.fixture(), fixture.listFixture())
@@ -163,11 +163,11 @@ class VerificationSpec {
     @JsName("fn7")
     fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
         // Given
-        val handleproxy = FunProxyStub(
+        val handleproxy = SyncFunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
@@ -201,7 +201,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 0
         val actualCallIdx = 1
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -235,7 +235,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 1
         val actualCallIdx = 2
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -276,7 +276,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx = 1
         val actualCallIdx = 2
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -322,7 +322,7 @@ class VerificationSpec {
         // Given
         val name: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -378,11 +378,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceProxy1 = FunProxyStub(
+        val referenceProxy1 = SyncFunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceProxy2 = FunProxyStub(
+        val referenceProxy2 = SyncFunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -438,11 +438,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 1
-        val referenceProxy1 = FunProxyStub(
+        val referenceProxy1 = SyncFunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceProxy2 = FunProxyStub(
+        val referenceProxy2 = SyncFunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -509,11 +509,11 @@ class VerificationSpec {
     @Test
     @JsName("fn15")
     fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
-        val handleproxy = FunProxyStub(
+        val handleproxy = SyncFunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             fixture.fixture(),
             calls = fixture.fixture()
         )
@@ -546,7 +546,7 @@ class VerificationSpec {
         // Given
         val name: String = fixture.fixture()
         val expectedCallIdx = 0
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -575,7 +575,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 1
         val expectedCallIdx2 = 0
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -618,7 +618,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 0
         val expectedCallIdx2 = 1
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -657,7 +657,7 @@ class VerificationSpec {
         val expectedCallIdx1 = 2
         val expectedCallIdx2 = 3
 
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -705,7 +705,7 @@ class VerificationSpec {
         val name: String = fixture.fixture()
         val expectedCallIdx1 = 3
         val expectedCallIdx2 = 2
-        val referenceProxy = FunProxyStub(
+        val referenceProxy = SyncFunProxyStub(
             name,
             calls = fixture.fixture()
         )
@@ -752,11 +752,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceProxy1 = FunProxyStub(
+        val referenceProxy1 = SyncFunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceProxy2 = FunProxyStub(
+        val referenceProxy2 = SyncFunProxyStub(
             name2,
             calls = fixture.fixture()
         )
@@ -807,11 +807,11 @@ class VerificationSpec {
         val name1: String = fixture.fixture()
         val name2: String = fixture.fixture()
         val expectedCallIdx = 2
-        val referenceProxy1 = FunProxyStub(
+        val referenceProxy1 = SyncFunProxyStub(
             name1,
             calls = fixture.fixture()
         )
-        val referenceProxy2 = FunProxyStub(
+        val referenceProxy2 = SyncFunProxyStub(
             name2,
             calls = fixture.fixture()
         )

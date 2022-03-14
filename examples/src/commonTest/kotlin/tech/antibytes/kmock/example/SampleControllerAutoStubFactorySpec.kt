@@ -137,6 +137,7 @@ class SampleControllerAutoStubFactorySpec {
 
             delay(20)
 
+            // Then
             verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
             verify(exactly = 1) { local._fetch.hasBeenStrictlyCalledWith(id) }
             verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
@@ -153,5 +154,20 @@ class SampleControllerAutoStubFactorySpec {
                 local._contains.hasBeenCalledWithout("abc")
             }
         }
+    }
+
+    @Test
+    @JsName("fnx3")
+    fun `Given a mocked DomainObject it does strange things`() {
+        // Given
+        val id = fixture.fixture<String>()
+
+        domainObject._toString.returnValue = id
+
+        // When
+        val actual = domainObject.toString()
+
+        // Then
+        actual mustBe id
     }
 }

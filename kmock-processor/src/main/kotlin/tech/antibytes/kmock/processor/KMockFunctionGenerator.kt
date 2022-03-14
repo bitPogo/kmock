@@ -20,6 +20,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
@@ -33,6 +34,8 @@ internal class KMockFunctionGenerator(
     private val genericResolver: ProcessorContract.GenericResolver,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
+    private val any = Any::class.asTypeName()
+
     private fun String.titleCase(): String {
         return this.replaceFirstChar {
             if (it.isLowerCase()) {
@@ -164,21 +167,13 @@ internal class KMockFunctionGenerator(
         }
     }
 
-    private fun assignNullability(nullable: Boolean): String {
-        return if (nullable) {
-            "?"
-        } else {
-            ""
-        }
-    }
-
     private fun resolveGenericProxyType(
         typeName: TypeName,
         generic: GenericDeclaration?
     ): TypeName {
         return when {
             generic == null -> typeName
-            generic.types.size > 1 -> TypeVariableName("Any${assignNullability(generic.nullable)}")
+            generic.types.size > 1 -> any.copy(nullable = generic.nullable)
             else -> generic.types.first()
         }
     }

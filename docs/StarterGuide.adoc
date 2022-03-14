@@ -336,6 +336,10 @@ IMPORTANT: Please be aware there is a precedence of invocation.
 `returns` is used over `throws`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
 If no behaviour is set the Proxy simply fails.
 
+KMock also allows you to stub/mock build-in methods like `toString`.
+Use them with caution and only if the intended implementation of the mocked Interface requires/has special behaviour.
+Also the Proxies of those methods do not require Relaxation, since they always fall back to default behaviour of the Mocks parent.
+
 ==== PropertyProxies
 
 PropertyProxies work similar to FunProxies.
@@ -626,7 +630,11 @@ fun sampleTest() {
 Verification over multiple Proxies comes in 2 flavour - `verifyOrder` as seen above and `verifyStrictOrder`.
 While `verifyOrder` allows gaps and does not need all captured invocations covered, `verifyStrictOrder` will fail if something is missing.
 Both methods utilizing the already explained Expectation Methods. +
-Optional you can use `ensureVerificationOf` if you need any insurance that all Proxies had been covered during a run by an Verifier.
+Optional you can use `ensureVerificationOf` if you need any insurance that all Proxies had been covered during a run by an Verifier. +
+Both Verifier can be initialized with the `coverAllInvocations` flag, which is `false` by default.
+This flags forces Proxies, which are excluded from Verification via Verifier by default, to be covered during a test unit run too. +
+This is only important if you have to cover build-in methods like `equals`.
+Build-in methods are excluded from Verification via Verifier by default due to their special nature.
 
 ==== Setup/Teardown Mocks
 
@@ -684,6 +692,30 @@ In other words methods or properties of an SO are used instead of throwing an er
 The precedence described above stays otherwise untouched.
 
 NOTE: Setters of are always invoked.
+
+If you are using spies in combination with build-in methods be aware that the Proxy use the SO's methods here as well.
+This might result in a behaviour which is not obvious right away:
+
+.Example Spying on build-in methods
+[source,kotlin]
+----
+@Test
+fun sampleTest() {
+    val subjectToSpyOn = AnyImplementation()
+    val someInstance: SomeInterfaceMock = kspy(subjectToSpyOn)
+
+    assertTrue(someInstance.equals(subjectToSpyOn)) // will pass
+    assertTrue(subjectToSpyOn.equals(someInstance)) // will fail
+    assertTrue(someInstance.equals(someInstance)) // will fail
+}
+
+----
+
+While the first Assertion passes the others won't.
+So why works it that way? +
+KMock is as mentioned currently only build on top of Interface therefore the 2nd assertion fails unless `AnyImplementation` has a custom implementation of `equals`.
+The 3rd assertion fails since the Proxy of `equals` utilizes the implementation of `AnyImplementation` due to Spying. +
+Since this an undesirable behaviour expect changes rather in the future.
 
 ==== Relaxation
 Lastly KMock also facilitates Relaxation to certain degree. As with spies it requires boilerplate code done by you. +
@@ -765,6 +797,9 @@ As with spies you still can override specific methods by using the corresponding
 In other words Relaxation is used instead of throwing an error, if no behaviour was assigned to a Proxy.
 The precedence described above stays otherwise untouched.
 
+NOTE: Relaxation will not work with build-in methods like `hashCode`.
+Those methods excluded from Relaxation.
+
 ==== Memory Model
 KMock uses still Kotlin's old Memory Model.
 Therefore you might run in some trouble. +
@@ -780,7 +815,7 @@ KMock is capable of using your custom defined ArgumentConstraints.
 You can simply extend `ArgumentConstraint` of the `KMockContract` and implement the functionality you require and use it. Done!
 
 ===== Assertions
-You are also able to to write your custom Assertions by implementing custom link:https://kotlinlang.org/docs/extensions.html[extension function] for either the `Proxy`, `FunProxy`, `PropertyProxy`, `SyncFunProxy` or `AsyncFunProxy` Interface of the `KMockContract`. +
+You are also able to to write your custom Assertions by implementing a custom link:https://kotlinlang.org/docs/extensions.html[extension function] for either the `Proxy`, `FunProxy`, `PropertyProxy`, `SyncFunProxy` or `AsyncFunProxy` Interface of the `KMockContract`. +
 KMock exposes 4 functions which are intended for this purpose.
 `getArgumentsByType`, `getAllArgumentsByType` and `getAllArgumentsBoxedByType` working only for FunProxies, while `getArgumentsForCall` works for all Proxy types.
 `getArgumentsByType` can be used to retrieve Arguments for a specific call, `getAllArgumentsByType` and `getAllArgumentsBoxedByType` collecting over all invocations.
