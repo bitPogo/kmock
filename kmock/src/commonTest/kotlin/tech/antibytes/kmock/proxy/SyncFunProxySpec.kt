@@ -55,6 +55,22 @@ class SyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn0_b")
+    fun `It is not ignorable for verfication by default`() {
+        SyncFunProxy<Unit, () -> Unit>(fixture.fixture()).ignorableForVerification mustBe false
+    }
+
+    @Test
+    @JsName("fn0_c")
+    fun `It is can be ignored for verfication if told to`() {
+        SyncFunProxy<Unit, () -> Unit>(
+            fixture.fixture(),
+            ignorableDuringVerification = true
+        ).ignorableForVerification mustBe true
+    }
+
+
+    @Test
     @JsName("fn1")
     fun `Given a throws is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given

@@ -31,6 +31,7 @@ import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = NoopCollector,
+    ignorableDuringVerification: Boolean = false,
     relaxer: Relaxer<ReturnValue>? = null,
     unitFunRelaxer: Relaxer<ReturnValue?>? = null,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
@@ -39,6 +40,7 @@ class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
 ) : KMockContract.SyncFunProxy<ReturnValue, SideEffect>,
     FunProxy<ReturnValue, SideEffect>(
         id = id,
+        ignorableForVerification = ignorableDuringVerification,
         collector = collector,
         relaxer = relaxer,
         unitFunRelaxer = unitFunRelaxer,

@@ -25,6 +25,7 @@ import kotlin.math.max
  */
 abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
+    override val ignorableForVerification: Boolean,
     collector: Collector = Collector { _, _ -> Unit },
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,

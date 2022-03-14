@@ -140,6 +140,11 @@ object KMockContract {
      */
     interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
         /**
+         * Marks the proxy as ignore during verification (e.g. build-in functions). Meant for internal usage only!
+         */
+        val ignorableForVerification: Boolean
+
+        /**
          * Setter/Getter in order to set/get constant ReturnValue of the function.
          * @throws NullPointerException on get if no value was set.
          */

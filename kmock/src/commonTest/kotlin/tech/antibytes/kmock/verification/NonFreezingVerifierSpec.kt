@@ -7,7 +7,12 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.mock.FunProxyStub
+import tech.antibytes.mock.AsyncFunProxyStub
+import tech.antibytes.mock.PropertyProxyStub
+import tech.antibytes.mock.SyncFunProxyStub
+import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
+import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
+import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -43,27 +48,113 @@ class NonFreezingVerifierSpec {
     fun `Given add reference is called it adds a refrenence entry`() {
         // Given
         val index: Int = fixture.fixture<Int>().absoluteValue
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
         val verifier = NonfreezingVerifier()
 
         // When
-        verifier.addReference(Proxy, index)
+        verifier.addReference(proxy, index)
 
         // Then
-        verifier.references.first().Proxy sameAs Proxy
+        verifier.references.first().Proxy sameAs proxy
         verifier.references.first().callIndex mustBe index
     }
 
     @Test
     @JsName("fn4")
-    fun `Given clear is called it clears the verifier`() {
+    fun `Given addReference is called it always adds PropertyProxies`() {
         // Given
-        val Proxy = FunProxyStub(fixture.fixture(), fixture.fixture())
+        val proxy = PropertyProxyStub(fixture.fixture(), fixture.fixture())
+
         val verifier = NonfreezingVerifier()
 
         // When
-        verifier.addReference(Proxy, fixture.fixture())
+        verifier.addReference(proxy, fixture.fixture())
+
+        // Then
+        verifier.references.first().Proxy sameAs proxy
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given addReference is called it always adds AsyncFunProxies`() {
+        // Given
+        val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
+
+        val verifier = NonfreezingVerifier()
+
+        // When
+        verifier.addReference(proxy, fixture.fixture())
+
+        // Then
+        verifier.references.first().Proxy sameAs proxy
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given addReference is called it adds SyncFunProxies if they are not marked for ignoring`() {
+        // Given
+        val proxy = SyncFunProxyStub(
+            fixture.fixture(),
+            fixture.fixture()
+        )
+
+        val verifier = NonfreezingVerifier()
+
+        // When
+        verifier.addReference(proxy, fixture.fixture())
+
+        // Then
+        verifier.references.first().Proxy sameAs proxy
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given addReference is called it ignores SyncFunProxies if they are marked for ignoring`() {
+        // Given
+        val proxy = SyncFunProxyStub(
+            fixture.fixture(),
+            fixture.fixture(),
+            ignorableForVerification = true
+        )
+
+        val verifier = NonfreezingVerifier()
+
+        // When
+        verifier.addReference(proxy, fixture.fixture())
+        
+        // Then
+        verifier.references.firstOrNull() mustBe null
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given addReference is called it adds SyncFunProxies if they are marked for ignoring but are overruled by the Verifier`() {
+        // Given
+        val proxy = SyncFunProxyStub(
+            fixture.fixture(),
+            fixture.fixture(),
+            ignorableForVerification = true
+        )
+
+        val verifier = NonfreezingVerifier(coverAllInvocations = true)
+
+        // When
+        verifier.addReference(proxy, fixture.fixture())
+
+        // Then
+        verifier.references.first().Proxy mustBe proxy
+    }
+    
+    @Test
+    @JsName("fn8")
+    fun `Given clear is called it clears the verifier`() {
+        // Given
+        val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
+        val verifier = NonfreezingVerifier()
+
+        // When
+        verifier.addReference(proxy, fixture.fixture())
 
         verifier.clear()
 

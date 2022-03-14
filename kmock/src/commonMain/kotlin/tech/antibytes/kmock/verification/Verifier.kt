@@ -16,19 +16,9 @@ import tech.antibytes.kmock.KMockContract.Reference
  * Container which collects and holds actual references of proxy calls in a freezing manner.
  * The references are ordered by their invocation.
  * This is intended as default mode for Verification.
+ * @param coverAllInvocations flag to enable/disable capturing including explicit ignorable Proxies. Default is false.
  * @author Matthias Geisler
  */
-class Verifier : KMockContract.Verifier, KMockContract.Collector {
-    private val _references: IsoMutableList<Reference> = sharedMutableListOf()
-
-    override val references: List<Reference>
-        get() = _references.toList()
-
-    override fun addReference(referredProxy: Proxy<*, *>, referredCall: Int) {
-        _references.add(Reference(referredProxy, referredCall))
-    }
-
-    override fun clear() {
-        _references.clear()
-    }
+class Verifier(coverAllInvocations: Boolean = false) : VerifierBase(coverAllInvocations) {
+    override val _references: IsoMutableList<Reference> = sharedMutableListOf()
 }

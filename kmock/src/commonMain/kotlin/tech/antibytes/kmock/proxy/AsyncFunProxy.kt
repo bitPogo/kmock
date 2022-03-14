@@ -39,6 +39,7 @@ class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
 ) : KMockContract.AsyncFunProxy<ReturnValue, SideEffect>,
     FunProxy<ReturnValue, SideEffect>(
         id = id,
+        ignorableForVerification = false,
         collector = collector,
         relaxer = relaxer,
         unitFunRelaxer = unitFunRelaxer,

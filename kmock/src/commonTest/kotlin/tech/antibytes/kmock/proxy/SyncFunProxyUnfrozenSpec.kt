@@ -40,6 +40,22 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn0_b")
+    fun `It is not ignorable for verfication by default`() {
+        SyncFunProxy<Unit, () -> Unit>(fixture.fixture(), freeze = false).ignorableForVerification mustBe false
+    }
+
+    @Test
+    @JsName("fn0_c")
+    fun `It is can be ignored for verfication if told to`() {
+        SyncFunProxy<Unit, () -> Unit>(
+            fixture.fixture(),
+            ignorableDuringVerification = true,
+            freeze = false
+        ).ignorableForVerification mustBe true
+    }
+
+    @Test
     @JsName("fn1")
     fun `Given a throws is set it is retrievable`() {
         // Given

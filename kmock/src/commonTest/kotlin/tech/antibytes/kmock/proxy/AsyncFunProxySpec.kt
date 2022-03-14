@@ -53,6 +53,12 @@ class AsyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn0_b")
+    fun `It is never ignorable for verfication`() {
+        AsyncFunProxy<Unit, suspend () -> Unit>(fixture.fixture()).ignorableForVerification mustBe false
+    }
+
+    @Test
     @JsName("fn1")
     fun `Given a throws is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
