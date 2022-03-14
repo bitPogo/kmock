@@ -12,6 +12,7 @@ pluginManagement {
 }
 
 includeBuild("gradlePlugin/kmock-dependency")
+includeBuild("gradlePlugin/kmock-compiler-plugin")
 
 plugins {
     id("com.gradle.enterprise") version("3.7")

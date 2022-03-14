@@ -14,6 +14,7 @@ object Dependency {
 
     object Kotlin {
         val gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.gradle.kotlin}"
+        const val compiler = "org.jetbrains.kotlin:kotlin-compiler-embeddable"
     }
 
     object AntiBytes {

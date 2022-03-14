@@ -21,6 +21,9 @@ plugins {
     id("com.google.devtools.ksp")
 
     id("kotlinx-atomicfu")
+
+    // KMock CompilerPlugin
+    id("tech.antibytes.gradle.kmock.compiler-plugin")
 }
 
 group = KMockConfiguration.group

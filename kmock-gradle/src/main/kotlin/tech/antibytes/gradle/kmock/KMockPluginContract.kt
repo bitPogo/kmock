@@ -19,7 +19,14 @@ internal interface KMockPluginContract {
          * The invoking projects root package name
          */
         var rootPackage: String
+
+        /**
+         * Enables/Disables the compiler plugin
+         */
+        var useExperimentalCompilerPlugin: Boolean
     }
+
+
 
     interface CleanUpTask {
         @get:Input
