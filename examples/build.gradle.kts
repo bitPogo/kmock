@@ -23,7 +23,7 @@ plugins {
     id("kotlinx-atomicfu")
 
     // KMock CompilerPlugin
-    id("tech.antibytes.gradle.kmock.compiler-plugin")
+    // id("tech.antibytes.gradle.kmock.compiler-plugin")
 }
 
 group = KMockConfiguration.group

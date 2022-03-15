@@ -23,10 +23,8 @@ internal interface KMockPluginContract {
         /**
          * Enables/Disables the compiler plugin
          */
-        var useExperimentalCompilerPlugin: Boolean
+        val useExperimentalCompilerPlugin: Property<Boolean>
     }
-
-
 
     interface CleanUpTask {
         @get:Input

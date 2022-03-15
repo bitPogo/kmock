@@ -56,7 +56,9 @@ afterEvaluate {
         packageName.set("tech.antibytes.gradle.kmock.config")
         stringFields.set(
             mapOf(
-                "version" to project.version as String
+                "version" to project.version as String,
+                "group" to KMockGradleConfiguration.group,
+                "id" to KMockGradleConfiguration.pluginId,
             )
         )
     }

@@ -16,6 +16,10 @@ abstract class KMockExtension(
 
     private var _rootPackage: String = ""
 
+    init {
+        useExperimentalCompilerPlugin.convention(false)
+    }
+
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
     }

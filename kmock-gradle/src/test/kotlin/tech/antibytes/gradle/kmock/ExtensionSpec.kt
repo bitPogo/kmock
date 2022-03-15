@@ -45,7 +45,7 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its propagates rootPackage changes to Ksp`() {
+    fun `It propagates rootPackage changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk(relaxed = true)
@@ -59,5 +59,17 @@ class ExtensionSpec {
 
         extension.rootPackage mustBe expected
         verify(exactly = 1) { kspExtension.arg("rootPackage", expected) }
+    }
+
+    @Test
+    fun `Its default compiler plugin flag is false`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+
+        // Then
+        extension.useExperimentalCompilerPlugin.get() mustBe false
     }
 }
