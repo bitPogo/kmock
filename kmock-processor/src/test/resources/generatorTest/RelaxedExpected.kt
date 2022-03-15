@@ -23,6 +23,8 @@ internal class RelaxedMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Relaxed {
+    private val __spyOn: Relaxed? = spyOn
+
     public override val buzz: String
         get() = _buzz.onGet()
 
@@ -76,7 +78,13 @@ internal class RelaxedMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is RelaxedMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 

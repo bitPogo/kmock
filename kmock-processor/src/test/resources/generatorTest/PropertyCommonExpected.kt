@@ -23,6 +23,8 @@ internal class PropertyCommonMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : PropertyCommon {
+    private val __spyOn: PropertyCommon? = spyOn
+
     public override val foo: String
         get() = _foo.onGet()
 
@@ -78,7 +80,13 @@ internal class PropertyCommonMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is PropertyCommonMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 

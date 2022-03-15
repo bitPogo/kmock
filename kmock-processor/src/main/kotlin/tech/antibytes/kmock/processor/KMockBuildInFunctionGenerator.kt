@@ -106,10 +106,10 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             SyncFunProxy::class.simpleName,
             "$qualifier#$proxyName",
             "if (spyOn != null) { ${
-            buildFunctionSpyInvocation(
-                spyName = functionName,
-                spyArgumentName = argumentName,
-            )
+                buildFunctionSpyInvocation(
+                    spyName = functionName,
+                    spyArgumentName = argumentName,
+                )
             } } else { null }",
             buildRelaxer(functionName, argumentName)
         )
@@ -152,9 +152,65 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         }.build()
     }
 
-    private fun buildFunction(
+    private fun buildGenerics(amountOfGenerics: Int): String {
+        return if (amountOfGenerics == 0) {
+            ""
+        } else {
+            "<${List(amountOfGenerics) { "*" }.joinToString(", ")}>"
+        }
+    }
+
+    private fun buildEqualsInvocation(
+        mockName: String,
+        function: FunSpec.Builder,
         functionName: String,
-        proxyName: String
+        proxyName: String,
+        amountOfGenerics: Int
+    ): FunSpec.Builder {
+        return function.addCode(
+            """
+            | return if(other is $mockName${buildGenerics(amountOfGenerics)} && __spyOn != null) {
+            |   super.$functionName(other)
+            | } else {
+            |   $proxyName.invoke(other)
+            | }
+        """.trimMargin()
+        )
+    }
+
+    private fun buildBuildInFunction(
+        function: FunSpec.Builder,
+        proxyName: String,
+    ): FunSpec.Builder = function.addCode("return $proxyName.invoke()")
+
+    private fun buildFunctionProxyBinding(
+        mockName: String,
+        function: FunSpec.Builder,
+        functionName: String,
+        proxyName: String,
+        amountOfGenerics: Int
+    ): FunSpec.Builder {
+        return if (functionName == "equals") {
+            buildEqualsInvocation(
+                mockName = mockName,
+                functionName = functionName,
+                function = function,
+                proxyName = proxyName,
+                amountOfGenerics = amountOfGenerics,
+            )
+        } else {
+            buildBuildInFunction(
+                function = function,
+                proxyName = proxyName,
+            )
+        }
+    }
+
+    private fun buildFunction(
+        mockName: String,
+        functionName: String,
+        proxyName: String,
+        amountOfGenerics: Int
     ): FunSpec {
         val function = FunSpec
             .builder(functionName)
@@ -165,19 +221,21 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             function.addParameter("other", argument)
         }
 
-        val argumentName = resolveArgumentName(functionName)
-
-        function.addCode(
-            "return $proxyName.invoke($argumentName)"
-        )
-
-        return function.build()
+        return buildFunctionProxyBinding(
+            mockName = mockName,
+            function = function,
+            functionName = functionName,
+            proxyName = proxyName,
+            amountOfGenerics = amountOfGenerics,
+        ).build()
     }
 
     private fun buildBuildInFunctionBundle(
+        mockName: String,
         qualifier: String,
         functionName: String,
-        existingProxies: Set<String>
+        existingProxies: Set<String>,
+        amountOfGenerics: Int
     ): Pair<PropertySpec, FunSpec> {
         val proxyName = determineProxyName(functionName, existingProxies)
         val proxy = buildProxy(
@@ -186,23 +244,32 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             functionName = functionName,
         )
 
-        val function = buildFunction(functionName, proxyName)
+        val function = buildFunction(
+            mockName = mockName,
+            functionName = functionName,
+            proxyName = proxyName,
+            amountOfGenerics = amountOfGenerics,
+        )
 
         return Pair(proxy, function)
     }
 
     override fun buildFunctionBundles(
+        mockName: String,
         qualifier: String,
-        existingProxies: Set<String>
+        existingProxies: Set<String>,
+        amountOfGenerics: Int
     ): Pair<List<PropertySpec>, List<FunSpec>> {
         val proxies: MutableList<PropertySpec> = mutableListOf()
         val functions: MutableList<FunSpec> = mutableListOf()
 
         buildIns.keys.forEach { functionName ->
             val (proxy, function) = buildBuildInFunctionBundle(
+                mockName = mockName,
                 qualifier = qualifier,
                 functionName = functionName,
-                existingProxies = existingProxies
+                existingProxies = existingProxies,
+                amountOfGenerics = amountOfGenerics,
             )
 
             proxies.add(proxy)

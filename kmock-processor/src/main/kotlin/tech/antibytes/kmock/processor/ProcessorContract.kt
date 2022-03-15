@@ -111,8 +111,10 @@ internal interface ProcessorContract {
 
     interface BuildInFunctionGenerator {
         fun buildFunctionBundles(
+            mockName: String,
             qualifier: String,
-            existingProxies: Set<String>
+            existingProxies: Set<String>,
+            amountOfGenerics: Int,
         ): Pair<List<PropertySpec>, List<FunSpec>>
     }
 

@@ -22,6 +22,8 @@ internal class PropertyPlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : PropertyPlatform {
+    private val __spyOn: PropertyPlatform? = spyOn
+
     public override val foo: String
         get() = _foo.onGet()
 
@@ -77,7 +79,13 @@ internal class PropertyPlatformMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is PropertyPlatformMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 
