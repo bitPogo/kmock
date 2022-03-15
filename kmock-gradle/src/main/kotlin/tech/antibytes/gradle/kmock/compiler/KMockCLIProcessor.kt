@@ -11,13 +11,12 @@ import org.jetbrains.kotlin.compiler.plugin.CliOption
 import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ARG_ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.config.MainConfig
 import java.util.Locale
 
 class KMockCLIProcessor : CommandLineProcessor {
-    private val ARG_ENABLE_COMPILER_PLUGIN_FIELD = CompilerConfigurationKey<Boolean>(ENABLE_COMPILER_PLUGIN_FIELD)
-
     override val pluginId: String = MainConfig.id
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
         CliOption(
