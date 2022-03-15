@@ -23,6 +23,8 @@ internal class SyncFunctionOverloadMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : SyncFunctionOverload {
+    private val __spyOn: SyncFunctionOverload? = spyOn
+
     public override val foo: Any
         get() = _foo.onGet()
 
@@ -143,7 +145,13 @@ internal class SyncFunctionOverloadMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is SyncFunctionOverloadMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCodeWithVoid.invoke()
 

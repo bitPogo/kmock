@@ -704,18 +704,18 @@ fun sampleTest() {
     val subjectToSpyOn = AnyImplementation()
     val someInstance: SomeInterfaceMock = kspy(subjectToSpyOn)
 
-    assertTrue(someInstance.equals(subjectToSpyOn)) // will pass
-    assertTrue(subjectToSpyOn.equals(someInstance)) // will fail
-    assertTrue(someInstance.equals(someInstance)) // will fail
+    assertTrue((someInstance as Any) == someInstance) // will pass
+    assertTrue((someInstance as Any) == subjectToSpyOn) // will pass
+    assertTrue((subjectToSpyOn as Any) == someInstance) // will fail
 }
 
 ----
 
-While the first Assertion passes the others won't.
-So why works it that way? +
-KMock is as mentioned currently only build on top of Interface therefore the 2nd assertion fails unless `AnyImplementation` has a custom implementation of `equals`.
-The 3rd assertion fails since the Proxy of `equals` utilizes the implementation of `AnyImplementation` due to Spying. +
-Since this an undesirable behaviour expect changes rather in the future.
+While the first and second Assertion passes the 3rd won't.
+So why is it that? +
+KMock uses inheritance not reflection as you remember.
+The 3rd assertion fails since `AnyImplementation` has no custom implementation of `equals` and uses the default.
+If `AnyImplementation` makes a custom comparison with taking properties for example into account, the Assertion would pass.
 
 ==== Relaxation
 Lastly KMock also facilitates Relaxation to certain degree. As with spies it requires boilerplate code done by you. +

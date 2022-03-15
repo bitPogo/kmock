@@ -45,6 +45,8 @@ import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @MockCommon(
     SampleRemoteRepository::class,
@@ -93,7 +95,11 @@ class SampleControllerAutoSpyFactorySpec {
             val actual = controller.fetchAndStore(url)
 
             // Then
-            actual.hashCode() mustBe domainObject.hashCode()
+            actual mustBe domainObject
+
+            assertTrue((domainObject as Any) == actual) // will pass
+            assertTrue((actual as Any) == domainObjectInstance) // will pass
+            assertFalse((domainObjectInstance as Any) == actual) // will fail
 
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith() }

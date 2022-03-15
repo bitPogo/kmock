@@ -19,6 +19,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -63,7 +64,10 @@ internal class KMockGenerator(
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
         collector.defaultValue("Collector { _, _ -> Unit }")
 
-        val spy = ParameterSpec.builder("spyOn", superType.copy(nullable = true))
+        val spy = ParameterSpec.builder(
+            "spyOn",
+            superType.copy(nullable = true),
+        )
         spy.defaultValue("null")
 
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
@@ -133,11 +137,11 @@ internal class KMockGenerator(
     }
 
     private fun buildMock(
-        className: String,
+        mockName: String,
         template: KSClassDeclaration,
         relaxer: Relaxer?
     ): TypeSpec {
-        val implementation = TypeSpec.classBuilder(className)
+        val implementation = TypeSpec.classBuilder(mockName)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val qualifier = template.qualifiedName!!.asString()
         val superType = resolveType(template, typeResolver)
@@ -147,6 +151,7 @@ internal class KMockGenerator(
         implementation.addModifiers(KModifier.INTERNAL)
 
         val generics = generics.extractGenerics(template, typeResolver)
+
         if (generics != null) {
             implementation.typeVariables.addAll(
                 this.generics.mapDeclaredGenerics(generics, typeResolver)
@@ -157,6 +162,14 @@ internal class KMockGenerator(
 
         implementation.primaryConstructor(
             buildConstructor(superType)
+        )
+
+        implementation.addProperty(
+            PropertySpec.builder(
+                "__spyOn",
+                superType.copy(nullable = true),
+                KModifier.PRIVATE,
+            ).initializer("spyOn").build()
         )
 
         template.getAllProperties().forEach { ksProperty ->
@@ -192,7 +205,12 @@ internal class KMockGenerator(
             }
         }
 
-        val (proxies, functions) = buildInGenerator.buildFunctionBundles(qualifier, overloadedMethods)
+        val (proxies, functions) = buildInGenerator.buildFunctionBundles(
+            mockName,
+            qualifier,
+            overloadedMethods,
+            generics?.size ?: 0
+        )
 
         implementation.addFunctions(functions)
         proxies.forEach { proxy ->
@@ -211,13 +229,18 @@ internal class KMockGenerator(
         target: String,
         relaxer: Relaxer?
     ) {
-        val className = "${template.simpleName.asString()}Mock"
+        val templateName = template.simpleName.asString()
+        val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
-            className
+            mockName
         )
 
-        val implementation = buildMock(className, template, relaxer)
+        val implementation = buildMock(
+            mockName = mockName,
+            template = template,
+            relaxer = relaxer
+        )
 
         if (target.isNotEmpty()) {
             file.addComment(target.uppercase())

@@ -23,6 +23,8 @@ internal class AsyncFunctionSharedMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : AsyncFunctionShared {
+    private val __spyOn: AsyncFunctionShared? = spyOn
+
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = AsyncFunProxy("generatorTest.AsyncFunctionShared#_foo", spyOn = if (spyOn != null) { { fuzz,
         ozz ->
@@ -56,7 +58,13 @@ internal class AsyncFunctionSharedMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is AsyncFunctionSharedMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 

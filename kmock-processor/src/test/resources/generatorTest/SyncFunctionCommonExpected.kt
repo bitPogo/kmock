@@ -23,6 +23,8 @@ internal class SyncFunctionCommonMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : SyncFunctionCommon {
+    private val __spyOn: SyncFunctionCommon? = spyOn
+
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
         SyncFunProxy("generatorTest.SyncFunctionCommon#_foo", spyOn = if (spyOn != null) { { fuzz,
             ozz ->
@@ -56,7 +58,13 @@ internal class SyncFunctionCommonMock(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is SyncFunctionCommonMock && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 

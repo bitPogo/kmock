@@ -27,6 +27,8 @@ internal class GenericsMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Generics<K, L> where L : CharSequence, L : Comparable<L> {
+    private val __spyOn: Generics<K, L>? = spyOn
+
     public override var template: L
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
@@ -439,7 +441,13 @@ internal class GenericsMock<K : Any, L>(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean {
+        return if(other is GenericsMock<*, *> && __spyOn != null) {
+            super.equals(other)
+        } else {
+            _equals.invoke(other)
+        }
+    }
 
     public override fun hashCode(): Int = _hashCode.invoke()
 
