@@ -23,7 +23,7 @@ class KMockRegistrationSpec {
     }
 
     @Test
-    fun `Given registerProjectComponents is called,  it does nothing if enableOpenClasses is false or by default`() {
+    fun `Given registerProjectComponents is called, it does nothing if enableOpenClasses is false or by default`() {
         // Given
         val project: MockProject = mockk()
         val config: CompilerConfiguration = mockk()

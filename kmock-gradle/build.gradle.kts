@@ -38,6 +38,7 @@ dependencies {
     testImplementation(Dependency.jvm.test.mockk)
     testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(LocalDependency.compilerTest.core)
+    testImplementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.gradle)
 }

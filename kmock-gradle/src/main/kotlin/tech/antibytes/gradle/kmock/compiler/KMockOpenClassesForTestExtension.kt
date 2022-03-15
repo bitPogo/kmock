@@ -6,29 +6,27 @@
 
 package tech.antibytes.gradle.kmock.compiler
 
+import org.jetbrains.kotlin.codegen.inline.isInlineOrInsideInline
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.isSealed
 import org.jetbrains.kotlin.extensions.DeclarationAttributeAltererExtension
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtModifierListOwner
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 internal class KMockOpenClassesForTestExtension : DeclarationAttributeAltererExtension {
     private fun crackClassOpen(
         modifierListOwner: KtModifierListOwner,
         declaration: DeclarationDescriptor?,
+        containingDeclaration: DeclarationDescriptor?,
         isImplicitModality: Boolean
     ): Modality? {
-        val descriptor = declaration as? ClassDescriptor
-
-        println("----")
-
-        println(descriptor?.containingDeclaration?.name)
-
-        println("----")
+        val descriptor = declaration as? ClassDescriptor ?: containingDeclaration
 
         return when {
-            descriptor != null -> null
+            descriptor == null -> null
             !isImplicitModality && modifierListOwner.hasModifier(KtTokens.FINAL_KEYWORD) -> Modality.FINAL
             else -> Modality.OPEN
         }
@@ -42,7 +40,7 @@ internal class KMockOpenClassesForTestExtension : DeclarationAttributeAltererExt
         isImplicitModality: Boolean
     ): Modality? {
         return if (currentModality == Modality.FINAL) {
-            crackClassOpen(modifierListOwner, declaration, isImplicitModality)
+            crackClassOpen(modifierListOwner, declaration, containingDeclaration, isImplicitModality)
         } else {
             null
         }
