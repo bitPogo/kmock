@@ -106,10 +106,10 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             SyncFunProxy::class.simpleName,
             "$qualifier#$proxyName",
             "if (spyOn != null) { ${
-                buildFunctionSpyInvocation(
-                    spyName = functionName,
-                    spyArgumentName = argumentName,
-                )
+            buildFunctionSpyInvocation(
+                spyName = functionName,
+                spyArgumentName = argumentName,
+            )
             } } else { null }",
             buildRelaxer(functionName, argumentName)
         )
@@ -174,7 +174,7 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             | } else {
             |   $proxyName.invoke(other)
             | }
-        """.trimMargin()
+            """.trimMargin()
         )
     }
 
