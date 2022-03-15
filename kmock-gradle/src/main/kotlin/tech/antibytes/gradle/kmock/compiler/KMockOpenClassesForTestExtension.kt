@@ -6,15 +6,12 @@
 
 package tech.antibytes.gradle.kmock.compiler
 
-import org.jetbrains.kotlin.codegen.inline.isInlineOrInsideInline
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.Modality
-import org.jetbrains.kotlin.descriptors.isSealed
 import org.jetbrains.kotlin.extensions.DeclarationAttributeAltererExtension
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtModifierListOwner
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 internal class KMockOpenClassesForTestExtension : DeclarationAttributeAltererExtension {
     private fun crackClassOpen(

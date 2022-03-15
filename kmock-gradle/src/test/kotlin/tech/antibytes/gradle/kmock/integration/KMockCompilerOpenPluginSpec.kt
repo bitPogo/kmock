@@ -12,7 +12,6 @@ import com.tschuchort.compiletesting.SourceFile
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.compiler.KMockCLIProcessor
-import tech.antibytes.gradle.kmock.compiler.KMockCompilerPlugin
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.compiler.KMockRegistration
 import tech.antibytes.gradle.kmock.config.MainConfig

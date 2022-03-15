@@ -22,6 +22,7 @@ import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerPlugin
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.invokeGradleAction
@@ -60,6 +61,7 @@ class KMockPluginSpec {
         every { project.extensions } returns extensions
 
         every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.apply(any()) } returns mockk()
 
         every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
@@ -85,6 +87,7 @@ class KMockPluginSpec {
         every { project.extensions } returns extensions
 
         every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
         every { plugins.apply(any()) } returns mockk()
 
@@ -100,6 +103,60 @@ class KMockPluginSpec {
     }
 
     @Test
+    fun `Given apply is called it applies the gradle KMockCompilerPlugin if it does not exists`() {
+        // Given
+        val kmock = KMockPlugin()
+        val project: Project = mockk()
+        val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
+
+        every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns false
+        every { plugins.apply(any()) } returns mockk()
+        every { plugins.apply(KMockCompilerPlugin::class.java) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
+        every { SingleSourceSetConfigurator.configure(any()) } just Runs
+
+        // When
+        kmock.apply(project)
+
+        verify(exactly = 1) { plugins.hasPlugin(KMockCompilerPlugin::class.java) }
+        verify(exactly = 1) { plugins.apply(KMockCompilerPlugin::class.java) }
+    }
+
+    @Test
+    fun `Given apply is called it ignores the gradle KMockCompilerPlugin if it already exists`() {
+        // Given
+        val kmock = KMockPlugin()
+        val project: Project = mockk()
+        val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
+
+        every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
+        every { plugins.apply(any()) } returns mockk()
+        every { plugins.apply(KMockCompilerPlugin::class.java) } returns mockk()
+
+        every { extensions.create(any<String>(), KMockExtension::class.java) } returns mockk()
+
+        every { SingleSourceSetConfigurator.configure(any()) } just Runs
+
+        // When
+        kmock.apply(project)
+
+        verify(exactly = 1) { plugins.hasPlugin(KMockCompilerPlugin::class.java) }
+        verify(exactly = 0) { plugins.apply(KMockCompilerPlugin::class.java) }
+    }
+
+    @Test
     fun `Given apply is called it creates the KMockExtension`() {
         // Given
         val kmock = KMockPlugin()
@@ -111,6 +168,7 @@ class KMockPluginSpec {
         every { project.extensions } returns extensions
 
         every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
         every { plugins.apply(any()) } returns mockk()
 
@@ -136,6 +194,7 @@ class KMockPluginSpec {
         every { project.extensions } returns extensions
 
         every { plugins.hasPlugin(any<String>()) } returns true
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { plugins.apply(any()) } returns mockk()
 
@@ -163,6 +222,7 @@ class KMockPluginSpec {
         every { project.afterEvaluate(any<Action<Project>>()) } just Runs
 
         every { plugins.hasPlugin(any<String>()) } returns true
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { plugins.apply(any()) } returns mockk()
 
@@ -199,6 +259,7 @@ class KMockPluginSpec {
         every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns true
+        every { plugins.hasPlugin(any<Class<out Plugin<*>>>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { plugins.apply(any()) } returns mockk()
 

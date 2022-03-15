@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerPlugin
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.kmock.util.applyIfNotExists
@@ -22,6 +23,7 @@ class KMockPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         target.applyIfNotExists("com.google.devtools.ksp")
+        target.applyIfNotExists(KMockCompilerPlugin::class)
 
         target.extensions.create("kmock", KMockExtension::class.java)
 

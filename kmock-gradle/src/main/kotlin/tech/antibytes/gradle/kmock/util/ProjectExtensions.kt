@@ -6,12 +6,22 @@
 
 package tech.antibytes.gradle.kmock.util
 
+import org.gradle.api.Plugin
 import org.gradle.api.Project
+import kotlin.reflect.KClass
 
 internal fun Project.applyIfNotExists(vararg pluginNames: String) {
     pluginNames.forEach { pluginName ->
         if (!this.plugins.hasPlugin(pluginName)) {
             this.plugins.apply(pluginName)
+        }
+    }
+}
+
+internal fun Project.applyIfNotExists(vararg plugins: KClass<out Plugin<*>>) {
+    plugins.forEach { plugin ->
+        if (!this.plugins.hasPlugin(plugin.java)) {
+            this.plugins.apply(plugin.java)
         }
     }
 }

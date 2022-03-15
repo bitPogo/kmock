@@ -61,4 +61,11 @@ internal interface KMockPluginContract {
     interface SourceSetConfigurator {
         fun configure(project: Project)
     }
+
+    interface ClassPropagator {
+        fun setupClassPropagation(
+            project: Project,
+            pipe: String
+        )
+    }
 }
