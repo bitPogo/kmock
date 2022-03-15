@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import tech.antibytes.gradle.kmock.KMockExtension
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
 
 internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
     override fun applyToCompilation(
@@ -24,7 +25,7 @@ internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
         return project.provider {
             listOf(
                 SubpluginOption(
-                    key = "enableOpenClasses",
+                    key = ENABLE_COMPILER_PLUGIN_FIELD,
                     value = extension.useExperimentalCompilerPlugin.get().toString()
                 )
             )

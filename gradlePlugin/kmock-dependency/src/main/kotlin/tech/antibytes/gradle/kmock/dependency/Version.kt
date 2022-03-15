@@ -14,7 +14,7 @@ object Version {
         /**
          * [Kotlin](https://github.com/JetBrains/kotlin)
          */
-        val kotlin = "1.6.10"
+        const val kotlin = "1.6.10"
 
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
