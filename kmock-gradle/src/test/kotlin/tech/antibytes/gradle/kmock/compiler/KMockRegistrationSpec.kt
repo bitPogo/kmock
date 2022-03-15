@@ -9,7 +9,6 @@ package tech.antibytes.gradle.kmock.compiler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.gradle.api.Project
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration

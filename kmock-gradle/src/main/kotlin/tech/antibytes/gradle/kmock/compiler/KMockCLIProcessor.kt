@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
 import org.jetbrains.kotlin.compiler.plugin.CliOption
 import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ARG_ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.config.MainConfig

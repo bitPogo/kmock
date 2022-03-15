@@ -64,7 +64,10 @@ class ExtensionSpec {
     @Test
     fun `Its default compiler plugin flag is false`() {
         // Given
-        val project: Project = mockk(relaxed = true)
+        val project: Project = mockk()
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
 
         // When
         val extension = createExtension<KMockExtension>(project)

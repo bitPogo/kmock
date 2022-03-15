@@ -6,7 +6,6 @@
 
 package tech.antibytes.gradle.kmock.compiler
 
-import tech.antibytes.gradle.kmock.config.MainConfig
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
@@ -14,6 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
+import tech.antibytes.gradle.kmock.config.MainConfig
 
 internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
     override fun applyToCompilation(

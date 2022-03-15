@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock.compiler
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
+import org.jetbrains.kotlin.extensions.DeclarationAttributeAltererExtension
 
 internal class KMockRegistration : ComponentRegistrar {
     override fun registerProjectComponents(
@@ -21,7 +22,7 @@ internal class KMockRegistration : ComponentRegistrar {
         )
 
         if (isEnabled) {
-            TODO("Not yet implemented")
+            DeclarationAttributeAltererExtension.registerExtension(project, KMockOpenClassesForTestExtension())
         }
     }
 }

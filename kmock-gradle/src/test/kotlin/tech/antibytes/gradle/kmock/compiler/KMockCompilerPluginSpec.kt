@@ -9,17 +9,14 @@ package tech.antibytes.gradle.kmock.compiler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
-import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.config.MainConfig
-import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
