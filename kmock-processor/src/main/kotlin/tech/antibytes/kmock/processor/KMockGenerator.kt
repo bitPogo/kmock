@@ -19,14 +19,10 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
@@ -34,31 +30,17 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
-import tech.antibytes.kmock.processor.ProcessorContract.InterfaceSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
-    private val generics: ProcessorContract.GenericResolver,
+    private val genericsResolver: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
     private val functionGenerator: ProcessorContract.FunctionGenerator,
     private val buildInGenerator: ProcessorContract.BuildInFunctionGenerator
 ) : ProcessorContract.MockGenerator {
-    private fun resolveType(
-        template: KSClassDeclaration,
-        resolver: TypeParameterResolver
-    ): TypeName {
-        return if (template.typeParameters.isEmpty()) {
-            template.toClassName()
-        } else {
-            template.toClassName()
-                .parameterizedBy(
-                    template.typeParameters.map { type -> type.toTypeVariableName(resolver) }
-                )
-        }
-    }
-
     private fun buildConstructor(superType: TypeName): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
@@ -146,7 +128,7 @@ internal class KMockGenerator(
         val implementation = TypeSpec.classBuilder(mockName)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val qualifier = template.qualifiedName!!.asString()
-        val superType = resolveType(template, typeResolver)
+        val superType = genericsResolver.resolveMockClassType(template, typeResolver)
         val proxyNameCollector: MutableList<String> = mutableListOf()
 
         implementation.addSuperinterface(superType)
@@ -154,7 +136,7 @@ internal class KMockGenerator(
 
         if (generics != null) {
             implementation.typeVariables.addAll(
-                this.generics.mapDeclaredGenerics(generics, typeResolver)
+                genericsResolver.mapDeclaredGenerics(generics, typeResolver)
             )
         }
 
@@ -267,13 +249,13 @@ internal class KMockGenerator(
     }
 
     override fun writeCommonMocks(
-        interfaces: List<InterfaceSource>,
+        templateSources: List<TemplateSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        interfaces.forEach { template ->
+        templateSources.forEach { template ->
             writeMock(
-                template = template.interfaze,
+                template = template.template,
                 generics = template.generics,
                 dependencies = dependencies,
                 target = ProcessorContract.Target.COMMON.value,
@@ -283,29 +265,29 @@ internal class KMockGenerator(
     }
 
     override fun writeSharedMocks(
-        interfaces: List<InterfaceSource>,
+        templateSources: List<TemplateSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        interfaces.forEach { template ->
+        templateSources.forEach { template ->
             writeMock(
-                template = template.interfaze,
+                template = template.template,
                 generics = template.generics,
                 dependencies = dependencies,
-                target = template.marker,
+                target = template.indicator,
                 relaxer = relaxer
             )
         }
     }
 
     override fun writePlatformMocks(
-        interfaces: List<InterfaceSource>,
+        templateSources: List<TemplateSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        interfaces.forEach { template ->
+        templateSources.forEach { template ->
             writeMock(
-                template = template.interfaze,
+                template = template.template,
                 generics = template.generics,
                 dependencies = dependencies,
                 target = ProcessorContract.Target.PLATFORM.value,

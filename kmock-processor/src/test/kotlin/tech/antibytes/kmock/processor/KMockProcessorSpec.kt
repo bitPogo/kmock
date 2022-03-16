@@ -150,7 +150,7 @@ class KMockProcessorSpec {
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfaces: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val templates: List<ProcessorContract.TemplateSource> = listOf(mockk())
         val dependencies: List<KSFile> = listOf(mockk())
 
         every {
@@ -159,7 +159,7 @@ class KMockProcessorSpec {
 
         every {
             aggregator.extractInterfaces(any())
-        } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
+        } returns ProcessorContract.Aggregated(illegal, templates, dependencies)
         every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
@@ -192,10 +192,10 @@ class KMockProcessorSpec {
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfacesCommon: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesShared: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesPlatform: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesFiltered: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesCommon: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesShared: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesPlatform: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesFiltered: List<ProcessorContract.TemplateSource> = listOf(mockk())
 
         val dependencies: List<KSFile> = listOf(mockk())
 
@@ -288,9 +288,9 @@ class KMockProcessorSpec {
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfacesCommon: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesPlatform: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesFiltered: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesCommon: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesPlatform: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesFiltered: List<ProcessorContract.TemplateSource> = listOf(mockk())
 
         val dependencies: List<KSFile> = listOf(mockk())
 

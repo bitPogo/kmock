@@ -88,9 +88,9 @@ internal class KMockCommonEntryPointGenerator(
 
     override fun generate(
         options: ProcessorContract.Options,
-        interfaces: List<ProcessorContract.InterfaceSource>,
+        templateSources: List<ProcessorContract.TemplateSource>,
     ) {
-        if (options.isKmp && interfaces.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 options.rootPackage,
                 "MockFactoryCommonEntry"

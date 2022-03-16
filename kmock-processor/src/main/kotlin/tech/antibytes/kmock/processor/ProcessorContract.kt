@@ -44,27 +44,27 @@ internal interface ProcessorContract {
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
-    data class InterfaceSource(
-        val marker: String,
-        val interfaze: KSClassDeclaration,
+    data class TemplateSource(
+        val indicator: String,
+        val template: KSClassDeclaration,
         val generics: Map<String, List<KSTypeReference>>?
     )
 
     data class Aggregated(
         val illFormed: List<KSAnnotated>,
-        val extractedInterfaces: List<InterfaceSource>,
+        val extractedTemplates: List<TemplateSource>,
         val dependencies: List<KSFile>
     )
 
     interface SourceFilter {
         fun filter(
-            sources: List<InterfaceSource>,
-            filteredBy: List<InterfaceSource>
-        ): List<InterfaceSource>
+            templateSources: List<TemplateSource>,
+            filteredBy: List<TemplateSource>
+        ): List<TemplateSource>
 
         fun filterSharedSources(
-            sources: List<InterfaceSource>
-        ): List<InterfaceSource>
+            templateSources: List<TemplateSource>
+        ): List<TemplateSource>
     }
 
     data class GenericDeclaration(
@@ -78,6 +78,11 @@ internal interface ProcessorContract {
             template: KSDeclaration,
             resolver: TypeParameterResolver
         ): Map<String, List<KSTypeReference>>?
+
+        fun resolveMockClassType(
+            template: KSClassDeclaration,
+            resolver: TypeParameterResolver
+        ): TypeName
 
         fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
@@ -124,19 +129,19 @@ internal interface ProcessorContract {
 
     interface MockGenerator {
         fun writePlatformMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeSharedMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeCommonMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
@@ -145,7 +150,7 @@ internal interface ProcessorContract {
     interface MockFactoryGenerator {
         fun writeFactories(
             options: Options,
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
         )
@@ -154,7 +159,7 @@ internal interface ProcessorContract {
     interface MockFactoryCommonEntryPointGenerator {
         fun generate(
             options: Options,
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
         )
     }
 

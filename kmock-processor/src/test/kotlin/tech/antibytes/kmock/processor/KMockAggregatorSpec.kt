@@ -416,7 +416,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.InterfaceSource("", declaration, generics))
+        interfaces mustBe listOf(ProcessorContract.TemplateSource("", declaration, generics))
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
@@ -484,7 +484,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.InterfaceSource(marker, declaration, generics))
+        interfaces mustBe listOf(ProcessorContract.TemplateSource(marker, declaration, generics))
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
@@ -575,8 +575,8 @@ class KMockAggregatorSpec {
 
         // Then
         interfaces mustBe listOf(
-            ProcessorContract.InterfaceSource(marker0, declaration, generics),
-            ProcessorContract.InterfaceSource(marker1, declaration, generics)
+            ProcessorContract.TemplateSource(marker0, declaration, generics),
+            ProcessorContract.TemplateSource(marker1, declaration, generics)
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }

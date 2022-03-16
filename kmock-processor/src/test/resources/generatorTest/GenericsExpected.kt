@@ -3,7 +3,6 @@ package generatorTest
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
 import kotlin.String
@@ -26,7 +25,7 @@ internal class GenericsMock<K : Any, L>(
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
-) : Generics<K, L> where L : CharSequence, L : Comparable<L> {
+) : Generics<K, L> where L : Any, L : Comparable<L> {
     private val __spyOn: Generics<K, L>? = spyOn
 
     public override var template: L

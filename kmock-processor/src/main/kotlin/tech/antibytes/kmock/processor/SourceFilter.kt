@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.KSPLogger
-import tech.antibytes.kmock.processor.ProcessorContract.InterfaceSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class SourceFilter(
     precedences: Map<String, String>,
@@ -20,15 +20,15 @@ internal class SourceFilter(
         .mapValues { (_, value) -> value.toInt() }
 
     override fun filter(
-        sources: List<InterfaceSource>,
-        filteredBy: List<InterfaceSource>
-    ): List<InterfaceSource> {
+        templateSources: List<TemplateSource>,
+        filteredBy: List<TemplateSource>
+    ): List<TemplateSource> {
         val filter = filteredBy.map { source ->
-            source.interfaze.qualifiedName!!.asString()
+            source.template.qualifiedName!!.asString()
         }
 
-        return sources.filter { source ->
-            !filter.contains(source.interfaze.qualifiedName!!.asString())
+        return templateSources.filter { source ->
+            !filter.contains(source.template.qualifiedName!!.asString())
         }
     }
 
@@ -40,21 +40,21 @@ internal class SourceFilter(
     }
 
     override fun filterSharedSources(
-        sources: List<InterfaceSource>
-    ): List<InterfaceSource> {
-        val filtered: MutableList<InterfaceSource> = mutableListOf()
+        templateSources: List<TemplateSource>
+    ): List<TemplateSource> {
+        val filtered: MutableList<TemplateSource> = mutableListOf()
         val filteredNamed: MutableList<String> = mutableListOf()
 
-        sources.forEach { source ->
-            val qualifiedName = source.interfaze.qualifiedName!!.asString()
+        templateSources.forEach { source ->
+            val qualifiedName = source.template.qualifiedName!!.asString()
             val currentFieldIdx = filteredNamed.indexOf(qualifiedName)
 
             if (currentFieldIdx == -1) {
                 filtered.add(source)
                 filteredNamed.add(qualifiedName)
             } else {
-                val currentSourceMarker = resolvePrecedence(source.marker)
-                val addedSourceMarker = resolvePrecedence(filtered[currentFieldIdx].marker)
+                val currentSourceMarker = resolvePrecedence(source.indicator)
+                val addedSourceMarker = resolvePrecedence(filtered[currentFieldIdx].indicator)
 
                 if (currentSourceMarker > addedSourceMarker) {
                     filtered[currentFieldIdx] = source

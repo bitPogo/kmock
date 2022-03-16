@@ -11,7 +11,7 @@ import tech.antibytes.kmock.Mock
 interface SomeGeneric<T>
 
 @Mock(Generics::class)
-interface Generics<K, L> where L : CharSequence, L : Comparable<L>, K : Any {
+interface Generics<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L
 
     fun <T> foo(): T

@@ -6,11 +6,13 @@
 
 package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asTypeName
@@ -39,6 +41,20 @@ internal object KMockGenerics : GenericResolver {
             }
 
             generic
+        }
+    }
+
+    override fun resolveMockClassType(
+        template: KSClassDeclaration,
+        resolver: TypeParameterResolver
+    ): TypeName {
+        return if (template.typeParameters.isEmpty()) {
+            template.toClassName()
+        } else {
+            template.toClassName()
+                .parameterizedBy(
+                    template.typeParameters.map { type -> type.toTypeVariableName(resolver) }
+                )
         }
     }
 

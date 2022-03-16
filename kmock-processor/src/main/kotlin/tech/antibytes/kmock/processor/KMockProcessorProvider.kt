@@ -24,12 +24,12 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             KMockGenerator(
                 logger = logger,
                 codeGenerator = generator,
-                generics = KMockGenerics,
+                genericsResolver = KMockGenerics,
                 propertyGenerator = propertyGenerator,
                 functionGenerator = functionGenerator,
                 buildInGenerator = KMockBuildInFunctionGenerator
             ),
-            KMockFactoryGenerator(logger, generator),
+            KMockFactoryGenerator(logger, KMockGenerics, generator),
             KMockCommonEntryPointGenerator(generator),
             KMockAggregator(logger, KMockGenerics),
             ProcessorContract.Options(

@@ -12,6 +12,6 @@ import org.junit.jupiter.api.Test
 class KMockFactorySpec {
     @Test
     fun `It fulfils MockFactoryGenerator`() {
-        KMockFactoryGenerator(mockk(), mockk())
+        KMockFactoryGenerator(mockk(), mockk(), mockk())
     }
 }

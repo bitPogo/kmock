@@ -52,12 +52,12 @@ internal class KMockAggregator(
     private fun resolveInterface(
         interfaze: KSDeclaration,
         sourceIndicator: String,
-        interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource>
+        templateCollector: MutableMap<String, ProcessorContract.TemplateSource>
     ) {
         when {
             interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-            else -> interfaceCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = ProcessorContract.InterfaceSource(
+            else -> templateCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = ProcessorContract.TemplateSource(
                 sourceIndicator,
                 interfaze,
                 resolveGenerics(interfaze)
@@ -67,11 +67,11 @@ internal class KMockAggregator(
 
     private fun resolveInterfaces(
         raw: Map<String, MutableList<KSType>>,
-        interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource>
+        templateCollector: MutableMap<String, ProcessorContract.TemplateSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
             interfaces.forEach { value ->
-                resolveInterface(value.declaration, sourceIndicator, interfaceCollector)
+                resolveInterface(value.declaration, sourceIndicator, templateCollector)
             }
         }
     }
@@ -90,7 +90,7 @@ internal class KMockAggregator(
     ): ProcessorContract.Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
-        val interfaceCollector: MutableMap<String, ProcessorContract.InterfaceSource> = mutableMapOf()
+        val templateCollector: MutableMap<String, ProcessorContract.TemplateSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
@@ -108,11 +108,11 @@ internal class KMockAggregator(
             }
         }
 
-        resolveInterfaces(typeContainer, interfaceCollector)
+        resolveInterfaces(typeContainer, templateCollector)
 
         return ProcessorContract.Aggregated(
             illAnnotated,
-            interfaceCollector.values.toList(),
+            templateCollector.values.toList(),
             fileCollector
         )
     }

@@ -283,6 +283,7 @@ class KMockSpec {
         // When
         val compilerResult = compile(provider, source)
         val actual = resolveGenerated("GenericsMock.kt")
+        val actualFactory = resolveGenerated("MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
