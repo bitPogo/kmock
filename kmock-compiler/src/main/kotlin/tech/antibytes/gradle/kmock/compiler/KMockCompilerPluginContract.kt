@@ -6,9 +6,17 @@
 
 package tech.antibytes.gradle.kmock.compiler
 
+import org.gradle.api.provider.Property
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 
 internal interface KMockCompilerPluginContract {
+    interface Extension {
+        /**
+         * Enables/Disables the compiler plugin
+         */
+        val useExperimentalCompilerPlugin: Property<Boolean>
+    }
+
     companion object {
         const val ENABLE_COMPILER_PLUGIN_FIELD = "enableOpenClasses"
         val ARG_ENABLE_COMPILER_PLUGIN_FIELD = CompilerConfigurationKey<Boolean>(ENABLE_COMPILER_PLUGIN_FIELD)

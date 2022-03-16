@@ -30,7 +30,7 @@ class KMockCLIProcessorSpec {
 
     @Test
     fun `It has a id`() {
-        KMockCLIProcessor().pluginId mustBe "tech.antibytes.kmock.kmock-gradle"
+        KMockCLIProcessor().pluginId mustBe "tech.antibytes.kmock.kmock-compiler"
     }
 
     @Test
@@ -40,7 +40,7 @@ class KMockCLIProcessorSpec {
         option.optionName mustBe "enableOpenClasses"
         option.description mustBe "Enables/Disables classes to opened for testing"
         option.valueDescription mustBe "boolean"
-        option.required mustBe true
+        option.required mustBe false
         option.allowMultipleOccurrences mustBe false
     }
 
@@ -51,7 +51,7 @@ class KMockCLIProcessorSpec {
             optionName = "Something",
             description = "Enables/Disables classes to opened for testing",
             valueDescription = "boolean",
-            required = true,
+            required = false,
             allowMultipleOccurrences = false
         )
         val config: CompilerConfiguration = mockk()
@@ -76,7 +76,7 @@ class KMockCLIProcessorSpec {
             optionName = "enableOpenClasses",
             description = "Enables/Disables classes to opened for testing",
             valueDescription = "boolean",
-            required = true,
+            required = false,
             allowMultipleOccurrences = false
         )
         val config: CompilerConfiguration = mockk()

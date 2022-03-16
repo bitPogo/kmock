@@ -9,9 +9,9 @@ package tech.antibytes.gradle.kmock.config
 import tech.antibytes.gradle.publishing.api.PackageConfiguration
 import tech.antibytes.gradle.publishing.api.PomConfiguration
 
-object KMockGradleConfiguration {
+object KMockCompilerPluginConfiguration {
     const val group = "tech.antibytes.kmock"
-    const val id = "kmock-gradle"
+    const val id = "kmock-compiler"
     const val pluginId = "$group.$id"
 
     val publishing = Publishing
@@ -20,7 +20,7 @@ object KMockGradleConfiguration {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
                 name = id,
-                description = "Mocking Framework for Kotlin Multiplatform.",
+                description = "KMock's Compiler plugin is part of humble mocking library for Kotlin Multiplatform.",
                 year = 2022,
                 url = "https://$gitHubRepositoryPath"
             ),

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.compiler.KMockCLIProcessor
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.compiler.KMockRegistration
-import tech.antibytes.gradle.kmock.config.MainConfig
+import tech.antibytes.gradle.kmock.compiler.config.MainConfig
 import tech.antibytes.util.test.mustBe
 import java.io.File
 
@@ -41,7 +41,7 @@ class KMockCompilerOpenPluginSpec {
             compilerPlugins = listOf(pluginRegistration)
             pluginOptions = listOf(
                 PluginOption(
-                    MainConfig.id,
+                    MainConfig.pluginId,
                     ENABLE_COMPILER_PLUGIN_FIELD,
                     true.toString()
                 )

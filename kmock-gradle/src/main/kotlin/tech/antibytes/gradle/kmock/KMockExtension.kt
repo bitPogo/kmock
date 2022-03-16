@@ -8,17 +8,16 @@ package tech.antibytes.gradle.kmock
 
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerExtension
 
 abstract class KMockExtension(
     project: Project
 ) : KMockPluginContract.Extension {
     private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+    private val compiler: KMockCompilerExtension = project.extensions.getByType(KMockCompilerExtension::class.java)
 
     private var _rootPackage: String = ""
-
-    init {
-        useExperimentalCompilerPlugin.convention(false)
-    }
+    private var _useExperimentalCompilerPlugin = false
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -29,5 +28,16 @@ abstract class KMockExtension(
         set(value) {
             propagateRootPackage(value)
             _rootPackage = value
+        }
+
+    private fun propagateCompilerFlag(flag: Boolean) {
+        compiler.useExperimentalCompilerPlugin.set(flag)
+    }
+
+    override var useExperimentalCompilerPlugin: Boolean
+        get() = _useExperimentalCompilerPlugin
+        set(value) {
+            propagateCompilerFlag(value)
+            _useExperimentalCompilerPlugin = value
         }
 }

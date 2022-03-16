@@ -12,17 +12,17 @@ import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ARG_ENABLE_COMPILER_PLUGIN_FIELD
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
-import tech.antibytes.gradle.kmock.config.MainConfig
+import tech.antibytes.gradle.kmock.compiler.config.MainConfig
 import java.util.Locale
 
 class KMockCLIProcessor : CommandLineProcessor {
-    override val pluginId: String = MainConfig.id
+    override val pluginId: String = MainConfig.pluginId
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
         CliOption(
             optionName = ENABLE_COMPILER_PLUGIN_FIELD,
             description = "Enables/Disables classes to opened for testing",
             valueDescription = "boolean",
-            required = true,
+            required = false,
             allowMultipleOccurrences = false
         )
     )

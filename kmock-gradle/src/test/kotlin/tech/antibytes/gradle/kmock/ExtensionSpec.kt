@@ -12,6 +12,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.gradle.api.Project
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.compiler.KMockCompilerExtension
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -25,8 +26,10 @@ class ExtensionSpec {
     fun `It fulfils Extension`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
+        val compilerExtension: KMockCompilerExtension = mockk()
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { project.extensions.getByType(KMockCompilerExtension::class.java) } returns compilerExtension
 
         val extension = createExtension<KMockExtension>(project)
         extension fulfils KMockPluginContract.Extension::class
@@ -36,8 +39,10 @@ class ExtensionSpec {
     fun `Its default rootPackage is an empty string`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
+        val compilerExtension: KMockCompilerExtension = mockk()
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { project.extensions.getByType(KMockCompilerExtension::class.java) } returns compilerExtension
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -49,9 +54,11 @@ class ExtensionSpec {
         // Given
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk(relaxed = true)
+        val compilerExtension: KMockCompilerExtension = mockk()
         val expected: String = fixture.fixture()
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { project.extensions.getByType(KMockCompilerExtension::class.java) } returns compilerExtension
 
         // When
         val extension = createExtension<KMockExtension>(project)
@@ -62,17 +69,38 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its default compiler plugin flag is false`() {
+    fun `Its default useExperimentalCompilerPlugin flag is false`() {
         // Given
         val project: Project = mockk()
         val kspExtension: KspExtension = mockk()
+        val compilerExtension: KMockCompilerExtension = mockk()
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { project.extensions.getByType(KMockCompilerExtension::class.java) } returns compilerExtension
 
         // When
         val extension = createExtension<KMockExtension>(project)
 
         // Then
-        extension.useExperimentalCompilerPlugin.get() mustBe false
+        extension.useExperimentalCompilerPlugin mustBe false
+    }
+
+    @Test
+    fun `It propagates useExperimentalCompilerPlugin changes to the CompilerPlugin`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+        val compilerExtension: KMockCompilerExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { project.extensions.getByType(KMockCompilerExtension::class.java) } returns compilerExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.useExperimentalCompilerPlugin = expected
+
+        extension.useExperimentalCompilerPlugin mustBe expected
+        verify(exactly = 1) { compilerExtension.useExperimentalCompilerPlugin.set(expected) }
     }
 }

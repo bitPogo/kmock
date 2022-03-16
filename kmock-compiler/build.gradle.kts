@@ -5,7 +5,7 @@
  */
 
 import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockGradlePluginConfiguration
+import tech.antibytes.gradle.kmock.config.KMockCompilerPluginConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
@@ -18,18 +18,17 @@ plugins {
     id("tech.antibytes.gradle.coverage")
 }
 
-group = KMockGradlePluginConfiguration.group
+group = KMockCompilerPluginConfiguration.group
 
 antiBytesPublishing {
-    packageConfiguration = KMockGradlePluginConfiguration.publishing.packageConfiguration
-    repositoryConfiguration = KMockGradlePluginConfiguration.publishing.repositories
-    versioning = KMockGradlePluginConfiguration.publishing.versioning
+    packageConfiguration = KMockCompilerPluginConfiguration.publishing.packageConfiguration
+    repositoryConfiguration = KMockCompilerPluginConfiguration.publishing.repositories
+    versioning = KMockCompilerPluginConfiguration.publishing.versioning
 }
 
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
-    implementation(LocalDependency.gradle.ksp)
-    implementation(project(":kmock-compiler"))
+    implementation(LocalDependency.kotlin.compiler)
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)
@@ -37,6 +36,8 @@ dependencies {
     testImplementation(Dependency.jvm.test.jupiter)
     testImplementation(Dependency.jvm.test.mockk)
     testImplementation(Dependency.jvm.test.kotlin)
+    testImplementation(LocalDependency.compilerTest.core)
+    testImplementation(project(":kmock"))
 
     testImplementation(LocalDependency.antibytes.test.gradle)
 }
@@ -52,10 +53,13 @@ tasks.test {
 
 afterEvaluate {
     val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
-        packageName.set("tech.antibytes.gradle.kmock.config")
+        packageName.set("tech.antibytes.gradle.kmock.compiler.config")
         stringFields.set(
             mapOf(
                 "version" to project.version as String,
+                "group" to KMockCompilerPluginConfiguration.group,
+                "artifactId" to KMockCompilerPluginConfiguration.id,
+                "pluginId" to KMockCompilerPluginConfiguration.pluginId,
             )
         )
     }
@@ -73,12 +77,12 @@ kotlin {
 }
 
 gradlePlugin {
-    plugins.register(KMockGradlePluginConfiguration.pluginId) {
-        group = KMockGradlePluginConfiguration.group
-        id = KMockGradlePluginConfiguration.pluginId
-        implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
+    plugins.register(KMockCompilerPluginConfiguration.pluginId) {
+        group = KMockCompilerPluginConfiguration.group
+        id = KMockCompilerPluginConfiguration.pluginId
+        implementationClass = "tech.antibytes.gradle.kmock.compiler.KMockCompilerPlugin"
         displayName = "${id}.gradle.plugin"
-        description = "KMock Gradle Plugin"
+        description = "KMock Compiler Plugin"
         version = "0.1.0"
     }
 }

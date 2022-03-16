@@ -19,7 +19,7 @@ object KMockProcessorConfiguration {
             isJavaLibrary = true,
             pom = PomConfiguration(
                 name = "kmock-processor",
-                description = "Mocking Framework for Kotlin Multiplatform.",
+                description = "KMock's KSP processor is part of humble mocking library for Kotlin Multiplatform.",
                 year = 2022,
                 url = "https://$gitHubRepositoryPath"
             ),

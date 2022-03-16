@@ -21,6 +21,7 @@ include(
     ":kmock",
     ":kmock-processor",
     ":kmock-gradle",
+    ":kmock-compiler",
     ":examples",
 )
 

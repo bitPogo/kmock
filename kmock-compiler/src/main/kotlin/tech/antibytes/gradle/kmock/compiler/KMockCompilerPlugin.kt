@@ -6,21 +6,26 @@
 
 package tech.antibytes.gradle.kmock.compiler
 
+import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
-import tech.antibytes.gradle.kmock.KMockExtension
 import tech.antibytes.gradle.kmock.compiler.KMockCompilerPluginContract.Companion.ENABLE_COMPILER_PLUGIN_FIELD
-import tech.antibytes.gradle.kmock.config.MainConfig
+import tech.antibytes.gradle.kmock.compiler.config.MainConfig
 
-internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
+class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
+    override fun apply(target: Project) {
+        super.apply(target)
+        target.extensions.create("kmockCompilation", KMockCompilerExtension::class.java)
+    }
+
     override fun applyToCompilation(
         kotlinCompilation: KotlinCompilation<*>
     ): Provider<List<SubpluginOption>> {
         val project = kotlinCompilation.target.project
-        val extension: KMockExtension = project.extensions.getByType(KMockExtension::class.java)
+        val extension: KMockCompilerExtension = project.extensions.getByType(KMockCompilerExtension::class.java)
 
         return project.provider {
             listOf(
@@ -32,12 +37,12 @@ internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
         }
     }
 
-    override fun getCompilerPluginId(): String = MainConfig.id
+    override fun getCompilerPluginId(): String = MainConfig.pluginId
 
     override fun getPluginArtifact(): SubpluginArtifact {
         return SubpluginArtifact(
             groupId = MainConfig.group,
-            artifactId = MainConfig.id,
+            artifactId = MainConfig.artifactId,
             version = MainConfig.version
         )
     }
@@ -45,7 +50,7 @@ internal class KMockCompilerPlugin : KotlinCompilerPluginSupportPlugin {
     override fun getPluginArtifactForNative(): SubpluginArtifact {
         return SubpluginArtifact(
             groupId = MainConfig.group,
-            artifactId = MainConfig.id,
+            artifactId = MainConfig.artifactId,
             version = MainConfig.version
         )
     }

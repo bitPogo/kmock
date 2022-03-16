@@ -47,7 +47,7 @@ import kotlin.test.Test
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,
-    ExampleContract.DecoderFactory::class
+    ExampleContract.DecoderFactory::class,
 )
 class SampleControllerAutoStubFactorySpec {
     private val fixture = kotlinFixture()
