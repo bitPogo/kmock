@@ -13,6 +13,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -139,6 +140,7 @@ internal class KMockGenerator(
     private fun buildMock(
         mockName: String,
         template: KSClassDeclaration,
+        generics: Map<String, List<KSTypeReference>>?,
         relaxer: Relaxer?
     ): TypeSpec {
         val implementation = TypeSpec.classBuilder(mockName)
@@ -149,8 +151,6 @@ internal class KMockGenerator(
 
         implementation.addSuperinterface(superType)
         implementation.addModifiers(KModifier.INTERNAL)
-
-        val generics = generics.extractGenerics(template, typeResolver)
 
         if (generics != null) {
             implementation.typeVariables.addAll(
@@ -225,6 +225,7 @@ internal class KMockGenerator(
 
     private fun writeMock(
         template: KSClassDeclaration,
+        generics: Map<String, List<KSTypeReference>>?,
         dependencies: List<KSFile>,
         target: String,
         relaxer: Relaxer?
@@ -239,6 +240,7 @@ internal class KMockGenerator(
         val implementation = buildMock(
             mockName = mockName,
             template = template,
+            generics = generics,
             relaxer = relaxer
         )
 
@@ -271,10 +273,11 @@ internal class KMockGenerator(
     ) {
         interfaces.forEach { template ->
             writeMock(
-                template.interfaze,
-                dependencies,
-                ProcessorContract.Target.COMMON.value,
-                relaxer
+                template = template.interfaze,
+                generics = template.generics,
+                dependencies = dependencies,
+                target = ProcessorContract.Target.COMMON.value,
+                relaxer = relaxer
             )
         }
     }
@@ -286,10 +289,11 @@ internal class KMockGenerator(
     ) {
         interfaces.forEach { template ->
             writeMock(
-                template.interfaze,
-                dependencies,
-                template.marker,
-                relaxer
+                template = template.interfaze,
+                generics = template.generics,
+                dependencies = dependencies,
+                target = template.marker,
+                relaxer = relaxer
             )
         }
     }
@@ -301,10 +305,11 @@ internal class KMockGenerator(
     ) {
         interfaces.forEach { template ->
             writeMock(
-                template.interfaze,
-                dependencies,
-                ProcessorContract.Target.PLATFORM.value,
-                relaxer
+                template = template.interfaze,
+                generics = template.generics,
+                dependencies = dependencies,
+                target = ProcessorContract.Target.PLATFORM.value,
+                relaxer = relaxer
             )
         }
     }
