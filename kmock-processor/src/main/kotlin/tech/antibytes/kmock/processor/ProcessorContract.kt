@@ -44,7 +44,11 @@ internal interface ProcessorContract {
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
-    data class InterfaceSource(val marker: String, val interfaze: KSClassDeclaration)
+    data class InterfaceSource(
+        val marker: String,
+        val interfaze: KSClassDeclaration,
+        val generics: Map<String, List<KSTypeReference>>?
+    )
 
     data class Aggregated(
         val illFormed: List<KSAnnotated>,

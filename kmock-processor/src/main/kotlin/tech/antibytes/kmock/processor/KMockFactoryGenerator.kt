@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
@@ -192,6 +193,19 @@ internal class KMockFactoryGenerator(
         return buildSpySelector(factory, interfaces).build()
     }
 
+    private fun splitInterfacesIntoRegularAndGenerics(
+        interfaces: List<InterfaceSource>
+    ) : Pair<List<InterfaceSource>, List<InterfaceSource>> {
+        val regular: MutableList<InterfaceSource>
+        val generics: MutableList<InterfaceSource>
+
+        interfaces.forEach { source ->
+
+        }
+
+        return Pair(emptyList(), emptyList())
+    }
+
     override fun writeFactories(
         options: ProcessorContract.Options,
         interfaces: List<InterfaceSource>,
@@ -204,6 +218,8 @@ internal class KMockFactoryGenerator(
                 "MockFactory"
             )
             file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
+
+            splitInterfacesIntoRegularAndGenerics(interfaces)
 
             file.addFunction(
                 buildMockFactory(

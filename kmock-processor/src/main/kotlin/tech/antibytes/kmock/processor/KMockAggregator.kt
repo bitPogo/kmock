@@ -20,13 +20,15 @@ import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockAggregator(
-    private val logger: KSPLogger
+    private val logger: KSPLogger,
+    private val generics: ProcessorContract.GenericResolver,
 ) : ProcessorContract.Aggregator {
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation {
         val annotation = annotations.first { annotation ->
@@ -39,6 +41,14 @@ internal class KMockAggregator(
         return annotation
     }
 
+    private fun resolveGenerics(template: KSDeclaration): Map<String, List<KSTypeReference>>? {
+        val typeResolver = template.typeParameters.toTypeParameterResolver()
+        return generics.extractGenerics(
+            template,
+            typeResolver
+        )
+    }
+
     private fun resolveInterface(
         interfaze: KSDeclaration,
         sourceIndicator: String,
@@ -49,7 +59,8 @@ internal class KMockAggregator(
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
             else -> interfaceCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = ProcessorContract.InterfaceSource(
                 sourceIndicator,
-                interfaze
+                interfaze,
+                resolveGenerics(interfaze)
             )
         }
     }

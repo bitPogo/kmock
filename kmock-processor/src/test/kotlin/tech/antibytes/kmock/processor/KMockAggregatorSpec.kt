@@ -48,7 +48,7 @@ class KMockAggregatorSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(mockk()) fulfils ProcessorContract.Aggregator::class
+        KMockAggregator(mockk(), mockk()) fulfils ProcessorContract.Aggregator::class
     }
 
     @Test
@@ -80,7 +80,7 @@ class KMockAggregatorSpec {
         // Then
         assertFailsWith<NoSuchElementException> {
             // When
-            KMockAggregator(mockk()).extractInterfaces(annotated)
+            KMockAggregator(mockk(), mockk()).extractInterfaces(annotated)
         }
     }
 
@@ -115,7 +115,7 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(mockk()).extractInterfaces(annotated)
+        val (illegal, _, _) = KMockAggregator(mockk(), mockk()).extractInterfaces(annotated)
 
         // Then
         illegal mustBe listOf(source)
@@ -164,7 +164,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractInterfaces(annotated)
+        KMockAggregator(logger, mockk()).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
@@ -210,7 +210,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractInterfaces(annotated)
+        KMockAggregator(logger, mockk()).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
@@ -279,7 +279,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractInterfaces(annotated)
+        KMockAggregator(logger, mockk()).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
@@ -345,7 +345,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractInterfaces(annotated)
+        KMockAggregator(logger, mockk()).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
@@ -376,6 +376,13 @@ class KMockAggregatorSpec {
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
+        val genericResolver: ProcessorContract.GenericResolver = mockk()
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+            emptyMap()
+        } else {
+            null
+        }
+
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns if (fixture.random.access { it.nextBoolean() }) {
@@ -403,11 +410,15 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { genericResolver.extractGenerics(any(), any()) } returns generics
+
         // When
-        val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
+        val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.InterfaceSource("", declaration))
+        interfaces mustBe listOf(ProcessorContract.InterfaceSource("", declaration, generics))
+
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
 
     @Test
@@ -436,6 +447,13 @@ class KMockAggregatorSpec {
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
+        val genericResolver: ProcessorContract.GenericResolver = mockk()
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+            emptyMap()
+        } else {
+            null
+        }
+
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
@@ -460,11 +478,15 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { genericResolver.extractGenerics(any(), any()) } returns generics
+
         // When
-        val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
+        val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.InterfaceSource(marker, declaration))
+        interfaces mustBe listOf(ProcessorContract.InterfaceSource(marker, declaration, generics))
+
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
 
     @Test
@@ -498,6 +520,13 @@ class KMockAggregatorSpec {
         val arguments1: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
+
+        val genericResolver: ProcessorContract.GenericResolver = mockk()
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+            emptyMap()
+        } else {
+            null
+        }
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
@@ -539,14 +568,18 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { genericResolver.extractGenerics(any(), any()) } returns generics
+
         // When
-        val (_, interfaces, _) = KMockAggregator(logger).extractInterfaces(annotated)
+        val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
         interfaces mustBe listOf(
-            ProcessorContract.InterfaceSource(marker0, declaration),
-            ProcessorContract.InterfaceSource(marker1, declaration)
+            ProcessorContract.InterfaceSource(marker0, declaration, generics),
+            ProcessorContract.InterfaceSource(marker1, declaration, generics)
         )
+
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
     }
 
     @Test
@@ -602,7 +635,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(logger).extractInterfaces(annotated)
+        val (_, _, sourceFiles) = KMockAggregator(logger, mockk(relaxed = true)).extractInterfaces(annotated)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -658,7 +691,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(logger).extractInterfaces(annotated)
+        val (_, _, sourceFiles) = KMockAggregator(logger, mockk(relaxed = true)).extractInterfaces(annotated)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -671,7 +704,7 @@ class KMockAggregatorSpec {
         val annotated: Sequence<KSAnnotated> = sequence {}
 
         // When
-        val relaxer = KMockAggregator(logger).extractRelaxer(annotated)
+        val relaxer = KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         relaxer mustBe null
@@ -706,7 +739,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -744,7 +777,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -782,7 +815,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -824,7 +857,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -862,7 +895,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -900,7 +933,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val actual = KMockAggregator(logger).extractRelaxer(annotated)
+        val actual = KMockAggregator(logger, mockk()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 0) { logger.error(any()) }

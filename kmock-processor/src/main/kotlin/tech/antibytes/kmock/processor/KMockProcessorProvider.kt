@@ -31,7 +31,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             KMockFactoryGenerator(logger, generator),
             KMockCommonEntryPointGenerator(generator),
-            KMockAggregator(logger),
+            KMockAggregator(logger, KMockGenerics),
             ProcessorContract.Options(
                 isKmp = environment.options["isKmp"] == true.toString(),
                 rootPackage = environment.options["rootPackage"]!!
