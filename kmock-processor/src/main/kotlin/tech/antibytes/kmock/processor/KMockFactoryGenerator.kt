@@ -88,43 +88,43 @@ internal class KMockFactoryGenerator(
         generics: List<TypeName>,
         relaxer: Relaxer?
     ): FunSpec.Builder {
-        functionFactory.beginControlFlow("return when (T::class)")
         val typeInfo = buildGenericsInfo(generics)
 
+        functionFactory.beginControlFlow("return when (Mock::class)")
         templateSources.forEach { source ->
             val qualifiedName = source.template.qualifiedName!!.asString()
             val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
 
             if (relaxer == null) {
                 functionFactory.addStatement(
-                    "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
+                    "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock",
                     qualifiedName,
                     interfaceName,
                     typeInfo,
                 )
 
                 functionFactory.addStatement(
-                    "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
+                    "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock",
                     interfaceName,
                     interfaceName,
                     typeInfo,
                 )
             } else {
                 functionFactory.addStatement(
-                    "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
+                    "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock",
                     qualifiedName,
                     interfaceName,
                     typeInfo,
                 )
                 functionFactory.addStatement(
-                    "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as T",
+                    "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock",
                     interfaceName,
                     interfaceName,
                     typeInfo,
                 )
             }
         }
-        functionFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${T::class.simpleName}.\")")
+        functionFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${Mock::class.simpleName}.\")")
         functionFactory.endControlFlow()
 
         return functionFactory
@@ -163,7 +163,7 @@ internal class KMockFactoryGenerator(
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
     ): FunSpec {
-        val type = TypeVariableName("T")
+        val type = TypeVariableName("Mock")
 
         return fillMockFactory(
             type = type,
@@ -181,24 +181,28 @@ internal class KMockFactoryGenerator(
 
     private fun buildSpySelector(
         function: FunSpec.Builder,
+        generics: List<TypeName>,
         templateSources: List<TemplateSource>,
     ): FunSpec.Builder {
-        function.beginControlFlow("return when (Mock::class)")
+        val typeInfo = buildGenericsInfo(generics)
 
+        function.beginControlFlow("return when (Mock::class)")
         templateSources.forEach { source ->
             val qualifiedName = source.template.qualifiedName!!.asString()
             val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
             function.addStatement(
-                "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L) as Mock",
+                "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as Mock",
                 qualifiedName,
                 interfaceName,
                 qualifiedName,
+                typeInfo,
             )
             function.addStatement(
-                "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L) as Mock",
+                "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as Mock",
                 interfaceName,
                 interfaceName,
                 qualifiedName,
+                typeInfo,
             )
         }
         function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${Mock::class.simpleName}.\")")
@@ -207,37 +211,55 @@ internal class KMockFactoryGenerator(
         return function
     }
 
-    private fun buildSpyFactory(
+    private fun fillSpyFactory(
+        mockType: TypeVariableName,
+        spyType: TypeVariableName,
+        generics: List<TypeName>,
         isKmp: Boolean,
         templateSources: List<TemplateSource>,
-    ): FunSpec {
-        val factory = FunSpec.builder("kspy")
-        val spy = TypeVariableName("SpyOn")
-        val mock = TypeVariableName("Mock").copy(bounds = listOf(spy))
+    ): FunSpec.Builder {
+        val spyFactory = FunSpec.builder("kspy")
 
-        factory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
-            .addTypeVariable(mock.copy(reified = true))
-            .addTypeVariable(spy.copy(reified = true))
-            .returns(mock)
+        spyFactory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
+            .addTypeVariable(mockType.copy(reified = true))
+            .addTypeVariable(spyType.copy(reified = true))
+            .returns(mockType)
             .addParameter(buildSpyParameter())
             .addParameter(buildVerifierParameter(isKmp))
             .addParameter(buildFreezeParameter(isKmp))
 
         if (isKmp) {
-            factory.addModifiers(KModifier.ACTUAL)
+            spyFactory.addModifiers(KModifier.ACTUAL)
         }
 
-        return buildSpySelector(factory, templateSources).build()
+        return buildSpySelector(spyFactory, generics, templateSources)
+    }
+
+    private fun buildSpyFactory(
+        isKmp: Boolean,
+        templateSources: List<TemplateSource>,
+    ): FunSpec {
+        val spyType = TypeVariableName("SpyOn")
+        val mockType = TypeVariableName("Mock", bounds = listOf(spyType))
+
+        return fillSpyFactory(
+            mockType = mockType,
+            spyType = spyType,
+            generics = emptyList(),
+            templateSources = templateSources,
+            isKmp = isKmp,
+        ).build()
     }
 
     private fun buildGenericMockFactoryType(
+        name: String,
         templateSource: TemplateSource,
     ): TypeVariableName {
         val template = templateSource.template
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val boundary = genericResolver.resolveMockClassType(template, typeResolver)
 
-        return TypeVariableName("T", bounds = listOf(boundary)).copy(reified = true)
+        return TypeVariableName(name, bounds = listOf(boundary)).copy(reified = true)
     }
     
     private fun FunSpec.Builder.amendIgnorableValues(
@@ -249,7 +271,7 @@ internal class KMockFactoryGenerator(
                 ParameterSpec.builder(
                     name = "ignoreMe$counter", 
                     type = type.copy(nullable = true)
-                ).addAnnotation(unused).build()
+                ).addAnnotation(unused).defaultValue("null").build()
             )
             
             counter += 1
@@ -271,6 +293,7 @@ internal class KMockFactoryGenerator(
         )
 
         val type = buildGenericMockFactoryType(
+            "Mock",
             templateSource
         )
 
@@ -283,13 +306,43 @@ internal class KMockFactoryGenerator(
         ).addTypeVariables(generics).amendIgnorableValues(generics).build()
     }
 
-    private fun buildGenericMockFactories(
+    private fun buildGenericSpyFactory(
+        isKmp: Boolean,
+        templateSource: TemplateSource,
+    ): FunSpec {
+        val template = templateSource.template
+        val typeResolver = template.typeParameters.toTypeParameterResolver()
+        val generics = genericResolver.mapDeclaredGenerics(
+            generics = templateSource.generics!!,
+            typeResolver = typeResolver
+        )
+
+        val spyType = buildGenericMockFactoryType(
+            "SpyOn",
+            templateSource
+        )
+
+        val mockType = TypeVariableName("Mock", bounds = listOf(spyType))
+
+        return fillSpyFactory(
+            mockType = mockType,
+            spyType = spyType,
+            templateSources = listOf(templateSource),
+            generics = generics,
+            isKmp = isKmp,
+        ).addTypeVariables(generics).amendIgnorableValues(generics).build()
+    }
+
+    private fun buildGenericFactories(
         isKmp: Boolean,
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
-    ): List<FunSpec> {
+    ): List<Pair<FunSpec, FunSpec>> {
         return templateSources.map { template ->
-            buildGenericMockFactory(isKmp, template, relaxer)
+            Pair(
+                buildGenericMockFactory(isKmp, template, relaxer),
+                buildGenericSpyFactory(isKmp, template)
+            )
         }
     }
 
@@ -325,7 +378,7 @@ internal class KMockFactoryGenerator(
 
             val (regular, generics) = splitInterfacesIntoRegularAndGenerics(templateSources)
 
-            val genericFactories = buildGenericMockFactories(
+            val genericFactories = buildGenericFactories(
                 templateSources = generics,
                 relaxer = relaxer,
                 isKmp = options.isKmp,
@@ -339,16 +392,19 @@ internal class KMockFactoryGenerator(
                 )
             )
 
-            genericFactories.forEach { factory ->
-                file.addFunction(factory)
-            }
-
             file.addFunction(
                 buildSpyFactory(
                     templateSources = regular,
                     isKmp = options.isKmp,
                 )
             )
+
+            genericFactories.forEach { factories ->
+                val (mockFactory, spyFactory) = factories
+
+                file.addFunction(mockFactory)
+                file.addFunction(spyFactory)
+            }
 
             file.build().writeTo(
                 codeGenerator = codeGenerator,
