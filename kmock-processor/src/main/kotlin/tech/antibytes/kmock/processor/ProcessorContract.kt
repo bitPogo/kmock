@@ -15,6 +15,7 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -44,23 +45,27 @@ internal interface ProcessorContract {
         fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
     }
 
-    data class InterfaceSource(val marker: String, val interfaze: KSClassDeclaration)
+    data class TemplateSource(
+        val indicator: String,
+        val template: KSClassDeclaration,
+        val generics: Map<String, List<KSTypeReference>>?
+    )
 
     data class Aggregated(
         val illFormed: List<KSAnnotated>,
-        val extractedInterfaces: List<InterfaceSource>,
+        val extractedTemplates: List<TemplateSource>,
         val dependencies: List<KSFile>
     )
 
     interface SourceFilter {
         fun filter(
-            sources: List<InterfaceSource>,
-            filteredBy: List<InterfaceSource>
-        ): List<InterfaceSource>
+            templateSources: List<TemplateSource>,
+            filteredBy: List<TemplateSource>
+        ): List<TemplateSource>
 
         fun filterSharedSources(
-            sources: List<InterfaceSource>
-        ): List<InterfaceSource>
+            templateSources: List<TemplateSource>
+        ): List<TemplateSource>
     }
 
     data class GenericDeclaration(
@@ -74,6 +79,16 @@ internal interface ProcessorContract {
             template: KSDeclaration,
             resolver: TypeParameterResolver
         ): Map<String, List<KSTypeReference>>?
+
+        fun resolveMockClassType(
+            template: KSClassDeclaration,
+            resolver: TypeParameterResolver
+        ): TypeName
+
+        fun resolveKMockFactoryType(
+            name: String,
+            templateSource: TemplateSource,
+        ): TypeVariableName
 
         fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
@@ -120,37 +135,65 @@ internal interface ProcessorContract {
 
     interface MockGenerator {
         fun writePlatformMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeSharedMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeCommonMocks(
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
     }
 
+    interface MockFactoryGeneratorUtil {
+        fun generateKmockSignature(
+            type: TypeVariableName,
+            generics: List<TypeVariableName>,
+            hasDefault: Boolean,
+            modifier: KModifier?
+        ): FunSpec.Builder
+
+        fun generateKspySignature(
+            mockType: TypeVariableName,
+            spyType: TypeVariableName,
+            generics: List<TypeVariableName>,
+            hasDefault: Boolean,
+            modifier: KModifier?
+        ): FunSpec.Builder
+
+        fun splitInterfacesIntoRegularAndGenerics(
+            templateSources: List<TemplateSource>
+        ): Pair<List<TemplateSource>, List<TemplateSource>>
+
+        fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
+    }
+
     interface MockFactoryGenerator {
         fun writeFactories(
             options: Options,
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
         )
     }
 
-    interface MockFactoryCommonEntryPointGenerator {
-        fun generate(
+    interface MockFactoryEntryPointGenerator {
+        fun generateCommon(
             options: Options,
-            interfaces: List<InterfaceSource>,
+            templateSources: List<TemplateSource>,
+        )
+
+        fun generateShared(
+            options: Options,
+            templateSources: List<TemplateSource>,
         )
     }
 
@@ -160,6 +203,8 @@ internal interface ProcessorContract {
     }
 
     companion object {
+        const val KMOCK_FACTORY_TYPE_NAME = "Mock"
+        const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         val ANNOTATION_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName

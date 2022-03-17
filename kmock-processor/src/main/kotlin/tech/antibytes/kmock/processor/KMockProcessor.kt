@@ -23,7 +23,7 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
-    private val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator,
+    private val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator,
     private val aggregator: ProcessorContract.Aggregator,
     private val options: ProcessorContract.Options,
     private val filter: ProcessorContract.SourceFilter,
@@ -59,14 +59,14 @@ internal class KMockProcessor(
     private fun mergeSources(
         rootSource: Aggregated,
         dependentSource: Aggregated,
-        filteredInterfaces: List<ProcessorContract.InterfaceSource>
+        filteredTemplates: List<ProcessorContract.TemplateSource>
     ): Aggregated {
         return Aggregated(
             illFormed = rootSource.illFormed.toMutableList().also {
                 it.addAll(dependentSource.illFormed)
             },
-            extractedInterfaces = rootSource.extractedInterfaces.toMutableList().also {
-                it.addAll(filteredInterfaces)
+            extractedTemplates = rootSource.extractedTemplates.toMutableList().also {
+                it.addAll(filteredTemplates)
             },
             dependencies = rootSource.dependencies.toMutableList().also {
                 it.addAll(dependentSource.dependencies)
@@ -82,14 +82,14 @@ internal class KMockProcessor(
         val aggregated = aggregator.extractInterfaces(annotated)
 
         mockGenerator.writeCommonMocks(
-            aggregated.extractedInterfaces,
+            aggregated.extractedTemplates,
             aggregated.dependencies,
             relaxer
         )
 
-        entryPointGenerator.generate(
+        entryPointGenerator.generateCommon(
             options,
-            aggregated.extractedInterfaces
+            aggregated.extractedTemplates
         )
 
         return aggregated
@@ -103,8 +103,13 @@ internal class KMockProcessor(
         val annotated = fetchSharedAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
         val filteredInterfaces = filter.filter(
-            filter.filterSharedSources(aggregated.extractedInterfaces),
-            commonAggregated.extractedInterfaces
+            filter.filterSharedSources(aggregated.extractedTemplates),
+            commonAggregated.extractedTemplates
+        )
+
+        entryPointGenerator.generateShared(
+            options,
+            filteredInterfaces,
         )
 
         mockGenerator.writeSharedMocks(
@@ -124,8 +129,8 @@ internal class KMockProcessor(
         val annotated = fetchPlatformAnnotated(resolver)
         val aggregated = aggregator.extractInterfaces(annotated)
         val filteredInterfaces = filter.filter(
-            aggregated.extractedInterfaces,
-            sharedAggregated.extractedInterfaces
+            aggregated.extractedTemplates,
+            sharedAggregated.extractedTemplates
         )
         val totalAggregated = mergeSources(sharedAggregated, aggregated, filteredInterfaces)
 
@@ -137,7 +142,7 @@ internal class KMockProcessor(
 
         factoryGenerator.writeFactories(
             options,
-            totalAggregated.extractedInterfaces,
+            totalAggregated.extractedTemplates,
             totalAggregated.dependencies,
             relaxer
         )

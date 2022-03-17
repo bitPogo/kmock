@@ -150,7 +150,7 @@ class KMockProcessorSpec {
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfaces: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val templates: List<ProcessorContract.TemplateSource> = listOf(mockk())
         val dependencies: List<KSFile> = listOf(mockk())
 
         every {
@@ -159,7 +159,7 @@ class KMockProcessorSpec {
 
         every {
             aggregator.extractInterfaces(any())
-        } returns ProcessorContract.Aggregated(illegal, interfaces, dependencies)
+        } returns ProcessorContract.Aggregated(illegal, templates, dependencies)
         every { aggregator.extractRelaxer(any()) } returns mockk()
 
         // When
@@ -185,17 +185,17 @@ class KMockProcessorSpec {
         val aggregator: ProcessorContract.Aggregator = mockk()
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
-        val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator = mockk()
+        val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
         val options = ProcessorContract.Options(true, fixture.fixture())
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfacesCommon: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesShared: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesPlatform: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesFiltered: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesCommon: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesShared: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesPlatform: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesFiltered: List<ProcessorContract.TemplateSource> = listOf(mockk())
 
         val dependencies: List<KSFile> = listOf(mockk())
 
@@ -221,7 +221,8 @@ class KMockProcessorSpec {
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generate(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateShared(any(), any()) } just Runs
 
         // When
         KMockProcessor(
@@ -269,8 +270,10 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 1) {
-            entryPointGenerator.generate(options, interfacesCommon)
+            entryPointGenerator.generateCommon(options, interfacesCommon)
         }
+
+        verify(exactly = 1) { entryPointGenerator.generateShared(options, interfacesFiltered) }
     }
 
     @Test
@@ -281,16 +284,16 @@ class KMockProcessorSpec {
         val aggregator: ProcessorContract.Aggregator = mockk()
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
-        val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator = mockk()
+        val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
         val options = ProcessorContract.Options(false, fixture.fixture())
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
-        val interfacesCommon: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesPlatform: List<ProcessorContract.InterfaceSource> = listOf(mockk())
-        val interfacesFiltered: List<ProcessorContract.InterfaceSource> = listOf(mockk())
+        val interfacesCommon: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesPlatform: List<ProcessorContract.TemplateSource> = listOf(mockk())
+        val interfacesFiltered: List<ProcessorContract.TemplateSource> = listOf(mockk())
 
         val dependencies: List<KSFile> = listOf(mockk())
 
@@ -312,7 +315,7 @@ class KMockProcessorSpec {
         every { generator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generate(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
 
         // When
         KMockProcessor(
@@ -353,7 +356,7 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 0) {
-            entryPointGenerator.generate(options, interfacesCommon)
+            entryPointGenerator.generateCommon(options, interfacesCommon)
         }
     }
 }

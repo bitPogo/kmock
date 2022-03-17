@@ -6,20 +6,24 @@
 
 package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal object KMockGenerics : GenericResolver {
     private val any = Any::class.asTypeName()
@@ -289,5 +293,30 @@ internal object KMockGenerics : GenericResolver {
         }
 
         return resolved
+    }
+
+    override fun resolveMockClassType(
+        template: KSClassDeclaration,
+        resolver: TypeParameterResolver
+    ): TypeName {
+        return if (template.typeParameters.isEmpty()) {
+            template.toClassName()
+        } else {
+            template.toClassName()
+                .parameterizedBy(
+                    template.typeParameters.map { type -> type.toTypeVariableName(resolver) }
+                )
+        }
+    }
+
+    override fun resolveKMockFactoryType(
+        name: String,
+        templateSource: TemplateSource
+    ): TypeVariableName {
+        val template = templateSource.template
+        val typeResolver = template.typeParameters.toTypeParameterResolver()
+        val boundary = resolveMockClassType(template, typeResolver)
+
+        return TypeVariableName(name, bounds = listOf(boundary)).copy(reified = true)
     }
 }

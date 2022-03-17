@@ -31,8 +31,6 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     private const val androidRelease = "androidReleaseUnitTest"
     private const val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
 
-    private val renaming = mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
-
     private fun createCleanUpTask(
         project: Project,
         platformName: String,
@@ -127,7 +125,6 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 source = precedence.mapping!!.second,
                 target = target,
                 indicator = indicator,
-                rename = renaming
             )
         } else {
             SharedSourceCopist.copySharedSource(
@@ -136,7 +133,6 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 source = dependencies.first() + "Test",
                 target = target,
                 indicator = indicator,
-                rename = renaming
             )
         }.also { copy -> setCopyTaskDependencies(copy, kspTask) }
     }

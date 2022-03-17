@@ -47,7 +47,6 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         source: String,
         target: String,
         indicator: String,
-        rename: Map<String, String>,
     ) {
         val capitalTarget = target.capitalize(Locale.ROOT)
 
@@ -59,8 +58,8 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
             .rename { fileName ->
-                if (fileName in rename) {
-                    rename[fileName]!!
+                if (fileName.startsWith("MockFactory") && fileName.endsWith("Entry.kt")) {
+                    "MockFactory.kt"
                 } else {
                     fileName
                 }
@@ -73,7 +72,6 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         source: String,
         target: String,
         indicator: String,
-        rename: Map<String, String>
     ): Copy {
         guardInputs(platform, source, target, indicator)
 
@@ -87,7 +85,6 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             source = source.substringBeforeLast("Test"),
             target = target.substringBeforeLast("Test"),
             indicator = indicator,
-            rename = rename,
         )
 
         return task

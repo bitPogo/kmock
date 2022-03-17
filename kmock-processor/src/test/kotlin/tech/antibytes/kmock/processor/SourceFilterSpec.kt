@@ -35,13 +35,13 @@ class SourceFilterSpec {
         val source0_1: KSClassDeclaration = mockk()
 
         val sources0 = listOf(
-            ProcessorContract.InterfaceSource("", source0_0),
-            ProcessorContract.InterfaceSource("", source0_1)
+            ProcessorContract.TemplateSource("", source0_0, null),
+            ProcessorContract.TemplateSource("", source0_1, null)
         )
 
         val sources1 = listOf(
-            ProcessorContract.InterfaceSource("", source1_0),
-            ProcessorContract.InterfaceSource("", source1_1)
+            ProcessorContract.TemplateSource("", source1_0, null),
+            ProcessorContract.TemplateSource("", source1_1, null)
         )
 
         val sameSource: String = fixture.fixture()
@@ -68,8 +68,8 @@ class SourceFilterSpec {
         val source1: KSClassDeclaration = mockk()
 
         val sources = listOf(
-            ProcessorContract.InterfaceSource(fixture.fixture(), source0),
-            ProcessorContract.InterfaceSource(fixture.fixture(), source1)
+            ProcessorContract.TemplateSource(fixture.fixture(), source0, null),
+            ProcessorContract.TemplateSource(fixture.fixture(), source1, null)
         )
 
         every { source0.qualifiedName!!.asString() } returns fixture.fixture()
@@ -93,8 +93,8 @@ class SourceFilterSpec {
         val marker1: String = fixture.fixture()
 
         val sources = listOf(
-            ProcessorContract.InterfaceSource(marker0, source0),
-            ProcessorContract.InterfaceSource(marker1, source1)
+            ProcessorContract.TemplateSource(marker0, source0, null),
+            ProcessorContract.TemplateSource(marker1, source1, null)
         )
 
         val interfaceName: String = fixture.fixture()
@@ -122,9 +122,9 @@ class SourceFilterSpec {
         val marker2: String = fixture.fixture()
 
         val sources = listOf(
-            ProcessorContract.InterfaceSource(marker0, source0),
-            ProcessorContract.InterfaceSource(marker1, source1),
-            ProcessorContract.InterfaceSource(marker2, source2),
+            ProcessorContract.TemplateSource(marker0, source0, null),
+            ProcessorContract.TemplateSource(marker1, source1, null),
+            ProcessorContract.TemplateSource(marker2, source2, null),
         )
 
         val interfaceName: String = fixture.fixture()

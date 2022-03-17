@@ -90,7 +90,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -131,7 +131,6 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -212,7 +211,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -246,7 +245,6 @@ class KmpSetupConfiguratorSpec {
                 "jvmTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
     }
@@ -297,8 +295,8 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any(), any()) } returns copyTask0
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any(), any()) } returns copyTask1
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any()) } returns copyTask0
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any()) } returns copyTask1
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -343,7 +341,6 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -354,7 +351,6 @@ class KmpSetupConfiguratorSpec {
                 any(),
                 "otherTest",
                 "OTHERTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -438,7 +434,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -471,7 +467,6 @@ class KmpSetupConfiguratorSpec {
                 "jvmTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
     }
@@ -500,7 +495,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -533,7 +528,6 @@ class KmpSetupConfiguratorSpec {
                 "jsTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
     }
@@ -562,7 +556,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
@@ -595,7 +589,6 @@ class KmpSetupConfiguratorSpec {
                 "native1Test",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -657,7 +650,7 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any(), any()) } returns copyTask
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJvm") } returns kspTask
@@ -692,7 +685,6 @@ class KmpSetupConfiguratorSpec {
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -715,7 +707,6 @@ class KmpSetupConfiguratorSpec {
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -840,8 +831,8 @@ class KmpSetupConfiguratorSpec {
 
         every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any(), any()) } returns copyTask0
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any(), any()) } returns copyTask1
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any()) } returns copyTask0
+        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any()) } returns copyTask1
 
         every { project.tasks.getByName(any<String>()) } returns compileTask
         every { project.tasks.getByName("kspTestKotlinJvm") } returns kspTask
@@ -879,7 +870,6 @@ class KmpSetupConfiguratorSpec {
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -902,7 +892,6 @@ class KmpSetupConfiguratorSpec {
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMONTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 
@@ -913,7 +902,6 @@ class KmpSetupConfiguratorSpec {
                 "androidDebugUnitTest",
                 "otherTest",
                 "OTHERTEST",
-                mapOf("MockFactoryCommonEntry.kt" to "MockFactory.kt")
             )
         }
 

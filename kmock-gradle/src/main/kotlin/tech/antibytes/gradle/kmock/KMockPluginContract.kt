@@ -42,7 +42,6 @@ internal interface KMockPluginContract {
             source: String,
             target: String,
             indicator: String,
-            rename: Map<String, String>
         ): Copy
     }
 
