@@ -18,8 +18,8 @@ import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
@@ -45,7 +45,7 @@ internal class KMockFactoryGenerator(
     ): FunSpec.Builder {
         val typeInfo = buildGenericsInfo(generics)
 
-        functionFactory.beginControlFlow("return when (${KMOCK_FACTORY_TYPE_NAME}::class)")
+        functionFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
             val qualifiedName = source.template.qualifiedName!!.asString()
             val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
@@ -79,7 +79,7 @@ internal class KMockFactoryGenerator(
                 )
             }
         }
-        functionFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${${KMOCK_FACTORY_TYPE_NAME}::class.simpleName}.\")")
+        functionFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
         functionFactory.endControlFlow()
 
         return functionFactory
@@ -139,7 +139,7 @@ internal class KMockFactoryGenerator(
     ): FunSpec.Builder {
         val typeInfo = buildGenericsInfo(generics)
 
-        function.beginControlFlow("return when (${KMOCK_FACTORY_TYPE_NAME}::class)")
+        function.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
             val qualifiedName = source.template.qualifiedName!!.asString()
             val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
@@ -158,7 +158,7 @@ internal class KMockFactoryGenerator(
                 typeInfo,
             )
         }
-        function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${${KMOCK_FACTORY_TYPE_NAME}::class.simpleName}.\")")
+        function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
         function.endControlFlow()
 
         return function

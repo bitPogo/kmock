@@ -9,7 +9,6 @@ package tech.antibytes.kmock.processor.factory
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.util.test.fulfils
 
 class KMockFactorySpec {

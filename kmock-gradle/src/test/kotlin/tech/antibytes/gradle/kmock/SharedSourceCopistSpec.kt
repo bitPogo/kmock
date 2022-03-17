@@ -61,7 +61,7 @@ class SharedSourceCopistSpec {
     @Test
     fun `Given copySharedSource is called it fails if Platform is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "", "", "", "", emptyMap())
+            SharedSourceCopist.copySharedSource(project, "", "", "", "")
         }
 
         error.message mustBe "Cannot copy from invalid Platform Definition!"
@@ -70,7 +70,7 @@ class SharedSourceCopistSpec {
     @Test
     fun `Given copySharedSource is called it fails if Source is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "test", "", "", "", emptyMap())
+            SharedSourceCopist.copySharedSource(project, "test", "", "", "")
         }
 
         error.message mustBe "Cannot copy from invalid Source Definition!"
@@ -79,7 +79,7 @@ class SharedSourceCopistSpec {
     @Test
     fun `Given copySharedSource is called it fails if Target is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "test", "test", "", "", emptyMap())
+            SharedSourceCopist.copySharedSource(project, "test", "test", "", "")
         }
 
         error.message mustBe "Cannot copy to invalid Target Definition!"
@@ -88,7 +88,7 @@ class SharedSourceCopistSpec {
     @Test
     fun `Given copySharedSource is called it fails if Indicator is empty`() {
         val error = assertFailsWith<StopExecutionException> {
-            SharedSourceCopist.copySharedSource(project, "test", "test", "test", "", emptyMap())
+            SharedSourceCopist.copySharedSource(project, "test", "test", "test", "")
         }
 
         error.message mustBe "Cannot copy with invalid Indicator!"
@@ -125,7 +125,6 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            emptyMap()
         )
 
         // Then
@@ -173,7 +172,6 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            emptyMap()
         )
 
         every { fileTreeElement.file } returns file
@@ -217,7 +215,6 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            emptyMap()
         )
 
         every { fileTreeElement.file } returns file
@@ -260,7 +257,6 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            emptyMap()
         )
 
         every { fileTreeElement.file } returns file
@@ -273,7 +269,7 @@ class SharedSourceCopistSpec {
     }
 
     @Test
-    fun `Given copySharedSource is called it creates a CopyTask, which ignores files, which are not marked for renaming`() {
+    fun `Given copySharedSource is called it creates a CopyTask, which ignores files, which are not a MockFactory`() {
         // Given
         val indicator = "Common"
         val sourcePlatform = "source"
@@ -282,9 +278,6 @@ class SharedSourceCopistSpec {
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
         val fileTreeElement: FileTreeElement = mockk()
-        val toRename = mapOf(
-            "${sourcePlatform}Test" to "somethingTest"
-        )
 
         val rename = slot<Transformer<String, String>>()
         val file = prepareFile("// $indicator")
@@ -306,32 +299,27 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            toRename
         )
 
         every { fileTreeElement.file } returns file
 
         // When
-        val fileName: String = fixture.fixture()
-        val actual = rename.captured.transform(fileName)
+        val actual = rename.captured.transform("$source.kt")
 
         // Then
-        actual mustBe fileName
+        actual mustBe "$source.kt"
     }
 
     @Test
-    fun `Given copySharedSource is called it creates a CopyTask, which renames files, which are marked for renaming`() {
+    fun `Given copySharedSource is called it creates a CopyTask, which renames files, which are a MockFactory`() {
         // Given
         val indicator = "Common"
         val sourcePlatform = "source"
-        val source = "${sourcePlatform}Test"
+        val source = "MockFactory${sourcePlatform}TestEntry"
         val target = "targetTest"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
         val fileTreeElement: FileTreeElement = mockk()
-        val toRename = mapOf(
-            "${sourcePlatform}Test" to "somethingTest"
-        )
 
         val rename = slot<Transformer<String, String>>()
         val file = prepareFile("// $indicator")
@@ -353,15 +341,14 @@ class SharedSourceCopistSpec {
             source,
             target,
             indicator,
-            toRename
         )
 
         every { fileTreeElement.file } returns file
 
         // When
-        val actual = rename.captured.transform(toRename.keys.first())
+        val actual = rename.captured.transform("$source.kt")
 
         // Then
-        actual mustBe toRename[toRename.keys.first()]
+        actual mustBe "MockFactory.kt"
     }
 }
