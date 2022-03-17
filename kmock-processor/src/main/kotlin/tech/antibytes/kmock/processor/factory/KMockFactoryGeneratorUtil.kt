@@ -21,6 +21,7 @@ internal class KMockFactoryGeneratorUtil(
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
 
     private fun FunSpec.Builder.amendGenericValues(
+        modifier: KModifier?,
         generics: List<TypeVariableName>
     ): FunSpec.Builder {
         var counter = 0
@@ -32,7 +33,13 @@ internal class KMockFactoryGeneratorUtil(
                 ParameterSpec.builder(
                     name = "ignoreMe$counter",
                     type = type.copy(nullable = true)
-                ).addAnnotation(unused).defaultValue("null").build()
+                ).addAnnotation(unused).let { function ->
+                    if (modifier == null || modifier == KModifier.EXPECT) {
+                        function.defaultValue("null")
+                    } else {
+                        function
+                    }
+                }.build()
             )
 
             counter += 1
@@ -103,7 +110,7 @@ internal class KMockFactoryGeneratorUtil(
             functionFactory.addModifiers(modifier)
         }
 
-        return functionFactory.amendGenericValues(generics)
+        return functionFactory.amendGenericValues(modifier, generics)
     }
 
     private fun buildSpyParameter(): ParameterSpec {
@@ -132,7 +139,7 @@ internal class KMockFactoryGeneratorUtil(
             spyFactory.addModifiers(modifier)
         }
 
-        return spyFactory.amendGenericValues(generics)
+        return spyFactory.amendGenericValues(modifier, generics)
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(

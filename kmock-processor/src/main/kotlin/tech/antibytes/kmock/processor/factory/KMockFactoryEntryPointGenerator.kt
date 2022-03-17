@@ -96,26 +96,11 @@ internal class KMockFactoryEntryPointGenerator(
         }
     }
 
-    private fun generateEntryPoint(
-        indicator: String,
-        options: ProcessorContract.Options,
-        templateSources: List<TemplateSource>,
+    private fun generateGenericEntryPoints(
+        file: FileSpec.Builder,
+        generics: List<TemplateSource>,
     ) {
-        val infix = indicator.titleCase()
-
-        val file = FileSpec.builder(
-            options.rootPackage,
-            "MockFactory${infix}Entry"
-        )
-
-        val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
         val genericFactories = buildGenericFactories(generics)
-
-        file.addComment(indicator.uppercase())
-        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-
-        file.addFunction(buildMockFactory())
-        file.addFunction(buildSpyFactory())
 
         genericFactories.forEach { factories ->
             val (mockFactory, spyFactory) = factories
@@ -123,11 +108,6 @@ internal class KMockFactoryEntryPointGenerator(
             file.addFunction(mockFactory)
             file.addFunction(spyFactory)
         }
-
-        file.build().writeTo(
-            codeGenerator = codeGenerator,
-            aggregating = false,
-        )
     }
 
     override fun generateCommon(
@@ -135,11 +115,58 @@ internal class KMockFactoryEntryPointGenerator(
         templateSources: List<TemplateSource>
     ) {
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            generateEntryPoint(
-                ProcessorContract.Target.COMMON.value,
-                options,
-                templateSources
+            val file = FileSpec.builder(
+                options.rootPackage,
+                "MockFactoryCommonTestEntry"
             )
+            val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
+
+            file.addComment(ProcessorContract.Target.COMMON.value.uppercase())
+            file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+
+            file.addFunction(buildMockFactory())
+            file.addFunction(buildSpyFactory())
+
+            generateGenericEntryPoints(
+                file,
+                generics
+            )
+
+            file.build().writeTo(
+                codeGenerator = codeGenerator,
+                aggregating = false,
+            )
+        }
+    }
+
+    private fun generateShared(
+        buckets: Map<String, List<TemplateSource>>,
+        options: ProcessorContract.Options,
+    ) {
+        buckets.forEach { (indicator, templateSources) ->
+            val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
+
+            if (generics.isNotEmpty()) {
+                val infix = indicator.titleCase()
+
+                val file = FileSpec.builder(
+                    options.rootPackage,
+                    "MockFactory${infix}Entry"
+                )
+
+                file.addComment(indicator.uppercase())
+                file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+
+                generateGenericEntryPoints(
+                    file,
+                    generics
+                )
+
+                file.build().writeTo(
+                    codeGenerator = codeGenerator,
+                    aggregating = false,
+                )
+            }
         }
     }
 
@@ -158,13 +185,7 @@ internal class KMockFactoryEntryPointGenerator(
                 buckets[indicator] = bucket
             }
 
-            buckets.forEach { (indicator, templates) ->
-                generateEntryPoint(
-                    indicator,
-                    options,
-                    templates
-                )
-            }
+            generateShared(buckets, options)
         }
     }
 }

@@ -182,21 +182,27 @@ class KMockFactoriesSpec {
             "Shared3.kt",
             loadResource("/template/generic/Shared3.kt")
         )
-        val expected1 = loadResource("/expected/generic/Shared1.kt")
-        val expected2 = loadResource("/expected/generic/Shared2.kt")
+        val expectedExpect1 = loadResource("/expected/generic/Shared1Expect.kt")
+        val expectedExpect2 = loadResource("/expected/generic/Shared2Expect.kt")
+        // Note: Shared2Expect is actually Shared3, since Shared2 is eaten by Shared1, which is totally correct!
+
+        val expectedActual = loadResource("/expected/generic/SharedActual.kt")
 
         // When
         val compilerResult = compile(provider, isKmp = true, source1, source2, source3)
-        val actual1 = resolveGenerated("MockFactoryTestEntry.kt")
-        val actual2 = resolveGenerated("MockFactoryNottestEntry.kt")
+        val actualExpect1 = resolveGenerated("MockFactoryTestEntry.kt")
+        val actualExpect2 = resolveGenerated("MockFactoryNottestEntry.kt")
+        val actualActual = resolveGenerated("MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        actual1 isNot null
-        actual2 isNot null
+        actualExpect1 isNot null
+        actualExpect2 isNot null
+        actualActual isNot null
 
-        actual1!!.normalizeSource() mustBe expected1.normalizeSource()
-        actual2!!.normalizeSource() mustBe expected2.normalizeSource()
+        actualExpect1!!.normalizeSource() mustBe expectedExpect1.normalizeSource()
+        actualExpect2!!.normalizeSource() mustBe expectedExpect2.normalizeSource()
+        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
     }
 
     @Test
