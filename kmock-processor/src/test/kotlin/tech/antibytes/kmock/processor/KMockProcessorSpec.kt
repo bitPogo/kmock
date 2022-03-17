@@ -222,6 +222,7 @@ class KMockProcessorSpec {
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateShared(any(), any()) } just Runs
 
         // When
         KMockProcessor(
@@ -271,6 +272,8 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             entryPointGenerator.generateCommon(options, interfacesCommon)
         }
+
+        verify(exactly = 1) { entryPointGenerator.generateShared(options, interfacesFiltered) }
     }
 
     @Test

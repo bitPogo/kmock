@@ -130,31 +130,41 @@ internal class KMockFactoryEntryPointGenerator(
         )
     }
 
-    private fun generate(
-        indicator: String,
-        options: ProcessorContract.Options,
-        templateSources: List<TemplateSource>,
-    ) {
-        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            generateEntryPoint(indicator, options, templateSources)
-        }
-    }
-
     override fun generateCommon(
         options: ProcessorContract.Options,
         templateSources: List<TemplateSource>
     ) {
-        generate(
-            ProcessorContract.Target.COMMON.value,
-            options,
-            templateSources
-        )
+        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+            generateEntryPoint(
+                ProcessorContract.Target.COMMON.value,
+                options,
+                templateSources
+            )
+        }
     }
 
     override fun generateShared(
         options: ProcessorContract.Options,
         templateSources: List<TemplateSource>
     ) {
-        TODO()
+        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+            val buckets: MutableMap<String, List<TemplateSource>> = mutableMapOf()
+
+            templateSources.forEach { template ->
+                val indicator = template.indicator.lowercase()
+                val bucket = buckets.getOrElse(indicator) { mutableListOf() }.toMutableList()
+                bucket.add(template)
+
+                buckets[indicator] = bucket
+            }
+
+            buckets.forEach { (indicator, templates) ->
+                generateEntryPoint(
+                    indicator,
+                    options,
+                    templates
+                )
+            }
+        }
     }
 }

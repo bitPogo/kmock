@@ -30,11 +30,11 @@ class KMockFactoriesSpec {
 
     private fun compile(
         processorProvider: SymbolProcessorProvider,
-        source: SourceFile,
         isKmp: Boolean = false,
+        vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
         return KotlinCompilation().apply {
-            sources = listOf(source)
+            sources = sourceFiles.toList()
             symbolProcessorProviders = listOf(processorProvider)
             workingDir = buildDir
             inheritClassPath = true
@@ -69,7 +69,7 @@ class KMockFactoriesSpec {
         val expected = loadResource("/expected/regular/Platform.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = false)
+        val compilerResult = compile(provider, isKmp = false, source)
         val actual = resolveGenerated("MockFactory.kt")
 
         // Then
@@ -90,7 +90,7 @@ class KMockFactoriesSpec {
         val expectedExpect = loadResource("/expected/regular/CommonExpect.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = true)
+        val compilerResult = compile(provider, isKmp = true, source)
         val actualActual = resolveGenerated("MockFactory.kt")
         val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 
@@ -113,7 +113,7 @@ class KMockFactoriesSpec {
         val expected = loadResource("/expected/relaxed/Platform.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = false)
+        val compilerResult = compile(provider, isKmp = false, source)
         val actual = resolveGenerated("MockFactory.kt")
 
         // Then
@@ -134,7 +134,7 @@ class KMockFactoriesSpec {
         val expectedExpect = loadResource("/expected/relaxed/CommonExpect.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = true)
+        val compilerResult = compile(provider, isKmp = true, source)
         val actualActual = resolveGenerated("MockFactory.kt")
         val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 
@@ -157,7 +157,7 @@ class KMockFactoriesSpec {
         val expected = loadResource("/expected/generic/Platform.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = false)
+        val compilerResult = compile(provider, isKmp = false, source)
         val actual = resolveGenerated("MockFactory.kt")
 
         // Then
@@ -165,6 +165,38 @@ class KMockFactoriesSpec {
         actual isNot null
 
         actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with Generics for Shared is processed, it writes a mock factory`() {
+        // Given
+        val source1 = SourceFile.kotlin(
+            "Shared1.kt",
+            loadResource("/template/generic/Shared1.kt")
+        )
+        val source2 = SourceFile.kotlin(
+            "Shared2.kt",
+            loadResource("/template/generic/Shared2.kt")
+        )
+        val source3 = SourceFile.kotlin(
+            "Shared3.kt",
+            loadResource("/template/generic/Shared3.kt")
+        )
+        val expected1 = loadResource("/expected/generic/Shared1.kt")
+        val expected2 = loadResource("/expected/generic/Shared2.kt")
+
+        // When
+        val compilerResult = compile(provider, isKmp = true, source1, source2, source3)
+        val actual1 = resolveGenerated("MockFactoryTestEntry.kt")
+        val actual2 = resolveGenerated("MockFactoryNottestEntry.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual1 isNot null
+        actual2 isNot null
+
+        actual1!!.normalizeSource() mustBe expected1.normalizeSource()
+        actual2!!.normalizeSource() mustBe expected2.normalizeSource()
     }
 
     @Test
@@ -178,7 +210,7 @@ class KMockFactoriesSpec {
         val expectedExpect = loadResource("/expected/generic/CommonExpect.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = true)
+        val compilerResult = compile(provider, isKmp = true, source)
         val actualActual = resolveGenerated("MockFactory.kt")
         val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 

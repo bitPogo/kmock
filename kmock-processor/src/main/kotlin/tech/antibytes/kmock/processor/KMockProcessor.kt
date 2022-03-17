@@ -107,6 +107,11 @@ internal class KMockProcessor(
             commonAggregated.extractedTemplates
         )
 
+        entryPointGenerator.generateShared(
+            options,
+            filteredInterfaces,
+        )
+
         mockGenerator.writeSharedMocks(
             filteredInterfaces,
             aggregated.dependencies,

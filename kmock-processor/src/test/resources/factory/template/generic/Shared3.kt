@@ -6,16 +6,13 @@
 
 package factory.template.generics
 
-import mock.template.async.Shared
 import tech.antibytes.kmock.MockShared
 
-interface SomeGeneric<T>
-
 @MockShared(
-    "TeST",
-    Shared::class
+    "notTest",
+    Shared3::class
 )
-interface Shared<K, L> where L : Any, L : Comparable<L>, K : Any {
+interface Shared3<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L
 
     fun <T> foo(): T
