@@ -57,6 +57,9 @@
 - name: DO NOT MERGE
   description: Not ready yet!
   color: e56992
+- name: postponed
+  description: Postponed change which is deprioriatised or needs a bigger decision
+  color: f5ad42
 
 # Library
 - name: kmock-gradle
