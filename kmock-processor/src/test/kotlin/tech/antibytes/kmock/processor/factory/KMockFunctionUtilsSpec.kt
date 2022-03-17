@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor.factory
 
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
@@ -13,6 +14,6 @@ import tech.antibytes.util.test.fulfils
 class KMockFunctionUtilsSpec {
     @Test
     fun `It fulfils MockFactoryGeneratorUtil`() {
-        KMockFactoryGeneratorUtil fulfils ProcessorContract.MockFactoryGeneratorUtil::class
+        KMockFactoryGeneratorUtil(mockk()) fulfils ProcessorContract.MockFactoryGeneratorUtil::class
     }
 }

@@ -156,6 +156,7 @@ internal interface ProcessorContract {
     interface MockFactoryGeneratorUtil {
         fun generateKmockSignature(
             type: TypeVariableName,
+            generics: List<TypeVariableName>,
             hasDefault: Boolean,
             modifier: KModifier?
         ): FunSpec.Builder
@@ -163,9 +164,16 @@ internal interface ProcessorContract {
         fun generateKspySignature(
             mockType: TypeVariableName,
             spyType: TypeVariableName,
+            generics: List<TypeVariableName>,
             hasDefault: Boolean,
             modifier: KModifier?
         ): FunSpec.Builder
+
+        fun splitInterfacesIntoRegularAndGenerics(
+            templateSources: List<TemplateSource>
+        ): Pair<List<TemplateSource>, List<TemplateSource>>
+
+        fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
     }
 
     interface MockFactoryGenerator {
@@ -184,7 +192,6 @@ internal interface ProcessorContract {
         )
 
         fun generateShared(
-            indicator: String,
             options: Options,
             templateSources: List<TemplateSource>,
         )

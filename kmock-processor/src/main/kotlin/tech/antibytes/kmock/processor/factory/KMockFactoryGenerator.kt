@@ -9,14 +9,11 @@ package tech.antibytes.kmock.processor.factory
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFile
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
@@ -30,8 +27,6 @@ internal class KMockFactoryGenerator(
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
-    
     private fun buildGenericsInfo(
         generics: List<TypeName>
     ): String {
@@ -100,7 +95,7 @@ internal class KMockFactoryGenerator(
 
     private fun fillMockFactory(
         type: TypeVariableName,
-        generics: List<TypeName>,
+        generics: List<TypeVariableName>,
         isKmp: Boolean,
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
@@ -108,6 +103,7 @@ internal class KMockFactoryGenerator(
         val modifier = resolveModifier(isKmp)
         val functionFactory = utils.generateKmockSignature(
             type = type,
+            generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
         )
@@ -171,7 +167,7 @@ internal class KMockFactoryGenerator(
     private fun fillSpyFactory(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
-        generics: List<TypeName>,
+        generics: List<TypeVariableName>,
         isKmp: Boolean,
         templateSources: List<TemplateSource>,
     ): FunSpec.Builder {
@@ -179,6 +175,7 @@ internal class KMockFactoryGenerator(
         val spyFactory = utils.generateKspySignature(
             mockType = mockType,
             spyType = spyType,
+            generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
         )
@@ -201,43 +198,13 @@ internal class KMockFactoryGenerator(
             isKmp = isKmp,
         ).build()
     }
-    
-    private fun FunSpec.Builder.amendIgnorableValues(
-        types: List<TypeName>
-    ): FunSpec.Builder {
-        var counter = 0
-        types.forEach { type ->
-            this.addParameter(
-                ParameterSpec.builder(
-                    name = "ignoreMe$counter", 
-                    type = type.copy(nullable = true)
-                ).addAnnotation(unused).defaultValue("null").build()
-            )
-            
-            counter += 1
-        }
-
-        return this
-    }
-
-    private fun resolveGenerics(
-        templateSource: TemplateSource,
-    ): List<TypeVariableName> {
-        val template = templateSource.template
-        val typeResolver = template.typeParameters.toTypeParameterResolver()
-
-        return genericResolver.mapDeclaredGenerics(
-            generics = templateSource.generics!!,
-            typeResolver = typeResolver
-        )
-    }
 
     private fun buildGenericMockFactory(
         isKmp: Boolean,
         templateSource: TemplateSource,
         relaxer: Relaxer?
     ): FunSpec {
-        val generics = resolveGenerics(templateSource)
+        val generics = utils.resolveGenerics(templateSource)
 
         val type = genericResolver.resolveKMockFactoryType(
             KMOCK_FACTORY_TYPE_NAME,
@@ -250,14 +217,14 @@ internal class KMockFactoryGenerator(
             type = type,
             isKmp = isKmp,
             relaxer = relaxer
-        ).addTypeVariables(generics).amendIgnorableValues(generics).build()
+        ).build()
     }
 
     private fun buildGenericSpyFactory(
         isKmp: Boolean,
         templateSource: TemplateSource,
     ): FunSpec {
-        val generics = resolveGenerics(templateSource)
+        val generics = utils.resolveGenerics(templateSource)
 
         val spyType = genericResolver.resolveKMockFactoryType(
             KSPY_FACTORY_TYPE_NAME,
@@ -272,7 +239,7 @@ internal class KMockFactoryGenerator(
             templateSources = listOf(templateSource),
             generics = generics,
             isKmp = isKmp,
-        ).addTypeVariables(generics).amendIgnorableValues(generics).build()
+        ).build()
     }
 
     private fun buildGenericFactories(
@@ -288,21 +255,53 @@ internal class KMockFactoryGenerator(
         }
     }
 
-    private fun splitInterfacesIntoRegularAndGenerics(
-        templateSources: List<TemplateSource>
-    ): Pair<List<TemplateSource>, List<TemplateSource>> {
-        val regular: MutableList<TemplateSource> = mutableListOf()
-        val generics: MutableList<TemplateSource> = mutableListOf()
+    private fun writeFactoryImplementation(
+        options: ProcessorContract.Options,
+        templateSources: List<TemplateSource>,
+        dependencies: List<KSFile>,
+        relaxer: Relaxer?
+    ) {
+        val file = FileSpec.builder(
+            options.rootPackage,
+            "MockFactory"
+        )
+        file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
 
-        templateSources.forEach { source ->
-            if (source.generics == null) {
-                regular.add(source)
-            } else {
-                generics.add(source)
-            }
+        val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
+
+        val genericFactories = buildGenericFactories(
+            templateSources = generics,
+            relaxer = relaxer,
+            isKmp = options.isKmp,
+        )
+
+        file.addFunction(
+            buildMockFactory(
+                templateSources = regular,
+                relaxer = relaxer,
+                isKmp = options.isKmp,
+            )
+        )
+
+        file.addFunction(
+            buildSpyFactory(
+                templateSources = regular,
+                isKmp = options.isKmp,
+            )
+        )
+
+        genericFactories.forEach { factories ->
+            val (mockFactory, spyFactory) = factories
+
+            file.addFunction(mockFactory)
+            file.addFunction(spyFactory)
         }
 
-        return Pair(regular, generics)
+        file.build().writeTo(
+            codeGenerator = codeGenerator,
+            aggregating = false,
+            originatingKSFiles = dependencies
+        )
     }
 
     override fun writeFactories(
@@ -312,46 +311,11 @@ internal class KMockFactoryGenerator(
         relaxer: Relaxer?
     ) {
         if (templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            val file = FileSpec.builder(
-                options.rootPackage,
-                "MockFactory"
-            )
-            file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
-
-            val (regular, generics) = splitInterfacesIntoRegularAndGenerics(templateSources)
-
-            val genericFactories = buildGenericFactories(
-                templateSources = generics,
-                relaxer = relaxer,
-                isKmp = options.isKmp,
-            )
-
-            file.addFunction(
-                buildMockFactory(
-                    templateSources = regular,
-                    relaxer = relaxer,
-                    isKmp = options.isKmp,
-                )
-            )
-
-            file.addFunction(
-                buildSpyFactory(
-                    templateSources = regular,
-                    isKmp = options.isKmp,
-                )
-            )
-
-            genericFactories.forEach { factories ->
-                val (mockFactory, spyFactory) = factories
-
-                file.addFunction(mockFactory)
-                file.addFunction(spyFactory)
-            }
-
-            file.build().writeTo(
-                codeGenerator = codeGenerator,
-                aggregating = false,
-                originatingKSFiles = dependencies
+            writeFactoryImplementation(
+                options = options,
+                templateSources = templateSources,
+                dependencies = dependencies,
+                relaxer = relaxer
             )
         }
     }

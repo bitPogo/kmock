@@ -7,15 +7,13 @@
 package tech.antibytes.kmock.processor.factory
 
 import com.google.devtools.ksp.processing.CodeGenerator
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
@@ -23,6 +21,7 @@ import tech.antibytes.kmock.processor.titleCase
 
 internal class KMockFactoryEntryPointGenerator(
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
+    private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryEntryPointGenerator {
     private fun buildMockFactory(): FunSpec {
@@ -30,6 +29,7 @@ internal class KMockFactoryEntryPointGenerator(
 
         return utils.generateKmockSignature(
             type = type.copy(reified = true),
+            generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
         ).build()
@@ -42,39 +42,107 @@ internal class KMockFactoryEntryPointGenerator(
         return utils.generateKspySignature(
             spyType = spyType,
             mockType = mockType,
+            generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
         ).build()
     }
 
+    private fun buildMockGenericFactory(
+        templateSource: TemplateSource,
+    ): FunSpec {
+        val generics = utils.resolveGenerics(templateSource)
+        val type = genericResolver.resolveKMockFactoryType(
+            KMOCK_FACTORY_TYPE_NAME,
+            templateSource
+        )
+
+        return utils.generateKmockSignature(
+            type = type.copy(reified = true),
+            generics = generics,
+            hasDefault = true,
+            modifier = KModifier.EXPECT
+        ).build()
+    }
+
+    private fun buildSpyGenericFactory(
+        templateSource: TemplateSource,
+    ): FunSpec {
+        val generics = utils.resolveGenerics(templateSource)
+        val spyType = genericResolver.resolveKMockFactoryType(
+            KSPY_FACTORY_TYPE_NAME,
+            templateSource
+        )
+
+        val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
+
+        return utils.generateKspySignature(
+            spyType = spyType,
+            mockType = mockType,
+            generics = generics,
+            hasDefault = true,
+            modifier = KModifier.EXPECT
+        ).build()
+    }
+
+    private fun buildGenericFactories(
+        templateSources: List<TemplateSource>
+    ): List<Pair<FunSpec, FunSpec>> {
+        return templateSources.map { template ->
+            Pair(
+                buildMockGenericFactory(template),
+                buildSpyGenericFactory(template)
+            )
+        }
+    }
+
+    private fun generateEntryPoint(
+        indicator: String,
+        options: ProcessorContract.Options,
+        templateSources: List<TemplateSource>,
+    ) {
+        val infix = indicator.titleCase()
+
+        val file = FileSpec.builder(
+            options.rootPackage,
+            "MockFactory${infix}Entry"
+        )
+
+        val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
+        val genericFactories = buildGenericFactories(generics)
+
+        file.addComment(indicator.uppercase())
+        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+
+        file.addFunction(buildMockFactory())
+        file.addFunction(buildSpyFactory())
+
+        genericFactories.forEach { factories ->
+            val (mockFactory, spyFactory) = factories
+
+            file.addFunction(mockFactory)
+            file.addFunction(spyFactory)
+        }
+
+        file.build().writeTo(
+            codeGenerator = codeGenerator,
+            aggregating = false,
+        )
+    }
+
     private fun generate(
         indicator: String,
         options: ProcessorContract.Options,
-        templateSources: List<ProcessorContract.TemplateSource>,
+        templateSources: List<TemplateSource>,
     ) {
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            val infix = indicator.titleCase()
-
-            val file = FileSpec.builder(
-                options.rootPackage,
-                "MockFactory${infix}Entry"
-            )
-            file.addComment(indicator.uppercase())
-            file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-
-            file.addFunction(buildMockFactory())
-            file.addFunction(buildSpyFactory())
-
-            file.build().writeTo(
-                codeGenerator = codeGenerator,
-                aggregating = false,
-            )
+            generateEntryPoint(indicator, options, templateSources)
         }
     }
 
     override fun generateCommon(
         options: ProcessorContract.Options,
-        templateSources: List<ProcessorContract.TemplateSource>
+        templateSources: List<TemplateSource>
     ) {
         generate(
             ProcessorContract.Target.COMMON.value,
@@ -84,14 +152,9 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     override fun generateShared(
-        indicator: String,
         options: ProcessorContract.Options,
-        templateSources: List<ProcessorContract.TemplateSource>
+        templateSources: List<TemplateSource>
     ) {
-        generate(
-            indicator,
-            options,
-            templateSources
-        )
+        TODO()
     }
 }

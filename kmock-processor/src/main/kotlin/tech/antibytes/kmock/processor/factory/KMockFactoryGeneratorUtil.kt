@@ -11,10 +11,35 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
-internal object KMockFactoryGeneratorUtil : ProcessorContract.MockFactoryGeneratorUtil {
+internal class KMockFactoryGeneratorUtil(
+    private val genericResolver: ProcessorContract.GenericResolver
+) : ProcessorContract.MockFactoryGeneratorUtil {
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+
+    private fun FunSpec.Builder.amendGenericValues(
+        generics: List<TypeVariableName>
+    ): FunSpec.Builder {
+        var counter = 0
+
+        this.addTypeVariables(generics)
+
+        generics.forEach { type ->
+            this.addParameter(
+                ParameterSpec.builder(
+                    name = "ignoreMe$counter",
+                    type = type.copy(nullable = true)
+                ).addAnnotation(unused).defaultValue("null").build()
+            )
+
+            counter += 1
+        }
+
+        return this
+    }
 
     private fun buildRelaxedParameter(
         hasDefault: Boolean
@@ -61,6 +86,7 @@ internal object KMockFactoryGeneratorUtil : ProcessorContract.MockFactoryGenerat
 
     override fun generateKmockSignature(
         type: TypeVariableName,
+        generics: List<TypeVariableName>,
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
@@ -77,7 +103,7 @@ internal object KMockFactoryGeneratorUtil : ProcessorContract.MockFactoryGenerat
             functionFactory.addModifiers(modifier)
         }
 
-        return functionFactory
+        return functionFactory.amendGenericValues(generics)
     }
 
     private fun buildSpyParameter(): ParameterSpec {
@@ -88,6 +114,7 @@ internal object KMockFactoryGeneratorUtil : ProcessorContract.MockFactoryGenerat
     override fun generateKspySignature(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        generics: List<TypeVariableName>,
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
@@ -105,6 +132,35 @@ internal object KMockFactoryGeneratorUtil : ProcessorContract.MockFactoryGenerat
             spyFactory.addModifiers(modifier)
         }
 
-        return spyFactory
+        return spyFactory.amendGenericValues(generics)
+    }
+
+    override fun splitInterfacesIntoRegularAndGenerics(
+        templateSources: List<TemplateSource>
+    ): Pair<List<TemplateSource>, List<TemplateSource>> {
+        val regular: MutableList<TemplateSource> = mutableListOf()
+        val generics: MutableList<TemplateSource> = mutableListOf()
+
+        templateSources.forEach { source ->
+            if (source.generics == null) {
+                regular.add(source)
+            } else {
+                generics.add(source)
+            }
+        }
+
+        return Pair(regular, generics)
+    }
+
+    override fun resolveGenerics(
+        templateSource: TemplateSource,
+    ): List<TypeVariableName> {
+        val template = templateSource.template
+        val typeResolver = template.typeParameters.toTypeParameterResolver()
+
+        return genericResolver.mapDeclaredGenerics(
+            generics = templateSource.generics!!,
+            typeResolver = typeResolver
+        )
     }
 }

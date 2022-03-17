@@ -28,6 +28,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
         val functionGenerator = KMockFunctionGenerator(KMockGenerics, relaxerGenerator)
 
+        val factoryUtils = KMockFactoryGeneratorUtil(KMockGenerics)
+
         return KMockProcessor(
             KMockGenerator(
                 logger = logger,
@@ -39,11 +41,15 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             KMockFactoryGenerator(
                 logger = logger,
-                utils = KMockFactoryGeneratorUtil,
+                utils = factoryUtils,
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            KMockFactoryEntryPointGenerator(KMockFactoryGeneratorUtil, generator),
+            KMockFactoryEntryPointGenerator(
+                utils = factoryUtils,
+                genericResolver = KMockGenerics,
+                codeGenerator = generator
+            ),
             KMockAggregator(logger, KMockGenerics),
             ProcessorContract.Options(
                 isKmp = environment.options["isKmp"] == true.toString(),
