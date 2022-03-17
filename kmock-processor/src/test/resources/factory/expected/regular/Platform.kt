@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
- *
- * Use of this source code is governed by Apache v2.0
- */
-
 package generatorTest
 
 import kotlin.Boolean
@@ -11,7 +5,7 @@ import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
-internal inline fun <Mock> kmock(
+internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,

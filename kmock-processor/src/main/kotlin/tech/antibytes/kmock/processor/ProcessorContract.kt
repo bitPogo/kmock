@@ -15,6 +15,7 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -84,6 +85,11 @@ internal interface ProcessorContract {
             resolver: TypeParameterResolver
         ): TypeName
 
+        fun resolveKMockFactoryType(
+            name: String,
+            templateSource: TemplateSource,
+        ): TypeVariableName
+
         fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
@@ -147,6 +153,21 @@ internal interface ProcessorContract {
         )
     }
 
+    interface MockFactoryGeneratorUtil {
+        fun generateKmockSignature(
+            type: TypeVariableName,
+            hasDefault: Boolean,
+            modifier: KModifier?
+        ): FunSpec.Builder
+
+        fun generateKspySignature(
+            mockType: TypeVariableName,
+            spyType: TypeVariableName,
+            hasDefault: Boolean,
+            modifier: KModifier?
+        ): FunSpec.Builder
+    }
+
     interface MockFactoryGenerator {
         fun writeFactories(
             options: Options,
@@ -156,8 +177,14 @@ internal interface ProcessorContract {
         )
     }
 
-    interface MockFactoryCommonEntryPointGenerator {
-        fun generate(
+    interface MockFactoryEntryPointGenerator {
+        fun generateCommon(
+            options: Options,
+            templateSources: List<TemplateSource>,
+        )
+
+        fun generateShared(
+            indicator: String,
             options: Options,
             templateSources: List<TemplateSource>,
         )
@@ -169,6 +196,8 @@ internal interface ProcessorContract {
     }
 
     companion object {
+        const val KMOCK_FACTORY_TYPE_NAME = "Mock"
+        const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         val ANNOTATION_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName

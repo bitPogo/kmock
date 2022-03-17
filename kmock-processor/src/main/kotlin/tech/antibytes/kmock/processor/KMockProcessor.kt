@@ -23,7 +23,7 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 internal class KMockProcessor(
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
-    private val entryPointGenerator: ProcessorContract.MockFactoryCommonEntryPointGenerator,
+    private val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator,
     private val aggregator: ProcessorContract.Aggregator,
     private val options: ProcessorContract.Options,
     private val filter: ProcessorContract.SourceFilter,
@@ -87,7 +87,7 @@ internal class KMockProcessor(
             relaxer
         )
 
-        entryPointGenerator.generate(
+        entryPointGenerator.generateCommon(
             options,
             aggregated.extractedTemplates
         )

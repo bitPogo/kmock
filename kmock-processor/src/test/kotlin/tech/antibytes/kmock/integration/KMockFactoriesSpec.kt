@@ -72,8 +72,6 @@ class KMockFactoriesSpec {
         val compilerResult = compile(provider, source, isKmp = false)
         val actual = resolveGenerated("MockFactory.kt")
 
-        println(actual)
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
@@ -94,10 +92,7 @@ class KMockFactoriesSpec {
         // When
         val compilerResult = compile(provider, source, isKmp = true)
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonEntry.kt")
-
-        println(actualActual)
-        println(actualExpect)
+        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -121,8 +116,6 @@ class KMockFactoriesSpec {
         val compilerResult = compile(provider, source, isKmp = false)
         val actual = resolveGenerated("MockFactory.kt")
 
-        println(actual)
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
@@ -143,10 +136,7 @@ class KMockFactoriesSpec {
         // When
         val compilerResult = compile(provider, source, isKmp = true)
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonEntry.kt")
-
-        println(actualActual)
-        println(actualExpect)
+        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -170,8 +160,6 @@ class KMockFactoriesSpec {
         val compilerResult = compile(provider, source, isKmp = false)
         val actual = resolveGenerated("MockFactory.kt")
 
-        println(actual)
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
@@ -192,10 +180,7 @@ class KMockFactoriesSpec {
         // When
         val compilerResult = compile(provider, source, isKmp = true)
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonEntry.kt")
-
-        println(actualActual)
-        println(actualExpect)
+        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

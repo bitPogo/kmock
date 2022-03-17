@@ -8,7 +8,7 @@ import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
-internal actual inline fun <Mock> kmock(
+internal actual inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector,
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,

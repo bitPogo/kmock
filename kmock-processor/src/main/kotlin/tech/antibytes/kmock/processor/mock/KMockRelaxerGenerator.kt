@@ -4,7 +4,9 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.mock
+
+import tech.antibytes.kmock.processor.ProcessorContract
 
 internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
     override fun buildRelaxers(

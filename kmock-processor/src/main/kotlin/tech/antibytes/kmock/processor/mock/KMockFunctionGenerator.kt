@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
@@ -26,8 +26,9 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
+import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
-import java.util.Locale
+import tech.antibytes.kmock.processor.titleCase
 import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
@@ -35,16 +36,6 @@ internal class KMockFunctionGenerator(
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
     private val any = Any::class.asTypeName()
-
-    private fun String.titleCase(): String {
-        return this.replaceFirstChar {
-            if (it.isLowerCase()) {
-                it.titlecase(Locale.getDefault())
-            } else {
-                it.toString()
-            }
-        }
-    }
 
     private fun resolveGenericName(
         boundaries: List<KSTypeReference>?,

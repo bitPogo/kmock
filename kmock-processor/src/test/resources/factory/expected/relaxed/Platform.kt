@@ -5,7 +5,7 @@ import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
-internal inline fun <Mock> kmock(
+internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
