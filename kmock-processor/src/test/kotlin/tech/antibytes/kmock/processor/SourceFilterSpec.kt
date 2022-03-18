@@ -131,9 +131,9 @@ class SourceFilterSpec {
         val interfaceName: String = fixture.fixture()
 
         val precedences = mapOf(
-            marker0 to "1",
-            marker1 to "2",
-            marker2 to "0",
+            marker0 to 1,
+            marker1 to 2,
+            marker2 to 0,
         )
 
         every { source0.qualifiedName!!.asString() } returns interfaceName

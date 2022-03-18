@@ -17,7 +17,6 @@ import tech.antibytes.kmock.processor.mock.KMockFunctionGenerator
 import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.Options
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
@@ -31,8 +30,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
 
         val factoryUtils = KMockFactoryGeneratorUtil(KMockGenerics)
 
+        val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
+
         return KMockProcessor(
-            KMockGenerator(
+            mockGenerator = KMockGenerator(
                 logger = logger,
                 codeGenerator = generator,
                 genericsResolver = KMockGenerics,
@@ -40,25 +41,20 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 functionGenerator = functionGenerator,
                 buildInGenerator = KMockBuildInFunctionGenerator
             ),
-            KMockFactoryGenerator(
+            factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
                 utils = factoryUtils,
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            KMockFactoryEntryPointGenerator(
+            entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            KMockAggregator(logger, KMockGenerics),
-            Options(
-                isKmp = environment.options["isKmp"] == true.toString(),
-                rootPackage = environment.options["rootPackage"]!!,
-                precedences = emptyMap(),
-                aliases = emptyMap()
-            ),
-            SourceFilter(environment.options, logger)
+            aggregator = KMockAggregator(logger, KMockGenerics),
+            options = options,
+            filter = SourceFilter(options.precedences, logger)
         )
     }
 }

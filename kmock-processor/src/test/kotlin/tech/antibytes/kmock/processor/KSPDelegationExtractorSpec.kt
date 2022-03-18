@@ -18,7 +18,7 @@ class KSPDelegationExtractorSpec {
 
     @Test
     fun `It fulfils KSPDelegationExtractor`() {
-        KSPDelegationExtractor fulfils ProcessorContract.KSPDelegationExtractor::class
+        KMockKSPDelegationExtractor fulfils ProcessorContract.KSPDelegationExtractor::class
     }
 
     @Test
@@ -33,7 +33,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.isKmp mustBe isKmp
@@ -52,7 +52,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe emptyMap()
@@ -76,7 +76,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe expected
@@ -94,7 +94,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe emptyMap()
@@ -118,7 +118,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.aliases mustBe expected
