@@ -31,6 +31,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 internal class KMockAggregator(
     private val logger: KSPLogger,
     private val generics: GenericResolver,
+    private val aliases: Map<String, String>
 ) : ProcessorContract.Aggregator {
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation {
         val annotation = annotations.first { annotation ->
@@ -59,13 +60,15 @@ internal class KMockAggregator(
         when {
             interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-
-            else -> templateCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = TemplateSource(
-                indicator = sourceIndicator,
-                template = interfaze,
-                alias = null,
-                generics = resolveGenerics(interfaze)
-            )
+            else -> {
+                val templateName = interfaze.qualifiedName!!.asString()
+                templateCollector[templateName + sourceIndicator] = TemplateSource(
+                    indicator = sourceIndicator,
+                    template = interfaze,
+                    alias = aliases[templateName],
+                    generics = resolveGenerics(interfaze)
+                )
+            }
         }
     }
 

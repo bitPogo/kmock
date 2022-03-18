@@ -52,7 +52,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            aggregator = KMockAggregator(logger, KMockGenerics),
+            aggregator = KMockAggregator(
+                logger = logger,
+                generics = KMockGenerics,
+                aliases = options.aliases
+            ),
             options = options,
             filter = SourceFilter(options.precedences, logger)
         )
