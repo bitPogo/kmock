@@ -8,8 +8,8 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIAS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
-import tech.antibytes.kmock.processor.ProcessorContract.Options
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
+import tech.antibytes.kmock.processor.ProcessorContract.Options
 
 internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
     private fun extractPrecedence(

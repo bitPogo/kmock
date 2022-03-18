@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.Options
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import tech.antibytes.kmock.processor.ProcessorContract.Options
-import tech.antibytes.util.test.fixture.mapFixture
 
 class KMockProcessorSpec {
     private val fixture = kotlinFixture()

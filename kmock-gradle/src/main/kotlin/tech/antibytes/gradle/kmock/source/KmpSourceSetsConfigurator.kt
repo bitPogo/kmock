@@ -11,7 +11,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.config.MainConfig

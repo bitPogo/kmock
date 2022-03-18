@@ -37,6 +37,17 @@ internal class KMockFactoryGenerator(
         }
     }
 
+    private fun createAliasName(
+        alias: String?,
+        packageName: String
+    ): String? {
+        return if (alias != null) {
+            "$packageName.$alias"
+        } else {
+            null
+        }
+    }
+
     private fun buildMockSelector(
         functionFactory: FunSpec.Builder,
         templateSources: List<TemplateSource>,
@@ -47,34 +58,36 @@ internal class KMockFactoryGenerator(
 
         functionFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
+            val packageName = source.template.packageName.asString()
             val qualifiedName = source.template.qualifiedName!!.asString()
-            val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
+            val aliasInterfaceName = createAliasName(source.alias, packageName)
+            val interfaceName = "$packageName.${source.template.simpleName.asString()}"
 
             if (relaxer == null) {
                 functionFactory.addStatement(
                     "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
                     qualifiedName,
-                    interfaceName,
+                    aliasInterfaceName ?: interfaceName,
                     typeInfo,
                 )
 
                 functionFactory.addStatement(
                     "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    interfaceName,
-                    interfaceName,
+                    aliasInterfaceName ?: interfaceName,
+                    aliasInterfaceName ?: interfaceName,
                     typeInfo,
                 )
             } else {
                 functionFactory.addStatement(
                     "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
                     qualifiedName,
-                    interfaceName,
+                    aliasInterfaceName ?: interfaceName,
                     typeInfo,
                 )
                 functionFactory.addStatement(
                     "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    interfaceName,
-                    interfaceName,
+                    aliasInterfaceName ?: interfaceName,
+                    aliasInterfaceName ?: interfaceName,
                     typeInfo,
                 )
             }
@@ -141,19 +154,22 @@ internal class KMockFactoryGenerator(
 
         function.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
+            val packageName = source.template.packageName.asString()
             val qualifiedName = source.template.qualifiedName!!.asString()
-            val interfaceName = "${source.template.packageName.asString()}.${source.template.simpleName.asString()}"
+            val aliasInterfaceName = createAliasName(source.alias, packageName)
+            val interfaceName = "$packageName.${source.template.simpleName.asString()}"
+
             function.addStatement(
                 "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
                 qualifiedName,
-                interfaceName,
+                aliasInterfaceName ?: interfaceName,
                 qualifiedName,
                 typeInfo,
             )
             function.addStatement(
                 "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
-                interfaceName,
-                interfaceName,
+                aliasInterfaceName ?: interfaceName,
+                aliasInterfaceName ?: interfaceName,
                 qualifiedName,
                 typeInfo,
             )

@@ -34,6 +34,7 @@ abstract class KMockExtension(
     private fun guardMapping(qualifiedName: String, alias: String) {
         when {
             qualifiedName == "rootPackage" -> throw IllegalArgumentException("$qualifiedName is not allowed!")
+            qualifiedName == "isKmp" -> throw IllegalArgumentException("$qualifiedName is not allowed!")
             !legalAliases.matches(alias) -> throw IllegalArgumentException("$alias is not a valid alias!")
         }
     }

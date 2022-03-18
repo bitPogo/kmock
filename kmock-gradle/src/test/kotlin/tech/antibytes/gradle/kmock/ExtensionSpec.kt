@@ -112,7 +112,8 @@ class ExtensionSpec {
         val kspExtension: KspExtension = mockk(relaxed = true)
 
         val internalNames = listOf(
-            "rootPackage"
+            "rootPackage",
+            "isKmp"
         )
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
