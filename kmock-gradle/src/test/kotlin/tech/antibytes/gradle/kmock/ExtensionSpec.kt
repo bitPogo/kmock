@@ -12,14 +12,24 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.gradle.api.Project
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.mapFixture
+import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import kotlin.test.assertFailsWith
 
 class ExtensionSpec {
-    private val fixture = kotlinFixture()
+    private val fixture = kotlinFixture {
+        it.addGenerator(
+            String::class,
+            StringAlphaGenerator,
+            qualifier = named("stringAlpha")
+        )
+    }
 
     @Test
     fun `It fulfils Extension`() {
@@ -59,5 +69,86 @@ class ExtensionSpec {
 
         extension.rootPackage mustBe expected
         verify(exactly = 1) { kspExtension.arg("rootPackage", expected) }
+    }
+
+    @Test
+    fun `Its default mockNameMapping is a empty map`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.mockNameMapping mustBe emptyMap()
+    }
+
+    @Test
+    fun `It propagates mockNameMapping changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Map<String, String> = fixture.mapFixture(
+            valueQualifier = named("stringAlpha"),
+            size = 3
+        )
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.mockNameMapping = expected
+
+        extension.mockNameMapping mustBe expected
+        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[0]}", expected.values.toList()[0]) }
+        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[1]}", expected.values.toList()[1]) }
+        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[2]}", expected.values.toList()[2]) }
+    }
+
+    @Test
+    fun `It fails if the mockNameMapping contains internal names`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+
+        val internalNames = listOf(
+            "rootPackage"
+        )
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        internalNames.forEach { name ->
+            val extension = createExtension<KMockExtension>(project)
+            // Then
+            val error = assertFailsWith<IllegalArgumentException> {
+                // When
+                extension.mockNameMapping = mapOf(
+                    name to fixture.fixture(named("stringAlpha"))
+                )
+            }
+
+            error.message mustBe "$name is not allowed!"
+        }
+    }
+
+    @Test
+    fun `It fails if the mockNameMapping contains special chars in the value`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val illegal = "some.thing"
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+        // Then
+        val error = assertFailsWith<IllegalArgumentException> {
+            // When
+            extension.mockNameMapping = mapOf(
+                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
+            )
+        }
+
+        error.message mustBe "$illegal is not a valid alias!"
     }
 }
