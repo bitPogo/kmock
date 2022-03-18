@@ -80,7 +80,7 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.mockNameMapping mustBe emptyMap()
+        extension.aliasNameMapping mustBe emptyMap()
     }
 
     @Test
@@ -97,9 +97,9 @@ class ExtensionSpec {
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.mockNameMapping = expected
+        extension.aliasNameMapping = expected
 
-        extension.mockNameMapping mustBe expected
+        extension.aliasNameMapping mustBe expected
         verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[0]}", expected.values.toList()[0]) }
         verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[1]}", expected.values.toList()[1]) }
         verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[2]}", expected.values.toList()[2]) }
@@ -123,7 +123,7 @@ class ExtensionSpec {
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
                 // When
-                extension.mockNameMapping = mapOf(
+                extension.aliasNameMapping = mapOf(
                     name to fixture.fixture(named("stringAlpha"))
                 )
             }
@@ -145,7 +145,7 @@ class ExtensionSpec {
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
             // When
-            extension.mockNameMapping = mapOf(
+            extension.aliasNameMapping = mapOf(
                 fixture.fixture<String>(named("stringAlpha")) to "some.thing"
             )
         }

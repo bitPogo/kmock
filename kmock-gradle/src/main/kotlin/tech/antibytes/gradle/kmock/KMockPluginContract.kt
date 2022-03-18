@@ -25,7 +25,7 @@ internal interface KMockPluginContract {
          * The key must be the full qualified name of target which should use a alias instead
          * The value must be an alias name which replaces the short name of the target
          */
-        var mockNameMapping: Map<String, String>
+        var aliasNameMapping: Map<String, String>
     }
 
     interface CleanUpTask {

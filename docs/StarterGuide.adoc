@@ -152,6 +152,10 @@ You will find the hash directly on the link:{link-repository}[start page] under 
 IMPORTANT: The plugin must be applied for KMP or KJs projects after `kotlin` has been declared as shown above.
 This is due to the fact that Kotlin brings its own system of source sets and KSP must be configured during the evaluation of the project.
 
+NOTE: In case you experience a name collision of Mocks you can delegate a map to resolve that issue via `aliasNameMapping`.
+The key must be the full qualified name of the interface which should use an alias.
+The value must be a string which starts with a latin letter (a-Z) followed by a latin letter or a number (a-Z0-9).
+
 === Terminology
 Just not get confused by terminology 2 terms upfront which are important - Mock and Proxy.
 A Proxy relates to a single property (PropertyProxy) or method (FunProxy).

@@ -18,7 +18,7 @@ abstract class KMockExtension(
 
     private var _rootPackage: String = ""
 
-    private var _mockNameMapping: Map<String, String> = emptyMap()
+    private var _aliasNameMapping: Map<String, String> = emptyMap()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -47,10 +47,10 @@ abstract class KMockExtension(
         }
     }
 
-    override var mockNameMapping: Map<String, String>
-        get() = _mockNameMapping
+    override var aliasNameMapping: Map<String, String>
+        get() = _aliasNameMapping
         set(value) {
             propagateMapping(value)
-            _mockNameMapping = value
+            _aliasNameMapping = value
         }
 }
