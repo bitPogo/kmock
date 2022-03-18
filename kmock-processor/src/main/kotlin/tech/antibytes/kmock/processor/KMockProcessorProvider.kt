@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.mock.KMockFunctionGenerator
 import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.Options
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
@@ -51,9 +52,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 codeGenerator = generator
             ),
             KMockAggregator(logger, KMockGenerics),
-            ProcessorContract.Options(
+            Options(
                 isKmp = environment.options["isKmp"] == true.toString(),
-                rootPackage = environment.options["rootPackage"]!!
+                rootPackage = environment.options["rootPackage"]!!,
+                precedences = emptyMap(),
+                aliases = emptyMap()
             ),
             SourceFilter(environment.options, logger)
         )

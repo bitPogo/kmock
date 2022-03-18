@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -377,7 +378,7 @@ class KMockAggregatorSpec {
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
-        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
             emptyMap()
         } else {
             null
@@ -416,7 +417,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.TemplateSource("", declaration, generics))
+        interfaces mustBe listOf(TemplateSource("", declaration, null, generics))
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
@@ -448,7 +449,7 @@ class KMockAggregatorSpec {
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
-        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
             emptyMap()
         } else {
             null
@@ -484,7 +485,7 @@ class KMockAggregatorSpec {
         val (_, interfaces, _) = KMockAggregator(logger, genericResolver).extractInterfaces(annotated)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.TemplateSource(marker, declaration, generics))
+        interfaces mustBe listOf(TemplateSource(marker, declaration, null, generics))
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
     }
@@ -522,7 +523,7 @@ class KMockAggregatorSpec {
         val values: List<KSType> = listOf(type)
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
-        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture<Boolean>()) {
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
             emptyMap()
         } else {
             null
@@ -575,8 +576,8 @@ class KMockAggregatorSpec {
 
         // Then
         interfaces mustBe listOf(
-            ProcessorContract.TemplateSource(marker0, declaration, generics),
-            ProcessorContract.TemplateSource(marker1, declaration, generics)
+            TemplateSource(marker0, declaration, null, generics),
+            TemplateSource(marker1, declaration, null, generics)
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }

@@ -23,6 +23,8 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import tech.antibytes.kmock.processor.ProcessorContract.Options
+import tech.antibytes.util.test.fixture.mapFixture
 
 class KMockProcessorSpec {
     private val fixture = kotlinFixture()
@@ -34,7 +36,12 @@ class KMockProcessorSpec {
             mockk(),
             mockk(),
             mockk(),
-            ProcessorContract.Options(true, fixture.fixture()),
+            Options(
+                true,
+                fixture.fixture(),
+                fixture.mapFixture(),
+                fixture.mapFixture()
+            ),
             mockk(relaxed = true),
         ) fulfils SymbolProcessor::class
     }
@@ -59,7 +66,12 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(true, fixture.fixture()),
+            Options(
+                true,
+                fixture.fixture(),
+                fixture.mapFixture(),
+                fixture.mapFixture()
+            ),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -89,7 +101,12 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(true, fixture.fixture()),
+            Options(
+                true,
+                fixture.fixture(),
+                fixture.mapFixture(),
+                fixture.mapFixture()
+            ),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -129,7 +146,12 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(true, fixture.fixture()),
+            Options(
+                true,
+                fixture.fixture(),
+                fixture.mapFixture(),
+                fixture.mapFixture()
+            ),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -168,7 +190,12 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             aggregator,
-            ProcessorContract.Options(true, fixture.fixture()),
+            Options(
+                true,
+                fixture.fixture(),
+                fixture.mapFixture(),
+                fixture.mapFixture()
+            ),
             mockk(relaxed = true),
         ).process(resolver)
 
@@ -186,7 +213,12 @@ class KMockProcessorSpec {
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
         val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
-        val options = ProcessorContract.Options(true, fixture.fixture())
+        val options = Options(
+            true,
+            fixture.fixture(),
+            fixture.mapFixture(),
+            fixture.mapFixture()
+        )
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 
@@ -285,7 +317,12 @@ class KMockProcessorSpec {
         val generator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
         val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
-        val options = ProcessorContract.Options(false, fixture.fixture())
+        val options = Options(
+            false,
+            fixture.fixture(),
+            fixture.mapFixture(),
+            fixture.mapFixture()
+        )
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
 

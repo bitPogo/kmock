@@ -16,6 +16,7 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 class SourceFilterSpec {
     private val fixture = kotlinFixture()
@@ -35,13 +36,13 @@ class SourceFilterSpec {
         val source0_1: KSClassDeclaration = mockk()
 
         val sources0 = listOf(
-            ProcessorContract.TemplateSource("", source0_0, null),
-            ProcessorContract.TemplateSource("", source0_1, null)
+            TemplateSource("", source0_0, null, null),
+            TemplateSource("", source0_1, null, null)
         )
 
         val sources1 = listOf(
-            ProcessorContract.TemplateSource("", source1_0, null),
-            ProcessorContract.TemplateSource("", source1_1, null)
+            TemplateSource("", source1_0, null, null),
+            TemplateSource("", source1_1, null, null)
         )
 
         val sameSource: String = fixture.fixture()
@@ -68,8 +69,8 @@ class SourceFilterSpec {
         val source1: KSClassDeclaration = mockk()
 
         val sources = listOf(
-            ProcessorContract.TemplateSource(fixture.fixture(), source0, null),
-            ProcessorContract.TemplateSource(fixture.fixture(), source1, null)
+            TemplateSource(fixture.fixture(), source0, null, null),
+            TemplateSource(fixture.fixture(), source1, null, null)
         )
 
         every { source0.qualifiedName!!.asString() } returns fixture.fixture()
@@ -93,8 +94,8 @@ class SourceFilterSpec {
         val marker1: String = fixture.fixture()
 
         val sources = listOf(
-            ProcessorContract.TemplateSource(marker0, source0, null),
-            ProcessorContract.TemplateSource(marker1, source1, null)
+            TemplateSource(marker0, source0, null, null),
+            TemplateSource(marker1, source1, null, null)
         )
 
         val interfaceName: String = fixture.fixture()
@@ -122,9 +123,9 @@ class SourceFilterSpec {
         val marker2: String = fixture.fixture()
 
         val sources = listOf(
-            ProcessorContract.TemplateSource(marker0, source0, null),
-            ProcessorContract.TemplateSource(marker1, source1, null),
-            ProcessorContract.TemplateSource(marker2, source2, null),
+            TemplateSource(marker0, source0, null, null),
+            TemplateSource(marker1, source1, null, null),
+            TemplateSource(marker2, source2, null, null),
         )
 
         val interfaceName: String = fixture.fixture()
