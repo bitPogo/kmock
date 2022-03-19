@@ -39,6 +39,9 @@ class KMockMocksSpec {
             "isKmp" to isKmp.toString()
         ).also {
             it.putAll(kspArguments)
+        }.also {
+            it["namePrefix_0"] = "kotlin.collections"
+            it["namePrefix_1"] = "kotlin"
         }
 
         return KotlinCompilation().apply {

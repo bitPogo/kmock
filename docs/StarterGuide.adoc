@@ -259,6 +259,7 @@ KMock will generate Proxy Properties (do not confuse them with PropertyProxies) 
 All Proxy Properties are named with `_` as prefix followed by the Templates original name.
 
 NOTE: If the Template is a method, which is overloaded or a property has been defined with the very same name, KMock will attach the parameter types to the name to avoid naming collisions.
+If the type contains a prefix which is useless (e.g. `kotlin.`) you can remove it via the `uselessPrefixes` property of the Gradle plugin extension.
 
 ==== FunProxies
 

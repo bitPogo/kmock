@@ -11,6 +11,7 @@ import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES_PREFIX
 
 abstract class KMockExtension(
     project: Project
@@ -22,6 +23,10 @@ abstract class KMockExtension(
     private var _aliasNameMapping: Map<String, String> = emptyMap()
     private var _allowedRecursiveTypes: Set<String> = emptySet()
     private var _useBuildInProxiesOn: Set<String> = emptySet()
+    private var _uselessPrefixes: Set<String> = setOf(
+        "kotlin.collections",
+        "kotlin",
+    )
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -83,5 +88,16 @@ abstract class KMockExtension(
             )
 
             _useBuildInProxiesOn = value
+        }
+
+    override var uselessPrefixes: Set<String>
+        get() = _uselessPrefixes
+        set(value) {
+            propagateIterable(
+                prefix = USELESS_PREFIXES_PREFIX,
+                values = value
+            )
+
+            _uselessPrefixes = value
         }
 }
