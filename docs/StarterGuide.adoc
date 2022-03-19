@@ -693,7 +693,10 @@ you may delegate the SO to `kspy` and voila habemus spy! +
 `kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
 `spyOn` expects an instance of the Interface which is mocked - so the SO.
 
-WARNING: Spying is not currently supported for recursive generics on function level. For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
+WARNING: Spying is not currently supported for recursive generics types on function level.
+For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
+However KMock allows you to select applicable recursive generics types via `allowedRecursiveTypes` in the extension of its Gradle Plugin.
+`allowedRecursiveTypes` takes a list of the full qualified names of the recursive generics types.
 
 However you still can override specific methods or properties by using the corresponding Proxy Property.
 In other words methods or properties of an SO are used instead of throwing an error, if no behaviour was assigned to a Proxy.
