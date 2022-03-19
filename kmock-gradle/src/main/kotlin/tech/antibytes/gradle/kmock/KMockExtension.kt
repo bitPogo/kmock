@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
 
 abstract class KMockExtension(
     project: Project
@@ -19,6 +20,8 @@ abstract class KMockExtension(
     private var _rootPackage: String = ""
 
     private var _aliasNameMapping: Map<String, String> = emptyMap()
+
+    private var _allowedRecursiveTypes: List<String> = emptyList()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -52,5 +55,19 @@ abstract class KMockExtension(
         set(value) {
             propagateMapping(value)
             _aliasNameMapping = value
+        }
+
+    private fun propagateRecursive(types: List<String>) {
+        types.forEachIndexed { idx, type ->
+            ksp.arg("$RECURSIVE_PREFIX$idx", type)
+        }
+    }
+
+    override var allowedRecursiveTypes: List<String>
+        get() = _allowedRecursiveTypes
+        set(value) {
+            propagateRecursive(value)
+
+            _allowedRecursiveTypes = value
         }
 }
