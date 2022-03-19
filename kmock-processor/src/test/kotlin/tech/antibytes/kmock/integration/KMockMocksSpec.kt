@@ -32,15 +32,13 @@ class KMockMocksSpec {
         processorProvider: SymbolProcessorProvider,
         source: SourceFile,
         isKmp: Boolean,
-        aliases: Map<String, String> = emptyMap(),
-        allowedRecursiveTypes: Map<String, String> = emptyMap()
+        kspArguments: Map<String, String> = emptyMap(),
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
             "rootPackage" to "generatorTest",
             "isKmp" to isKmp.toString()
         ).also {
-            it.putAll(aliases)
-            it.putAll(allowedRecursiveTypes)
+            it.putAll(kspArguments)
         }
 
         return KotlinCompilation().apply {
@@ -440,7 +438,7 @@ class KMockMocksSpec {
             provider,
             source,
             isKmp = false,
-            aliases = mapOf(
+            kspArguments = mapOf(
                 "alias_mock.template.alias.Platform" to "AliasPlatform",
             )
         )
@@ -467,7 +465,7 @@ class KMockMocksSpec {
             provider,
             source,
             isKmp = true,
-            aliases = mapOf(
+            kspArguments = mapOf(
                 "alias_mock.template.alias.Shared" to "AliasShared",
             )
         )
@@ -494,7 +492,7 @@ class KMockMocksSpec {
             provider,
             source,
             isKmp = true,
-            aliases = mapOf(
+            kspArguments = mapOf(
                 "alias_mock.template.alias.Common" to "AliasCommon",
             )
         )
@@ -525,9 +523,117 @@ class KMockMocksSpec {
             provider,
             source,
             isKmp = false,
-            allowedRecursiveTypes = allowedRecursiveTypes
+            kspArguments = allowedRecursiveTypes
         )
         val actual = resolveGenerated("AllowedRecursiveMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with BuildIns for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/buildIn/Platform.kt")
+        )
+        val expected = loadResource("/expected/buildIn/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "buildIn_0" to "mock.template.buildIn.Platform",
+            )
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which contains a colliding name with BuildIns for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Collision.kt",
+            loadResource("/template/buildIn/Collision.kt")
+        )
+        val expected = loadResource("/expected/buildIn/Collision.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "buildIn_0" to "mock.template.buildIn.Collision",
+            )
+        )
+        val actual = resolveGenerated("CollisionMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with BuildIns for Shared is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/buildIn/Shared.kt")
+        )
+        val expected = loadResource("/expected/buildIn/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "buildIn_0" to "mock.template.buildIn.Shared",
+            )
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with BuildIns for Common is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/buildIn/Common.kt")
+        )
+        val expected = loadResource("/expected/buildIn/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "buildIn_0" to "mock.template.buildIn.Common",
+            )
+        )
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

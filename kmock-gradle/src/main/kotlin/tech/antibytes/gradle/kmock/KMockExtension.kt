@@ -21,7 +21,7 @@ abstract class KMockExtension(
     private var _rootPackage: String = ""
     private var _aliasNameMapping: Map<String, String> = emptyMap()
     private var _allowedRecursiveTypes: Set<String> = emptySet()
-    private var _allowBuildInProxies: Set<String> = emptySet()
+    private var _useBuildInProxiesOn: Set<String> = emptySet()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -74,14 +74,14 @@ abstract class KMockExtension(
             _allowedRecursiveTypes = value
         }
 
-    override var allowBuildInProxies: Set<String>
-        get() = _allowBuildInProxies
+    override var useBuildInProxiesOn: Set<String>
+        get() = _useBuildInProxiesOn
         set(value) {
             propagateIterable(
                 prefix = BUILD_IN_PREFIX,
                 values = value
             )
 
-            _allowBuildInProxies = value
+            _useBuildInProxiesOn = value
         }
 }

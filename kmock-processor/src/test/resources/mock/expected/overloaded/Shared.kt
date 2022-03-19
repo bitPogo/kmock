@@ -107,23 +107,6 @@ internal class SharedMock(
                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
         null)
 
-    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        SyncFunProxy("mock.template.overloaded.Shared#_toString", spyOn = if (spyOn != null) { {
-            spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
-        null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
-
-    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        SyncFunProxy("mock.template.overloaded.Shared#_equals", spyOn = if (spyOn != null) { {
-                other ->
-            spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
-        null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
-            ignorableForVerification = true)
-
-    public val _hashCodeWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("mock.template.overloaded.Shared#_hashCodeWithVoid", spyOn = if (spyOn != null) {
-            { spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
-        null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
-
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Any, ozz: Int): Any = _fooWithAnyInt.invoke(fuzz, ozz)
@@ -144,18 +127,6 @@ internal class SharedMock(
 
     public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithMockTemplateOverloadedLPG.invoke(fuzz)
 
-    public override fun toString(): String = _toString.invoke()
-
-    public override fun equals(other: Any?): Boolean {
-        return if(other is SharedMock && __spyOn != null) {
-            super.equals(other)
-        } else {
-            _equals.invoke(other)
-        }
-    }
-
-    public override fun hashCode(): Int = _hashCodeWithVoid.invoke()
-
     public fun _clearMock(): Unit {
         _foo.clear()
         _hashCode.clear()
@@ -168,8 +139,5 @@ internal class SharedMock(
         _fooWithAny.clear()
         _fooWithMockTemplateOverloadedShared.clear()
         _fooWithMockTemplateOverloadedLPG.clear()
-        _toString.clear()
-        _equals.clear()
-        _hashCodeWithVoid.clear()
     }
 }

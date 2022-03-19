@@ -40,7 +40,8 @@ internal interface ProcessorContract {
         val rootPackage: String,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
-        val allowedRecursiveTypes: Set<String>
+        val allowedRecursiveTypes: Set<String>,
+        val useBuildInProxiesOn: Set<String>
     )
 
     fun interface KSPDelegationExtractor {
@@ -247,5 +248,6 @@ internal interface ProcessorContract {
         const val PRECEDENCE_PREFIX = "precedence_"
         const val ALIAS_PREFIX = "alias_"
         const val RECURSIVE_PREFIX = "recursive_"
+        const val BUILD_IN_PREFIX = "buildIn_"
     }
 }

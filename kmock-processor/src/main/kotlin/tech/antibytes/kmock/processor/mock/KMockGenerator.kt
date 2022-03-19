@@ -36,6 +36,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
+    private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: CodeGenerator,
     private val genericsResolver: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
@@ -188,17 +189,19 @@ internal class KMockGenerator(
             }
         }
 
-        val (proxies, functions) = buildInGenerator.buildFunctionBundles(
-            mockName,
-            qualifier,
-            overloadedMethods,
-            generics?.size ?: 0
-        )
+        if (qualifier in useBuildInProxiesOn) {
+            val (proxies, functions) = buildInGenerator.buildFunctionBundles(
+                mockName,
+                qualifier,
+                overloadedMethods,
+                generics?.size ?: 0
+            )
 
-        implementation.addFunctions(functions)
-        proxies.forEach { proxy ->
-            proxyNameCollector.add(proxy.name)
-            implementation.addProperty(proxy)
+            implementation.addFunctions(functions)
+            proxies.forEach { proxy ->
+                proxyNameCollector.add(proxy.name)
+                implementation.addProperty(proxy)
+            }
         }
 
         implementation.addFunction(buildClear(proxyNameCollector))

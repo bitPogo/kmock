@@ -38,7 +38,7 @@ internal interface KMockPluginContract {
          * Selection of targets which allow Proxies on build-in method (e.g. toString)
          * List of full qualified name of target which should proxy build-in methods.
          */
-        var allowBuildInProxies: Set<String>
+        var useBuildInProxiesOn: Set<String>
     }
 
     interface CleanUpTask {
