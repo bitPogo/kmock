@@ -144,7 +144,7 @@ project.extensions.configure<KMockExtension>("kmock") {
 
 ----
 
-IMPORTANT: You must set the root package of your project in the Extentsion of the KMock's Gradle Plugin via the `rootPackage` property.
+IMPORTANT: You must set the root package of your project in the Extension of the KMock's Gradle Plugin via the `rootPackage` property.
 
 CAUTION: Currently the short hash of the latest commit of main branch is used instead of a proper version. (As mentioned this project is still a WIP)
 You will find the hash directly on the link:{link-repository}[start page] under the `Go to file` button.
@@ -340,8 +340,10 @@ IMPORTANT: Please be aware there is a precedence of invocation.
 `returns` is used over `throws`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
 If no behaviour is set the Proxy simply fails.
 
-KMock also allows you to stub/mock build-in methods like `toString`.
-Use them with caution and only if the intended implementation of the mocked Interface requires/has special behaviour.
+NOTE: KMock also allows you to proxy build-in methods like `toString`.
+The Gradle extension offers you a field called `useBuildInProxiesOn` for that purpose.
+It takes a set of the full qualified names of the targeted interfaces in order to select them.
+Use those Proxy with caution and only if the intended implementation of the mocked Interface requires/has special behaviour.
 Also the Proxies of those methods do not require Relaxation, since they always fall back to default behaviour of the Mocks parent.
 
 ==== PropertyProxies
@@ -696,7 +698,7 @@ you may delegate the SO to `kspy` and voila habemus spy! +
 WARNING: Spying is not currently supported for recursive generics types on function level.
 For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
 However KMock allows you to select applicable recursive generics types via `allowedRecursiveTypes` in the extension of its Gradle Plugin.
-`allowedRecursiveTypes` takes a list of the full qualified names of the recursive generics types.
+`allowedRecursiveTypes` takes a set of the full qualified names of the recursive generics types.
 
 However you still can override specific methods or properties by using the corresponding Proxy Property.
 In other words methods or properties of an SO are used instead of throwing an error, if no behaviour was assigned to a Proxy.

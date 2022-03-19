@@ -28,7 +28,7 @@ group = KMockConfiguration.group
 ksp {
     arg("rootPackage", "tech.antibytes.kmock.example")
     arg("isKmp", true.toString())
-    arg("isKmp", true.toString())
+    arg("buildIn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
 }
 
 kotlin {

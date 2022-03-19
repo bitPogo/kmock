@@ -28,11 +28,17 @@ internal interface KMockPluginContract {
         var aliasNameMapping: Map<String, String>
 
         /**
-         * List of qualified name of Generics which are used for recursive declaration.
-         * E.g.: Comparable
-         * This property can be used to allow them for spying
+         * Selection of allowed recursive generic types (e.g. Comparable)
+         * List of full qualified names of generics types which are used for recursive declaration.
+         * This property can be used to allow them for spying.
          */
         var allowedRecursiveTypes: Set<String>
+
+        /**
+         * Selection of targets which allow Proxies on build-in method (e.g. toString)
+         * List of full qualified name of target which should proxy build-in methods.
+         */
+        var useBuildInProxiesOn: Set<String>
     }
 
     interface CleanUpTask {
@@ -75,5 +81,6 @@ internal interface KMockPluginContract {
         const val PRECEDENCE_PREFIX = "precedence_"
         const val ALIAS_PREFIX = "alias_"
         const val RECURSIVE_PREFIX = "recursive_"
+        const val BUILD_IN_PREFIX = "buildIn_"
     }
 }

@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
 
 abstract class KMockExtension(
@@ -18,10 +19,9 @@ abstract class KMockExtension(
     private val legalAliases = "^[a-zA-Z][a-zA-Z0-9]*$".toRegex()
 
     private var _rootPackage: String = ""
-
     private var _aliasNameMapping: Map<String, String> = emptyMap()
-
     private var _allowedRecursiveTypes: Set<String> = emptySet()
+    private var _useBuildInProxiesOn: Set<String> = emptySet()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -57,17 +57,31 @@ abstract class KMockExtension(
             _aliasNameMapping = value
         }
 
-    private fun propagateRecursive(types: Set<String>) {
-        types.forEachIndexed { idx, type ->
-            ksp.arg("$RECURSIVE_PREFIX$idx", type)
+    private fun propagateIterable(prefix: String, values: Iterable<String>) {
+        values.forEachIndexed { idx, type ->
+            ksp.arg("$prefix$idx", type)
         }
     }
 
     override var allowedRecursiveTypes: Set<String>
         get() = _allowedRecursiveTypes
         set(value) {
-            propagateRecursive(value)
+            propagateIterable(
+                prefix = RECURSIVE_PREFIX,
+                values = value
+            )
 
             _allowedRecursiveTypes = value
+        }
+
+    override var useBuildInProxiesOn: Set<String>
+        get() = _useBuildInProxiesOn
+        set(value) {
+            propagateIterable(
+                prefix = BUILD_IN_PREFIX,
+                values = value
+            )
+
+            _useBuildInProxiesOn = value
         }
 }
