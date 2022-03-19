@@ -37,8 +37,14 @@ internal interface ProcessorContract {
 
     data class Options(
         val isKmp: Boolean,
-        val rootPackage: String
+        val rootPackage: String,
+        val precedences: Map<String, Int>,
+        val aliases: Map<String, String>,
     )
+
+    fun interface KSPDelegationExtractor {
+        fun convertOptions(kspRawOptions: Map<String, String>): Options
+    }
 
     interface Aggregator {
         fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
@@ -48,6 +54,7 @@ internal interface ProcessorContract {
     data class TemplateSource(
         val indicator: String,
         val template: KSClassDeclaration,
+        val alias: String?,
         val generics: Map<String, List<KSTypeReference>>?
     )
 
@@ -234,5 +241,8 @@ internal interface ProcessorContract {
             PropertyProxy::class.java.packageName,
             PropertyProxy::class.java.simpleName
         )
+
+        const val PRECEDENCE_PREFIX = "precedence_"
+        const val ALIAS_PREFIX = "alias_"
     }
 }

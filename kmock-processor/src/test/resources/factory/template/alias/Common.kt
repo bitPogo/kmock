@@ -4,13 +4,13 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.regular
+package factory.template.alias
 
-import mock.template.async.Shared
-import tech.antibytes.kmock.MockShared
+import mock.template.async.Common
+import tech.antibytes.kmock.MockCommon
 
-@MockShared("TesT", Shared::class)
-interface Shared {
+@MockCommon(Common::class)
+interface Common {
     val foo: String
     val bar: Int
         get() = foo.length

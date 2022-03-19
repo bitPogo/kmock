@@ -30,8 +30,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
 
         val factoryUtils = KMockFactoryGeneratorUtil(KMockGenerics)
 
+        val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
+
         return KMockProcessor(
-            KMockGenerator(
+            mockGenerator = KMockGenerator(
                 logger = logger,
                 codeGenerator = generator,
                 genericsResolver = KMockGenerics,
@@ -39,23 +41,24 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 functionGenerator = functionGenerator,
                 buildInGenerator = KMockBuildInFunctionGenerator
             ),
-            KMockFactoryGenerator(
+            factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
                 utils = factoryUtils,
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            KMockFactoryEntryPointGenerator(
+            entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
                 genericResolver = KMockGenerics,
                 codeGenerator = generator
             ),
-            KMockAggregator(logger, KMockGenerics),
-            ProcessorContract.Options(
-                isKmp = environment.options["isKmp"] == true.toString(),
-                rootPackage = environment.options["rootPackage"]!!
+            aggregator = KMockAggregator(
+                logger = logger,
+                generics = KMockGenerics,
+                aliases = options.aliases
             ),
-            SourceFilter(environment.options, logger)
+            options = options,
+            filter = SourceFilter(options.precedences, logger)
         )
     }
 }

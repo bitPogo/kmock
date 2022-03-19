@@ -24,11 +24,14 @@ import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockAggregator(
     private val logger: KSPLogger,
-    private val generics: ProcessorContract.GenericResolver,
+    private val generics: GenericResolver,
+    private val aliases: Map<String, String>
 ) : ProcessorContract.Aggregator {
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation {
         val annotation = annotations.first { annotation ->
@@ -45,29 +48,33 @@ internal class KMockAggregator(
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         return generics.extractGenerics(
             template,
-            typeResolver
+            typeResolver,
         )
     }
 
     private fun resolveInterface(
         interfaze: KSDeclaration,
         sourceIndicator: String,
-        templateCollector: MutableMap<String, ProcessorContract.TemplateSource>
+        templateCollector: MutableMap<String, TemplateSource>
     ) {
         when {
             interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
             interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-            else -> templateCollector[interfaze.qualifiedName!!.asString() + sourceIndicator] = ProcessorContract.TemplateSource(
-                sourceIndicator,
-                interfaze,
-                resolveGenerics(interfaze)
-            )
+            else -> {
+                val templateName = interfaze.qualifiedName!!.asString()
+                templateCollector[templateName + sourceIndicator] = TemplateSource(
+                    indicator = sourceIndicator,
+                    template = interfaze,
+                    alias = aliases[templateName],
+                    generics = resolveGenerics(interfaze)
+                )
+            }
         }
     }
 
     private fun resolveInterfaces(
         raw: Map<String, MutableList<KSType>>,
-        templateCollector: MutableMap<String, ProcessorContract.TemplateSource>
+        templateCollector: MutableMap<String, TemplateSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
             interfaces.forEach { value ->
@@ -90,7 +97,7 @@ internal class KMockAggregator(
     ): ProcessorContract.Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
-        val templateCollector: MutableMap<String, ProcessorContract.TemplateSource> = mutableMapOf()
+        val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->

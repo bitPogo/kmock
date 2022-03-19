@@ -208,12 +208,13 @@ internal class KMockGenerator(
 
     private fun writeMock(
         template: KSClassDeclaration,
+        alias: String?,
         generics: Map<String, List<KSTypeReference>>?,
         dependencies: List<KSFile>,
         target: String,
         relaxer: Relaxer?
     ) {
-        val templateName = template.simpleName.asString()
+        val templateName = alias ?: template.simpleName.asString()
         val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
@@ -257,6 +258,7 @@ internal class KMockGenerator(
         templateSources.forEach { template ->
             writeMock(
                 template = template.template,
+                alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
                 target = ProcessorContract.Target.COMMON.value,
@@ -273,6 +275,7 @@ internal class KMockGenerator(
         templateSources.forEach { template ->
             writeMock(
                 template = template.template,
+                alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
                 target = template.indicator,
@@ -289,6 +292,7 @@ internal class KMockGenerator(
         templateSources.forEach { template ->
             writeMock(
                 template = template.template,
+                alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
                 target = ProcessorContract.Target.PLATFORM.value,

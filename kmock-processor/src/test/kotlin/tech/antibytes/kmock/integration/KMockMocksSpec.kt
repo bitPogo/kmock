@@ -32,17 +32,22 @@ class KMockMocksSpec {
         processorProvider: SymbolProcessorProvider,
         source: SourceFile,
         isKmp: Boolean,
+        aliases: Map<String, String> = emptyMap()
     ): KotlinCompilation.Result {
+        val args = mutableMapOf(
+            "rootPackage" to "generatorTest",
+            "isKmp" to isKmp.toString()
+        ).also {
+            it.putAll(aliases)
+        }
+
         return KotlinCompilation().apply {
             sources = listOf(source)
             symbolProcessorProviders = listOf(processorProvider)
             workingDir = buildDir
             inheritClassPath = true
             verbose = false
-            kspArgs = mutableMapOf(
-                "rootPackage" to "generatorTest",
-                "isKmp" to isKmp.toString()
-            )
+            kspArgs = args
         }.compile()
     }
 
@@ -411,6 +416,87 @@ class KMockMocksSpec {
         // When
         val compilerResult = compile(provider, source, isKmp = true)
         val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with Alias names for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/alias/Platform.kt")
+        )
+        val expected = loadResource("/expected/alias/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            aliases = mapOf(
+                "alias_mock.template.alias.Platform" to "AliasPlatform",
+            )
+        )
+        val actual = resolveGenerated("AliasPlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with Alias names for Shared is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/alias/Shared.kt")
+        )
+        val expected = loadResource("/expected/alias/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            aliases = mapOf(
+                "alias_mock.template.alias.Shared" to "AliasShared",
+            )
+        )
+        val actual = resolveGenerated("AliasSharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with Alias names for Common is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/alias/Common.kt")
+        )
+        val expected = loadResource("/expected/alias/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            aliases = mapOf(
+                "alias_mock.template.alias.Common" to "AliasCommon",
+            )
+        )
+        val actual = resolveGenerated("AliasCommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

@@ -619,9 +619,9 @@ class KmpSourceSetsConfiguratorSpec {
             )
         }
 
-        verify(exactly = 1) { kspExtension.arg("metaTest", "0") }
-        verify(exactly = 1) { kspExtension.arg("concurrentTest", "-1") }
-        verify(exactly = 1) { kspExtension.arg("nativeTest", "-3") }
-        verify(exactly = 1) { kspExtension.arg("iosTest", "-5") }
+        verify(exactly = 1) { kspExtension.arg("precedence_metaTest", "0") }
+        verify(exactly = 1) { kspExtension.arg("precedence_concurrentTest", "-1") }
+        verify(exactly = 1) { kspExtension.arg("precedence_nativeTest", "-3") }
+        verify(exactly = 1) { kspExtension.arg("precedence_iosTest", "-5") }
     }
 }

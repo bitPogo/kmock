@@ -10,15 +10,9 @@ import com.google.devtools.ksp.processing.KSPLogger
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class SourceFilter(
-    precedences: Map<String, String>,
+    private val precedences: Map<String, Int>,
     private val logger: KSPLogger
 ) : ProcessorContract.SourceFilter {
-    private val precedences: Map<String, Int> = precedences
-        .filter { (key, _) ->
-            key != "isKmp" && key != "rootPackage"
-        }
-        .mapValues { (_, value) -> value.toInt() }
-
     override fun filter(
         templateSources: List<TemplateSource>,
         filteredBy: List<TemplateSource>

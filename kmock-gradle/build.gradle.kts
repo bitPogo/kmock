@@ -36,6 +36,7 @@ dependencies {
     testImplementation(Dependency.jvm.test.jupiter)
     testImplementation(Dependency.jvm.test.mockk)
     testImplementation(Dependency.jvm.test.kotlin)
+    testImplementation(Dependency.multiplatform.stately.isolate)
 
     testImplementation(LocalDependency.antibytes.test.gradle)
 }

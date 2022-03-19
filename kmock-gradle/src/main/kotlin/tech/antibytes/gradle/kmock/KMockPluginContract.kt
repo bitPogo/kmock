@@ -19,6 +19,13 @@ internal interface KMockPluginContract {
          * The invoking projects root package name
          */
         var rootPackage: String
+
+        /**
+         * Mapping to resolve Mock name conflicts
+         * The key must be the full qualified name of target which should use a alias instead
+         * The value must be an alias name which replaces the short name of the target
+         */
+        var aliasNameMapping: Map<String, String>
     }
 
     interface CleanUpTask {
@@ -55,5 +62,10 @@ internal interface KMockPluginContract {
 
     interface SourceSetConfigurator {
         fun configure(project: Project)
+    }
+
+    companion object {
+        const val PRECEDENCE_PREFIX = "precedence_"
+        const val ALIAS_PREFIX = "alias_"
     }
 }
