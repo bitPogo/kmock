@@ -31,6 +31,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
         val functionGenerator = KMockFunctionGenerator(
             allowedRecursiveTypes = options.allowedRecursiveTypes,
+            uselessPrefixes = options.uselessPrefixes,
             genericResolver = genericResolver,
             relaxerGenerator = relaxerGenerator
         )

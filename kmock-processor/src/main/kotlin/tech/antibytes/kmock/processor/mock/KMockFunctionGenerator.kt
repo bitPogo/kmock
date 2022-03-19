@@ -33,10 +33,21 @@ import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
     private val allowedRecursiveTypes: Set<String>,
+    private val uselessPrefixes: Set<String>,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
     private val any = Any::class.asTypeName()
+
+    private fun String.removePrefixes(prefixes: Iterable<String>): String {
+        var cleaned = this
+
+        prefixes.forEach { prefix ->
+            cleaned = removePrefix(prefix)
+        }
+
+        return cleaned
+    }
 
     private fun resolveGenericName(
         boundaries: List<KSTypeReference>?,
@@ -80,7 +91,8 @@ internal class KMockFunctionGenerator(
                         name
                     }
                 }
-                .removePrefix("kotlin.")
+                .removePrefixes(uselessPrefixes)
+                .trimStart('.')
                 .substringBefore('<') // Lambdas
                 .let { name ->
                     if (name.contains('.')) {

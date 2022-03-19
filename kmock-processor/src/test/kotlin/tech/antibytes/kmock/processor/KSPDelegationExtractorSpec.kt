@@ -172,4 +172,28 @@ class KSPDelegationExtractorSpec {
         // Then
         actual.useBuildInProxiesOn mustBe expected
     }
+
+    @Test
+    fun `Given convertOptions it returns a set of target names where to use uselessPrefixes proxies`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "rootPackage" to rootPackage,
+            "isKmp" to isKmp.toString()
+        )
+
+        val expected = fixture.listFixture<String>(size = 3).toSet()
+
+        expected.forEachIndexed { idx, value ->
+            delegateKSP["namePrefix_$idx"] = value
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.uselessPrefixes mustBe expected
+    }
 }
