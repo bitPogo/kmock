@@ -653,6 +653,10 @@ You can either use the an Interface or the generated Mock class.
 While both are technically allowed, using the Mock class is recommended.
 Access via Interface is meant for future usage.
 
+NOTE: If your interface is generic, `kmock` takes an additional argument called `templateType`.
+This argument must be used to identify the right Mock and to avoid type collisions.
+The parameter itself takes the `KClass` of the interface which has been mocked.
+
 ===== Teardown
 All Mocks are generated with `_clearMock` method which clears all Proxies owned by the Mock.
 This enables you to use Mocks per test set and not only per test case:
@@ -720,6 +724,10 @@ So why is it that? +
 KMock uses inheritance not reflection as you remember.
 The 3rd assertion fails since `AnyImplementation` has no custom implementation of `equals` and uses the default.
 If `AnyImplementation` makes a custom comparison with taking properties for example into account, the Assertion would pass.
+
+NOTE: If your interface is generic, `kspy` takes an additional argument called `templateType`.
+This argument must be used to identify the right Mock and to avoid type collisions.
+The parameter itself takes the `KClass` of the interface which has been mocked.
 
 ==== Relaxation
 Lastly KMock also facilitates Relaxation to certain degree. As with spies it requires boilerplate code done by you. +
