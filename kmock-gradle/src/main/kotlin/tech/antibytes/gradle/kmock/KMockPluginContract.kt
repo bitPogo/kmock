@@ -32,7 +32,7 @@ internal interface KMockPluginContract {
          * E.g.: Comparable
          * This property can be used to allow them for spying
          */
-        var allowedRecursiveTypes: List<String>
+        var allowedRecursiveTypes: Set<String>
     }
 
     interface CleanUpTask {

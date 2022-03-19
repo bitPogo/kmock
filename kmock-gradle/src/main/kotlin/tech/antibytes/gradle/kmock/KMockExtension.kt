@@ -21,7 +21,7 @@ abstract class KMockExtension(
 
     private var _aliasNameMapping: Map<String, String> = emptyMap()
 
-    private var _allowedRecursiveTypes: List<String> = emptyList()
+    private var _allowedRecursiveTypes: Set<String> = emptySet()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg("rootPackage", rootPackage)
@@ -57,13 +57,13 @@ abstract class KMockExtension(
             _aliasNameMapping = value
         }
 
-    private fun propagateRecursive(types: List<String>) {
+    private fun propagateRecursive(types: Set<String>) {
         types.forEachIndexed { idx, type ->
             ksp.arg("$RECURSIVE_PREFIX$idx", type)
         }
     }
 
-    override var allowedRecursiveTypes: List<String>
+    override var allowedRecursiveTypes: Set<String>
         get() = _allowedRecursiveTypes
         set(value) {
             propagateRecursive(value)

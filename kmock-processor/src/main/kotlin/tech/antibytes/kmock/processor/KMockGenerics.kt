@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -25,10 +26,22 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
-internal object KMockGenerics : GenericResolver {
+internal class KMockGenerics(
+    private val allowedRecursiveTypes: Set<String>
+) : GenericResolver {
     private val any = Any::class.asTypeName()
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
+
+    private fun isAllowedRecursiveType(typeName: String): Boolean = typeName in allowedRecursiveTypes
+    private fun isAllowedRecursiveType(typeName: ClassName): Boolean = isAllowedRecursiveType(typeName.toString())
+    private fun isAllowedRecursiveType(typeName: KSType): Boolean {
+        return if (typeName.starProjection() is KSClassDeclaration) {
+            isAllowedRecursiveType(typeName.toClassName())
+        } else {
+            false
+        }
+    }
 
     override fun extractGenerics(
         template: KSDeclaration,
@@ -101,7 +114,42 @@ internal object KMockGenerics : GenericResolver {
             GenericDeclaration(
                 types = listOf(typeName),
                 nullable = typeName.isNullable,
-                recursive = false
+                recursive = false,
+                castReturnType = isAllowedRecursiveType(type)
+            )
+        }
+    }
+
+    private fun filterAllowedRecursiveTypes(
+        typeName: ClassName,
+        nested: GenericDeclaration,
+        nullable: Boolean
+    ): GenericDeclaration {
+        val isAllowedRecursiveTypes = isAllowedRecursiveType(typeName)
+
+        return if (isAllowedRecursiveTypes && nested.recursive) {
+            val genericsArguments = List(nested.types.size) { "Any?" }
+
+            GenericDeclaration(
+                types = listOf(
+                    TypeVariableName(
+                        "$typeName<${genericsArguments.joinToString(", ")}>"
+                    ).copy(nullable = nullable)
+                ),
+                nullable = nullable,
+                recursive = false,
+                castReturnType = isAllowedRecursiveTypes
+            )
+        } else {
+            GenericDeclaration(
+                types = listOf(
+                    TypeVariableName(
+                        "$typeName<${nested.types.joinToString(", ")}>"
+                    ).copy(nullable = nullable)
+                ),
+                nullable = nullable,
+                recursive = nested.recursive,
+                castReturnType = isAllowedRecursiveTypes
             )
         }
     }
@@ -116,14 +164,10 @@ internal object KMockGenerics : GenericResolver {
             val isNullable = isNullable(type)
             val typeName = type.toClassName()
 
-            GenericDeclaration(
-                types = listOf(
-                    TypeVariableName(
-                        "$typeName<${nested.types.joinToString(", ")}>"
-                    ).copy(nullable = isNullable)
-                ),
-                nullable = isNullable,
-                recursive = nested.recursive
+            filterAllowedRecursiveTypes(
+                typeName = typeName,
+                nested = nested,
+                nullable = isNullable
             )
         }
     }
@@ -156,8 +200,8 @@ internal object KMockGenerics : GenericResolver {
             )
 
             mergeNestedGeneric(
-                type,
-                nestedGeneric
+                type = type,
+                nested = nestedGeneric
             )
         }
     }
@@ -193,6 +237,7 @@ internal object KMockGenerics : GenericResolver {
         val accumulatedTypes: MutableList<TypeName> = mutableListOf()
         var isNullable: Boolean? = null
         var isRecursive = false
+        var doCastOnReturn = false
 
         types.map { type ->
             val nested = resolveGeneric(
@@ -213,6 +258,7 @@ internal object KMockGenerics : GenericResolver {
                 } else {
                     nested.nullable && isNullable!!
                 }
+                doCastOnReturn = doCastOnReturn || isAllowedRecursiveType(type.toClassName())
 
                 accumulatedTypes.addAll(nested.types)
             }
@@ -221,7 +267,8 @@ internal object KMockGenerics : GenericResolver {
         return GenericDeclaration(
             types = accumulatedTypes,
             nullable = isNullable!!,
-            recursive = isRecursive
+            recursive = isRecursive,
+            castReturnType = doCastOnReturn
         )
     }
 

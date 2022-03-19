@@ -32,13 +32,15 @@ class KMockMocksSpec {
         processorProvider: SymbolProcessorProvider,
         source: SourceFile,
         isKmp: Boolean,
-        aliases: Map<String, String> = emptyMap()
+        aliases: Map<String, String> = emptyMap(),
+        allowedRecursiveTypes: Map<String, String> = emptyMap()
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
             "rootPackage" to "generatorTest",
             "isKmp" to isKmp.toString()
         ).also {
             it.putAll(aliases)
+            it.putAll(allowedRecursiveTypes)
         }
 
         return KotlinCompilation().apply {
@@ -497,6 +499,35 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("AliasCommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Generics which allows Recursive Types is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "AllowedRecursive.kt",
+            loadResource("/template/generic/AllowedRecursive.kt")
+        )
+        val expected = loadResource("/expected/generic/AllowedRecursive.kt")
+
+        val allowedRecursiveTypes = mapOf(
+            "recursive_0" to "kotlin.Comparable"
+        )
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            allowedRecursiveTypes = allowedRecursiveTypes
+        )
+        val actual = resolveGenerated("AllowedRecursiveMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

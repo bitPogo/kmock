@@ -155,7 +155,7 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its default allowedRecursiveTypes is a empty map`() {
+    fun `Its default allowedRecursiveTypes is a empty set`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
 
@@ -163,7 +163,7 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.allowedRecursiveTypes mustBe emptyList()
+        extension.allowedRecursiveTypes mustBe emptySet()
     }
 
     @Test
@@ -180,9 +180,9 @@ class ExtensionSpec {
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.allowedRecursiveTypes = expected
+        extension.allowedRecursiveTypes = expected.toSet()
 
-        extension.allowedRecursiveTypes mustBe expected
+        extension.allowedRecursiveTypes mustBe expected.toSet()
         verify(exactly = 1) { kspExtension.arg("recursive_0", expected[0]) }
         verify(exactly = 1) { kspExtension.arg("recursive_1", expected[1]) }
         verify(exactly = 1) { kspExtension.arg("recursive_2", expected[2]) }
