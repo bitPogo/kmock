@@ -16,33 +16,33 @@ import org.gradle.api.tasks.TaskAction
 internal interface KMockPluginContract {
     interface Extension {
         /**
-         * The invoking projects root package name
+         * The invoking projects root package name.
          */
         var rootPackage: String
 
         /**
-         * Mapping to resolve Mock name conflicts
-         * The key must be the full qualified name of target which should use a alias instead
-         * The value must be an alias name which replaces the short name of the target
+         * Mapping to resolve Mock name conflicts.
+         * The key must be the full qualified name of target which should use a alias instead.
+         * The value must be an alias name which replaces the short name of the target.
          */
         var aliasNameMapping: Map<String, String>
 
         /**
-         * Selection of allowed recursive generic types (e.g. Comparable)
+         * Selection of allowed recursive generic types (e.g. Comparable).
          * List of full qualified names of generics types which are used for recursive declaration.
          * This property can be used to allow them for spying.
          */
         var allowedRecursiveTypes: Set<String>
 
         /**
-         * Selection of targets which allow Proxies on build-in method (e.g. toString)
+         * Selection of targets which allow Proxies on build-in method (e.g. toString).
          * Set of full qualified name of target which should proxy build-in methods.
          */
         var useBuildInProxiesOn: Set<String>
 
         /**
-         * Selection of prefixes which are polluting names of Proxies while they referencing overloaded methods
-         * The order must be longest to shortest
+         * Selection of prefixes which are polluting names of Proxies while they referencing overloaded methods.
+         * The order must be longest to shortest.
          */
         var uselessPrefixes: Set<String>
     }
