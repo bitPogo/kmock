@@ -31,8 +31,8 @@ internal actual inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K?,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L?
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Shared1::class -> factory.template.generics.Shared1Mock<K, L>(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -45,8 +45,8 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     spyOn: SpyOn,
     verifier: KMockContract.Collector,
     freeze: Boolean,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K?,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L?
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Shared1::class -> factory.template.generics.Shared1Mock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared1<K, L>) as Mock
@@ -60,8 +60,8 @@ internal actual inline fun <reified Mock : Shared3<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K?,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L?
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Shared3::class -> factory.template.generics.Shared3Mock<K, L>(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -74,8 +74,8 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared3<K, L>,
     spyOn: SpyOn,
     verifier: KMockContract.Collector,
     freeze: Boolean,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K?,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L?
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Shared3::class -> factory.template.generics.Shared3Mock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared3<K, L>) as Mock

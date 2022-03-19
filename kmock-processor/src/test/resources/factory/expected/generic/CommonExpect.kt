@@ -27,14 +27,14 @@ internal expect inline fun <reified Mock : Common<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Common<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Common<K, L>, K : Any, L> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Common<*, *>>
 ): Mock where L : Any, L : Comparable<L>
