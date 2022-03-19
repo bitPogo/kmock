@@ -215,4 +215,38 @@ class ExtensionSpec {
         verify(exactly = 1) { kspExtension.arg("buildIn_1", expected[1]) }
         verify(exactly = 1) { kspExtension.arg("buildIn_2", expected[2]) }
     }
+
+    @Test
+    fun `uselessPrefixes has default values`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.uselessPrefixes mustBe setOf(
+            "kotlin.collections",
+            "kotlin",
+        )
+    }
+
+    @Test
+    fun `It propagates uselessPrefixes changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: List<String> = fixture.listFixture(size = 3)
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.uselessPrefixes = expected.toSet()
+
+        extension.uselessPrefixes mustBe expected.toSet()
+        verify(exactly = 1) { kspExtension.arg("namePrefix_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("namePrefix_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("namePrefix_2", expected[2]) }
+    }
 }

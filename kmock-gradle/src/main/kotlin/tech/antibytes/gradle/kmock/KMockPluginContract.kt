@@ -36,9 +36,15 @@ internal interface KMockPluginContract {
 
         /**
          * Selection of targets which allow Proxies on build-in method (e.g. toString)
-         * List of full qualified name of target which should proxy build-in methods.
+         * Set of full qualified name of target which should proxy build-in methods.
          */
         var useBuildInProxiesOn: Set<String>
+
+        /**
+         * Selection of prefixes which are polluting names of Proxies while they referencing overloaded methods
+         * The order must be longest to shortest
+         */
+        var uselessPrefixes: Set<String>
     }
 
     interface CleanUpTask {
@@ -82,5 +88,6 @@ internal interface KMockPluginContract {
         const val ALIAS_PREFIX = "alias_"
         const val RECURSIVE_PREFIX = "recursive_"
         const val BUILD_IN_PREFIX = "buildIn_"
+        const val USELESS_PREFIXES_PREFIX = "namePrefix_"
     }
 }
