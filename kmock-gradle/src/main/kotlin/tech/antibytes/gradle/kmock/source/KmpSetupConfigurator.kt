@@ -9,45 +9,39 @@ package tech.antibytes.gradle.kmock.source
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.getByName
 import tech.antibytes.gradle.kmock.KMockCleanTask
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.SharedSourceCopist
 import java.util.Locale
 
 internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator {
-    enum class Precedence(val mapping: Pair<String, String>?) {
-        NONE(null),
-        JS(Pair("js", "jsTest")),
-        JVM(Pair("jvm", "jvmTest")),
-        ANDROID(Pair("android", "androidDebugUnitTest")),
-    }
-
     private const val common = "commonTest"
 
-    private const val androidDebug = "androidDebugUnitTest"
+    private const val androidDebug = "androidDebugUnit"
+    private const val androidDebugTest = "androidDebugUnitTest"
     private const val androidDebugKsp = "kspDebugUnitTestKotlinAndroid"
 
-    private const val androidRelease = "androidReleaseUnitTest"
+    private const val androidRelease = "androidReleaseUnit"
+    private const val androidReleaseTest = "androidReleaseUnitTest"
     private const val androidReleaseKsp = "kspReleaseUnitTestKotlinAndroid"
 
     private fun createCleanUpTask(
         project: Project,
-        platformName: String,
-        sourceSetName: String,
+        platform: String,
+        sourceSet: String,
         indicators: List<String>,
         kspTask: String,
         moveTasks: Array<Copy>
     ): Task {
         val cleanUpTask: KMockCleanTask = project.tasks.create(
-            "cleanDuplicates${sourceSetName.capitalize(Locale.ROOT)}",
+            "cleanDuplicates${sourceSet.capitalize(Locale.ROOT)}",
             KMockCleanTask::class.java
         )
 
-        cleanUpTask.target.set(sourceSetName)
-        cleanUpTask.platform.set(platformName)
+        cleanUpTask.target.set(sourceSet)
+        cleanUpTask.platform.set(platform)
         cleanUpTask.indicators.addAll(indicators)
-        cleanUpTask.description = "Removes Contradicting Sources"
+        cleanUpTask.description = "Removes Contradicting Sources for $platform"
         cleanUpTask.group = "Code Generation"
 
         return cleanUpTask.dependsOn(*moveTasks)
@@ -58,83 +52,109 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     private fun setupAndroidCleanUpTasks(
         project: Project,
         indicators: List<String>,
-        copyTasks: Array<Copy>
+        copyTasksDebug: Array<Copy>,
+        copyTasksRelease: Array<Copy>
     ): Pair<Task, Task> {
         val cleanUpTaskDebug = createCleanUpTask(
             project = project,
-            platformName = "android",
+            platform = androidDebug,
             indicators = indicators,
-            sourceSetName = androidDebug,
+            sourceSet = androidDebugTest,
             kspTask = androidDebugKsp,
-            moveTasks = copyTasks
+            moveTasks = copyTasksDebug
         )
 
         val cleanUpTaskRelease = createCleanUpTask(
             project = project,
-            platformName = "android",
+            platform = androidRelease,
             indicators = indicators,
-            sourceSetName = androidRelease,
+            sourceSet = androidReleaseTest,
             kspTask = androidReleaseKsp,
-            moveTasks = copyTasks
+            moveTasks = copyTasksRelease
         )
 
         return Pair(cleanUpTaskDebug, cleanUpTaskRelease)
     }
 
-    private fun setCopyTaskDependencies(
-        copy: Copy,
-        kspTask: String
-    ) {
-        val dependency = if (kspTask.endsWith("Android")) {
-            "kspDebugUnitTestKotlinAndroid"
-        } else {
-            kspTask
+    private fun createCopyTask(
+        project: Project,
+        platform: String,
+        target: String,
+        indicator: String,
+        kspTask: String,
+    ): Copy {
+        return SharedSourceCopist.copySharedSource(
+            project = project,
+            platform = platform,
+            source = platform + "Test",
+            target = target,
+            indicator = indicator,
+        ).also { copyTask ->
+            copyTask.dependsOn(kspTask)
+            copyTask.mustRunAfter(kspTask)
         }
-
-        copy.dependsOn(dependency)
     }
 
-    private fun selectReferenceSource(
+    private fun chainCopyTask(
         project: Project,
-        dependencies: Set<String>,
-        kspMapping: Map<String, String>,
+        platform: String,
+        target: String,
         indicator: String,
-        target: String
-    ): Copy {
-        var precedence = Precedence.NONE
-        var kspTask = kspMapping[dependencies.first()]!!
-
-        dependencies.forEach { source ->
-            val current = when (source) {
-                "android" -> Precedence.ANDROID
-                "jvm" -> Precedence.JVM
-                "js" -> Precedence.JS
-                else -> Precedence.NONE
-            }
-
-            if (current.ordinal > precedence.ordinal) {
-                precedence = current
-                kspTask = kspMapping[source]!!
-            }
-        }
-
-        return if (precedence.mapping != null) {
-            SharedSourceCopist.copySharedSource(
+        kspTask: String,
+    ): Pair<Copy, Copy?> {
+        return if (platform == "android") {
+            val copyTaskDebug = createCopyTask(
                 project = project,
-                platform = precedence.mapping!!.first,
-                source = precedence.mapping!!.second,
+                platform = androidDebug,
                 target = target,
                 indicator = indicator,
+                kspTask = androidDebugKsp,
             )
+
+            val copyTaskRelease = createCopyTask(
+                project = project,
+                platform = androidRelease,
+                target = target,
+                indicator = indicator,
+                kspTask = androidReleaseKsp,
+            )
+
+            Pair(copyTaskDebug, copyTaskRelease)
         } else {
-            SharedSourceCopist.copySharedSource(
+            val platformCopyTasks = createCopyTask(
                 project = project,
-                platform = dependencies.first(),
-                source = dependencies.first() + "Test",
+                platform = platform,
                 target = target,
                 indicator = indicator,
+                kspTask = kspTask,
             )
-        }.also { copy -> setCopyTaskDependencies(copy, kspTask) }
+
+            Pair(platformCopyTasks, null)
+        }
+    }
+
+    // Note this only necessary due to the Android special case
+    private fun appendCopyTasks(
+        platform: String,
+        copyTasks: Pair<Copy, Copy?>,
+        copyTaskContainer: MutableMap<String, MutableList<Copy>>,
+    ) {
+        if (platform != "android") {
+            val platformSpecificCopyTasks = copyTaskContainer.getOrElse(platform) { mutableListOf() }
+            platformSpecificCopyTasks.add(copyTasks.first)
+
+            copyTaskContainer[platform] = platformSpecificCopyTasks
+        } else {
+            val androidDebugCopyTasks = copyTaskContainer.getOrElse(androidDebug) { mutableListOf() }
+            androidDebugCopyTasks.add(copyTasks.first)
+
+            copyTaskContainer[androidDebug] = androidDebugCopyTasks
+
+            val androidReleaseCopyTasks = copyTaskContainer.getOrElse(androidRelease) { mutableListOf() }
+            androidReleaseCopyTasks.add(copyTasks.second!!)
+
+            copyTaskContainer[androidRelease] = androidReleaseCopyTasks
+        }
     }
 
     private fun createCopyTasks(
@@ -142,67 +162,56 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         indicators: Map<String, String>,
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
-    ): Pair<Array<Copy>, List<Set<String>>> {
-        val dependsOn: MutableList<Set<String>> = mutableListOf()
+    ): Map<String, MutableList<Copy>> {
+        val copyTaskContainer: MutableMap<String, MutableList<Copy>> = mutableMapOf()
 
-        val copyTasks = indicators
-            .filter { (source, _) ->
-                source in dependencies
-            }
-            .map { (source, indicator) ->
-                selectReferenceSource(
-                    project,
-                    dependencies[source]!!,
-                    kspMapping,
-                    indicator,
-                    source
-                ).also { dependsOn.add(dependencies[source]!!) }
-            }
-            .toTypedArray()
+        dependencies.forEach { (sharedSource, platforms) ->
+            platforms.forEach { platform ->
+                val copyTasks = chainCopyTask(
+                    project = project,
+                    platform = platform,
+                    target = sharedSource,
+                    indicator = indicators[sharedSource]!!,
+                    kspTask = kspMapping[platform]!!,
+                )
 
-        return Pair(copyTasks, dependsOn)
-    }
-
-    private fun filterCopyTasksByDependencies(
-        platform: String,
-        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
-    ): Array<Copy> {
-        val copyTasks: MutableList<Copy> = mutableListOf()
-        val (allCopyTasks, dependencies) = copyTasksAndDependencies
-
-        allCopyTasks.forEachIndexed { idx, copyTask ->
-            if (platform in dependencies[idx]) {
-                copyTasks.add(copyTask)
+                appendCopyTasks(
+                    platform = platform,
+                    copyTasks = copyTasks,
+                    copyTaskContainer = copyTaskContainer,
+                )
             }
         }
 
-        return copyTasks.toTypedArray()
+        return copyTaskContainer
     }
 
     private fun setUpAndroidTaskChain(
         project: Project,
         indicators: List<String>,
-        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
+        copyTasksContainer: Map<String, List<Copy>>,
     ) {
-        val copyTasks = filterCopyTasksByDependencies("android", copyTasksAndDependencies)
+        val copyDebugTasks = copyTasksContainer[androidDebug]!!.toTypedArray()
+        val copyReleaseTasks = copyTasksContainer[androidRelease]!!.toTypedArray()
+
         val (cleanUpTaskDebug, cleanUpTaskRelease) = setupAndroidCleanUpTasks(
             project,
             indicators,
-            copyTasks
+            copyDebugTasks,
+            copyReleaseTasks
         )
 
-        project.tasks.getByName("compileDebugUnitTestKotlinAndroid").dependsOn(
-            cleanUpTaskDebug
-        ).dependsOn(*copyTasks)
+        project.tasks.getByName("compileDebugUnitTestKotlinAndroid")
+            .dependsOn(cleanUpTaskDebug)
+            .mustRunAfter(cleanUpTaskDebug)
+            .dependsOn(*copyDebugTasks)
+            .mustRunAfter(*copyDebugTasks)
 
-        project.tasks.getByName("compileReleaseUnitTestKotlinAndroid").dependsOn(
-            cleanUpTaskRelease
-        ).dependsOn(*copyTasks)
-
-        copyTasks.forEach { copyTask ->
-            copyTask.mustRunAfter(androidDebugKsp)
-            copyTask.mustRunAfter(androidReleaseKsp)
-        }
+        project.tasks.getByName("compileReleaseUnitTestKotlinAndroid")
+            .dependsOn(cleanUpTaskRelease)
+            .mustRunAfter(cleanUpTaskRelease)
+            .dependsOn(*copyReleaseTasks)
+            .mustRunAfter(*copyReleaseTasks)
     }
 
     private fun setUpTaskChain(
@@ -210,9 +219,9 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         indicators: List<String>,
         platform: String,
         kspTask: String,
-        copyTasksAndDependencies: Pair<Array<Copy>, List<Set<String>>>,
+        copyTasksContainer: Map<String, List<Copy>>,
     ) {
-        val copyTasks = filterCopyTasksByDependencies(platform, copyTasksAndDependencies)
+        val copyTasks = copyTasksContainer[platform]!!.toTypedArray()
         val cleanUpTask = createCleanUpTask(
             project,
             platform,
@@ -222,18 +231,17 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
             copyTasks
         )
 
-        val compileTask = project.tasks.getByName(
+        project.tasks.getByName(
             "compileTestKotlin${platform.capitalize(Locale.ROOT)}"
         ).dependsOn(
             cleanUpTask
+        ).mustRunAfter(
+            cleanUpTask
         ).dependsOn(
             *copyTasks
+        ).mustRunAfter(
+            *copyTasks
         )
-
-        compileTask.mustRunAfter(*copyTasks)
-        copyTasks.forEach { copyTask ->
-            copyTask.mustRunAfter(kspTask)
-        }
     }
 
     private fun wireSharedSourceTasks(
@@ -242,7 +250,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
         kspMapping: Map<String, String>,
         dependencies: Map<String, Set<String>>
     ) {
-        val copyTasksAndDependencies = createCopyTasks(
+        val copyTasks = createCopyTasks(
             project,
             indicatorMapping,
             kspMapping,
@@ -255,7 +263,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                 setUpAndroidTaskChain(
                     project,
                     indicators,
-                    copyTasksAndDependencies
+                    copyTasks
                 )
             } else {
                 setUpTaskChain(
@@ -263,7 +271,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
                     indicators,
                     platform,
                     kspTask,
-                    copyTasksAndDependencies
+                    copyTasks
                 )
             }
         }

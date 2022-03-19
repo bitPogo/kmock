@@ -11,15 +11,15 @@ import tech.antibytes.kmock.processor.ProcessorContract
 internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
     override fun buildRelaxers(
         relaxer: ProcessorContract.Relaxer?,
-        isFunction: Boolean
+        useUnitFunRelaxer: Boolean
     ): String {
-        val unitFunRelaxerStr = if (isFunction) {
+        val unitFunRelaxerStr = if (useUnitFunRelaxer) {
             "unitFunRelaxer = if (relaxUnitFun) { { ${ProcessorContract.UNIT_RELAXER.simpleName}() } } else { null }"
         } else {
             ""
         }
 
-        val buildInRelaxerStr = if (isFunction) {
+        val buildInRelaxerStr = if (useUnitFunRelaxer) {
             "buildInRelaxer = null"
         } else {
             ""
