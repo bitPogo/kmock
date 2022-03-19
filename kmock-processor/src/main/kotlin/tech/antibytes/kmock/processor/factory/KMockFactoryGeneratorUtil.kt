@@ -20,29 +20,36 @@ internal class KMockFactoryGeneratorUtil(
 ) : ProcessorContract.MockFactoryGeneratorUtil {
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
 
+    private fun buildGenericFactoryArgument(
+        identifier: TypeVariableName,
+        generics: List<TypeVariableName>
+    ): TypeVariableName {
+        val mockType = identifier
+            .bounds
+            .first()
+            .toString()
+            .substringBeforeLast('<')
+
+        val genericTypes = List(generics.size) { "*" }
+
+        return TypeVariableName(
+            "kotlin.reflect.KClass<$mockType<${genericTypes.joinToString(", ")}>>"
+        )
+    }
+
     private fun FunSpec.Builder.amendGenericValues(
-        modifier: KModifier?,
+        identifier: TypeVariableName,
         generics: List<TypeVariableName>
     ): FunSpec.Builder {
-        var counter = 0
-
         this.addTypeVariables(generics)
 
-        generics.forEach { type ->
+        if (generics.isNotEmpty()) {
             this.addParameter(
                 ParameterSpec.builder(
-                    name = "ignoreMe$counter",
-                    type = type.copy(nullable = true)
-                ).addAnnotation(unused).let { function ->
-                    if (modifier == null || modifier == KModifier.EXPECT) {
-                        function.defaultValue("null")
-                    } else {
-                        function
-                    }
-                }.build()
+                    name = "templateType",
+                    type = buildGenericFactoryArgument(identifier, generics)
+                ).addAnnotation(unused).build()
             )
-
-            counter += 1
         }
 
         return this
@@ -110,7 +117,7 @@ internal class KMockFactoryGeneratorUtil(
             functionFactory.addModifiers(modifier)
         }
 
-        return functionFactory.amendGenericValues(modifier, generics)
+        return functionFactory.amendGenericValues(type, generics)
     }
 
     private fun buildSpyParameter(): ParameterSpec {
@@ -139,7 +146,7 @@ internal class KMockFactoryGeneratorUtil(
             spyFactory.addModifiers(modifier)
         }
 
-        return spyFactory.amendGenericValues(modifier, generics)
+        return spyFactory.amendGenericValues(spyType, generics)
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(

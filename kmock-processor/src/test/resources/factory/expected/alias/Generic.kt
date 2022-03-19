@@ -30,8 +30,8 @@ internal inline fun <reified Mock : Generic<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.alias.Generic<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.alias.Generic::class -> factory.template.alias.AliasGenericMock<K, L>(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -44,8 +44,8 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Generic<K, L>, K : An
     spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.alias.Generic<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.alias.Generic::class -> factory.template.alias.AliasGenericMock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.alias.Generic<K, L>) as Mock

@@ -30,8 +30,8 @@ internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Platform::class -> factory.template.generics.PlatformMock<K, L>(verifier
     = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -44,8 +44,8 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform<K, L>, K : A
     spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER") ignoreMe0: K? = null,
-    @Suppress("UNUSED_PARAMETER") ignoreMe1: L? = null
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generics.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generics.Platform::class -> factory.template.generics.PlatformMock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Platform<K, L>) as Mock

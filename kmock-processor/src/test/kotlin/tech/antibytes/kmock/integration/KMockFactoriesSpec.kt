@@ -318,8 +318,6 @@ class KMockFactoriesSpec {
         )
         val actual = resolveGenerated("MockFactory.kt")
 
-        println(actual)
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
