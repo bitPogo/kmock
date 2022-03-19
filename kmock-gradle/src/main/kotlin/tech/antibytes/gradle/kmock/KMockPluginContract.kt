@@ -26,6 +26,13 @@ internal interface KMockPluginContract {
          * The value must be an alias name which replaces the short name of the target
          */
         var aliasNameMapping: Map<String, String>
+
+        /**
+         * List of qualified name of Generics which are used for recursive declaration.
+         * E.g.: Comparable
+         * This property can be used to allow them for spying
+         */
+        var allowedRecursiveTypes: Set<String>
     }
 
     interface CleanUpTask {
@@ -67,5 +74,6 @@ internal interface KMockPluginContract {
     companion object {
         const val PRECEDENCE_PREFIX = "precedence_"
         const val ALIAS_PREFIX = "alias_"
+        const val RECURSIVE_PREFIX = "recursive_"
     }
 }

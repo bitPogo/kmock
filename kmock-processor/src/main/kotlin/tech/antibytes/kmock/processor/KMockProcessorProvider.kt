@@ -23,20 +23,25 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val logger = environment.logger
         val generator = environment.codeGenerator
 
+        val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
+
+        val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
 
         val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
-        val functionGenerator = KMockFunctionGenerator(KMockGenerics, relaxerGenerator)
+        val functionGenerator = KMockFunctionGenerator(
+            allowedRecursiveTypes = options.allowedRecursiveTypes,
+            genericResolver = genericResolver,
+            relaxerGenerator = relaxerGenerator
+        )
 
-        val factoryUtils = KMockFactoryGeneratorUtil(KMockGenerics)
-
-        val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
+        val factoryUtils = KMockFactoryGeneratorUtil(genericResolver)
 
         return KMockProcessor(
             mockGenerator = KMockGenerator(
                 logger = logger,
                 codeGenerator = generator,
-                genericsResolver = KMockGenerics,
+                genericsResolver = genericResolver,
                 propertyGenerator = propertyGenerator,
                 functionGenerator = functionGenerator,
                 buildInGenerator = KMockBuildInFunctionGenerator
@@ -44,17 +49,17 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
                 utils = factoryUtils,
-                genericResolver = KMockGenerics,
+                genericResolver = genericResolver,
                 codeGenerator = generator
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
-                genericResolver = KMockGenerics,
+                genericResolver = genericResolver,
                 codeGenerator = generator
             ),
             aggregator = KMockAggregator(
                 logger = logger,
-                generics = KMockGenerics,
+                generics = genericResolver,
                 aliases = options.aliases
             ),
             options = options,

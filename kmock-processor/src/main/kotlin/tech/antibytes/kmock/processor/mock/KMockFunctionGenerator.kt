@@ -32,6 +32,7 @@ import tech.antibytes.kmock.processor.titleCase
 import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
+    private val allowedRecursiveTypes: Set<String>,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
@@ -261,6 +262,19 @@ internal class KMockFunctionGenerator(
         }
     }
 
+    private fun buildSpyReturnTypeCasts(
+        body: StringBuilder,
+        returnTypes: GenericDeclaration
+    ) {
+        returnTypes.types.forEach { type ->
+            val typeStr = type.toString()
+
+            if (typeStr.substringBeforeLast('<') in allowedRecursiveTypes) {
+                body.append(" as $typeStr")
+            }
+        }
+    }
+
     private fun buildSpyBody(
         spyName: String,
         spyArgumentNames: Set<String>,
@@ -277,7 +291,17 @@ internal class KMockFunctionGenerator(
 
             buildSpyArgumentCasts(body, spyArgumentNames, proxyArguments)
 
-            body.append("$spyName($spyArguments)").toString()
+            if (proxyReturnType.second?.castReturnType == true) {
+                body.append("@Suppress(\"UNCHECKED_CAST\")\n")
+            }
+
+            body.append("$spyName($spyArguments)")
+
+            if (proxyReturnType.second?.castReturnType == true) {
+                buildSpyReturnTypeCasts(body, proxyReturnType.second!!)
+            }
+
+            body.toString()
         }
     }
 

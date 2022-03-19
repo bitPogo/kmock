@@ -16,6 +16,7 @@ import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
@@ -151,5 +152,39 @@ class ExtensionSpec {
         }
 
         error.message mustBe "$illegal is not a valid alias!"
+    }
+
+    @Test
+    fun `Its default allowedRecursiveTypes is a empty set`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.allowedRecursiveTypes mustBe emptySet()
+    }
+
+    @Test
+    fun `It propagates allowedRecursiveTypes changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: List<String> = fixture.listFixture(
+            qualifier = named("stringAlpha"),
+            size = 3
+        )
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.allowedRecursiveTypes = expected.toSet()
+
+        extension.allowedRecursiveTypes mustBe expected.toSet()
+        verify(exactly = 1) { kspExtension.arg("recursive_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("recursive_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("recursive_2", expected[2]) }
     }
 }

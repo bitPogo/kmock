@@ -40,6 +40,7 @@ internal interface ProcessorContract {
         val rootPackage: String,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
+        val allowedRecursiveTypes: Set<String>
     )
 
     fun interface KSPDelegationExtractor {
@@ -78,7 +79,8 @@ internal interface ProcessorContract {
     data class GenericDeclaration(
         val types: List<TypeName>,
         val recursive: Boolean,
-        val nullable: Boolean
+        val nullable: Boolean,
+        val castReturnType: Boolean = false
     )
 
     interface GenericResolver {
@@ -244,5 +246,6 @@ internal interface ProcessorContract {
 
         const val PRECEDENCE_PREFIX = "precedence_"
         const val ALIAS_PREFIX = "alias_"
+        const val RECURSIVE_PREFIX = "recursive_"
     }
 }

@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor
 import org.junit.jupiter.api.Test
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
@@ -122,5 +123,29 @@ class KSPDelegationExtractorSpec {
 
         // Then
         actual.aliases mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a list of allowed recursive types`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "rootPackage" to rootPackage,
+            "isKmp" to isKmp.toString()
+        )
+
+        val expected = fixture.listFixture<String>(size = 3).toSet()
+
+        expected.forEachIndexed { idx, value ->
+            delegateKSP["recursive_$idx"] = value
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.allowedRecursiveTypes mustBe expected
     }
 }
