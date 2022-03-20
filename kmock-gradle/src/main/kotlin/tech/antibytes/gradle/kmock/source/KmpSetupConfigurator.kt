@@ -57,7 +57,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
     ): Pair<Task, Task> {
         val cleanUpTaskDebug = createCleanUpTask(
             project = project,
-            platform = androidDebug,
+            platform = "android",
             indicators = indicators,
             sourceSet = androidDebugTest,
             kspTask = androidDebugKsp,
@@ -66,7 +66,7 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
 
         val cleanUpTaskRelease = createCleanUpTask(
             project = project,
-            platform = androidRelease,
+            platform = "android",
             indicators = indicators,
             sourceSet = androidReleaseTest,
             kspTask = androidReleaseKsp,
