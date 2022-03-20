@@ -15,9 +15,17 @@ import tech.antibytes.gradle.kmock.util.applyIfNotExists
 import tech.antibytes.gradle.kmock.util.isKmp
 
 class KMockPlugin : Plugin<Project> {
-    private fun configureKmp(project: Project) {
-        KmpSourceSetsConfigurator.configure(project)
-        project.extensions.getByType(KspExtension::class.java).arg("isKmp", true.toString())
+    private fun configureSources(
+        project: Project
+    ) {
+        val isKMP = project.isKmp()
+        project.extensions.getByType(KspExtension::class.java).arg("isKmp", isKMP.toString())
+
+        if (!isKMP) {
+            SingleSourceSetConfigurator.configure(project)
+        } else {
+            KmpSourceSetsConfigurator.configure(project)
+        }
     }
 
     override fun apply(target: Project) {
@@ -25,10 +33,6 @@ class KMockPlugin : Plugin<Project> {
 
         target.extensions.create("kmock", KMockExtension::class.java)
 
-        if (!target.isKmp()) {
-            SingleSourceSetConfigurator.configure(target)
-        } else {
-            configureKmp(target)
-        }
+        configureSources(project = target)
     }
 }

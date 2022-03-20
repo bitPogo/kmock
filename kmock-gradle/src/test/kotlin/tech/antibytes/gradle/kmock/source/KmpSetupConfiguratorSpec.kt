@@ -13,7 +13,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
@@ -57,13 +56,233 @@ class KmpSetupConfiguratorSpec {
 
         val path: String = fixture.fixture()
 
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
+        val copyTasks: List<Copy> = listOf(
+            mockk(),
+            mockk()
+        )
         val cleanUpTasks: List<KMockCleanTask> = listOf(
             mockk(),
             mockk(),
         )
+        val compileTasks: List<Task> = listOf(
+            mockk(),
+            mockk()
+        )
+
+        every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
+        every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
+
+        every { cleanUpTasks[0].group = any() } just Runs
+        every { cleanUpTasks[0].description = any() } just Runs
+        every { cleanUpTasks[0].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
+        every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
+        every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
+        every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
+        every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
+        every { cleanUpTasks[0].mustRunAfter(*anyVararg()) } returns cleanUpTasks[0]
+
+        every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
+        every { copyTasks[1].mustRunAfter(*anyVararg()) } returns copyTasks[1]
+
+        every { cleanUpTasks[1].group = any() } just Runs
+        every { cleanUpTasks[1].description = any() } just Runs
+        every { cleanUpTasks[1].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
+        every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
+        every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
+        every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
+        every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
+        every { cleanUpTasks[1].mustRunAfter(*anyVararg()) } returns cleanUpTasks[1]
+
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        every { project.tasks.create(any(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+
+        every {
+            SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any())
+        } returnsMany copyTasks
+
+        every { project.tasks.getByName(any()) } returnsMany compileTasks
+
+        every { compileTasks[0].dependsOn(any()) } returns compileTasks[0]
+        every { compileTasks[0].dependsOn(*anyVararg()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(any()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(*anyVararg()) } returns compileTasks[0]
+
+        every { compileTasks[1].dependsOn(any()) } returns compileTasks[1]
+        every { compileTasks[1].dependsOn(*anyVararg()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(any()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(*anyVararg()) } returns compileTasks[1]
+
+        // When
+        KmpSetupConfigurator.wireSharedSourceTasks(
+            project,
+            sources,
+            mapOf(
+                "commonTest" to setOf("jvm", "js")
+            )
+        )
+
+        // Then
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "jvm",
+                "jvmTest",
+                "commonTest",
+                "COMMONTEST",
+            )
+        }
+
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "js",
+                "jsTest",
+                "commonTest",
+                "COMMONTEST",
+            )
+        }
+        verify(exactly = 1) { copyTasks[0].dependsOn("kspTestKotlinJvm") }
+        verify(exactly = 1) {
+            copyTasks[0].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
+        }
+
+        verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTasks[0]) }
+        verify(atLeast = 1) {
+            cleanUpTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
+        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources for jvm" }
+        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
+
+        verify(exactly = 1) { copyTasks[1].dependsOn("kspTestKotlinJs") }
+        verify(exactly = 1) {
+            copyTasks[1].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesJsTest", KMockCleanTask::class.java)
+        }
+
+        verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTasks[1]) }
+        verify(atLeast = 1) {
+            cleanUpTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
+        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources for js" }
+        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
+
+        verify(atLeast = 1) {
+            project.tasks.getByName("compileTestKotlinJvm")
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.getByName("compileTestKotlinJs")
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                *arrayOf(copyTasks[0]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                cleanUpTasks[1]
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                cleanUpTasks[1],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                *arrayOf(copyTasks[1]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1]),
+            )
+        }
+    }
+
+    @Test
+    fun `Given wireSharedSourceTasks is called it wires Android Sources`() {
+        // Given
+        val project: Project = mockk()
+        val sources = mapOf(
+            "jvm" to "kspTestKotlinJvm",
+            "android" to "kspTestKotlinAndroid"
+        )
+
+        val path: String = fixture.fixture()
+
+        val copyTasks: List<Copy> = listOf(
+            mockk(),
+            mockk(),
+            mockk(),
+        )
+        val cleanUpTasks: List<KMockCleanTask> = listOf(
+            mockk(),
+            mockk(),
+            mockk()
+        )
+        val compileTasks: List<Task> = listOf(
+            mockk(),
+            mockk(),
+            mockk()
+        )
+
+        every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
+        every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
+        every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
+        every { copyTasks[1].mustRunAfter(*anyVararg()) } returns copyTasks[1]
+        every { copyTasks[2].dependsOn(any()) } returns copyTasks[2]
+        every { copyTasks[2].mustRunAfter(*anyVararg()) } returns copyTasks[2]
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -85,155 +304,48 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(*anyVararg()) } returns cleanUpTasks[1]
 
+        every { cleanUpTasks[2].group = any() } just Runs
+        every { cleanUpTasks[2].description = any() } just Runs
+        every { cleanUpTasks[2].target.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].platform.set(any<String>()) } just Runs
+        every { cleanUpTasks[2].indicators.addAll(any<Iterable<String>>()) } just Runs
+        every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
+        every { cleanUpTasks[2].dependsOn(*anyVararg()) } returns cleanUpTasks[2]
+        every { cleanUpTasks[2].mustRunAfter(any()) } returns cleanUpTasks[2]
+        every { cleanUpTasks[2].mustRunAfter(*anyVararg()) } returns cleanUpTasks[2]
+
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+        every { project.tasks.create(any(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
+        every {
+            SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any())
+        } returnsMany copyTasks
 
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
+        every { project.tasks.getByName(any()) } returnsMany compileTasks
 
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
+        every { compileTasks[0].dependsOn(any()) } returns compileTasks[0]
+        every { compileTasks[0].dependsOn(*anyVararg()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(any()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(*anyVararg()) } returns compileTasks[0]
 
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
+        every { compileTasks[1].dependsOn(any()) } returns compileTasks[1]
+        every { compileTasks[1].dependsOn(*anyVararg()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(any()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(*anyVararg()) } returns compileTasks[1]
 
-        every { copyTask.dependsOn(any()) } returns copyTask
-        every { copyTask.mustRunAfter(any()) } returns mockk()
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
+        every { compileTasks[2].dependsOn(any()) } returns compileTasks[2]
+        every { compileTasks[2].dependsOn(*anyVararg()) } returns compileTasks[2]
+        every { compileTasks[2].mustRunAfter(any()) } returns compileTasks[2]
+        every { compileTasks[2].mustRunAfter(*anyVararg()) } returns compileTasks[2]
 
         // When
         KmpSetupConfigurator.wireSharedSourceTasks(
             project,
             sources,
             mapOf(
-                "commonTest" to setOf("jvm", "js")
-            )
-        )
-
-        // Then
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesJsTest", KMockCleanTask::class.java)
-        }
-
-        verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(
-                project,
-                any(),
-                any(),
-                "commonTest",
-                "COMMONTEST",
-            )
-        }
-
-        verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinJvm") }
-        verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJs") }
-
-        verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
-
-        verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
-        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
-        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
-
-        verify(atLeast = 1) {
-            project.tasks.getByName("compileTestKotlinJvm")
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.getByName("compileTestKotlinJs")
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[0],
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                *arrayOf(copyTask),
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[1]
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.mustRunAfter(copyTask)
-        }
-    }
-
-    @Test
-    fun `Given configure is called it filters unrecognized SharedSources`() {
-        // Given
-        val project: Project = mockk()
-        val sources = mapOf(
-            "jvm" to "kspTestKotlinJvm",
-            "js" to "kspTestKotlinJs"
-        )
-
-        val path: String = fixture.fixture()
-
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
-        val cleanUpTasks: List<KMockCleanTask> = listOf(
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-        )
-
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
-
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
-
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask.dependsOn(any()) } returns copyTask
-        every { copyTask.mustRunAfter(any()) } returns mockk()
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
-
-        // When
-        KmpSetupConfigurator.wireSharedSourceTasks(
-            project,
-            sources,
-            mapOf(
-                "commonTest" to setOf("jvm", "js"),
-                "otherTest" to setOf("jvm", "js"),
+                "commonTest" to setOf("jvm", "android"),
             )
         )
 
@@ -245,6 +357,182 @@ class KmpSetupConfiguratorSpec {
                 "jvmTest",
                 "commonTest",
                 "COMMONTEST",
+            )
+        }
+
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "androidDebugUnit",
+                "androidDebugUnitTest",
+                "commonTest",
+                "COMMONTEST",
+            )
+        }
+
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "androidReleaseUnit",
+                "androidReleaseUnitTest",
+                "commonTest",
+                "COMMONTEST",
+            )
+        }
+
+        verify(exactly = 1) { copyTasks[0].dependsOn("kspTestKotlinJvm") }
+        verify(exactly = 1) {
+            copyTasks[0].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
+        }
+
+        verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTasks[0])) }
+        verify(atLeast = 1) {
+            cleanUpTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
+        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources for jvm" }
+        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
+
+        verify(exactly = 1) { copyTasks[1].dependsOn("kspDebugUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[1].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesAndroidDebugUnitTest", KMockCleanTask::class.java)
+        }
+
+        verify(exactly = 1) { cleanUpTasks[1].target.set("androidDebugUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTasks[1])) }
+        verify(atLeast = 1) {
+            cleanUpTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
+        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources for android" }
+        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
+
+        verify(exactly = 1) { copyTasks[2].dependsOn("kspReleaseUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[2].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesAndroidReleaseUnitTest", KMockCleanTask::class.java)
+        }
+
+        verify(exactly = 1) { cleanUpTasks[2].target.set("androidReleaseUnitTest") }
+        verify(exactly = 1) { cleanUpTasks[2].platform.set("android") }
+        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMONTEST")) }
+        verify(exactly = 1) { cleanUpTasks[2].dependsOn(*arrayOf(copyTasks[2])) }
+        verify(atLeast = 1) {
+            cleanUpTasks[2].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
+        verify(exactly = 1) { cleanUpTasks[2].description = "Removes Contradicting Sources for android" }
+        verify(exactly = 1) { cleanUpTasks[2].group = "Code Generation" }
+
+        verify(atLeast = 1) {
+            project.tasks.getByName("compileTestKotlinJvm")
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.getByName("compileDebugUnitTestKotlinAndroid")
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.getByName("compileReleaseUnitTestKotlinAndroid")
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                *arrayOf(copyTasks[0]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                cleanUpTasks[1]
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                cleanUpTasks[1],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                *arrayOf(copyTasks[1]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[2].dependsOn(
+                cleanUpTasks[2]
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[2].mustRunAfter(
+                cleanUpTasks[2],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[2].dependsOn(
+                *arrayOf(copyTasks[2]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[2].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2])
             )
         }
     }
@@ -260,15 +548,25 @@ class KmpSetupConfiguratorSpec {
 
         val path: String = fixture.fixture()
 
-        val copyTask0: Copy = mockk()
-        val copyTask1: Copy = mockk()
-
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
+        val copyTasks: List<Copy> = listOf(
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk()
+        )
         val cleanUpTasks: List<KMockCleanTask> = listOf(
             mockk(),
             mockk(),
         )
+        val compileTasks: List<Task> = listOf(
+            mockk(),
+            mockk()
+        )
+
+        every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
+        every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
+        every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
+        every { copyTasks[1].mustRunAfter(*anyVararg()) } returns copyTasks[1]
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -279,6 +577,11 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(*anyVararg()) } returns cleanUpTasks[0]
+
+        every { copyTasks[2].dependsOn(any()) } returns copyTasks[2]
+        every { copyTasks[2].mustRunAfter(*anyVararg()) } returns copyTasks[2]
+        every { copyTasks[3].dependsOn(any()) } returns copyTasks[3]
+        every { copyTasks[3].mustRunAfter(*anyVararg()) } returns copyTasks[3]
 
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
@@ -293,27 +596,23 @@ class KmpSetupConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+        every { project.tasks.create(any(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any()) } returns copyTask0
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any()) } returns copyTask1
+        every {
+            SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any())
+        } returnsMany copyTasks
 
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
+        every { project.tasks.getByName(any()) } returnsMany compileTasks
 
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
+        every { compileTasks[0].dependsOn(any()) } returns compileTasks[0]
+        every { compileTasks[0].dependsOn(*anyVararg()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(any()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(*anyVararg()) } returns compileTasks[0]
 
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask0.dependsOn(any()) } returns copyTask0
-        every { copyTask0.mustRunAfter(any()) } returns mockk()
-        every { copyTask0.doLast(any<Action<in Task>>()) } returns mockk()
-
-        every { copyTask1.dependsOn(any()) } returns copyTask1
-        every { copyTask1.mustRunAfter(any()) } returns mockk()
+        every { compileTasks[1].dependsOn(any()) } returns compileTasks[1]
+        every { compileTasks[1].dependsOn(*anyVararg()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(any()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(*anyVararg()) } returns compileTasks[1]
 
         // When
         KmpSetupConfigurator.wireSharedSourceTasks(
@@ -321,141 +620,7 @@ class KmpSetupConfiguratorSpec {
             sources,
             mapOf(
                 "commonTest" to setOf("jvm", "js"),
-                "otherTest" to setOf("jvm"),
-            )
-        )
-
-        // Then
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesJsTest", KMockCleanTask::class.java)
-        }
-
-        verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(
-                project,
-                any(),
-                any(),
-                "commonTest",
-                "COMMONTEST",
-            )
-        }
-
-        verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(
-                project,
-                any(),
-                any(),
-                "otherTest",
-                "OTHERTEST",
-            )
-        }
-
-        verify(exactly = 1) { copyTask0.dependsOn("kspTestKotlinJvm") }
-        verify(exactly = 1) { copyTask0.mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { copyTask0.mustRunAfter("kspTestKotlinJs") }
-
-        verify(exactly = 1) { copyTask1.dependsOn("kspTestKotlinJvm") }
-        verify(exactly = 1) { copyTask1.mustRunAfter("kspTestKotlinJvm") }
-
-        verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask0, copyTask1)) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
-
-        verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
-        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
-        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0)) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0)) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
-        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
-
-        verify(atLeast = 1) {
-            project.tasks.getByName("compileTestKotlinJvm")
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.getByName("compileTestKotlinJs")
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[0],
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                *arrayOf(copyTask0, copyTask1),
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[1]
-            )
-        }
-
-        verify(atLeast = 1) {
-            compileTask.mustRunAfter(*arrayOf(copyTask0))
-        }
-    }
-
-    @Test
-    fun `Given configure is called it configures PlatformTest Sources, it selects Jvm over Js`() {
-        // Given
-        val project: Project = mockk()
-        val sources = mapOf(
-            "jvm" to "kspTestKotlinJvm",
-            "js" to "kspTestKotlinJs"
-        )
-
-        val path: String = fixture.fixture()
-
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
-        val cleanUpTasks: List<KMockCleanTask> = listOf(
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-        )
-
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
-
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
-
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask.dependsOn(any()) } returns copyTask
-        every { copyTask.mustRunAfter(any()) } returns mockk()
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
-
-        // When
-        KmpSetupConfigurator.wireSharedSourceTasks(
-            project,
-            sources,
-            mapOf(
-                "commonTest" to setOf("jvm", "js")
+                "otherTest" to setOf("jvm", "js")
             )
         )
 
@@ -469,58 +634,7 @@ class KmpSetupConfiguratorSpec {
                 "COMMONTEST",
             )
         }
-    }
 
-    @Test
-    fun `Given configure is called it configures PlatformTest Sources, it selects Js over Any other source`() {
-        // Given
-        val project: Project = mockk()
-        val sources = mapOf(
-            "native" to "kspTestKotlinNative",
-            "js" to "kspTestKotlinJs"
-        )
-
-        val path: String = fixture.fixture()
-
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
-        val cleanUpTasks: List<KMockCleanTask> = listOf(
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-        )
-
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
-
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
-
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask.dependsOn(any()) } returns copyTask
-        every { copyTask.mustRunAfter(any()) } returns mockk()
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
-
-        // When
-        KmpSetupConfigurator.wireSharedSourceTasks(
-            project,
-            sources,
-            mapOf(
-                "commonTest" to setOf("native", "js")
-            )
-        )
-
-        // Then
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
@@ -530,161 +644,36 @@ class KmpSetupConfiguratorSpec {
                 "COMMONTEST",
             )
         }
-    }
-
-    @Test
-    fun `Given configure is called it configures PlatformTest Sources it selects Any other source if no precedence matches`() {
-        // Given
-        val project: Project = mockk()
-        val sources = mapOf(
-            "native1" to "kspTestKotlinNative1",
-            "native2" to "kspTestKotlinNative2"
-        )
-
-        val path: String = fixture.fixture()
-
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
-        val cleanUpTasks: List<KMockCleanTask> = listOf(
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-        )
-
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
-
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJs") } returns kspTask
-
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask.dependsOn(any()) } returns copyTask
-        every { copyTask.mustRunAfter(any()) } returns mockk()
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
-
-        // When
-        KmpSetupConfigurator.wireSharedSourceTasks(
-            project,
-            sources,
-            mapOf(
-                "commonTest" to setOf("native1", "native2")
-            )
-        )
-
-        // Then
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
-                "native1",
-                "native1Test",
-                "commonTest",
-                "COMMONTEST",
+                "jvm",
+                "jvmTest",
+                "otherTest",
+                "OTHERTEST",
             )
         }
 
-        verify(exactly = 1) { copyTask.dependsOn("kspTestKotlinNative1") }
-    }
-
-    @Test
-    fun `Given configure is called it configures AndroidSources and uses them over Jvm`() {
-        // Given
-        val project: Project = mockk()
-        val sources = mapOf(
-            "android" to "kspTestKotlinAndroid",
-            "jvm" to "kspTestKotlinJvm",
-        )
-
-        val path: String = fixture.fixture()
-
-        val copyTask: Copy = mockk()
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
-        val cleanUpTasks: List<KMockCleanTask> = listOf(
-            mockk(),
-            mockk(),
-            mockk(),
-        )
-
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns true
-
-        every { cleanUpTasks[0].group = any() } just Runs
-        every { cleanUpTasks[0].description = any() } just Runs
-        every { cleanUpTasks[0].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].platform.set(any<String>()) } just Runs
-        every { cleanUpTasks[0].indicators.addAll(any<Iterable<String>>()) } just Runs
-        every { cleanUpTasks[0].dependsOn(any()) } returns cleanUpTasks[0]
-        every { cleanUpTasks[0].dependsOn(*anyVararg()) } returns cleanUpTasks[0]
-        every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
-        every { cleanUpTasks[0].mustRunAfter(*anyVararg()) } returns cleanUpTasks[0]
-
-        every { cleanUpTasks[1].group = any() } just Runs
-        every { cleanUpTasks[1].description = any() } just Runs
-        every { cleanUpTasks[1].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].platform.set(any<String>()) } just Runs
-        every { cleanUpTasks[1].indicators.addAll(any<Iterable<String>>()) } just Runs
-        every { cleanUpTasks[1].dependsOn(any()) } returns cleanUpTasks[1]
-        every { cleanUpTasks[1].dependsOn(*anyVararg()) } returns cleanUpTasks[1]
-        every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
-        every { cleanUpTasks[1].mustRunAfter(*anyVararg()) } returns cleanUpTasks[1]
-
-        every { cleanUpTasks[2].group = any() } just Runs
-        every { cleanUpTasks[2].description = any() } just Runs
-        every { cleanUpTasks[2].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].platform.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].indicators.addAll(any<Iterable<String>>()) } just Runs
-        every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].dependsOn(*anyVararg()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].mustRunAfter(any()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].mustRunAfter(*anyVararg()) } returns cleanUpTasks[2]
-
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
-
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any()) } returns copyTask
-
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJvm") } returns kspTask
-        every { project.tasks.getByName("kspReleaseUnitTestKotlinAndroid") } returns kspTask
-
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
-
-        every { copyTask.dependsOn(any<String>()) } returns copyTask
-        every { copyTask.mustRunAfter(any<String>()) } returns copyTask
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
-
-        every { copyTask.doLast(any<Action<in Task>>()) } returns mockk()
-
-        // When
-        KmpSetupConfigurator.wireSharedSourceTasks(
-            project,
-            sources,
-            mapOf(
-                "commonTest" to setOf("jvm", "android")
-            )
-        )
-
-        // Then
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
-                "android",
-                "androidDebugUnitTest",
-                "commonTest",
-                "COMMONTEST",
+                "js",
+                "jsTest",
+                "otherTest",
+                "OTHERTEST",
+            )
+        }
+
+        verify(exactly = 1) { copyTasks[0].dependsOn("kspTestKotlinJvm") }
+        verify(exactly = 1) {
+            copyTasks[0].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
+            )
+        }
+        verify(exactly = 1) { copyTasks[2].dependsOn("kspTestKotlinJvm") }
+        verify(exactly = 1) {
+            copyTasks[2].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
             )
         }
 
@@ -692,112 +681,135 @@ class KmpSetupConfiguratorSpec {
             project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
         }
 
+        verify(exactly = 1) { cleanUpTasks[0].target.set("jvmTest") }
+        verify(exactly = 1) { cleanUpTasks[0].platform.set("jvm") }
+        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTasks[0], copyTasks[2])) }
         verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesAndroidDebugUnitTest", KMockCleanTask::class.java)
+            cleanUpTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
         }
+        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspTestKotlinJvm") }
+        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources for jvm" }
+        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
 
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesAndroidReleaseUnitTest", KMockCleanTask::class.java)
-        }
-
+        verify(exactly = 1) { copyTasks[1].dependsOn("kspTestKotlinJs") }
         verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(
-                project,
-                "android",
-                "androidDebugUnitTest",
-                "commonTest",
-                "COMMONTEST",
+            copyTasks[1].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
+            )
+        }
+        verify(exactly = 1) { copyTasks[3].dependsOn("kspTestKotlinJs") }
+        verify(exactly = 1) {
+            copyTasks[3].mustRunAfter(
+                *arrayOf("kspTestKotlinJvm", "kspTestKotlinJs")
             )
         }
 
-        verify(exactly = 1) { copyTask.dependsOn("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { copyTask.mustRunAfter("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { copyTask.mustRunAfter("kspTestKotlinJvm") }
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesJsTest", KMockCleanTask::class.java)
+        }
 
-        verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
-
-        verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
-        verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
-        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[1].dependsOn(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
-        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources" }
+        verify(exactly = 1) { cleanUpTasks[1].target.set("jsTest") }
+        verify(exactly = 1) { cleanUpTasks[1].platform.set("js") }
+        verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
+        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTasks[1], copyTasks[3])) }
+        verify(atLeast = 1) {
+            cleanUpTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
+        }
+        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspTestKotlinJs") }
+        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources for js" }
         verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
-
-        verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMONTEST")) }
-        verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask) }
-        verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { cleanUpTasks[2].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[2].group = "Code Generation" }
 
         verify(atLeast = 1) {
             project.tasks.getByName("compileTestKotlinJvm")
         }
 
         verify(atLeast = 1) {
-            project.tasks.getByName("compileDebugUnitTestKotlinAndroid")
+            project.tasks.getByName("compileTestKotlinJs")
         }
 
         verify(atLeast = 1) {
-            project.tasks.getByName("compileReleaseUnitTestKotlinAndroid")
-        }
-
-        verify(atLeast = 1) {
-            compileTask.dependsOn(
+            compileTasks[0].dependsOn(
                 cleanUpTasks[0],
             )
         }
 
         verify(atLeast = 1) {
-            compileTask.dependsOn(
+            compileTasks[0].mustRunAfter(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                *arrayOf(copyTasks[0], copyTasks[2]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                cleanUpTasks[1]
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
                 cleanUpTasks[1],
             )
         }
 
         verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[2],
+            compileTasks[1].dependsOn(
+                *arrayOf(copyTasks[1], copyTasks[3]),
             )
         }
 
-        verify(atLeast = 1) { compileTask.mustRunAfter(*arrayOf(copyTask)) }
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
+        }
     }
 
     @Test
-    fun `Given configure is called it allows Arbitrary Sources for Android`() {
+    fun `Given wireSharedSourceTasks is allows arbitrary SharedSources while Android is involved`() {
         // Given
         val project: Project = mockk()
         val sources = mapOf(
-            "android" to "kspTestKotlinAndroid",
-            "jvm" to "kspTestKotlinJvm",
+            "android" to "kspTestKotlinAndroid"
         )
 
         val path: String = fixture.fixture()
 
-        val copyTask0: Copy = mockk()
-        val copyTask1: Copy = mockk()
-
-        val compileTask: Task = mockk()
-        val kspTask: Task = mockk()
+        val copyTasks: List<Copy> = listOf(
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk()
+        )
         val cleanUpTasks: List<KMockCleanTask> = listOf(
             mockk(),
             mockk(),
+        )
+        val compileTasks: List<Task> = listOf(
             mockk(),
+            mockk()
         )
 
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns true
+        every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
+        every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
+        every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
+        every { copyTasks[1].mustRunAfter(*anyVararg()) } returns copyTasks[1]
 
         every { cleanUpTasks[0].group = any() } just Runs
         every { cleanUpTasks[0].description = any() } just Runs
@@ -809,6 +821,11 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[0].mustRunAfter(any()) } returns cleanUpTasks[0]
         every { cleanUpTasks[0].mustRunAfter(*anyVararg()) } returns cleanUpTasks[0]
 
+        every { copyTasks[2].dependsOn(any()) } returns copyTasks[2]
+        every { copyTasks[2].mustRunAfter(*anyVararg()) } returns copyTasks[2]
+        every { copyTasks[3].dependsOn(any()) } returns copyTasks[3]
+        every { copyTasks[3].mustRunAfter(*anyVararg()) } returns copyTasks[3]
+
         every { cleanUpTasks[1].group = any() } just Runs
         every { cleanUpTasks[1].description = any() } just Runs
         every { cleanUpTasks[1].target.set(any<String>()) } just Runs
@@ -819,45 +836,33 @@ class KmpSetupConfiguratorSpec {
         every { cleanUpTasks[1].mustRunAfter(any()) } returns cleanUpTasks[1]
         every { cleanUpTasks[1].mustRunAfter(*anyVararg()) } returns cleanUpTasks[1]
 
-        every { cleanUpTasks[2].group = any() } just Runs
-        every { cleanUpTasks[2].description = any() } just Runs
-        every { cleanUpTasks[2].target.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].platform.set(any<String>()) } just Runs
-        every { cleanUpTasks[2].indicators.addAll(any<Iterable<String>>()) } just Runs
-        every { cleanUpTasks[2].dependsOn(any()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].dependsOn(*anyVararg()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].mustRunAfter(any()) } returns cleanUpTasks[2]
-        every { cleanUpTasks[2].mustRunAfter(*anyVararg()) } returns cleanUpTasks[2]
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        every { project.tasks.create(any<String>(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
+        every { project.tasks.create(any(), KMockCleanTask::class.java) } returnsMany cleanUpTasks
 
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "commonTest", any()) } returns copyTask0
-        every { SharedSourceCopist.copySharedSource(any(), any(), any(), "otherTest", any()) } returns copyTask1
+        every {
+            SharedSourceCopist.copySharedSource(any(), any(), any(), any(), any())
+        } returnsMany copyTasks
 
-        every { project.tasks.getByName(any<String>()) } returns compileTask
-        every { project.tasks.getByName("kspTestKotlinJvm") } returns kspTask
-        every { project.tasks.getByName("kspReleaseUnitTestKotlinAndroid") } returns kspTask
+        every { project.tasks.getByName(any()) } returnsMany compileTasks
 
-        every { compileTask.dependsOn(any()) } returns compileTask
-        every { compileTask.dependsOn(*anyVararg()) } returns compileTask
-        every { compileTask.mustRunAfter(any()) } returns compileTask
-        every { compileTask.mustRunAfter(*anyVararg()) } returns compileTask
+        every { compileTasks[0].dependsOn(any()) } returns compileTasks[0]
+        every { compileTasks[0].dependsOn(*anyVararg()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(any()) } returns compileTasks[0]
+        every { compileTasks[0].mustRunAfter(*anyVararg()) } returns compileTasks[0]
 
-        every { copyTask0.dependsOn(any<String>()) } returns copyTask0
-        every { copyTask0.mustRunAfter(any<String>()) } returns copyTask0
-        every { copyTask0.doLast(any<Action<in Task>>()) } returns mockk()
-
-        every { copyTask1.dependsOn(any<String>()) } returns copyTask1
-        every { copyTask1.mustRunAfter(any<String>()) } returns copyTask1
-
-        every { kspTask.mustRunAfter(any<String>()) } returns kspTask
+        every { compileTasks[1].dependsOn(any()) } returns compileTasks[1]
+        every { compileTasks[1].dependsOn(*anyVararg()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(any()) } returns compileTasks[1]
+        every { compileTasks[1].mustRunAfter(*anyVararg()) } returns compileTasks[1]
 
         // When
         KmpSetupConfigurator.wireSharedSourceTasks(
             project,
             sources,
             mapOf(
-                "commonTest" to setOf("jvm", "android"),
+                "commonTest" to setOf("android"),
                 "otherTest" to setOf("android")
             )
         )
@@ -866,29 +871,7 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
-                "android",
-                "androidDebugUnitTest",
-                "commonTest",
-                "COMMONTEST",
-            )
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesJvmTest", KMockCleanTask::class.java)
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesAndroidDebugUnitTest", KMockCleanTask::class.java)
-        }
-
-        verify(atLeast = 1) {
-            project.tasks.create("cleanDuplicatesAndroidReleaseUnitTest", KMockCleanTask::class.java)
-        }
-
-        verify(exactly = 1) {
-            SharedSourceCopist.copySharedSource(
-                project,
-                "android",
+                "androidDebugUnit",
                 "androidDebugUnitTest",
                 "commonTest",
                 "COMMONTEST",
@@ -898,47 +881,91 @@ class KmpSetupConfiguratorSpec {
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
-                "android",
+                "androidReleaseUnit",
+                "androidReleaseUnitTest",
+                "commonTest",
+                "COMMONTEST",
+            )
+        }
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "androidDebugUnit",
                 "androidDebugUnitTest",
                 "otherTest",
                 "OTHERTEST",
             )
         }
 
-        verify(exactly = 1) { copyTask0.dependsOn("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { copyTask0.mustRunAfter("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { copyTask0.mustRunAfter("kspTestKotlinJvm") }
+        verify(exactly = 1) {
+            SharedSourceCopist.copySharedSource(
+                project,
+                "androidReleaseUnit",
+                "androidReleaseUnitTest",
+                "otherTest",
+                "OTHERTEST",
+            )
+        }
+
+        verify(exactly = 1) { copyTasks[0].dependsOn("kspDebugUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[0].mustRunAfter(
+                *arrayOf("kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+        verify(exactly = 1) { copyTasks[2].dependsOn("kspDebugUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[2].mustRunAfter(
+                *arrayOf("kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesAndroidDebugUnitTest", KMockCleanTask::class.java)
+        }
 
         verify(exactly = 1) { cleanUpTasks[0].target.set("androidDebugUnitTest") }
         verify(exactly = 1) { cleanUpTasks[0].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[0].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
-        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTask0, copyTask1)) }
-        verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
+        verify(exactly = 1) { cleanUpTasks[0].dependsOn(*arrayOf(copyTasks[0], copyTasks[2])) }
+        verify(atLeast = 1) {
+            cleanUpTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
+        }
         verify(atLeast = 1) { cleanUpTasks[0].mustRunAfter("kspDebugUnitTestKotlinAndroid") }
-        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources" }
+        verify(exactly = 1) { cleanUpTasks[0].description = "Removes Contradicting Sources for android" }
         verify(exactly = 1) { cleanUpTasks[0].group = "Code Generation" }
+
+        verify(exactly = 1) { copyTasks[1].dependsOn("kspReleaseUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[1].mustRunAfter(
+                *arrayOf("kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+        verify(exactly = 1) { copyTasks[3].dependsOn("kspReleaseUnitTestKotlinAndroid") }
+        verify(exactly = 1) {
+            copyTasks[3].mustRunAfter(
+                *arrayOf("kspDebugUnitTestKotlinAndroid", "kspReleaseUnitTestKotlinAndroid")
+            )
+        }
+
+        verify(atLeast = 1) {
+            project.tasks.create("cleanDuplicatesAndroidReleaseUnitTest", KMockCleanTask::class.java)
+        }
 
         verify(exactly = 1) { cleanUpTasks[1].target.set("androidReleaseUnitTest") }
         verify(exactly = 1) { cleanUpTasks[1].platform.set("android") }
         verify(exactly = 1) { cleanUpTasks[1].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
-        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTask0, copyTask1)) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter(*arrayOf(copyTask0, copyTask1)) }
-        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
-        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
-
-        verify(exactly = 1) { cleanUpTasks[2].target.set("jvmTest") }
-        verify(exactly = 1) { cleanUpTasks[2].platform.set("jvm") }
-        verify(exactly = 1) { cleanUpTasks[2].indicators.addAll(listOf("COMMONTEST", "OTHERTEST")) }
-        verify(exactly = 1) { cleanUpTasks[2].dependsOn(copyTask0) }
-        verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter(copyTask0) }
-        verify(atLeast = 1) { cleanUpTasks[2].mustRunAfter("kspTestKotlinJvm") }
-        verify(exactly = 1) { cleanUpTasks[2].description = "Removes Contradicting Sources" }
-        verify(exactly = 1) { cleanUpTasks[2].group = "Code Generation" }
-
+        verify(exactly = 1) { cleanUpTasks[1].dependsOn(*arrayOf(copyTasks[1], copyTasks[3])) }
         verify(atLeast = 1) {
-            project.tasks.getByName("compileTestKotlinJvm")
+            cleanUpTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3])
+            )
         }
+        verify(atLeast = 1) { cleanUpTasks[1].mustRunAfter("kspReleaseUnitTestKotlinAndroid") }
+        verify(exactly = 1) { cleanUpTasks[1].description = "Removes Contradicting Sources for android" }
+        verify(exactly = 1) { cleanUpTasks[1].group = "Code Generation" }
 
         verify(atLeast = 1) {
             project.tasks.getByName("compileDebugUnitTestKotlinAndroid")
@@ -949,23 +976,51 @@ class KmpSetupConfiguratorSpec {
         }
 
         verify(atLeast = 1) {
-            compileTask.dependsOn(
+            compileTasks[0].dependsOn(
                 cleanUpTasks[0],
             )
         }
 
         verify(atLeast = 1) {
-            compileTask.dependsOn(
+            compileTasks[0].mustRunAfter(
+                cleanUpTasks[0],
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].dependsOn(
+                *arrayOf(copyTasks[0], copyTasks[2]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[0].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3]),
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].dependsOn(
+                cleanUpTasks[1]
+            )
+        }
+
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
                 cleanUpTasks[1],
             )
         }
 
         verify(atLeast = 1) {
-            compileTask.dependsOn(
-                cleanUpTasks[2],
+            compileTasks[1].dependsOn(
+                *arrayOf(copyTasks[1], copyTasks[3]),
             )
         }
 
-        verify(atLeast = 1) { compileTask.mustRunAfter(*arrayOf(copyTask0)) }
+        verify(atLeast = 1) {
+            compileTasks[1].mustRunAfter(
+                *arrayOf(copyTasks[0], copyTasks[1], copyTasks[2], copyTasks[3]),
+            )
+        }
     }
 }

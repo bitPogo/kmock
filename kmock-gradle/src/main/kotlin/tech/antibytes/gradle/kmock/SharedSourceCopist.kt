@@ -50,7 +50,7 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
     ) {
         val capitalTarget = target.capitalize(Locale.ROOT)
 
-        task.description = "Extract $capitalTarget Sources"
+        task.description = "Extract $capitalTarget Sources for $platform"
         task.group = "Code Generation"
 
         task.from("$buildDir/generated/ksp/$platform/${source}Test")
@@ -76,7 +76,10 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
         guardInputs(platform, source, target, indicator)
 
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
-        val task = project.tasks.create("moveTo${target.capitalize(Locale.ROOT)}", Copy::class.java)
+        val task = project.tasks.create(
+            "moveTo${target.capitalize(Locale.ROOT)}For${platform.capitalize(Locale.ROOT)}",
+            Copy::class.java
+        )
 
         setUpTask(
             task = task,

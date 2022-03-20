@@ -29,7 +29,6 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import java.io.File
-import java.util.Locale
 import kotlin.test.assertFailsWith
 
 class SharedSourceCopistSpec {
@@ -108,8 +107,8 @@ class SharedSourceCopistSpec {
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
 
-        every { copyTask.description = any<String>() } just Runs
-        every { copyTask.group = any<String>() } just Runs
+        every { copyTask.description = any() } just Runs
+        every { copyTask.group = any() } just Runs
         every { copyTask.dependsOn(any()) } returns copyTask
         every { copyTask.mustRunAfter(any()) } returns copyTask
         every { copyTask.from(any<String>()) } returns copyTask
@@ -130,10 +129,10 @@ class SharedSourceCopistSpec {
         // Then
         task sameAs copyTask
         verify(exactly = 1) {
-            project.tasks.create("moveTo${target.capitalize(Locale.ROOT)}", Copy::class.java)
+            project.tasks.create("moveToTargetTestForSource", Copy::class.java)
         }
 
-        verify(exactly = 1) { copyTask.description = "Extract Target Sources" }
+        verify(exactly = 1) { copyTask.description = "Extract Target Sources for $sourcePlatform" }
         verify(exactly = 1) { copyTask.group = "Code Generation" }
         verify(exactly = 1) { copyTask.from("$buildDir/generated/ksp/$sourcePlatform/$source") }
         verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$targetPlatform/$target") }

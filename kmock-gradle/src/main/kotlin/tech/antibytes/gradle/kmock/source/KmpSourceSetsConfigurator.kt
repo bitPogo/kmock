@@ -169,9 +169,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         return dependencies
     }
 
-    override fun configure(
-        project: Project
-    ) {
+    override fun configure(project: Project) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
         val kspCollector: MutableMap<String, String> = mutableMapOf()
