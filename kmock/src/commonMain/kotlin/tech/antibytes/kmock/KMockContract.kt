@@ -692,9 +692,9 @@ object KMockContract {
      */
     interface VerificationHandle {
         /**
-         * Id of the Proxy.
+         * Reference of the Proxy.
          */
-        val id: String
+        val proxy: Proxy<*, *>
 
         /**
          * List with aggregated indices of invocation of the refered Proxy.
@@ -729,7 +729,7 @@ object KMockContract {
         /**
          * The referenced Proxy.
          */
-        val Proxy: Proxy<*, *>,
+        val proxy: Proxy<*, *>,
 
         /**
          * The referenced Call.

@@ -23,7 +23,7 @@ private fun <T> traverseMockAndShare(
         }
     }
 
-    val handle = VerificationHandle(proxy.id, callIndices)
+    val handle = VerificationHandle(proxy, callIndices)
     shareHandle(proxy, handle)
 
     return handle

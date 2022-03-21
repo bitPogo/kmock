@@ -66,6 +66,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     private val buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
 
     private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
+    private val _verificationBuilderFreezing: KMockContract.VerificationChainBuilder? = null
+
     override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
 
     protected enum class Provider(val value: Int) {

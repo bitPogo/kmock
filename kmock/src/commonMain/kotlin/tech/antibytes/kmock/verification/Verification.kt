@@ -108,13 +108,13 @@ private fun initChainVerification(
     val container = VerificationChainBuilder()
 
     references.forEach { reference ->
-        reference.Proxy.verificationBuilderReference = container
+        reference.proxy.verificationBuilderReference = container
     }
 
     scope(container)
 
     references.forEach { reference ->
-        reference.Proxy.verificationBuilderReference = null
+        reference.proxy.verificationBuilderReference = null
     }
 
     return container.toList()
@@ -141,15 +141,15 @@ private fun evaluateStrictReference(
     functionName: String,
     call: Int?
 ) {
-    if (reference.Proxy.id != functionName) {
-        val message = formatMessage(MISMATCHING_FUNCTION, reference.Proxy.id, functionName)
+    if (reference.proxy.id != functionName) {
+        val message = formatMessage(MISMATCHING_FUNCTION, reference.proxy.id, functionName)
         throw AssertionError(message)
     }
 
     if (call == null) {
         val message = formatMessage(
             NO_MATCHING_CALL_IDX,
-            reference.Proxy.id
+            reference.proxy.id
         )
 
         throw AssertionError(message)
@@ -159,7 +159,7 @@ private fun evaluateStrictReference(
         val message = formatMessage(
             MISMATCHING_CALL_IDX,
             reference.callIndex,
-            "$call of ${reference.Proxy.id}"
+            "$call of ${reference.proxy.id}"
         )
 
         throw AssertionError(message)
@@ -189,7 +189,7 @@ fun Verifier.verifyStrictOrder(
     guardStrictChain(this.references, handles)
 
     this.references.forEachIndexed { idx, reference ->
-        val functionName = handles[idx].id
+        val functionName = handles[idx].proxy.id
         val lastCall = handleCalls[functionName] ?: -1
         val call = scanHandleStrictly(lastCall, handles[idx].callIndices)
 
@@ -219,7 +219,7 @@ private fun evaluateReference(
 ): Boolean {
     return when {
         call == null -> false
-        reference.Proxy.id != functionName -> false
+        reference.proxy.id != functionName -> false
         reference.callIndex != call -> false
         else -> true
     }
@@ -232,7 +232,7 @@ private fun ensureAllHandlesAreDone(
     if (handleOffset != handles.size) {
         val message = formatMessage(
             CALL_NOT_FOUND,
-            handles[handleOffset].id
+            handles[handleOffset].proxy.id
         )
 
         throw AssertionError(message)
@@ -267,7 +267,7 @@ fun Verifier.verifyOrder(
             return@forEach
         }
 
-        val functionName = handles[handleOffset].id
+        val functionName = handles[handleOffset].proxy.id
         val lastCall = handleCalls[functionName] ?: -1
         val call = scanHandle(lastCall, handles[handleOffset].callIndices)
 

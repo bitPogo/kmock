@@ -6,6 +6,8 @@
 
 package tech.antibytes.mock
 
+import kotlinx.atomicfu.AtomicRef
+import kotlinx.atomicfu.atomic
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
 
@@ -13,9 +15,11 @@ class SyncFunProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
-    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? = null,
     override val ignorableForVerification: Boolean = false
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
+    private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
+    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
+
     override var throws: Throwable
         get() = TODO("Not yet implemented")
         set(_) {}

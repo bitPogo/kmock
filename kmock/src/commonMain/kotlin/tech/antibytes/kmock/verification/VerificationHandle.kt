@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Proxy
 
 /**
  * Handle with the aggregated information of a Proxy invocation.
@@ -14,6 +15,6 @@ import tech.antibytes.kmock.KMockContract
  * @author Matthias Geisler
  */
 data class VerificationHandle(
-    override val id: String,
+    override val proxy: Proxy<*, *>,
     override val callIndices: List<Int>
 ) : KMockContract.VerificationHandle

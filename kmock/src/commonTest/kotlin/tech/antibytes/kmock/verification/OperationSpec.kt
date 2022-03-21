@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.verification
 
+import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -24,8 +25,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.fixture(), values1)
-        val handle2 = VerificationHandle(fixture.fixture(), values2)
+        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
+        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
 
         // When
         val unionError = assertFailsWith<IllegalArgumentException> {
@@ -46,11 +47,12 @@ class OperationSpec {
     fun `Given union is called with different VerificationHandles it merges both`() {
         // Given
         val name: String = fixture.fixture()
+        val proxy = fixture.funProxyFixture(id = name)
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(name, values1)
-        val handle2 = VerificationHandle(name, values2)
+        val handle1 = VerificationHandle(proxy, values1)
+        val handle2 = VerificationHandle(proxy, values2)
 
         // When
         val actualUnion = handle1 union handle2
@@ -65,7 +67,7 @@ class OperationSpec {
 
         actualOr mustBe actualUnion
 
-        actualUnion.id mustBe handle1.id
+        actualUnion.proxy mustBe handle1.proxy
         actualUnion.callIndices.forEachIndexed { idx, value ->
             value mustBe expected[idx]
         }
@@ -78,8 +80,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.fixture(), values1)
-        val handle2 = VerificationHandle(fixture.fixture(), values2)
+        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
+        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
 
         // When
         val intersectError = assertFailsWith<IllegalArgumentException> {
@@ -100,6 +102,8 @@ class OperationSpec {
     fun `Given intersect is called with different VerificationHandles it makes the intersection of both`() {
         // Given
         val name: String = fixture.fixture()
+        val proxy = fixture.funProxyFixture(id = name)
+
         val base: List<Int> = fixture.listFixture()
         val values1: List<Int> = fixture.listFixture<Int>()
             .toMutableList()
@@ -110,8 +114,8 @@ class OperationSpec {
             .also { it.addAll(base) }
             .also { it.shuffle() }
 
-        val handle1 = VerificationHandle(name, values1)
-        val handle2 = VerificationHandle(name, values2)
+        val handle1 = VerificationHandle(proxy, values1)
+        val handle2 = VerificationHandle(proxy, values2)
 
         // When
         val actualIntersect = handle1 intersection handle2
@@ -122,7 +126,7 @@ class OperationSpec {
 
         actualAnd mustBe actualIntersect
 
-        actualIntersect.id mustBe handle1.id
+        actualIntersect.proxy mustBe handle1.proxy
         actualIntersect.callIndices.forEachIndexed { idx, value ->
             value mustBe expected[idx]
         }
@@ -135,8 +139,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.fixture(), values1)
-        val handle2 = VerificationHandle(fixture.fixture(), values2)
+        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
+        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
 
         // When
         val diffError = assertFailsWith<IllegalArgumentException> {
@@ -157,6 +161,8 @@ class OperationSpec {
     fun `Given diff is called with different VerificationHandles it makes the difference of both`() {
         // Given
         val name: String = fixture.fixture()
+        val proxy = fixture.funProxyFixture(id = name)
+
         val base: List<Int> = fixture.listFixture()
         val values1: List<Int> = fixture.listFixture<Int>()
             .toMutableList()
@@ -167,8 +173,8 @@ class OperationSpec {
             .also { it.addAll(base) }
             .also { it.shuffle() }
 
-        val handle1 = VerificationHandle(name, values1)
-        val handle2 = VerificationHandle(name, values2)
+        val handle1 = VerificationHandle(proxy, values1)
+        val handle2 = VerificationHandle(proxy, values2)
 
         // When
         val actualDiff = handle1 diff handle2
@@ -183,7 +189,7 @@ class OperationSpec {
 
         actualXOr mustBe actualDiff
 
-        actualDiff.id mustBe handle1.id
+        actualDiff.proxy mustBe handle1.proxy
         actualDiff.callIndices.forEachIndexed { idx, value ->
             value mustBe expected[idx]
         }

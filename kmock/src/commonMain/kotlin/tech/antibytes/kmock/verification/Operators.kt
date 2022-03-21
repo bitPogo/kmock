@@ -13,7 +13,7 @@ private fun guardInvocation(
     handle2: VerificationHandle,
     method: String
 ) {
-    if (handle1.id != handle2.id) {
+    if (handle1.proxy !== handle2.proxy) {
         throw IllegalArgumentException("$method cannot be applied to handles which refer to different proxies.")
     }
 }
@@ -36,7 +36,7 @@ infix fun VerificationHandle.union(
     multiSet.addAll(other.callIndices)
 
     return VerificationHandle(
-        this.id,
+        this.proxy,
         multiSet.sorted()
     )
 }
@@ -69,7 +69,7 @@ infix fun VerificationHandle.intersection(
         .sorted()
 
     return VerificationHandle(
-        this.id,
+        this.proxy,
         set
     )
 }
@@ -105,7 +105,7 @@ infix fun VerificationHandle.diff(
         .sorted()
 
     return VerificationHandle(
-        this.id,
+        this.proxy,
         set
     )
 }
