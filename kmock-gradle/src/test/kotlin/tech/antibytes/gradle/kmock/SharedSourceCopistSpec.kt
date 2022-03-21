@@ -137,6 +137,7 @@ class SharedSourceCopistSpec {
 
         // Then
         task sameAs copyTask
+
         verify(exactly = 1) {
             project.tasks.create("moveToTargetTestForSource", Copy::class.java)
         }
