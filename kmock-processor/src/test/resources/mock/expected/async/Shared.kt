@@ -1,4 +1,3 @@
-// TEST
 package mock.template.async
 
 import kotlin.Any

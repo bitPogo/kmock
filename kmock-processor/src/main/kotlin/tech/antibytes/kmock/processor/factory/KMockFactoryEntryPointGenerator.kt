@@ -13,11 +13,11 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.titleCase
 
 internal class KMockFactoryEntryPointGenerator(
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
@@ -117,11 +117,10 @@ internal class KMockFactoryEntryPointGenerator(
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 options.rootPackage,
-                "MockFactoryCommonTestEntry"
+                "MockFactory${INDICATOR_SEPARATOR}COMMONTEST"
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
-            file.addComment(ProcessorContract.Target.COMMON.value.uppercase())
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
             file.addFunction(buildMockFactory())
@@ -147,14 +146,13 @@ internal class KMockFactoryEntryPointGenerator(
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
             if (generics.isNotEmpty()) {
-                val infix = indicator.titleCase()
+                val targetIndicator = indicator.uppercase()
 
                 val file = FileSpec.builder(
                     options.rootPackage,
-                    "MockFactory${infix}Entry"
+                    "MockFactory$INDICATOR_SEPARATOR$targetIndicator"
                 )
 
-                file.addComment(indicator.uppercase())
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
                 generateGenericEntryPoints(

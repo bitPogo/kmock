@@ -1,4 +1,3 @@
-// COMMONTEST
 package mock.template.`property`
 
 import kotlin.Any

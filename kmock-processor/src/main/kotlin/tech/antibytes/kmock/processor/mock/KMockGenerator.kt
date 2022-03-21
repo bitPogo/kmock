@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
@@ -209,6 +210,17 @@ internal class KMockGenerator(
         return implementation.build()
     }
 
+    private fun dertermineFileName(
+        mockName: String,
+        suffix: String
+    ): String {
+        return if (suffix.isEmpty()) {
+            mockName
+        } else {
+            "$mockName$INDICATOR_SEPARATOR$suffix"
+        }
+    }
+
     private fun writeMock(
         template: KSClassDeclaration,
         alias: String?,
@@ -218,10 +230,11 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ) {
         val templateName = alias ?: template.simpleName.asString()
+        val targetIndicator = target.uppercase()
         val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
-            mockName
+            dertermineFileName(mockName, targetIndicator)
         )
 
         val implementation = buildMock(
@@ -230,10 +243,6 @@ internal class KMockGenerator(
             generics = generics,
             relaxer = relaxer
         )
-
-        if (target.isNotEmpty()) {
-            file.addComment(target.uppercase())
-        }
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
         file.addImport(PROP_NAME.packageName, PROP_NAME.simpleName)

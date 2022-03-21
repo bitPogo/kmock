@@ -1,4 +1,3 @@
-// NOTTEST
 package generatorTest
 
 import factory.template.generics.Shared3

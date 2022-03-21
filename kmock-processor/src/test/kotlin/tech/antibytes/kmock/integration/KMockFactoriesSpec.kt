@@ -107,7 +107,7 @@ class KMockFactoriesSpec {
             source
         )
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
+        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -161,7 +161,7 @@ class KMockFactoriesSpec {
             source
         )
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
+        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -227,8 +227,8 @@ class KMockFactoriesSpec {
             source2,
             source3
         )
-        val actualExpect1 = resolveGenerated("MockFactoryTestEntry.kt")
-        val actualExpect2 = resolveGenerated("MockFactoryNottestEntry.kt")
+        val actualExpect1 = resolveGenerated("MockFactory@TEST.kt")
+        val actualExpect2 = resolveGenerated("MockFactory@NOTTEST.kt")
         val actualActual = resolveGenerated("MockFactory.kt")
 
         // Then
@@ -260,7 +260,7 @@ class KMockFactoriesSpec {
             source
         )
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
+        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -345,7 +345,7 @@ class KMockFactoriesSpec {
             source
         )
         val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactoryCommonTestEntry.kt")
+        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
