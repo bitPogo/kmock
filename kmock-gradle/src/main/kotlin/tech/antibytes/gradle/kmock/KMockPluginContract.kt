@@ -79,6 +79,13 @@ internal interface KMockPluginContract {
         )
     }
 
+    interface KspSharedSourceCleaner {
+        fun cleanKspSources(
+            project: Project,
+            sourceSets: Set<String>
+        )
+    }
+
     interface SourceSetConfigurator {
         fun configure(project: Project)
     }

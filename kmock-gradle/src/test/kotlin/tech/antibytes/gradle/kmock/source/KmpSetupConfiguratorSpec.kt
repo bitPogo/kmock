@@ -33,11 +33,13 @@ class KmpSetupConfiguratorSpec {
     @BeforeEach
     fun setUp() {
         mockkObject(SharedSourceCopist)
+        mockkObject(KspSharedSourceCleaner)
     }
 
     @AfterEach
     fun tearDown() {
         unmockkObject(SharedSourceCopist)
+        unmockkObject(KspSharedSourceCleaner)
     }
 
     @Test
@@ -68,6 +70,8 @@ class KmpSetupConfiguratorSpec {
             mockk(),
             mockk()
         )
+
+        every { KspSharedSourceCleaner.cleanKspSources(any(), any()) } just Runs
 
         every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
         every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
@@ -126,6 +130,19 @@ class KmpSetupConfiguratorSpec {
         )
 
         // Then
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("commonTest")
+            )
+        }
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("jvmTest", "jsTest")
+            )
+        }
+
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
@@ -277,6 +294,8 @@ class KmpSetupConfiguratorSpec {
             mockk()
         )
 
+        every { KspSharedSourceCleaner.cleanKspSources(any(), any()) } just Runs
+
         every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
         every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
         every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
@@ -348,8 +367,21 @@ class KmpSetupConfiguratorSpec {
                 "commonTest" to setOf("jvm", "android"),
             )
         )
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("jvmTest", "androidTest")
+            )
+        }
 
         // Then
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("commonTest")
+            )
+        }
+
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
@@ -563,6 +595,8 @@ class KmpSetupConfiguratorSpec {
             mockk()
         )
 
+        every { KspSharedSourceCleaner.cleanKspSources(any(), any()) } just Runs
+
         every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
         every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
         every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
@@ -625,6 +659,19 @@ class KmpSetupConfiguratorSpec {
         )
 
         // Then
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("commonTest", "otherTest")
+            )
+        }
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("jvmTest", "jsTest")
+            )
+        }
+
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,
@@ -806,6 +853,8 @@ class KmpSetupConfiguratorSpec {
             mockk()
         )
 
+        every { KspSharedSourceCleaner.cleanKspSources(any(), any()) } just Runs
+
         every { copyTasks[0].dependsOn(any()) } returns copyTasks[0]
         every { copyTasks[0].mustRunAfter(*anyVararg()) } returns copyTasks[0]
         every { copyTasks[1].dependsOn(any()) } returns copyTasks[1]
@@ -868,6 +917,19 @@ class KmpSetupConfiguratorSpec {
         )
 
         // Then
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("commonTest", "otherTest")
+            )
+        }
+        verify(exactly = 1) {
+            KspSharedSourceCleaner.cleanKspSources(
+                project,
+                setOf("androidTest")
+            )
+        }
+
         verify(exactly = 1) {
             SharedSourceCopist.copySharedSource(
                 project,

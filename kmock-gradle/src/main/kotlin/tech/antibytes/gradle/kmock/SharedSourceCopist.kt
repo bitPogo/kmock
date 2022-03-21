@@ -98,13 +98,12 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             "moveTo${target.capitalize(Locale.ROOT)}For${platform.capitalize(Locale.ROOT)}",
             Copy::class.java
         )
-
         setUpTask(
             task = task,
             platform = platform,
             buildDir = buildDir,
-            source = source.substringBeforeLast("Test"),
-            target = target.substringBeforeLast("Test"),
+            source = source.substring(0, source.length - 4),
+            target = target.substring(0, target.length - 4),
             indicator = indicator,
         )
 

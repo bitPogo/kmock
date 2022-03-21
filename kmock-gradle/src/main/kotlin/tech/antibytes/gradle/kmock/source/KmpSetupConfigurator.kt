@@ -320,6 +320,9 @@ internal object KmpSetupConfigurator : KMockPluginContract.KmpSetupConfigurator 
 
         indicators[common] = common.toUpperCase(Locale.ROOT)
 
+        KspSharedSourceCleaner.cleanKspSources(project, indicators.keys)
+        KspSharedSourceCleaner.cleanKspSources(project, kspMapping.keys.map { source -> "${source}Test" }.toSet())
+
         wireSharedSourceTasks(
             project,
             indicators,
