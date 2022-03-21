@@ -796,7 +796,9 @@ object KMockContract {
     internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
     internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
     internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+
     internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
+    internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
 
     internal const val NOT_CALLED = "Call not found."
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
