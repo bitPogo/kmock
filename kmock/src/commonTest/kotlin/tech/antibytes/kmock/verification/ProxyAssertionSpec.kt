@@ -50,6 +50,35 @@ class ProxyAssertionSpec {
 
     @Test
     @JsName("fn2")
+    fun `Given assertHasBeenCalledWithVoid fails if the amount of calls does not match the criteria`() {
+        // Given
+        val values = arrayOf<Any>()
+        val proxy = SyncFunProxyStub(fixture.fixture(), 5)
+
+        proxy.getArgumentsForCall = { values }
+
+        // Then
+        assertFailsWith<AssertionError> {
+            // When
+            proxy.assertHasBeenCalledWithVoid(exactly = 1)
+        }
+    }
+
+    @Test
+    @JsName("fn3")
+    fun `Given assertHasBeenCalledWith accepts if the amount of calls match the criteria`() {
+        // Given
+        val values = arrayOf<Any>()
+        val proxy = SyncFunProxyStub(fixture.fixture(), 1)
+
+        proxy.getArgumentsForCall = { values }
+
+        // When
+        proxy.assertHasBeenCalledWithVoid(exactly = 1)
+    }
+
+    @Test
+    @JsName("fn4")
     fun `Given assertHasBeenCalledWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -68,7 +97,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn5")
     fun `Given assertHasBeenCalledWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -83,7 +112,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn4")
+    @JsName("fn6")
     fun `Given assertHasBeenCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -102,7 +131,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn5")
+    @JsName("fn7")
     fun `Given assertHasBeenCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -118,7 +147,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn8")
     fun `Given assertHadNotBeenCalled fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -134,7 +163,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn9")
     fun `Given assertHadNotBeenCalled accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -147,7 +176,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn10")
     fun `Given assertHasBeenCalledWithout fails if the amount of calls does not match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -163,7 +192,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn11")
     fun `Given assertHasBeenCalledWithout accepts if the amount of calls does match the criteria`() {
         // Given
         val values = fixture.listFixture<String>(size = 2).toTypedArray()
@@ -176,7 +205,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn12")
     fun `Given assertWasGotten fails if the amount of calls does not match the criteria`() {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), 2)
@@ -191,7 +220,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn13")
     fun `Given assertWasGotten accepts if the amount of calls does match the criteria`() {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), 1)
@@ -203,7 +232,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn14")
     fun `Given assertWasSet fails if the amount of calls does not match the criteria`() {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), 2)
@@ -218,7 +247,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn15")
     fun `Given assertWasSet accepts if the amount of calls does match the criteria`() {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), 1)
@@ -230,7 +259,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn16")
     fun `Given assertWasSetTo fails if the amount of calls does not match the criteria`() {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), 2)
@@ -245,7 +274,7 @@ class ProxyAssertionSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn17")
     fun `Given assertWasSetTo accepts if the amount of calls does match the criteria`() {
         // Given
         val value: Any = fixture.fixture()

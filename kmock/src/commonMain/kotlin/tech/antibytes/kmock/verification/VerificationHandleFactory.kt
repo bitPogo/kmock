@@ -46,6 +46,13 @@ private fun shareHandle(
 fun FunProxy<*, *>.hasBeenCalled(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWith() }
 
 /**
+ * VerificationHandle Factory, which collects all invocation of an FunProxy which contain no Arguments.
+ * @return VerificationHandle
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.hasBeenCalledWithVoid(): VerificationHandle = traverseMockAndShare(this) { hasBeenCalledWithVoid() }
+
+/**
  * VerificationHandle Factory, which collects all invocation of an FunProxy which matches the given Arguments.
  * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
  * @return VerificationHandle

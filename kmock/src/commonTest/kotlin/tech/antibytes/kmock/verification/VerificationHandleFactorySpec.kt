@@ -23,7 +23,7 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn0")
-    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if there were no calls`() {
+    fun `Given hasBeenCalled is called with a FunProxy it returns a VerficationHandle which contains no matches if there were no calls`() {
         // Given
         val name: String = fixture.fixture()
         val mock = SyncFunProxyStub(name, 0)
@@ -37,7 +37,7 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn1")
-    fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if there were calls`() {
+    fun `Given hasBeenCalled is called with a FunProxy it returns a VerficationHandle which contains no matches if there were calls`() {
         // Given
         val name: String = fixture.fixture()
         val mock = SyncFunProxyStub(name, 1)
@@ -59,6 +59,64 @@ class VerificationHandleFactorySpec {
 
     @Test
     @JsName("fn2")
+    fun `Given hasBeenCalledWithVoid is called with a FunProxy it returns a VerficationHandle which contains matches if there were no calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = SyncFunProxyStub(name, 0)
+
+        // When
+        val actual = mock.hasBeenCalledWithVoid()
+
+        // Then
+        actual mustBe VerificationHandle(name, emptyList())
+    }
+
+    @Test
+    @JsName("fn3")
+    fun `Given hasBeenCalledWithVoid is called with a FunProxy it returns a VerficationHandle which contains no matches if no call matches`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = SyncFunProxyStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            fixture.listFixture<String>().toTypedArray()
+        }
+
+        // When
+        val actual = mock.hasBeenCalledWithVoid()
+
+        // Then
+        actual mustBe VerificationHandle(name, emptyList())
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn4")
+    fun `Given hasBeenCalledWithVoid is called with a FunProxy it returns a VerficationHandle which contains matches if there were calls`() {
+        // Given
+        val name: String = fixture.fixture()
+        val mock = SyncFunProxyStub(name, 1)
+
+        var capturedIndex: Int? = null
+        mock.getArgumentsForCall = { givenIndex ->
+            capturedIndex = givenIndex
+
+            arrayOf()
+        }
+
+        // When
+        val actual = mock.hasBeenCalled()
+
+        // Then
+        actual mustBe VerificationHandle(name, listOf(0))
+        capturedIndex mustBe 0
+    }
+
+    @Test
+    @JsName("fn5")
     fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -72,7 +130,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn6")
     fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -94,7 +152,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn4")
+    @JsName("fn7")
     fun `Given hasBeenCalledWith is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -117,7 +175,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn5")
+    @JsName("fn8")
     fun `Given hasBeenCalledWith is called with a FunProxy it propagtes its handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -144,7 +202,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn6")
+    @JsName("fn9")
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -158,7 +216,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn10")
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -180,7 +238,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn11")
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -203,7 +261,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn12")
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -231,7 +289,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn13")
     fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -245,7 +303,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn14")
     fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -268,7 +326,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn15")
     fun `Given hasBeenCalledWithout is called with a FunProxy it returns a VerficationHandle which contains matches if something matches while delegating the captured values`() {
         // Given
         val name: String = fixture.fixture()
@@ -290,7 +348,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn16")
     fun `Given hasBeenCalledWithout is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -316,7 +374,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn17")
     fun `Given wasGotten is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -338,7 +396,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn18")
     fun `Given wasGotten is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -360,7 +418,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn19")
     fun `Given wasGotten is called with a PropProxy it it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -386,7 +444,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn20")
     fun `Given wasSet is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -408,7 +466,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn21")
     fun `Given wasSet is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -430,7 +488,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn22")
     fun `Given wasSet is called with a PropProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
@@ -456,7 +514,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn23")
     fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
         val name: String = fixture.fixture()
@@ -478,7 +536,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn24")
     fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle while filtering mismatching Values`() {
         // Given
         val name: String = fixture.fixture()
@@ -500,7 +558,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn25")
     fun `Given wasSetTo is called with a PropProxy it returns a VerficationHandle which contains matches`() {
         // Given
         val name: String = fixture.fixture()
@@ -523,7 +581,7 @@ class VerificationHandleFactorySpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn26")
     fun `Given wasSetTo is called with a PropProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()

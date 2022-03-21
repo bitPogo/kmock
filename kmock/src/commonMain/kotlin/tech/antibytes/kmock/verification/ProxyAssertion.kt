@@ -27,6 +27,22 @@ fun FunProxy<*, *>.assertHasBeenCalled(
 }
 
 /**
+ * Asserts that invocations of a FunProxy happened which has no Arguments.
+ * @param exactly how often the Proxy was invoked.
+ * @throws AssertionError if the amount of calls does not match the expected amount.
+ * @see FunProxy
+ * @see verify
+ * @author Matthias Geisler
+ */
+fun FunProxy<*, *>.assertHasBeenCalledWithVoid(
+    exactly: Int,
+) {
+    verify(exactly = exactly) {
+        this.hasBeenCalledWithVoid()
+    }
+}
+
+/**
  * Asserts that invocations of a FunProxy with the given arguments happened.
  * @param exactly how often the Proxy was invoked.
  * @param arguments or constraints which follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments/constraints.
