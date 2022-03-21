@@ -22,107 +22,6 @@ class VerificationSpec {
 
     @Test
     @JsName("fn0")
-    fun `Given verify is called it fails if the covered mock does not contain any call`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-
-        // When
-        val error = assertFailsWith<AssertionError> {
-            verify {
-                VerificationHandle(proxy, emptyList())
-            }
-        }
-
-        error.message mustBe "Call not found."
-    }
-
-    @Test
-    @JsName("fn1")
-    fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-        val givenCalls = 1
-        val expectedCalls = 3
-
-        // When
-        val error = assertFailsWith<AssertionError> {
-            verify(atLeast = expectedCalls) {
-                VerificationHandle(proxy, fixture.listFixture(size = givenCalls))
-            }
-        }
-
-        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
-    }
-
-    @Test
-    @JsName("fn2")
-    fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-        val givenCalls = 3
-        val expectedCalls = 1
-
-        // When
-        val error = assertFailsWith<AssertionError> {
-            verify(atMost = expectedCalls) {
-                VerificationHandle(proxy, fixture.listFixture(size = givenCalls))
-            }
-        }
-
-        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
-    }
-
-    @Test
-    @JsName("fn3")
-    fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-        val givenCalls = 1
-        val expectedCalls = 3
-
-        // When
-        val error = assertFailsWith<AssertionError> {
-            verify(exactly = expectedCalls, atLeast = 0) {
-                VerificationHandle(proxy, fixture.listFixture(size = givenCalls))
-            }
-        }
-
-        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
-    }
-
-    @Test
-    @JsName("fn4")
-    fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-        val givenCalls = 3
-        val expectedCalls = 1
-
-        // When
-        val error = assertFailsWith<AssertionError> {
-            verify(exactly = expectedCalls, atMost = 0) {
-                VerificationHandle(proxy, fixture.listFixture(size = givenCalls))
-            }
-        }
-
-        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
-    }
-
-    @Test
-    @JsName("fn5")
-    fun `Given verify is called it passes if the covered mock matches the requirements`() {
-        // Given
-        val proxy = fixture.funProxyFixture()
-        val givenCalls = 3
-
-        // When
-        verify(exactly = givenCalls) {
-            VerificationHandle(proxy, fixture.listFixture(size = givenCalls))
-        }
-    }
-
-    @Test
-    @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
         // Given
         val shared = fixture.funProxyFixture()
@@ -161,7 +60,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn1")
     fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
         // Given
         val handleProxy = fixture.funProxyFixture()
@@ -190,7 +89,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn2")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match`() {
         // Given
         val name: String = fixture.fixture()
@@ -221,7 +120,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn3")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values`() {
         // Given
         val name: String = fixture.fixture()
@@ -259,7 +158,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn10")
+    @JsName("fn4")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -303,7 +202,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn5")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length while exceeding the range`() {
         // Given
         val name: String = fixture.fixture()
@@ -355,7 +254,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
@@ -409,7 +308,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn13")
+    @JsName("fn7")
     fun `Given verifyStrictOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
@@ -458,7 +357,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn8")
     fun `Given verifyOrder is called it fails if the amount captured calls is smaller than the given Order`() {
         // Given
         val verifier = VerifierStub(emptyList())
@@ -478,7 +377,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn9")
     fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
         val handleProxy = fixture.funProxyFixture()
         val referenceProxy = fixture.funProxyFixture()
@@ -506,7 +405,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn16")
+    @JsName("fn10")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found`() {
         // Given
         val name: String = fixture.fixture()
@@ -531,7 +430,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn11")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls`() {
         // Given
         val name: String = fixture.fixture()
@@ -571,7 +470,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn12")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls`() {
         // Given
         val name: String = fixture.fixture()
@@ -606,7 +505,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn13")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -652,7 +551,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn14")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls with various length`() {
         // Given
         val name: String = fixture.fixture()
@@ -696,7 +595,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn15")
     fun `Given verifyOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()
@@ -745,7 +644,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn16")
     fun `Given verifyOrder is called it fails if the referenced CallIndicies does not match on multiple values with mixed References`() {
         // Given
         val name1: String = fixture.fixture()

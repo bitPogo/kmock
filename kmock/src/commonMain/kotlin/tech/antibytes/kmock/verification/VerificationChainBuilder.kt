@@ -16,9 +16,9 @@ internal class VerificationChainBuilder :
     private val handles = IsoMutableList<VerificationHandle>()
 
     override fun ensureVerificationOf(vararg proxies: KMockContract.Proxy<*, *>) {
-        proxies.forEach { mock ->
-            if (mock.verificationBuilderReference != this) {
-                throw IllegalStateException("The given mock ${mock.id} is not part of this VerificationChain.")
+        proxies.forEach { proxy ->
+            if (proxy.verificationBuilderReference != this) {
+                throw IllegalStateException("The given proxy ${proxy.id} is not part of this VerificationChain.")
             }
         }
     }
