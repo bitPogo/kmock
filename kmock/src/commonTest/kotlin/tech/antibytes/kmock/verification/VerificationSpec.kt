@@ -125,14 +125,15 @@ class VerificationSpec {
     @JsName("fn6")
     fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
         // Given
+        val shared = fixture.funProxyFixture()
         val verifierLower = VerifierStub(emptyList())
         val verifierUpper = VerifierStub(
             listOf(
-                Reference(fixture.funProxyFixture(), fixture.fixture()),
+                Reference(shared, 0),
                 Reference(fixture.funProxyFixture(), fixture.fixture())
             )
         )
-        val handle = VerificationHandle(fixture.funProxyFixture(), fixture.listFixture())
+        val handle = VerificationHandle(shared, listOf(0))
 
         // Then
         val errorLowerBound = assertFailsWith<AssertionError> {
@@ -216,7 +217,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
     }
 
     @Test
@@ -254,7 +255,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
     }
 
     @Test
@@ -298,7 +299,7 @@ class VerificationSpec {
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
     }
 
     @Test

@@ -793,6 +793,6 @@ object KMockContract {
     internal const val NOTHING_TO_VERIFY = "The given verification chain (has %0 items) is exceeding the captured calls (%1 were captured)."
     internal const val NO_MATCHING_CALL_IDX = "The captured calls of %0 exceeds the captured calls."
     internal const val MISMATCHING_FUNCTION = "Excepted '%0', but got '%1'."
-    internal const val MISMATCHING_CALL_IDX = "Excepted the %0 of %1, but the %2 was referenced."
+    internal const val MISMATCHING_CALL_IDX = "Excepted the %0 call of %1, but the %2 was referenced."
     internal const val CALL_NOT_FOUND = "Last referred invocation of %0 was not found."
 }

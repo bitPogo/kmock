@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.verification
 
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.MISMATCHING_CALL_IDX
 import tech.antibytes.kmock.KMockContract.MISMATCHING_FUNCTION
@@ -118,26 +119,26 @@ private fun scanHandleStrictly(
 }
 
 private fun evaluateStrictReference(
-    reference: Reference,
-    functionName: String,
+    actual: Reference,
+    expected: Proxy<*, *>,
     call: Int?
 ) {
-    if (reference.proxy.id != functionName) {
-        val message = MISMATCHING_FUNCTION.format(functionName, reference.proxy.id)
+    if (actual.proxy !== expected) {
+        val message = MISMATCHING_FUNCTION.format(expected.id, actual.proxy.id)
         throw AssertionError(message)
     }
 
     if (call == null) {
-        val message = NO_MATCHING_CALL_IDX.format(reference.proxy.id)
+        val message = NO_MATCHING_CALL_IDX.format(actual.proxy.id)
 
         throw AssertionError(message)
     }
 
-    if (reference.callIndex != call) {
+    if (actual.callIndex != call) {
         val message = MISMATCHING_CALL_IDX.format(
             call,
-            reference.proxy.id,
-            reference.callIndex,
+            actual.proxy.id,
+            actual.callIndex,
         )
 
         throw AssertionError(message)
@@ -161,20 +162,23 @@ private fun evaluateStrictReference(
 fun Verifier.verifyStrictOrder(
     scope: VerificationInsurance.() -> Any,
 ) {
-    val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope, this.references)
+    val expectedCalls: MutableMap<String, Int> = mutableMapOf()
+    val expectedHandles = initChainVerification(scope, this.references)
 
-    guardStrictChain(this.references, handles)
+    expectedHandles.forEachIndexed { idx, expected ->
+        val expectedProxy = expected.proxy
+        val functionName = expectedProxy.id
+        val lastCall = expectedCalls[functionName] ?: -1
+        val call = scanHandleStrictly(lastCall, expected.callIndices)
 
-    this.references.forEachIndexed { idx, reference ->
-        val functionName = handles[idx].proxy.id
-        val lastCall = handleCalls[functionName] ?: -1
-        val call = scanHandleStrictly(lastCall, handles[idx].callIndices)
+        if (idx < this.references.size) {
+            evaluateStrictReference(this.references[idx], expectedProxy, call)
+        }
 
-        evaluateStrictReference(reference, functionName, call)
-
-        handleCalls[functionName] = call ?: Int.MAX_VALUE
+        expectedCalls[functionName] = call ?: Int.MAX_VALUE
     }
+
+    guardStrictChain(this.references, expectedHandles)
 }
 
 private fun guardChain(references: List<Reference>, handles: List<VerificationHandle>) {
