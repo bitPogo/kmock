@@ -1,4 +1,3 @@
-// COMMONTEST
 package generatorTest
 
 import factory.template.generics.Common

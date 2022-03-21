@@ -1,4 +1,3 @@
-// COMMONTEST
 package mock.template.overloaded
 
 import kotlin.Any

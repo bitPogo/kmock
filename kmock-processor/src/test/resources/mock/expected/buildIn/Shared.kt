@@ -1,4 +1,3 @@
-// TEST
 package mock.template.buildIn
 
 import kotlin.Any

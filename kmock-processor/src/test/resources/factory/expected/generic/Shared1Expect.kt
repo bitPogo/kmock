@@ -1,4 +1,3 @@
-// TEST
 package generatorTest
 
 import factory.template.generics.Shared1

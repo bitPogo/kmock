@@ -1,4 +1,3 @@
-// TEST
 package mock.template.sync
 
 import kotlin.Any

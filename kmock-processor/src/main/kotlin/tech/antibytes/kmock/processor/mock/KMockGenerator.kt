@@ -209,6 +209,17 @@ internal class KMockGenerator(
         return implementation.build()
     }
 
+    private fun dertermineFileName(
+        mockName: String,
+        suffix: String
+    ): String {
+        return if (suffix.isEmpty()) {
+            mockName
+        } else {
+            "$mockName@$suffix"
+        }
+    }
+
     private fun writeMock(
         template: KSClassDeclaration,
         alias: String?,
@@ -218,10 +229,11 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ) {
         val templateName = alias ?: template.simpleName.asString()
+        val targetIndicator = target.uppercase()
         val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
-            mockName
+            dertermineFileName(mockName, targetIndicator)
         )
 
         val implementation = buildMock(
@@ -230,10 +242,6 @@ internal class KMockGenerator(
             generics = generics,
             relaxer = relaxer
         )
-
-        if (target.isNotEmpty()) {
-            file.addComment(target.uppercase())
-        }
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
         file.addImport(PROP_NAME.packageName, PROP_NAME.simpleName)

@@ -1,4 +1,3 @@
-// COMMONTEST
 package mock.template.generic
 
 import kotlin.Any

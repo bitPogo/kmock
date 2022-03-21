@@ -98,7 +98,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -118,7 +118,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -158,7 +158,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -178,7 +178,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -218,7 +218,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -238,7 +238,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -278,7 +278,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -298,7 +298,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -338,7 +338,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -358,7 +358,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -398,7 +398,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -418,7 +418,7 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -472,7 +472,7 @@ class KMockMocksSpec {
                 "alias_mock.template.alias.Shared" to "AliasShared",
             )
         )
-        val actual = resolveGenerated("AliasSharedMock.kt")
+        val actual = resolveGenerated("AliasSharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -499,7 +499,7 @@ class KMockMocksSpec {
                 "alias_mock.template.alias.Common" to "AliasCommon",
             )
         )
-        val actual = resolveGenerated("AliasCommonMock.kt")
+        val actual = resolveGenerated("AliasCommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -609,7 +609,7 @@ class KMockMocksSpec {
                 "buildIn_0" to "mock.template.buildIn.Shared",
             )
         )
-        val actual = resolveGenerated("SharedMock.kt")
+        val actual = resolveGenerated("SharedMock@TEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -636,7 +636,7 @@ class KMockMocksSpec {
                 "buildIn_0" to "mock.template.buildIn.Common",
             )
         )
-        val actual = resolveGenerated("CommonMock.kt")
+        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

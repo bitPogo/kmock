@@ -1,4 +1,3 @@
-// COMMONTEST
 package mock.template.async
 
 import kotlin.Any
