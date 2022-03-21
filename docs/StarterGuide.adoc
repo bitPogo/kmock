@@ -450,6 +450,9 @@ You have the following Expectation Methods for FunProxies:
 | `hasBeenCalled`
 | determines if the Proxy was invoked.
 
+| `hasBeenCalledWithVoid`
+| determines if the Proxy was invoked without any arguments.
+
 | `hasBeenCalledWith`
 | determines if the Proxy was invoked with the given arguments.
 The arguments must follow the order of the Template signature but can contain gaps and do not need to all arguments.
@@ -472,6 +475,9 @@ Alternatively you may use the following Assertions:
 
 | `assertHasBeenCalled`
 | determines if the Proxy was invoked.
+
+| `assertHasBeenCalledWithVoid`
+| determines if the Proxy was invoked without any arguments.
 
 | `assertHasBeenCalledWith`
 | determines if the Proxy was invoked with the given arguments.
