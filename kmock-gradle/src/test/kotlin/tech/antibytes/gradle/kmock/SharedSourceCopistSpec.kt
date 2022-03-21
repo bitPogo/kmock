@@ -23,6 +23,7 @@ import org.gradle.kotlin.dsl.invoke
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -44,10 +45,18 @@ class SharedSourceCopistSpec {
         clearMocks(project)
     }
 
-    private fun prepareFile(value: String): File {
-        val file = File(buildDir, "test")
+    private fun prepareFile(
+        indicator: String = ""
+    ): File {
+        val fileName = if (indicator.isEmpty()) {
+            "test"
+        } else {
+            "test$INDICATOR_SEPARATOR$indicator"
+        }
+
+        val file = File(buildDir, fileName)
         file.createNewFile()
-        file.writeText(value)
+        file.writeText("content")
 
         return file
     }
@@ -138,6 +147,7 @@ class SharedSourceCopistSpec {
         verify(exactly = 1) { copyTask.into("$buildDir/generated/ksp/$targetPlatform/$target") }
         verify(exactly = 1) { copyTask.include("**/*.kt") }
         verify(exactly = 1) { copyTask.exclude(any<Spec<FileTreeElement>>()) }
+        verify(exactly = 1) { copyTask.rename(any<Transformer<String, String>>()) }
     }
 
     @Test
@@ -195,7 +205,7 @@ class SharedSourceCopistSpec {
         val fileTreeElement: FileTreeElement = mockk()
 
         val filter = slot<Spec<FileTreeElement>>()
-        val file = prepareFile("NOT AN INDICATOR")
+        val file = prepareFile("NOINDICATOR")
 
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
@@ -237,7 +247,7 @@ class SharedSourceCopistSpec {
         val fileTreeElement: FileTreeElement = mockk()
 
         val filter = slot<Spec<FileTreeElement>>()
-        val file = prepareFile("// $indicator")
+        val file = prepareFile(indicator)
 
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
@@ -268,7 +278,7 @@ class SharedSourceCopistSpec {
     }
 
     @Test
-    fun `Given copySharedSource is called it creates a CopyTask, which ignores files, which are not a MockFactory`() {
+    fun `Given copySharedSource is called it creates a CopyTask, which will not rename Files which contain no matching indicator`() {
         // Given
         val indicator = "Common"
         val sourcePlatform = "source"
@@ -279,7 +289,7 @@ class SharedSourceCopistSpec {
         val fileTreeElement: FileTreeElement = mockk()
 
         val rename = slot<Transformer<String, String>>()
-        val file = prepareFile("// $indicator")
+        val file = prepareFile("not_an_indicator")
 
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
@@ -303,25 +313,25 @@ class SharedSourceCopistSpec {
         every { fileTreeElement.file } returns file
 
         // When
-        val actual = rename.captured.transform("$source.kt")
+        val actual = rename.captured.transform("${file.name}.kt")
 
         // Then
-        actual mustBe "$source.kt"
+        actual mustBe "${file.name}.kt"
     }
 
     @Test
-    fun `Given copySharedSource is called it creates a CopyTask, which renames files, which are a MockFactory`() {
+    fun `Given copySharedSource is called it creates a CopyTask, which will rename Files which contain a matching indicator`() {
         // Given
         val indicator = "Common"
         val sourcePlatform = "source"
-        val source = "MockFactory${sourcePlatform}TestEntry"
+        val source = "${sourcePlatform}Test"
         val target = "targetTest"
         val buildDir: String = fixture.fixture()
         val copyTask: Copy = mockk(relaxUnitFun = true)
         val fileTreeElement: FileTreeElement = mockk()
 
         val rename = slot<Transformer<String, String>>()
-        val file = prepareFile("// $indicator")
+        val file = prepareFile(indicator)
 
         every { project.buildDir.absolutePath } returns buildDir
         every { project.tasks.create(any<String>(), Copy::class.java) } returns copyTask
@@ -345,9 +355,9 @@ class SharedSourceCopistSpec {
         every { fileTreeElement.file } returns file
 
         // When
-        val actual = rename.captured.transform("$source.kt")
+        val actual = rename.captured.transform("${file.name}.kt")
 
         // Then
-        actual mustBe "MockFactory.kt"
+        actual mustBe "test.kt"
     }
 }

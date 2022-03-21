@@ -33,12 +33,10 @@ internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, Defaul
     override fun cleanUp() {
         guardInputs()
 
-        val files = project.fileTree(
-            "${project.buildDir.absolutePath}/generated/ksp/${platform.get()}/${target.get()}"
-        ).toList()
         val indicators: Set<String> = this.indicators.get()
-
-        files.forEach { file ->
+        project.fileTree(
+            "${project.buildDir.absolutePath}/generated/ksp/${platform.get()}/${target.get()}"
+        ).asFileTree.forEach { file ->
             val indicator = file.nameWithoutExtension.substringAfterLast('@')
 
             if (indicator in indicators) {

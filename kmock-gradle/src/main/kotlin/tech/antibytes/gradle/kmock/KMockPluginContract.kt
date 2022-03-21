@@ -89,5 +89,6 @@ internal interface KMockPluginContract {
         const val RECURSIVE_PREFIX = "recursive_"
         const val BUILD_IN_PREFIX = "buildIn_"
         const val USELESS_PREFIXES_PREFIX = "namePrefix_"
+        const val INDICATOR_SEPARATOR = "@"
     }
 }

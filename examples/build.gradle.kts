@@ -212,6 +212,34 @@ kotlin {
 }
 
 afterEvaluate {
+    val indicator = "COMMONTEST"
+
+    fun filterFiles(element: FileTreeElement, indicator: String): Boolean {
+        return if (element.file.isFile) {
+            val fileName = element.file.nameWithoutExtension
+
+            !fileName.endsWith("@$indicator")
+        } else {
+            false
+        }
+    }
+
+    fun renameFile(fileName: String, indicator: String): String {
+        val fileParts = fileName.split("@", limit = 2)
+
+        return if (fileParts.size != 2) {
+            fileName
+        } else {
+            val actualIndicator = fileParts[1].substring(0, fileParts[1].length - 3)
+
+            if (actualIndicator == indicator) {
+                "${fileParts[0]}.kt"
+            } else {
+                fileName
+            }
+        }
+    }
+
     val copyToCommon by tasks.creating(Copy::class) {
         description = "Extract Common Sources"
         group = "Code Generation"
@@ -220,22 +248,15 @@ afterEvaluate {
 
         this.from("${project.buildDir.absolutePath}/generated/ksp/jvm/jvmTest")
         this.into("${project.buildDir.absolutePath}/generated/ksp/common/commonTest")
-        this.include("**/*.kt")
-        this.exclude { details: FileTreeElement ->
-            if (details.file.isFile) {
-                val indicator = details.file.bufferedReader().readLine()
-                indicator != "// COMMONTEST"
-            } else {
-                false
+            .include("**/*.kt")
+            .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
+            .rename { fileName ->
+                if (fileName.contains("@")) {
+                    renameFile(fileName, indicator)
+                } else {
+                    fileName
+                }
             }
-        }
-        this.rename { fileName ->
-            if (fileName is String && fileName == "MockFactoryCommonEntry.kt") {
-                "MockFactory.kt"
-            } else {
-                fileName
-            }
-        }
     }
 
     val cleanDuplicatesJvm by tasks.creating(DefaultTask::class) {
@@ -247,15 +268,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinJvm")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/jvm/jvmTest").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/jvm/jvmTest"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }
@@ -270,15 +289,13 @@ afterEvaluate {
         mustRunAfter("kspDebugUnitTestKotlinAndroid")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/android/androidDebugUnitTest").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/android/androidDebugUnitTest"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }
@@ -293,15 +310,13 @@ afterEvaluate {
         mustRunAfter("kspReleaseUnitTestKotlinAndroid")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/android/androidReleaseUnitTest").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/android/androidReleaseUnitTest"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }
@@ -316,15 +331,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinJs")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/js/jsTest").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/js/jsTest"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }
@@ -339,15 +352,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinIosX64")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/iosX64/iosX64Test").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/iosX64/iosX64Test"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }
@@ -362,15 +373,13 @@ afterEvaluate {
         mustRunAfter("kspTestKotlinLinuxX64")
 
         doLast {
-            val files = project.fileTree("${project.buildDir.absolutePath}/generated/ksp/linuxX64/linuxX64Test").toList()
+            project.fileTree(
+                "${project.buildDir.absolutePath}/generated/ksp/linuxX64/linuxX64Test"
+            ).asFileTree.forEach { file ->
+                val actualIndicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            files.forEach { file ->
-                if (!file.absolutePath.contains("commonTest")) {
-                    val indicator = file.bufferedReader().readLine()
-
-                    if (indicator == "// COMMONTEST") {
-                        file.delete()
-                    }
+                if (actualIndicator == indicator) {
+                    file.delete()
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
@@ -116,7 +117,7 @@ internal class KMockFactoryEntryPointGenerator(
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 options.rootPackage,
-                "MockFactory@COMMONTEST"
+                "MockFactory${INDICATOR_SEPARATOR}COMMONTEST"
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
@@ -149,7 +150,7 @@ internal class KMockFactoryEntryPointGenerator(
 
                 val file = FileSpec.builder(
                     options.rootPackage,
-                    "MockFactory@$targetIndicator"
+                    "MockFactory$INDICATOR_SEPARATOR$targetIndicator"
                 )
 
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)

@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
@@ -216,7 +217,7 @@ internal class KMockGenerator(
         return if (suffix.isEmpty()) {
             mockName
         } else {
-            "$mockName@$suffix"
+            "$mockName$INDICATOR_SEPARATOR$suffix"
         }
     }
 

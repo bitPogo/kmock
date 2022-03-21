@@ -10,6 +10,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.StopExecutionException
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INDICATOR_SEPARATOR
 import java.util.Locale
 
 internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
@@ -33,10 +34,27 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
 
     private fun filterFiles(element: FileTreeElement, indicator: String): Boolean {
         return if (element.file.isFile) {
-            val fileIndicator = element.file.bufferedReader().readLine()
-            fileIndicator != "// $indicator"
+            val fileName = element.file.nameWithoutExtension
+
+            !fileName.endsWith("$INDICATOR_SEPARATOR$indicator")
         } else {
             false
+        }
+    }
+
+    private fun renameFile(fileName: String, indicator: String): String {
+        val fileParts = fileName.split(INDICATOR_SEPARATOR, limit = 2)
+
+        return if (fileParts.size != 2) {
+            fileName
+        } else {
+            val actualIndicator = fileParts[1].substring(0, fileParts[1].length - 3)
+
+            if (actualIndicator == indicator) {
+                "${fileParts[0]}.kt"
+            } else {
+                fileName
+            }
         }
     }
 
@@ -58,8 +76,8 @@ internal object SharedSourceCopist : KMockPluginContract.SharedSourceCopist {
             .include("**/*.kt")
             .exclude { element: FileTreeElement -> filterFiles(element, indicator) }
             .rename { fileName ->
-                if (fileName.startsWith("MockFactory") && fileName.endsWith("Entry.kt")) {
-                    "MockFactory.kt"
+                if (fileName.contains(INDICATOR_SEPARATOR)) {
+                    renameFile(fileName, indicator)
                 } else {
                     fileName
                 }
