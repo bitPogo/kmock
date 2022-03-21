@@ -19,41 +19,22 @@ import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockContract.VerificationHandle
 import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.KMockContract.Verifier
-
-private fun formatMessage(
-    message: String,
-    actual: Int,
-    expected: Int
-): String = formatMessage(message, actual.toString(), expected.toString())
-
-private fun formatMessage(
-    message: String,
-    actual: Int,
-    expected: String
-): String = formatMessage(message, actual.toString(), expected)
-
-private fun formatMessage(
-    message: String,
-    arg: String
-): String = formatMessage(message, "", arg)
-
-private fun formatMessage(message: String, actual: String, expected: String): String {
-    return message
-        .replace("\$1", expected)
-        .replace("\$2", actual)
-}
+import tech.antibytes.kmock.util.format
 
 private fun determineAtLeastMessage(actual: Int, expected: Int): String {
     return if (actual == 0) {
         NOT_CALLED
     } else {
-        formatMessage(TOO_LESS_CALLS, actual, expected)
+        TOO_LESS_CALLS.format(expected, actual)
     }
 }
 
 private infix fun VerificationHandle.mustBeAtLeast(value: Int) {
     if (this.callIndices.size < value) {
-        val message = determineAtLeastMessage(this.callIndices.size, value)
+        val message = determineAtLeastMessage(
+            expected = value,
+            actual = this.callIndices.size
+        )
 
         throw AssertionError(message)
     }
@@ -61,7 +42,7 @@ private infix fun VerificationHandle.mustBeAtLeast(value: Int) {
 
 private infix fun VerificationHandle.mustBeAtMost(value: Int) {
     if (this.callIndices.size > value) {
-        val message = formatMessage(TOO_MANY_CALLS, this.callIndices.size, value)
+        val message = TOO_MANY_CALLS.format(value, this.callIndices.size)
 
         throw AssertionError(message)
     }
@@ -122,7 +103,7 @@ private fun initChainVerification(
 
 private fun guardStrictChain(references: List<Reference>, handles: List<VerificationHandle>) {
     if (handles.size != references.size) {
-        val message = formatMessage(NOTHING_TO_STRICTLY_VERIFY, references.size, handles.size)
+        val message = NOTHING_TO_STRICTLY_VERIFY.format(handles.size, references.size)
 
         throw AssertionError(message)
     }
@@ -142,24 +123,21 @@ private fun evaluateStrictReference(
     call: Int?
 ) {
     if (reference.proxy.id != functionName) {
-        val message = formatMessage(MISMATCHING_FUNCTION, reference.proxy.id, functionName)
+        val message = MISMATCHING_FUNCTION.format(functionName, reference.proxy.id)
         throw AssertionError(message)
     }
 
     if (call == null) {
-        val message = formatMessage(
-            NO_MATCHING_CALL_IDX,
-            reference.proxy.id
-        )
+        val message = NO_MATCHING_CALL_IDX.format(reference.proxy.id)
 
         throw AssertionError(message)
     }
 
     if (reference.callIndex != call) {
-        val message = formatMessage(
-            MISMATCHING_CALL_IDX,
+        val message = MISMATCHING_CALL_IDX.format(
+            call,
+            reference.proxy.id,
             reference.callIndex,
-            "$call of ${reference.proxy.id}"
         )
 
         throw AssertionError(message)
@@ -201,7 +179,7 @@ fun Verifier.verifyStrictOrder(
 
 private fun guardChain(references: List<Reference>, handles: List<VerificationHandle>) {
     if (handles.size > references.size) {
-        val message = formatMessage(NOTHING_TO_VERIFY, handles.size, references.size)
+        val message = NOTHING_TO_VERIFY.format(references.size, handles.size)
 
         throw AssertionError(message)
     }
@@ -230,10 +208,7 @@ private fun ensureAllHandlesAreDone(
     handleOffset: Int
 ) {
     if (handleOffset != handles.size) {
-        val message = formatMessage(
-            CALL_NOT_FOUND,
-            handles[handleOffset].proxy.id
-        )
+        val message = CALL_NOT_FOUND.format(handles[handleOffset].proxy.id)
 
         throw AssertionError(message)
     }

@@ -787,12 +787,12 @@ object KMockContract {
     }
 
     internal const val NOT_CALLED = "Call not found."
-    internal const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-    internal const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-    internal const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
-    internal const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
-    internal const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-    internal const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
-    internal const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
-    internal const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
+    internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
+    internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
+    internal const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has %0 items) does not match the captured calls (%1 were captured)."
+    internal const val NOTHING_TO_VERIFY = "The given verification chain (has %0 items) is exceeding the captured calls (%1 were captured)."
+    internal const val NO_MATCHING_CALL_IDX = "The captured calls of %0 exceeds the captured calls."
+    internal const val MISMATCHING_FUNCTION = "Excepted '%0', but got '%1'."
+    internal const val MISMATCHING_CALL_IDX = "Excepted the %0 of %1, but the %2 was referenced."
+    internal const val CALL_NOT_FOUND = "Last referred invocation of %0 was not found."
 }
