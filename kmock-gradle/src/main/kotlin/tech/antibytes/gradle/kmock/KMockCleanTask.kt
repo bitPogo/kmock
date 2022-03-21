@@ -39,7 +39,7 @@ internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, Defaul
         val indicators: Set<String> = this.indicators.get()
 
         files.forEach { file ->
-            val indicator = file.bufferedReader().readLine().trimStart('/').trim()
+            val indicator = file.nameWithoutExtension.substringAfterLast('@')
 
             if (indicators.contains(indicator)) {
                 file.delete()

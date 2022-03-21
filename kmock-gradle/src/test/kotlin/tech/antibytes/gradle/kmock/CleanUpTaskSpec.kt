@@ -202,7 +202,7 @@ class CleanUpTaskSpec {
     fun `Given the CleanUpTask is executed it deletes Stubs which contain a indicator`() {
         // Given
         val task: CleanUpTask = project.tasks.create("sut", KMockCleanTask::class.java) {}
-        val stubs = Pair("SomeStub.kt", "SomeOtherStub.kt")
+        val stubs = Pair("SomeStub@Common.kt", "SomeOtherStub@Common.kt")
         val indicator = "Common"
         val target = createStubs(stubs, indicator)
         var isClean = true
