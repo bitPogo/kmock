@@ -41,7 +41,7 @@ internal abstract class KMockCleanTask : KMockPluginContract.CleanUpTask, Defaul
         files.forEach { file ->
             val indicator = file.nameWithoutExtension.substringAfterLast('@')
 
-            if (indicators.contains(indicator)) {
+            if (indicator in indicators) {
                 file.delete()
             }
         }
