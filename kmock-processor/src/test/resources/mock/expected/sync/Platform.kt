@@ -24,11 +24,13 @@ internal class PlatformMock(
     private val __spyOn: Platform? = spyOn
 
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.sync.Platform#_foo", spyOn = if (spyOn != null) { { fuzz, ozz ->
+        SyncFunProxy("mock.template.sync.PlatformMock#_foo", spyOn = if (spyOn != null) { { fuzz,
+            ozz ->
             foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.sync.Platform#_bar", spyOn = if (spyOn != null) { { buzz, bozz ->
+        SyncFunProxy("mock.template.sync.PlatformMock#_bar", spyOn = if (spyOn != null) { { buzz,
+            bozz ->
             bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)

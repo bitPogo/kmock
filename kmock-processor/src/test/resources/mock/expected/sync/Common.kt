@@ -24,11 +24,12 @@ internal class CommonMock(
     private val __spyOn: Common? = spyOn
 
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.sync.Common#_foo", spyOn = if (spyOn != null) { { fuzz, ozz ->
+        SyncFunProxy("mock.template.sync.CommonMock#_foo", spyOn = if (spyOn != null) { { fuzz, ozz ->
             foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.sync.Common#_bar", spyOn = if (spyOn != null) { { buzz, bozz ->
+        SyncFunProxy("mock.template.sync.CommonMock#_bar", spyOn = if (spyOn != null) { { buzz,
+            bozz ->
             bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)

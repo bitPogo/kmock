@@ -28,11 +28,11 @@ internal class SharedMock(
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.Shared#_foo", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.Shared#_foo", spyOnGet = { spyOn.foo }, collector =
+        PropertyProxy("mock.template.property.SharedMock#_foo", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("mock.template.property.SharedMock#_foo", spyOnGet = { spyOn.foo }, collector
+        = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -40,11 +40,11 @@ internal class SharedMock(
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.Shared#_bar", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.Shared#_bar", spyOnGet = { spyOn.bar }, collector =
+        PropertyProxy("mock.template.property.SharedMock#_bar", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("mock.template.property.SharedMock#_bar", spyOnGet = { spyOn.bar }, collector
+        = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -53,11 +53,12 @@ internal class SharedMock(
         set(`value`) = _buzz.onSet(value)
 
     public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.Shared#_buzz", spyOnGet = null, spyOnSet = null,
+        PropertyProxy("mock.template.property.SharedMock#_buzz", spyOnGet = null, spyOnSet = null,
             collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.property.Shared#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet =
-        { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.property.SharedMock#_buzz", spyOnGet = { spyOn.buzz },
+            spyOnSet = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer =
+            null)
     }
 
 
