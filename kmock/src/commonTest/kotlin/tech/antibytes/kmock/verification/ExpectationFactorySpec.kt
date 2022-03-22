@@ -6,11 +6,11 @@
 
 package tech.antibytes.kmock.verification
 
-import VerificationChainBuilderStub
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.VerificationHandle
+import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
+import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -18,7 +18,7 @@ import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
 
-class VerificationHandleFactorySpec {
+class ExpectationFactorySpec {
     private val fixture = kotlinFixture()
 
     @Test
@@ -32,7 +32,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalled()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
     }
 
     @Test
@@ -53,7 +53,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalled()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -68,7 +68,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWithVoid()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
     }
 
     @Test
@@ -89,7 +89,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWithVoid()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -111,7 +111,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalled()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -126,7 +126,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWith()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
     }
 
     @Test
@@ -147,7 +147,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWith(fixture.fixture<String>())
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -170,7 +170,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWith(*values)
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -179,11 +179,13 @@ class VerificationHandleFactorySpec {
     fun `Given hasBeenCalledWith is called with a FunProxy it propagtes its handle`() {
         // Given
         val name: String = fixture.fixture()
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -197,7 +199,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -212,7 +214,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenStrictlyCalledWith()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
     }
 
     @Test
@@ -233,7 +235,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenStrictlyCalledWith(fixture.fixture<String>())
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -256,7 +258,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenStrictlyCalledWith(*values)
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -265,11 +267,13 @@ class VerificationHandleFactorySpec {
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -284,7 +288,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -299,7 +303,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWithout()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
     }
 
     @Test
@@ -321,7 +325,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWithout(*values)
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -343,7 +347,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.hasBeenCalledWithout(fixture.fixture<String>())
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -352,10 +356,12 @@ class VerificationHandleFactorySpec {
     fun `Given hasBeenCalledWithout is called with a FunProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -369,7 +375,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -391,7 +397,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasGotten()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -413,7 +419,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasGotten()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -422,10 +428,12 @@ class VerificationHandleFactorySpec {
     fun `Given wasGotten is called with a PropProxy it it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -439,7 +447,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -461,7 +469,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasSet()
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -483,7 +491,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasSet()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -492,10 +500,12 @@ class VerificationHandleFactorySpec {
     fun `Given wasSet is called with a PropProxy it propagates its Handle`() {
         // Given
         val name: String = fixture.fixture()
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -509,7 +519,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -531,7 +541,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasSetTo(fixture.fixture())
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -553,7 +563,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasSetTo(fixture.fixture())
 
         // Then
-        actual mustBe VerificationHandle(proxy, emptyList())
+        actual mustBe Expectation(proxy, emptyList())
         capturedIndex mustBe 0
     }
 
@@ -576,7 +586,7 @@ class VerificationHandleFactorySpec {
         val actual = proxy.wasSetTo(value)
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 
@@ -587,10 +597,12 @@ class VerificationHandleFactorySpec {
         val name: String = fixture.fixture()
         val value: Any = fixture.fixture()
 
-        val captured: MutableList<VerificationHandle> = mutableListOf()
+        val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainBuilderStub(captured)
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationBuilderReference = builder }
+        val builder = VerificationChainStub { handle ->
+            captured.add(handle)
+        }
+        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -604,7 +616,7 @@ class VerificationHandleFactorySpec {
         val actual = captured.first()
 
         // Then
-        actual mustBe VerificationHandle(proxy, listOf(0))
+        actual mustBe Expectation(proxy, listOf(0))
         capturedIndex mustBe 0
     }
 }

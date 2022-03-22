@@ -25,8 +25,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
-        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
+        val handle1 = Expectation(fixture.funProxyFixture(), values1)
+        val handle2 = Expectation(fixture.funProxyFixture(), values2)
 
         // When
         val unionError = assertFailsWith<IllegalArgumentException> {
@@ -51,8 +51,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(proxy, values1)
-        val handle2 = VerificationHandle(proxy, values2)
+        val handle1 = Expectation(proxy, values1)
+        val handle2 = Expectation(proxy, values2)
 
         // When
         val actualUnion = handle1 union handle2
@@ -80,8 +80,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
-        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
+        val handle1 = Expectation(fixture.funProxyFixture(), values1)
+        val handle2 = Expectation(fixture.funProxyFixture(), values2)
 
         // When
         val intersectError = assertFailsWith<IllegalArgumentException> {
@@ -114,8 +114,8 @@ class OperationSpec {
             .also { it.addAll(base) }
             .also { it.shuffle() }
 
-        val handle1 = VerificationHandle(proxy, values1)
-        val handle2 = VerificationHandle(proxy, values2)
+        val handle1 = Expectation(proxy, values1)
+        val handle2 = Expectation(proxy, values2)
 
         // When
         val actualIntersect = handle1 intersection handle2
@@ -139,8 +139,8 @@ class OperationSpec {
         val values1: List<Int> = fixture.listFixture()
         val values2: List<Int> = fixture.listFixture()
 
-        val handle1 = VerificationHandle(fixture.funProxyFixture(), values1)
-        val handle2 = VerificationHandle(fixture.funProxyFixture(), values2)
+        val handle1 = Expectation(fixture.funProxyFixture(), values1)
+        val handle2 = Expectation(fixture.funProxyFixture(), values2)
 
         // When
         val diffError = assertFailsWith<IllegalArgumentException> {
@@ -173,8 +173,8 @@ class OperationSpec {
             .also { it.addAll(base) }
             .also { it.shuffle() }
 
-        val handle1 = VerificationHandle(proxy, values1)
-        val handle2 = VerificationHandle(proxy, values2)
+        val handle1 = Expectation(proxy, values1)
+        val handle2 = Expectation(proxy, values2)
 
         // When
         val actualDiff = handle1 diff handle2

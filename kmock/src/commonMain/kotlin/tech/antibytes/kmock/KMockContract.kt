@@ -40,7 +40,7 @@ object KMockContract {
          * Reference to its correspondent VerificationChain. This Property is intended for internal use only!
          * @suppress
          */
-        var verificationBuilderReference: VerificationChainBuilder?
+        var verificationChain: VerificationChain?
 
         /**
          * Resolves given arguments of an invocation.
@@ -690,7 +690,7 @@ object KMockContract {
      * Meant for internal usage only!
      * @author Matthias Geisler
      */
-    interface VerificationHandle {
+    interface Expectation {
         /**
          * Reference of the Proxy.
          */
@@ -750,28 +750,24 @@ object KMockContract {
     }
 
     /**
-     * Builder for a VerificationChain.
-     * Meant for internal usage only!
+     * VerificationChain in order to verify over multiple Handles.
+     * Meant for internal purpose only!
      * @author Matthias Geisler
      */
-    interface VerificationChainBuilder {
-        /**
-         * Adds a VerificationHandle to the Chain.
-         * Meant for internal usage only!
-         * @param handle a VerificationHandle which will be used for verification
-         */
-        fun add(handle: VerificationHandle)
-
-        /**
-         * Transforms the chain into a list.
-         * Meant for internal usage only!
-         * @return a List of VerificationHandle.
-         */
-        fun toList(): List<VerificationHandle>
-    }
-
     interface VerificationChain {
-        fun propagate(expected: VerificationHandle)
+        /**
+         * Propagates the expected invocation to the Chain and asserts it against the actual values.
+         * @param expected the expected Invocation.
+         * @throws AssertionError if the expected value does not match the actual value.
+         */
+        @Throws(AssertionError::class)
+        fun propagate(expected: Expectation)
+
+        /**
+         * Ensures that all expected or actual values are covered depending on the context.
+         * @throws AssertionError if the context needs to be exhaustive and not all expected or actual values are covered.
+         */
+        @Throws(AssertionError::class)
         fun ensureAllReferencesAreEvaluated()
     }
 
@@ -803,10 +799,6 @@ object KMockContract {
     internal const val NOT_CALLED = "Call not found."
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
-    internal const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has %0 items) does not match the captured calls (%1 were captured)."
-    internal const val NOTHING_TO_VERIFY = "The given verification chain (has %0 items) is exceeding the captured calls (%1 were captured)."
-    internal const val NO_MATCHING_CALL_IDX = "The captured calls of %0 exceeds the captured calls."
-    internal const val MISMATCHING_FUNCTION = "Excepted '%0', but got '%1'."
-    internal const val MISMATCHING_CALL_IDX = "Excepted the %0 call of %1, but the %2 was referenced."
-    internal const val CALL_NOT_FOUND = "Last referred invocation of %0 was not found."
+
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this VerificationChain."
 }

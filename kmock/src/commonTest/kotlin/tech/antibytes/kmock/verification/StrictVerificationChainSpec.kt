@@ -35,7 +35,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given propagate is called and the references are exceeded, it fails`() {
+    fun `Given propagate is called and the references are exceeded it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle()
 
@@ -52,7 +52,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given propagate is called and actual refers not to the same Proxy, it fails`() {
+    fun `Given propagate is called and actual refers not to the same Proxy it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle()
         val references = listOf(
@@ -72,7 +72,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given propagate is called and actual refers to the same Proxy as expected, but the invocations are exceeded, it fails`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected but the invocations are exceeded it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle(calls = 0)
         val references = listOf(
@@ -92,7 +92,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn5")
-    fun `Given propagate is called and actual refers to the same Proxy as expected, but the invocation do not match, it fails`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected but the invocation do not match it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle(calls = 1)
         val references = listOf(
@@ -107,12 +107,12 @@ class StrictVerificationChainSpec {
             chain.propagate(handle)
         }
 
-        error.message mustBe "Expected 1th call of ${handle.proxy.id}, but it refers to the ${references[0].callIndex + 1}th call."
+        error.message mustBe "Expected 1th call of ${handle.proxy.id} was not made."
     }
 
     @Test
     @JsName("fn6")
-    fun `Given propagate is called and actual refers to the same Proxy as expected, but the invocation do not match, while working on several handels, it fails`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected but the invocation do not match while working on several handels it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle(
             callIndices = listOf(0, 1)
@@ -136,7 +136,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn7")
-    fun `Given propagate is called and actual refers to the same Proxy as expected, but the invocation do not match, while working on several handels and references, it fails`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected but the invocation do not match while working on several handels and references it fails`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
             callIndices = listOf(0, 1)
@@ -167,7 +167,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn8")
-    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match, it accepts`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match it accepts`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
             callIndices = listOf(0, 1)
@@ -193,7 +193,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn9")
-    fun `Given ensureAllReferencesAreEvaluated is called, it fails if not all References had been evaluated`() {
+    fun `Given ensureAllReferencesAreEvaluated is called it fails if not all References had been evaluated`() {
         // Given
         val references = listOf(
             Reference(fixture.funProxyFixture(), 0),
@@ -213,7 +213,7 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn10")
-    fun `Given ensureAllReferencesAreEvaluated is called, it accepts if all References had been evaluated`() {
+    fun `Given ensureAllReferencesAreEvaluated is called it accepts if all References had been evaluated`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
             callIndices = listOf(0)
@@ -232,5 +232,35 @@ class StrictVerificationChainSpec {
         chain.propagate(handle1)
         chain.propagate(handle2)
         chain.ensureAllReferencesAreEvaluated()
+    }
+
+    @Test
+    @JsName("fn11")
+    fun `Given ensureVerification it fails if the given mock is not part of it`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+
+        // When
+        val container = StrictVerificationChain(emptyList())
+
+        val error = assertFailsWith<IllegalStateException> {
+            container.ensureVerificationOf(proxy)
+        }
+
+        // Then
+        error.message mustBe "The given proxy ${proxy.id} is not part of this VerificationChain."
+    }
+
+    @Test
+    @JsName("fn12")
+    fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val container = StrictVerificationChain(emptyList())
+
+        proxy.verificationChain = container
+
+        // When
+        container.ensureVerificationOf(proxy)
     }
 }

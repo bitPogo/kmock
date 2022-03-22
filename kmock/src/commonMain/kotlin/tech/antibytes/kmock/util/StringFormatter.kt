@@ -56,4 +56,3 @@ internal fun String.format(vararg args: Any?): String {
         formatParts(parts, args)
     }
 }
-

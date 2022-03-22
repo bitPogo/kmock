@@ -9,6 +9,7 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.fixture.fixtureVerificationHandle
+import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -34,7 +35,7 @@ class NonStrictVerificationChainSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given propagate is called and the references are exceeded, it fails`() {
+    fun `Given propagate is called and the references are exceeded it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle()
 
@@ -51,7 +52,7 @@ class NonStrictVerificationChainSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given propagate is called and actual refers same Proxy as expected, but the invocations are exceeded, it fails`() {
+    fun `Given propagate is called and actual refers same Proxy as expected but the invocations are exceeded it fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle(calls = 0)
         val references = listOf(
@@ -71,7 +72,7 @@ class NonStrictVerificationChainSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given propagate is called and actual refers same Proxy as expected, but the invocations are exceeded over multible Handles, it fails`() {
+    fun `Given propagate is called and actual refers same Proxy as expected but the invocations are exceeded over multible Handlesit fails`() {
         // Given
         val handle = fixture.fixtureVerificationHandle(
             callIndices = listOf(3)
@@ -90,12 +91,12 @@ class NonStrictVerificationChainSpec {
             chain.propagate(handle)
         }
 
-        error.message mustBe "Expected call of ${handle.proxy.id} was not made."
+        error.message mustBe "Expected ${handle.proxy.id} to be invoked, but no call was captured with the given arguments."
     }
 
     @Test
     @JsName("fn5")
-    fun `Given propagate is called and actual refers to the same Proxy as expected, but the invocation do not match, while working on several handels and references, it fails`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected but the invocation do not match while working on several handels and referencesit fails`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
             callIndices = listOf(0, 1)
@@ -126,7 +127,7 @@ class NonStrictVerificationChainSpec {
 
     @Test
     @JsName("fn6")
-    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match, it accepts`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match it accepts`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
             callIndices = listOf(0, 1)
@@ -152,19 +153,20 @@ class NonStrictVerificationChainSpec {
 
     @Test
     @JsName("fn7")
-    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match, it accepts for incomplete calls`() {
+    fun `Given propagate is called and actual refers to the same Proxy as expected and the invocation match it accepts for incomplete calls`() {
         // Given
         val handle1 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0, 1)
+            callIndices = listOf(0, 2)
         )
         val handle2 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0, 1)
+            callIndices = listOf(1)
         )
         val references = listOf(
             Reference(handle1.proxy, 0),
             Reference(handle2.proxy, 0),
             Reference(handle1.proxy, 1),
             Reference(handle2.proxy, 1),
+            Reference(handle1.proxy, 2),
         )
 
         val chain = NonStrictVerificationChain(references)
@@ -200,5 +202,35 @@ class NonStrictVerificationChainSpec {
         chain.propagate(handle1)
 
         chain.ensureAllReferencesAreEvaluated()
+    }
+
+    @Test
+    @JsName("fn9")
+    fun `Given ensureVerification it fails if the given Proxy is not part of it`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+
+        // When
+        val container = NonStrictVerificationChain(emptyList())
+
+        val error = assertFailsWith<IllegalStateException> {
+            container.ensureVerificationOf(proxy)
+        }
+
+        // Then
+        error.message mustBe "The given proxy ${proxy.id} is not part of this VerificationChain."
+    }
+
+    @Test
+    @JsName("fn10")
+    fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val container = NonStrictVerificationChain(emptyList())
+
+        proxy.verificationChain = container
+
+        // When
+        container.ensureVerificationOf(proxy)
     }
 }

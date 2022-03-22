@@ -14,7 +14,7 @@ import tech.antibytes.kmock.KMockContract.Proxy
  * Meant for internal usage only!
  * @author Matthias Geisler
  */
-data class VerificationHandle(
+data class Expectation(
     override val proxy: Proxy<*, *>,
     override val callIndices: List<Int>
-) : KMockContract.VerificationHandle
+) : KMockContract.Expectation

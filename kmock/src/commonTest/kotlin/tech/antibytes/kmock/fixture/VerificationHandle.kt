@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.fixture
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.verification.VerificationHandle
+import tech.antibytes.kmock.verification.Expectation
 import tech.antibytes.util.test.fixture.PublicApi
 import tech.antibytes.util.test.fixture.listFixture
 
@@ -15,8 +15,8 @@ internal fun PublicApi.Fixture.fixtureVerificationHandle(
     proxy: KMockContract.Proxy<*, *>? = null,
     calls: Int? = null,
     callIndices: List<Int>? = null
-): VerificationHandle {
-    return VerificationHandle(
+): Expectation {
+    return Expectation(
         proxy ?: this.funProxyFixture(),
         callIndices ?: this.listFixture(size = calls ?: 23)
     )

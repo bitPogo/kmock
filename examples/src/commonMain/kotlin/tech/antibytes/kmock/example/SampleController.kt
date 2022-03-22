@@ -36,6 +36,9 @@ class SampleController(
             val objc = remoteRepository.find(ref.get())
 
             localRepository.fetch(objc.id)
+            localRepository.fetch(objc.id)
+
+            remoteRepository.find(ref.get())
 
             objc.id = "23"
 

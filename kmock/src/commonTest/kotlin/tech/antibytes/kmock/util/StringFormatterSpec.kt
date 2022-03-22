@@ -7,11 +7,13 @@
 package tech.antibytes.kmock.util
 
 import tech.antibytes.util.test.mustBe
+import kotlin.js.JsName
 import kotlin.test.Test
 
 class StringFormatterSpec {
     @Test
-    fun `Given format is called without presetted placeholders and arguments, it returns the given String`() {
+    @JsName("fn0")
+    fun `Given format is called without presetted placeholders and arguments it returns the given String`() {
         // Given
         val template = "Something"
 
@@ -23,7 +25,8 @@ class StringFormatterSpec {
     }
 
     @Test
-    fun `Given format is called presetted placeholders and arguments, it uses the arguments according to their index`() {
+    @JsName("fn1")
+    fun `Given format is called presetted placeholders and arguments it uses the arguments according to their index`() {
         // Given
         val template = "Something"
         val arg0 = 123
@@ -37,7 +40,8 @@ class StringFormatterSpec {
     }
 
     @Test
-    fun `Given format is called presetted placeholders and arguments, which contains a Array, it uses the arguments according to their index`() {
+    @JsName("fn3")
+    fun `Given format is called presetted placeholders and arguments which contains a Array it uses the arguments according to their index`() {
         // Given
         val template = "Something"
         val arg0 = 123

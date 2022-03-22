@@ -7,11 +7,12 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Reference
+import tech.antibytes.kmock.fixture.fixtureVerificationHandle
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.VerifierStub
-import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
+import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
@@ -22,678 +23,225 @@ class VerificationSpec {
 
     @Test
     @JsName("fn0")
-    fun `Given verifyStrictOrder is called it fails if the amount captured calls does not match the given Order`() {
+    fun `Given verify is called it fails if the covered mock does not contain any call`() {
         // Given
-        val shared = fixture.funProxyFixture()
-        val verifierLower = VerifierStub(emptyList())
-        val verifierUpper = VerifierStub(
-            listOf(
-                Reference(shared, 0),
-                Reference(fixture.funProxyFixture(), fixture.fixture())
-            )
-        )
-        val handle = VerificationHandle(shared, listOf(0))
+        val proxy = fixture.funProxyFixture()
 
-        // Then
-        val errorLowerBound = assertFailsWith<AssertionError> {
-            // When
-            verifierLower.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
+        // When
+        val error = assertFailsWith<AssertionError> {
+            verify {
+                Expectation(proxy, emptyList())
             }
         }
 
-        errorLowerBound.message mustBe "The given verification chain (has 1 items) does not match the captured calls (${verifierLower.references.size} were captured)."
-
-        // Then
-        val errorUpperBound = assertFailsWith<AssertionError> {
-            // When
-            verifierUpper.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
-            }
-        }
-
-        errorUpperBound.message mustBe "The given verification chain (has 1 items) does not match the captured calls (${verifierUpper.references.size} were captured)."
+        error.message mustBe "Call not found."
     }
 
     @Test
     @JsName("fn1")
-    fun `Given verifyStrictOrder is called it fails if the referenced Functions do not match`() {
+    fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
         // Given
-        val handleProxy = fixture.funProxyFixture()
-        val referenceProxy = fixture.funProxyFixture()
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 1
+        val expectedCalls = 3
 
-        val handle = VerificationHandle(
-            handleProxy,
-            listOf(1)
-        )
-
-        val verifier = VerifierStub(
-            listOf(Reference(referenceProxy, 0))
-        )
-
-        // Then
+        // When
         val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
+            verify(atLeast = expectedCalls) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
 
-        error.message mustBe "Excepted '${handleProxy.id}', but got '${referenceProxy.id}'."
+        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
     }
 
     @Test
     @JsName("fn2")
-    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match`() {
+    fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx = 0
-        val actualCallIdx = 1
-        val referenceProxy = fixture.funProxyFixture(name)
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 3
+        val expectedCalls = 1
 
-        val handle = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx)
-        )
-
-        val verifier = VerifierStub(
-            listOf(Reference(referenceProxy, actualCallIdx))
-        )
-
-        // Then
+        // When
         val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
+            verify(atMost = expectedCalls) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
     }
 
     @Test
     @JsName("fn3")
-    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values`() {
+    fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx = 1
-        val actualCallIdx = 2
-        val referenceProxy = fixture.funProxyFixture(name)
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 1
+        val expectedCalls = 3
 
-        val handle = VerificationHandle(
-            referenceProxy,
-            listOf(
-                0,
-                expectedCallIdx
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, 0),
-                Reference(referenceProxy, actualCallIdx)
-            )
-        )
-
-        // Then
+        // When
         val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
-                add(handle)
+            verify(exactly = expectedCalls, atLeast = 0) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
     }
 
     @Test
     @JsName("fn4")
-    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length`() {
+    fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx = 1
-        val actualCallIdx = 2
-        val referenceProxy = fixture.funProxyFixture(name)
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 3
+        val expectedCalls = 1
 
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                0,
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                expectedCallIdx,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, 0),
-                Reference(referenceProxy, actualCallIdx)
-            )
-        )
-
-        // Then
+        // When
         val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
+            verify(exactly = expectedCalls, atMost = 0) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
 
-        error.message mustBe "Excepted the $expectedCallIdx call of $name, but the $actualCallIdx was referenced."
+        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
     }
 
     @Test
     @JsName("fn5")
-    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with various length while exceeding the range`() {
+    fun `Given verify is called it passes if the covered mock matches the requirements`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx = 2
-        val referenceProxy = fixture.funProxyFixture(name)
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 3
 
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                0,
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                expectedCallIdx + 1,
-            )
-        )
-
-        val handle3 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                expectedCallIdx,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, 0),
-                Reference(referenceProxy, expectedCallIdx - 1),
-                Reference(referenceProxy, expectedCallIdx),
-            )
-        )
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
-                add(handle3)
-            }
+        // When
+        verify(exactly = givenCalls) {
+            Expectation(proxy, fixture.listFixture(size = givenCalls))
         }
-
-        error.message mustBe "The captured calls of $name exceeds the captured calls."
     }
 
     @Test
     @JsName("fn6")
-    fun `Given verifyStrictOrder is called it fails if the referenced CallIndicies do not match on multiple values with mixed References`() {
+    fun `Given verifyStrictOrder is called it uses a StrictVerificationChain`() {
         // Given
-        val name1: String = fixture.fixture()
-        val name2: String = fixture.fixture()
-        val expectedCallIdx = 2
-        val referenceProxy1 = fixture.funProxyFixture(name1)
-        val referenceProxy2 = fixture.funProxyFixture(name2)
+        val verifier = VerifierStub(emptyList())
 
-        val handle1 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                0,
-            )
+        // When
+        verifier.verifyStrictOrder {
+            // Then
+            this fulfils StrictVerificationChain::class
+        }
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given verifyStrictOrder is called it registers and ensures that all references had been taken into account`() {
+        // Given
+        val references = listOf(
+            Reference(fixture.funProxyFixture(), 0),
+            Reference(fixture.funProxyFixture(), 0),
         )
 
-        val handle2 = VerificationHandle(
-            referenceProxy2,
-            listOf(
-                0,
-            )
-        )
-
-        val handle3 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                expectedCallIdx,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy1, 0),
-                Reference(referenceProxy2, 0),
-                Reference(referenceProxy1, expectedCallIdx),
-            )
-        )
+        val verifier = VerifierStub(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
             // When
             verifier.verifyStrictOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
-                add(handle3)
+                // Do nothing
             }
         }
 
-        error.message mustBe "The captured calls of $name1 exceeds the captured calls."
-    }
-
-    @Test
-    @JsName("fn7")
-    fun `Given verifyStrictOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
-        // Given
-        val name1: String = fixture.fixture()
-        val name2: String = fixture.fixture()
-        val expectedCallIdx = 1
-        val referenceProxy1 = fixture.funProxyFixture(name1)
-        val referenceProxy2 = fixture.funProxyFixture(name2)
-
-        val handle1 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                0,
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy2,
-            listOf(
-                0,
-            )
-        )
-
-        val handle3 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                expectedCallIdx,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy1, 0),
-                Reference(referenceProxy2, 0),
-                Reference(referenceProxy1, expectedCallIdx),
-            )
-        )
-
-        // When
-        verifier.verifyStrictOrder {
-            this as VerificationChainBuilder
-
-            add(handle1)
-            add(handle2)
-            add(handle3)
-        }
+        error.message mustBe "The given verification chain covers 2 items, but only 0 were expected (${references[0].proxy.id}, ${references[1].proxy.id} were referenced)."
     }
 
     @Test
     @JsName("fn8")
-    fun `Given verifyOrder is called it fails if the amount captured calls is smaller than the given Order`() {
+    fun `Given verifyStrictOrder is called it accepts and cleans its registration`() {
         // Given
-        val verifier = VerifierStub(emptyList())
-        val handle = VerificationHandle(fixture.funProxyFixture(), fixture.listFixture())
+        val handle1 = fixture.fixtureVerificationHandle(
+            callIndices = listOf(0)
+        )
+        val handle2 = fixture.fixtureVerificationHandle(
+            callIndices = listOf(0)
+        )
+        val references = listOf(
+            Reference(handle1.proxy, 0),
+            Reference(handle2.proxy, 0),
+        )
 
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyOrder {
-                this as VerificationChainBuilder
+        val verifier = VerifierStub(references)
 
-                add(handle)
-            }
+        // When
+        verifier.verifyStrictOrder {
+            this as StrictVerificationChain
+            this.propagate(handle1)
+            this.propagate(handle2)
         }
 
-        error.message mustBe "The given verification chain (has ${verifier.references.size} items) is exceeding the captured calls (1 were captured)."
+        // Then
+        references[0].proxy.verificationChain mustBe null
+        references[1].proxy.verificationChain mustBe null
     }
 
     @Test
     @JsName("fn9")
-    fun `Given verifyOrder is called it fails if the captured calls does not contain the mentioned function call`() {
-        val handleProxy = fixture.funProxyFixture()
-        val referenceProxy = fixture.funProxyFixture()
+    fun `Given verifyOrder is called it uses a StrictVerificationChain`() {
+        // Given
+        val verifier = VerifierStub(emptyList())
 
-        val handle = VerificationHandle(
-            handleProxy,
-            listOf(1)
-        )
-
-        val verifier = VerifierStub(
-            listOf(Reference(referenceProxy, 0))
-        )
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyOrder {
-                this as VerificationChainBuilder
-
-                add(handle)
-            }
+        // When
+        verifier.verifyOrder {
+            // Then
+            this fulfils NonStrictVerificationChain::class
         }
-
-        error.message mustBe "Last referred invocation of ${handleProxy.id} was not found."
     }
 
     @Test
     @JsName("fn10")
-    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found`() {
+    fun `Given verifyOrder is called it registers and accepts`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx = 0
-        val referenceProxy = fixture.funProxyFixture(name)
-
-        val handle = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx)
+        val references = listOf(
+            Reference(fixture.funProxyFixture(), 0),
+            Reference(fixture.funProxyFixture(), 0),
         )
 
-        val verifier = VerifierStub(
-            listOf(Reference(referenceProxy, expectedCallIdx))
-        )
+        val verifier = VerifierStub(references)
 
         // When
-        verifier.verifyStrictOrder {
-            this as VerificationChainBuilder
-
-            add(handle)
+        verifier.verifyOrder {
+            // Do nothing
         }
     }
 
     @Test
     @JsName("fn11")
-    fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls`() {
+    fun `Given verifyOrder is called it accepts and cleans its registration`() {
         // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx1 = 1
-        val expectedCallIdx2 = 0
-        val referenceProxy = fixture.funProxyFixture(name)
-
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx1)
+        val handle1 = fixture.fixtureVerificationHandle(
+            callIndices = listOf(0)
+        )
+        val handle2 = fixture.fixtureVerificationHandle(
+            callIndices = listOf(0)
+        )
+        val references = listOf(
+            Reference(handle1.proxy, 0),
+            Reference(handle2.proxy, 0),
         )
 
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx2)
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, expectedCallIdx1),
-                Reference(referenceProxy, expectedCallIdx2)
-            )
-        )
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
-            }
-        }
-
-        error.message mustBe "Last referred invocation of $name was not found."
-    }
-
-    @Test
-    @JsName("fn12")
-    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls`() {
-        // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx1 = 0
-        val expectedCallIdx2 = 1
-        val referenceProxy = fixture.funProxyFixture(name)
-
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx1)
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(expectedCallIdx2)
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, expectedCallIdx1),
-                Reference(referenceProxy, expectedCallIdx2)
-            )
-        )
+        val verifier = VerifierStub(references)
 
         // When
         verifier.verifyOrder {
-            this as VerificationChainBuilder
-
-            add(handle1)
-            add(handle2)
+            this as NonStrictVerificationChain
+            this.propagate(handle1)
+            this.propagate(handle2)
         }
-    }
-
-    @Test
-    @JsName("fn13")
-    fun `Given verifyOrder is called it passes if the referenced CallIndicies was found for multiple calls with various length`() {
-        // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx1 = 2
-        val expectedCallIdx2 = 3
-
-        val referenceProxy = fixture.funProxyFixture(name)
-
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                0,
-                1,
-                expectedCallIdx1
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                0,
-                expectedCallIdx2
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, 0),
-                Reference(referenceProxy, 1),
-                Reference(referenceProxy, expectedCallIdx1),
-                Reference(referenceProxy, expectedCallIdx2),
-                Reference(referenceProxy, 4),
-            )
-        )
-
-        // When
-        verifier.verifyOrder {
-            this as VerificationChainBuilder
-
-            add(handle1)
-            add(handle2)
-        }
-    }
-
-    @Test
-    @JsName("fn14")
-    fun `Given verifyOrder is called it fails if the referenced CallIndicies was not found for multiple calls with various length`() {
-        // Given
-        val name: String = fixture.fixture()
-        val expectedCallIdx1 = 3
-        val expectedCallIdx2 = 2
-        val referenceProxy = fixture.funProxyFixture(name)
-
-        val handle1 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                expectedCallIdx1
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy,
-            listOf(
-                expectedCallIdx2
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy, expectedCallIdx1),
-                Reference(referenceProxy, expectedCallIdx2)
-            )
-        )
 
         // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
-            }
-        }
-
-        error.message mustBe "Last referred invocation of $name was not found."
-    }
-
-    @Test
-    @JsName("fn15")
-    fun `Given verifyOrder is called it passes if the referenced CallIndicies match on multiple values with mixed References`() {
-        // Given
-        val name1: String = fixture.fixture()
-        val name2: String = fixture.fixture()
-        val expectedCallIdx = 2
-        val referenceProxy1 = fixture.funProxyFixture(name1)
-        val referenceProxy2 = fixture.funProxyFixture(name2)
-
-        val handle1 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                0,
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy2,
-            listOf(
-                0,
-            )
-        )
-
-        val handle3 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                expectedCallIdx,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy1, 0),
-                Reference(referenceProxy2, 0),
-                Reference(referenceProxy1, expectedCallIdx),
-            )
-        )
-
-        // When
-        verifier.verifyOrder {
-            this as VerificationChainBuilder
-
-            add(handle1)
-            add(handle2)
-            add(handle3)
-        }
-    }
-
-    @Test
-    @JsName("fn16")
-    fun `Given verifyOrder is called it fails if the referenced CallIndicies does not match on multiple values with mixed References`() {
-        // Given
-        val name1: String = fixture.fixture()
-        val name2: String = fixture.fixture()
-        val expectedCallIdx = 2
-        val referenceProxy1 = fixture.funProxyFixture(name1)
-        val referenceProxy2 = fixture.funProxyFixture(name2)
-
-        val handle1 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                0,
-            )
-        )
-
-        val handle2 = VerificationHandle(
-            referenceProxy2,
-            listOf(
-                0,
-            )
-        )
-
-        val handle3 = VerificationHandle(
-            referenceProxy1,
-            listOf(
-                expectedCallIdx + 1,
-            )
-        )
-
-        val verifier = VerifierStub(
-            listOf(
-                Reference(referenceProxy1, 0),
-                Reference(referenceProxy2, 0),
-                Reference(referenceProxy1, expectedCallIdx),
-            )
-        )
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyOrder {
-                this as VerificationChainBuilder
-
-                add(handle1)
-                add(handle2)
-                add(handle3)
-            }
-        }
-
-        error.message mustBe "Last referred invocation of $name1 was not found."
+        references[0].proxy.verificationChain mustBe null
+        references[1].proxy.verificationChain mustBe null
     }
 }

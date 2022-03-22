@@ -6,11 +6,11 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract.VerificationHandle
+import tech.antibytes.kmock.KMockContract.Expectation
 
 private fun guardInvocation(
-    handle1: VerificationHandle,
-    handle2: VerificationHandle,
+    handle1: Expectation,
+    handle2: Expectation,
     method: String
 ) {
     if (handle1.proxy !== handle2.proxy) {
@@ -24,18 +24,18 @@ private fun guardInvocation(
  * @param other 2nd handle.
  * @throws IllegalArgumentException if the 2nd handle does not refer to the same proxy.
  * @return VerificationHandle which contains the union of both given call indices.
- * @see VerificationHandle
+ * @see Expectation
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.union(
-    other: VerificationHandle
-): VerificationHandle {
+infix fun Expectation.union(
+    other: Expectation
+): Expectation {
     guardInvocation(this, other, "union")
 
     val multiSet = this.callIndices.toMutableSet()
     multiSet.addAll(other.callIndices)
 
-    return VerificationHandle(
+    return Expectation(
         this.proxy,
         multiSet.sorted()
     )
@@ -46,9 +46,9 @@ infix fun VerificationHandle.union(
  * @see union
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.or(
-    other: VerificationHandle
-): VerificationHandle = this.union(other)
+infix fun Expectation.or(
+    other: Expectation
+): Expectation = this.union(other)
 
 /**
  * Operator to determine the intersection of 2 VerificationHandles call indices.
@@ -56,19 +56,19 @@ infix fun VerificationHandle.or(
  * @param other 2nd handle.
  * @throws IllegalArgumentException if the 2nd handle does not refer to the same proxy.
  * @return VerificationHandle which contains the intersection of both given call indices.
- * @see VerificationHandle
+ * @see Expectation
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.intersection(
-    other: VerificationHandle
-): VerificationHandle {
+infix fun Expectation.intersection(
+    other: Expectation
+): Expectation {
     guardInvocation(this, other, "intersection")
 
     val set = this.callIndices
         .filter { value -> value in other.callIndices }
         .sorted()
 
-    return VerificationHandle(
+    return Expectation(
         this.proxy,
         set
     )
@@ -79,9 +79,9 @@ infix fun VerificationHandle.intersection(
  * @see intersection
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.and(
-    other: VerificationHandle
-): VerificationHandle = this.intersection(other)
+infix fun Expectation.and(
+    other: Expectation
+): Expectation = this.intersection(other)
 
 /**
  * Operator to determine the symmetrical difference of 2 VerificationHandles call indices.
@@ -89,12 +89,12 @@ infix fun VerificationHandle.and(
  * @param other 2nd handle.
  * @throws IllegalArgumentException if the 2nd handle does not refer to the same proxy.
  * @return VerificationHandle which contains the symmetrical difference of both given call indices.
- * @see VerificationHandle
+ * @see Expectation
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.diff(
-    other: VerificationHandle
-): VerificationHandle {
+infix fun Expectation.diff(
+    other: Expectation
+): Expectation {
     guardInvocation(this, other, "diff")
     val intersection = this.intersection(other)
 
@@ -104,7 +104,7 @@ infix fun VerificationHandle.diff(
         .filterNot { value -> value in intersection.callIndices }
         .sorted()
 
-    return VerificationHandle(
+    return Expectation(
         this.proxy,
         set
     )
@@ -115,6 +115,6 @@ infix fun VerificationHandle.diff(
  * @see diff
  * @author Matthias Geisler
  */
-infix fun VerificationHandle.xor(
-    other: VerificationHandle
-): VerificationHandle = this.diff(other)
+infix fun Expectation.xor(
+    other: Expectation
+): Expectation = this.diff(other)

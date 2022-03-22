@@ -6,11 +6,16 @@
 
 package tech.antibytes.kmock.verification
 
+import co.touchlab.stately.collections.IsoMutableMap
+import co.touchlab.stately.collections.sharedMutableMapOf
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NON_STRICT_CALL_IDX_NOT_FOUND
+import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.kmock.KMockContract.VerificationHandle
 import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.util.format
@@ -18,15 +23,19 @@ import tech.antibytes.kmock.util.format
 internal class NonStrictVerificationChain(
     private val references: List<Reference>
 ) : VerificationChain, VerificationInsurance {
-    private var callCounter = 0
-    private val invokedProxies: MutableMap<String, Int> = mutableMapOf()
+    private val callCounter = atomic(0)
+    private val invokedProxies: IsoMutableMap<String, Int> = sharedMutableMapOf()
 
     override fun ensureVerificationOf(vararg proxies: Proxy<*, *>) {
-        TODO("Not yet implemented")
+        proxies.forEach { proxy ->
+            if (proxy.verificationChain != this) {
+                throw IllegalStateException(NOT_PART_OF_CHAIN.format(proxy.id))
+            }
+        }
     }
 
     private fun findProxy(expected: Proxy<*, *>): Int? {
-        for (idx in callCounter until references.size) {
+        for (idx in callCounter.value until references.size) {
             if (references[idx].proxy === expected) {
                 return idx
             }
@@ -36,7 +45,7 @@ internal class NonStrictVerificationChain(
     }
 
     private fun assertProxy(
-        expected: VerificationHandle,
+        expected: Expectation,
         actual: Int?
     ) {
         if (actual == null) {
@@ -47,52 +56,62 @@ internal class NonStrictVerificationChain(
     }
 
     private fun assertInvocation(
-        actual: Reference,
-        expected: VerificationHandle,
+        expected: Expectation,
         expectedCallIdx: Int?,
-        expectedCallIdxReference: Int
     ) {
         if (expectedCallIdx == null) {
             throw AssertionError(NON_STRICT_CALL_IDX_NOT_FOUND.format(expected.proxy.id))
         }
+    }
+
+    private fun findInvocation(
+        expected: Expectation,
+        actual: Reference,
+    ): Int? {
+        val expectedCallIdxReference = invokedProxies[actual.proxy.id] ?: 0
+        val expectedCallIdx = expected.callIndices.firstOrNull { call -> call >= expectedCallIdxReference }
 
         invokedProxies[actual.proxy.id] = expectedCallIdxReference + 1
+
+        return expectedCallIdx
     }
 
-    private fun hasExpectedInvocation(
-        expected: VerificationHandle,
-        actual: Reference,
-    ): Boolean {
-        val expectedCallIdxReference = invokedProxies[actual.proxy.id] ?: 0
-        val expectedCallIdx = expected.callIndices.getOrNull(expectedCallIdxReference)
+    @Throws(AssertionError::class)
+    override fun propagate(expected: Expectation) {
+        while (callCounter.value <= references.size) {
+            val actualReferenceIdx = findProxy(expected.proxy)
 
-        assertInvocation(
-            actual = actual,
-            expected = expected,
-            expectedCallIdx = expectedCallIdx,
-            expectedCallIdxReference = expectedCallIdxReference
-        )
+            try {
+                assertProxy(
+                    actual = actualReferenceIdx,
+                    expected = expected,
+                )
+            } catch (e: AssertionError) {
+                throw e
+            }
 
-
-        return expectedCallIdx == actual.callIndex
-    }
-
-    override fun propagate(expected: VerificationHandle) {
-
-        var referenceIdx: Int
-
-        do {
-            val currentIdx = findProxy(expected.proxy)
-
-            assertProxy(
-                actual = currentIdx,
+            val actualInvocation = findInvocation(
                 expected = expected,
+                actual = references[actualReferenceIdx!!]
             )
 
-            referenceIdx = currentIdx!!
-            callCounter++
-        } while (!hasExpectedInvocation(expected = expected, actual = references[referenceIdx]))
+            try {
+                assertInvocation(
+                    expected = expected,
+                    expectedCallIdx = actualInvocation,
+                )
+            } catch (e: AssertionError) {
+                throw e
+            } finally {
+                callCounter.update { actualReferenceIdx + 1 }
+            }
+
+            if (actualInvocation == references[actualReferenceIdx].callIndex) {
+                break
+            }
+        }
     }
 
+    @Throws(AssertionError::class)
     override fun ensureAllReferencesAreEvaluated() = Unit
 }

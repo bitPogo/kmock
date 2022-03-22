@@ -6,18 +6,11 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract.Proxy
-import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
-import tech.antibytes.kmock.KMockContract.MISMATCHING_CALL_IDX
-import tech.antibytes.kmock.KMockContract.MISMATCHING_FUNCTION
-import tech.antibytes.kmock.KMockContract.NOTHING_TO_STRICTLY_VERIFY
-import tech.antibytes.kmock.KMockContract.NOTHING_TO_VERIFY
+import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NOT_CALLED
-import tech.antibytes.kmock.KMockContract.NO_MATCHING_CALL_IDX
-import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
-import tech.antibytes.kmock.KMockContract.VerificationHandle
 import tech.antibytes.kmock.KMockContract.VerificationInsurance
 import tech.antibytes.kmock.KMockContract.Verifier
 import tech.antibytes.kmock.util.format
@@ -30,7 +23,7 @@ private fun determineAtLeastMessage(actual: Int, expected: Int): String {
     }
 }
 
-private infix fun VerificationHandle.mustBeAtLeast(value: Int) {
+private infix fun Expectation.mustBeAtLeast(value: Int) {
     if (this.callIndices.size < value) {
         val message = determineAtLeastMessage(
             expected = value,
@@ -41,7 +34,7 @@ private infix fun VerificationHandle.mustBeAtLeast(value: Int) {
     }
 }
 
-private infix fun VerificationHandle.mustBeAtMost(value: Int) {
+private infix fun Expectation.mustBeAtMost(value: Int) {
     if (this.callIndices.size > value) {
         val message = TOO_MANY_CALLS.format(value, this.callIndices.size)
 
@@ -55,9 +48,10 @@ private infix fun VerificationHandle.mustBeAtMost(value: Int) {
  * This parameter overrides atLeast and atMost.
  * @param atLeast optional parameter which indicates the minimum amount of calls.
  * @param atMost optional parameter which indicates the maximum amount of calls.
- * @param action producer of VerificationHandle.
+ * @param action producer of a VerificationHandle.
  * @throws AssertionError if given criteria are not met.
  * @see hasBeenCalled
+ * @see hasBeenCalledWithVoid
  * @see hasBeenCalledWith
  * @see hasBeenStrictlyCalledWith
  * @see hasBeenCalledWithout
@@ -70,7 +64,7 @@ fun verify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
-    action: () -> VerificationHandle
+    action: () -> Expectation
 ) {
     val handle = action()
     val minimum = exactly ?: atLeast
@@ -83,74 +77,30 @@ fun verify(
     }
 }
 
-private fun initChainVerification(
-    scope: VerificationInsurance.() -> Any,
-    references: List<Reference>
-): List<VerificationHandle> {
-    val container = VerificationChainBuilder()
+private fun <T> Verifier.verifyChain(
+    scope: VerificationInsurance.() -> Any?,
+    chain: T,
+) where T : VerificationInsurance, T : KMockContract.VerificationChain {
+    references.forEach { reference ->
+        reference.proxy.verificationChain = chain
+    }
+
+    scope(chain)
+
+    chain.ensureAllReferencesAreEvaluated()
 
     references.forEach { reference ->
-        reference.proxy.verificationBuilderReference = container
-    }
-
-    scope(container)
-
-    references.forEach { reference ->
-        reference.proxy.verificationBuilderReference = null
-    }
-
-    return container.toList()
-}
-
-private fun guardStrictChain(references: List<Reference>, handles: List<VerificationHandle>) {
-    if (handles.size != references.size) {
-        val message = NOTHING_TO_STRICTLY_VERIFY.format(handles.size, references.size)
-
-        throw AssertionError(message)
-    }
-}
-
-private fun scanHandleStrictly(
-    latestCall: Int,
-    applicableIdx: List<Int>
-): Int? {
-    val next = latestCall + 1
-    return applicableIdx.firstOrNull { value -> value == next }
-}
-
-private fun evaluateStrictReference(
-    actual: Reference,
-    expected: Proxy<*, *>,
-    call: Int?
-) {
-    if (actual.proxy !== expected) {
-        val message = MISMATCHING_FUNCTION.format(expected.id, actual.proxy.id)
-        throw AssertionError(message)
-    }
-
-    if (call == null) {
-        val message = NO_MATCHING_CALL_IDX.format(actual.proxy.id)
-
-        throw AssertionError(message)
-    }
-
-    if (actual.callIndex != call) {
-        val message = MISMATCHING_CALL_IDX.format(
-            call,
-            actual.proxy.id,
-            actual.callIndex,
-        )
-
-        throw AssertionError(message)
+        reference.proxy.verificationChain = null
     }
 }
 
 /**
- * Verifies a chain VerificationHandles. Each Handle must be in strict order of the referenced Proxy invocation
+ * Verifies a chain of VerificationHandles. Each Handle must be in strict order of the referenced Proxy invocation
  * and all invocations must be present.
- * @param scope chain of VerificationHandle factory.
+ * @param scope chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
  * @see hasBeenCalled
+ * @see hasBeenCalledWithVoid
  * @see hasBeenCalledWith
  * @see hasBeenStrictlyCalledWith
  * @see hasBeenCalledWithout
@@ -162,68 +112,19 @@ private fun evaluateStrictReference(
 fun Verifier.verifyStrictOrder(
     scope: VerificationInsurance.() -> Any,
 ) {
-    val expectedCalls: MutableMap<String, Int> = mutableMapOf()
-    val expectedHandles = initChainVerification(scope, this.references)
-
-    expectedHandles.forEachIndexed { idx, expected ->
-        val expectedProxy = expected.proxy
-        val functionName = expectedProxy.id
-        val lastCall = expectedCalls[functionName] ?: -1
-        val call = scanHandleStrictly(lastCall, expected.callIndices)
-
-        if (idx < this.references.size) {
-            evaluateStrictReference(this.references[idx], expectedProxy, call)
-        }
-
-        expectedCalls[functionName] = call ?: Int.MAX_VALUE
-    }
-
-    guardStrictChain(this.references, expectedHandles)
-}
-
-private fun guardChain(references: List<Reference>, handles: List<VerificationHandle>) {
-    if (handles.size > references.size) {
-        val message = NOTHING_TO_VERIFY.format(references.size, handles.size)
-
-        throw AssertionError(message)
-    }
-}
-
-private fun scanHandle(
-    latestCall: Int,
-    applicableIdx: List<Int>
-): Int? = applicableIdx.firstOrNull { value -> value > latestCall }
-
-private fun evaluateReference(
-    reference: Reference,
-    functionName: String,
-    call: Int?
-): Boolean {
-    return when {
-        call == null -> false
-        reference.proxy.id != functionName -> false
-        reference.callIndex != call -> false
-        else -> true
-    }
-}
-
-private fun ensureAllHandlesAreDone(
-    handles: List<VerificationHandle>,
-    handleOffset: Int
-) {
-    if (handleOffset != handles.size) {
-        val message = CALL_NOT_FOUND.format(handles[handleOffset].proxy.id)
-
-        throw AssertionError(message)
-    }
+    verifyChain(
+        scope = scope,
+        chain = StrictVerificationChain(references),
+    )
 }
 
 /**
  * Verifies a chain VerificationHandles. Each Handle must be in order but gaps are allowed.
  * Also the chain does not need to be exhaustive.
- * @param scope chain of VerificationHandle factory.
+ * @param scope chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
  * @see hasBeenCalled
+ * @see hasBeenCalledWithVoid
  * @see hasBeenCalledWith
  * @see hasBeenStrictlyCalledWith
  * @see hasBeenCalledWithout
@@ -235,26 +136,8 @@ private fun ensureAllHandlesAreDone(
 fun Verifier.verifyOrder(
     scope: VerificationInsurance.() -> Any
 ) {
-    val handleCalls: MutableMap<String, Int> = mutableMapOf()
-    val handles = initChainVerification(scope, this.references)
-    var handleOffset = 0
-
-    guardChain(this.references, handles)
-
-    this.references.forEach { reference ->
-        if (handleOffset == handles.size) {
-            return@forEach
-        }
-
-        val functionName = handles[handleOffset].proxy.id
-        val lastCall = handleCalls[functionName] ?: -1
-        val call = scanHandle(lastCall, handles[handleOffset].callIndices)
-
-        if (evaluateReference(reference, functionName, call)) {
-            handleCalls[functionName] = call!!
-            handleOffset += 1
-        }
-    }
-
-    ensureAllHandlesAreDone(handles, handleOffset)
+    verifyChain(
+        scope = scope,
+        chain = NonStrictVerificationChain(references),
+    )
 }
