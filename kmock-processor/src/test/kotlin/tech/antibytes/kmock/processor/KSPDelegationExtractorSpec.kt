@@ -27,8 +27,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -39,6 +41,7 @@ class KSPDelegationExtractorSpec {
         // Then
         actual.isKmp mustBe isKmp
         actual.rootPackage mustBe rootPackage
+        actual.kspDir mustBe kspDir
     }
 
     @Test
@@ -46,8 +49,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -64,8 +69,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -88,8 +95,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -106,8 +115,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -130,8 +141,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -154,8 +167,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )
@@ -178,8 +193,10 @@ class KSPDelegationExtractorSpec {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
+            "kspDir" to kspDir,
             "rootPackage" to rootPackage,
             "isKmp" to isKmp.toString()
         )

@@ -33,6 +33,7 @@ class KMockProcessorSpec {
 
     private fun PublicApi.Fixture.optionsFixture(isKmp: Boolean? = null): Options {
         return Options(
+            fixture.fixture(),
             isKmp ?: fixture.fixture(),
             fixture.fixture(),
             fixture.mapFixture(),

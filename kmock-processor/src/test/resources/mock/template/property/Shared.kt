@@ -9,7 +9,7 @@ package mock.template.property
 import mock.template.async.Shared
 import tech.antibytes.kmock.MockShared
 
-@MockShared("TesT", Shared::class)
+@MockShared("sharedTest", Shared::class)
 interface Shared {
     val foo: String
     val bar: Int

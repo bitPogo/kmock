@@ -1,6 +1,6 @@
 package generatorTest
 
-import factory.template.generics.Platform
+import factory.template.generic.Platform
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
@@ -31,11 +31,11 @@ internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Platform<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Platform::class -> factory.template.generics.PlatformMock<K, L>(verifier
-    = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
-    factory.template.generics.PlatformMock::class -> factory.template.generics.PlatformMock<K,
+    factory.template.generic.Platform::class -> factory.template.generic.PlatformMock<K, L>(verifier =
+    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    factory.template.generic.PlatformMock::class -> factory.template.generic.PlatformMock<K,
         L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
@@ -45,11 +45,11 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform<K, L>, K : A
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Platform<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Platform::class -> factory.template.generics.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Platform<K, L>) as Mock
-    factory.template.generics.PlatformMock::class -> factory.template.generics.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Platform<K, L>) as Mock
+    factory.template.generic.Platform::class -> factory.template.generic.PlatformMock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Platform<K, L>) as Mock
+    factory.template.generic.PlatformMock::class -> factory.template.generic.PlatformMock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Platform<K, L>) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

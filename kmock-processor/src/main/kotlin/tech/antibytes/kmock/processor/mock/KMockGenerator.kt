@@ -8,7 +8,6 @@ package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.isPublic
-import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
@@ -27,7 +26,7 @@ import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
@@ -38,7 +37,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockGenerator(
     private val logger: KSPLogger,
     private val useBuildInProxiesOn: Set<String>,
-    private val codeGenerator: CodeGenerator,
+    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val genericsResolver: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
     private val functionGenerator: ProcessorContract.FunctionGenerator,
@@ -217,31 +216,18 @@ internal class KMockGenerator(
         return implementation.build()
     }
 
-    private fun determineFileName(
-        mockName: String,
-        suffix: String
-    ): String {
-        return if (suffix.isEmpty()) {
-            mockName
-        } else {
-            "$mockName$INDICATOR_SEPARATOR$suffix"
-        }
-    }
-
     private fun writeMock(
         template: KSClassDeclaration,
         alias: String?,
         generics: Map<String, List<KSTypeReference>>?,
         dependencies: List<KSFile>,
-        target: String,
         relaxer: Relaxer?
     ) {
         val templateName = alias ?: template.simpleName.asString()
-        val targetIndicator = target.uppercase()
         val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
-            determineFileName(mockName, targetIndicator)
+            mockName
         )
 
         val implementation = buildMock(
@@ -275,12 +261,13 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
+            codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
+
             writeMock(
                 template = template.template,
                 alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
-                target = ProcessorContract.Target.COMMON.value,
                 relaxer = relaxer
             )
         }
@@ -292,12 +279,13 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
+            codeGenerator.setOneTimeSourceSet(template.indicator)
+
             writeMock(
                 template = template.template,
                 alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
-                target = template.indicator,
                 relaxer = relaxer
             )
         }
@@ -314,7 +302,6 @@ internal class KMockGenerator(
                 alias = template.alias,
                 generics = template.generics,
                 dependencies = dependencies,
-                target = ProcessorContract.Target.PLATFORM.value,
                 relaxer = relaxer
             )
         }

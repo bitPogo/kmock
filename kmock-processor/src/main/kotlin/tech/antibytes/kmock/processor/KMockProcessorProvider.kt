@@ -21,10 +21,13 @@ import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         val logger = environment.logger
-        val generator = environment.codeGenerator
 
         val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
 
+        val generator = KMockCodeGenerator(
+            kspDir = options.kspDir,
+            kspGenerator = environment.codeGenerator
+        )
         val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
 

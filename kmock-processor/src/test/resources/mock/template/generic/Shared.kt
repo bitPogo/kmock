@@ -12,7 +12,7 @@ import tech.antibytes.kmock.MockShared
 interface SomeGeneric<T>
 
 @MockShared(
-    "TeST",
+    "sharedTest",
     Shared::class
 )
 interface Shared<K, L> where L : Any, L : Comparable<L>, K : Any {

@@ -14,6 +14,7 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
+import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -23,6 +24,7 @@ class KMockFactoriesSpec {
     lateinit var buildDir: File
     private val provider = KMockProcessorProvider()
     private val root = "/factory"
+    private val rootPackage = "generatorTest"
 
     private fun loadResource(path: String): String {
         return KMockMocksSpec::class.java.getResource(root + path).readText()
@@ -35,8 +37,9 @@ class KMockFactoriesSpec {
         vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
-            "rootPackage" to "generatorTest",
-            "isKmp" to isKmp.toString()
+            ProcessorContract.KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
+            ProcessorContract.ROOT_PACKAGE to rootPackage,
+            ProcessorContract.KMP_FLAG to isKmp.toString()
         ).also {
             it.putAll(aliases)
         }
@@ -57,9 +60,8 @@ class KMockFactoriesSpec {
             .filter(filter)
     }
 
-    private fun resolveGenerated(expected: String): String? {
-        return findGeneratedSource { file -> file.absolutePath.endsWith(expected) }
-            .getOrNull(0)?.readText()
+    private fun resolveGenerated(expected: String): File? {
+        return findGeneratedSource { file -> file.absolutePath.endsWith(expected) }.getOrNull(0)
     }
 
     private fun String.normalizeSource(): String = this.replace(Regex("[\t ]+"), "")
@@ -86,7 +88,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -106,16 +108,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -140,7 +142,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -160,16 +162,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -194,7 +196,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -227,9 +229,10 @@ class KMockFactoriesSpec {
             source2,
             source3
         )
-        val actualExpect1 = resolveGenerated("MockFactory@TEST.kt")
-        val actualExpect2 = resolveGenerated("MockFactory@NOTTEST.kt")
-        val actualActual = resolveGenerated("MockFactory.kt")
+
+        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
+        val actualExpect1 = resolveGenerated("kotlin/other/otherTest/${rootPackage}/MockFactory.kt")
+        val actualExpect2 = resolveGenerated("kotlin/shared/sharedTest/${rootPackage}/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -237,9 +240,9 @@ class KMockFactoriesSpec {
         actualExpect2 isNot null
         actualActual isNot null
 
-        actualExpect1!!.normalizeSource() mustBe expectedExpect1.normalizeSource()
-        actualExpect2!!.normalizeSource() mustBe expectedExpect2.normalizeSource()
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect1!!.readText().normalizeSource() mustBe expectedExpect1.normalizeSource()
+        actualExpect2!!.readText().normalizeSource() mustBe expectedExpect2.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
     }
 
     @Test
@@ -259,16 +262,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -295,7 +298,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -322,7 +325,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -344,15 +347,15 @@ class KMockFactoriesSpec {
             ),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 }

@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
@@ -36,6 +37,7 @@ internal interface ProcessorContract {
     )
 
     data class Options(
+        val kspDir: String,
         val isKmp: Boolean,
         val rootPackage: String,
         val precedences: Map<String, Int>,
@@ -110,6 +112,11 @@ internal interface ProcessorContract {
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
         ): Map<String, GenericDeclaration>
+    }
+
+    interface KmpCodeGenerator : CodeGenerator {
+        fun setOneTimeSourceSet(sourceSet: String)
+        fun closeFiles()
     }
 
     interface RelaxerGenerator {
@@ -208,11 +215,6 @@ internal interface ProcessorContract {
         )
     }
 
-    enum class Target(val value: String) {
-        COMMON("commonTest"),
-        PLATFORM("")
-    }
-
     companion object {
         const val KMOCK_FACTORY_TYPE_NAME = "Mock"
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
@@ -246,11 +248,14 @@ internal interface ProcessorContract {
             PropertyProxy::class.java.simpleName
         )
 
+        const val COMMON_INDICATOR = "commonTest"
+        const val KSP_DIR = "kspDir"
+        const val KMP_FLAG = "isKmp"
+        const val ROOT_PACKAGE = "rootPackage"
         const val PRECEDENCE_PREFIX = "precedence_"
         const val ALIAS_PREFIX = "alias_"
         const val RECURSIVE_PREFIX = "recursive_"
         const val BUILD_IN_PREFIX = "buildIn_"
         const val USELESS_PREFIXES_PREFIX = "namePrefix_"
-        const val INDICATOR_SEPARATOR = "@"
     }
 }

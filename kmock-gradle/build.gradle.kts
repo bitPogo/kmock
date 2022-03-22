@@ -9,6 +9,7 @@ import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
+import tech.antibytes.gradle.kmock.dependency.Version
 
 plugins {
     `kotlin-dsl`
@@ -55,7 +56,7 @@ afterEvaluate {
         packageName.set("tech.antibytes.gradle.kmock.config")
         stringFields.set(
             mapOf(
-                "version" to project.version as String
+                "version" to project.version as String,
             )
         )
     }
