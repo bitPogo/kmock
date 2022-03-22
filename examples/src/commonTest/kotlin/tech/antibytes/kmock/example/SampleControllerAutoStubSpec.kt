@@ -142,19 +142,24 @@ class SampleControllerAutoStubSpec {
             delay(20)
 
             verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 1) { local._fetch.hasBeenStrictlyCalledWith(id) }
-            verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.verifyStrictOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
                 local._fetch.hasBeenStrictlyCalledWith(id)
+                domainObject._id.wasGotten()
+                local._fetch.hasBeenStrictlyCalledWith(id)
+                remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasSet()
             }
 
             verifier.verifyOrder {
                 local._contains.hasBeenCalledWithout("abc")
+                remote._find.hasBeenStrictlyCalledWith(idOrg)
+                remote._find.hasBeenStrictlyCalledWith(idOrg)
             }
         }
     }

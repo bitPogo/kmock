@@ -53,7 +53,7 @@ class NonFreezingVerifierSpec {
         verifier.addReference(proxy, index)
 
         // Then
-        verifier.references.first().Proxy sameAs proxy
+        verifier.references.first().proxy sameAs proxy
         verifier.references.first().callIndex mustBe index
     }
 
@@ -69,7 +69,7 @@ class NonFreezingVerifierSpec {
         verifier.addReference(proxy, fixture.fixture())
 
         // Then
-        verifier.references.first().Proxy sameAs proxy
+        verifier.references.first().proxy sameAs proxy
     }
 
     @Test
@@ -84,7 +84,7 @@ class NonFreezingVerifierSpec {
         verifier.addReference(proxy, fixture.fixture())
 
         // Then
-        verifier.references.first().Proxy sameAs proxy
+        verifier.references.first().proxy sameAs proxy
     }
 
     @Test
@@ -102,7 +102,7 @@ class NonFreezingVerifierSpec {
         verifier.addReference(proxy, fixture.fixture())
 
         // Then
-        verifier.references.first().Proxy sameAs proxy
+        verifier.references.first().proxy sameAs proxy
     }
 
     @Test
@@ -140,7 +140,7 @@ class NonFreezingVerifierSpec {
         verifier.addReference(proxy, fixture.fixture())
 
         // Then
-        verifier.references.first().Proxy mustBe proxy
+        verifier.references.first().proxy mustBe proxy
     }
 
     @Test

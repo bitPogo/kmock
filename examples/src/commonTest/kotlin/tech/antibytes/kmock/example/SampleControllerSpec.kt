@@ -144,14 +144,17 @@ class SampleControllerSpec {
             delay(20)
 
             local.contains.assertHasBeenCalledStrictlyWith(1, idOrg)
-            local.fetch.assertHasBeenCalledStrictlyWith(1, id)
-            remote.find.assertHasBeenCalledStrictlyWith(1, idOrg)
+            local.fetch.assertHasBeenCalledStrictlyWith(2, id)
+            remote.find.assertHasBeenCalledStrictlyWith(2, idOrg)
 
             verifier.verifyStrictOrder {
                 local.contains.hasBeenStrictlyCalledWith(idOrg)
                 remote.find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propId.wasGotten()
                 local.fetch.hasBeenStrictlyCalledWith(id)
+                domainObject.propId.wasGotten()
+                local.fetch.hasBeenStrictlyCalledWith(id)
+                remote.find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propId.wasSet()
             }
 

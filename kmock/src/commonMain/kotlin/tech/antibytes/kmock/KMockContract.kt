@@ -40,7 +40,7 @@ object KMockContract {
          * Reference to its correspondent VerificationChain. This Property is intended for internal use only!
          * @suppress
          */
-        var verificationBuilderReference: VerificationChainBuilder?
+        var verificationChain: VerificationChain?
 
         /**
          * Resolves given arguments of an invocation.
@@ -690,14 +690,14 @@ object KMockContract {
      * Meant for internal usage only!
      * @author Matthias Geisler
      */
-    interface VerificationHandle {
+    interface Expectation {
         /**
-         * Id of the Proxy.
+         * Reference of the Proxy.
          */
-        val id: String
+        val proxy: Proxy<*, *>
 
         /**
-         * List with aggregated indices of invocation of the refered Proxy.
+         * List with aggregated indices of invocation of the referred Proxy.
          */
         val callIndices: List<Int>
     }
@@ -729,7 +729,7 @@ object KMockContract {
         /**
          * The referenced Proxy.
          */
-        val Proxy: Proxy<*, *>,
+        val proxy: Proxy<*, *>,
 
         /**
          * The referenced Call.
@@ -750,24 +750,25 @@ object KMockContract {
     }
 
     /**
-     * Builder for a VerificationChain.
-     * Meant for internal usage only!
+     * VerificationChain in order to verify over multiple Handles.
+     * Meant for internal purpose only!
      * @author Matthias Geisler
      */
-    interface VerificationChainBuilder {
+    interface VerificationChain {
         /**
-         * Adds a VerificationHandle to the Chain.
-         * Meant for internal usage only!
-         * @param handle a VerificationHandle which will be used for verification
+         * Propagates the expected invocation to the Chain and asserts it against the actual values.
+         * @param expected the expected Invocation.
+         * @throws AssertionError if the expected value does not match the actual value.
          */
-        fun add(handle: VerificationHandle)
+        @Throws(AssertionError::class)
+        fun propagate(expected: Expectation)
 
         /**
-         * Transforms the chain into a list.
-         * Meant for internal usage only!
-         * @return a List of VerificationHandle.
+         * Ensures that all expected or actual values are covered depending on the context.
+         * @throws AssertionError if the context needs to be exhaustive and not all expected or actual values are covered.
          */
-        fun toList(): List<VerificationHandle>
+        @Throws(AssertionError::class)
+        fun ensureAllReferencesAreEvaluated()
     }
 
     /**
@@ -786,13 +787,18 @@ object KMockContract {
         fun clear()
     }
 
+    internal const val STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
+    internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
+    internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
+    internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
+    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+
+    internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
+    internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
+
     internal const val NOT_CALLED = "Call not found."
-    internal const val TOO_LESS_CALLS = "Expected at least \$1 calls, but found only \$2."
-    internal const val TOO_MANY_CALLS = "Expected at most \$1 calls, but exceeded with \$2."
-    internal const val NOTHING_TO_STRICTLY_VERIFY = "The given verification chain (has \$1 items) does not match the captured calls (\$2 were captured)."
-    internal const val NOTHING_TO_VERIFY = "The given verification chain (has \$1 items) is exceeding the captured calls (\$2 were captured)."
-    internal const val NO_MATCHING_CALL_IDX = "The captured calls of \$1 exceeds the captured calls."
-    internal const val MISMATCHING_FUNCTION = "Excepted '\$1', but got '\$2'."
-    internal const val MISMATCHING_CALL_IDX = "Excepted the \$1, but the \$2 was referenced."
-    internal const val CALL_NOT_FOUND = "Last referred invocation of \$1 was not found."
+    internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
+    internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
+
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this VerificationChain."
 }

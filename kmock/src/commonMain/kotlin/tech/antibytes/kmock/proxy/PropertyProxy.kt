@@ -16,6 +16,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.Relaxer
+import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
@@ -66,8 +67,8 @@ class PropertyProxy<Value>(
     private val arguments: IsoMutableList<GetOrSet> = sharedMutableListOf()
     private val relaxer: AtomicRef<Relaxer<Value>?> = atomic(relaxer)
 
-    private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
-    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
+    private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
+    override var verificationChain: VerificationChain? by _verificationChain
 
     private enum class Provider(val value: Int) {
         NO_PROVIDER(0),

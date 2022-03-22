@@ -17,6 +17,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
+import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
@@ -26,7 +27,7 @@ import kotlin.math.max
 abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     override val id: String,
     override val ignorableForVerification: Boolean,
-    collector: Collector = Collector { _, _ -> Unit },
+    collector: Collector = NoopCollector,
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
@@ -65,8 +66,9 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
 
     private val buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
 
-    private val _verificationBuilder: AtomicRef<KMockContract.VerificationChainBuilder?> = atomic(null)
-    override var verificationBuilderReference: KMockContract.VerificationChainBuilder? by _verificationBuilder
+    private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
+
+    override var verificationChain: VerificationChain? by _verificationChain
 
     protected enum class Provider(val value: Int) {
         NO_PROVIDER(0),

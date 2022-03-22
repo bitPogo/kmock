@@ -69,7 +69,7 @@ class VerifierSpec {
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().Proxy sameAs proxy
+            verifier.references.first().proxy sameAs proxy
             verifier.references.first().callIndex mustBe index
         }
 
@@ -91,7 +91,7 @@ class VerifierSpec {
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().Proxy sameAs proxy
+            verifier.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -112,7 +112,7 @@ class VerifierSpec {
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().Proxy sameAs proxy
+            verifier.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -136,7 +136,7 @@ class VerifierSpec {
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().Proxy sameAs proxy
+            verifier.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -186,7 +186,7 @@ class VerifierSpec {
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().Proxy mustBe proxy
+            verifier.references.first().proxy mustBe proxy
         }
 
         return resolveMultiBlockCalls()
