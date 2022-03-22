@@ -32,10 +32,10 @@ internal class AllowedRecursiveMock<K : Any, L>(
         set(`value`) = _template.onSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> = if (spyOn == null) {
-        PropertyProxy("mock.template.generic.AllowedRecursive#_template", spyOnGet = null, spyOnSet
-        = null, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.generic.AllowedRecursiveMock#_template", spyOnGet = null,
+            spyOnSet = null, collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.generic.AllowedRecursive#_template", spyOnGet = {
+        PropertyProxy("mock.template.generic.AllowedRecursiveMock#_template", spyOnGet = {
             spyOn.template }, spyOnSet = { spyOn.template = it; Unit }, collector = verifier, freeze =
         freeze, relaxer = null)
     }
@@ -43,8 +43,8 @@ internal class AllowedRecursiveMock<K : Any, L>(
 
     public val _ossWithSequencesSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> =
-        SyncFunProxy("mock.template.generic.AllowedRecursive#_ossWithSequencesSequence", spyOn = if
-                                                                                                     (spyOn != null) { { payload ->
+        SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithSequencesSequence", spyOn =
+        if (spyOn != null) { { payload ->
             @Suppress("UNCHECKED_CAST")
             payload as kotlin.sequences.Sequence<kotlin.Char>
             @Suppress("UNCHECKED_CAST")
@@ -56,13 +56,13 @@ internal class AllowedRecursiveMock<K : Any, L>(
         null)
 
     public val _ossWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.AllowedRecursive#_ossWithVoid", spyOn = if (spyOn != null)
-        { { @Suppress("UNCHECKED_CAST")
+        SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithVoid", spyOn = if (spyOn !=
+            null) { { @Suppress("UNCHECKED_CAST")
         oss() as kotlin.Comparable<Any?> } } else { null }, collector = verifier, freeze = freeze,
             relaxer = null)
 
     public val _brassWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
-    kotlin.Unit> = SyncFunProxy("mock.template.generic.AllowedRecursive#_brassWithComparable",
+    kotlin.Unit> = SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithComparable",
         spyOn = if (spyOn != null) { { payload ->
             brass(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                           (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
@@ -70,23 +70,24 @@ internal class AllowedRecursiveMock<K : Any, L>(
 
     public val _brassWithVoid: KMockContract.SyncFunProxy<kotlin.Comparable<Any?>, () ->
     kotlin.Comparable<Any?>> =
-        SyncFunProxy("mock.template.generic.AllowedRecursive#_brassWithVoid", spyOn = if (spyOn !=
+        SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithVoid", spyOn = if (spyOn !=
             null) { { @Suppress("UNCHECKED_CAST")
         brass() as kotlin.Comparable<Any?> } } else { null }, collector = verifier, freeze = freeze,
             relaxer = null)
 
     public val _issWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
-    kotlin.Unit> = SyncFunProxy("mock.template.generic.AllowedRecursive#_issWithComparable", spyOn
-    = if (spyOn != null) { { payload ->
-        iss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-    null)
+    kotlin.Unit> = SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithComparable",
+        spyOn = if (spyOn != null) { { payload ->
+            iss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
+        null)
 
     public val _issWithVoid: KMockContract.SyncFunProxy<kotlin.Comparable<Any?>, () ->
-    kotlin.Comparable<Any?>> = SyncFunProxy("mock.template.generic.AllowedRecursive#_issWithVoid",
-        spyOn = if (spyOn != null) { { @Suppress("UNCHECKED_CAST")
+    kotlin.Comparable<Any?>> =
+        SyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithVoid", spyOn = if (spyOn !=
+            null) { { @Suppress("UNCHECKED_CAST")
         iss() as kotlin.Comparable<Any?> } } else { null }, collector = verifier, freeze = freeze,
-        relaxer = null)
+            relaxer = null)
 
     public override fun <T> oss(payload: T): Unit where T : Sequence<Char>, T : CharSequence, T :
     Comparable<List<T>> = _ossWithSequencesSequence.invoke(payload)

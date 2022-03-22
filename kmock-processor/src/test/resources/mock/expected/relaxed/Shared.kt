@@ -28,27 +28,30 @@ internal class SharedMock(
         get() = _buzz.onGet()
 
     public val _buzz: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.relaxed.Shared#_buzz", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else { null })
-    } else {
-        PropertyProxy("mock.template.relaxed.Shared#_buzz", spyOnGet = { spyOn.buzz }, collector =
+        PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else {
             null })
+    } else {
+        PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = { spyOn.buzz },
+            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
+                relaxed(mockId) } } else { null })
     }
 
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
-        SyncFunProxy("mock.template.relaxed.Shared#_foo", spyOn = if (spyOn != null) { { payload ->
+        SyncFunProxy("mock.template.relaxed.SharedMock#_foo", spyOn = if (spyOn != null) { {
+                payload ->
             foo(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
         { { mockId -> relaxed(mockId) } } else { null })
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
-        AsyncFunProxy("mock.template.relaxed.Shared#_bar", spyOn = if (spyOn != null) { { payload ->
+        AsyncFunProxy("mock.template.relaxed.SharedMock#_bar", spyOn = if (spyOn != null) { {
+                payload ->
             bar(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
         { { mockId -> relaxed(mockId) } } else { null })
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        SyncFunProxy("mock.template.relaxed.Shared#_buzzWithVoid", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", spyOn = if (spyOn != null) { {
             buzz() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                   (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId ->
             relaxed(mockId) } } else { null }, buildInRelaxer = null)

@@ -118,6 +118,11 @@ internal class KMockGenerator(
         return overloadedMethods
     }
 
+    private fun constructQualifier(
+        mockName: String,
+        template: KSClassDeclaration,
+    ): String = "${template.packageName.asString()}.$mockName"
+
     private fun KSDeclaration.isPublicOpen(): Boolean {
         return this.isPublic() && this.isOpen()
     }
@@ -130,7 +135,9 @@ internal class KMockGenerator(
     ): TypeSpec {
         val implementation = TypeSpec.classBuilder(mockName)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
-        val qualifier = template.qualifiedName!!.asString()
+        val templateName = template.qualifiedName!!.asString()
+        val qualifier = constructQualifier(mockName, template)
+
         val superType = genericsResolver.resolveMockClassType(template, typeResolver)
         val proxyNameCollector: MutableList<String> = mutableListOf()
 
@@ -160,10 +167,10 @@ internal class KMockGenerator(
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isPublicOpen()) {
                 val (proxy, property) = propertyGenerator.buildPropertyBundle(
-                    qualifier,
-                    ksProperty,
-                    typeResolver,
-                    relaxer
+                    qualifier = qualifier,
+                    ksProperty = ksProperty,
+                    typeResolver = typeResolver,
+                    relaxer = relaxer
                 )
 
                 proxyNameCollector.add(proxy.name)
@@ -177,11 +184,11 @@ internal class KMockGenerator(
 
             if (ksFunction.isPublicOpen() && name != "equals" && name != "toString" && name != "hashCode") {
                 val (proxy, function) = functionGenerator.buildFunctionBundle(
-                    qualifier,
-                    ksFunction,
-                    typeResolver,
-                    overloadedMethods,
-                    relaxer
+                    qualifier = qualifier,
+                    ksFunction = ksFunction,
+                    typeResolver = typeResolver,
+                    existingProxies = overloadedMethods,
+                    relaxer = relaxer
                 )
 
                 proxyNameCollector.add(proxy.name)
@@ -190,12 +197,12 @@ internal class KMockGenerator(
             }
         }
 
-        if (qualifier in useBuildInProxiesOn) {
+        if (templateName in useBuildInProxiesOn) {
             val (proxies, functions) = buildInGenerator.buildFunctionBundles(
-                mockName,
-                qualifier,
-                overloadedMethods,
-                generics?.size ?: 0
+                mockName = mockName,
+                qualifier = qualifier,
+                existingProxies = overloadedMethods,
+                amountOfGenerics = generics?.size ?: 0
             )
 
             implementation.addFunctions(functions)
@@ -210,7 +217,7 @@ internal class KMockGenerator(
         return implementation.build()
     }
 
-    private fun dertermineFileName(
+    private fun determineFileName(
         mockName: String,
         suffix: String
     ): String {
@@ -234,7 +241,7 @@ internal class KMockGenerator(
         val mockName = "${templateName}Mock"
         val file = FileSpec.builder(
             template.packageName.asString(),
-            dertermineFileName(mockName, targetIndicator)
+            determineFileName(mockName, targetIndicator)
         )
 
         val implementation = buildMock(

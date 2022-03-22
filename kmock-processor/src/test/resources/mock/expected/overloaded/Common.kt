@@ -29,11 +29,11 @@ internal class CommonMock(
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
-        PropertyProxy("mock.template.overloaded.Common#_foo", spyOnGet = null, collector =
+        PropertyProxy("mock.template.overloaded.CommonMock#_foo", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.overloaded.Common#_foo", spyOnGet = { spyOn.foo }, collector =
-        verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.overloaded.CommonMock#_foo", spyOnGet = { spyOn.foo },
+            collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -42,49 +42,49 @@ internal class CommonMock(
         set(`value`) = _hashCode.onSet(value)
 
     public val _hashCode: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.overloaded.Common#_hashCode", spyOnGet = null, spyOnSet =
+        PropertyProxy("mock.template.overloaded.CommonMock#_hashCode", spyOnGet = null, spyOnSet =
         null, collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.overloaded.Common#_hashCode", spyOnGet = { spyOn.hashCode },
-            spyOnSet = { spyOn.hashCode = it; Unit }, collector = verifier, freeze = freeze, relaxer =
-            null)
+        PropertyProxy("mock.template.overloaded.CommonMock#_hashCode", spyOnGet = { spyOn.hashCode
+        }, spyOnSet = { spyOn.hashCode = it; Unit }, collector = verifier, freeze = freeze,
+            relaxer = null)
     }
 
 
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = SyncFunProxy("mock.template.overloaded.Common#_fooWithIntAny", spyOn = if (spyOn != null) {
-        { fuzz, ozz ->
-            foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        = SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithIntAny", spyOn = if (spyOn !=
+        null) { { fuzz, ozz ->
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
-        = SyncFunProxy("mock.template.overloaded.Common#_fooWithAnyInt", spyOn = if (spyOn != null) {
-        { fuzz, ozz ->
-            foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        = SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithAnyInt", spyOn = if (spyOn !=
+        null) { { fuzz, ozz ->
+        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
-    kotlin.Any> = SyncFunProxy("mock.template.overloaded.Common#_fooWithAnyString", spyOn = if
-                                                                                                (spyOn != null) { { fuzz, ozz ->
+    kotlin.Any> = SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithAnyString", spyOn = if
+                                                                                                    (spyOn != null) { { fuzz, ozz ->
         foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
-    kotlin.Any> = SyncFunProxy("mock.template.overloaded.Common#_fooWithStringAny", spyOn = if
-                                                                                                (spyOn != null) { { fuzz, ozz ->
+    kotlin.Any> = SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithStringAny", spyOn = if
+                                                                                                    (spyOn != null) { { fuzz, ozz ->
         foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithStringMockTemplateOverloadedAbc:
         KMockContract.SyncFunProxy<Any, (kotlin.String, mock.template.overloaded.Abc) -> kotlin.Any> =
-        SyncFunProxy("mock.template.overloaded.Common#_fooWithStringMockTemplateOverloadedAbc", spyOn
-        = if (spyOn != null) { { fuzz, ozz ->
-            foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithStringMockTemplateOverloadedAbc",
+            spyOn = if (spyOn != null) { { fuzz, ozz ->
+                foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
-        SyncFunProxy("mock.template.overloaded.Common#_fooWithFunction1", spyOn = if (spyOn != null) {
-            { fuzz ->
-                foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithFunction1", spyOn = if (spyOn !=
+            null) { { fuzz ->
+            foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.overloaded.Common#_fooWithAny", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithAny", spyOn = if (spyOn != null) { {
                 fuzz ->
             foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
@@ -92,16 +92,16 @@ internal class CommonMock(
 
     public val _fooWithMockTemplateOverloadedCommon:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Common) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.overloaded.Common#_fooWithMockTemplateOverloadedCommon", spyOn =
-        if (spyOn != null) { { fuzz ->
+        SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithMockTemplateOverloadedCommon", spyOn
+        = if (spyOn != null) { { fuzz ->
             foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
         null)
 
     public val _fooWithMockTemplateOverloadedLPG:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.overloaded.Common#_fooWithMockTemplateOverloadedLPG", spyOn = if
-                                                                                                      (spyOn != null) { { fuzz ->
+        SyncFunProxy("mock.template.overloaded.CommonMock#_fooWithMockTemplateOverloadedLPG", spyOn =
+        if (spyOn != null) { { fuzz ->
             foo(fuzz) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
                                                                                                      (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
         null)

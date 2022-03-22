@@ -28,11 +28,11 @@ internal class CollisionMock(
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Collision#_foo", spyOnGet = null, collector =
+        PropertyProxy("mock.template.buildIn.CollisionMock#_foo", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.buildIn.Collision#_foo", spyOnGet = { spyOn.foo }, collector =
-        verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CollisionMock#_foo", spyOnGet = { spyOn.foo },
+            collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -40,11 +40,11 @@ internal class CollisionMock(
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Collision#_bar", spyOnGet = null, collector =
+        PropertyProxy("mock.template.buildIn.CollisionMock#_bar", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.buildIn.Collision#_bar", spyOnGet = { spyOn.bar }, collector =
-        verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CollisionMock#_bar", spyOnGet = { spyOn.bar },
+            collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -52,11 +52,11 @@ internal class CollisionMock(
         get() = _hashCode.onGet()
 
     public val _hashCode: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Collision#_hashCode", spyOnGet = null, collector =
+        PropertyProxy("mock.template.buildIn.CollisionMock#_hashCode", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.buildIn.Collision#_hashCode", spyOnGet = { spyOn.hashCode },
-            collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CollisionMock#_hashCode", spyOnGet = { spyOn.hashCode
+        }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -65,30 +65,32 @@ internal class CollisionMock(
         set(`value`) = _buzz.onSet(value)
 
     public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Collision#_buzz", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CollisionMock#_buzz", spyOnGet = null, spyOnSet =
+        null, collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.buildIn.Collision#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet
-        = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CollisionMock#_buzz", spyOnGet = { spyOn.buzz },
+            spyOnSet = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer =
+            null)
     }
 
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        SyncFunProxy("mock.template.buildIn.Collision#_toString", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.buildIn.CollisionMock#_toString", spyOn = if (spyOn != null) { {
             spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
         null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        SyncFunProxy("mock.template.buildIn.Collision#_equals", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.buildIn.CollisionMock#_equals", spyOn = if (spyOn != null) { {
                 other ->
             spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
         null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
             ignorableForVerification = true)
 
     public val _hashCodeWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("mock.template.buildIn.Collision#_hashCodeWithVoid", spyOn = if (spyOn != null) {
-            { spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
-        null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
+        SyncFunProxy("mock.template.buildIn.CollisionMock#_hashCodeWithVoid", spyOn = if (spyOn !=
+            null) { { spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze,
+            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.hashCode() },
+            ignorableForVerification = true)
 
     public override fun toString(): String = _toString.invoke()
 

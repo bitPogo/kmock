@@ -28,11 +28,11 @@ internal class CommonMock(
         get() = _foo.onGet()
 
     public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Common#_foo", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.buildIn.Common#_foo", spyOnGet = { spyOn.foo }, collector =
+        PropertyProxy("mock.template.buildIn.CommonMock#_foo", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("mock.template.buildIn.CommonMock#_foo", spyOnGet = { spyOn.foo }, collector
+        = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -40,11 +40,11 @@ internal class CommonMock(
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Common#_bar", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.buildIn.Common#_bar", spyOnGet = { spyOn.bar }, collector =
+        PropertyProxy("mock.template.buildIn.CommonMock#_bar", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = null)
+    } else {
+        PropertyProxy("mock.template.buildIn.CommonMock#_bar", spyOnGet = { spyOn.bar }, collector
+        = verifier, freeze = freeze, relaxer = null)
     }
 
 
@@ -53,27 +53,28 @@ internal class CommonMock(
         set(`value`) = _buzz.onSet(value)
 
     public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
-        PropertyProxy("mock.template.buildIn.Common#_buzz", spyOnGet = null, spyOnSet = null,
+        PropertyProxy("mock.template.buildIn.CommonMock#_buzz", spyOnGet = null, spyOnSet = null,
             collector = verifier, freeze = freeze, relaxer = null)
     } else {
-        PropertyProxy("mock.template.buildIn.Common#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet = {
-            spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
+        PropertyProxy("mock.template.buildIn.CommonMock#_buzz", spyOnGet = { spyOn.buzz }, spyOnSet
+        = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer = null)
     }
 
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        SyncFunProxy("mock.template.buildIn.Common#_toString", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.buildIn.CommonMock#_toString", spyOn = if (spyOn != null) { {
             spyOn.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
         null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        SyncFunProxy("mock.template.buildIn.Common#_equals", spyOn = if (spyOn != null) { { other ->
+        SyncFunProxy("mock.template.buildIn.CommonMock#_equals", spyOn = if (spyOn != null) { {
+                other ->
             spyOn.equals(other) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
         null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
             ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("mock.template.buildIn.Common#_hashCode", spyOn = if (spyOn != null) { {
+        SyncFunProxy("mock.template.buildIn.CommonMock#_hashCode", spyOn = if (spyOn != null) { {
             spyOn.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer =
         null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification = true)
 
