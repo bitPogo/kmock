@@ -20,16 +20,24 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import java.io.File
 
 class KMockPluginSpec {
-    private val fixture = kotlinFixture()
+    private val fixture = kotlinFixture {
+        it.addGenerator(
+            String::class,
+            StringAlphaGenerator,
+            named("stringAlpha")
+        )
+    }
 
     @Test
     fun `It fulfils Plugin`() {
@@ -44,9 +52,11 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
+        every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.apply(any()) } returns mockk()
@@ -73,9 +83,11 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
+        every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
@@ -103,9 +115,11 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
+        every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
@@ -132,9 +146,11 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
+        every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
@@ -165,11 +181,10 @@ class KMockPluginSpec {
         val kmockExtension: KMockExtension = mockk()
         val kspExtension: KspExtension = mockk()
         val rootPackage: String = fixture.fixture()
-        val buildDir = File(fixture.fixture<String>())
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.afterEvaluate(any<Action<Project>>()) } just Runs
         every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns true
@@ -194,7 +209,10 @@ class KMockPluginSpec {
         kmock.apply(project)
 
         // Then
-        verify(exactly = 1) { kspExtension.arg("isKmp", "false") }
+        verify(exactly = 1) { kspExtension.arg("kmock_isKmp", "false") }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath.toString()}/generated/ksp")
+        }
 
         unmockkObject(SingleSourceSetConfigurator)
     }
@@ -207,10 +225,11 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.afterEvaluate(any<Action<Project>>()) } just Runs
+        every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns true
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
@@ -241,11 +260,10 @@ class KMockPluginSpec {
         val kmockExtension: KMockExtension = mockk()
         val kspExtension: KspExtension = mockk()
         val rootPackage: String = fixture.fixture()
-        val buildDir = File(fixture.fixture<String>())
+        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.afterEvaluate(any<Action<Project>>()) } just Runs
         every { project.buildDir } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns true
@@ -256,11 +274,6 @@ class KMockPluginSpec {
 
         every { KmpSourceSetsConfigurator.configure(any()) } just Runs
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
-
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
 
         every { kmockExtension.rootPackage } returns rootPackage
@@ -270,7 +283,10 @@ class KMockPluginSpec {
         kmock.apply(project)
 
         // Then
-        verify(exactly = 1) { kspExtension.arg("isKmp", "true") }
+        verify(exactly = 1) { kspExtension.arg("kmock_isKmp", "true") }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath.toString()}/generated/ksp")
+        }
 
         unmockkObject(KmpSourceSetsConfigurator)
     }

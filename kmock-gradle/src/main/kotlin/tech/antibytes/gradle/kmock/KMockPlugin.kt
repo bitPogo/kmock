@@ -9,6 +9,8 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.kmock.util.applyIfNotExists
@@ -19,7 +21,9 @@ class KMockPlugin : Plugin<Project> {
         project: Project
     ) {
         val isKMP = project.isKmp()
-        project.extensions.getByType(KspExtension::class.java).arg("isKmp", isKMP.toString())
+        val ksp = project.extensions.getByType(KspExtension::class.java)
+        ksp.arg(KMP_FLAG, isKMP.toString())
+        ksp.arg(KSP_DIR, "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
 
         if (!isKMP) {
             SingleSourceSetConfigurator.configure(project)

@@ -69,7 +69,7 @@ class ExtensionSpec {
         extension.rootPackage = expected
 
         extension.rootPackage mustBe expected
-        verify(exactly = 1) { kspExtension.arg("rootPackage", expected) }
+        verify(exactly = 1) { kspExtension.arg("kmock_rootPackage", expected) }
     }
 
     @Test
@@ -101,9 +101,15 @@ class ExtensionSpec {
         extension.aliasNameMapping = expected
 
         extension.aliasNameMapping mustBe expected
-        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[0]}", expected.values.toList()[0]) }
-        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[1]}", expected.values.toList()[1]) }
-        verify(exactly = 1) { kspExtension.arg("alias_${expected.keys.toList()[2]}", expected.values.toList()[2]) }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_alias_${expected.keys.toList()[0]}", expected.values.toList()[0])
+        }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_alias_${expected.keys.toList()[1]}", expected.values.toList()[1])
+        }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_alias_${expected.keys.toList()[2]}", expected.values.toList()[2])
+        }
     }
 
     @Test
@@ -113,8 +119,9 @@ class ExtensionSpec {
         val kspExtension: KspExtension = mockk(relaxed = true)
 
         val internalNames = listOf(
-            "rootPackage",
-            "isKmp"
+            "kmock_rootPackage",
+            "kmock_isKmp",
+            "kmock_kspDir"
         )
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
@@ -180,9 +187,9 @@ class ExtensionSpec {
         extension.allowedRecursiveTypes = expected.toSet()
 
         extension.allowedRecursiveTypes mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("recursive_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("recursive_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("recursive_2", expected[2]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_recursive_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_recursive_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_recursive_2", expected[2]) }
     }
 
     @Test
@@ -211,9 +218,9 @@ class ExtensionSpec {
         extension.useBuildInProxiesOn = expected.toSet()
 
         extension.useBuildInProxiesOn mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("buildIn_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("buildIn_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("buildIn_2", expected[2]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_2", expected[2]) }
     }
 
     @Test
@@ -245,8 +252,8 @@ class ExtensionSpec {
         extension.uselessPrefixes = expected.toSet()
 
         extension.uselessPrefixes mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("namePrefix_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("namePrefix_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("namePrefix_2", expected[2]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_namePrefix_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_namePrefix_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_namePrefix_2", expected[2]) }
     }
 }
