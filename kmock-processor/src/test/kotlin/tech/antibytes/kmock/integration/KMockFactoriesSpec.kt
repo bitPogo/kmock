@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -288,7 +289,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             aliases = mapOf(
-                "alias_factory.template.alias.Platform" to "AliasPlatform",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Platform" to "AliasPlatform",
             ),
             source
         )
@@ -315,7 +316,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             aliases = mapOf(
-                "alias_factory.template.alias.Generic" to "AliasGeneric",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Generic" to "AliasGeneric",
             ),
             source
         )
@@ -343,7 +344,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             aliases = mapOf(
-                "alias_factory.template.alias.Common" to "AliasCommon",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Common" to "AliasCommon",
             ),
             source
         )

@@ -249,13 +249,14 @@ internal interface ProcessorContract {
         )
 
         const val COMMON_INDICATOR = "commonTest"
-        const val KSP_DIR = "kspDir"
-        const val KMP_FLAG = "isKmp"
-        const val ROOT_PACKAGE = "rootPackage"
-        const val PRECEDENCE_PREFIX = "precedence_"
-        const val ALIAS_PREFIX = "alias_"
-        const val RECURSIVE_PREFIX = "recursive_"
-        const val BUILD_IN_PREFIX = "buildIn_"
-        const val USELESS_PREFIXES_PREFIX = "namePrefix_"
+        const val KMOCK_PREFIX = "kmock_"
+        const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
+        const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
+        const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
+        const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
+        const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
+        const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

@@ -14,6 +14,8 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
+import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
@@ -44,8 +46,8 @@ class KMockMocksSpec {
         ).also {
             it.putAll(kspArguments)
         }.also {
-            it["namePrefix_0"] = "kotlin.collections"
-            it["namePrefix_1"] = "kotlin"
+            it["${KMOCK_PREFIX}namePrefix_0"] = "kotlin.collections"
+            it["${KMOCK_PREFIX}namePrefix_1"] = "kotlin"
         }
 
         return KotlinCompilation().apply {
@@ -458,7 +460,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Platform" to "AliasPlatform",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Platform" to "AliasPlatform",
             )
         )
         val actual = resolveGenerated("AliasPlatformMock.kt")
@@ -485,7 +487,7 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Shared" to "AliasShared",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Shared" to "AliasShared",
             )
         )
         val actual = resolveGenerated("AliasSharedMock.kt")
@@ -513,7 +515,7 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Common" to "AliasCommon",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Common" to "AliasCommon",
             )
         )
         val actual = resolveGenerated("AliasCommonMock.kt")
@@ -536,7 +538,7 @@ class KMockMocksSpec {
         val expected = loadResource("/expected/generic/AllowedRecursive.kt")
 
         val allowedRecursiveTypes = mapOf(
-            "recursive_0" to "kotlin.Comparable"
+            "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
         )
 
         // When
@@ -570,7 +572,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Platform",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Platform",
             )
         )
         val actual = resolveGenerated("PlatformMock.kt")
@@ -597,7 +599,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Collision",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Collision",
             )
         )
         val actual = resolveGenerated("CollisionMock.kt")
@@ -624,7 +626,7 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Shared",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Shared",
             )
         )
         val actual = resolveGenerated("SharedMock.kt")
@@ -652,7 +654,7 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Common",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Common",
             )
         )
         val actual = resolveGenerated("CommonMock.kt")
