@@ -14,6 +14,6 @@ import tech.antibytes.util.test.fulfils
 class KMockPropertyGeneratorSpec {
     @Test
     fun `It fulfils PropertyGenerator`() {
-        KMockPropertyGenerator(mockk(), mockk()) fulfils ProcessorContract.PropertyGenerator::class
+        KMockPropertyGenerator(true, mockk()) fulfils ProcessorContract.PropertyGenerator::class
     }
 }

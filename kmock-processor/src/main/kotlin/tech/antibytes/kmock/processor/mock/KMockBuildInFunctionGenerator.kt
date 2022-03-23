@@ -99,17 +99,16 @@ internal class KMockBuildInFunctionGenerator(
         spyName: String,
         spyArgumentName: String
     ): String {
-        return if (enableSpies){
+        return if (enableSpies) {
             "if (spyOn != null) { ${
-                buildFunctionSpyInvocation(
-                    spyName = spyName,
-                    spyArgumentName = spyArgumentName,
-                )
+            buildFunctionSpyInvocation(
+                spyName = spyName,
+                spyArgumentName = spyArgumentName,
+            )
             } } else { null }"
         } else {
             "null"
         }
-
     }
 
     private fun buildProxyInitializer(

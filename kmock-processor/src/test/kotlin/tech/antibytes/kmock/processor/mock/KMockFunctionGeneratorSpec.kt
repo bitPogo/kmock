@@ -15,7 +15,7 @@ class KMockFunctionGeneratorSpec {
     @Test
     fun `It fulfils FunctionGenerator`() {
         KMockFunctionGenerator(
-            mockk(),
+            true,
             mockk(),
             mockk(),
             mockk(),

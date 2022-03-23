@@ -698,7 +698,10 @@ NOTE: Also Verifier expose a `clear` method, so do not forget it to call as well
 ==== Spying
 KMock also supports Spying to a certain degree.
 While you still need to instantiate the _subject to spy on_ (SO) by hand to avoid any funny behaviour,
-you may delegate the SO to `kspy` and voila habemus spy! +
+you may delegate the SO to corresponding factory and voila habemus spy! +
+First of all you need to enable Spies via the Gradle Plugin by setting `enableSpies` to true.
+They are disabled by default to reduce compile-time. +
+Once Spies are enabled KMock will generate a 2nd factory called `kspy`.
 `kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
 `spyOn` expects an instance of the Interface which is mocked - so the SO.
 

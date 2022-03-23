@@ -348,12 +348,12 @@ internal class KMockFunctionGenerator(
     ): String {
         return if (enableSpies) {
             "if (spyOn != null) { ${
-                buildFunctionSpyInvocation(
-                    spyName,
-                    spyArgumentNames,
-                    proxyArguments,
-                    proxyReturnType
-                )
+            buildFunctionSpyInvocation(
+                spyName,
+                spyArgumentNames,
+                proxyArguments,
+                proxyReturnType
+            )
             } } else { null }"
         } else {
             "null"
