@@ -14,7 +14,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
@@ -211,7 +210,7 @@ class KMockPluginSpec {
         // Then
         verify(exactly = 1) { kspExtension.arg("kmock_isKmp", "false") }
         verify(exactly = 1) {
-            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath.toString()}/generated/ksp")
+            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp")
         }
 
         unmockkObject(SingleSourceSetConfigurator)
@@ -285,7 +284,7 @@ class KMockPluginSpec {
         // Then
         verify(exactly = 1) { kspExtension.arg("kmock_isKmp", "true") }
         verify(exactly = 1) {
-            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath.toString()}/generated/ksp")
+            kspExtension.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp")
         }
 
         unmockkObject(KmpSourceSetsConfigurator)

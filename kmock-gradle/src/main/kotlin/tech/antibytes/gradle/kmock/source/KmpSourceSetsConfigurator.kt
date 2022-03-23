@@ -179,7 +179,6 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         val precedences = extractPrecedences(sourceDependencies, metaDependencies)
 
-
         if (kspCollector.isNotEmpty()) {
             propagatePrecedences(project, precedences)
         }

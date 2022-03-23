@@ -115,8 +115,8 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
-        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -169,8 +169,8 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
-        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -237,9 +237,9 @@ class KMockFactoriesSpec {
             source3
         )
 
-        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
-        val actualExpect1 = resolveGenerated("kotlin/other/otherTest/${rootPackage}/MockFactory.kt")
-        val actualExpect2 = resolveGenerated("kotlin/shared/sharedTest/${rootPackage}/MockFactory.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect1 = resolveGenerated("kotlin/other/otherTest/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect2 = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -269,8 +269,8 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
-        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -354,8 +354,8 @@ class KMockFactoriesSpec {
             ),
             source
         )
-        val actualActual = resolveGenerated("kotlin/${rootPackage}/MockFactory.kt")
-        val actualExpect = resolveGenerated("kotlin/common/commonTest/${rootPackage}/MockFactory.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

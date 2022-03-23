@@ -51,7 +51,6 @@ internal class KMockAggregator(
         }
     }
 
-
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation? {
         val annotation = annotations.firstOrNull { annotation ->
             val annotationName = resolveAnnotationName(annotation)

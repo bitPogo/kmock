@@ -41,7 +41,7 @@ internal class KMockCodeGenerator(
     private fun String.toCompliantKspPath(): String {
         val platform = this.substring(0, this.length - 4)
 
-        return "$platform$separator$this"
+        return "$platform$separator$this${separator}kotlin"
     }
 
     private fun pathOf(
