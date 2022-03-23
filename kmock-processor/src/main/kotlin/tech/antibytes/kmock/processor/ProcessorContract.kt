@@ -40,6 +40,7 @@ internal interface ProcessorContract {
         val kspDir: String,
         val isKmp: Boolean,
         val rootPackage: String,
+        val knownSourceSets: Set<String>,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
         val allowedRecursiveTypes: Set<String>,

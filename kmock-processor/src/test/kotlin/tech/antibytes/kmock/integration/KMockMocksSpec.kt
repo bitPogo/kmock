@@ -14,10 +14,10 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
-import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
@@ -42,12 +42,14 @@ class KMockMocksSpec {
         val args = mutableMapOf(
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to "generatorTest",
-            KMP_FLAG to isKmp.toString()
+            KMP_FLAG to isKmp.toString(),
         ).also {
             it.putAll(kspArguments)
         }.also {
             it["${KMOCK_PREFIX}namePrefix_0"] = "kotlin.collections"
             it["${KMOCK_PREFIX}namePrefix_1"] = "kotlin"
+            it["${PRECEDENCE_PREFIX}sharedTest"] = "0"
+            it["${PRECEDENCE_PREFIX}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {

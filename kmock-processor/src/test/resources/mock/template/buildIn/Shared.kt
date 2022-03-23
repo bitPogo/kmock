@@ -8,7 +8,7 @@ package mock.template.buildIn
 
 import tech.antibytes.kmock.MockShared
 
-@MockShared("TesT", Shared::class)
+@MockShared("sharedTest", Shared::class)
 interface Shared {
     val foo: String
     val bar: Int

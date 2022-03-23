@@ -36,6 +36,10 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         action(qualifiedName, value)
     }
 
+    private fun extractSourceSets(
+        precedences: MutableMap<String, Int>
+    ): Set<String> = precedences.keys.filterNot { sourceSet -> sourceSet == "commonTest" }.toSet()
+
     override fun convertOptions(
         kspRawOptions: Map<String, String>
     ): Options {
@@ -69,6 +73,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             kspDir = kspDir!!,
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
+            knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
             allowedRecursiveTypes = allowedRecursiveTypes,

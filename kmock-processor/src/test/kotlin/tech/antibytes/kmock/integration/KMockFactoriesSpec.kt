@@ -14,8 +14,11 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
-import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -38,11 +41,14 @@ class KMockFactoriesSpec {
         vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
-            ProcessorContract.KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
-            ProcessorContract.ROOT_PACKAGE to rootPackage,
-            ProcessorContract.KMP_FLAG to isKmp.toString()
+            KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
+            ROOT_PACKAGE to rootPackage,
+            KMP_FLAG to isKmp.toString()
         ).also {
             it.putAll(aliases)
+        }.also {
+            it["${PRECEDENCE_PREFIX}sharedTest"] = "0"
+            it["${PRECEDENCE_PREFIX}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {

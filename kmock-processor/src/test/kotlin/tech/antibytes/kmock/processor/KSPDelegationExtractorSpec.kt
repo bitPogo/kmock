@@ -30,9 +30,9 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         // When
@@ -52,9 +52,9 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         // When
@@ -72,15 +72,15 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         val expected: Map<String, Int> = fixture.mapFixture(size = 3)
 
         expected.forEach { (key, value) ->
-            delegateKSP["precedence_$key"] = value.toString()
+            delegateKSP["kmock_precedence_$key"] = value.toString()
         }
 
         // When
@@ -91,6 +91,80 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
+    fun `Given convertOptions it returns a empty set of sourceSets if no precedences were given to derive them from`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.knownSourceSets mustBe emptySet()
+    }
+
+    @Test
+    fun `Given convertOptions it returns a set of derived sourceSets, which are extracted from precedences`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected: Map<String, Int> = fixture.mapFixture(size = 3)
+
+        expected.forEach { (key, value) ->
+            delegateKSP["kmock_precedence_$key"] = value.toString()
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.knownSourceSets mustBe expected.keys
+    }
+
+    @Test
+    fun `Given convertOptions it returns a set of derived sourceSets, while filtering commonTest`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected: Map<String, Int> = fixture.mapFixture(size = 3)
+
+        expected.forEach { (key, value) ->
+            delegateKSP["kmock_precedence_$key"] = value.toString()
+        }
+
+        delegateKSP["kmock_precedence_commonTest"] = "23"
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.knownSourceSets mustBe expected.keys
+    }
+
+    @Test
     fun `Given convertOptions it returns a empty map if no aliases were delegated`() {
         // Given
         val rootPackage: String = fixture.fixture()
@@ -98,9 +172,9 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         // When
@@ -118,15 +192,15 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         val expected: Map<String, String> = fixture.mapFixture(size = 3)
 
         expected.forEach { (key, value) ->
-            delegateKSP["alias_$key"] = value
+            delegateKSP["kmock_alias_$key"] = value
         }
 
         // When
@@ -144,15 +218,15 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
 
         expected.forEachIndexed { idx, value ->
-            delegateKSP["recursive_$idx"] = value
+            delegateKSP["kmock_recursive_$idx"] = value
         }
 
         // When
@@ -170,15 +244,15 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
 
         expected.forEachIndexed { idx, value ->
-            delegateKSP["buildIn_$idx"] = value
+            delegateKSP["kmock_buildIn_$idx"] = value
         }
 
         // When
@@ -196,15 +270,15 @@ class KSPDelegationExtractorSpec {
         val kspDir: String = fixture.fixture()
 
         val delegateKSP = mutableMapOf(
-            "kspDir" to kspDir,
-            "rootPackage" to rootPackage,
-            "isKmp" to isKmp.toString()
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
 
         expected.forEachIndexed { idx, value ->
-            delegateKSP["namePrefix_$idx"] = value
+            delegateKSP["kmock_namePrefix_$idx"] = value
         }
 
         // When
