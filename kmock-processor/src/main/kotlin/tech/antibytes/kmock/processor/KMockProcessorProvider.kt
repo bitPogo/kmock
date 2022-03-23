@@ -31,8 +31,12 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
 
-        val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
+        val propertyGenerator = KMockPropertyGenerator(
+            enableSpies = options.enableSpies,
+            relaxerGenerator = relaxerGenerator
+        )
         val functionGenerator = KMockFunctionGenerator(
+            enableSpies = options.enableSpies,
             allowedRecursiveTypes = options.allowedRecursiveTypes,
             uselessPrefixes = options.uselessPrefixes,
             genericResolver = genericResolver,
@@ -45,12 +49,15 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             codeGenerator = codeGenerator,
             mockGenerator = KMockGenerator(
                 logger = logger,
+                enableSpies = options.enableSpies,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
                 genericsResolver = genericResolver,
                 propertyGenerator = propertyGenerator,
                 functionGenerator = functionGenerator,
-                buildInGenerator = KMockBuildInFunctionGenerator
+                buildInGenerator = KMockBuildInFunctionGenerator(
+                    enableSpies = options.enableSpies,
+                )
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,

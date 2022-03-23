@@ -13,6 +13,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
@@ -46,6 +47,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         var kspDir: String? = null
         var rootPackage: String? = null
         var isKmp: Boolean? = null
+        var enableSpies = false
         val precedences: MutableMap<String, Int> = mutableMapOf()
         val aliases: MutableMap<String, String> = mutableMapOf()
         val allowedRecursiveTypes: MutableSet<String> = mutableSetOf()
@@ -57,6 +59,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == KSP_DIR -> kspDir = value
                 key == ROOT_PACKAGE -> rootPackage = value
                 key == KMP_FLAG -> isKmp = value.toBoolean()
+                key == SPY_FLAG -> enableSpies = value.toBoolean()
                 key.startsWith(PRECEDENCE_PREFIX) -> extractPrecedence(key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence
                 }
@@ -73,6 +76,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             kspDir = kspDir!!,
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
+            enableSpies = enableSpies,
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,

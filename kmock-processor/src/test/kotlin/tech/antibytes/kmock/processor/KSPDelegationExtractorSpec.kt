@@ -287,4 +287,46 @@ class KSPDelegationExtractorSpec {
         // Then
         actual.uselessPrefixes mustBe expected
     }
+
+    @Test
+    fun `Given convertOptions it returns a false for enableSpies if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.enableSpies mustBe false
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for enableSpies`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected: Boolean = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_enableSpies" to expected.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.enableSpies mustBe expected
+    }
 }

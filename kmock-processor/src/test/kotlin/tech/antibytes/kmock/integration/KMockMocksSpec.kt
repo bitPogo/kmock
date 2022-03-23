@@ -19,6 +19,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_FLAG
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -37,12 +38,14 @@ class KMockMocksSpec {
         processorProvider: SymbolProcessorProvider,
         source: SourceFile,
         isKmp: Boolean,
+        enableSpies: Boolean = true,
         kspArguments: Map<String, String> = emptyMap(),
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to "generatorTest",
             KMP_FLAG to isKmp.toString(),
+            SPY_FLAG to enableSpies.toString()
         ).also {
             it.putAll(kspArguments)
         }.also {
@@ -667,5 +670,111 @@ class KMockMocksSpec {
 
         actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/alias/CommonMock.kt")
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/spy/Platform.kt")
+        )
+        val expected = loadResource("/expected/spy/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            enableSpies = false,
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies for Shared is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/spy/Shared.kt")
+        )
+        val expected = loadResource("/expected/spy/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            enableSpies = false
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/spy/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies for Common is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/spy/Common.kt")
+        )
+        val expected = loadResource("/expected/spy/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            enableSpies = false,
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/spy/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies and with BuildIns for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "BuildIn.kt",
+            loadResource("/template/spy/BuildIn.kt")
+        )
+        val expected = loadResource("/expected/spy/BuildIn.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            enableSpies = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.spy.BuildIn",
+            )
+        )
+
+        val actual = resolveGenerated("BuildInMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 }

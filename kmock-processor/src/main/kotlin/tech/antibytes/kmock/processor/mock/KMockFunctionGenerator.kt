@@ -32,6 +32,7 @@ import tech.antibytes.kmock.processor.titleCase
 import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
+    private val enableSpies: Boolean,
     private val allowedRecursiveTypes: Set<String>,
     private val uselessPrefixes: Set<String>,
     private val genericResolver: ProcessorContract.GenericResolver,
@@ -339,6 +340,26 @@ internal class KMockFunctionGenerator(
         }
     }
 
+    private fun resolveSpyInvocation(
+        spyName: String,
+        spyArgumentNames: Set<String>,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+    ): String {
+        return if (enableSpies) {
+            "if (spyOn != null) { ${
+                buildFunctionSpyInvocation(
+                    spyName,
+                    spyArgumentNames,
+                    proxyArguments,
+                    proxyReturnType
+                )
+            } } else { null }"
+        } else {
+            "null"
+        }
+    }
+
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
         qualifier: String,
@@ -354,14 +375,12 @@ internal class KMockFunctionGenerator(
             "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
             proxyType.simpleName,
             "$qualifier#$proxyName",
-            "if (spyOn != null) { ${
-            buildFunctionSpyInvocation(
-                spyName,
-                spyArgumentNames,
-                proxyArguments,
-                proxyReturnType
-            )
-            } } else { null }",
+            resolveSpyInvocation(
+                spyName = spyName,
+                spyArgumentNames = spyArgumentNames,
+                proxyArguments = proxyArguments,
+                proxyReturnType = proxyReturnType
+            ),
             relaxerGenerator.buildRelaxers(
                 relaxer,
                 proxyReturnType.first.toString() == "kotlin.Unit"

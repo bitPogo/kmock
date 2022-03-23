@@ -36,6 +36,7 @@ class KMockProcessorSpec {
             this.fixture(),
             isKmp ?: this.fixture(),
             this.fixture(),
+            this.fixture(),
             this.listFixture<String>().toSet(),
             this.mapFixture(),
             this.mapFixture(),

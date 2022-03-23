@@ -36,6 +36,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
+    private val enableSpies: Boolean,
     private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val genericsResolver: ProcessorContract.GenericResolver,
@@ -48,15 +49,20 @@ internal class KMockGenerator(
 
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
         collector.defaultValue("Collector { _, _ -> Unit }")
+        constructor.addParameter(collector.build())
 
-        val spy = ParameterSpec.builder(
-            "spyOn",
-            superType.copy(nullable = true),
-        )
-        spy.defaultValue("null")
+        if (enableSpies) {
+            val spy = ParameterSpec.builder(
+                "spyOn",
+                superType.copy(nullable = true),
+            )
+            spy.defaultValue("null")
+            constructor.addParameter(spy.build())
+        }
 
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
         freeze.defaultValue("true")
+        constructor.addParameter(freeze.build())
 
         val relaxUnit = ParameterSpec.builder(
             "relaxUnitFun",
@@ -64,10 +70,6 @@ internal class KMockGenerator(
         ).addAnnotation(
             AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         ).defaultValue("false")
-
-        constructor.addParameter(collector.build())
-        constructor.addParameter(spy.build())
-        constructor.addParameter(freeze.build())
         constructor.addParameter(relaxUnit.build())
 
         val relaxed = ParameterSpec.builder(
@@ -155,13 +157,15 @@ internal class KMockGenerator(
             buildConstructor(superType)
         )
 
-        implementation.addProperty(
-            PropertySpec.builder(
-                "__spyOn",
-                superType.copy(nullable = true),
-                KModifier.PRIVATE,
-            ).initializer("spyOn").build()
-        )
+        if (enableSpies) {
+            implementation.addProperty(
+                PropertySpec.builder(
+                    "__spyOn",
+                    superType.copy(nullable = true),
+                    KModifier.PRIVATE,
+                ).initializer("spyOn").build()
+            )
+        }
 
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isPublicOpen()) {

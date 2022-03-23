@@ -19,6 +19,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
 
 internal class KMockPropertyGenerator(
+    private val enableSpies: Boolean,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.PropertyGenerator {
     private fun buildGetter(propertyName: String): FunSpec {
@@ -60,33 +61,65 @@ internal class KMockPropertyGenerator(
             .build()
     }
 
-    private fun determinePropertyInitializer(
+    private fun resolveGetterSpyArgument(
+        propertyName: String
+    ): String {
+        return if (enableSpies) {
+            "{ spyOn.$propertyName }"
+        } else {
+            "null"
+        }
+    }
+
+    private fun resolveSetterSpyArgument(
+        propertyName: String
+    ): String {
+        return if (enableSpies) {
+            "{ spyOn.$propertyName = it; Unit }"
+        } else {
+            "null"
+        }
+    }
+
+    private fun resolveImmutableProxy(
         propertyProxy: PropertySpec.Builder,
-        qualifier: String,
+        name: String,
         propertyName: String,
-        isMutable: Boolean,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec.Builder {
-        val name = "$qualifier#_$propertyName"
-
-        return if (!isMutable) {
+        return if (enableSpies) {
             propertyProxy.initializer(
                 """
-                    |if (spyOn == null) {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |} else {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |}
+                |if (spyOn == null) {
+                |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                |} else {
+                |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                |}
                 |
                 """.trimMargin(),
                 name,
                 "null",
                 relaxerGenerator.buildRelaxers(relaxer, false),
                 name,
-                "{ spyOn.$propertyName }",
+                resolveGetterSpyArgument(propertyName),
                 relaxerGenerator.buildRelaxers(relaxer, false)
             )
         } else {
+            propertyProxy.initializer(
+                "PropertyProxy(%S, collector = verifier, freeze = freeze, %L)",
+                name,
+                relaxerGenerator.buildRelaxers(relaxer, false),
+            )
+        }
+    }
+
+    private fun resolveMutableProxy(
+        propertyProxy: PropertySpec.Builder,
+        name: String,
+        propertyName: String,
+        relaxer: ProcessorContract.Relaxer?
+    ): PropertySpec.Builder {
+        return if (enableSpies) {
             propertyProxy.initializer(
                 """
                 |if (spyOn == null) {
@@ -101,9 +134,41 @@ internal class KMockPropertyGenerator(
                 "null",
                 relaxerGenerator.buildRelaxers(relaxer, false),
                 name,
-                "{ spyOn.$propertyName }",
-                "{ spyOn.$propertyName = it; Unit }",
+                resolveGetterSpyArgument(propertyName),
+                resolveSetterSpyArgument(propertyName),
                 relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+        } else {
+            propertyProxy.initializer(
+                "PropertyProxy(%S, collector = verifier, freeze = freeze, %L)",
+                name,
+                relaxerGenerator.buildRelaxers(relaxer, false),
+            )
+        }
+    }
+
+    private fun determinePropertyInitializer(
+        propertyProxy: PropertySpec.Builder,
+        qualifier: String,
+        propertyName: String,
+        isMutable: Boolean,
+        relaxer: ProcessorContract.Relaxer?
+    ): PropertySpec.Builder {
+        val name = "$qualifier#_$propertyName"
+
+        return if (!isMutable) {
+            resolveImmutableProxy(
+                propertyProxy = propertyProxy,
+                name = name,
+                propertyName = propertyName,
+                relaxer = relaxer
+            )
+        } else {
+            resolveMutableProxy(
+                propertyProxy = propertyProxy,
+                name = name,
+                propertyName = propertyName,
+                relaxer = relaxer
             )
         }
     }

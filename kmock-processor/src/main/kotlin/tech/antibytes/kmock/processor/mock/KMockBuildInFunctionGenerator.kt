@@ -17,7 +17,9 @@ import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInFunctionGenerator
 
-internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
+internal class KMockBuildInFunctionGenerator(
+    private val enableSpies: Boolean
+) : BuildInFunctionGenerator {
     private val buildIns = mapOf(
         "toString" to String::class,
         "equals" to Boolean::class,
@@ -93,6 +95,23 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         return "$otherRelaxersStr, $relaxerStr"
     }
 
+    private fun resolveSpyInvocation(
+        spyName: String,
+        spyArgumentName: String
+    ): String {
+        return if (enableSpies){
+            "if (spyOn != null) { ${
+                buildFunctionSpyInvocation(
+                    spyName = spyName,
+                    spyArgumentName = spyArgumentName,
+                )
+            } } else { null }"
+        } else {
+            "null"
+        }
+
+    }
+
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
         qualifier: String,
@@ -105,12 +124,10 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L, ignorableForVerification = true)",
             SyncFunProxy::class.simpleName,
             "$qualifier#$proxyName",
-            "if (spyOn != null) { ${
-            buildFunctionSpyInvocation(
+            resolveSpyInvocation(
                 spyName = functionName,
                 spyArgumentName = argumentName,
-            )
-            } } else { null }",
+            ),
             buildRelaxer(functionName, argumentName)
         )
     }
@@ -160,6 +177,25 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         }
     }
 
+    private fun resolveEqualsInvocation(
+        mockName: String,
+        functionName: String,
+        proxyName: String,
+        amountOfGenerics: Int
+    ): String {
+        return if (enableSpies) {
+            """
+            | return if(other is $mockName${buildGenerics(amountOfGenerics)} && __spyOn != null) {
+            |   super.$functionName(other)
+            | } else {
+            |   $proxyName.invoke(other)
+            | }
+            """.trimMargin()
+        } else {
+            "return $proxyName.invoke(other)"
+        }
+    }
+
     private fun buildEqualsInvocation(
         mockName: String,
         function: FunSpec.Builder,
@@ -168,13 +204,12 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         amountOfGenerics: Int
     ): FunSpec.Builder {
         return function.addCode(
-            """
-            | return if(other is $mockName${buildGenerics(amountOfGenerics)} && __spyOn != null) {
-            |   super.$functionName(other)
-            | } else {
-            |   $proxyName.invoke(other)
-            | }
-            """.trimMargin()
+            resolveEqualsInvocation(
+                mockName = mockName,
+                functionName = functionName,
+                proxyName = proxyName,
+                amountOfGenerics = amountOfGenerics
+            )
         )
     }
 

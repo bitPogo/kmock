@@ -14,11 +14,13 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
+import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_FLAG
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -43,7 +45,8 @@ class KMockFactoriesSpec {
         val args = mutableMapOf(
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to rootPackage,
-            KMP_FLAG to isKmp.toString()
+            KMP_FLAG to isKmp.toString(),
+            SPY_FLAG to true.toString()
         ).also {
             it.putAll(aliases)
         }.also {
