@@ -14,6 +14,12 @@ import tech.antibytes.util.test.fulfils
 class KMockFactorySpec {
     @Test
     fun `It fulfils MockFactoryGenerator`() {
-        KMockFactoryGenerator(mockk(), mockk(), mockk(), mockk()) fulfils ProcessorContract.MockFactoryGenerator::class
+        KMockFactoryGenerator(
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk()
+        ) fulfils ProcessorContract.MockFactoryGenerator::class
     }
 }

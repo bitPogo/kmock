@@ -14,7 +14,6 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
-import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
@@ -39,6 +38,7 @@ class KMockFactoriesSpec {
     private fun compile(
         processorProvider: SymbolProcessorProvider,
         isKmp: Boolean,
+        enableSpies: Boolean = true,
         aliases: Map<String, String> = emptyMap(),
         vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
@@ -46,7 +46,7 @@ class KMockFactoriesSpec {
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to rootPackage,
             KMP_FLAG to isKmp.toString(),
-            SPY_FLAG to true.toString()
+            SPY_FLAG to enableSpies.toString()
         ).also {
             it.putAll(aliases)
         }.also {
@@ -89,8 +89,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = false,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -115,8 +115,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = true,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -143,8 +143,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = false,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -169,8 +169,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = true,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -197,8 +197,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = false,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -234,10 +234,12 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = true,
-            emptyMap(),
-            source1,
-            source2,
-            source3
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(
+                source1,
+                source2,
+                source3
+            )
         )
 
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
@@ -269,8 +271,8 @@ class KMockFactoriesSpec {
         val compilerResult = compile(
             provider,
             isKmp = true,
-            emptyMap(),
-            source
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -300,7 +302,7 @@ class KMockFactoriesSpec {
             aliases = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Platform" to "AliasPlatform",
             ),
-            source
+            sourceFiles = arrayOf(source)
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -327,7 +329,7 @@ class KMockFactoriesSpec {
             aliases = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Generic" to "AliasGeneric",
             ),
-            source
+            sourceFiles = arrayOf(source)
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -355,7 +357,142 @@ class KMockFactoriesSpec {
             aliases = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Common" to "AliasCommon",
             ),
-            source
+            sourceFiles = arrayOf(source)
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/spy/Platform.kt")
+        )
+        val expected = loadResource("/expected/spy/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            enableSpies = false,
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies for Common is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/spy/Common.kt")
+        )
+        val expectedActual = loadResource("/expected/spy/CommonActual.kt")
+        val expectedExpect = loadResource("/expected/spy/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            enableSpies = false,
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies and with Generics for Shared is processed, it writes a mock factory`() {
+        // Given
+        val source1 = SourceFile.kotlin(
+            "Shared1.kt",
+            loadResource("/template/spy/Shared1.kt")
+        )
+        val source2 = SourceFile.kotlin(
+            "Shared2.kt",
+            loadResource("/template/spy/Shared2.kt")
+        )
+        val source3 = SourceFile.kotlin(
+            "Shared3.kt",
+            loadResource("/template/spy/Shared3.kt")
+        )
+        val expectedExpect1 = loadResource("/expected/spy/Shared1Expect.kt")
+        val expectedExpect2 = loadResource("/expected/spy/Shared2Expect.kt")
+        // Note: Shared2Expect is actually Shared3, since Shared2 is eaten by Shared1, which is totally correct!
+
+        val expectedActual = loadResource("/expected/spy/SharedActual.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            enableSpies = false,
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(
+                source1,
+                source2,
+                source3
+            )
+        )
+
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect1 = resolveGenerated("kotlin/other/otherTest/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect2 = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualExpect1 isNot null
+        actualExpect2 isNot null
+        actualActual isNot null
+
+        actualExpect1!!.readText().normalizeSource() mustBe expectedExpect1.normalizeSource()
+        actualExpect2!!.readText().normalizeSource() mustBe expectedExpect2.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source without Spies and with with Generics for Common is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "GenericCommon.kt",
+            loadResource("/template/spy/GenericCommon.kt")
+        )
+        val expectedActual = loadResource("/expected/spy/GenericCommonActual.kt")
+        val expectedExpect = loadResource("/expected/spy/GenericCommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            enableSpies = false,
+            aliases = emptyMap(),
+            sourceFiles = arrayOf(source)
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")

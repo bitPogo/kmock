@@ -18,6 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_T
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
+    private val enableSpies: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
@@ -46,7 +47,7 @@ internal class KMockFactoryEntryPointGenerator(
         ).build()
     }
 
-    private fun buildMockGenericFactory(
+    private fun buildGenericMockFactory(
         templateSource: TemplateSource,
     ): FunSpec {
         val generics = utils.resolveGenerics(templateSource)
@@ -63,7 +64,7 @@ internal class KMockFactoryEntryPointGenerator(
         ).build()
     }
 
-    private fun buildSpyGenericFactory(
+    private fun buildGenericSpyFactory(
         templateSource: TemplateSource,
     ): FunSpec {
         val generics = utils.resolveGenerics(templateSource)
@@ -85,11 +86,17 @@ internal class KMockFactoryEntryPointGenerator(
 
     private fun buildGenericFactories(
         templateSources: List<TemplateSource>
-    ): List<Pair<FunSpec, FunSpec>> {
+    ): List<Pair<FunSpec, FunSpec?>> {
         return templateSources.map { template ->
+            val spyFactory = if (enableSpies) {
+                buildGenericSpyFactory(template)
+            } else {
+                null
+            }
+
             Pair(
-                buildMockGenericFactory(template),
-                buildSpyGenericFactory(template)
+                buildGenericMockFactory(template),
+                spyFactory
             )
         }
     }
@@ -104,7 +111,10 @@ internal class KMockFactoryEntryPointGenerator(
             val (mockFactory, spyFactory) = factories
 
             file.addFunction(mockFactory)
-            file.addFunction(spyFactory)
+
+            if (spyFactory != null) {
+                file.addFunction(spyFactory)
+            }
         }
     }
 
@@ -122,7 +132,10 @@ internal class KMockFactoryEntryPointGenerator(
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
             file.addFunction(buildMockFactory())
-            file.addFunction(buildSpyFactory())
+
+            if (enableSpies) {
+                file.addFunction(buildSpyFactory())
+            }
 
             generateGenericEntryPoints(
                 file,

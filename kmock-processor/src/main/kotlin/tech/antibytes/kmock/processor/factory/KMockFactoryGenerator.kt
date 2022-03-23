@@ -23,6 +23,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
+    private val enableSpies: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
@@ -262,11 +263,20 @@ internal class KMockFactoryGenerator(
         isKmp: Boolean,
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
-    ): List<Pair<FunSpec, FunSpec>> {
+    ): List<Pair<FunSpec, FunSpec?>> {
         return templateSources.map { template ->
+            val spyFactory = if (enableSpies) {
+                buildGenericSpyFactory(
+                    isKmp = isKmp,
+                    templateSource = template
+                )
+            } else {
+                null
+            }
+
             Pair(
                 buildGenericMockFactory(isKmp, template, relaxer),
-                buildGenericSpyFactory(isKmp, template)
+                spyFactory
             )
         }
     }
@@ -299,18 +309,23 @@ internal class KMockFactoryGenerator(
             )
         )
 
-        file.addFunction(
-            buildSpyFactory(
-                templateSources = regular,
-                isKmp = options.isKmp,
+        if (enableSpies) {
+            file.addFunction(
+                buildSpyFactory(
+                    templateSources = regular,
+                    isKmp = options.isKmp,
+                )
             )
-        )
+        }
 
         genericFactories.forEach { factories ->
             val (mockFactory, spyFactory) = factories
 
             file.addFunction(mockFactory)
-            file.addFunction(spyFactory)
+
+            if (spyFactory != null) {
+                file.addFunction(spyFactory)
+            }
         }
 
         file.build().writeTo(

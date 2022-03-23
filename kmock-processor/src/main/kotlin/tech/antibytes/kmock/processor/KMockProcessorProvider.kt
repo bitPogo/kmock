@@ -61,11 +61,13 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
+                enableSpies = options.enableSpies,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
                 codeGenerator = codeGenerator
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
+                enableSpies = options.enableSpies,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
                 codeGenerator = codeGenerator
