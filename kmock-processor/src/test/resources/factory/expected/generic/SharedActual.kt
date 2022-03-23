@@ -1,7 +1,8 @@
 package generatorTest
 
-import factory.template.generics.Shared1
-import factory.template.generics.Shared3
+import factory.template.generic.Shared1
+import factory.template.generic.Shared2
+import factory.template.generic.Shared3
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
@@ -32,12 +33,12 @@ internal actual inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Shared1::class -> factory.template.generics.Shared1Mock<K, L>(verifier =
+    factory.template.generic.Shared1::class -> factory.template.generic.Shared1Mock<K, L>(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
-    factory.template.generics.Shared1Mock::class -> factory.template.generics.Shared1Mock<K,
-        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    factory.template.generic.Shared1Mock::class -> factory.template.generic.Shared1Mock<K, L>(verifier
+    = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
@@ -46,12 +47,41 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     verifier: KMockContract.Collector,
     freeze: Boolean,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Shared1::class -> factory.template.generics.Shared1Mock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared1<K, L>) as Mock
-    factory.template.generics.Shared1Mock::class -> factory.template.generics.Shared1Mock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared1<K, L>) as Mock
+    factory.template.generic.Shared1::class -> factory.template.generic.Shared1Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared1<K, L>) as Mock
+    factory.template.generic.Shared1Mock::class -> factory.template.generic.Shared1Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared1<K, L>) as Mock
+    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
+}
+
+internal actual inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
+    verifier: KMockContract.Collector,
+    @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
+    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
+    freeze: Boolean,
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
+): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
+    factory.template.generic.Shared2::class -> factory.template.generic.Shared2Mock<K, L>(verifier =
+    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    factory.template.generic.Shared2Mock::class -> factory.template.generic.Shared2Mock<K, L>(verifier
+    = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
+}
+
+internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared2<K, L>, K : Any, L> kspy(
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector,
+    freeze: Boolean,
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
+): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
+    factory.template.generic.Shared2::class -> factory.template.generic.Shared2Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared2<K, L>) as Mock
+    factory.template.generic.Shared2Mock::class -> factory.template.generic.Shared2Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared2<K, L>) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
@@ -61,12 +91,12 @@ internal actual inline fun <reified Mock : Shared3<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Shared3::class -> factory.template.generics.Shared3Mock<K, L>(verifier =
+    factory.template.generic.Shared3::class -> factory.template.generic.Shared3Mock<K, L>(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
-    factory.template.generics.Shared3Mock::class -> factory.template.generics.Shared3Mock<K,
-        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    factory.template.generic.Shared3Mock::class -> factory.template.generic.Shared3Mock<K, L>(verifier
+    = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
@@ -75,11 +105,11 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared3<K, L>,
     verifier: KMockContract.Collector,
     freeze: Boolean,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generics.Shared3::class -> factory.template.generics.Shared3Mock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared3<K, L>) as Mock
-    factory.template.generics.Shared3Mock::class -> factory.template.generics.Shared3Mock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generics.Shared3<K, L>) as Mock
+    factory.template.generic.Shared3::class -> factory.template.generic.Shared3Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared3<K, L>) as Mock
+    factory.template.generic.Shared3Mock::class -> factory.template.generic.Shared3Mock(verifier =
+    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Shared3<K, L>) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

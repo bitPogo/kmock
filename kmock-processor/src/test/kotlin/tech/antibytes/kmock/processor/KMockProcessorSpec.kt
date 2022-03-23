@@ -33,19 +33,22 @@ class KMockProcessorSpec {
 
     private fun PublicApi.Fixture.optionsFixture(isKmp: Boolean? = null): Options {
         return Options(
-            isKmp ?: fixture.fixture(),
-            fixture.fixture(),
-            fixture.mapFixture(),
-            fixture.mapFixture(),
-            fixture.listFixture<String>().toSet(),
-            fixture.listFixture<String>().toSet(),
-            fixture.listFixture<String>().toSet(),
+            this.fixture(),
+            isKmp ?: this.fixture(),
+            this.fixture(),
+            this.listFixture<String>().toSet(),
+            this.mapFixture(),
+            this.mapFixture(),
+            this.listFixture<String>().toSet(),
+            this.listFixture<String>().toSet(),
+            this.listFixture<String>().toSet(),
         )
     }
 
     @Test
     fun `It fulfils SymbolProcessor`() {
         KMockProcessor(
+            mockk(),
             mockk(),
             mockk(),
             mockk(),
@@ -71,6 +74,7 @@ class KMockProcessorSpec {
 
         // When
         KMockProcessor(
+            mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -101,6 +105,7 @@ class KMockProcessorSpec {
 
         // When
         KMockProcessor(
+            mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -144,6 +149,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
             fixture.optionsFixture(true),
             mockk(relaxed = true),
@@ -183,6 +189,7 @@ class KMockProcessorSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
+            mockk(relaxed = true),
             aggregator,
             fixture.optionsFixture(true),
             mockk(relaxed = true),
@@ -199,9 +206,12 @@ class KMockProcessorSpec {
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
-        val generator: ProcessorContract.MockGenerator = mockk()
+
+        val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
+        val mockGenerator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
         val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
+
         val options = fixture.optionsFixture(true)
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
@@ -232,9 +242,11 @@ class KMockProcessorSpec {
 
         every { aggregator.extractRelaxer(any()) } returns relaxer
 
-        every { generator.writeCommonMocks(any(), any(), any()) } just Runs
-        every { generator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { generator.writePlatformMocks(any(), any(), any()) } just Runs
+        every { codeGenerator.closeFiles() } just Runs
+
+        every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
@@ -242,7 +254,8 @@ class KMockProcessorSpec {
 
         // When
         KMockProcessor(
-            generator,
+            codeGenerator,
+            mockGenerator,
             factoryGenerator,
             entryPointGenerator,
             aggregator,
@@ -251,12 +264,12 @@ class KMockProcessorSpec {
         ).process(resolver)
 
         // Then
-        verify(exactly = 1) { generator.writeCommonMocks(interfacesCommon, dependencies, relaxer) }
+        verify(exactly = 1) { mockGenerator.writeCommonMocks(interfacesCommon, dependencies, relaxer) }
 
         verify(exactly = 1) { filter.filter(interfacesFiltered, interfacesCommon) }
         verify(exactly = 1) { filter.filterSharedSources(interfacesShared) }
 
-        verify(exactly = 1) { generator.writeSharedMocks(interfacesFiltered, dependencies, relaxer) }
+        verify(exactly = 1) { mockGenerator.writeSharedMocks(interfacesFiltered, dependencies, relaxer) }
 
         verify(exactly = 1) {
             filter.filter(
@@ -267,7 +280,7 @@ class KMockProcessorSpec {
                 )
             )
         }
-        verify(exactly = 1) { generator.writePlatformMocks(interfacesFiltered, dependencies, relaxer) }
+        verify(exactly = 1) { mockGenerator.writePlatformMocks(interfacesFiltered, dependencies, relaxer) }
 
         verify(exactly = 1) {
             factoryGenerator.writeFactories(
@@ -290,6 +303,8 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 1) { entryPointGenerator.generateShared(options, interfacesFiltered) }
+
+        verify(exactly = 1) { codeGenerator.closeFiles() }
     }
 
     @Test
@@ -298,9 +313,12 @@ class KMockProcessorSpec {
         val resolver: Resolver = mockk()
         val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
-        val generator: ProcessorContract.MockGenerator = mockk()
+
+        val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
+        val mockGenerator: ProcessorContract.MockGenerator = mockk()
         val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
         val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
+
         val options = fixture.optionsFixture(false)
         val filter: ProcessorContract.SourceFilter = mockk()
         val relaxer: ProcessorContract.Relaxer = ProcessorContract.Relaxer(fixture.fixture(), fixture.fixture())
@@ -326,16 +344,19 @@ class KMockProcessorSpec {
 
         every { aggregator.extractRelaxer(any()) } returns relaxer
 
-        every { generator.writeCommonMocks(any(), any(), any()) } just Runs
-        every { generator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { generator.writePlatformMocks(any(), any(), any()) } just Runs
+        every { codeGenerator.closeFiles() } just Runs
+
+        every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
 
         // When
         KMockProcessor(
-            generator,
+            codeGenerator,
+            mockGenerator,
             factoryGenerator,
             entryPointGenerator,
             aggregator,
@@ -345,12 +366,13 @@ class KMockProcessorSpec {
 
         // Then
         verify(exactly = 1) { aggregator.extractInterfaces(any()) }
-        verify(exactly = 0) { generator.writeCommonMocks(any(), any(), any()) }
+
+        verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
 
         verify(exactly = 1) { filter.filter(any(), any()) }
         verify(exactly = 0) { filter.filterSharedSources(any()) }
 
-        verify(exactly = 0) { generator.writeSharedMocks(any(), any(), any()) }
+        verify(exactly = 0) { mockGenerator.writeSharedMocks(any(), any(), any()) }
 
         verify(exactly = 1) {
             filter.filter(
@@ -358,7 +380,7 @@ class KMockProcessorSpec {
                 emptyList()
             )
         }
-        verify(exactly = 1) { generator.writePlatformMocks(interfacesFiltered, dependencies, relaxer) }
+        verify(exactly = 1) { mockGenerator.writePlatformMocks(interfacesFiltered, dependencies, relaxer) }
 
         verify(exactly = 1) {
             factoryGenerator.writeFactories(
@@ -374,5 +396,7 @@ class KMockProcessorSpec {
         verify(exactly = 0) {
             entryPointGenerator.generateCommon(options, interfacesCommon)
         }
+
+        verify(exactly = 1) { codeGenerator.closeFiles() }
     }
 }

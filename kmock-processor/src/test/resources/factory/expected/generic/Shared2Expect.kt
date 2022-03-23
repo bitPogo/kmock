@@ -1,6 +1,6 @@
 package generatorTest
 
-import factory.template.generics.Shared3
+import factory.template.generic.Shared3
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
@@ -14,7 +14,7 @@ internal expect inline fun <reified Mock : Shared3<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared3<K, L>, K : Any, L> kspy(
@@ -22,5 +22,5 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared3<K, L>,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared3<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>
 ): Mock where L : Any, L : Comparable<L>

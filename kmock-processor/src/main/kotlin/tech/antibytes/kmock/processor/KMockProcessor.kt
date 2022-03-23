@@ -21,6 +21,7 @@ import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
  * Notices -> No deep checking in order to no drain performance
  */
 internal class KMockProcessor(
+    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator,
@@ -147,6 +148,7 @@ internal class KMockProcessor(
             relaxer
         )
 
+        codeGenerator.closeFiles()
         return totalAggregated.illFormed
     }
 

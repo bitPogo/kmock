@@ -21,10 +21,13 @@ import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         val logger = environment.logger
-        val generator = environment.codeGenerator
 
         val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
 
+        val codeGenerator = KMockCodeGenerator(
+            kspDir = options.kspDir,
+            kspGenerator = environment.codeGenerator
+        )
         val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
 
@@ -39,10 +42,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val factoryUtils = KMockFactoryGeneratorUtil(genericResolver)
 
         return KMockProcessor(
+            codeGenerator = codeGenerator,
             mockGenerator = KMockGenerator(
                 logger = logger,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
-                codeGenerator = generator,
+                codeGenerator = codeGenerator,
                 genericsResolver = genericResolver,
                 propertyGenerator = propertyGenerator,
                 functionGenerator = functionGenerator,
@@ -52,15 +56,16 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 logger = logger,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
-                codeGenerator = generator
+                codeGenerator = codeGenerator
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
                 genericResolver = genericResolver,
-                codeGenerator = generator
+                codeGenerator = codeGenerator
             ),
             aggregator = KMockAggregator(
                 logger = logger,
+                knownSourceSets = options.knownSourceSets,
                 generics = genericResolver,
                 aliases = options.aliases
             ),

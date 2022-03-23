@@ -9,7 +9,7 @@ package mock.template.alias
 import mock.template.generic.Shared
 import tech.antibytes.kmock.MockShared
 
-@MockShared("test", Shared::class)
+@MockShared("sharedTest", Shared::class)
 interface Shared {
     suspend fun foo(fuzz: Int, ozz: Any): Any
 

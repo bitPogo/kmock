@@ -4,14 +4,14 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.generics
+package factory.template.generic
 
 import tech.antibytes.kmock.MockShared
 
 interface SomeGeneric<T>
 
 @MockShared(
-    "test",
+    "otherTest",
     Shared1::class
 )
 interface Shared1<K, L> where L : Any, L : Comparable<L>, K : Any {

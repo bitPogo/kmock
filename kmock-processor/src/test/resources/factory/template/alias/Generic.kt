@@ -6,8 +6,7 @@
 
 package factory.template.alias
 
-import factory.template.generics.SomeGeneric
-import mock.template.async.Platform
+import factory.template.generic.SomeGeneric
 import tech.antibytes.kmock.Mock
 
 interface SomeGeneric<T>

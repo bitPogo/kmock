@@ -14,6 +14,11 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -35,13 +40,16 @@ class KMockMocksSpec {
         kspArguments: Map<String, String> = emptyMap(),
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
-            "rootPackage" to "generatorTest",
-            "isKmp" to isKmp.toString()
+            KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
+            ROOT_PACKAGE to "generatorTest",
+            KMP_FLAG to isKmp.toString(),
         ).also {
             it.putAll(kspArguments)
         }.also {
-            it["namePrefix_0"] = "kotlin.collections"
-            it["namePrefix_1"] = "kotlin"
+            it["${KMOCK_PREFIX}namePrefix_0"] = "kotlin.collections"
+            it["${KMOCK_PREFIX}namePrefix_1"] = "kotlin"
+            it["${PRECEDENCE_PREFIX}sharedTest"] = "0"
+            it["${PRECEDENCE_PREFIX}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {
@@ -60,9 +68,9 @@ class KMockMocksSpec {
             .filter(filter)
     }
 
-    private fun resolveGenerated(expected: String): String? {
+    private fun resolveGenerated(expected: String): File? {
         return findGeneratedSource { file -> file.absolutePath.endsWith(expected) }
-            .getOrNull(0)?.readText()
+            .getOrNull(0)
     }
 
     private fun String.normalizeSource(): String = this.replace(Regex("[\t ]+"), "")
@@ -84,27 +92,28 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
     fun `Given a annotated Source for Properties for Shared is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
-            "Common.kt",
+            "Shared.kt",
             loadResource("/template/property/Shared.kt")
         )
         val expected = loadResource("/expected/property/Shared.kt")
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/property/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -118,13 +127,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/property/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -144,7 +154,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -158,13 +168,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/sync/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -178,13 +189,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/sync/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -204,7 +216,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -218,13 +230,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/async/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -238,13 +251,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/async/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -264,7 +278,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -278,13 +292,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/generic/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -298,13 +313,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/generic/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -324,7 +340,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -338,13 +354,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/relaxed/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -358,13 +375,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/relaxed/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -384,7 +402,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -398,13 +416,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/overloaded/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -418,13 +437,14 @@ class KMockMocksSpec {
 
         // When
         val compilerResult = compile(provider, source, isKmp = true)
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/overloaded/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -442,7 +462,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Platform" to "AliasPlatform",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Platform" to "AliasPlatform",
             )
         )
         val actual = resolveGenerated("AliasPlatformMock.kt")
@@ -451,7 +471,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -469,16 +489,17 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Shared" to "AliasShared",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Shared" to "AliasShared",
             )
         )
-        val actual = resolveGenerated("AliasSharedMock@TEST.kt")
+        val actual = resolveGenerated("AliasSharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/alias/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -496,16 +517,17 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "alias_mock.template.alias.Common" to "AliasCommon",
+                "${KMOCK_PREFIX}alias_mock.template.alias.Common" to "AliasCommon",
             )
         )
-        val actual = resolveGenerated("AliasCommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("AliasCommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/alias/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -518,7 +540,7 @@ class KMockMocksSpec {
         val expected = loadResource("/expected/generic/AllowedRecursive.kt")
 
         val allowedRecursiveTypes = mapOf(
-            "recursive_0" to "kotlin.Comparable"
+            "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
         )
 
         // When
@@ -534,7 +556,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -552,7 +574,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Platform",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Platform",
             )
         )
         val actual = resolveGenerated("PlatformMock.kt")
@@ -561,7 +583,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -579,7 +601,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Collision",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Collision",
             )
         )
         val actual = resolveGenerated("CollisionMock.kt")
@@ -588,7 +610,7 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -606,16 +628,17 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Shared",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Shared",
             )
         )
-        val actual = resolveGenerated("SharedMock@TEST.kt")
+        val actual = resolveGenerated("SharedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/buildIn/SharedMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -633,15 +656,16 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "buildIn_0" to "mock.template.buildIn.Common",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Common",
             )
         )
-        val actual = resolveGenerated("CommonMock@COMMONTEST.kt")
+        val actual = resolveGenerated("CommonMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/alias/CommonMock.kt")
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 }

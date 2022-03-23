@@ -11,7 +11,7 @@ import tech.antibytes.util.test.fixture.PublicApi
 import kotlin.random.Random
 
 internal class StringAlphaGenerator(
-    val random: IsolateState<Random>
+    private val random: IsolateState<Random>
 ) : PublicApi.Generator<String> {
     override fun generate(): String {
         val length = random.access { it.nextInt(1, 10) }

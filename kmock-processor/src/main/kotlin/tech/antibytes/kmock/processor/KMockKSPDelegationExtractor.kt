@@ -8,8 +8,11 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIAS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RECURSIVE_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
@@ -33,9 +36,14 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         action(qualifiedName, value)
     }
 
+    private fun extractSourceSets(
+        precedences: MutableMap<String, Int>
+    ): Set<String> = precedences.keys.filterNot { sourceSet -> sourceSet == "commonTest" }.toSet()
+
     override fun convertOptions(
         kspRawOptions: Map<String, String>
     ): Options {
+        var kspDir: String? = null
         var rootPackage: String? = null
         var isKmp: Boolean? = null
         val precedences: MutableMap<String, Int> = mutableMapOf()
@@ -46,8 +54,9 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
 
         kspRawOptions.forEach { (key, value) ->
             when {
-                key == "rootPackage" -> rootPackage = value
-                key == "isKmp" -> isKmp = value.toBoolean()
+                key == KSP_DIR -> kspDir = value
+                key == ROOT_PACKAGE -> rootPackage = value
+                key == KMP_FLAG -> isKmp = value.toBoolean()
                 key.startsWith(PRECEDENCE_PREFIX) -> extractPrecedence(key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence
                 }
@@ -61,8 +70,10 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         }
 
         return Options(
+            kspDir = kspDir!!,
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
+            knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
             allowedRecursiveTypes = allowedRecursiveTypes,

@@ -9,7 +9,7 @@ package mock.template.overloaded
 import tech.antibytes.kmock.MockShared
 
 @MockShared(
-    "TEST",
+    "sharedTest",
     Shared::class
 )
 interface Shared {

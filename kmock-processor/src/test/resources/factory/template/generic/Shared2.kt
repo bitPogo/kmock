@@ -4,14 +4,13 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.generics
+package factory.template.generic
 
-import mock.template.async.Shared
 import tech.antibytes.kmock.MockShared
 
 @MockShared(
-    "test",
-    Shared::class
+    "otherTest",
+    Shared2::class
 )
 interface Shared2<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L

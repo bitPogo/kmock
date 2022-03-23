@@ -26,8 +26,9 @@ class KMockProcessorProviderSpec {
         // Given
         val environment: SymbolProcessorEnvironment = mockk()
         val options = mapOf(
-            "isKmp" to "false",
-            "rootPackage" to "somewhere",
+            "kmock_kspDir" to "dir",
+            "kmock_isKmp" to "false",
+            "kmock_rootPackage" to "somewhere",
         )
 
         every { environment.logger } returns mockk()

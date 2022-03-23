@@ -14,6 +14,11 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -23,6 +28,7 @@ class KMockFactoriesSpec {
     lateinit var buildDir: File
     private val provider = KMockProcessorProvider()
     private val root = "/factory"
+    private val rootPackage = "generatorTest"
 
     private fun loadResource(path: String): String {
         return KMockMocksSpec::class.java.getResource(root + path).readText()
@@ -35,10 +41,14 @@ class KMockFactoriesSpec {
         vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
         val args = mutableMapOf(
-            "rootPackage" to "generatorTest",
-            "isKmp" to isKmp.toString()
+            KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
+            ROOT_PACKAGE to rootPackage,
+            KMP_FLAG to isKmp.toString()
         ).also {
             it.putAll(aliases)
+        }.also {
+            it["${PRECEDENCE_PREFIX}sharedTest"] = "0"
+            it["${PRECEDENCE_PREFIX}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {
@@ -57,9 +67,8 @@ class KMockFactoriesSpec {
             .filter(filter)
     }
 
-    private fun resolveGenerated(expected: String): String? {
-        return findGeneratedSource { file -> file.absolutePath.endsWith(expected) }
-            .getOrNull(0)?.readText()
+    private fun resolveGenerated(expected: String): File? {
+        return findGeneratedSource { file -> file.absolutePath.endsWith(expected) }.getOrNull(0)
     }
 
     private fun String.normalizeSource(): String = this.replace(Regex("[\t ]+"), "")
@@ -86,7 +95,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -106,16 +115,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -140,7 +149,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -160,16 +169,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -194,7 +203,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -227,9 +236,10 @@ class KMockFactoriesSpec {
             source2,
             source3
         )
-        val actualExpect1 = resolveGenerated("MockFactory@TEST.kt")
-        val actualExpect2 = resolveGenerated("MockFactory@NOTTEST.kt")
-        val actualActual = resolveGenerated("MockFactory.kt")
+
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect1 = resolveGenerated("kotlin/other/otherTest/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect2 = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -237,9 +247,9 @@ class KMockFactoriesSpec {
         actualExpect2 isNot null
         actualActual isNot null
 
-        actualExpect1!!.normalizeSource() mustBe expectedExpect1.normalizeSource()
-        actualExpect2!!.normalizeSource() mustBe expectedExpect2.normalizeSource()
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect1!!.readText().normalizeSource() mustBe expectedExpect1.normalizeSource()
+        actualExpect2!!.readText().normalizeSource() mustBe expectedExpect2.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
     }
 
     @Test
@@ -259,16 +269,16 @@ class KMockFactoriesSpec {
             emptyMap(),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 
     @Test
@@ -285,7 +295,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             aliases = mapOf(
-                "alias_factory.template.alias.Platform" to "AliasPlatform",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Platform" to "AliasPlatform",
             ),
             source
         )
@@ -295,7 +305,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -312,7 +322,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             aliases = mapOf(
-                "alias_factory.template.alias.Generic" to "AliasGeneric",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Generic" to "AliasGeneric",
             ),
             source
         )
@@ -322,7 +332,7 @@ class KMockFactoriesSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.normalizeSource() mustBe expected.normalizeSource()
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -340,19 +350,19 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             aliases = mapOf(
-                "alias_factory.template.alias.Common" to "AliasCommon",
+                "${KMOCK_PREFIX}alias_factory.template.alias.Common" to "AliasCommon",
             ),
             source
         )
-        val actualActual = resolveGenerated("MockFactory.kt")
-        val actualExpect = resolveGenerated("MockFactory@COMMONTEST.kt")
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
         actualExpect isNot null
 
-        actualActual!!.normalizeSource() mustBe expectedActual.normalizeSource()
-        actualExpect!!.normalizeSource() mustBe expectedExpect.normalizeSource()
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
 }

@@ -102,12 +102,11 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         }
     }
 
-    private fun flattenMetaDependencies(
+    private fun extractPrecedences(
         platformDependencies: Map<String, Set<String>>,
         metaDependencies: Map<String, Set<String>>,
-        precedences: MutableMap<String, Int>
-    ): MutableMap<String, Set<String>> {
-        val flattenedDependencies: MutableMap<String, Set<String>> = mutableMapOf()
+    ): Map<String, Int> {
+        val precedences: MutableMap<String, Int> = mutableMapOf()
 
         metaDependencies.keys.forEach { key ->
             val dependencies = metaDependencies[key]!!.toMutableSet()
@@ -145,28 +144,9 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     else -> idx++
                 }
             }
-
-            flattenedDependencies[key] = dependencies
         }
 
-        return flattenedDependencies
-    }
-
-    private fun mergeDependencies(
-        platformDependencies: Map<String, Set<String>>,
-        metaDependencies: Map<String, Set<String>>
-    ): Map<String, Set<String>> {
-        val dependencies: MutableMap<String, Set<String>> = platformDependencies.toMutableMap()
-
-        metaDependencies.forEach { (key, values) ->
-            if (key in platformDependencies) {
-                dependencies[key] = dependencies[key]!!.toMutableSet().also { it.addAll(values) }
-            } else {
-                dependencies[key] = values
-            }
-        }
-
-        return dependencies
+        return precedences
     }
 
     override fun configure(project: Project) {
@@ -175,7 +155,6 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val kspCollector: MutableMap<String, String> = mutableMapOf()
         val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
         val metaDependencies: MutableMap<String, Set<String>> = mutableMapOf()
-        val precedences: MutableMap<String, Int> = mutableMapOf()
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
@@ -198,21 +177,10 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
         }
 
-        val allDependencies = mergeDependencies(
-            sourceDependencies,
-            flattenMetaDependencies(sourceDependencies, metaDependencies, precedences)
-        )
+        val precedences = extractPrecedences(sourceDependencies, metaDependencies)
 
         if (kspCollector.isNotEmpty()) {
             propagatePrecedences(project, precedences)
-
-            project.afterEvaluate {
-                KmpSetupConfigurator.wireSharedSourceTasks(
-                    project,
-                    kspCollector,
-                    allDependencies
-                )
-            }
         }
     }
 }

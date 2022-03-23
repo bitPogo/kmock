@@ -7,11 +7,6 @@
 package tech.antibytes.gradle.kmock
 
 import org.gradle.api.Project
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
-import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.TaskAction
 
 internal interface KMockPluginContract {
     interface Extension {
@@ -47,48 +42,19 @@ internal interface KMockPluginContract {
         var uselessPrefixes: Set<String>
     }
 
-    interface CleanUpTask {
-        @get:Input
-        val indicators: SetProperty<String>
-
-        @get:Input
-        val platform: Property<String>
-
-        @get:Input
-        val target: Property<String>
-
-        @TaskAction
-        fun cleanUp()
-    }
-
-    interface SharedSourceCopist {
-        fun copySharedSource(
-            project: Project,
-            platform: String,
-            source: String,
-            target: String,
-            indicator: String,
-        ): Copy
-    }
-
-    interface KmpSetupConfigurator {
-        fun wireSharedSourceTasks(
-            project: Project,
-            kspMapping: Map<String, String>,
-            dependencies: Map<String, Set<String>>
-        )
-    }
-
     interface SourceSetConfigurator {
         fun configure(project: Project)
     }
 
     companion object {
-        const val PRECEDENCE_PREFIX = "precedence_"
-        const val ALIAS_PREFIX = "alias_"
-        const val RECURSIVE_PREFIX = "recursive_"
-        const val BUILD_IN_PREFIX = "buildIn_"
-        const val USELESS_PREFIXES_PREFIX = "namePrefix_"
-        const val INDICATOR_SEPARATOR = "@"
+        const val KMOCK_PREFIX = "kmock_"
+        const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
+        const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
+        const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
+        const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
+        const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
+        const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

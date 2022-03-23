@@ -4,9 +4,8 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.generics
+package factory.template.generic
 
-import mock.template.async.Platform
 import tech.antibytes.kmock.Mock
 
 interface SomeGeneric<T>

@@ -16,7 +16,7 @@ internal inline fun <reified T> relaxed(id: String): T {
 }
 
 @MockShared(
-    "tesT",
+    "sharedTest",
     Shared::class
 )
 interface Shared {

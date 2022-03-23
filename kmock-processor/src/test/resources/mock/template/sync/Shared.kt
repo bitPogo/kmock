@@ -9,7 +9,7 @@ package mock.template.sync
 import mock.template.async.Shared
 import tech.antibytes.kmock.MockShared
 
-@MockShared("Test", Shared::class)
+@MockShared("sharedTest", Shared::class)
 interface Shared {
     fun foo(fuzz: Int, ozz: Any): Any
 

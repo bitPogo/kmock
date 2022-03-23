@@ -35,13 +35,11 @@ class KmpSourceSetsConfiguratorSpec {
 
     @BeforeEach
     fun setUp() {
-        mockkObject(KmpSetupConfigurator)
         mockkObject(MainConfig)
     }
 
     @AfterEach
     fun tearDown() {
-        unmockkObject(KmpSetupConfigurator)
         unmockkObject(MainConfig)
     }
 
@@ -125,11 +123,6 @@ class KmpSourceSetsConfiguratorSpec {
             kotlin
         )
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
-
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -148,8 +141,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
-
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -175,20 +166,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         verify(exactly = 1) {
             source2.kotlin.srcDir("$path/generated/ksp/js/jsTest")
-        }
-
-        verify(exactly = 1) {
-            KmpSetupConfigurator.wireSharedSourceTasks(
-                project,
-                mapOf(
-                    "jvm" to "kspTestKotlinJvm",
-                    "js" to "kspTestKotlinJs"
-                ),
-                mapOf(
-                    source1DependenciesName to setOf("jvm"),
-                    source2DependenciesName to setOf("js")
-                )
-            )
         }
 
         verify(exactly = 0) { kspExtension.arg(any(), any()) }
@@ -230,11 +207,6 @@ class KmpSourceSetsConfiguratorSpec {
             kotlin
         )
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
-
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -253,8 +225,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
-
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -280,20 +250,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         verify(exactly = 1) {
             source2.kotlin.srcDir("$path/generated/ksp/android/androidTest")
-        }
-
-        verify(exactly = 1) {
-            KmpSetupConfigurator.wireSharedSourceTasks(
-                project,
-                mapOf(
-                    "android" to "kspTestKotlinAndroid",
-                    "jvm" to "kspTestKotlinJvm",
-                ),
-                mapOf(
-                    source1DependenciesName to setOf("jvm"),
-                    source2DependenciesName to setOf("android")
-                )
-            )
         }
 
         verify(exactly = 0) { kspExtension.arg(any(), any()) }
@@ -330,11 +286,6 @@ class KmpSourceSetsConfiguratorSpec {
             kotlin
         )
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
-
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -352,8 +303,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
-
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -379,18 +328,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         verify(exactly = 1) {
             source2.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test")
-        }
-
-        verify(exactly = 1) {
-            KmpSetupConfigurator.wireSharedSourceTasks(
-                project,
-                mapOf(
-                    "iosX64" to "kspTestKotlinIosX64",
-                ),
-                mapOf(
-                    "nativeTest" to setOf("iosX64"),
-                )
-            )
         }
 
         verify(exactly = 0) { kspExtension.arg(any(), any()) }
@@ -441,11 +378,6 @@ class KmpSourceSetsConfiguratorSpec {
             kotlin
         )
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project
-        )
-
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
         every { MainConfig.version } returns version
@@ -494,8 +426,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
-
-        every { KmpSetupConfigurator.wireSharedSourceTasks(any(), any(), any()) } just Runs
 
         // When
         KmpSourceSetsConfigurator.configure(project)
@@ -600,28 +530,9 @@ class KmpSourceSetsConfiguratorSpec {
             source7.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
-        verify(exactly = 1) {
-            KmpSetupConfigurator.wireSharedSourceTasks(
-                project,
-                mapOf(
-                    "iosX64" to "kspTestKotlinIosX64",
-                    "iosArm32" to "kspTestKotlinIosArm32",
-                    "linuxX64" to "kspTestKotlinLinuxX64",
-                    "jvm" to "kspTestKotlinJvm",
-                ),
-                mapOf(
-                    "commonTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
-                    "metaTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
-                    "concurrentTest" to setOf("linuxX64", "iosX64", "iosArm32", "jvm"),
-                    "nativeTest" to setOf("linuxX64", "iosX64", "iosArm32"),
-                    "iosTest" to setOf("iosX64", "iosArm32"),
-                )
-            )
-        }
-
-        verify(exactly = 1) { kspExtension.arg("precedence_metaTest", "0") }
-        verify(exactly = 1) { kspExtension.arg("precedence_concurrentTest", "-1") }
-        verify(exactly = 1) { kspExtension.arg("precedence_nativeTest", "-3") }
-        verify(exactly = 1) { kspExtension.arg("precedence_iosTest", "-5") }
+        verify(exactly = 1) { kspExtension.arg("kmock_precedence_metaTest", "0") }
+        verify(exactly = 1) { kspExtension.arg("kmock_precedence_concurrentTest", "-1") }
+        verify(exactly = 1) { kspExtension.arg("kmock_precedence_nativeTest", "-3") }
+        verify(exactly = 1) { kspExtension.arg("kmock_precedence_iosTest", "-5") }
     }
 }

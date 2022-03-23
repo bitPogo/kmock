@@ -6,14 +6,12 @@
 
 package tech.antibytes.kmock.processor.factory
 
-import com.google.devtools.ksp.processing.CodeGenerator
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.INDICATOR_SEPARATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
@@ -22,7 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockFactoryEntryPointGenerator(
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
-    private val codeGenerator: CodeGenerator,
+    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
 ) : ProcessorContract.MockFactoryEntryPointGenerator {
     private fun buildMockFactory(): FunSpec {
         val type = TypeVariableName(KMOCK_FACTORY_TYPE_NAME)
@@ -117,7 +115,7 @@ internal class KMockFactoryEntryPointGenerator(
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 options.rootPackage,
-                "MockFactory${INDICATOR_SEPARATOR}COMMONTEST"
+                "MockFactory"
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
@@ -131,6 +129,7 @@ internal class KMockFactoryEntryPointGenerator(
                 generics
             )
 
+            codeGenerator.setOneTimeSourceSet("commonTest")
             file.build().writeTo(
                 codeGenerator = codeGenerator,
                 aggregating = false,
@@ -146,11 +145,9 @@ internal class KMockFactoryEntryPointGenerator(
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
             if (generics.isNotEmpty()) {
-                val targetIndicator = indicator.uppercase()
-
                 val file = FileSpec.builder(
                     options.rootPackage,
-                    "MockFactory$INDICATOR_SEPARATOR$targetIndicator"
+                    "MockFactory"
                 )
 
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
@@ -160,6 +157,7 @@ internal class KMockFactoryEntryPointGenerator(
                     generics
                 )
 
+                codeGenerator.setOneTimeSourceSet(indicator)
                 file.build().writeTo(
                     codeGenerator = codeGenerator,
                     aggregating = false,
@@ -176,7 +174,7 @@ internal class KMockFactoryEntryPointGenerator(
             val buckets: MutableMap<String, List<TemplateSource>> = mutableMapOf()
 
             templateSources.forEach { template ->
-                val indicator = template.indicator.lowercase()
+                val indicator = template.indicator
                 val bucket = buckets.getOrElse(indicator) { mutableListOf() }.toMutableList()
                 bucket.add(template)
 

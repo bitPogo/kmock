@@ -30,15 +30,33 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockAggregator(
     private val logger: KSPLogger,
+    private val knownSourceSets: Set<String>,
     private val generics: GenericResolver,
     private val aliases: Map<String, String>
 ) : ProcessorContract.Aggregator {
-    private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation {
-        val annotation = annotations.first { annotation ->
-            val annotationString = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-            ANNOTATION_NAME == annotationString ||
-                ANNOTATION_COMMON_NAME == annotationString ||
-                ANNOTATION_SHARED_NAME == annotationString
+    private fun resolveAnnotationName(
+        annotation: KSAnnotation
+    ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+
+    private fun validateSourceIndicator(
+        annotation: KSAnnotation
+    ): Boolean {
+        return when (val actualSourceSet = annotation.arguments.firstOrNull()?.value) {
+            !is String -> false
+            !in knownSourceSets -> {
+                logger.warn("$actualSourceSet is not a applicable sourceSet!")
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation? {
+        val annotation = annotations.firstOrNull { annotation ->
+            val annotationName = resolveAnnotationName(annotation)
+            ANNOTATION_NAME == annotationName ||
+                ANNOTATION_COMMON_NAME == annotationName ||
+                (ANNOTATION_SHARED_NAME == annotationName && validateSourceIndicator(annotation))
         }
 
         return annotation
@@ -103,7 +121,7 @@ internal class KMockAggregator(
         annotated.forEach { annotatedSymbol ->
             val stub = findKMockAnnotation(annotatedSymbol.annotations)
 
-            if (stub.arguments.isEmpty()) {
+            if (stub == null || stub.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
             } else {
                 val sourceIndicator = determineSourceCategory(stub)

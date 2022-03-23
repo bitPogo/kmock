@@ -1,6 +1,7 @@
 package generatorTest
 
-import factory.template.generics.Shared1
+import factory.template.generic.Shared1
+import factory.template.generic.Shared2
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
@@ -14,7 +15,7 @@ internal expect inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>, K : Any, L> kspy(
@@ -22,5 +23,22 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
-    templateType: kotlin.reflect.KClass<factory.template.generics.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
+): Mock where L : Any, L : Comparable<L>
+
+internal expect inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
+    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
+    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
+): Mock where L : Any, L : Comparable<L>
+
+internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared2<K, L>, K : Any, L> kspy(
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    freeze: Boolean = true,
+    @Suppress("UNUSED_PARAMETER")
+    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
 ): Mock where L : Any, L : Comparable<L>

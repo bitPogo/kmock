@@ -10,13 +10,21 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES_PREFIX
 
 abstract class KMockExtension(
     project: Project
 ) : KMockPluginContract.Extension {
     private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+    private val illegalNames = setOf(
+        ROOT_PACKAGE,
+        KMP_FLAG,
+        KSP_DIR
+    )
     private val legalAliases = "^[a-zA-Z][a-zA-Z0-9]*$".toRegex()
 
     private var _rootPackage: String = ""
@@ -29,7 +37,7 @@ abstract class KMockExtension(
     )
 
     private fun propagateRootPackage(rootPackage: String) {
-        ksp.arg("rootPackage", rootPackage)
+        ksp.arg(ROOT_PACKAGE, rootPackage)
     }
 
     override var rootPackage: String
@@ -41,8 +49,7 @@ abstract class KMockExtension(
 
     private fun guardMapping(qualifiedName: String, alias: String) {
         when {
-            qualifiedName == "rootPackage" -> throw IllegalArgumentException("$qualifiedName is not allowed!")
-            qualifiedName == "isKmp" -> throw IllegalArgumentException("$qualifiedName is not allowed!")
+            qualifiedName in illegalNames -> throw IllegalArgumentException("$qualifiedName is not allowed!")
             !legalAliases.matches(alias) -> throw IllegalArgumentException("$alias is not a valid alias!")
         }
     }
