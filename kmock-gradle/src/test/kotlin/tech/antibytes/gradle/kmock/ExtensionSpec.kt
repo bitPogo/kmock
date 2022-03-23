@@ -256,4 +256,33 @@ class ExtensionSpec {
         verify(exactly = 1) { kspExtension.arg("kmock_namePrefix_1", expected[1]) }
         verify(exactly = 1) { kspExtension.arg("kmock_namePrefix_2", expected[2]) }
     }
+
+    @Test
+    fun `enableSpies is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.enableSpies mustBe false
+    }
+
+    @Test
+    fun `It propagates enableSpies changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.enableSpies = expected
+
+        extension.enableSpies mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_enableSpies", expected.toString()) }
+    }
 }

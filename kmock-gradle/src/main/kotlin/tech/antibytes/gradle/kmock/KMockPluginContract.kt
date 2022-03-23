@@ -40,6 +40,12 @@ internal interface KMockPluginContract {
          * The order must be longest to shortest.
          */
         var uselessPrefixes: Set<String>
+
+        /**
+         * Enables/Disables spy generation of KMock.
+         * Default is false
+         */
+        var enableSpies: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -50,6 +56,7 @@ internal interface KMockPluginContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val SPY_FLAG = "${KMOCK_PREFIX}enableSpies"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
         const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
