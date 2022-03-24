@@ -457,4 +457,157 @@ class KMockFactoriesSpec {
         actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
         actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for Interface enabled for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/interfaze/Platform.kt")
+        )
+        val expected = loadResource("/expected/interfaze/NoSpy.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
+                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Spies and Interface enabled for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/interfaze/Platform.kt")
+        )
+        val expected = loadResource("/expected/interfaze/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform1",
+                "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
+                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
+                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Spies and Interface and aliased enabled for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/interfaze/Platform.kt")
+        )
+        val expected = loadResource("/expected/interfaze/Alias.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform1",
+                "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
+                "${KMOCK_PREFIX}alias_factory.template.interfaze.Platform1" to "AliasPlatform",
+                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
+                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Spies and enabled Interfaces for Shared is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/interfaze/Shared.kt")
+        )
+        val expectedActual = loadResource("/expected/interfaze/SharedActual.kt")
+        val expectedExpect = loadResource("/expected/interfaze/SharedExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Shared1",
+                "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Shared2",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Spies with enabled Interfazes for Common is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/interfaze/Common.kt")
+        )
+        val expectedActual = loadResource("/expected/interfaze/CommonActual.kt")
+        val expectedExpect = loadResource("/expected/interfaze/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Common1",
+                "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Common2",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
 }

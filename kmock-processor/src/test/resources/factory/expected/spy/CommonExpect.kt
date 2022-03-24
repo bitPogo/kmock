@@ -16,7 +16,7 @@ internal expect inline fun <reified Mock> kmock(
 ): Mock
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock
@@ -31,7 +31,7 @@ internal expect inline fun <reified Mock : Common1<K, L>, K : Any, L> kmock(
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Common1<K, L>, K : Any, L> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER") templateType: kotlin.reflect.KClass<factory.template.spy.Common1<*,
