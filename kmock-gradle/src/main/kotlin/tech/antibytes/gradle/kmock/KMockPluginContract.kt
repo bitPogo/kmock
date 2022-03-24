@@ -40,6 +40,13 @@ internal interface KMockPluginContract {
          * The order must be longest to shortest.
          */
         var uselessPrefixes: Set<String>
+
+        /**
+         * Selection of targets which allow Proxies to use Spies.
+         * Set of full qualified name of target which should allow proxy to spy on.
+         * Note: This will also activate build-in methods.
+         */
+        var spyOn: Set<String>
     }
 
     interface SourceSetConfigurator {
@@ -55,6 +62,7 @@ internal interface KMockPluginContract {
         const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
         const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
         const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }
