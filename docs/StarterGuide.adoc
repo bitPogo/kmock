@@ -657,10 +657,10 @@ All Mocks are build with the same naming pattern (the name of the Interface and 
 `kmock` takes 4 arguments: `verifier`, `relaxed`, `relaxUnitFun` and `freeze`.
 `relax` and `relaxUnitFun` determine if relaxing should be used and are false by default.
 `freeze` determines which flavour for the Memory Model is used and and is true by default. +
-The last thing you need is to reference the type of the Mock.
-You can either use the an Interface or the generated Mock class.
-While both are technically allowed, using the Mock class is recommended.
-Access via Interface is meant for future usage.
+The last thing you need is to reference the type of the Mock. +
+You can enable also interfaces as types for `kmock`.
+This is meant for relaxing to ease the need to add boilerplate code.
+To enable interfaces you simply set `allowInterfacesOnKmock` of KMock's Gradle Plugin to `true`.
 
 NOTE: If your interface is generic, `kmock` takes an additional argument called `templateType`.
 This argument must be used to identify the right Mock and to avoid type collisions.
@@ -702,7 +702,10 @@ you may delegate the SO to `kspy` and voila habemus spy! +
 First of all you need select an subject by adding the full qualified name of the Interface which is shared by the Mock and SO to the `spyOn` field of KMock's Gradle Plugin.
 This will add the Mock to the factory function `kspy`. +
 `kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
-`spyOn` expects the SO.
+`spyOn` expects the SO. +
+As with `kmock` you can enable interfaces as types for `kspy`.
+This is meant for relaxing to ease the need to add boilerplate code.
+To enable interfaces you simply set `allowInterfacesOnKspy` of KMock's Gradle Plugin to `true`.
 
 WARNING: Spying is not currently supported for recursive generics types on function level.
 For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
