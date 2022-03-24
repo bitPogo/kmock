@@ -4,22 +4,22 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package mock.template.relaxed
+package mock.template.spy
 
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.Relaxer
 
 @Relaxer
 internal inline fun <reified T> relaxed(id: String): T {
-    return id as T
+    return Any() as T
 }
 
-@Mock(Platform::class)
-interface Platform {
-    val buzz: String
+@Mock(Relaxed::class)
+interface Relaxed<K, L> where L : Any, L : Comparable<L>, K : Any {
+    var template: L
+    val ozz: Int
 
-    fun foo(payload: Any): String
-    suspend fun bar(payload: Any): String
-    fun buzz()
+    fun <T> foo(payload: T)
+    fun bar(arg0: Int): Any
+    suspend fun buzz(arg0: String): L
 }
-

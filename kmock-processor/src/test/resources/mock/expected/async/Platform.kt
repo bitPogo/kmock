@@ -21,17 +21,13 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Platform {
-    private val __spyOn: Platform? = spyOn
-
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = AsyncFunProxy("mock.template.async.PlatformMock#_foo", spyOn = if (spyOn != null) { { fuzz,
-        ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        = AsyncFunProxy("mock.template.async.PlatformMock#_foo", spyOn = null, collector = verifier,
+        freeze = freeze, relaxer = null)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.async.PlatformMock#_bar", spyOn = if (spyOn != null) { { buzz,
-            bozz ->
-            bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.async.PlatformMock#_bar", spyOn = null, collector = verifier,
+            freeze = freeze, relaxer = null)
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

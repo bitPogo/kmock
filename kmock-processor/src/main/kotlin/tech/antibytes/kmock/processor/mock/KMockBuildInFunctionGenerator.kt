@@ -69,7 +69,7 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         spyName: String,
         spyArgumentName: String,
     ): String {
-        val spyBody = "spyOn.$spyName($spyArgumentName)"
+        val spyBody = "__spyOn!!.$spyName($spyArgumentName)"
 
         return if (spyArgumentName.isEmpty()) {
             "{ $spyBody }"

@@ -22,39 +22,27 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Platform {
-    private val __spyOn: Platform? = spyOn
-
     public override val buzz: String
         get() = _buzz.onGet()
 
-    public val _buzz: KMockContract.PropertyProxy<String> = if (spyOn == null) {
+    public val _buzz: KMockContract.PropertyProxy<String> =
         PropertyProxy("mock.template.relaxed.PlatformMock#_buzz", spyOnGet = null, collector =
         verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else {
             null })
-    } else {
-        PropertyProxy("mock.template.relaxed.PlatformMock#_buzz", spyOnGet = { spyOn.buzz },
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
-                relaxed(mockId) } } else { null })
-    }
-
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
-        SyncFunProxy("mock.template.relaxed.PlatformMock#_foo", spyOn = if (spyOn != null) { {
-                payload ->
-            foo(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
-        { { mockId -> relaxed(mockId) } } else { null })
+        SyncFunProxy("mock.template.relaxed.PlatformMock#_foo", spyOn = null, collector = verifier,
+            freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else { null })
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
-        AsyncFunProxy("mock.template.relaxed.PlatformMock#_bar", spyOn = if (spyOn != null) { {
-                payload ->
-            bar(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
-        { { mockId -> relaxed(mockId) } } else { null })
+        AsyncFunProxy("mock.template.relaxed.PlatformMock#_bar", spyOn = null, collector = verifier,
+            freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else { null })
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        SyncFunProxy("mock.template.relaxed.PlatformMock#_buzzWithVoid", spyOn = if (spyOn != null) {
-            { buzz() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId ->
-            relaxed(mockId) } } else { null }, buildInRelaxer = null)
+        SyncFunProxy("mock.template.relaxed.PlatformMock#_buzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else
+        { null }, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else { null },
+            buildInRelaxer = null)
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 

@@ -130,7 +130,8 @@ internal interface ProcessorContract {
             qualifier: String,
             ksProperty: KSPropertyDeclaration,
             typeResolver: TypeParameterResolver,
-            relaxer: Relaxer?
+            enableSpy: Boolean,
+            relaxer: Relaxer?,
         ): Pair<PropertySpec, PropertySpec>
     }
 
@@ -140,7 +141,8 @@ internal interface ProcessorContract {
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
             existingProxies: Set<String>,
-            relaxer: Relaxer?
+            enableSpy: Boolean,
+            relaxer: Relaxer?,
         ): Pair<PropertySpec, FunSpec>
     }
 

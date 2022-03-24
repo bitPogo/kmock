@@ -307,7 +307,7 @@ internal class KMockFunctionGenerator(
                 body.append("@Suppress(\"UNCHECKED_CAST\")\n")
             }
 
-            body.append("$spyName($spyArguments)")
+            body.append("__spyOn!!.$spyName($spyArguments)")
 
             if (proxyReturnType.second?.castReturnType == true) {
                 buildSpyReturnTypeCasts(body, proxyReturnType.second!!)
@@ -339,6 +339,27 @@ internal class KMockFunctionGenerator(
         }
     }
 
+    private fun buildSpy(
+        enableSpy: Boolean,
+        spyName: String,
+        spyArgumentNames: Set<String>,
+        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+    ): String {
+        return if (enableSpy) {
+            "if (spyOn != null) { ${
+                buildFunctionSpyInvocation(
+                    spyName,
+                    spyArgumentNames,
+                    proxyArguments,
+                    proxyReturnType
+                )
+            } } else { null }"
+        } else {
+            "null"
+        }
+    }
+
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
         qualifier: String,
@@ -348,23 +369,25 @@ internal class KMockFunctionGenerator(
         spyArgumentNames: Set<String>,
         proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
+        enableSpy: Boolean,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec.Builder {
+        val proxyId = "$qualifier#$proxyName"
+
         return proxySpec.initializer(
             "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
             proxyType.simpleName,
-            "$qualifier#$proxyName",
-            "if (spyOn != null) { ${
-            buildFunctionSpyInvocation(
-                spyName,
-                spyArgumentNames,
-                proxyArguments,
-                proxyReturnType
-            )
-            } } else { null }",
+            proxyId,
+            buildSpy(
+                enableSpy = enableSpy,
+                spyName = spyName,
+                spyArgumentNames = spyArgumentNames,
+                proxyArguments = proxyArguments,
+                proxyReturnType = proxyReturnType
+            ),
             relaxerGenerator.buildRelaxers(
-                relaxer,
-                proxyReturnType.first.toString() == "kotlin.Unit"
+                relaxer = relaxer,
+                useUnitFunRelaxer = proxyReturnType.first.toString() == "kotlin.Unit"
             )
         )
     }
@@ -378,6 +401,7 @@ internal class KMockFunctionGenerator(
         returnType: KSType,
         typeResolver: TypeParameterResolver,
         suspending: Boolean,
+        enableSpy: Boolean,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, TypeName> {
         val (proxyType, sideEffectPrefix) = determineProxyType(suspending)
@@ -416,6 +440,7 @@ internal class KMockFunctionGenerator(
                     spyArgumentNames = arguments.keys,
                     proxyArguments = proxyArguments,
                     proxyReturnType = proxyReturnType,
+                    enableSpy = enableSpy,
                     relaxer = relaxer
                 )
             }.build(),
@@ -479,6 +504,7 @@ internal class KMockFunctionGenerator(
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
         existingProxies: Set<String>,
+        enableSpy: Boolean,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, FunSpec> {
         val functionName = ksFunction.simpleName.asString()
@@ -506,6 +532,7 @@ internal class KMockFunctionGenerator(
             returnType = returnType,
             typeResolver = parameterTypeResolver,
             suspending = isSuspending,
+            enableSpy = enableSpy,
             relaxer = relaxer
         )
 

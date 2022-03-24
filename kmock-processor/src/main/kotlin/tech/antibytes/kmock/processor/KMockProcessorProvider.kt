@@ -45,6 +45,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             codeGenerator = codeGenerator,
             mockGenerator = KMockGenerator(
                 logger = logger,
+                spyOn = options.spyOn,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
                 genericsResolver = genericResolver,
