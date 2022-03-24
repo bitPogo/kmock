@@ -14,7 +14,7 @@ import tech.antibytes.kmock.KMockContract.Proxy
  * @see Collector
  * @author Matthias Geisler
  */
-internal object NoopCollector : Collector {
+object NoopCollector : Collector {
     /**
      * Performs a noop on invocation
      * @param referredProxy the proxy it is referring to.
