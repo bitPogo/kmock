@@ -14,6 +14,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES_PREFIX
 
 abstract class KMockExtension(
@@ -35,6 +36,7 @@ abstract class KMockExtension(
         "kotlin.collections",
         "kotlin",
     )
+    private var _spyOn: Set<String> = emptySet()
 
     private fun propagateRootPackage(rootPackage: String) {
         ksp.arg(ROOT_PACKAGE, rootPackage)
@@ -106,5 +108,16 @@ abstract class KMockExtension(
             )
 
             _uselessPrefixes = value
+        }
+
+    override var spyOn: Set<String>
+        get() = _spyOn
+        set(value) {
+            propagateIterable(
+                prefix = SPY_ON,
+                values = value
+            )
+
+            _spyOn = value
         }
 }

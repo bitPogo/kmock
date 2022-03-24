@@ -45,6 +45,7 @@ internal interface ProcessorContract {
         val aliases: Map<String, String>,
         val allowedRecursiveTypes: Set<String>,
         val useBuildInProxiesOn: Set<String>,
+        val spyOn: Set<String>,
         val uselessPrefixes: Set<String>,
     )
 
@@ -129,7 +130,8 @@ internal interface ProcessorContract {
             qualifier: String,
             ksProperty: KSPropertyDeclaration,
             typeResolver: TypeParameterResolver,
-            relaxer: Relaxer?
+            enableSpy: Boolean,
+            relaxer: Relaxer?,
         ): Pair<PropertySpec, PropertySpec>
     }
 
@@ -139,7 +141,8 @@ internal interface ProcessorContract {
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
             existingProxies: Set<String>,
-            relaxer: Relaxer?
+            enableSpy: Boolean,
+            relaxer: Relaxer?,
         ): Pair<PropertySpec, FunSpec>
     }
 
@@ -258,6 +261,7 @@ internal interface ProcessorContract {
         const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
         const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
         const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

@@ -19,6 +19,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class PlatformMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Platform<K, L>? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
@@ -26,296 +27,215 @@ internal class PlatformMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Platform<K, L> where L : Any, L : Comparable<L> {
-    private val __spyOn: Platform<K, L>? = spyOn
-
     public override var template: L
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
 
-    public val _template: KMockContract.PropertyProxy<L> = if (spyOn == null) {
+    public val _template: KMockContract.PropertyProxy<L> =
         PropertyProxy("mock.template.generic.PlatformMock#_template", spyOnGet = null, spyOnSet =
         null, collector = verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.generic.PlatformMock#_template", spyOnGet = { spyOn.template
-        }, spyOnSet = { spyOn.template = it; Unit }, collector = verifier, freeze = freeze,
-            relaxer = null)
-    }
-
 
     public val _fooWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_fooWithVoid", spyOn = if (spyOn != null) { {
-            foo() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_fooWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_fooWithAny", spyOn = if (spyOn != null) { {
-                payload ->
-            foo(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_fooWithAny", spyOn = null, collector =
+        verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else
+        { null }, relaxer = null, buildInRelaxer = null)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_blaWithVoid", spyOn = if (spyOn != null) { {
-            bla() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_blaWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _blaWithInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_blaWithInt", spyOn = if (spyOn != null) { {
-                payload ->
-            bla(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_blaWithInt", spyOn = null, collector =
+        verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else
+        { null }, relaxer = null, buildInRelaxer = null)
 
     public val _barWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_barWithCollectionsList",
-        spyOn = if (spyOn != null) { { payload ->
-            bar(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String>>> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_barWithVoid", spyOn = if (spyOn != null) { {
-            bar() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_barWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _blubbWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String?>>) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_blubbWithCollectionsList",
-        spyOn = if (spyOn != null) { { payload ->
-            blubb(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                          (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _blubbWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String?>>> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_blubbWithVoid", spyOn = if (spyOn != null) {
-            { blubb() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_blubbWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _bussWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_bussWithCollectionsList",
-        spyOn = if (spyOn != null) { { payload ->
-            buss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _bussWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_bussWithVoid", spyOn = if (spyOn != null) {
-            { buss() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_bussWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _bossWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_bossWithCollectionsList",
-        spyOn = if (spyOn != null) { { payload ->
-            boss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _bossWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_bossWithVoid", spyOn = if (spyOn != null) {
-            { boss() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_bossWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _buzzWithT:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
-        kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_buzzWithT", spyOn = if (spyOn
-        != null) { { payload ->
-        buzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                     (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-    null)
+        kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_buzzWithT", spyOn = null,
+        collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _buzzWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_buzzWithVoid", spyOn = if (spyOn != null) {
-            { buzz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_buzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _ozzWithL: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_ozzWithL", spyOn = if (spyOn != null) { {
-                payload ->
-            ozz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                        (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_ozzWithL", spyOn = null, collector =
+        verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else
+        { null }, relaxer = null, buildInRelaxer = null)
 
     public val _ozzWithVoid: KMockContract.SyncFunProxy<L, () -> L> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_ozzWithVoid", spyOn = if (spyOn != null) { {
-            ozz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_ozzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _brassWithComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_brassWithComparable", spyOn =
-    if (spyOn != null) { { payload ->
-        throw IllegalArgumentException(
-            "Recursive generics are not supported on function level spies (yet)."
-        ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-    { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+    null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+        relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _brassWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_brassWithVoid", spyOn = if (spyOn != null) {
-            { throw IllegalArgumentException(
-                "Recursive generics are not supported on function level spies (yet)."
-            ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_brassWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _blissWithComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_blissWithComparable", spyOn =
-    if (spyOn != null) { { payload ->
-        throw IllegalArgumentException(
-            "Recursive generics are not supported on function level spies (yet)."
-        ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-    { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+    null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+        relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _blissWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_blissWithVoid", spyOn = if (spyOn != null) {
-            { throw IllegalArgumentException(
-                "Recursive generics are not supported on function level spies (yet)."
-            ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_blissWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _lossWithCollectionsMap:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String, kotlin.String>) ->
         kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_lossWithCollectionsMap",
-        spyOn = if (spyOn != null) { { payload ->
-            loss(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                         (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-        null)
+        spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
         kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_lossWithVoid", spyOn = if (spyOn != null) {
-            { loss() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_lossWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _uzzWithMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_uzzWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { payload ->
-                @Suppress("UNCHECKED_CAST")
-                payload as mock.template.generic.SomeGeneric<kotlin.String>
-                @Suppress("UNCHECKED_CAST")
-                payload as kotlin.collections.List<kotlin.String>
-                uzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                            (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-            null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _uzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_uzzWithVoid", spyOn = if (spyOn != null) { {
-            uzz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_uzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _lzzWithMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_lzzWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { payload ->
-                @Suppress("UNCHECKED_CAST")
-                payload as mock.template.generic.SomeGeneric<kotlin.String>
-                @Suppress("UNCHECKED_CAST")
-                payload as kotlin.collections.List<kotlin.String>?
-                lzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                            (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-            null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_lzzWithVoid", spyOn = if (spyOn != null) { {
-            lzz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_lzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _tzzWithMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_tzzWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { payload ->
-                @Suppress("UNCHECKED_CAST")
-                payload as mock.template.generic.SomeGeneric<kotlin.String>?
-                @Suppress("UNCHECKED_CAST")
-                payload as kotlin.collections.List<kotlin.String>?
-                tzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                            (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-            null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_tzzWithVoid", spyOn = if (spyOn != null) { {
-            tzz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_tzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _rzzWithMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_rzzWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { payload ->
-                @Suppress("UNCHECKED_CAST")
-                payload as mock.template.generic.SomeGeneric<kotlin.String>
-                @Suppress("UNCHECKED_CAST")
-                payload as kotlin.collections.Map<kotlin.String, kotlin.String>
-                rzz(payload) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                            (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-            null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_rzzWithVoid", spyOn = if (spyOn != null) { {
-            rzz() } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_rzzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _izzWithMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_izzWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { payload ->
-                throw IllegalArgumentException(
-                    "Recursive generics are not supported on function level spies (yet)."
-                ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-            { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_izzWithVoid", spyOn = if (spyOn != null) { {
-            throw IllegalArgumentException(
-                "Recursive generics are not supported on function level spies (yet)."
-            ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_izzWithVoid", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _ossWithAnyAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
-    kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_ossWithAnyAny", spyOn = if
-                                                                                                 (spyOn != null) { { arg0, arg1 ->
-        oss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                       (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-    null)
+    kotlin.Unit> = SyncFunProxy("mock.template.generic.PlatformMock#_ossWithAnyAny", spyOn = null,
+        collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+            relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _ossWithAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_ossWithAny", spyOn = if (spyOn != null) { {
-                arg0 ->
-            oss(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_ossWithAny", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     public val _kssWithMockTemplateGenericSomeGenericMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_kssWithMockTemplateGenericSomeGenericMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { arg0, arg1 ->
-                throw IllegalArgumentException(
-                    "Recursive generics are not supported on function level spies (yet)."
-                ) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun)
-            { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _kssWithMockTemplateGenericSomeGeneric: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
         SyncFunProxy("mock.template.generic.PlatformMock#_kssWithMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { arg0 ->
-                throw IllegalArgumentException(
-                    "Recursive generics are not supported on function level spies (yet)."
-                ) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+            spyOn = null, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _issWithAnyMockTemplateGenericSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any) -> kotlin.Unit> =
         SyncFunProxy("mock.template.generic.PlatformMock#_issWithAnyMockTemplateGenericSomeGeneric",
-            spyOn = if (spyOn != null) { { arg0, arg1 ->
-                @Suppress("UNCHECKED_CAST")
-                arg1 as mock.template.generic.SomeGeneric<kotlin.String>
-                @Suppress("UNCHECKED_CAST")
-                arg1 as kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>
-                iss(arg0, arg1) } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                               (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer =
-            null)
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     public val _issWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        SyncFunProxy("mock.template.generic.PlatformMock#_issWithAny", spyOn = if (spyOn != null) { {
-                arg0 ->
-            iss(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.generic.PlatformMock#_issWithAny", spyOn = null, collector =
+        verifier, freeze = freeze, relaxer = null)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T

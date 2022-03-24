@@ -699,8 +699,10 @@ NOTE: Also Verifier expose a `clear` method, so do not forget it to call as well
 KMock also supports Spying to a certain degree.
 While you still need to instantiate the _subject to spy on_ (SO) by hand to avoid any funny behaviour,
 you may delegate the SO to `kspy` and voila habemus spy! +
+First of all you need select an subject by adding the full qualified name of the Interface which is shared by the Mock and SO to the `spyOn` field of KMock's Gradle Plugin.
+This will add the Mock to the factory method `kspy`. +
 `kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
-`spyOn` expects an instance of the Interface which is mocked - so the SO.
+`spyOn` expects the SO.
 
 WARNING: Spying is not currently supported for recursive generics types on function level.
 For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
@@ -713,7 +715,7 @@ The precedence described above stays otherwise untouched.
 
 NOTE: Setters of are always invoked.
 
-If you are using spies in combination with build-in methods be aware that the Proxy use the SO's methods here as well.
+If you are using spies  be aware that build-in methods use the SO's methods here as well.
 This might result in a behaviour which is not obvious right away:
 
 .Example Spying on build-in methods

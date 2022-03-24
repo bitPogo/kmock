@@ -13,6 +13,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
@@ -51,6 +52,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val allowedRecursiveTypes: MutableSet<String> = mutableSetOf()
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
+        val spyOn: MutableSet<String> = mutableSetOf()
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -66,6 +68,10 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key.startsWith(RECURSIVE_PREFIX) -> allowedRecursiveTypes.add(value)
                 key.startsWith(BUILD_IN_PREFIX) -> useBuildInProxiesOn.add(value)
                 key.startsWith(USELESS_PREFIXES_PREFIX) -> uselessPrefixes.add(value)
+                key.startsWith(SPY_ON) -> {
+                    useBuildInProxiesOn.add(value)
+                    spyOn.add(value)
+                }
             }
         }
 
@@ -78,7 +84,8 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             aliases = aliases,
             allowedRecursiveTypes = allowedRecursiveTypes,
             useBuildInProxiesOn = useBuildInProxiesOn,
-            uselessPrefixes = uselessPrefixes
+            spyOn = spyOn,
+            uselessPrefixes = uselessPrefixes,
         )
     }
 }

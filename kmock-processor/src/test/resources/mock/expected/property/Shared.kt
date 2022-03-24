@@ -15,6 +15,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class SharedMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
@@ -22,45 +23,27 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Shared {
-    private val __spyOn: Shared? = spyOn
-
     public override val foo: String
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.SharedMock#_foo", spyOnGet = null, collector =
-        verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.SharedMock#_foo", spyOnGet = { spyOn.foo }, collector
-        = verifier, freeze = freeze, relaxer = null)
-    }
-
+    public val _foo: KMockContract.PropertyProxy<String> =
+        PropertyProxy("mock.template.property.SharedMock#_foo", spyOnGet = null, collector = verifier,
+            freeze = freeze, relaxer = null)
 
     public override val bar: Int
         get() = _bar.onGet()
 
-    public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.SharedMock#_bar", spyOnGet = null, collector =
-        verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.SharedMock#_bar", spyOnGet = { spyOn.bar }, collector
-        = verifier, freeze = freeze, relaxer = null)
-    }
-
+    public val _bar: KMockContract.PropertyProxy<Int> =
+        PropertyProxy("mock.template.property.SharedMock#_bar", spyOnGet = null, collector = verifier,
+            freeze = freeze, relaxer = null)
 
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
-    public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
+    public val _buzz: KMockContract.PropertyProxy<Any> =
         PropertyProxy("mock.template.property.SharedMock#_buzz", spyOnGet = null, spyOnSet = null,
             collector = verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.SharedMock#_buzz", spyOnGet = { spyOn.buzz },
-            spyOnSet = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer =
-            null)
-    }
-
 
     public fun _clearMock(): Unit {
         _foo.clear()

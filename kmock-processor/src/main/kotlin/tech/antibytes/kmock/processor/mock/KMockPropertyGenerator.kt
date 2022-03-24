@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -17,10 +18,14 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockPropertyGenerator(
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.PropertyGenerator {
+    private val immutableTemplate = "PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)"
+    private val mutableTemplate = "PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)"
+
     private fun buildGetter(propertyName: String): FunSpec {
         return FunSpec
             .getterBuilder()
@@ -60,50 +65,107 @@ internal class KMockPropertyGenerator(
             .build()
     }
 
+    private fun buildImmutablePropertyProxy(
+        proxyId: String,
+        propertyName: String,
+        enableSpy: Boolean,
+        relaxer: Relaxer?
+    ): CodeBlock {
+        val initializer = CodeBlock.builder()
+        if (enableSpy) {
+            initializer.beginControlFlow("if (spyOn == null)")
+            initializer.add(
+                immutableTemplate,
+                proxyId,
+                "null",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+            initializer.nextControlFlow("else")
+            initializer.add(
+                immutableTemplate,
+                proxyId,
+                "{ __spyOn!!.$propertyName }",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+            initializer.endControlFlow()
+        } else {
+            initializer.add(
+                immutableTemplate,
+                proxyId,
+                "null",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+        }
+
+        return initializer.build()
+    }
+
+    private fun buildMutablePropertyProxy(
+        proxyId: String,
+        propertyName: String,
+        enableSpy: Boolean,
+        relaxer: Relaxer?
+    ): CodeBlock {
+        val initializer = CodeBlock.builder()
+
+        if (enableSpy) {
+            initializer.beginControlFlow("if (spyOn == null)")
+            initializer.add(
+                mutableTemplate,
+                proxyId,
+                "null",
+                "null",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+            initializer.nextControlFlow("else")
+            initializer.add(
+                mutableTemplate,
+                proxyId,
+                "{ __spyOn!!.$propertyName }",
+                "{ __spyOn!!.$propertyName = it; Unit }",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+            initializer.endControlFlow()
+        } else {
+            initializer.add(
+                mutableTemplate,
+                proxyId,
+                "null",
+                "null",
+                relaxerGenerator.buildRelaxers(relaxer, false)
+            )
+        }
+
+        return initializer.build()
+    }
+
     private fun determinePropertyInitializer(
         propertyProxy: PropertySpec.Builder,
         qualifier: String,
         propertyName: String,
         isMutable: Boolean,
-        relaxer: ProcessorContract.Relaxer?
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ): PropertySpec.Builder {
-        val name = "$qualifier#_$propertyName"
+        val proxyId = "$qualifier#_$propertyName"
 
         return if (!isMutable) {
             propertyProxy.initializer(
-                """
-                    |if (spyOn == null) {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |} else {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |}
-                |
-                """.trimMargin(),
-                name,
-                "null",
-                relaxerGenerator.buildRelaxers(relaxer, false),
-                name,
-                "{ spyOn.$propertyName }",
-                relaxerGenerator.buildRelaxers(relaxer, false)
+                buildImmutablePropertyProxy(
+                    proxyId = proxyId,
+                    propertyName = propertyName,
+                    enableSpy = enableSpy,
+                    relaxer = relaxer
+                )
             )
         } else {
             propertyProxy.initializer(
-                """
-                |if (spyOn == null) {
-                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
-                |} else {
-                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
-                |}
-                |
-                """.trimMargin(),
-                name,
-                "null",
-                "null",
-                relaxerGenerator.buildRelaxers(relaxer, false),
-                name,
-                "{ spyOn.$propertyName }",
-                "{ spyOn.$propertyName = it; Unit }",
-                relaxerGenerator.buildRelaxers(relaxer, false)
+                buildMutablePropertyProxy(
+                    proxyId = proxyId,
+                    propertyName = propertyName,
+                    enableSpy = enableSpy,
+                    relaxer = relaxer
+                )
             )
         }
     }
@@ -113,7 +175,8 @@ internal class KMockPropertyGenerator(
         propertyName: String,
         propertyType: TypeName,
         isMutable: Boolean,
-        relaxer: ProcessorContract.Relaxer?
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ): PropertySpec {
         val property = PropertySpec.builder(
             "_$propertyName",
@@ -123,11 +186,12 @@ internal class KMockPropertyGenerator(
         )
 
         return determinePropertyInitializer(
-            property,
-            qualifier,
-            propertyName,
-            isMutable,
-            relaxer
+            propertyProxy = property,
+            qualifier = qualifier,
+            propertyName = propertyName,
+            isMutable = isMutable,
+            enableSpy = enableSpy,
+            relaxer = relaxer
         ).build()
     }
 
@@ -135,14 +199,22 @@ internal class KMockPropertyGenerator(
         qualifier: String,
         ksProperty: KSPropertyDeclaration,
         typeResolver: TypeParameterResolver,
-        relaxer: ProcessorContract.Relaxer?
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(typeResolver)
         val isMutable = ksProperty.isMutable
 
         return Pair(
-            buildPropertyProxy(qualifier, propertyName, propertyType, isMutable, relaxer),
+            buildPropertyProxy(
+                qualifier = qualifier,
+                propertyName = propertyName,
+                propertyType = propertyType,
+                isMutable = isMutable,
+                enableSpy = enableSpy,
+                relaxer = relaxer,
+            ),
             buildProperty(propertyName, propertyType, isMutable),
         )
     }

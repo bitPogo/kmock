@@ -23,6 +23,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
+    private val spyOn: Set<String>,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
@@ -154,25 +155,28 @@ internal class KMockFactoryGenerator(
 
         function.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
-            val packageName = source.template.packageName.asString()
             val qualifiedName = source.template.qualifiedName!!.asString()
-            val aliasInterfaceName = createAliasName(source.alias, packageName)
-            val interfaceName = "$packageName.${source.template.simpleName.asString()}"
 
-            function.addStatement(
-                "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
-                qualifiedName,
-                aliasInterfaceName ?: interfaceName,
-                qualifiedName,
-                typeInfo,
-            )
-            function.addStatement(
-                "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
-                aliasInterfaceName ?: interfaceName,
-                aliasInterfaceName ?: interfaceName,
-                qualifiedName,
-                typeInfo,
-            )
+            if (qualifiedName in spyOn) {
+                val packageName = source.template.packageName.asString()
+                val aliasInterfaceName = createAliasName(source.alias, packageName)
+                val interfaceName = "$packageName.${source.template.simpleName.asString()}"
+
+                function.addStatement(
+                    "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
+                    qualifiedName,
+                    aliasInterfaceName ?: interfaceName,
+                    qualifiedName,
+                    typeInfo,
+                )
+                function.addStatement(
+                    "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
+                    aliasInterfaceName ?: interfaceName,
+                    aliasInterfaceName ?: interfaceName,
+                    qualifiedName,
+                    typeInfo,
+                )
+            }
         }
         function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
         function.endControlFlow()

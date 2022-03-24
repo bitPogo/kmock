@@ -14,6 +14,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class AliasPlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
@@ -21,17 +22,13 @@ internal class AliasPlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Platform {
-    private val __spyOn: Platform? = spyOn
-
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = AsyncFunProxy("mock.template.alias.AliasPlatformMock#_foo", spyOn = if (spyOn != null) { {
-            fuzz, ozz ->
-        foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        = AsyncFunProxy("mock.template.alias.AliasPlatformMock#_foo", spyOn = null, collector =
+    verifier, freeze = freeze, relaxer = null)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.alias.AliasPlatformMock#_bar", spyOn = if (spyOn != null) { {
-                buzz, bozz ->
-            bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+        SyncFunProxy("mock.template.alias.AliasPlatformMock#_bar", spyOn = null, collector = verifier,
+            freeze = freeze, relaxer = null)
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

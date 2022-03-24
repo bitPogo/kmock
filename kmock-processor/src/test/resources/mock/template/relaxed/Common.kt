@@ -6,7 +6,6 @@
 
 package mock.template.relaxed
 
-import mock.template.async.Common
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.Relaxer
 

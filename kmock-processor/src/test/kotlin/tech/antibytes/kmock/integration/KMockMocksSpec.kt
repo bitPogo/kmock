@@ -112,7 +112,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/property/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/property/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -133,7 +135,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/property/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/property/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -174,7 +178,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/sync/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/sync/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -195,7 +201,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/sync/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/sync/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -236,7 +244,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/async/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/async/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -257,7 +267,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/async/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/async/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -298,7 +310,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/generic/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/generic/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -319,7 +333,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/generic/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/generic/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -360,7 +376,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/relaxed/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/relaxed/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -381,7 +399,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/relaxed/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/relaxed/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -422,7 +442,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/overloaded/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/overloaded/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -443,7 +465,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/overloaded/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/overloaded/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -498,7 +522,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/alias/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/alias/AliasSharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -526,7 +552,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/alias/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/alias/AliasCommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -637,7 +665,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("shared/sharedTest/mock/template/buildIn/SharedMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/buildIn/SharedMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -665,7 +695,151 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.absolutePath.toString().endsWith("common/commonTest/mock/template/alias/CommonMock.kt")
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/buildIn/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which spies on a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/spy/Platform.kt")
+        )
+        val expected = loadResource("/expected/spy/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Platform",
+            )
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which spies under an Alias on a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/spy/Platform.kt")
+        )
+        val expected = loadResource("/expected/spy/Alias.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Platform",
+                "${KMOCK_PREFIX}alias_mock.template.spy.Platform" to "AliasPlatform",
+            )
+        )
+        val actual = resolveGenerated("AliasPlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which spies relaxed on a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Collision.kt",
+            loadResource("/template/spy/Relaxed.kt")
+        )
+        val expected = loadResource("/expected/spy/Relaxed.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Relaxed",
+            )
+        )
+        val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which spies on Shared is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/spy/Shared.kt")
+        )
+        val expected = loadResource("/expected/spy/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Shared",
+            )
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/spy/SharedMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source which spies on Common is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/spy/Common.kt")
+        )
+        val expected = loadResource("/expected/spy/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Common",
+            )
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/spy/CommonMock.kt"
+        ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 }
