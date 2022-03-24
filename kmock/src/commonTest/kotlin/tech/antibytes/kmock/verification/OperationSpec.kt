@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.verification
 
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -18,6 +19,7 @@ import kotlin.test.assertFailsWith
 class OperationSpec {
     private val fixture = kotlinFixture()
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn0")
     fun `Given union is called with different VerificationHandles fails if they refence 2 different Proxies both`() {
@@ -42,6 +44,7 @@ class OperationSpec {
         unionError.message mustBe "union cannot be applied to handles which refer to different proxies."
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn1")
     fun `Given union is called with different VerificationHandles it merges both`() {
@@ -73,6 +76,7 @@ class OperationSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn2")
     fun `Given intersect is called with different VerificationHandles fails if they refence 2 different Proxies both`() {
@@ -97,6 +101,7 @@ class OperationSpec {
         intersectError.message mustBe "intersection cannot be applied to handles which refer to different proxies."
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn3")
     fun `Given intersect is called with different VerificationHandles it makes the intersection of both`() {
@@ -132,6 +137,7 @@ class OperationSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn4")
     fun `Given diff is called with different VerificationHandles fails if they refence 2 different Proxies both`() {
@@ -156,6 +162,7 @@ class OperationSpec {
         diffError.message mustBe "diff cannot be applied to handles which refer to different proxies."
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn5")
     fun `Given diff is called with different VerificationHandles it makes the difference of both`() {

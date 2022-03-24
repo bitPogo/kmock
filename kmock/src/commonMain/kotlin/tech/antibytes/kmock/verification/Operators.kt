@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Expectation
+import tech.antibytes.kmock.KMockExperimental
 
 private fun guardInvocation(
     handle1: Expectation,
@@ -27,6 +28,7 @@ private fun guardInvocation(
  * @see Expectation
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.union(
     other: Expectation
 ): Expectation {
@@ -46,6 +48,7 @@ infix fun Expectation.union(
  * @see union
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.or(
     other: Expectation
 ): Expectation = this.union(other)
@@ -59,6 +62,7 @@ infix fun Expectation.or(
  * @see Expectation
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.intersection(
     other: Expectation
 ): Expectation {
@@ -79,6 +83,7 @@ infix fun Expectation.intersection(
  * @see intersection
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.and(
     other: Expectation
 ): Expectation = this.intersection(other)
@@ -92,6 +97,7 @@ infix fun Expectation.and(
  * @see Expectation
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.diff(
     other: Expectation
 ): Expectation {
@@ -115,6 +121,7 @@ infix fun Expectation.diff(
  * @see diff
  * @author Matthias Geisler
  */
+@KMockExperimental
 infix fun Expectation.xor(
     other: Expectation
 ): Expectation = this.diff(other)
