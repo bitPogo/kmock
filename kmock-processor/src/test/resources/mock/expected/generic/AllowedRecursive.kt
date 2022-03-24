@@ -18,6 +18,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class AllowedRecursiveMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: AllowedRecursive<K, L>? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")

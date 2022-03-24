@@ -29,7 +29,7 @@ ksp {
     arg("kmock_rootPackage", "tech.antibytes.kmock.example")
     arg("kmock_isKmp", true.toString())
     arg("kmock_kspDir", "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
-    arg("kmock_buildIn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
+    arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
 }
 
 kotlin {

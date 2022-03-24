@@ -836,7 +836,7 @@ class KMockMocksSpec {
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
-        
+
         actual!!.absolutePath.toString().endsWith(
             "common/commonTest/kotlin/mock/template/spy/CommonMock.kt"
         ) mustBe true

@@ -54,8 +54,9 @@ internal class KMockGenerator(
         val spy = ParameterSpec.builder(
             "spyOn",
             superType.copy(nullable = true),
-        )
-        spy.defaultValue("null")
+        ).addAnnotation(
+            AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        ).defaultValue("null")
         constructor.addParameter(spy.build())
 
         val freeze = ParameterSpec.builder("freeze", Boolean::class)

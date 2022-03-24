@@ -17,6 +17,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class RelaxedMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Relaxed<K, L>? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")

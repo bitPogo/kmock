@@ -16,6 +16,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class CommonMock<K : Any, L>(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Common<K, L>? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")

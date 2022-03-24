@@ -16,6 +16,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class PlatformMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")

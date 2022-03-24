@@ -15,6 +15,7 @@ import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class SharedMock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")
