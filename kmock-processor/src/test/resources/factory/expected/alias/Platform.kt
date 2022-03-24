@@ -11,8 +11,6 @@ internal inline fun <reified Mock> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
-    factory.template.alias.Platform::class -> factory.template.alias.AliasPlatformMock(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     factory.template.alias.AliasPlatformMock::class ->
         factory.template.alias.AliasPlatformMock(verifier = verifier, relaxUnitFun = relaxUnitFun,
             freeze = freeze) as Mock
@@ -20,7 +18,7 @@ internal inline fun <reified Mock> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {

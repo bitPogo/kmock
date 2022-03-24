@@ -104,9 +104,9 @@ internal class KMockFactoryGeneratorUtil(
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
-        val functionFactory = FunSpec.builder("kmock")
+        val kmock = FunSpec.builder("kmock")
 
-        functionFactory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
+        kmock.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addParameter(buildVerifierParameter(hasDefault))
             .addParameter(buildRelaxedParameter(hasDefault))
             .addParameter(buildUnitRelaxedParameter(hasDefault))
@@ -114,14 +114,15 @@ internal class KMockFactoryGeneratorUtil(
             .returns(type).addTypeVariable(type)
 
         if (modifier != null) {
-            functionFactory.addModifiers(modifier)
+            kmock.addModifiers(modifier)
         }
 
-        return functionFactory.amendGenericValues(type, generics)
+        return kmock.amendGenericValues(type, generics)
     }
 
     private fun buildSpyParameter(): ParameterSpec {
         return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
+            .addAnnotation(unused)
             .build()
     }
 
@@ -132,9 +133,9 @@ internal class KMockFactoryGeneratorUtil(
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
-        val spyFactory = FunSpec.builder("kspy")
+        val kspy = FunSpec.builder("kspy")
 
-        spyFactory.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
+        kspy.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(mockType.copy(reified = true))
             .addTypeVariable(spyType.copy(reified = true))
             .returns(mockType)
@@ -143,10 +144,10 @@ internal class KMockFactoryGeneratorUtil(
             .addParameter(buildFreezeParameter(hasDefault))
 
         if (modifier != null) {
-            spyFactory.addModifiers(modifier)
+            kspy.addModifiers(modifier)
         }
 
-        return spyFactory.amendGenericValues(spyType, generics)
+        return kspy.amendGenericValues(spyType, generics)
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(

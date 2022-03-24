@@ -47,6 +47,18 @@ internal interface KMockPluginContract {
          * Note: This will also activate build-in methods.
          */
         var spyOn: Set<String>
+
+        /**
+         * Enable the kmock factory function to reference Mocks by their interfaces.
+         * Default is false
+         */
+        var allowInterfacesOnKmock: Boolean
+
+        /**
+         * Enable the kspy factory function to reference Mocks by their interfaces.
+         * Default is false
+         */
+        var allowInterfacesOnKspy: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -57,6 +69,8 @@ internal interface KMockPluginContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
+        const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
         const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"

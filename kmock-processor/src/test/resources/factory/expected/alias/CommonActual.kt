@@ -11,15 +11,13 @@ internal actual inline fun <reified Mock> kmock(
     @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
     freeze: Boolean
 ): Mock = when (Mock::class) {
-    factory.template.alias.Common::class -> factory.template.alias.AliasCommonMock(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     factory.template.alias.AliasCommonMock::class -> factory.template.alias.AliasCommonMock(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector,
     freeze: Boolean
 ): Mock = when (Mock::class) {

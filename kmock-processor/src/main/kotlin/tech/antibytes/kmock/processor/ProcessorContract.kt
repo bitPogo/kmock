@@ -39,6 +39,8 @@ internal interface ProcessorContract {
     data class Options(
         val kspDir: String,
         val isKmp: Boolean,
+        val allowInterfacesOnKmock: Boolean,
+        val allowInterfacesOnKspy: Boolean,
         val rootPackage: String,
         val knownSourceSets: Set<String>,
         val precedences: Map<String, Int>,
@@ -256,6 +258,8 @@ internal interface ProcessorContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
+        const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
         const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"

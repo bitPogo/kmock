@@ -38,6 +38,7 @@ internal class KMockFunctionGenerator(
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.FunctionGenerator {
     private val any = Any::class.asTypeName()
+    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
 
     private fun String.removePrefixes(prefixes: Iterable<String>): String {
         var cleaned = this
@@ -484,9 +485,7 @@ internal class KMockFunctionGenerator(
         function.returns(returnType)
 
         val cast = if (returnType != proxyReturnType) {
-            function.addAnnotation(
-                AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
-            )
+            function.addAnnotation(unused)
             " as $returnType"
         } else {
             ""

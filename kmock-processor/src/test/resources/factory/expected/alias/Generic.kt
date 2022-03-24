@@ -18,7 +18,7 @@ internal inline fun <reified Mock> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
@@ -33,15 +33,13 @@ internal inline fun <reified Mock : Generic<K, L>, K : Any, L> kmock(
     @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.alias.Generic<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.alias.Generic::class -> factory.template.alias.AliasGenericMock<K, L>(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     factory.template.alias.AliasGenericMock::class -> factory.template.alias.AliasGenericMock<K,
         L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn : Generic<K, L>, K : Any, L> kspy(
-    spyOn: SpyOn,
+    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
     @Suppress("UNUSED_PARAMETER")

@@ -10,6 +10,8 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KSPY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
@@ -38,14 +40,18 @@ abstract class KMockExtension(
     )
     private var _spyOn: Set<String> = emptySet()
 
-    private fun propagateRootPackage(rootPackage: String) {
-        ksp.arg(ROOT_PACKAGE, rootPackage)
-    }
+    private var _allowInterfacesOnKmock = false
+    private var _allowInterfacesOnKspy = false
+
+    private fun propagateValue(
+        id: String,
+        value: String
+    ) = ksp.arg(id, value)
 
     override var rootPackage: String
         get() = _rootPackage
         set(value) {
-            propagateRootPackage(value)
+            propagateValue(ROOT_PACKAGE, value)
             _rootPackage = value
         }
 
@@ -119,5 +125,19 @@ abstract class KMockExtension(
             )
 
             _spyOn = value
+        }
+
+    override var allowInterfacesOnKmock: Boolean
+        get() = _allowInterfacesOnKmock
+        set(value) {
+            propagateValue(INTERFACES_KMOCK, value.toString())
+            _allowInterfacesOnKmock = value
+        }
+
+    override var allowInterfacesOnKspy: Boolean
+        get() = _allowInterfacesOnKspy
+        set(value) {
+            propagateValue(INTERFACES_KSPY, value.toString())
+            _allowInterfacesOnKspy = value
         }
 }

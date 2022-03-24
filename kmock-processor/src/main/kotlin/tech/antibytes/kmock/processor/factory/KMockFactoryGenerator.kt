@@ -24,6 +24,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     private val spyOn: Set<String>,
+    private val allowInterfacesOnKmock: Boolean,
+    private val allowInterfacesOnKspy: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
@@ -49,54 +51,76 @@ internal class KMockFactoryGenerator(
         }
     }
 
+    private fun determineMockTemplates(
+        relaxer: Relaxer?
+    ): Pair<String, String> {
+        return if (relaxer == null) {
+            Pair(
+                "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
+            )
+        } else {
+            Pair(
+                "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
+            )
+        }
+    }
+
+    private fun addMock(
+        kmock: FunSpec.Builder,
+        qualifiedName: String,
+        interfaceName: String,
+        aliasInterfaceName: String?,
+        typeInfo: String,
+        relaxer: Relaxer?
+    ) {
+        val (interfaceInvocationTemplate, mockInvocationTemplate) = determineMockTemplates(relaxer)
+        if (allowInterfacesOnKmock) {
+            kmock.addStatement(
+                interfaceInvocationTemplate,
+                qualifiedName,
+                aliasInterfaceName ?: interfaceName,
+                typeInfo,
+            )
+        }
+
+        kmock.addStatement(
+            mockInvocationTemplate,
+            aliasInterfaceName ?: interfaceName,
+            aliasInterfaceName ?: interfaceName,
+            typeInfo,
+        )
+    }
+
     private fun buildMockSelector(
-        functionFactory: FunSpec.Builder,
+        kmock: FunSpec.Builder,
         templateSources: List<TemplateSource>,
         generics: List<TypeName>,
         relaxer: Relaxer?
     ): FunSpec.Builder {
         val typeInfo = buildGenericsInfo(generics)
 
-        functionFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
+        kmock.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
         templateSources.forEach { source ->
             val packageName = source.template.packageName.asString()
             val qualifiedName = source.template.qualifiedName!!.asString()
             val aliasInterfaceName = createAliasName(source.alias, packageName)
             val interfaceName = "$packageName.${source.template.simpleName.asString()}"
 
-            if (relaxer == null) {
-                functionFactory.addStatement(
-                    "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    qualifiedName,
-                    aliasInterfaceName ?: interfaceName,
-                    typeInfo,
-                )
-
-                functionFactory.addStatement(
-                    "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    aliasInterfaceName ?: interfaceName,
-                    aliasInterfaceName ?: interfaceName,
-                    typeInfo,
-                )
-            } else {
-                functionFactory.addStatement(
-                    "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    qualifiedName,
-                    aliasInterfaceName ?: interfaceName,
-                    typeInfo,
-                )
-                functionFactory.addStatement(
-                    "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME",
-                    aliasInterfaceName ?: interfaceName,
-                    aliasInterfaceName ?: interfaceName,
-                    typeInfo,
-                )
-            }
+            addMock(
+                kmock = kmock,
+                qualifiedName = qualifiedName,
+                aliasInterfaceName = aliasInterfaceName,
+                interfaceName = interfaceName,
+                typeInfo = typeInfo,
+                relaxer = relaxer,
+            )
         }
-        functionFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
-        functionFactory.endControlFlow()
+        kmock.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        kmock.endControlFlow()
 
-        return functionFactory
+        return kmock
     }
 
     private fun resolveModifier(isKmp: Boolean): KModifier? {
@@ -115,7 +139,7 @@ internal class KMockFactoryGenerator(
         relaxer: Relaxer?
     ): FunSpec.Builder {
         val modifier = resolveModifier(isKmp)
-        val functionFactory = utils.generateKmockSignature(
+        val kmock = utils.generateKmockSignature(
             type = type,
             generics = generics,
             hasDefault = !isKmp,
@@ -123,7 +147,7 @@ internal class KMockFactoryGenerator(
         )
 
         return buildMockSelector(
-            functionFactory = functionFactory,
+            kmock = kmock,
             templateSources = templateSources,
             generics = generics,
             relaxer = relaxer
@@ -146,42 +170,58 @@ internal class KMockFactoryGenerator(
         ).build()
     }
 
-    private fun buildSpySelector(
-        function: FunSpec.Builder,
-        generics: List<TypeName>,
-        templateSources: List<TemplateSource>,
-    ): FunSpec.Builder {
-        val typeInfo = buildGenericsInfo(generics)
+    private fun addSpy(
+        kspy: FunSpec.Builder,
+        qualifiedName: String,
+        source: TemplateSource,
+        typeInfo: String,
+    ) {
+        if (qualifiedName in spyOn) {
+            val packageName = source.template.packageName.asString()
+            val aliasInterfaceName = createAliasName(source.alias, packageName)
+            val interfaceName = "$packageName.${source.template.simpleName.asString()}"
 
-        function.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
-        templateSources.forEach { source ->
-            val qualifiedName = source.template.qualifiedName!!.asString()
-
-            if (qualifiedName in spyOn) {
-                val packageName = source.template.packageName.asString()
-                val aliasInterfaceName = createAliasName(source.alias, packageName)
-                val interfaceName = "$packageName.${source.template.simpleName.asString()}"
-
-                function.addStatement(
+            if (allowInterfacesOnKspy) {
+                kspy.addStatement(
                     "%L::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
                     qualifiedName,
                     aliasInterfaceName ?: interfaceName,
                     qualifiedName,
                     typeInfo,
                 )
-                function.addStatement(
-                    "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
-                    aliasInterfaceName ?: interfaceName,
-                    aliasInterfaceName ?: interfaceName,
-                    qualifiedName,
-                    typeInfo,
-                )
             }
-        }
-        function.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
-        function.endControlFlow()
 
-        return function
+            kspy.addStatement(
+                "%LMock::class -> %LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as %L%L) as $KMOCK_FACTORY_TYPE_NAME",
+                aliasInterfaceName ?: interfaceName,
+                aliasInterfaceName ?: interfaceName,
+                qualifiedName,
+                typeInfo,
+            )
+        }
+    }
+
+    private fun buildSpySelector(
+        kspy: FunSpec.Builder,
+        generics: List<TypeName>,
+        templateSources: List<TemplateSource>,
+    ): FunSpec.Builder {
+        val typeInfo = buildGenericsInfo(generics)
+
+        kspy.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
+        templateSources.forEach { source ->
+            val qualifiedName = source.template.qualifiedName!!.asString()
+            addSpy(
+                kspy = kspy,
+                qualifiedName = qualifiedName,
+                source = source,
+                typeInfo = typeInfo
+            )
+        }
+        kspy.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        kspy.endControlFlow()
+
+        return kspy
     }
 
     private fun fillSpyFactory(
@@ -192,7 +232,7 @@ internal class KMockFactoryGenerator(
         templateSources: List<TemplateSource>,
     ): FunSpec.Builder {
         val modifier = resolveModifier(isKmp)
-        val spyFactory = utils.generateKspySignature(
+        val kspy = utils.generateKspySignature(
             mockType = mockType,
             spyType = spyType,
             generics = generics,
@@ -200,7 +240,7 @@ internal class KMockFactoryGenerator(
             modifier = modifier
         )
 
-        return buildSpySelector(spyFactory, generics, templateSources)
+        return buildSpySelector(kspy, generics, templateSources)
     }
 
     private fun buildSpyFactory(
@@ -311,10 +351,10 @@ internal class KMockFactoryGenerator(
         )
 
         genericFactories.forEach { factories ->
-            val (mockFactory, spyFactory) = factories
+            val (kmock, kspy) = factories
 
-            file.addFunction(mockFactory)
-            file.addFunction(spyFactory)
+            file.addFunction(kmock)
+            file.addFunction(kspy)
         }
 
         file.build().writeTo(
