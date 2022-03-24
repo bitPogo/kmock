@@ -8,14 +8,16 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.proxy.AsyncFunProxy
-import tech.antibytes.kmock.proxy.PropertyProxy
-import tech.antibytes.kmock.proxy.SyncFunProxy
+import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.SyncFunProxy
+import tech.antibytes.kmock.proxy.NoopCollector
+import tech.antibytes.kmock.proxy.ProxyFactory
 import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class SharedMock<K : Any, L>(
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    verifier: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared<K, L>? = null,
     freeze: Boolean = true,
@@ -29,56 +31,60 @@ internal class SharedMock<K : Any, L>(
         set(`value`) = _template.onSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> = if (spyOn == null) {
-        PropertyProxy("mock.template.spy.SharedMock#_template", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, relaxer = null)} else {
-        PropertyProxy("mock.template.spy.SharedMock#_template", spyOnGet = { __spyOn!!.template },
-            spyOnSet = { __spyOn!!.template = it; Unit }, collector = verifier, freeze = freeze,
-            relaxer = null)}
+        ProxyFactory.createPropertyProxy("mock.template.spy.SharedMock#_template", spyOnGet = null,
+            spyOnSet = null, collector = verifier, freeze = freeze, relaxer = null)} else {
+        ProxyFactory.createPropertyProxy("mock.template.spy.SharedMock#_template", spyOnGet = {
+            __spyOn!!.template }, spyOnSet = { __spyOn!!.template = it; Unit }, collector =
+        verifier, freeze = freeze, relaxer = null)}
 
 
     public override val ozz: Int
         get() = _ozz.onGet()
 
     public val _ozz: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.spy.SharedMock#_ozz", spyOnGet = null, collector = verifier,
-            freeze = freeze, relaxer = null)} else {
-        PropertyProxy("mock.template.spy.SharedMock#_ozz", spyOnGet = { __spyOn!!.ozz }, collector =
-        verifier, freeze = freeze, relaxer = null)}
+        ProxyFactory.createPropertyProxy("mock.template.spy.SharedMock#_ozz", spyOnGet = null,
+            collector = verifier, freeze = freeze, relaxer = null)} else {
+        ProxyFactory.createPropertyProxy("mock.template.spy.SharedMock#_ozz", spyOnGet = {
+            __spyOn!!.ozz }, collector = verifier, freeze = freeze, relaxer = null)}
 
 
     public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        SyncFunProxy("mock.template.spy.SharedMock#_foo", spyOn = if (spyOn != null) { { payload ->
+        ProxyFactory.createSyncFunProxy("mock.template.spy.SharedMock#_foo", spyOn = if (spyOn !=
+            null) { { payload ->
             __spyOn!!.foo(payload) } } else { null }, collector = verifier, freeze = freeze,
             unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer =
             null, buildInRelaxer = null)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
-        SyncFunProxy("mock.template.spy.SharedMock#_bar", spyOn = if (spyOn != null) { { arg0 ->
+        ProxyFactory.createSyncFunProxy("mock.template.spy.SharedMock#_bar", spyOn = if (spyOn !=
+            null) { { arg0 ->
             __spyOn!!.bar(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
-        AsyncFunProxy("mock.template.spy.SharedMock#_buzz", spyOn = if (spyOn != null) { { arg0 ->
+        ProxyFactory.createAsyncFunProxy("mock.template.spy.SharedMock#_buzz", spyOn = if (spyOn !=
+            null) { { arg0 ->
             __spyOn!!.buzz(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     private val __spyOn: Shared<K, L>? = spyOn
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        SyncFunProxy("mock.template.spy.SharedMock#_toString", spyOn = if (spyOn != null) { {
-            __spyOn!!.toString() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer
-        = null, relaxer = null, buildInRelaxer = { super.toString() }, ignorableForVerification =
-        true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.SharedMock#_toString", spyOn = if (spyOn !=
+            null) { { __spyOn!!.toString() } } else { null }, collector = verifier, freeze = freeze,
+            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.toString() },
+            ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        SyncFunProxy("mock.template.spy.SharedMock#_equals", spyOn = if (spyOn != null) { { other ->
+        ProxyFactory.createSyncFunProxy("mock.template.spy.SharedMock#_equals", spyOn = if (spyOn !=
+            null) { { other ->
             __spyOn!!.equals(other) } } else { null }, collector = verifier, freeze = freeze,
             unitFunRelaxer = null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
             ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        SyncFunProxy("mock.template.spy.SharedMock#_hashCode", spyOn = if (spyOn != null) { {
-            __spyOn!!.hashCode() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer
-        = null, relaxer = null, buildInRelaxer = { super.hashCode() }, ignorableForVerification =
-        true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.SharedMock#_hashCode", spyOn = if (spyOn !=
+            null) { { __spyOn!!.hashCode() } } else { null }, collector = verifier, freeze = freeze,
+            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.hashCode() },
+            ignorableForVerification = true)
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 

@@ -697,8 +697,8 @@ object KMockContract {
 
         fun <Value> createPropertyProxy(
             id: String,
-            collector: KMockContract.Collector = NoopCollector,
-            relaxer: KMockContract.Relaxer<Value>? = null,
+            collector: Collector = NoopCollector,
+            relaxer: Relaxer<Value>? = null,
             freeze: Boolean = true,
             spyOnGet: (() -> Value)? = null,
             spyOnSet: ((Value) -> Unit)? = null

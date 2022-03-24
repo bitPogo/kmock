@@ -16,15 +16,16 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
-import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockPropertyGenerator(
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : ProcessorContract.PropertyGenerator {
-    private val immutableTemplate = "PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)"
-    private val mutableTemplate = "PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)"
+    private val proxy = PropertyProxy::class.asClassName()
+    private val immutableTemplate = "ProxyFactory.createPropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)"
+    private val mutableTemplate = "ProxyFactory.createPropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)"
 
     private fun buildGetter(propertyName: String): FunSpec {
         return FunSpec
@@ -180,9 +181,7 @@ internal class KMockPropertyGenerator(
     ): PropertySpec {
         val property = PropertySpec.builder(
             "_$propertyName",
-            KMockContract.PropertyProxy::class
-                .asClassName()
-                .parameterizedBy(propertyType),
+            proxy.parameterizedBy(propertyType),
         )
 
         return determinePropertyInitializer(

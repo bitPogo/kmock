@@ -29,7 +29,6 @@ import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.titleCase
-import kotlin.reflect.KClass
 
 internal class KMockFunctionGenerator(
     private val allowedRecursiveTypes: Set<String>,
@@ -39,6 +38,8 @@ internal class KMockFunctionGenerator(
 ) : ProcessorContract.FunctionGenerator {
     private val any = Any::class.asTypeName()
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+    private val asyncProxy = AsyncFunProxy::class.asClassName()
+    private val syncProxy = SyncFunProxy::class.asClassName()
 
     private fun String.removePrefixes(prefixes: Iterable<String>): String {
         var cleaned = this
@@ -153,11 +154,11 @@ internal class KMockFunctionGenerator(
         }
     }
 
-    private fun determineProxyType(suspending: Boolean): Pair<KClass<*>, String> {
+    private fun determineProxyType(suspending: Boolean): Triple<ClassName, String, String> {
         return if (suspending) {
-            Pair(AsyncFunProxy::class, "suspend ")
+            Triple(asyncProxy, "createAsyncFunProxy", "suspend ")
         } else {
-            Pair(SyncFunProxy::class, "")
+            Triple(syncProxy, "createSyncFunProxy", "")
         }
     }
 
@@ -365,7 +366,7 @@ internal class KMockFunctionGenerator(
         proxySpec: PropertySpec.Builder,
         qualifier: String,
         proxyName: String,
-        proxyType: ClassName,
+        proxyFactoryMethod: String,
         spyName: String,
         spyArgumentNames: Set<String>,
         proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
@@ -376,8 +377,8 @@ internal class KMockFunctionGenerator(
         val proxyId = "$qualifier#$proxyName"
 
         return proxySpec.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
-            proxyType.simpleName,
+            "ProxyFactory.%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
+            proxyFactoryMethod,
             proxyId,
             buildSpy(
                 enableSpy = enableSpy,
@@ -405,7 +406,7 @@ internal class KMockFunctionGenerator(
         enableSpy: Boolean,
         relaxer: ProcessorContract.Relaxer?
     ): Pair<PropertySpec, TypeName> {
-        val (proxyType, sideEffectPrefix) = determineProxyType(suspending)
+        val (proxyType, proxyFactoryMethod, sideEffectPrefix) = determineProxyType(suspending)
         val proxyGenericTypes = resolveProxyGenerics(generics, typeResolver)
 
         val proxyArguments = determineProxyArgumentTypes(
@@ -425,18 +426,16 @@ internal class KMockFunctionGenerator(
             sideEffectPrefix
         )
 
-        val proxyClass = proxyType.asClassName()
-
         return Pair(
             PropertySpec.builder(
                 proxyName,
-                proxyClass.parameterizedBy(proxyReturnType.first, sideEffect)
+                proxyType.parameterizedBy(proxyReturnType.first, sideEffect)
             ).let { proxySpec ->
                 buildProxyInitializer(
                     proxySpec = proxySpec,
                     qualifier = qualifier,
                     proxyName = proxyName,
-                    proxyType = proxyClass,
+                    proxyFactoryMethod = proxyFactoryMethod,
                     spyName = spyName,
                     spyArgumentNames = arguments.keys,
                     proxyArguments = proxyArguments,

@@ -8,10 +8,10 @@ package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
+import tech.antibytes.kmock.KMockContract.Relaxer
+import tech.antibytes.kmock.KMockContract.SyncFunProxy
 
 object ProxyFactory : KMockContract.ProxyFactory {
     override fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(

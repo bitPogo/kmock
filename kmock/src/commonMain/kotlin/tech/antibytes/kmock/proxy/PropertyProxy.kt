@@ -35,7 +35,7 @@ import kotlin.math.max
  * @see Relaxer
  * @author Matthias Geisler
  */
-class PropertyProxy<Value>(
+internal class PropertyProxy<Value>(
     override val id: String,
     collector: Collector = NoopCollector,
     relaxer: Relaxer<Value>? = null,

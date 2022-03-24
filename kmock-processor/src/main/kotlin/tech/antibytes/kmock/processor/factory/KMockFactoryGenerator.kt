@@ -16,6 +16,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -325,7 +326,7 @@ internal class KMockFactoryGenerator(
             options.rootPackage,
             "MockFactory"
         )
-        file.addImport(ProcessorContract.KMOCK_CONTRACT.packageName, ProcessorContract.KMOCK_CONTRACT.simpleName)
+        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
         val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 

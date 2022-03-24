@@ -28,7 +28,7 @@ import tech.antibytes.kmock.KMockContract.Relaxer
  * @see Relaxer
  * @author Matthias Geisler
  */
-class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
+internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = NoopCollector,
     relaxer: Relaxer<ReturnValue>? = null,
