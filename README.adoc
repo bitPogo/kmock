@@ -58,12 +58,15 @@ endif::[]
 toc::[]
 
 == About The Project
-Mocking for tests should work without shenanigans or frills.
-While link:https://mockk.io/[MockK] for example provides excellent support for Kotlin projects which operate on JVM, Multiplatform missing similar capabilities for quite some time.
-KMock seeks to change that to a certain extend.
-It supports for example arbitrary shared sources, spying and relaxing. +
-If you want to learn about the usage and features please visit the link:{link-docs}/StarterGuide.adoc[Starter Guide] or
-take a look at the link:{link-base}/kmock-playground[Playground].
+Writing mocks is certainly no witchcraft, but doing them by hand day for day can be dull.
+More importantly it takes time which can be better invested directly into writing tests. +
+However, while JVM project get indeed supreme support by either link:https://mockk.io/[MockK] or link:https://github.com/mockito/mockito-kotlin[Mockito], KMP still has nothing comparable. +
+KMock aims to at least automate the process of Mock generation and will hopefully advance from here.
+Similar to other projects it uses link:https://github.com/google/ksp[KSP], but it is capable of associating generated Mocks correctly to their belonging shared source sets (like native, ios, etc) without additional setup or boilerplate done by consumers. +
+Also KMock offers to some extent features like spying or relaxing Mocks.
+KMock at its core pressures is non intrusive and can currently only work based on interfaces only.
+Also it has extended support for Kotlin basic features like overloading or generics in comparison to already existing mock libraries which target KMP as well.
+So if the project caught your eye check out the link:{link-base}/kmock-playground[Playground] or dive into the link:{link-docs}/StarterGuide.adoc[Starter Guide].
 
 === Dependencies
 
