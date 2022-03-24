@@ -8,6 +8,8 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIAS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KSPY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
@@ -53,12 +55,16 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
+        var allowInterfacesOnKmock = false
+        var allowInterfacesOnKspy = false
 
         kspRawOptions.forEach { (key, value) ->
             when {
                 key == KSP_DIR -> kspDir = value
                 key == ROOT_PACKAGE -> rootPackage = value
                 key == KMP_FLAG -> isKmp = value.toBoolean()
+                key == INTERFACES_KMOCK -> allowInterfacesOnKmock = value.toBoolean()
+                key == INTERFACES_KSPY -> allowInterfacesOnKspy = value.toBoolean()
                 key.startsWith(PRECEDENCE_PREFIX) -> extractPrecedence(key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence
                 }
@@ -79,6 +85,8 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             kspDir = kspDir!!,
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
+            allowInterfacesOnKmock = allowInterfacesOnKmock,
+            allowInterfacesOnKspy = allowInterfacesOnKspy,
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
