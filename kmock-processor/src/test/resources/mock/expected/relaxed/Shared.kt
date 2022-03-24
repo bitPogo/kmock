@@ -2,6 +2,7 @@ package mock.template.relaxed
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.LazyThreadSafetyMode
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -27,34 +28,42 @@ internal class SharedMock(
     public override val buzz: String
         get() = _buzz.onGet()
 
-    public val _buzz: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = null, collector =
-        verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else {
-            null })
-    } else {
-        PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = { spyOn.buzz },
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
-                relaxed(mockId) } } else { null })
+    public val _buzz: KMockContract.PropertyProxy<String> by lazy(mode =
+    LazyThreadSafetyMode.PUBLICATION) {
+        if (spyOn == null) {
+            PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = null, collector =
+            verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else {
+                null })
+        } else {
+            PropertyProxy("mock.template.relaxed.SharedMock#_buzz", spyOnGet = { spyOn.buzz },
+                collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
+                    relaxed(mockId) } } else { null })
+        }
     }
 
-
-    public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
+    public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> by lazy(mode =
+    LazyThreadSafetyMode.PUBLICATION) {
         SyncFunProxy("mock.template.relaxed.SharedMock#_foo", spyOn = if (spyOn != null) { {
                 payload ->
             foo(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
         { { mockId -> relaxed(mockId) } } else { null })
+    }
 
-    public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
+    public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> by
+    lazy(mode = LazyThreadSafetyMode.PUBLICATION) {
         AsyncFunProxy("mock.template.relaxed.SharedMock#_bar", spyOn = if (spyOn != null) { {
                 payload ->
             bar(payload) } } else { null }, collector = verifier, freeze = freeze, relaxer = if (relaxed)
         { { mockId -> relaxed(mockId) } } else { null })
+    }
 
-    public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        SyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", spyOn = if (spyOn != null) { {
-            buzz() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
-                                                                                                  (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId ->
-            relaxed(mockId) } } else { null }, buildInRelaxer = null)
+    public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> by lazy(mode =
+    LazyThreadSafetyMode.PUBLICATION) {
+        SyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", spyOn = if (spyOn != null) {
+            { buzz() } } else { null }, collector = verifier, freeze = freeze, unitFunRelaxer = if
+                                                                                                    (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { {
+                mockId -> relaxed(mockId) } } else { null }, buildInRelaxer = null)
+    }
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 

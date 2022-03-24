@@ -23,6 +23,8 @@ import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import java.io.File
 
+// Note: Currently expected/relaxed show errors, while in practice they work - this is simply due to the fact
+// that AS is not able to deal with the relaxed method correctly in this dry environment.
 class KMockMocksSpec {
     @TempDir
     lateinit var buildDir: File

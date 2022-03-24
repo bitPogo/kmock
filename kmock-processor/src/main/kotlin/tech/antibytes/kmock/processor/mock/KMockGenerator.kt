@@ -132,7 +132,7 @@ internal class KMockGenerator(
         generics: Map<String, List<KSTypeReference>>?,
         relaxer: Relaxer?
     ): TypeSpec {
-        val implementation = TypeSpec.classBuilder(mockName)
+        val mock = TypeSpec.classBuilder(mockName)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
         val templateName = template.qualifiedName!!.asString()
         val qualifier = constructQualifier(mockName, template)
@@ -140,22 +140,22 @@ internal class KMockGenerator(
         val superType = genericsResolver.resolveMockClassType(template, typeResolver)
         val proxyNameCollector: MutableList<String> = mutableListOf()
 
-        implementation.addSuperinterface(superType)
-        implementation.addModifiers(KModifier.INTERNAL)
+        mock.addSuperinterface(superType)
+        mock.addModifiers(KModifier.INTERNAL)
 
         if (generics != null) {
-            implementation.typeVariables.addAll(
+            mock.typeVariables.addAll(
                 genericsResolver.mapDeclaredGenerics(generics, typeResolver)
             )
         }
 
         val overloadedMethods = aggregateOverloading(template)
 
-        implementation.primaryConstructor(
+        mock.primaryConstructor(
             buildConstructor(superType)
         )
 
-        implementation.addProperty(
+        mock.addProperty(
             PropertySpec.builder(
                 "__spyOn",
                 superType.copy(nullable = true),
@@ -173,8 +173,9 @@ internal class KMockGenerator(
                 )
 
                 proxyNameCollector.add(proxy.name)
-                implementation.addProperty(property)
-                implementation.addProperty(proxy)
+
+                mock.addProperty(property)
+                mock.addProperty(proxy)
             }
         }
 
@@ -191,8 +192,8 @@ internal class KMockGenerator(
                 )
 
                 proxyNameCollector.add(proxy.name)
-                implementation.addFunction(function)
-                implementation.addProperty(proxy)
+                mock.addFunction(function)
+                mock.addProperty(proxy)
             }
         }
 
@@ -204,16 +205,16 @@ internal class KMockGenerator(
                 amountOfGenerics = generics?.size ?: 0
             )
 
-            implementation.addFunctions(functions)
+            mock.addFunctions(functions)
             proxies.forEach { proxy ->
                 proxyNameCollector.add(proxy.name)
-                implementation.addProperty(proxy)
+                mock.addProperty(proxy)
             }
         }
 
-        implementation.addFunction(buildClear(proxyNameCollector))
+        mock.addFunction(buildClear(proxyNameCollector))
 
-        return implementation.build()
+        return mock.build()
     }
 
     private fun writeMock(

@@ -3,6 +3,7 @@ package mock.template.sync
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.LazyThreadSafetyMode
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
@@ -23,14 +24,19 @@ internal class CommonMock(
 ) : Common {
     private val __spyOn: Common? = spyOn
 
-    public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        SyncFunProxy("mock.template.sync.CommonMock#_foo", spyOn = if (spyOn != null) { { fuzz, ozz ->
+    public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> by
+    lazy(mode = LazyThreadSafetyMode.PUBLICATION) {
+        SyncFunProxy("mock.template.sync.CommonMock#_foo", spyOn = if (spyOn != null) { { fuzz,
+            ozz ->
             foo(fuzz, ozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+    }
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> by
+    lazy(mode = LazyThreadSafetyMode.PUBLICATION) {
         SyncFunProxy("mock.template.sync.CommonMock#_bar", spyOn = if (spyOn != null) { { buzz,
             bozz ->
             bar(buzz, bozz) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+    }
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

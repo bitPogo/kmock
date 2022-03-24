@@ -350,8 +350,13 @@ internal class KMockFunctionGenerator(
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
         relaxer: ProcessorContract.Relaxer?
     ): PropertySpec.Builder {
-        return proxySpec.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)",
+        return proxySpec.delegate(
+            """
+            |lazy(mode = %T.PUBLICATION) {
+            |   %L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L)
+            |}
+            """.trimMargin(),
+            LazyThreadSafetyMode::class.asTypeName(),
             proxyType.simpleName,
             "$qualifier#$proxyName",
             "if (spyOn != null) { ${

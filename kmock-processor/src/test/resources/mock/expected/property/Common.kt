@@ -3,6 +3,7 @@ package mock.template.`property`
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.LazyThreadSafetyMode
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
@@ -27,40 +28,46 @@ internal class CommonMock(
     public override val foo: String
         get() = _foo.onGet()
 
-    public val _foo: KMockContract.PropertyProxy<String> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.CommonMock#_foo", spyOnGet = null, collector =
-        verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.CommonMock#_foo", spyOnGet = { spyOn.foo }, collector
-        = verifier, freeze = freeze, relaxer = null)
+    public val _foo: KMockContract.PropertyProxy<String> by lazy(mode =
+    LazyThreadSafetyMode.PUBLICATION) {
+        if (spyOn == null) {
+            PropertyProxy("mock.template.property.CommonMock#_foo", spyOnGet = null, collector =
+            verifier, freeze = freeze, relaxer = null)
+        } else {
+            PropertyProxy("mock.template.property.CommonMock#_foo", spyOnGet = { spyOn.foo },
+                collector = verifier, freeze = freeze, relaxer = null)
+        }
     }
-
 
     public override val bar: Int
         get() = _bar.onGet()
 
-    public val _bar: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.CommonMock#_bar", spyOnGet = null, collector =
-        verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.CommonMock#_bar", spyOnGet = { spyOn.bar }, collector
-        = verifier, freeze = freeze, relaxer = null)
+    public val _bar: KMockContract.PropertyProxy<Int> by lazy(mode = LazyThreadSafetyMode.PUBLICATION)
+    {
+        if (spyOn == null) {
+            PropertyProxy("mock.template.property.CommonMock#_bar", spyOnGet = null, collector =
+            verifier, freeze = freeze, relaxer = null)
+        } else {
+            PropertyProxy("mock.template.property.CommonMock#_bar", spyOnGet = { spyOn.bar },
+                collector = verifier, freeze = freeze, relaxer = null)
+        }
     }
-
 
     public override var buzz: Any
         get() = _buzz.onGet()
         set(`value`) = _buzz.onSet(value)
 
-    public val _buzz: KMockContract.PropertyProxy<Any> = if (spyOn == null) {
-        PropertyProxy("mock.template.property.CommonMock#_buzz", spyOnGet = null, spyOnSet = null,
-            collector = verifier, freeze = freeze, relaxer = null)
-    } else {
-        PropertyProxy("mock.template.property.CommonMock#_buzz", spyOnGet = { spyOn.buzz },
-            spyOnSet = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer =
-            null)
+    public val _buzz: KMockContract.PropertyProxy<Any> by lazy(mode =
+    LazyThreadSafetyMode.PUBLICATION) {
+        if (spyOn == null) {
+            PropertyProxy("mock.template.property.CommonMock#_buzz", spyOnGet = null, spyOnSet =
+            null, collector = verifier, freeze = freeze, relaxer = null)
+        } else {
+            PropertyProxy("mock.template.property.CommonMock#_buzz", spyOnGet = { spyOn.buzz },
+                spyOnSet = { spyOn.buzz = it; Unit }, collector = verifier, freeze = freeze, relaxer =
+                null)
+        }
     }
-
 
     public fun _clearMock(): Unit {
         _foo.clear()

@@ -13,6 +13,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract
@@ -70,15 +71,17 @@ internal class KMockPropertyGenerator(
         val name = "$qualifier#_$propertyName"
 
         return if (!isMutable) {
-            propertyProxy.initializer(
+            propertyProxy.delegate(
                 """
-                    |if (spyOn == null) {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |} else {
-                    |   PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
-                    |}
-                |
+                |lazy(mode = %T.PUBLICATION) {
+                |   if (spyOn == null) {
+                |       PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                |   } else {
+                |       PropertyProxy(%S, spyOnGet = %L, collector = verifier, freeze = freeze, %L)
+                |   }
+                |}
                 """.trimMargin(),
+                LazyThreadSafetyMode::class.asTypeName(),
                 name,
                 "null",
                 relaxerGenerator.buildRelaxers(relaxer, false),
@@ -87,15 +90,17 @@ internal class KMockPropertyGenerator(
                 relaxerGenerator.buildRelaxers(relaxer, false)
             )
         } else {
-            propertyProxy.initializer(
+            propertyProxy.delegate(
                 """
-                |if (spyOn == null) {
-                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
-                |} else {
-                |   PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |lazy(mode = %T.PUBLICATION) {
+                |   if (spyOn == null) {
+                |       PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |   } else {
+                |       PropertyProxy(%S, spyOnGet = %L, spyOnSet = %L, collector = verifier, freeze = freeze, %L)
+                |   }
                 |}
-                |
                 """.trimMargin(),
+                LazyThreadSafetyMode::class.asTypeName(),
                 name,
                 "null",
                 "null",
