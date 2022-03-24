@@ -652,7 +652,7 @@ Build-in methods are excluded from Verification via Verifier by default due to t
 ==== Setup/Teardown Mocks
 
 ===== Setup (the kmock function)
-As already shown in the examples above KMock comes with a factory method `kmock` and should be used instead of instantiating the Mocks by hand.
+As already shown in the examples above KMock comes with a factory function `kmock` and should be used instead of instantiating the Mocks by hand.
 All Mocks are build with the same naming pattern (the name of the Interface and the suffix _Mock_), in the hope to ease referencing generated Mocks. +
 `kmock` takes 4 arguments: `verifier`, `relaxed`, `relaxUnitFun` and `freeze`.
 `relax` and `relaxUnitFun` determine if relaxing should be used and are false by default.
@@ -700,7 +700,7 @@ KMock also supports Spying to a certain degree.
 While you still need to instantiate the _subject to spy on_ (SO) by hand to avoid any funny behaviour,
 you may delegate the SO to `kspy` and voila habemus spy! +
 First of all you need select an subject by adding the full qualified name of the Interface which is shared by the Mock and SO to the `spyOn` field of KMock's Gradle Plugin.
-This will add the Mock to the factory method `kspy`. +
+This will add the Mock to the factory function `kspy`. +
 `kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
 `spyOn` expects the SO.
 
@@ -829,7 +829,7 @@ Those methods excluded from Relaxation.
 ==== Memory Model
 KMock uses still Kotlin's old Memory Model.
 Therefore you might run in some trouble. +
-Both factory methods - `kmock` and `kspy` - take an argument `freeze` which is true by default.
+Both factory functions - `kmock` and `kspy` - take an argument `freeze` which is true by default.
 This means everything which is delegated to an Proxy (including Relaxation) or Verifier must be conform with the freezing Memory Model. +
 By switching `freeze` to `false` it changes the flavour to non freezing.
 If you use non freezing Mocks, make sure you use the corresponding Verifier (`NonfreezingVerifier`) and all interacting Mocks are non freezing. +
