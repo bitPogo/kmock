@@ -23,9 +23,5 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
-    factory.template.relaxed.Platform::class -> factory.template.relaxed.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.relaxed.Platform) as Mock
-    factory.template.relaxed.PlatformMock::class -> factory.template.relaxed.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.relaxed.Platform) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

@@ -55,6 +55,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
+                spyOn = options.spyOn,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
                 codeGenerator = codeGenerator

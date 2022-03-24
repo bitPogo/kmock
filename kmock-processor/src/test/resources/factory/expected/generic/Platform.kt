@@ -47,9 +47,5 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform<K, L>, K : A
     @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.generic.Platform::class -> factory.template.generic.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Platform<K, L>) as Mock
-    factory.template.generic.PlatformMock::class -> factory.template.generic.PlatformMock(verifier =
-    verifier, freeze = freeze, spyOn = spyOn as factory.template.generic.Platform<K, L>) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
