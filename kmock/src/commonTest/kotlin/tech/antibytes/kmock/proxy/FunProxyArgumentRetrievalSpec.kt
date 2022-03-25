@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.proxy
 
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -18,6 +19,7 @@ import kotlin.test.assertFailsWith
 class FunProxyArgumentRetrievalSpec {
     private val fixture = kotlinFixture()
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn0")
     fun `Given getArgumentsByType is called it progates errors`() {
@@ -38,6 +40,7 @@ class FunProxyArgumentRetrievalSpec {
         actual mustBe error
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn1")
     fun `Given getArgumentsByType is called collects all Arguments with for the given Type at the given CallIndex`() {
@@ -73,6 +76,7 @@ class FunProxyArgumentRetrievalSpec {
         actual.sorted() mustBe expected.sorted()
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn2")
     fun `Given getAllArgumentsByType is called it progates errors`() {
@@ -103,6 +107,7 @@ class FunProxyArgumentRetrievalSpec {
         actual mustBe error
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn3")
     fun `Given getAllArgumentsByType is called collects all Arguments with for the given Type at the given CallIndex`() {
@@ -144,6 +149,7 @@ class FunProxyArgumentRetrievalSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn4")
     fun `Given getAllArgumentsBoxedByType is called it progates errors`() {

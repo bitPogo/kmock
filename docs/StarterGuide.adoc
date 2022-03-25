@@ -29,8 +29,8 @@ toc::[]
 == Starter Guide
 
 NOTE: KMock is still a work in progress.
-All artifacts are currently only consumable as snapshots.
-Also changes may fly in on short notice.
+All artefacts are currently only consumable as snapshots.
+Also changes may fly in on short notice. Currently the short hash of the latest commit of the main branch is used instead of a proper version. You will find the hash directly on the link:{link-repository}[start page] under the `Go to file` button.
 
 
 === Preparation
@@ -40,13 +40,13 @@ In order to consume KMock snapshots please add the following code:
 [source, kotlin]
 ----
 repositories {
-    ..
-    maven {
-        setUrl("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
-        content {
-            includeGroup("tech.antibytes.kmock")
-        }
-    }
+   ..
+   maven {
+       setUrl("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
+       content {
+           includeGroup("tech.antibytes.kmock")
+       }
+   }
 }
 ----
 
@@ -57,18 +57,18 @@ repositories {
 [source, kotlin]
 ----
 plugins {
-    ..
-    id("tech.antibytes.kmock.kmock-gradle")
+   ..
+   id("tech.antibytes.kmock.kmock-gradle")
 }
 
 kmock {
-    rootPackage = "my.root.package"
+   rootPackage = "my.root.package"
 }
 
 dependencies {
-    ..
-    testImplementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
-    ..
+   ..
+   testImplementation("tech.antibytes.kmock:kmock:$KMockVersion")
+   ..
 }
 
 ..
@@ -80,29 +80,29 @@ dependencies {
 [source, kotlin]
 ----
 plugins {
-    id("org.jetbrains.kotlin.js")
+   id("org.jetbrains.kotlin.js")
 
-    ..
+   ..
 
-    id("tech.antibytes.kmock.kmock-gradle") apply false
+   id("tech.antibytes.kmock.kmock-gradle") apply false
 }
 
 kotlin {
-    ..
+   ..
 }
 
 plugins.apply("tech.antibytes.kmock.kmock-gradle")
 
 project.extensions.configure<KMockExtension>(KMockExtension::class.java) {
-    rootPackage = "my.root.package"
+   rootPackage = "my.root.package"
 }
 
 dependencies {
-    ..
+   ..
 
-    testImplementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+   testImplementation("tech.antibytes.kmock:kmock:$KMockVersion")
 
-    ..
+   ..
 }
 
 ----
@@ -112,45 +112,45 @@ dependencies {
 [source, kotlin]
 ----
 plugins {
-    ..
+   ..
 
-    id("tech.antibytes.kmock.kmock-gradle") apply false
+   id("tech.antibytes.kmock.kmock-gradle") apply false
 }
 
 kotlin {
-    ..
+   ..
 
-    sourceSets {
-        ..
-        val commonTest by getting {
-            dependencies {
-                ..
-                implementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
-                ..
-            }
-        }
-        ..
-    }
-    ..
+   sourceSets {
+       ..
+       val commonTest by getting {
+           dependencies {
+               ..
+               implementation("tech.antibytes.kmock:kmock:$KMockVersion")
+               ..
+           }
+       }
+       ..
+   }
+   ..
 }
 
 plugins.apply("tech.antibytes.kmock.kmock-gradle")
 
 project.extensions.configure<KMockExtension>("kmock") {
-    rootPackage = "my.root.package"
+   rootPackage = "my.root.package"
 }
 
 ..
 
 ----
 
-IMPORTANT: You must set the root package of your project in the Extension of the KMock's Gradle Plugin via the `rootPackage` property.
+In order to bring KMock to life you must tell it about the root package of your project in the Extension of the KMock's Gradle Plugin via the `rootPackage` property as shown above. This is simply needed to arrange things right, while generating Mocks.
 
-CAUTION: Currently the short hash of the latest commit of main branch is used instead of a proper version. (As mentioned this project is still a WIP)
-You will find the hash directly on the link:{link-repository}[start page] under the `Go to file` button.
+IMPORTANT: The plugin must be applied for KMP or KJs projects after `kotlin` has been set up as shown above.
+This is due to the fact that Kotlin brings its own system of source sets and link:https://github.com/google/ksp[Kotlin Symbol Processing (KSP)]
+must be configured during the evaluation of the project.
 
-IMPORTANT: The plugin must be applied for KMP or KJs projects after `kotlin` has been declared as shown above.
-This is due to the fact that Kotlin brings its own system of source sets and KSP must be configured during the evaluation of the project.
+TIP: You find a full examples, how to set up KMock properly in the link:{link-base}/kmock-playground[Playground].
 
 NOTE: In case you experience a name collision of Mocks you can delegate a map to resolve that issue via `aliasNameMapping`.
 The key must be the full qualified name of the interface which should use an alias.
@@ -160,11 +160,11 @@ The value must be a string which starts with a latin letter (a-Z) followed by a 
 Just not get confused by terminology 2 terms upfront which are important - Mock and Proxy.
 A Proxy relates to a single property (PropertyProxy) or method (FunProxy).
 A Mock owns multiple Proxies based on an given Interface.
-The Interface and its methods and properties are used as Templates for Proxies or a Mock.
+The Interface and its members are used as Templates for Proxies or a Mock.
 
 === Declaring Mocks
-You can declare Mocks in a central place (per platform) or per test set.
-However declaring them in a central place is discourage since it violates the link:https://enterprisecraftsmanship.com/posts/dry-damp-unit-tests/[DAMP unit tests] principle. +
+You can declare Mocks in a central place (per platform) or per test suite.
+However declaring them in a central place is discouraged since it violates the link:https://enterprisecraftsmanship.com/posts/dry-damp-unit-tests/[DAMP unit tests] principle. +
 You may declare Mocks as followed:
 
 .Declare Mocks for Common Code
@@ -175,12 +175,12 @@ import tech.antibytes.kmock.MockCommon
 ..
 
 @MockCommon(
-    SampleInterface::class,
-    OtherSampleInterface::class,
-    ..
+   SampleInterface::class,
+   OtherSampleInterface::class,
+   ..
 )
 class SampleTestSet {
-    ..
+   ..
 }
 
 ----
@@ -193,16 +193,22 @@ import tech.antibytes.kmock.MockShared
 ..
 
 @MockShared(
-    "sourceSetName",
-    SampleInterface::class,
-    OtherSampleInterface::class,
-    ..
+   "sourceSetName",
+   SampleInterface::class,
+   OtherSampleInterface::class,
+   ..
 )
 class SampleTestSet {
-    ..
+   ..
 }
 
 ----
+
+IMPORTANT: You must set a SourceSetName if you use `MockShared`.
+KMock needs to know where the Interfaces and therefore the generated Mocks belong to.
+For example if you mock sources in `nativeTest` use it (`nativeTest`) as the SourceSetName.
+Also `MockShared` will not accept `commonTest` as SourceSetName, since this special case has to go through `MockCommon`.
+
 
 .Declare Mocks for Platform Code
 [source, kotlin]
@@ -212,26 +218,27 @@ import tech.antibytes.kmock.Mock
 ..
 
 @Mock(
-    SampleInterface::class,
-    OtherSampleInterface::class,
-    ..
+   SampleInterface::class,
+   OtherSampleInterface::class,
+   ..
 )
 class SampleTestSet {
-    ..
+   ..
 }
 
 ----
 
-IMPORTANT: You must set a `sourceSetName` if you use `MockShared`.
-This is needed so KMock knows where the Mocks belong to.
-For example if you mock sources in `nativeTest` use it (`nativeTest`) as the `sourceSetName`.
-
-NOTE: KMock allows currently *only* Mocks for *Interfaces*.
+As you already noticed KMock will *only* allow you to mock *Interfaces*.
+This is simply due to the fact that for KMP there is no way to manipulate things at runtime in the same way as link:https://mockk.io/[MockK] can do it.
+This means everything will be generated upfront, which can lead to collisions of names of Mocks.
+KMock will let you set an alias name if you experience collisions via `aliasNameMapping` in its Gradle Plugin Extension.
+It takes a map where the key must be the full qualified name of the Interface which should use an alias for its Mock.
+The value must be a string which starts with a latin letter (a-Z) followed by a latin letter or a number (a-Z0-9).
 
 === Using KMock
 
 Once you have declared the Mocks you are going to use, please run your test suite once even if you have no meaningful tests defined.
-This will generate the Mocks and you may benefit from autocompletion in your Editor or IDE.
+This triggers the Generation the Mocks and you may benefit from autocompletion in your Editor or IDE right away.
 After that you can start to write your tests:
 
 .Example Test
@@ -239,33 +246,34 @@ After that you can start to write your tests:
 ----
 @Test
 fun sampleTest() {
-    // arrange
-    val someInstance: SomeInterfaceMock = kmock()
+   // arrange
+   val someInstance: SomeInterfaceMock = kmock()
 
-    someInstance._someProperty.returns = "any"
-    someInstance._someMethod.returns = "any"
+   someInstance._someProperty.returns = "any"
+   someInstance._someMethod.returns = "any"
 
-    // act
-    val someOtherInstance = SomeClass(someInstance)
-    someOtherInstance.run()
+   // act
+   val someOtherInstance = SomeClass(someInstance)
+   someOtherInstance.run()
 
-    // assert
-    someInstance._someProperty.assertWasGotten(exactly = 1)
-    someInstance._someMethod.assertHasBeenCalled(exactly = 1)
+   // assert
+   someInstance._someProperty.assertWasGotten(exactly = 1)
+   someInstance._someMethod.assertHasBeenCalled(exactly = 1)
 }
 ----
 
-KMock will generate Proxy Properties (do not confuse them with PropertyProxies) and attaches them to the generated Mock.
-All Proxy Properties are named with `_` as prefix followed by the Templates original name.
-
-NOTE: If the Template is a method, which is overloaded or a property has been defined with the very same name, KMock will attach the parameter types to the name to avoid naming collisions.
-If the type contains a prefix which is useless (e.g. `kotlin.`) you can remove it via the `uselessPrefixes` property of the Gradle plugin extension.
+KMock will add double members - _Proxy Properties_ - (do not confuse them with _PropertyProxies_) to the generated Mock.
+All Proxy Properties are named with `_` as prefix followed by the Templates original name, except overloaded for names. +
+In cases where a name is used multiple times it acts a bit different.
+It will add additionally the parameter types to names for Proxy Properties, which are binding a _FunProxy_ to keep the name unique.
+This might lead to some weird cases, since the type may contain a prefix which is useless (e.g. `kotlin.collections`, which gets converted into `KotlinCollections`).
+Since this can really hurt readability and fun, KMock lets you remove those prefixes via the `uselessPrefixes` property of the Gradle Plugin Extension.
 
 ==== FunProxies
 
 FunProxies don't differentiate between asynchronous and synchronous, while you assign them values.
 Therefore anything works for both modi alike. +
-Similar to other frameworks KMock offers a simple way to facilitate stubbing as shown in the example above.
+KMock offers a simple way to facilitate stubbing as shown before.
 You can use the following properties for stubbing:
 
 [cols=2*]
@@ -274,7 +282,7 @@ You can use the following properties for stubbing:
 | What it does
 
 | `returns`
-| the Proxy will return constantly the given value.
+| the Proxy will return the always the given value.
 
 | `returnMany`
 | the Proxy will return each value of the given list.
@@ -284,15 +292,15 @@ If only one value is left it will return it until the run is completed.
 | throws a given error/exception.
 |===
 
-In case you need more elaborated behaviour, which takes for example arguments into account, you can use SideEffects. +
+In case you need elaborated behaviour, which takes for example arguments into account, you can use _SideEffects_. +
 SideEffects are in principle lambdas with a identical signature of the Template method:
 
 .Example Source
 [source, kotlin]
 ----
 interface SampleRemoteRepository {
-    suspend fun fetch(url: String): Any
-    fun find(id: String): Any
+   suspend fun fetch(url: String): Any
+   fun find(id: String): Any
 }
 ----
 
@@ -302,54 +310,54 @@ interface SampleRemoteRepository {
 ..
 @Test
 fun sampleTest() {
-    val someInstance: SampleRemoteRepositoryMock = kmock()
+   val someInstance: SampleRemoteRepositoryMock = kmock()
 
-    someInstance._fetch.sideEffect = {
-        delay(20)
-        return Any()
-    }
+   someInstance._fetch.sideEffect = {
+       delay(20)
+       return Any()
+   }
 
-    someInstance._find.sideEffect = { id ->
-        return if (id.isEmpty()) {
-            throw RuntimeException()
-        } else {
-            Any()
-        }
-    }
+   someInstance._find.sideEffect = { id ->
+       return if (id.isEmpty()) {
+           throw RuntimeException()
+       } else {
+           Any()
+       }
+   }
 }
 ..
 ----
 
 If you want to chain several SideEffects together, while keeping them in small packages, you may consider using the `sideEffects` property of a FunProxy.
 This property contains a builder to chain multiple SideEffects together.
-Similar to `returnsMany` it will repeat the execution of the last assigned SideEffect until the run is complet, if the chain is otherwise exhausted. +
+Similar to `returnsMany` it will repeat the execution of the last assigned SideEffect until the run is complete, if the chain is otherwise exhausted. +
+
+IMPORTANT: Please be aware there is a precedence of invocation.
+`returns` is used over `throws`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
+If no behaviour is set the Proxy simply fails and acts therefore intrusively.
+
 While SideEffects are in general type safe there is one exception to this - link:https://kotlinlang.org/docs/generics.html[Multi-Boundary Generics] which are declared on method level:
 
 .Multi-Bounded Generic
 [source, kotlin]
 ----
 interface SampleThing {
-    fun <T> doSomething(payload: T) where T : SomeOtherInterface<String>, T : SomeAnyInterface<String>
+   fun <T> doSomething(payload: T) where T : SomeOtherInterface<String>, T : SomeAnyInterface<String>
 }
 ----
 
 `payload` and the return type will be resolved as `Any` for the generated SideEffect.
 You'll need to cast the provided arguments and return value accordingly to avoid any errors. +
-If you end up in such a situation, maybe consider to combine those boundaries into a single interface.
-
-IMPORTANT: Please be aware there is a precedence of invocation.
-`returns` is used over `throws`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
-If no behaviour is set the Proxy simply fails.
-
-NOTE: KMock also allows you to proxy build-in methods like `toString`.
-The Gradle extension offers you a field called `useBuildInProxiesOn` for that purpose.
-It takes a set of the full qualified names of the targeted interfaces in order to select them.
-Use those Proxy with caution and only if the intended implementation of the mocked Interface requires/has special behaviour.
-Also the Proxies of those methods do not require Relaxation, since they always fall back to default behaviour of the Mocks parent.
+If you end up in such a situation, maybe consider combining those boundaries into a single interface. +
+KMock also allows you to proxy build-in methods like `toString`.
+The Gradle Extension offers you a field called `useBuildInProxiesOn` for that purpose.
+It takes a set of the full qualified names of the targeted Interfaces in order to select them.
+Use those Proxy with caution and only if the intended implementation of the mocked Interface requires/has special behaviour or attention.
+Also the Proxies of those methods do not require any additional setup to act non intrusively, since they always fall back to default behaviour of its parent.
 
 ==== PropertyProxies
 
-PropertyProxies work similar to FunProxies.
+PropertyProxies work similarly to FunProxies.
 Therefore they have similar stubbing capabilities:
 
 [cols=2*]
@@ -358,7 +366,7 @@ Therefore they have similar stubbing capabilities:
 | What it does
 
 | `get`
-| the Proxy will return constantly the given value if the getter is called.
+| the Proxy will return always the given value if the getter is called.
 
 | `getMany`
 | the Proxy will return each value of the given list if the getter is called.
@@ -372,11 +380,11 @@ If only one value is left it will return it until the run is completed.
 
 |===
 
-PropertyProxies do not allow chaining of SideEffects since this should be considered as clear sign that the usage of method is more appropriate instead.
+PropertyProxies do not allow chaining of SideEffects since this should be considered as a clear sign that the usage of method is more appropriate instead.
 
 IMPORTANT: Please be aware there is a precedence of invocation.
 `getMany` is used over `get` and `getSideEffect` is used over `getMany`.
-If no behaviour is set the Proxy simply fails.
+If no behaviour is set the Proxy simply fails and acts intrusively.
 
 ==== Verification/Assertion
 ===== Verification of a single Proxy
@@ -389,15 +397,17 @@ For single Proxies you can either use Verification or Assertions:
 ..
 @Test
 fun sampleTest() {
-    val someInstance: SampleRemoteRepositoryMock = kmock()
-    ..
+   val someInstance: SampleRemoteRepositoryMock = kmock()
+   ..
 
-    // Verification
-    verify(exactly = 1) { someInstance._fetch.hasBeenCalledWith("someUrl") }
-    verify(exactly = 1) { someInstance._find.hasBeenCalledWith("something") }
+   // Verification
+   verify(exactly = 1) { someInstance._fetch.hasBeenCalledWith("someUrl") }
+   verify(exactly = 1) { someInstance._find.hasBeenCalledWith("something") }
 }
 
 ----
+
+IMPORTANT: `verify` will only take the latest _Expectation_ into account.
 
 .Example Test with Assertion style
 [source, kotlin]
@@ -405,21 +415,21 @@ fun sampleTest() {
 ..
 @Test
 fun sampleTest() {
-    val someInstance: SampleRemoteRepositoryMock = kmock()
-    ..
+   val someInstance: SampleRemoteRepositoryMock = kmock()
+   ..
 
-    // Assertion
-    someInstance._fetch.assertHasBeenCalledWith("someUrl") }
-    someInstance._find.assertHasBeenCalledWith("something")
+   // Assertion
+   someInstance._fetch.assertHasBeenCalledWith("someUrl") }
+   someInstance._find.assertHasBeenCalledWith("something")
 }
 
 ----
 
 CAUTION: Assertions are currently limited and considered as experimental.
-They need further evaluation if they are suitable concept or if they are less idiomatic.
-This means they might get removed in the future.
+They need further evaluation if they are suitable concepts or if they are less idiomatic.
+This means they might get removed or changed in the future.
 
-While Assertions use a single method attached to a Proxy, Verification uses a Expectation Method inside of an Verification Block.
+While Assertions use a single method attached to a Proxy, Verification uses a _Expectation Method_ inside of a Verification Block.
 If you use Verification you can additionally combine multiple Expectations:
 
 .Example Test with combined Verification
@@ -428,12 +438,12 @@ If you use Verification you can additionally combine multiple Expectations:
 ..
 @Test
 fun sampleTest() {
-    val someInstance: SampleRemoteRepositoryMock = kmock()
-    ..
+   val someInstance: SampleRemoteRepositoryMock = kmock()
+   ..
 
-    verify(exactly = 1) {
-        someInstance._fetch.hasBeenCalledWith("someUrl") and someInstance._fetch.hasBeenCalledWithout("someOtherUrl")
-    }
+   verify(exactly = 1) {
+       someInstance._fetch.hasBeenCalledWith("someUrl") and someInstance._fetch.hasBeenCalledWithout("someOtherUrl")
+   }
 }
 
 ----
@@ -455,7 +465,7 @@ You have the following Expectation Methods for FunProxies:
 
 | `hasBeenCalledWith`
 | determines if the Proxy was invoked with the given arguments.
-The arguments must follow the order of the Template signature but can contain gaps and do not need to all arguments.
+The arguments must follow the order of the Template signature but can contain gaps and do not need all arguments.
 
 | `hasBeenStrictlyCalledWith`
 | determines if the Proxy was invoked with the given arguments.
@@ -481,7 +491,7 @@ Alternatively you may use the following Assertions:
 
 | `assertHasBeenCalledWith`
 | determines if the Proxy was invoked with the given arguments.
-The arguments must follow the order of the Template signature but can contain gaps and do not need to all arguments.
+The arguments must follow the order of the Template signature but can contain gaps and do not need all arguments.
 
 | `assertHasBeenCalledStrictlyWith`
 | determines if the Proxy was invoked with the given arguments.
@@ -503,13 +513,13 @@ For PropertyProxies you can use the following Expectation Methods:
 | What it does
 
 | `wasGotten`
-| determines if the Proxy was invoked as getter.
+| determines if the Proxy was invoked as a getter.
 
 | `wasSet`
-| determines if the Proxy was invoked as setter.
+| determines if the Proxy was invoked as a setter.
 
 | `wasSetTo`
-| determines if the Proxy was invoked as setter with the given argument.
+| determines if the Proxy was invoked as a setter with the given argument.
 
 |===
 
@@ -560,7 +570,7 @@ FunProxy and PropertyProxy Expectation Methods can make use of the following Ope
 
 ===== ArgumentConstrains
 
-While it might not always desirable to assert/verify against a concrete value, KMock also offers ArgumentConstraints.
+While it might not always be desirable to assert/verify against a concrete value, KMock also offers ArgumentConstraints.
 For example if you simply want to confirm that a Proxy was called with a certain type you may do the following:
 
 .Example Test with ArgumentConstraint
@@ -569,19 +579,19 @@ For example if you simply want to confirm that a Proxy was called with a certain
 ..
 @Test
 fun sampleTest() {
-    val someInstance: SampleRemoteRepositoryMock = kmock()
-    ..
+   val someInstance: SampleRemoteRepositoryMock = kmock()
+   ..
 
-    verify(exactly = 1) {
-        someInstance._fetch.hasBeenCalledWith(any(String::class))
-    }
+   verify(exactly = 1) {
+       someInstance._fetch.hasBeenCalledWith(any(String::class))
+   }
 }
 
 ----
 
-Internally all concrete types will be converted in a `eq` constrain.
-For example an assertion/expectation with `42` will be converted into `eq(42)`.
-Currently the following constrains are implemented:
+Internally all concrete types will be converted in a `eq` constraint.
+For example an assertion/expectation which is called with `42` will be converted into `eq(42)`.
+Currently the following constraints are implemented:
 
 [cols=2*]
 |===
@@ -620,105 +630,112 @@ In order to apply Verification you can proceed as in the following example:
 ----
 @Test
 fun sampleTest() {
-    val verifier = Verifier()
-    val someInstance: SomeInterfaceMock = kmock(verifier = verifier)
+   val verifier = Verifier()
+   val someInstance: SomeInterfaceMock = kmock(verifier = verifier)
 
-    someInstance._someProperty.returns = "any"
-    someInstance._someMethod.returns = "any"
+   someInstance._someProperty.returns = "any"
+   someInstance._someMethod.returns = "any"
 
-    val someOtherInstance = SomeClass(someInstance)
-    someOtherInstance.run()
+   val someOtherInstance = SomeClass(someInstance)
+   someOtherInstance.run()
 
-    verifier.verifyOrder {
-        ensureVerificationOf(someInstance) // optional
+   verifier.verifyOrder {
+       ensureVerificationOf(someInstance) // optional
 
-        someInstance._someProperty.wasGotten()
-        someInstance._someMethod.hasBeenCalled()
-        someInstance._someMethod.hasBeenCalled()
-    }
+       someInstance._someProperty.wasGotten()
+       someInstance._someMethod.hasBeenCalled()
+       someInstance._someMethod.hasBeenCalled()
+   }
 }
 
 ----
 
-Verification over multiple Proxies comes in 2 flavour - `verifyOrder` as seen above and `verifyStrictOrder`.
+Verification over multiple Proxies comes in 2 flavours - `verifyOrder` as seen above and `verifyStrictOrder`.
 While `verifyOrder` allows gaps and does not need all captured invocations covered, `verifyStrictOrder` will fail if something is missing.
-Both methods utilizing the already explained Expectation Methods. +
-Optional you can use `ensureVerificationOf` if you need any insurance that all Proxies had been covered during a run by an Verifier. +
-Both Verifier can be initialized with the `coverAllInvocations` flag, which is `false` by default.
-This flags forces Proxies, which are excluded from Verification via Verifier by default, to be covered during a test unit run too. +
+Both methods utilise the already explained Expectation Methods. +
+Optionally you can use `ensureVerificationOf` if you need any insurance that all Proxies have been covered during a run by a Verifier. +
+Both Verifiers can be initialised with the `coverAllInvocations` flag, which is `false` by default.
+This flag forces Proxies, which are excluded from Verification via Verifier by default, to be covered during a test unit run too.
 This is only important if you have to cover build-in methods like `equals`.
 Build-in methods are excluded from Verification via Verifier by default due to their special nature.
+
 
 ==== Setup/Teardown Mocks
 
 ===== Setup (the kmock function)
-As already shown in the examples above KMock comes with a factory function `kmock` and should be used instead of instantiating the Mocks by hand.
-All Mocks are build with the same naming pattern (the name of the Interface and the suffix _Mock_), in the hope to ease referencing generated Mocks. +
+As already shown in the examples above KMock comes with a factory method `kmock..
+All Mocks are built with the same naming pattern (the name of the Interface and the suffix _Mock_), in the hope to ease referencing generated Mocks. +
 `kmock` takes 4 arguments: `verifier`, `relaxed`, `relaxUnitFun` and `freeze`.
 `relax` and `relaxUnitFun` determine if relaxing should be used and are false by default.
-`freeze` determines which flavour for the Memory Model is used and and is true by default. +
-The last thing you need is to reference the type of the Mock. +
-You can enable also interfaces as types for `kmock`.
-This is meant for relaxing to ease the need to add boilerplate code.
-To enable interfaces you simply set `allowInterfacesOnKmock` of KMock's Gradle Plugin to `true`.
+`freeze` determines which flavour for the Memory Model is used and is true by default. +
+The last thing you need is to reference the type of the Mock.
 
-NOTE: If your interface is generic, `kmock` takes an additional argument called `templateType`.
+NOTE: If your Interface is generic, `kmock` takes an additional argument called `templateType`.
 This argument must be used to identify the right Mock and to avoid type collisions.
-The parameter itself takes the `KClass` of the interface which has been mocked.
+The parameter itself takes the `KClass` of the Interface which has been mocked.
+
+Also it is highly encouraged to reuse Mocks, if possible, in a test suite by making them a member of the suite.
+Your compile-time will profit from it! +
+KMock will also allow you to use Interfaces as reference types for `kmock`.
+In order to use that feature you need to set `allowInterfacesOnKmock` to `true`.
+This is handy when used in tandem with Relaxation or by simply used as return value for stubbing.
 
 ===== Teardown
-All Mocks are generated with `_clearMock` method which clears all Proxies owned by the Mock.
-This enables you to use Mocks per test set and not only per test case:
+All Mocks are generated with a `_clearMock` method which clears all Proxies owned by the Mock.
+This enables you to use Mocks per test suite, which is highly recommended, and not only per test case:
 
 .Teardown Proxies
 [source,kotlin]
 ----
 @MockCommon(
-    SampleInterface::class,
-    ..
+   SampleInterface::class,
+   ..
 )
 class SampleTestSet {
-    private val someInstance: SomeInterfaceMock = kmock()
+   private val someInstance: SomeInterfaceMock = kmock()
 
-    @AfterTest
-    fun tearDown() {
-        someInstance._clearMock()
-    }
+   @AfterTest
+   fun tearDown() {
+       someInstance._clearMock()
+   }
 
-    @Test
-    fun sampleTest() {
-        ..
-    }
+   @Test
+   fun sampleTest() {
+       ..
+   }
 
 }
 ----
 
-NOTE: Also Verifier expose a `clear` method, so do not forget it to call as well if you use them!
+NOTE: Also Verifiers expose a `clear` method, so do not forget to call it as well if you use them!
 
 ==== Spying
 KMock also supports Spying to a certain degree.
-While you still need to instantiate the _subject to spy on_ (SO) by hand to avoid any funny behaviour,
-you may delegate the SO to `kspy` and voila habemus spy! +
-First of all you need select an subject by adding the full qualified name of the Interface which is shared by the Mock and SO to the `spyOn` field of KMock's Gradle Plugin.
-This will add the Mock to the factory function `kspy`. +
-`kspy` works similar to `kmock` and takes 3 argument `spyOn`, `verifier` and `freeze`.
-`spyOn` expects the SO. +
+While you still need to instantiate the _subject to spy on_ (SO) by hand to avoid any funny behaviour and you may delegate the SO to `kspy` and voila habemus spy! +
+However Spying is disabled by default.
+To enable it you need to reference the Interface of the SO.
+This is done by adding the full qualified name of the Interface to the `spyOn` field of KMock's Gradle Plugin Extension.
+Also you must declare a Mock for that Interface as usual. +
+If both preconditions are fulfilled, KMocks factory function `kspy` will recognize the Mock as able to utilise spies. +
+`kspy` works similar to `kmock` and takes 3 arguments `spyOn`, `verifier` and `freeze`.
+`spyOn` expects the SO and you need to reference the Mock Class. +
+
+
+NOTE: If your interface is generic, `kspy` takes an additional argument called `templateType`.
+This argument must be used to identify the right Mock and to avoid type collisions.
+The parameter itself takes the `KClass` of the interface which has been mocked.
+
 As with `kmock` you can enable interfaces as types for `kspy`.
-This is meant for relaxing to ease the need to add boilerplate code.
-To enable interfaces you simply set `allowInterfacesOnKspy` of KMock's Gradle Plugin to `true`.
+This is meant for relaxing to ease the need to add boilerplate code if used in that context.
+To enable interfaces you simply set `allowInterfacesOnKspy` of KMock's Gradle Plugin Extension to `true`.
 
-WARNING: Spying is not currently supported for recursive generics types on function level.
-For example `fun <T: Comparable<T>> doSomething()` will result in an error if mocked and invoked.
-However KMock allows you to select applicable recursive generics types via `allowedRecursiveTypes` in the extension of its Gradle Plugin.
-`allowedRecursiveTypes` takes a set of the full qualified names of the recursive generics types.
-
-However you still can override specific methods or properties by using the corresponding Proxy Property.
-In other words methods or properties of an SO are used instead of throwing an error, if no behaviour was assigned to a Proxy.
+Also you still can override specific methods or properties by using the corresponding Proxy Property.
+In other words methods or properties of an SO are used instead of throwing an error, if no behaviour or stub was assigned to a Proxy, so it acts completely non intrusive.
 The precedence described above stays otherwise untouched.
 
-NOTE: Setters of are always invoked.
+NOTE: Setters are always invoked.
 
-If you are using spies  be aware that build-in methods use the SO's methods here as well.
+If you are using spies be aware that build-in methods use the SO's methods here as well and are always present.
 This might result in a behaviour which is not obvious right away:
 
 .Example Spying on build-in methods
@@ -726,12 +743,12 @@ This might result in a behaviour which is not obvious right away:
 ----
 @Test
 fun sampleTest() {
-    val subjectToSpyOn = AnyImplementation()
-    val someInstance: SomeInterfaceMock = kspy(subjectToSpyOn)
+   val subjectToSpyOn = AnyImplementation()
+   val someInstance: SomeInterfaceMock = kspy(subjectToSpyOn)
 
-    assertTrue((someInstance as Any) == someInstance) // will pass
-    assertTrue((someInstance as Any) == subjectToSpyOn) // will pass
-    assertTrue((subjectToSpyOn as Any) == someInstance) // will fail
+   assertTrue((someInstance as Any) == someInstance) // will pass
+   assertTrue((someInstance as Any) == subjectToSpyOn) // will pass
+   assertTrue((subjectToSpyOn as Any) == someInstance) // will fail
 }
 
 ----
@@ -742,13 +759,32 @@ KMock uses inheritance not reflection as you remember.
 The 3rd assertion fails since `AnyImplementation` has no custom implementation of `equals` and uses the default.
 If `AnyImplementation` makes a custom comparison with taking properties for example into account, the Assertion would pass.
 
-NOTE: If your interface is generic, `kspy` takes an additional argument called `templateType`.
-This argument must be used to identify the right Mock and to avoid type collisions.
-The parameter itself takes the `KClass` of the interface which has been mocked.
+Lastly there is another thing to know about Spies.
+They come with a certain limitation.
+If you use generics which are recursive and declared on function level like:
+
+.Usage of multiple Proxies
+[source,kotlin]
+----
+interface GenericThing {
+   fun <T> doSomething(payload: T) where T : Comparable<T>
+}
+
+
+----
+
+If `doSomething` is mocked and invoked it will result in an error.
+This is simply due to the fact that technically Declarations like `fun <T> doSomething(payload: T) where T : SomeGeneric<String>, T : Comparable<List<Array<T>>>` legal, but won’t work and the compiler cries out.
+So if `doSomething` would be mocked, the compiler will most likely point to generated Mock, which is actually not the cause of the problem, but the outcome.
+However KMock cannot know which cases are right or wrong upfront, but it allows you to select them.
+KMocks Gradle Plugin Extension has a property called `allowedRecursiveTypes`, where you can declare the cases where it actually should work.
+`allowedRecursiveTypes` takes a set of the full qualified names of the recursive generics types (e.g. `kotlin.Comparable`).
+
 
 ==== Relaxation
-Lastly KMock also facilitates Relaxation to certain degree. As with spies it requires boilerplate code done by you. +
-However Relaxation of methods which return `Unit` is build-in feature, so do not worry about it.
+Lastly, KMock also facilitates Relaxation to a certain degree and will hopefully get better over time.
+As with spies it requires boilerplate code done by you. +
+However, Relaxation of methods which return `Unit` is build-in feature, so do not worry about it.
 You only need to switch `relaxUnitFun` to `true`. +
 To get full Relaxation support you need to implement a relaxer function and annotate it properly:
 
@@ -757,35 +793,35 @@ To get full Relaxation support you need to implement a relaxer function and anno
 ----
 @Relaxer
 internal inline fun <reified T> relax(id: String): T {
-    return if (id.endsWith("#_find")) {
-        Any()
-    } else {
-        throw RuntimeException()
-    }
+   return if (id.endsWith("#_find")) {
+       Any()
+   } else {
+       throw RuntimeException()
+   }
 }
 
 ----
 
 The annotation `@Relaxer` tells KMock that a Relaxer is present and is up for usage.
-The Relaxer can be a arbitrary function but has to follow a specific signature, similar as shown above. +
+The Relaxer can be an arbitrary function but has to follow a specific signature, similar as shown above. +
 The function can be either inline or not.
 The type parameter can be either `reified` or not, but must be present and used as the return value.
-There can be only  one type parameter. +
+There can be only one type parameter. +
 The function can be marked as internal or not, but must be visible by the Mocks.
 Also the function must take exactly one argument, which is a String.
 This argument will be provided when invoked by a Proxy and is its id.
 You may use it to differentiate between Proxies. +
 At last you need to switch relaxing on by adding `relaxed = true` to `kmock`:
 
-.Example Source up fo Relaxation
+.Example Source up with Relaxation
 [source, kotlin]
 ----
 interface SampleDomainObject {
-    fun resolve(): Any
+   fun resolve(): Any
 }
 
 interface SampleService {
-    fun find(id: String): SampleDomainObject
+   fun find(id: String): SampleDomainObject
 }
 ----
 
@@ -794,11 +830,11 @@ interface SampleService {
 ----
 @Relaxer
 internal inline fun <reified T> relax(id: String): T {
-    return if (id.endsWith("#_find")) {
-        kmock()
-    } else {
-        throw RuntimeException()
-    }
+   return if (id.endsWith("#_find")) {
+       kmock()
+   } else {
+       throw RuntimeException()
+   }
 }
 ----
 
@@ -806,37 +842,37 @@ internal inline fun <reified T> relax(id: String): T {
 [source, kotlin]
 ----
 @MockCommon(
-    SampleService::class,
-    SampleDomainObject::class
-    ..
+   SampleService::class,
+   SampleDomainObject::class
+   ..
 )
 class SampleTestSet {
-    private val someInstance: SampleServiceMock = kmock(relaxed = true)
+   private val someInstance: SampleServiceMock = kmock(relaxed = true)
 
-    @Test
-    fun sampleTest() {
-        assertTrue(someInstance.find("somthing") is SampleDomainObject)
-    }
+   @Test
+   fun sampleTest() {
+       assertTrue(someInstance.find("somthing") is SampleDomainObject)
+   }
 }
 ----
 
 IMPORTANT: Only one Relaxer can be defined per project!
 
 As with spies you still can override specific methods by using the corresponding Proxy Property.
-In other words Relaxation is used instead of throwing an error, if no behaviour was assigned to a Proxy.
+In other words Relaxation is used instead of throwing an error, if no behaviour was assigned to a Proxy and makes Mock non intrusive.
 The precedence described above stays otherwise untouched.
 
 NOTE: Relaxation will not work with build-in methods like `hashCode`.
-Those methods excluded from Relaxation.
+Those methods excluded from Relaxation and fall back to their parent.
 
 ==== Memory Model
-KMock uses still Kotlin's old Memory Model.
-Therefore you might run in some trouble. +
+KMock still uses Kotlin's ‘old’ Memory Model.
+Therefore you might run into some trouble in certain cases. +
 Both factory functions - `kmock` and `kspy` - take an argument `freeze` which is true by default.
-This means everything which is delegated to an Proxy (including Relaxation) or Verifier must be conform with the freezing Memory Model. +
-By switching `freeze` to `false` it changes the flavour to non freezing.
-If you use non freezing Mocks, make sure you use the corresponding Verifier (`NonfreezingVerifier`) and all interacting Mocks are non freezing. +
-This is inconvenient for now but will be go away once the new Memory Model is more stable.
+This means everything which is delegated to an Proxy (including Relaxation) or Verifier must conform with the freezing Memory Model of Kotlin. +
+By switching `freeze` to `false` it changes the flavour to non-freezing.
+If you use non freezing Mocks, make sure you use the corresponding Verifier (`NonfreezingVerifier`) and all interacting Mocks are non-freezing as well. +
+This is inconvenient for now but will go away once the new Memory Model is more stable.
 
 ==== Customization
 ===== ArgumentConstraints
@@ -847,8 +883,10 @@ You can simply extend `ArgumentConstraint` of the `KMockContract` and implement 
 You are also able to to write your custom Assertions by implementing a custom link:https://kotlinlang.org/docs/extensions.html[extension function] for either the `Proxy`, `FunProxy`, `PropertyProxy`, `SyncFunProxy` or `AsyncFunProxy` Interface of the `KMockContract`. +
 KMock exposes 4 functions which are intended for this purpose.
 `getArgumentsByType`, `getAllArgumentsByType` and `getAllArgumentsBoxedByType` working only for FunProxies, while `getArgumentsForCall` works for all Proxy types.
-`getArgumentsByType` can be used to retrieve Arguments for a specific call, `getAllArgumentsByType` and `getAllArgumentsBoxedByType` collecting over all invocations.
+`getArgumentsByType` can be used to retrieve Arguments for a specific call and type, `getAllArgumentsByType` and `getAllArgumentsBoxedByType` collecting over all invocations.
 The main difference between the latter methods is simply that `getAllArgumentsByType` will collect arguments in a linear order,
-while `getAllArgumentsBoxedByType` will box them in a List per call. +
-KMock itself uses `getArgumentsForCall` which you might wanna use as well while working with PropertyProxies or you need a type unaware method to extract arguments form a Proxies.
+while `getAllArgumentsBoxedByType` will box them in a List per call.
+Use those methods with caution, since they are likely subject to changes, once the concept of assertions gets a second look. +
+KMock itself uses `getArgumentsForCall` which you might wanna use as well while working with PropertyProxies or you need a type unaware method to extract arguments from Proxies.
+
 Happy coding!
