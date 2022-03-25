@@ -280,7 +280,7 @@ fun sampleTest() {
 ----
 
 KMock will add double members - _Proxy Properties_ - (do not confuse them with _PropertyProxies_) to the generated Mock.
-All Proxy Properties are named with `_` as prefix followed by the Templates original name, except overloaded for names. +
+All Proxy Properties are named with `\_` as prefix followed by the Templates original name, except overloaded for names. +
 In cases where a name is used multiple times it acts a bit different.
 It will add additionally the parameter types to names for Proxy Properties, which are binding a _FunProxy_ to keep the name unique.
 This might lead to some weird cases, since the type may contain a prefix which is useless (e.g. `kotlin.collections`, which gets converted into `KotlinCollections`).
@@ -369,7 +369,7 @@ If you end up in such a situation, maybe consider combining those boundaries int
 KMock also allows you to proxy build-in methods like `toString`.
 The Gradle Extension offers you a field called `useBuildInProxiesOn` for that purpose.
 It takes a set of the full qualified names of the targeted Interfaces in order to select them.
-Use those Proxy with caution and only if the intended implementation of the mocked Interface requires/has special behaviour or attention.
+Use those Proxy with caution and only if the intended implementation of the mocked Interface has special behaviour or needs extra attention.
 Also the Proxies of those methods do not require any additional setup to act non intrusively, since they always fall back to default behaviour of its parent.
 
 ==== PropertyProxies
@@ -680,7 +680,7 @@ Build-in methods are excluded from Verification via Verifier by default due to t
 ==== Setup/Teardown Mocks
 
 ===== Setup (the kmock function)
-As already shown in the examples above KMock comes with a factory method `kmock..
+As already shown in the examples above KMock comes with a factory method `kmock`.
 All Mocks are built with the same naming pattern (the name of the Interface and the suffix _Mock_), in the hope to ease referencing generated Mocks. +
 `kmock` takes 4 arguments: `verifier`, `relaxed`, `relaxUnitFun` and `freeze`.
 `relax` and `relaxUnitFun` determine if relaxing should be used and are false by default.
