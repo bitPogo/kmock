@@ -44,3 +44,7 @@ toc::[]
 === Deprecated
 
 === Migration
+
+== https://github.com/bitPogo/kmock/compare/v0.1.0[0.1.0]
+
+Initial release.
