@@ -8,6 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.error.MockError.MissingCall
 import tech.antibytes.kmock.error.MockError.MissingStub
+import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.verification.constraints.any
 import tech.antibytes.kmock.verification.constraints.eq
 import tech.antibytes.kmock.verification.constraints.isNot
@@ -669,6 +670,39 @@ object KMockContract {
          * @suppress
          */
         fun onSet(value: Value)
+    }
+
+    interface ProxyFactory {
+        fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
+            id: String,
+            collector: Collector = NoopCollector,
+            ignorableForVerification: Boolean = false,
+            relaxer: Relaxer<ReturnValue>? = null,
+            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
+            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
+            freeze: Boolean = true,
+            spyOn: SideEffect? = null
+        ): SyncFunProxy<ReturnValue, SideEffect>
+
+        fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
+            id: String,
+            collector: Collector = NoopCollector,
+            ignorableForVerification: Boolean = false,
+            relaxer: Relaxer<ReturnValue>? = null,
+            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
+            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
+            freeze: Boolean = true,
+            spyOn: SideEffect? = null
+        ): AsyncFunProxy<ReturnValue, SideEffect>
+
+        fun <Value> createPropertyProxy(
+            id: String,
+            collector: Collector = NoopCollector,
+            relaxer: Relaxer<Value>? = null,
+            freeze: Boolean = true,
+            spyOnGet: (() -> Value)? = null,
+            spyOnSet: ((Value) -> Unit)? = null
+        ): PropertyProxy<Value>
     }
 
     /**

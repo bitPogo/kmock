@@ -25,6 +25,7 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
     )
 
     private val any = Any::class.asTypeName()
+    private val proxy = SyncFunProxy::class.asClassName()
 
     private fun determineSuffixedProxyName(proxyName: String): String {
         return when (proxyName) {
@@ -100,11 +101,11 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
         proxyName: String,
     ): PropertySpec.Builder {
         val argumentName = resolveArgumentName(functionName)
+        val proxyId = "$qualifier#$proxyName"
 
         return proxySpec.initializer(
-            "%L(%S, spyOn = %L, collector = verifier, freeze = freeze, %L, ignorableForVerification = true)",
-            SyncFunProxy::class.simpleName,
-            "$qualifier#$proxyName",
+            "ProxyFactory.createSyncFunProxy(%S, spyOn = %L, collector = verifier, freeze = freeze, %L, ignorableForVerification = true)",
+            proxyId,
             "if (spyOn != null) { ${
             buildFunctionSpyInvocation(
                 spyName = functionName,
@@ -137,11 +138,9 @@ internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
             proxyReturnType,
         )
 
-        val proxyClass = SyncFunProxy::class.asClassName()
-
         return PropertySpec.builder(
             proxyName,
-            proxyClass.parameterizedBy(proxyReturnType, sideEffect)
+            proxy.parameterizedBy(proxyReturnType, sideEffect)
         ).let { proxySpec ->
             buildProxyInitializer(
                 proxySpec = proxySpec,

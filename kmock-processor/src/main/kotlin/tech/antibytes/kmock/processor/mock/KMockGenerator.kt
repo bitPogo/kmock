@@ -28,7 +28,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -50,7 +52,7 @@ internal class KMockGenerator(
         val constructor = FunSpec.constructorBuilder()
 
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
-        collector.defaultValue("Collector { _, _ -> Unit }")
+        collector.defaultValue("NoopCollector")
         constructor.addParameter(collector.build())
 
         val spy = ParameterSpec.builder(
@@ -243,6 +245,8 @@ internal class KMockGenerator(
         file.addImport(PROP_NAME.packageName, PROP_NAME.simpleName)
         file.addImport(SYNC_FUN_NAME.packageName, SYNC_FUN_NAME.simpleName)
         file.addImport(ASYNC_FUN_NAME.packageName, ASYNC_FUN_NAME.simpleName)
+        file.addImport(PROXY_FACTORY_NAME.packageName, PROXY_FACTORY_NAME.simpleName)
+        file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
         file.addImport(UNIT_RELAXER.packageName, UNIT_RELAXER.simpleName)
 
         if (relaxer != null) {

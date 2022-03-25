@@ -29,7 +29,7 @@ import tech.antibytes.kmock.KMockContract.Relaxer
  * @see Relaxer
  * @author Matthias Geisler
  */
-class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
+internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     id: String,
     collector: Collector = NoopCollector,
     ignorableForVerification: Boolean = false,
