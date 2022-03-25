@@ -28,9 +28,10 @@ toc::[]
 
 == Motivation and Goals
 
-Mocking should come ideally out of the box with other Language features.
-While KMP has come to stay, there was no candidate, which supported all basic test scenarios I encountered and was ready to fly out of the box, when I embarked on this project. +
-Well, complaining is easy, so I started to get my hands dirty and KMock was born. +
+Writing mocks is certainly no witchcraft, but doing them by hand day for day can be dull.
+While KMP has come to stay, there was no candidate, which fills the gap in terms of mocking satisfactory.
+Moreover, already existing libraries could not handle all basic test scenarios I encountered nor were able to fly out of the box.+
+Well, complaining is easy, so I started to get my hands dirty, embarked on a mission to change that and KMock was born. +
 It should at least fulfil the following properties:
 
 * easy to set up,
