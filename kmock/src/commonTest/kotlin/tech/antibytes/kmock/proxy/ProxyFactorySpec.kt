@@ -28,7 +28,7 @@ class ProxyFactorySpec {
     @Test
     @JsName("fn1")
     @Suppress("USELESS_IS_CHECK")
-    fun `Given createSyncFunProxy, it creates a SyncFunProxy`() {
+    fun `Given createSyncFunProxy it creates a SyncFunProxy`() {
         // When
         val proxy = ProxyFactory.createSyncFunProxy<Any, (Any, Any) -> Any>(
             id = fixture.fixture()
@@ -41,7 +41,7 @@ class ProxyFactorySpec {
     @Test
     @JsName("fn2")
     @Suppress("USELESS_IS_CHECK")
-    fun `Given createAsyncFunProxy, it creates a AsyncFunProxy`() {
+    fun `Given createAsyncFunProxy it creates a AsyncFunProxy`() {
         // When
         val proxy = ProxyFactory.createAsyncFunProxy<Any, suspend (Any, Any) -> Any>(
             id = fixture.fixture()
@@ -53,7 +53,7 @@ class ProxyFactorySpec {
 
     @Test
     @JsName("fn3")
-    fun `Given createPropertyProxy, it creates a PropertyProxy`() {
+    fun `Given createPropertyProxy it creates a PropertyProxy`() {
         // When
         val proxy: KMockContract.Proxy<Int, KMockContract.GetOrSet> = ProxyFactory.createPropertyProxy(
             id = fixture.fixture()

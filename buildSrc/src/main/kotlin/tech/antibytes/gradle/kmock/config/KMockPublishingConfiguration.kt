@@ -15,7 +15,8 @@ import tech.antibytes.gradle.publishing.api.VersioningConfiguration
 
 open class KMockPublishingConfiguration {
     private val username = System.getenv("PACKAGE_REGISTRY_UPLOAD_USERNAME")?.toString() ?: ""
-    private val password = System.getenv("PACKAGE_REGISTRY_UPLOAD_TOKEN")?.toString() ?: ""
+    private val passwordGitHubRepos = System.getenv("PACKAGE_REGISTRY_UPLOAD_TOKEN")?.toString() ?: ""
+    private val passwordGitHubPackages = System.getenv("PACKAGE_REGISTRY_REGISTER_TOKEN")?.toString() ?: ""
     private val githubOwner = "bitPogo"
     private val githubRepository = "kmock"
 
@@ -49,28 +50,28 @@ open class KMockPublishingConfiguration {
             name = "GitHubPackageRegistry",
             url = "https://maven.pkg.github.com/$path",
             username = username,
-            password = password
+            password = passwordGitHubPackages
         ),
         GitRepositoryConfiguration(
             name = "Development",
             gitWorkDirectory = "dev",
             url = "https://$gitHubOwnerPath/maven-dev",
             username = username,
-            password = password
+            password = passwordGitHubRepos
         ),
         GitRepositoryConfiguration(
             name = "Snapshot",
             gitWorkDirectory = "snapshots",
             url = "https://$gitHubOwnerPath/maven-snapshots",
             username = username,
-            password = password
+            password = passwordGitHubRepos
         ),
         GitRepositoryConfiguration(
             name = "Release",
             gitWorkDirectory = "releases",
             url = "https://$gitHubOwnerPath/maven-releases",
             username = username,
-            password = password
+            password = passwordGitHubRepos
         )
     )
 

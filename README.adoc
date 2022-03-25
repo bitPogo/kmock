@@ -36,9 +36,9 @@ endif::[]
         <a href="https://github.com/bitPogo/kmock/issues">Request Feature</a>
     </p>
     <p><!-- PROJECT BADGES see badges.adoc how to change them -->
-        <!--<a href="https://github.com/bitPogo/kmock/releases">
+        <a href="https://github.com/bitPogo/kmock/releases">
             <img src="assets/images/badge-release-latest.svg" alt="Latest release"/>
-        </a>//-->
+        </a>
         <a href="https://github.com/bitPogo/kmock/actions">
             <img src="https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg" alt="Latest Version"/>
         </a>
@@ -60,12 +60,10 @@ toc::[]
 == About The Project
 Writing mocks is certainly no witchcraft, but doing them by hand day for day can be dull.
 More importantly it takes time which can be better invested directly into writing tests. +
-However, while JVM project get indeed supreme support by either link:https://mockk.io/[MockK] or link:https://github.com/mockito/mockito-kotlin[Mockito], KMP still has nothing comparable. +
+However, while JVM projects get indeed supreme support by either link:https://mockk.io/[MockK] or link:https://github.com/mockito/mockito-kotlin[Mockito], KMP still has nothing comparable. +
 KMock aims to at least automate the process of Mock generation and will hopefully advance from here.
-Similar to other projects it uses link:https://github.com/google/ksp[KSP], but it is capable of associating generated Mocks correctly to their belonging shared source sets (like native, ios, etc) without additional setup or boilerplate done by consumers. +
-Also KMock offers to some extent features like spying or relaxing Mocks.
-KMock at its core pressures is non intrusive and can currently only work based on interfaces only.
-Also it has extended support for Kotlin basic features like overloading or generics in comparison to already existing mock libraries which target KMP as well.
+Similar to other projects it uses link:https://github.com/google/ksp[KSP], but it is capable of associating generated Mocks correctly to their belonging shared source sets (like native, ios, etc) without additional setup and with minimal boilerplate done by consumers. +
+KMock works currently *only* based on *interfaces*. It supports to some extent features like spying and relaxation of Mocks to make them non intrusive.
 So if the project caught your eye check out the link:{link-base}/kmock-playground[Playground] or dive into the link:{link-docs}/StarterGuide.adoc[Starter Guide].
 
 === Dependencies

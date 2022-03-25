@@ -180,6 +180,7 @@ class FunProxyArgumentRetrievalSpec {
         actual mustBe error
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn5")
     fun `Given getAllArgumentsBoxedByType is called collects all Arguments with for the given Type at the given CallIndex`() {
