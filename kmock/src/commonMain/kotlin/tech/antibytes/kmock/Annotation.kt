@@ -69,3 +69,17 @@ annotation class MockShared(val sourceSetName: String, vararg val interfaces: KC
  * @author Matthias Geisler
  */
 annotation class Relaxer
+
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "This API is experimental.  It may be removed or changed in future releases."
+)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+annotation class KMockExperimental

@@ -9,6 +9,7 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockExperimental
 
 /**
  * Asserts that invocations of a FunProxy happened.
@@ -18,6 +19,7 @@ import tech.antibytes.kmock.KMockContract.FunProxy
  * @see verify
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalled(
     exactly: Int,
 ) {
@@ -34,6 +36,7 @@ fun FunProxy<*, *>.assertHasBeenCalled(
  * @see verify
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalledWithVoid(
     exactly: Int,
 ) {
@@ -52,6 +55,7 @@ fun FunProxy<*, *>.assertHasBeenCalledWithVoid(
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalledWith(
     exactly: Int,
     vararg arguments: Any?
@@ -71,6 +75,7 @@ fun FunProxy<*, *>.assertHasBeenCalledWith(
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
     exactly: Int,
     vararg arguments: Any?
@@ -87,6 +92,7 @@ fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
  * @see verify
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasNotBeenCalled() {
     verify(exactly = 0) {
         this.hasBeenCalledWith()
@@ -102,6 +108,7 @@ fun FunProxy<*, *>.assertHasNotBeenCalled() {
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalledWithout(
     vararg illegal: Any?
 ) {
@@ -118,6 +125,7 @@ fun FunProxy<*, *>.assertHasBeenCalledWithout(
  * @see verify
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasGotten(exactly: Int) {
     verify(exactly = exactly) { this.wasGotten() }
 }
@@ -130,6 +138,7 @@ fun KMockContract.PropertyProxy<*>.assertWasGotten(exactly: Int) {
  * @see verify
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
     verify(exactly = exactly) { this.wasSet() }
 }
@@ -144,6 +153,7 @@ fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
+@KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasSetTo(exactly: Int, value: Any?) {
     verify(exactly = exactly) { this.wasSetTo(value) }
 }

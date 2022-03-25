@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fixture.fixture
@@ -19,6 +20,7 @@ import kotlin.test.assertFailsWith
 class ProxyAssertionSpec {
     private val fixture = kotlinFixture()
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn0")
     fun `Given assertHasBeenCalled fails if the amount of calls does not match the criteria`() {
@@ -35,6 +37,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn1")
     fun `Given assertHasBeenCalled accepts if the amount of calls match the criteria`() {
@@ -48,6 +51,7 @@ class ProxyAssertionSpec {
         proxy.assertHasBeenCalled(exactly = 1)
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn2")
     fun `Given assertHasBeenCalledWithVoid fails if the amount of calls does not match the criteria`() {
@@ -64,6 +68,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn3")
     fun `Given assertHasBeenCalledWith accepts if the amount of calls match the criteria`() {
@@ -77,6 +82,7 @@ class ProxyAssertionSpec {
         proxy.assertHasBeenCalledWithVoid(exactly = 1)
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn4")
     fun `Given assertHasBeenCalledWith fails if the amount of calls does not match the criteria`() {
@@ -96,6 +102,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn5")
     fun `Given assertHasBeenCalledWith accepts if the amount of calls does match the criteria`() {
@@ -111,6 +118,7 @@ class ProxyAssertionSpec {
         )
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn6")
     fun `Given assertHasBeenCalledStrictlyWith fails if the amount of calls does not match the criteria`() {
@@ -130,6 +138,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn7")
     fun `Given assertHasBeenCalledStrictlyWith accepts if the amount of calls does match the criteria`() {
@@ -146,6 +155,7 @@ class ProxyAssertionSpec {
         )
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn8")
     fun `Given assertHadNotBeenCalled fails if the amount of calls does not match the criteria`() {
@@ -162,6 +172,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn9")
     fun `Given assertHadNotBeenCalled accepts if the amount of calls does match the criteria`() {
@@ -175,6 +186,7 @@ class ProxyAssertionSpec {
         proxy.assertHasNotBeenCalled()
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn10")
     fun `Given assertHasBeenCalledWithout fails if the amount of calls does not match the criteria`() {
@@ -191,6 +203,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn11")
     fun `Given assertHasBeenCalledWithout accepts if the amount of calls does match the criteria`() {
@@ -204,6 +217,7 @@ class ProxyAssertionSpec {
         proxy.assertHasBeenCalledWithout(fixture.fixture())
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn12")
     fun `Given assertWasGotten fails if the amount of calls does not match the criteria`() {
@@ -219,6 +233,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn13")
     fun `Given assertWasGotten accepts if the amount of calls does match the criteria`() {
@@ -231,6 +246,7 @@ class ProxyAssertionSpec {
         proxy.assertWasGotten(1)
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn14")
     fun `Given assertWasSet fails if the amount of calls does not match the criteria`() {
@@ -246,6 +262,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn15")
     fun `Given assertWasSet accepts if the amount of calls does match the criteria`() {
@@ -258,6 +275,7 @@ class ProxyAssertionSpec {
         proxy.assertWasSet(1)
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn16")
     fun `Given assertWasSetTo fails if the amount of calls does not match the criteria`() {
@@ -273,6 +291,7 @@ class ProxyAssertionSpec {
         }
     }
 
+    @OptIn(KMockExperimental::class)
     @Test
     @JsName("fn17")
     fun `Given assertWasSetTo accepts if the amount of calls does match the criteria`() {

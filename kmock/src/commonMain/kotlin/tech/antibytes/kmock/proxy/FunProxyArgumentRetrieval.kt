@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.error.MockError.MissingCall
 
 /**
@@ -16,6 +17,7 @@ import tech.antibytes.kmock.error.MockError.MissingCall
  * @throws MissingCall if there is no call recorded at given index
  * @return List of T
  */
+@KMockExperimental
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
     callIndex: Int
 ): List<T> = this.getArgumentsForCall(callIndex).filterIsInstance<T>()
@@ -26,6 +28,7 @@ inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
  * @throws MissingCall if there is no call recorded at given index
  * @return List of T
  */
+@KMockExperimental
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsByType(): List<T> {
     val aggregated: MutableList<T> = mutableListOf()
 
@@ -44,6 +47,7 @@ inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsByType(
  * @throws MissingCall if there is no call recorded at given index
  * @return List of List of T
  */
+@KMockExperimental
 inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArgumentsBoxedByType(): List<List<T>> {
     val aggregated: MutableList<List<T>> = mutableListOf()
 
