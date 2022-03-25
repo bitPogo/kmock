@@ -28,29 +28,45 @@ toc::[]
 
 == Starter Guide
 
-NOTE: KMock is still a work in progress.
-All artefacts are currently only consumable as snapshots.
-Also changes may fly in on short notice. Currently the short hash of the latest commit of the main branch is used instead of a proper version. You will find the hash directly on the link:{link-repository}[start page] under the `Go to file` button.
-
+NOTE: KMock is currently published via link:https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package[GitHub Packages].
+If it finds sufficient appreciation it will migrate to MavenCentral.
 
 === Preparation
 
-In order to consume KMock snapshots please add the following code:
+In order to consume KMock please add the following code into your _buildSrc_'s and project's _build.gradle(.kts)_:
 
 [source, kotlin]
 ----
 repositories {
    ..
    maven {
-       setUrl("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
-       content {
-           includeGroup("tech.antibytes.kmock")
-       }
-   }
+      url = uri("https://maven.pkg.github.com/bitPogo/kmock")
+      credentials {
+          username = project.findProperty("gpr.user") ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
+          password = project.findProperty("gpr.key") ?: System.getenv("PACKAGE_REGISTRY_DOWNLOAD_TOKEN")
+      }
 }
 ----
 
+You may find a description what it does link:https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package[here].
+
 === Installation
+
+==== Include the plugin into your buildSrc
+
+Include the plugin into your link:https://docs.gradle.org/current/userguide/organizing_gradle_projects.html#sec:build_sources[buildSrc]:
+
+[source, kotlin]
+----
+dependencies {
+   ..
+   implementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+   ..
+}
+
+..
+
+----
 
 ==== Installation for JVM Projects
 
