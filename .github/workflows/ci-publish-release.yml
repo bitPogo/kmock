@@ -11,6 +11,7 @@ jobs:
     runs-on: macos-latest
 
     env:
+      PACKAGE_REGISTRY_REGISTER_TOKEN: ${{ secrets.PACKAGE_REGISTRY_REGISTER_TOKEN }}
       PACKAGE_REGISTRY_UPLOAD_USERNAME: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
       PACKAGE_REGISTRY_UPLOAD_TOKEN: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
 
@@ -28,5 +29,7 @@ jobs:
         run: ./gradlew clean
       - name: Build
         run: ./gradlew build
+      - name: Publish on GitHub Packages
+        run: ./gradlew publishAllPublicationToGitHubPackagesRepository
       - name: Publish to Release Repository
         run: ./gradlew publishRelease
