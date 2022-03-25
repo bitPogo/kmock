@@ -30,6 +30,6 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Publish on GitHub Packages
-        run: ./gradlew publishAllPublicationToGitHubPackagesRepository
+        run: ./gradlew publishAllPublicationsToGitHubPackageRegistryRepository
       - name: Publish to Release Repository
         run: ./gradlew publishRelease
