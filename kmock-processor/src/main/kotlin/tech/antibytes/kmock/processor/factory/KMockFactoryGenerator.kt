@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor.factory
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -19,6 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
@@ -31,6 +33,12 @@ internal class KMockFactoryGenerator(
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
+    private val unused = AnnotationSpec.builder(Suppress::class).addMember(
+        "%S, %S",
+        "UNUSED_PARAMETER",
+        "UNUSED_EXPRESSION"
+    ).build()
+
     private fun buildGenericsInfo(
         generics: List<TypeName>
     ): String {
@@ -326,7 +334,12 @@ internal class KMockFactoryGenerator(
             options.rootPackage,
             "MockFactory"
         )
+        file.addAnnotation(unused)
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+
+        if (!options.isKmp) {
+            file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
+        }
 
         val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 

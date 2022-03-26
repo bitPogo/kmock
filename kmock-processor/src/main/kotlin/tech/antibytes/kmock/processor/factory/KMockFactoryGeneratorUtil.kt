@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.processor.factory
 
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
@@ -18,8 +17,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockFactoryGeneratorUtil(
     private val genericResolver: ProcessorContract.GenericResolver
 ) : ProcessorContract.MockFactoryGeneratorUtil {
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
-
     private fun buildGenericFactoryArgument(
         identifier: TypeVariableName,
         generics: List<TypeVariableName>
@@ -48,7 +45,7 @@ internal class KMockFactoryGeneratorUtil(
                 ParameterSpec.builder(
                     name = "templateType",
                     type = buildGenericFactoryArgument(identifier, generics)
-                ).addAnnotation(unused).build()
+                ).build()
             )
         }
 
@@ -63,7 +60,7 @@ internal class KMockFactoryGeneratorUtil(
             parameter.defaultValue("false")
         }
 
-        return parameter.addAnnotation(unused).build()
+        return parameter.build()
     }
 
     private fun buildUnitRelaxedParameter(
@@ -74,7 +71,7 @@ internal class KMockFactoryGeneratorUtil(
             parameter.defaultValue("false")
         }
 
-        return parameter.addAnnotation(unused).build()
+        return parameter.build()
     }
 
     private fun buildVerifierParameter(
@@ -82,14 +79,14 @@ internal class KMockFactoryGeneratorUtil(
     ): ParameterSpec {
         val parameter = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME)
         if (hasDefault) {
-            parameter.defaultValue("Collector { _, _ -> Unit }")
+            parameter.defaultValue("NoopCollector")
         }
 
         return parameter.build()
     }
 
     private fun buildFreezeParameter(
-        hasDefault: Boolean
+        hasDefault: Boolean,
     ): ParameterSpec {
         val parameter = ParameterSpec.builder("freeze", Boolean::class)
         if (hasDefault) {
@@ -122,7 +119,6 @@ internal class KMockFactoryGeneratorUtil(
 
     private fun buildSpyParameter(): ParameterSpec {
         return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
-            .addAnnotation(unused)
             .build()
     }
 

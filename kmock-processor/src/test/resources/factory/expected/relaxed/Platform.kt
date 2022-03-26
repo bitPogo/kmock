@@ -1,14 +1,17 @@
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+
 package generatorTest
 
 import kotlin.Boolean
 import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.proxy.NoopCollector
 
 internal inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    verifier: KMockContract.Collector = NoopCollector,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     factory.template.relaxed.PlatformMock::class -> factory.template.relaxed.PlatformMock(verifier =
@@ -17,8 +20,8 @@ internal inline fun <reified Mock> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")

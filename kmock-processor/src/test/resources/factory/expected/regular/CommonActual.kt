@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+
 package generatorTest
 
 import kotlin.Boolean
@@ -7,8 +9,8 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 internal actual inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector,
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean,
+    relaxed: Boolean,
+    relaxUnitFun: Boolean,
     freeze: Boolean
 ): Mock = when (Mock::class) {
     factory.template.regular.CommonMock::class -> factory.template.regular.CommonMock(verifier =
@@ -17,7 +19,7 @@ internal actual inline fun <reified Mock> kmock(
 }
 
 internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector,
     freeze: Boolean
 ): Mock = when (Mock::class) {
