@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+
 package generatorTest
 
 import factory.template.generic.Shared1
@@ -11,34 +13,30 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 internal expect inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>, K : Any, L> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared2<K, L>, K : Any, L> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>
 ): Mock where L : Any, L : Comparable<L>

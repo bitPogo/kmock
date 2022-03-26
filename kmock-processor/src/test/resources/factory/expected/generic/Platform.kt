@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+
 package generatorTest
 
 import factory.template.generic.Platform
@@ -10,15 +12,15 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
@@ -27,10 +29,9 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
 
 internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generic.PlatformMock::class -> factory.template.generic.PlatformMock<K,
@@ -39,10 +40,9 @@ internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform<K, L>, K : Any, L> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")

@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION")
+
 package generatorTest
 
 import factory.template.spy.Platform1
@@ -10,8 +12,8 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     factory.template.spy.Platform2Mock::class -> factory.template.spy.Platform2Mock(verifier =
@@ -22,7 +24,7 @@ internal inline fun <reified Mock> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
@@ -33,10 +35,9 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
 
 internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
-    @Suppress("UNUSED_PARAMETER") relaxed: Boolean = false,
-    @Suppress("UNUSED_PARAMETER") relaxUnitFun: Boolean = false,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.spy.Platform1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.spy.Platform1Mock::class -> factory.template.spy.Platform1Mock<K, L>(verifier =
@@ -45,10 +46,9 @@ internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
 }
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : Any, L> kspy(
-    @Suppress("UNUSED_PARAMETER") spyOn: SpyOn,
+    spyOn: SpyOn,
     verifier: KMockContract.Collector = Collector { _, _ -> Unit },
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
     templateType: kotlin.reflect.KClass<factory.template.spy.Platform1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.spy.Platform1Mock::class -> factory.template.spy.Platform1Mock(verifier =
