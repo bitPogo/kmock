@@ -37,6 +37,8 @@ toc::[]
 
 === Fixed
 
+* Warnings for unused expression and unused parameter in MockFactory
+
 === Security
 
 === Bumped
