@@ -79,7 +79,7 @@ internal class KMockFactoryGeneratorUtil(
     ): ParameterSpec {
         val parameter = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME)
         if (hasDefault) {
-            parameter.defaultValue("Collector { _, _ -> Unit }")
+            parameter.defaultValue("NoopCollector")
         }
 
         return parameter.build()
@@ -119,7 +119,6 @@ internal class KMockFactoryGeneratorUtil(
 
     private fun buildSpyParameter(): ParameterSpec {
         return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
-            
             .build()
     }
 

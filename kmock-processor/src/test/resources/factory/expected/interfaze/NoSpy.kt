@@ -9,9 +9,10 @@ import kotlin.Comparable
 import kotlin.Suppress
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.proxy.NoopCollector
 
 internal inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    verifier:KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true
@@ -31,14 +32,14 @@ internal inline fun <reified Mock> kmock(
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    verifier:KMockContract.Collector = NoopCollector,
     freeze: Boolean = true
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    verifier:KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
@@ -53,7 +54,7 @@ internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : Any, L> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = Collector { _, _ -> Unit },
+    verifier:KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {

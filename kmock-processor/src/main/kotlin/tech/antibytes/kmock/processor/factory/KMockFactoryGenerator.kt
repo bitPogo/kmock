@@ -20,6 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
@@ -335,6 +336,10 @@ internal class KMockFactoryGenerator(
         )
         file.addAnnotation(unused)
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+
+        if (!options.isKmp) {
+            file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
+        }
 
         val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
