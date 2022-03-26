@@ -18,9 +18,9 @@ object KMockConfiguration {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
                 name = "kmock",
-                description = "Mocking framework for Kotlin Multiplatform.",
-                year = 2022,
-                url = "https://$gitHubRepositoryPath"
+                description = description,
+                year = year,
+                url = url
             ),
             developers = listOf(developer),
             license = license,

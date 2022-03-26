@@ -19,9 +19,9 @@ object KMockProcessorConfiguration {
             isJavaLibrary = true,
             pom = PomConfiguration(
                 name = "kmock-processor",
-                description = "Mocking Framework for Kotlin Multiplatform.",
-                year = 2022,
-                url = "https://$gitHubRepositoryPath"
+                description = description,
+                year = year,
+                url = url
             ),
             developers = listOf(developer),
             license = license,

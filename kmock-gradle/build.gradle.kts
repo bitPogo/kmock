@@ -9,13 +9,14 @@ import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
-import tech.antibytes.gradle.kmock.dependency.Version
 
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
 
     id("tech.antibytes.gradle.publishing")
+    id("com.gradle.plugin-publish")
+
     id("tech.antibytes.gradle.coverage")
 }
 
@@ -73,13 +74,20 @@ kotlin {
     }
 }
 
+pluginBundle {
+    description = KMockGradleConfiguration.longDescription
+    website = KMockGradleConfiguration.publishing.url
+    vcsUrl = KMockGradleConfiguration.publishing.packageConfiguration.scm.url
+    tags = listOf("kotlin", "stub", "spy", "mock", "test")
+}
+
 gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {
-        group = KMockGradleConfiguration.group
         id = KMockGradleConfiguration.pluginId
+        group = KMockGradleConfiguration.group
+        displayName = KMockGradleConfiguration.publishing.description
+        description = KMockGradleConfiguration.longDescription
         implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
-        displayName = "${id}.gradle.plugin"
-        description = "KMock Gradle Plugin"
-        version = "0.1.0"
+        version = KMockGradleConfiguration.version
     }
 }
