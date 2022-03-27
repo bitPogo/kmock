@@ -6,6 +6,7 @@
 
 import tech.antibytes.gradle.kmock.dependency.Dependency
 import tech.antibytes.gradle.kmock.dependency.addCustomRepositories
+import tech.antibytes.gradle.kmock.dependency.ensureKotlinVersion
 
 plugins {
     `kotlin-dsl`
@@ -18,6 +19,7 @@ repositories {
     mavenCentral()
     google()
     addCustomRepositories()
+    ensureKotlinVersion("1.5.31")
 }
 
 dependencies {
@@ -28,4 +30,9 @@ dependencies {
     implementation(Dependency.gradle.projectConfig)
     implementation(Dependency.gradle.runtimeConfig)
     implementation(Dependency.gradle.ksp)
+}
+
+with(extensions.getByType<JavaPluginExtension>()) {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
