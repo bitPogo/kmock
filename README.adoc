@@ -76,7 +76,7 @@ KMock has the following dependencies:
 * link:https://github.com/touchlab/Stately[Touchlab's Stately 1.2.1]
 * link:https://square.github.io/kotlinpoet/[Square KotlinPoet 1.10.2]
 * link:https://github.com/google/ksp[Kotlin Symbol Processing (KSP) 1.6.10-1.0.4]
-* link:https://gradle.org/[Gradle 7.2]
+* link:https://gradle.org/[Gradle 7.4.1]
 
 === Additional Requirements
 
