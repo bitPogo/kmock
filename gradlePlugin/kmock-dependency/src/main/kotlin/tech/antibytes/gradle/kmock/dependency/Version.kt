@@ -9,17 +9,18 @@ package tech.antibytes.gradle.kmock.dependency
 object Version {
 
     val gradle = Gradle
+    const val kotlin = "1.6.10"
 
     object Gradle {
         /**
          * [Kotlin](https://github.com/JetBrains/kotlin)
          */
-        val kotlin = "1.6.10"
+        const val kotlin = Version.kotlin
 
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "6731cef"
+        const val antibytes = "4137039"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
@@ -30,7 +31,7 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "c3e5acf"
+        const val test = "7281fe2"
     }
 
     val google = Google
