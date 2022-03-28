@@ -2,7 +2,7 @@
 :link-base: https://github.com/bitPogo
 :link-repository: {link-base}/kmock
 :link-docs: {link-repository}/tree/main/docs
-:project-version: 0.1.0
+:project-version: 0.1.1
 :doctype: article
 :!showtitle:
 :toc: macro

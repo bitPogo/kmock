@@ -4,7 +4,7 @@ The badges are generate with link:https://shields.io/[Shields.io] to generate ou
 
 == Badge sources
 
-:link-badge-release: https://img.shields.io/badge/Release-0.1.0-blueviolet.svg
+:link-badge-release: https://img.shields.io/badge/Release-0.1.1-blueviolet.svg
 Version image:{link-badge-release}[Latest release]::
 `curl {link-badge-release} -s -o badge-release-latest.svg`
 
