@@ -19,12 +19,15 @@ open class KMockPublishingConfiguration {
     private val passwordGitHubPackages = System.getenv("PACKAGE_REGISTRY_REGISTER_TOKEN")?.toString() ?: ""
     private val githubOwner = "bitPogo"
     private val githubRepository = "kmock"
+    val description = "KMock - a Mock Generator for Kotlin (Multiplatform)."
 
     private val host = "github.com"
     private val path = "$githubOwner/$githubRepository"
 
-    protected val gitHubRepositoryPath = "$host/$path"
+    private val gitHubRepositoryPath = "$host/$path"
     private val gitHubOwnerPath = "$host/$githubOwner"
+    val url = "https://$gitHubRepositoryPath"
+    protected val year = 2022
 
     protected val license = LicenseConfiguration(
         name = "Apache License, Version 2.0",

@@ -13,6 +13,11 @@ object KMockGradleConfiguration {
     const val group = "tech.antibytes.kmock"
     const val id = "kmock-gradle"
     const val pluginId = "$group.$id"
+    val longDescription = """KMock is generator for Mocks and Spies aiming Kotlin (Multiplatform).
+        |It can work non intrusive, if relaxed or while acting as Spy and supports as well stubbing.
+        |This plugin apply some necessary configuration and takes care of the communication with the processor.
+    """.trimMargin()
+    const val version = "0.1.0"
 
     val publishing = Publishing
 
@@ -20,9 +25,9 @@ object KMockGradleConfiguration {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
                 name = id,
-                description = "Mocking Framework for Kotlin Multiplatform.",
-                year = 2022,
-                url = "https://$gitHubRepositoryPath"
+                description = description,
+                year = year,
+                url = url
             ),
             developers = listOf(developer),
             license = license,

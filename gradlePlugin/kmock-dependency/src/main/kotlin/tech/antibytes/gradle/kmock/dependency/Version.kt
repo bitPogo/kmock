@@ -26,6 +26,11 @@ object Version {
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
         const val spotless = "6.3.0"
+
+        /**
+         * [Gradle Plugin Publishing](https://plugins.gradle.org/plugin/com.gradle.plugin-publish)
+         */
+        const val pluginPublishing = "0.20.0"
     }
 
     val antibytes = Antibytes
