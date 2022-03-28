@@ -5,7 +5,7 @@
 :link-api: {link-docs}/api
 :author: Matthias Geisler
 :revnumber: 1.0
-:project-version: 0.1.0
+:project-version: 0.1.1
 :doctype: article
 :toc: macro
 :toclevels: 4

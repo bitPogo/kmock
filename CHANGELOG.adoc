@@ -37,17 +37,24 @@ toc::[]
 
 === Fixed
 
-* Warnings for unused expression and unused parameter in MockFactory
-
 === Security
 
 === Bumped
 
-* Gradle 7.2 -> 7.4.1
-
 === Deprecated
 
 === Migration
+
+
+== https://github.com/bitPogo/kmock/compare/v0.1.0\...v0.1.1[0.1.1]
+
+=== Fixed
+
+* Warnings for unused expression and unused parameter in MockFactory
+
+=== Bumped
+
+* Gradle 7.2 -> 7.4.1
 
 == https://github.com/bitPogo/kmock/compare/v0.1.0[0.1.0]
 

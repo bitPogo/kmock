@@ -6,7 +6,7 @@
 :doctype: article
 :author: Matthias Geisler
 :revnumber: 1.0
-:project-version: 0.1.0
+:project-version: 0.1.1
 :toc: macro
 :toclevels: 3
 :toc-title:
