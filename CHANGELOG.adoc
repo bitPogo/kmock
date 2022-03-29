@@ -29,6 +29,8 @@ toc::[]
 
 === Added
 
+* `or` ArgumentConstraint
+
 === Changed
 
 === Deprecated
