@@ -49,6 +49,12 @@ internal interface KMockPluginContract {
         var spyOn: Set<String>
 
         /**
+         * Switch which will KMock tell generate only `kspy` instead of `kmock`.
+         * `kspy` will automatically reference all generated spies an addtional invocation of `spyOn` is not needed.
+         */
+        var spiesOnly: Boolean
+
+        /**
          * Enable the kmock factory function to reference Mocks by their interfaces.
          * Default is false
          */
@@ -77,6 +83,7 @@ internal interface KMockPluginContract {
         const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
         const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
+        const val SPY_ONLY = "${KMOCK_PREFIX}spiesOnly"
         const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

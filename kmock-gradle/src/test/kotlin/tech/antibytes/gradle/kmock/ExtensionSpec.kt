@@ -345,4 +345,33 @@ class ExtensionSpec {
         extension.allowInterfacesOnKspy mustBe expected
         verify(exactly = 1) { kspExtension.arg("kmock_allowInterfacesOnKspy", expected.toString()) }
     }
+
+    @Test
+    fun `Its spiesOnly is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.spiesOnly mustBe false
+    }
+
+    @Test
+    fun `It propagates spiesOnly changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.spiesOnly = expected
+
+        extension.spiesOnly mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_spiesOnly", expected.toString()) }
+    }
 }
