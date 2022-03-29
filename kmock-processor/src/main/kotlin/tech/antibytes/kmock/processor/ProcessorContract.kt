@@ -43,6 +43,7 @@ internal interface ProcessorContract {
         val isKmp: Boolean,
         val allowInterfacesOnKmock: Boolean,
         val allowInterfacesOnKspy: Boolean,
+        val spiesOnly: Boolean,
         val rootPackage: String,
         val knownSourceSets: Set<String>,
         val precedences: Map<String, Int>,
@@ -278,6 +279,7 @@ internal interface ProcessorContract {
         const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
         const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
+        const val SPY_ONLY = "${KMOCK_PREFIX}spiesOnly"
         const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

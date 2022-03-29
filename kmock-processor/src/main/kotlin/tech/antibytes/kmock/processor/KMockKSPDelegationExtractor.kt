@@ -16,6 +16,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PRE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
@@ -57,6 +58,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val spyOn: MutableSet<String> = mutableSetOf()
         var allowInterfacesOnKmock = false
         var allowInterfacesOnKspy = false
+        var spiesOnly = false
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -65,6 +67,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == KMP_FLAG -> isKmp = value.toBoolean()
                 key == INTERFACES_KMOCK -> allowInterfacesOnKmock = value.toBoolean()
                 key == INTERFACES_KSPY -> allowInterfacesOnKspy = value.toBoolean()
+                key == SPY_ONLY -> spiesOnly = value.toBoolean()
                 key.startsWith(PRECEDENCE_PREFIX) -> extractPrecedence(key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence
                 }
@@ -87,6 +90,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             isKmp = isKmp!!,
             allowInterfacesOnKmock = allowInterfacesOnKmock,
             allowInterfacesOnKspy = allowInterfacesOnKspy,
+            spiesOnly = spiesOnly,
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
