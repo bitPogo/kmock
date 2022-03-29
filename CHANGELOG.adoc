@@ -30,6 +30,7 @@ toc::[]
 === Added
 
 * `or` ArgumentConstraint
+* `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`, while adding all known mocks.
 
 === Changed
 
