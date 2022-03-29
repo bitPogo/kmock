@@ -366,7 +366,7 @@ class KSPDelegationExtractorSpec {
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
         val kspDir: String = fixture.fixture()
-        val expected: Boolean = fixture.fixture()
+        val expected = true
 
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
@@ -408,7 +408,7 @@ class KSPDelegationExtractorSpec {
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
         val kspDir: String = fixture.fixture()
-        val expected: Boolean = fixture.fixture()
+        val expected = true
 
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
@@ -422,5 +422,47 @@ class KSPDelegationExtractorSpec {
 
         // Then
         actual.allowInterfacesOnKspy mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a false for spiesOnly if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.spiesOnly mustBe false
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for spiesOnly`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected = true
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_spiesOnly" to expected.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.spiesOnly mustBe expected
     }
 }

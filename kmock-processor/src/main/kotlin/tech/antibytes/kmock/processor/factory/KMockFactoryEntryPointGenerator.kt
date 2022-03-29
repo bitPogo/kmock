@@ -20,6 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
+    private val spiesOnly: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
@@ -111,7 +112,9 @@ internal class KMockFactoryEntryPointGenerator(
         genericFactories.forEach { factories ->
             val (mockFactory, spyFactory) = factories
 
-            file.addFunction(mockFactory)
+            if (!spiesOnly) {
+                file.addFunction(mockFactory)
+            }
             file.addFunction(spyFactory)
         }
     }
@@ -131,7 +134,9 @@ internal class KMockFactoryEntryPointGenerator(
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
             file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
 
-            file.addFunction(buildMockFactory())
+            if (!spiesOnly) {
+                file.addFunction(buildMockFactory())
+            }
             file.addFunction(buildSpyFactory())
 
             generateGenericEntryPoints(
