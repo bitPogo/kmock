@@ -58,12 +58,14 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 allowInterfacesOnKmock = options.allowInterfacesOnKmock,
                 allowInterfacesOnKspy = options.allowInterfacesOnKspy,
                 spyOn = options.spyOn,
+                spiesOnly = options.spiesOnly,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
                 codeGenerator = codeGenerator
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
+                spiesOnly = options.spiesOnly,
                 genericResolver = genericResolver,
                 codeGenerator = codeGenerator
             ),

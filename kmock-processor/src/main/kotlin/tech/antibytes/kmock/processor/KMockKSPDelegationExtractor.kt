@@ -15,8 +15,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
@@ -67,7 +67,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == KMP_FLAG -> isKmp = value.toBoolean()
                 key == INTERFACES_KMOCK -> allowInterfacesOnKmock = value.toBoolean()
                 key == INTERFACES_KSPY -> allowInterfacesOnKspy = value.toBoolean()
-                key == SPY_ONLY -> spiesOnly = value.toBoolean()
+                key == SPIES_ONLY -> spiesOnly = value.toBoolean()
                 key.startsWith(PRECEDENCE_PREFIX) -> extractPrecedence(key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence
                 }

@@ -610,4 +610,93 @@ class KMockFactoriesSpec {
         actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
         actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for only Spies for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/spiesonly/Platform.kt")
+        )
+        val expected = loadResource("/expected/spiesonly/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spiesOnly" to "true",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for only Spies for Shared is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/spiesonly/Shared.kt")
+        )
+        val expectedActual = loadResource("/expected/spiesonly/SharedActual.kt")
+        val expectedExpect = loadResource("/expected/spiesonly/SharedExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spiesOnly" to "true",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for only Spies for Common is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/spiesonly/Common.kt")
+        )
+        val expectedActual = loadResource("/expected/spiesonly/CommonActual.kt")
+        val expectedExpect = loadResource("/expected/spiesonly/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spiesOnly" to "true",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
 }

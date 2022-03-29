@@ -83,7 +83,7 @@ internal interface KMockPluginContract {
         const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
         const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
-        const val SPY_ONLY = "${KMOCK_PREFIX}spiesOnly"
+        const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
         const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
     }
 }

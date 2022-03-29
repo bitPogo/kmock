@@ -16,8 +16,8 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES_PREFIX
 
 abstract class KMockExtension(
@@ -147,7 +147,7 @@ abstract class KMockExtension(
     override var spiesOnly: Boolean
         get() = _spiesOnly
         set(value) {
-            propagateValue(SPY_ONLY, value.toString())
+            propagateValue(SPIES_ONLY, value.toString())
             _spiesOnly = value
         }
 }

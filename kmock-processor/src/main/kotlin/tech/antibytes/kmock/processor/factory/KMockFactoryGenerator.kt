@@ -27,6 +27,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     private val spyOn: Set<String>,
+    private val spiesOnly: Boolean,
     private val allowInterfacesOnKmock: Boolean,
     private val allowInterfacesOnKspy: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
@@ -185,7 +186,7 @@ internal class KMockFactoryGenerator(
         source: TemplateSource,
         typeInfo: String,
     ) {
-        if (qualifiedName in spyOn) {
+        if (spiesOnly || qualifiedName in spyOn) {
             val packageName = source.template.packageName.asString()
             val aliasInterfaceName = createAliasName(source.alias, packageName)
             val interfaceName = "$packageName.${source.template.simpleName.asString()}"
@@ -349,13 +350,15 @@ internal class KMockFactoryGenerator(
             isKmp = options.isKmp,
         )
 
-        file.addFunction(
-            buildMockFactory(
-                templateSources = regular,
-                relaxer = relaxer,
-                isKmp = options.isKmp,
+        if (!spiesOnly) {
+            file.addFunction(
+                buildMockFactory(
+                    templateSources = regular,
+                    relaxer = relaxer,
+                    isKmp = options.isKmp,
+                )
             )
-        )
+        }
 
         file.addFunction(
             buildSpyFactory(
@@ -367,7 +370,10 @@ internal class KMockFactoryGenerator(
         genericFactories.forEach { factories ->
             val (kmock, kspy) = factories
 
-            file.addFunction(kmock)
+            if (!spiesOnly) {
+                file.addFunction(kmock)
+            }
+
             file.addFunction(kspy)
         }
 

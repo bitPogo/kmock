@@ -19,6 +19,7 @@ class KMockFactorySpec {
             mockk(),
             false,
             false,
+            false,
             mockk(),
             mockk(),
             mockk()
