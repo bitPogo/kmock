@@ -32,12 +32,26 @@ internal class PlatformMock(
         ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_bar", spyOn = null,
             collector = verifier, freeze = freeze, relaxer = null)
 
+    public val _ozz: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_ozz", spyOn = null,
+            collector = verifier, freeze = freeze, relaxer = null)
+
+    public val _izz: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_izz", spyOn = null,
+            collector = verifier, freeze = freeze, relaxer = null)
+
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
     public override fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
 
+    public override fun ozz(vararg buzz: Int): Any = _ozz.invoke(buzz)
+
+    public override fun izz(vararg buzz: Any): Any = _izz.invoke(buzz)
+
     public fun _clearMock(): Unit {
         _foo.clear()
         _bar.clear()
+        _ozz.clear()
+        _izz.clear()
     }
 }

@@ -36,19 +36,19 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createPropertyProxy("mock.template.generic.AllowedRecursiveMock#_template",
             spyOnGet = null, spyOnSet = null, collector = verifier, freeze = freeze, relaxer = null)
 
+    public val _ossWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithVoid",
+            spyOn = null, collector = verifier, freeze = freeze, relaxer = null)
+
     public val _ossWithSequencesSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithSequencesSequence",
             spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
                 relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
-    public val _ossWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithVoid",
-            spyOn = null, collector = verifier, freeze = freeze, relaxer = null)
-
-    public val _brassWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
+    public val _ossWithSequencesSequences: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_ossWithSequencesSequences",
             spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
                 relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
@@ -57,9 +57,15 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithVoid",
             spyOn = null, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _issWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
+    public val _brassWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithComparable",
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+
+    public val _brassWithComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    kotlin.Comparable<Any?>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_brassWithComparables",
             spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
                 relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
@@ -68,31 +74,55 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithVoid",
             spyOn = null, collector = verifier, freeze = freeze, relaxer = null)
 
-    public override fun <T> oss(payload: T): Unit where T : Sequence<Char>, T : CharSequence, T :
-    Comparable<List<T>> = _ossWithSequencesSequence.invoke(payload)
+    public val _issWithComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<Any?>) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithComparable",
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
+
+    public val _issWithComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    kotlin.Comparable<Any?>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.AllowedRecursiveMock#_issWithComparables",
+            spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
+                relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> oss(): T where T : Sequence<Char>, T : CharSequence, T :
     Comparable<List<T>> = _ossWithVoid.invoke() as T
 
-    public override fun <T : Comparable<List<T>>> brass(payload: T): Unit =
-        _brassWithComparable.invoke(payload)
+    public override fun <T> oss(payload: T): Unit where T : Sequence<Char>, T : CharSequence, T :
+    Comparable<List<T>> = _ossWithSequencesSequence.invoke(payload)
+
+    public override fun <T> oss(vararg payload: T): Unit where T : Sequence<Char>, T : CharSequence, T
+    : Comparable<List<T>> = _ossWithSequencesSequences.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Comparable<List<T>>> brass(): T = _brassWithVoid.invoke() as T
 
-    public override fun <T : Comparable<T>> iss(payload: T): Unit = _issWithComparable.invoke(payload)
+    public override fun <T : Comparable<List<T>>> brass(payload: T): Unit =
+        _brassWithComparable.invoke(payload)
+
+    public override fun <T : Comparable<List<T>>> brass(vararg payload: T): Unit =
+        _brassWithComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Comparable<T>> iss(): T = _issWithVoid.invoke() as T
 
+    public override fun <T : Comparable<T>> iss(payload: T): Unit = _issWithComparable.invoke(payload)
+
+    public override fun <T : Comparable<T>> iss(vararg payload: T): Unit =
+        _issWithComparables.invoke(payload)
+
     public fun _clearMock(): Unit {
         _template.clear()
-        _ossWithSequencesSequence.clear()
         _ossWithVoid.clear()
-        _brassWithComparable.clear()
+        _ossWithSequencesSequence.clear()
+        _ossWithSequencesSequences.clear()
         _brassWithVoid.clear()
-        _issWithComparable.clear()
+        _brassWithComparable.clear()
+        _brassWithComparables.clear()
         _issWithVoid.clear()
+        _issWithComparable.clear()
+        _issWithComparables.clear()
     }
 }

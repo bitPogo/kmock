@@ -55,15 +55,32 @@ internal class CommonMock<K : Any, L>(
             unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer =
             null, buildInRelaxer = null)
 
+    public val _oo: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_oo", spyOn = if (spyOn != null)
+        { { payload ->
+            __spyOn!!.oo(*payload) } } else { null }, collector = verifier, freeze = freeze,
+            unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer =
+            null, buildInRelaxer = null)
+
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_bar", spyOn = if (spyOn !=
             null) { { arg0 ->
             __spyOn!!.bar(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
+    public val _ar: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_ar", spyOn = if (spyOn != null)
+        { { arg0 ->
+            __spyOn!!.ar(*arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
     public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_buzz", spyOn = if (spyOn !=
             null) { { arg0 ->
             __spyOn!!.buzz(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
+    public val _uzz: KMockContract.AsyncFunProxy<L, suspend (Array<out kotlin.String>) -> L> =
+        ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_uzz", spyOn = if (spyOn !=
+            null) { { arg0 ->
+            __spyOn!!.uzz(*arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
     private val __spyOn: Common<K, L>? = spyOn
 
@@ -88,9 +105,15 @@ internal class CommonMock<K : Any, L>(
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 
+    public override fun <T> oo(vararg payload: T): Unit = _oo.invoke(payload)
+
     public override fun bar(arg0: Int): Any = _bar.invoke(arg0)
 
+    public override fun ar(vararg arg0: Int): Any = _ar.invoke(arg0)
+
     public override suspend fun buzz(arg0: String): L = _buzz.invoke(arg0)
+
+    public override suspend fun uzz(vararg arg0: String): L = _uzz.invoke(arg0)
 
     public override fun toString(): String = _toString.invoke()
 
@@ -108,8 +131,11 @@ internal class CommonMock<K : Any, L>(
         _template.clear()
         _ozz.clear()
         _foo.clear()
+        _oo.clear()
         _bar.clear()
+        _ar.clear()
         _buzz.clear()
+        _uzz.clear()
         _toString.clear()
         _equals.clear()
         _hashCode.clear()

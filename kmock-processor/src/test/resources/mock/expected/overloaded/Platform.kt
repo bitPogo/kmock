@@ -86,6 +86,10 @@ internal class PlatformMock(
             spyOn = null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
                 relaxVoidFunction() } } else { null }, relaxer = null, buildInRelaxer = null)
 
+    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithAnys", spyOn =
+        null, collector = verifier, freeze = freeze, relaxer = null)
+
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Any, ozz: Int): Any = _fooWithAnyInt.invoke(fuzz, ozz)
@@ -106,6 +110,8 @@ internal class PlatformMock(
 
     public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithMockTemplateOverloadedLPG.invoke(fuzz)
 
+    public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)
+
     public fun _clearMock(): Unit {
         _foo.clear()
         _hashCode.clear()
@@ -118,5 +124,6 @@ internal class PlatformMock(
         _fooWithAny.clear()
         _fooWithMockTemplateOverloadedPlatform.clear()
         _fooWithMockTemplateOverloadedLPG.clear()
+        _fooWithAnys.clear()
     }
 }

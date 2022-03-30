@@ -43,8 +43,8 @@ internal class KMockGenerator(
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val genericsResolver: ProcessorContract.GenericResolver,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
-    private val functionGenerator: ProcessorContract.FunctionGenerator,
-    private val buildInGenerator: ProcessorContract.BuildInFunctionGenerator
+    private val methodGenerator: ProcessorContract.MethodGenerator,
+    private val buildInGenerator: ProcessorContract.BuildInMethodGenerator
 ) : ProcessorContract.MockGenerator {
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
 
@@ -176,7 +176,7 @@ internal class KMockGenerator(
             val name = ksFunction.simpleName.asString()
 
             if (ksFunction.isPublicOpen() && name != "equals" && name != "toString" && name != "hashCode") {
-                val (proxy, function) = functionGenerator.buildFunctionBundle(
+                val (proxy, function) = methodGenerator.buildMethodBundle(
                     qualifier = qualifier,
                     ksFunction = ksFunction,
                     typeResolver = typeResolver,
@@ -201,7 +201,7 @@ internal class KMockGenerator(
                 ).initializer("spyOn").build()
             )
 
-            val (proxies, functions) = buildInGenerator.buildFunctionBundles(
+            val (proxies, functions) = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
                 existingProxies = overloadedMethods,
