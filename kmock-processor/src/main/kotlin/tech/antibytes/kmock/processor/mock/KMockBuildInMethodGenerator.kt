@@ -17,7 +17,7 @@ import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInFunctionGenerator
 
-internal object KMockBuildInFunctionGenerator : BuildInFunctionGenerator {
+internal object KMockBuildInMethodGenerator : BuildInFunctionGenerator {
     private val buildIns = mapOf(
         "toString" to String::class,
         "equals" to Boolean::class,

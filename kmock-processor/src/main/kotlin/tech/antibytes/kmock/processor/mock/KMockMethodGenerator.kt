@@ -30,7 +30,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.titleCase
 
-internal class KMockFunctionGenerator(
+internal class KMockMethodGenerator(
     private val allowedRecursiveTypes: Set<String>,
     private val uselessPrefixes: Set<String>,
     private val genericResolver: ProcessorContract.GenericResolver,
