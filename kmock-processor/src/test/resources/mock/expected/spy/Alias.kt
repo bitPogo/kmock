@@ -48,22 +48,40 @@ internal class AliasPlatformMock<K : Any, L>(
             __spyOn!!.ozz }, collector = verifier, freeze = freeze, relaxer = null)}
 
 
-    public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_foo", spyOn = if (spyOn
-            != null) { { payload ->
+    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_fooWithAny", spyOn = if
+                                                                                                       (spyOn != null) { { payload ->
             __spyOn!!.foo(payload) } } else { null }, collector = verifier, freeze = freeze,
             unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer =
             null, buildInRelaxer = null)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_bar", spyOn = if (spyOn
-            != null) { { arg0 ->
+    public val _fooWithAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) -> kotlin.Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_fooWithAnys", spyOn =
+    if (spyOn != null) { { payload ->
+        __spyOn!!.foo(*payload) } } else { null }, collector = verifier, freeze = freeze,
+        unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer =
+        null, buildInRelaxer = null)
+
+    public val _barWithInt: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_barWithInt", spyOn = if
+                                                                                                       (spyOn != null) { { arg0 ->
             __spyOn!!.bar(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
 
-    public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
-        ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzz", spyOn = if
-                                                                                                  (spyOn != null) { { arg0 ->
+    public val _barWithInts: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_barWithInts", spyOn = if
+                                                                                                        (spyOn != null) { { arg0 ->
+            __spyOn!!.bar(*arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
+    public val _buzzWithString: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
+        ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzzWithString", spyOn
+        = if (spyOn != null) { { arg0 ->
             __spyOn!!.buzz(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = null)
+
+    public val _buzzWithStrings: KMockContract.AsyncFunProxy<L, suspend (Array<out kotlin.String>) ->
+    L> = ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzzWithStrings",
+        spyOn = if (spyOn != null) { { arg0 ->
+            __spyOn!!.buzz(*arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer =
+        null)
 
     private val __spyOn: Platform<K, L>? = spyOn
 
@@ -86,11 +104,17 @@ internal class AliasPlatformMock<K : Any, L>(
         freeze, unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.hashCode() },
             ignorableForVerification = true)
 
-    public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
+    public override fun <T> foo(payload: T): Unit = _fooWithAny.invoke(payload)
 
-    public override fun bar(arg0: Int): Any = _bar.invoke(arg0)
+    public override fun <T> foo(vararg payload: T): Unit = _fooWithAnys.invoke(payload)
 
-    public override suspend fun buzz(arg0: String): L = _buzz.invoke(arg0)
+    public override fun bar(arg0: Int): Any = _barWithInt.invoke(arg0)
+
+    public override fun bar(vararg arg0: Int): Any = _barWithInts.invoke(arg0)
+
+    public override suspend fun buzz(arg0: String): L = _buzzWithString.invoke(arg0)
+
+    public override suspend fun buzz(vararg arg0: String): L = _buzzWithStrings.invoke(arg0)
 
     public override fun toString(): String = _toString.invoke()
 
@@ -107,9 +131,12 @@ internal class AliasPlatformMock<K : Any, L>(
     public fun _clearMock(): Unit {
         _template.clear()
         _ozz.clear()
-        _foo.clear()
-        _bar.clear()
-        _buzz.clear()
+        _fooWithAny.clear()
+        _fooWithAnys.clear()
+        _barWithInt.clear()
+        _barWithInts.clear()
+        _buzzWithString.clear()
+        _buzzWithStrings.clear()
         _toString.clear()
         _equals.clear()
         _hashCode.clear()

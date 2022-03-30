@@ -35,11 +35,56 @@ internal class KMockMethodGenerator(
     private val uselessPrefixes: Set<String>,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val relaxerGenerator: ProcessorContract.RelaxerGenerator
-) : ProcessorContract.FunctionGenerator {
+) : ProcessorContract.MethodGenerator {
     private val any = Any::class.asTypeName()
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
     private val asyncProxy = AsyncFunProxy::class.asClassName()
     private val syncProxy = SyncFunProxy::class.asClassName()
+
+    @OptIn(ExperimentalUnsignedTypes::class)
+    private val specialArrays: Map<TypeName, TypeName> = mapOf(
+        Int::class.asTypeName() to IntArray::class.asTypeName(),
+        Byte::class.asTypeName() to ByteArray::class.asTypeName(),
+        Short::class.asTypeName() to ShortArray::class.asTypeName(),
+        Long::class.asTypeName() to LongArray::class.asTypeName(),
+        Float::class.asTypeName() to FloatArray::class.asTypeName(),
+        Double::class.asTypeName() to DoubleArray::class.asTypeName(),
+        Char::class.asTypeName() to CharArray::class.asTypeName(),
+        Boolean::class.asTypeName() to BooleanArray::class.asTypeName(),
+        UByte::class.asTypeName() to UByteArray::class.asTypeName(),
+        UShort::class.asTypeName() to UShortArray::class.asTypeName(),
+        UInt::class.asTypeName() to UIntArray::class.asTypeName(),
+        ULong::class.asTypeName() to ULongArray::class.asTypeName(),
+    )
+
+    data class TypeInfo(
+        val typeName: TypeName,
+        val isVarArg: Boolean
+    )
+
+    data class SpyTypeInfo(
+        val typeName: String,
+        val isVarArg: Boolean
+    )
+
+    private fun String.resolveActualName(
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): String {
+        return if (this in generics) {
+            determineGenericName(this, generics, typeResolver)
+        } else {
+            this
+        }
+    }
+
+    private fun String.amendPlural(usePlural: Boolean): String {
+        return if (usePlural) {
+            "${this}s"
+        } else {
+            this
+        }
+    }
 
     private fun String.removePrefixes(prefixes: Iterable<String>): String {
         var cleaned = this
@@ -49,6 +94,18 @@ internal class KMockMethodGenerator(
         }
 
         return cleaned
+    }
+
+    private fun String.packageNameToVariableName(): String {
+        val partialNames = split('.')
+
+        return if (partialNames.size == 1) {
+            this
+        } else {
+            partialNames
+                .map { partialName -> partialName.titleCase() }
+                .joinToString("")
+        }
     }
 
     private fun resolveGenericName(
@@ -79,39 +136,26 @@ internal class KMockMethodGenerator(
     }
 
     private fun resolveProxySuffixFromArguments(
-        arguments: Collection<TypeName>,
+        arguments: Collection<TypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): List<String> {
-        return arguments.map { suffix ->
+        return arguments.map { (suffix, usePlural) ->
             suffix
                 .toString()
-                .let { name ->
-                    if (name in generics) {
-                        determineGenericName(name, generics, typeResolver)
-                    } else {
-                        name
-                    }
-                }
+                .resolveActualName(generics, typeResolver)
                 .removePrefixes(uselessPrefixes)
                 .trimStart('.')
                 .substringBefore('<') // Lambdas
-                .let { name ->
-                    if (name.contains('.')) {
-                        name.split('.')
-                            .map { partialName -> partialName.titleCase() }
-                            .joinToString("")
-                    } else {
-                        name
-                    }
-                }
+                .packageNameToVariableName()
                 .replace("?", "")
+                .amendPlural(usePlural)
         }
     }
 
     private fun determineSuffixedProxyName(
         functionName: String,
-        arguments: Collection<TypeName>,
+        arguments: Collection<TypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): String {
@@ -128,7 +172,7 @@ internal class KMockMethodGenerator(
         functionName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
-        arguments: Collection<TypeName>,
+        arguments: Collection<TypeInfo>,
         existingProxies: Set<String>
     ): String {
         val proxyName = "_$functionName"
@@ -148,9 +192,12 @@ internal class KMockMethodGenerator(
     private fun determineParameter(
         parameters: List<KSValueParameter>,
         parameterTypeResolver: TypeParameterResolver
-    ): Map<String, TypeName> {
+    ): Map<String, TypeInfo> {
         return parameters.associate { parameter ->
-            parameter.name!!.asString() to parameter.type.toTypeName(parameterTypeResolver)
+            parameter.name!!.asString() to TypeInfo(
+                typeName = parameter.type.toTypeName(parameterTypeResolver),
+                isVarArg = parameter.isVararg,
+            )
         }
     }
 
@@ -215,28 +262,51 @@ internal class KMockMethodGenerator(
 
     private fun resolveGenericArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>,
-        argumentTypes: Collection<TypeName>,
-    ): List<Pair<TypeName, GenericDeclaration?>> {
-        return argumentTypes.map { typeName -> mapGenericProxyType(typeName, proxyGenericTypes) }
+        argumentTypes: Collection<TypeInfo>,
+    ): List<Pair<TypeInfo, GenericDeclaration?>> {
+        return argumentTypes.map { typeInfo ->
+            val (typeName, declaration) = mapGenericProxyType(
+                typeInfo.typeName,
+                proxyGenericTypes
+            )
+
+            Pair(typeInfo.copy(typeName = typeName), declaration)
+        }
     }
 
     private fun determineProxyArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>?,
-        argumentTypes: Collection<TypeName>,
-    ): List<Pair<TypeName, GenericDeclaration?>> {
+        argumentTypes: Collection<TypeInfo>,
+    ): List<Pair<TypeInfo, GenericDeclaration?>> {
         return if (proxyGenericTypes == null) {
-            argumentTypes.map { typeName -> typeName to null }
+            argumentTypes.map { typeInfo -> typeInfo to null }
         } else {
             resolveGenericArgumentTypes(proxyGenericTypes, argumentTypes)
         }
     }
 
+    private fun mapProxyArgumentTypeNames(
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>
+    ): List<TypeName> {
+        return proxyArguments.map { argument ->
+            if (!argument.first.isVarArg) {
+                argument.first.typeName
+            } else {
+                specialArrays.getOrElse(argument.first.typeName) {
+                    TypeVariableName(
+                        "Array<out ${argument.first.typeName}>"
+                    )
+                }
+            }
+        }
+    }
+
     private fun buildSideEffectSignature(
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: TypeName,
         prefix: String
     ): TypeName {
-        val argumentTypeName = proxyArguments.map { argument -> argument.first }
+        val argumentTypeName = mapProxyArgumentTypeNames(proxyArguments)
 
         return TypeVariableName(
             "$prefix(${argumentTypeName.joinToString(", ")}) -> $proxyReturnType"
@@ -244,7 +314,7 @@ internal class KMockMethodGenerator(
     }
 
     private fun determineSpyConstrains(
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
     ): Boolean {
         var isRecursive = proxyReturnType.second?.recursive ?: false
@@ -258,21 +328,18 @@ internal class KMockMethodGenerator(
 
     private fun buildSpyArgumentCasts(
         body: StringBuilder,
-        spyArgumentNames: Set<String>,
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>
+        spyArguments: Set<SpyTypeInfo>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>
     ) {
-        var idx = 0
-        val argumentNames = spyArgumentNames.toList()
-        proxyArguments.forEach { (_, generic) ->
+        val argumentNames = spyArguments.toList()
+        proxyArguments.forEachIndexed { idx, (_, generic) ->
             if (generic != null && generic.types.size >= 2) {
                 generic.types.forEach { type ->
 
                     body.append("@Suppress(\"UNCHECKED_CAST\")\n")
-                        .append("${argumentNames[idx]} as $type\n")
+                        .append("${argumentNames[idx].typeName} as $type\n")
                 }
             }
-
-            idx += 1
         }
     }
 
@@ -289,11 +356,22 @@ internal class KMockMethodGenerator(
         }
     }
 
+    private fun extractSpyArgumentNames(
+        spyArguments: Set<SpyTypeInfo>
+    ): String {
+        return spyArguments.joinToString(", ") { spyTypeInfo ->
+            if (spyTypeInfo.isVarArg) {
+                "*${spyTypeInfo.typeName}"
+            } else {
+                spyTypeInfo.typeName
+            }
+        }
+    }
+
     private fun buildSpyBody(
         spyName: String,
-        spyArgumentNames: Set<String>,
-        spyArguments: String,
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        spyArguments: Set<SpyTypeInfo>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
     ): String {
         val isRecursive = determineSpyConstrains(proxyArguments, proxyReturnType)
@@ -302,14 +380,15 @@ internal class KMockMethodGenerator(
             "throw IllegalArgumentException(\n\"Recursive generics are not supported on function level spies (yet).\"\n)"
         } else {
             val body = StringBuilder(1)
+            val spyTypeNames = extractSpyArgumentNames(spyArguments)
 
-            buildSpyArgumentCasts(body, spyArgumentNames, proxyArguments)
+            buildSpyArgumentCasts(body, spyArguments, proxyArguments)
 
             if (proxyReturnType.second?.castReturnType == true) {
                 body.append("@Suppress(\"UNCHECKED_CAST\")\n")
             }
 
-            body.append("__spyOn!!.$spyName($spyArguments)")
+            body.append("__spyOn!!.$spyName($spyTypeNames)")
 
             if (proxyReturnType.second?.castReturnType == true) {
                 buildSpyReturnTypeCasts(body, proxyReturnType.second!!)
@@ -321,38 +400,38 @@ internal class KMockMethodGenerator(
 
     private fun buildFunctionSpyInvocation(
         spyName: String,
-        spyArgumentNames: Set<String>,
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        spyArguments: Set<SpyTypeInfo>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
     ): String {
-        val spyArguments = spyArgumentNames.joinToString(", ")
         val spyBody = buildSpyBody(
-            spyName,
-            spyArgumentNames,
-            spyArguments,
-            proxyArguments,
-            proxyReturnType
+            spyName = spyName,
+            spyArguments = spyArguments,
+            proxyArguments = proxyArguments,
+            proxyReturnType = proxyReturnType
         )
 
-        return if (spyArgumentNames.isEmpty()) {
+        val spyArgumentNames = spyArguments.joinToString(", ") { spyTypeInfo -> spyTypeInfo.typeName }
+
+        return if (spyArguments.isEmpty()) {
             "{ $spyBody }"
         } else {
-            "{ $spyArguments ->\n$spyBody }"
+            "{ $spyArgumentNames ->\n$spyBody }"
         }
     }
 
     private fun buildSpy(
         enableSpy: Boolean,
         spyName: String,
-        spyArgumentNames: Set<String>,
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        spyArguments: Set<SpyTypeInfo>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
     ): String {
         return if (enableSpy) {
             "if (spyOn != null) { ${
             buildFunctionSpyInvocation(
                 spyName,
-                spyArgumentNames,
+                spyArguments,
                 proxyArguments,
                 proxyReturnType
             )
@@ -368,8 +447,8 @@ internal class KMockMethodGenerator(
         proxyName: String,
         proxyFactoryMethod: String,
         spyName: String,
-        spyArgumentNames: Set<String>,
-        proxyArguments: List<Pair<TypeName, GenericDeclaration?>>,
+        spyArguments: Set<SpyTypeInfo>,
+        proxyArguments: List<Pair<TypeInfo, GenericDeclaration?>>,
         proxyReturnType: Pair<TypeName, GenericDeclaration?>,
         enableSpy: Boolean,
         relaxer: ProcessorContract.Relaxer?
@@ -383,7 +462,7 @@ internal class KMockMethodGenerator(
             buildSpy(
                 enableSpy = enableSpy,
                 spyName = spyName,
-                spyArgumentNames = spyArgumentNames,
+                spyArguments = spyArguments,
                 proxyArguments = proxyArguments,
                 proxyReturnType = proxyReturnType
             ),
@@ -394,12 +473,22 @@ internal class KMockMethodGenerator(
         )
     }
 
+    private fun extractSpyNames(
+        arguments: Map<String, TypeInfo>
+    ): Set<SpyTypeInfo> {
+        val spyInfo: MutableSet<SpyTypeInfo> = mutableSetOf()
+
+        return arguments.mapTo(spyInfo) { (spyName, typeInfo) ->
+            SpyTypeInfo(spyName, typeInfo.isVarArg)
+        }
+    }
+
     private fun buildProxy(
         qualifier: String,
         proxyName: String,
         spyName: String,
         generics: Map<String, List<KSTypeReference>>?,
-        arguments: Map<String, TypeName>,
+        arguments: Map<String, TypeInfo>,
         returnType: KSType,
         typeResolver: TypeParameterResolver,
         suspending: Boolean,
@@ -426,6 +515,8 @@ internal class KMockMethodGenerator(
             sideEffectPrefix
         )
 
+        val spyArguments = extractSpyNames(arguments)
+
         return Pair(
             PropertySpec.builder(
                 proxyName,
@@ -437,7 +528,7 @@ internal class KMockMethodGenerator(
                     proxyName = proxyName,
                     proxyFactoryMethod = proxyFactoryMethod,
                     spyName = spyName,
-                    spyArgumentNames = arguments.keys,
+                    spyArguments = spyArguments,
                     proxyArguments = proxyArguments,
                     proxyReturnType = proxyReturnType,
                     enableSpy = enableSpy,
@@ -448,56 +539,64 @@ internal class KMockMethodGenerator(
         )
     }
 
-    private fun buildFunction(
+    private fun buildMethod(
         functionName: String,
         proxyName: String,
         generics: Map<String, List<KSTypeReference>>?,
         isSuspending: Boolean,
-        arguments: Map<String, TypeName>,
+        arguments: Map<String, TypeInfo>,
         rawReturnType: KSType,
         proxyReturnType: TypeName,
         typeResolver: TypeParameterResolver,
     ): FunSpec {
         val returnType = rawReturnType.toTypeName(typeResolver)
 
-        val function = FunSpec
+        val method = FunSpec
             .builder(functionName)
             .addModifiers(KModifier.OVERRIDE)
 
         if (generics != null) {
-            function.typeVariables.addAll(
+            method.typeVariables.addAll(
                 this.genericResolver.mapDeclaredGenerics(generics, typeResolver)
             )
         }
 
         if (isSuspending) {
-            function.addModifiers(KModifier.SUSPEND)
+            method.addModifiers(KModifier.SUSPEND)
         }
 
         arguments.forEach { (argumentName, argumentType) ->
-            function.addParameter(
-                argumentName,
-                argumentType
-            )
+            if (argumentType.isVarArg) {
+                method.addParameter(
+                    argumentName,
+                    argumentType.typeName,
+                    KModifier.VARARG
+                )
+            } else {
+                method.addParameter(
+                    argumentName,
+                    argumentType.typeName
+                )
+            }
         }
 
-        function.returns(returnType)
+        method.returns(returnType)
 
         val cast = if (returnType != proxyReturnType) {
-            function.addAnnotation(unused)
+            method.addAnnotation(unused)
             " as $returnType"
         } else {
             ""
         }
 
-        function.addCode(
+        method.addCode(
             "return $proxyName.invoke(${arguments.keys.joinToString(", ")})$cast"
         )
 
-        return function.build()
+        return method.build()
     }
 
-    override fun buildFunctionBundle(
+    override fun buildMethodBundle(
         qualifier: String,
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
@@ -534,7 +633,7 @@ internal class KMockMethodGenerator(
             relaxer = relaxer
         )
 
-        val function = buildFunction(
+        val method = buildMethod(
             functionName = functionName,
             proxyName = proxyName,
             generics = generics,
@@ -545,6 +644,6 @@ internal class KMockMethodGenerator(
             typeResolver = parameterTypeResolver
         )
 
-        return Pair(proxy, function)
+        return Pair(proxy, method)
     }
 }

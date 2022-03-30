@@ -559,35 +559,6 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Generics which allows Recursive Types is processed, it writes a mock`() {
-        // Given
-        val source = SourceFile.kotlin(
-            "AllowedRecursive.kt",
-            loadResource("/template/generic/AllowedRecursive.kt")
-        )
-        val expected = loadResource("/expected/generic/AllowedRecursive.kt")
-
-        val allowedRecursiveTypes = mapOf(
-            "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
-        )
-
-        // When
-        val compilerResult = compile(
-            provider,
-            source,
-            isKmp = false,
-            kspArguments = allowedRecursiveTypes
-        )
-        val actual = resolveGenerated("AllowedRecursiveMock.kt")
-
-        // Then
-        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        actual isNot null
-
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
-    }
-
-    @Test
     fun `Given a annotated Source with BuildIns for a Platform is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -775,6 +746,35 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Spies with Generics which allows Recursive Types is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "AllowedRecursive.kt",
+            loadResource("/template/spy/AllowedRecursive.kt")
+        )
+        val expected = loadResource("/expected/spy/AllowedRecursive.kt")
+
+        val allowedRecursiveTypes = mapOf(
+            "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
+        )
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = allowedRecursiveTypes
+        )
+        val actual = resolveGenerated("AllowedRecursiveMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

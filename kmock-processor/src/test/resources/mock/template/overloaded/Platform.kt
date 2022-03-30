@@ -21,6 +21,7 @@ interface Platform {
     fun <T> foo(fuzz: T)
     fun <T : Platform> foo(fuzz: T)
     fun <T : LPG> foo(fuzz: T)
+    fun foo(vararg fuzz: Any): Any
 }
 
 data class Abc(

@@ -38,10 +38,20 @@ internal class CommonMock(
             collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
             } else { null })
 
+    public val _oo: KMockContract.SyncFunProxy<String, (Array<out kotlin.Any>) -> kotlin.String> =
+        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_oo", spyOn = null,
+            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
+            } else { null })
+
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.CommonMock#_bar", spyOn = null,
             collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
             } else { null })
+
+    public val _ar: KMockContract.AsyncFunProxy<String, suspend (Array<out kotlin.Any>) ->
+    kotlin.String> = ProxyFactory.createAsyncFunProxy("mock.template.relaxed.CommonMock#_ar",
+        spyOn = null, collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
+            relaxed(mockId) } } else { null })
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_buzzWithVoid", spyOn =
@@ -51,14 +61,20 @@ internal class CommonMock(
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 
+    public override fun oo(vararg payload: Any): String = _oo.invoke(payload)
+
     public override suspend fun bar(payload: Any): String = _bar.invoke(payload)
+
+    public override suspend fun ar(vararg payload: Any): String = _ar.invoke(payload)
 
     public override fun buzz(): Unit = _buzzWithVoid.invoke()
 
     public fun _clearMock(): Unit {
         _buzz.clear()
         _foo.clear()
+        _oo.clear()
         _bar.clear()
+        _ar.clear()
         _buzzWithVoid.clear()
     }
 }

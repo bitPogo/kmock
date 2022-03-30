@@ -19,7 +19,9 @@ interface Common {
     val buzz: String
 
     fun foo(payload: Any): String
+    fun oo(vararg payload: Any): String
     suspend fun bar(payload: Any): String
+    suspend fun ar(vararg payload: Any): String
     fun buzz()
 }
 

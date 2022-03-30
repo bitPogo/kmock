@@ -14,4 +14,8 @@ interface Platform {
     fun foo(fuzz: Int, ozz: Any): dynamic
 
     fun bar(buzz: Int, bozz: Any): Any = bozz
+
+    fun ozz(vararg buzz: Int): Any
+
+    fun izz(vararg buzz: Any): Any
 }

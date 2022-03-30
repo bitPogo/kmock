@@ -13,8 +13,8 @@ import tech.antibytes.kmock.processor.factory.KMockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.mock.KMockBuildInMethodGenerator
-import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockGenerator
+import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 
@@ -32,7 +32,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val relaxerGenerator = KMockRelaxerGenerator()
 
         val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
-        val functionGenerator = KMockMethodGenerator(
+        val methodGenerator = KMockMethodGenerator(
             allowedRecursiveTypes = options.allowedRecursiveTypes,
             uselessPrefixes = options.uselessPrefixes,
             genericResolver = genericResolver,
@@ -50,7 +50,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 codeGenerator = codeGenerator,
                 genericsResolver = genericResolver,
                 propertyGenerator = propertyGenerator,
-                functionGenerator = functionGenerator,
+                methodGenerator = methodGenerator,
                 buildInGenerator = KMockBuildInMethodGenerator
             ),
             factoryGenerator = KMockFactoryGenerator(

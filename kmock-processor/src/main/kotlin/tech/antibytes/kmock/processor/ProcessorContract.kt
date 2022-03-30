@@ -140,8 +140,8 @@ internal interface ProcessorContract {
         ): Pair<PropertySpec, PropertySpec>
     }
 
-    interface FunctionGenerator {
-        fun buildFunctionBundle(
+    interface MethodGenerator {
+        fun buildMethodBundle(
             qualifier: String,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
@@ -151,8 +151,8 @@ internal interface ProcessorContract {
         ): Pair<PropertySpec, FunSpec>
     }
 
-    interface BuildInFunctionGenerator {
-        fun buildFunctionBundles(
+    interface BuildInMethodGenerator {
+        fun buildMethodBundles(
             mockName: String,
             qualifier: String,
             existingProxies: Set<String>,
