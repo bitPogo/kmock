@@ -380,7 +380,7 @@ internal class KMockMethodGenerator(
             "throw IllegalArgumentException(\n\"Recursive generics are not supported on function level spies (yet).\"\n)"
         } else {
             val body = StringBuilder(1)
-            val spyTypeNames = extractSpyArgumentNames(spyArguments)
+            val spyArgumentNames = extractSpyArgumentNames(spyArguments)
 
             buildSpyArgumentCasts(body, spyArguments, proxyArguments)
 
@@ -388,7 +388,7 @@ internal class KMockMethodGenerator(
                 body.append("@Suppress(\"UNCHECKED_CAST\")\n")
             }
 
-            body.append("__spyOn!!.$spyName($spyTypeNames)")
+            body.append("__spyOn!!.$spyName($spyArgumentNames)")
 
             if (proxyReturnType.second?.castReturnType == true) {
                 buildSpyReturnTypeCasts(body, proxyReturnType.second!!)
