@@ -12,7 +12,6 @@ import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
 import kotlin.reflect.KClass
 
-// FIXME: CLEAR according to hierarchies
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
     KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
     KMockContract.NonIntrusiveFunConfigurationReceiver<ReturnValue, SideEffect> {
@@ -22,8 +21,19 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
     private var relaxer: Relaxer<ReturnValue>? = null
     private var spyOn: SideEffect? = null
 
+    private fun finalizeRelaxers() {
+        if (unitFunRelaxer != null || buildInRelaxer != null) {
+            relaxer = null
+        }
+
+        if (spyOn != null) {
+            relaxer = null
+            unitFunRelaxer = null
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
-    override fun relaxUnitFunIf(condition: Boolean) {
+    override fun useUnitFunRelaxerIf(condition: Boolean) {
         unitFunRelaxer = if (condition) {
             kmockUnitFunRelaxer as Relaxer<ReturnValue?>?
         } else {
@@ -84,6 +94,8 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
     }
 
     override fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect> {
+        finalizeRelaxers()
+
         return NonIntrusiveFunConfiguration(
             unitFunRelaxer = unitFunRelaxer,
             relaxer = relaxer,

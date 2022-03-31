@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.proxy
 
-import co.touchlab.stately.freeze
 import co.touchlab.stately.isFrozen
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Proxy
@@ -111,7 +110,7 @@ class ProxyFactorySpec {
         // When
         val proxy = ProxyFactory.createSyncFunProxy<Any, (Any, Any) -> Unit>(
             id = fixture.fixture(),
-        ) { relaxUnitFunIf(true) }
+        ) { useUnitFunRelaxerIf(true) }
 
         // Then
         proxy.invoke<Any, Any>(fixture.fixture(), fixture.fixture()) mustBe Unit
@@ -196,7 +195,7 @@ class ProxyFactorySpec {
         // When
         val proxy = ProxyFactory.createAsyncFunProxy<Any, suspend (Any, Any) -> Unit>(
             id = fixture.fixture(),
-        ) { relaxUnitFunIf(true) }
+        ) { useUnitFunRelaxerIf(true) }
 
         // Then
         proxy.invoke<Any, Any>(fixture.fixture(), fixture.fixture()) mustBe Unit

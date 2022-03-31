@@ -675,7 +675,7 @@ object KMockContract {
     }
 
     interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> {
-        fun relaxUnitFunIf(condition: Boolean)
+        fun useUnitFunRelaxerIf(condition: Boolean)
         fun useToStringRelaxer(parent: Any)
         fun useHashCodeRelaxer(parent: Any)
         fun useEqualsRelaxer(parent: Any)

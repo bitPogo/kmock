@@ -57,7 +57,7 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.relaxUnitFunIf(false)
+        configurator.useUnitFunRelaxerIf(false)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -76,7 +76,7 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.relaxUnitFunIf(true)
+        configurator.useUnitFunRelaxerIf(true)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -90,8 +90,8 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.relaxUnitFunIf(true)
-        configurator.relaxUnitFunIf(false)
+        configurator.useUnitFunRelaxerIf(true)
+        configurator.useUnitFunRelaxerIf(false)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -322,6 +322,91 @@ class NonIntrusiveConfiguratorSpec {
         // Then
         actual mustBe expected
         capturedValue mustBe expectedValue
+    }
+
+    @Test
+    @JsName("fn17")
+    fun `Given a Relaxer and UnitFunRelaxer is set, the UnitFunRelaxer wipes the Relaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Unit, (Any) -> Unit>()
+
+        // When
+        configurator.useUnitFunRelaxerIf(true)
+        configurator.useRelaxerIf(true) { fixture.fixture() }
+
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual.unitFunRelaxer isNot null
+        actual.relaxer mustBe null
+    }
+
+    @Test
+    @JsName("fn18")
+    fun `Given a Relaxer and BuildInRelaxer is set, the BuildInRelaxer wipes the Relaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
+
+        // When
+        configurator.useEqualsRelaxer(fixture.fixture())
+        configurator.useRelaxerIf(true) { fixture.fixture() }
+
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual.buildInRelaxer isNot null
+        actual.relaxer mustBe null
+    }
+
+    @Test
+    @JsName("fn19")
+    fun `Given a Relaxer and Spy is set, the Spy wipes the Relaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
+
+        // When
+        configurator.useRelaxerIf(fixture.fixture()) { fixture.fixture() }
+        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
+
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual.spyOn isNot null
+        actual.relaxer mustBe null
+    }
+
+    @Test
+    @JsName("fn20")
+    fun `Given a UnitFunRelaxer and Spy is set, the Spy wipes the UnitFunRelaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
+
+        // When
+        configurator.useUnitFunRelaxerIf(true)
+        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
+
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual.spyOn isNot null
+        actual.unitFunRelaxer mustBe null
+    }
+
+    @Test
+    @JsName("fn21")
+    fun `Given a BuildInRelaxer and Spy is set, the Spy wipes the BuildInRelaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
+
+        // When
+        configurator.useEqualsRelaxer(fixture.fixture())
+        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
+
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual.buildInRelaxer isNot null
+        actual.unitFunRelaxer mustBe null
     }
 }
 
