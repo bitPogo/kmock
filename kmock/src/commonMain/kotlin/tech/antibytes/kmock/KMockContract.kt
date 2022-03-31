@@ -14,6 +14,7 @@ import tech.antibytes.kmock.verification.constraints.eq
 import tech.antibytes.kmock.verification.constraints.isNot
 import tech.antibytes.kmock.verification.constraints.isNotSame
 import tech.antibytes.kmock.verification.constraints.isSame
+import kotlin.reflect.KClass
 
 /**
  * Contract Container of KMock
@@ -85,7 +86,7 @@ object KMockContract {
          * @param payload which is supported by the invoked build-in method.
          * @return the given Relaxer Type.
          */
-        fun relax(payload: Parameter): ReturnValue
+        fun invoke(payload: Parameter): ReturnValue
     }
 
     /**
@@ -119,7 +120,8 @@ object KMockContract {
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
      */
-    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> :
+        SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
@@ -672,6 +674,33 @@ object KMockContract {
         fun onSet(value: Value)
     }
 
+    interface NonIntrusiveConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> {
+        fun relaxUnitFunIf(condition: Boolean)
+        fun useToStringRelaxer(parent: Any)
+        fun useHashCodeRelaxer(parent: Any)
+        fun useEqualsRelaxer(parent: Any)
+        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, ReturnValue>)
+
+        fun useSpyOnEqualIf(
+            spy: Any?,
+            parent: Any,
+            mockKlass: KClass<out Any>,
+        )
+
+        fun useSpyIf(spy: Any?, spyOn: SideEffect)
+    }
+
+    internal data class NonIntrusiveConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
+        val unitFunRelaxer: Relaxer<Unit>?,
+        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        val relaxer: Relaxer<ReturnValue>?,
+        val spyOn: SideEffect?
+    )
+
+    internal interface NonIntrusiveConfigurationReceiver<ReturnValue, SideEffect : Function<ReturnValue>> {
+        fun getConfiguration(): NonIntrusiveConfiguration<ReturnValue, SideEffect>
+    }
+
     interface ProxyFactory {
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
             id: String,
@@ -681,7 +710,7 @@ object KMockContract {
             unitFunRelaxer: Relaxer<ReturnValue?>? = null,
             buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
             freeze: Boolean = true,
-            spyOn: SideEffect? = null
+            spyOn: SideEffect? = null,
         ): SyncFunProxy<ReturnValue, SideEffect>
 
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
@@ -825,9 +854,11 @@ object KMockContract {
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
     internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
     internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
-    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+    internal const val STRICT_MISSING_EXPECTATION =
+        "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
-    internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
+    internal const val NON_STRICT_CALL_NOT_FOUND =
+        "Expected %0 to be invoked, but no call was captured with the given arguments."
     internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
 
     internal const val NOT_CALLED = "Call not found."

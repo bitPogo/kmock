@@ -13,13 +13,7 @@ import kotlin.test.Test
 class UnitFunRelaxerSpec {
     @Test
     @JsName("fn0")
-    fun `Given relaxVoidFunction is called it returns Unit if the refered type is Unit`() {
-        relaxVoidFunction<Unit>() mustBe Unit
-    }
-
-    @Test
-    @JsName("fn1")
-    fun `Given relaxVoidFunction is called it returns Null if the refered type is not Unit`() {
-        relaxVoidFunction<Int>() mustBe null
+    fun `Given kmockUnitFunRelaxer is called it returns Unit if the refered type is Unit`() {
+        kmockUnitFunRelaxer.relax("xx") mustBe Unit
     }
 }
