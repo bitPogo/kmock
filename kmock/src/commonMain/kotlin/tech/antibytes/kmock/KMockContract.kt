@@ -674,7 +674,7 @@ object KMockContract {
         fun onSet(value: Value)
     }
 
-    interface NonIntrusiveConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> {
+    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> {
         fun relaxUnitFunIf(condition: Boolean)
         fun useToStringRelaxer(parent: Any)
         fun useHashCodeRelaxer(parent: Any)
@@ -690,15 +690,15 @@ object KMockContract {
         fun useSpyIf(spy: Any?, spyOn: SideEffect)
     }
 
-    internal data class NonIntrusiveConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
-        val unitFunRelaxer: Relaxer<Unit>?,
+    internal data class NonIntrusiveFunConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
+        val unitFunRelaxer: Relaxer<ReturnValue?>?,
         val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         val relaxer: Relaxer<ReturnValue>?,
         val spyOn: SideEffect?
     )
 
-    internal interface NonIntrusiveConfigurationReceiver<ReturnValue, SideEffect : Function<ReturnValue>> {
-        fun getConfiguration(): NonIntrusiveConfiguration<ReturnValue, SideEffect>
+    internal interface NonIntrusiveFunConfigurationReceiver<ReturnValue, SideEffect : Function<ReturnValue>> {
+        fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect>
     }
 
     interface ProxyFactory {
@@ -706,22 +706,16 @@ object KMockContract {
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
-            relaxer: Relaxer<ReturnValue>? = null,
-            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
-            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
             freeze: Boolean = true,
-            spyOn: SideEffect? = null,
+            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): SyncFunProxy<ReturnValue, SideEffect>
 
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
-            relaxer: Relaxer<ReturnValue>? = null,
-            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
-            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
             freeze: Boolean = true,
-            spyOn: SideEffect? = null
+            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): AsyncFunProxy<ReturnValue, SideEffect>
 
         fun <Value> createPropertyProxy(

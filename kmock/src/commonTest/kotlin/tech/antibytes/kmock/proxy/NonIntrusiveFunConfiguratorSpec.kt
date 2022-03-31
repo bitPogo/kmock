@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusiveConfiguration
+import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -23,26 +23,26 @@ class NonIntrusiveConfiguratorSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils NonIntrusiveConfigurator`() {
-        NonIntrusiveConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurator::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurator::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusiveConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurationReceiver::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurationReceiver::class
     }
 
     @Test
     @JsName("fn2")
     fun `Given getConfiguration is called while nothing else was invoked it returns the default configuration`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Unit, () -> Unit>()
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveConfiguration(
+        actual mustBe NonIntrusiveFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -54,14 +54,14 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn3")
     fun `Given getConfiguration is called after relaxUnitFunIf while its condition is falsum it returns a configuration without the unitFunRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Unit, () -> Unit>()
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
         configurator.relaxUnitFunIf(false)
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveConfiguration(
+        actual mustBe NonIntrusiveFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -73,7 +73,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn4")
     fun `Given getConfiguration is called after relaxUnitFunIf while its condition is verum it returns a configuration with the unitFunRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Unit, () -> Unit>()
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
         configurator.relaxUnitFunIf(true)
@@ -87,7 +87,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn5")
     fun `Given getConfiguration is called after relaxUnitFunIf while its condition falsum after a verum it returns a configuration without unitFunRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Unit, () -> Unit>()
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
         configurator.relaxUnitFunIf(true)
@@ -102,7 +102,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn6")
     fun `Given getConfiguration is called after useToStringRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<String, () -> String>()
+        val configurator = NonIntrusiveFunConfigurator<String, () -> String>()
 
         // When
         val subject: Any = fixture.fixture()
@@ -119,7 +119,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn7")
     fun `Given getConfiguration is called after useHashCodeRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Int, () -> Int>()
+        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
 
         // When
         val subject: Any = fixture.fixture()
@@ -136,7 +136,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn8")
     fun `Given getConfiguration is called after useEqualsRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Boolean, () -> Boolean>()
+        val configurator = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
 
         // When
         val subject: Any = fixture.fixture()
@@ -154,14 +154,14 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn9")
     fun `Given getConfiguration is called after useRelaxerIf while its condition is falsum it returns a configuration without the relaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Int, () -> Int>()
+        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
 
         // When
         configurator.useRelaxerIf(false) { fixture.fixture() }
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveConfiguration(
+        actual mustBe NonIntrusiveFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -173,7 +173,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn10")
     fun `Given getConfiguration is called after useRelaxerIf while its condition is verum it returns a configuration without the relaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Int, () -> Int>()
+        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
         val expected: Int = fixture.fixture()
 
         // When
@@ -189,7 +189,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn11")
     fun `Given getConfiguration is called after useRelaxerIf while its condition falsum after a verum it returns a configuration without the relaxer`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Unit, () -> Unit>()
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
         configurator.useRelaxerIf(true) { fixture.fixture() }
@@ -204,7 +204,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn12")
     fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is null it returns a configuration without spyOn`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Boolean, (Any?) -> Boolean>()
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
         // When
         configurator.useSpyOnEqualIf(
@@ -215,7 +215,7 @@ class NonIntrusiveConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveConfiguration(
+        actual mustBe NonIntrusiveFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -227,7 +227,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn13")
     fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses the subjectToSpyOn`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Boolean, (Any?) -> Boolean>()
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
         val expected: Boolean = fixture.fixture()
         var spyWasCalled = false
         val subjectToSpyOn = MockOfMocks(
@@ -255,7 +255,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn14")
     fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses its parent when invoked with another mock of the same Class`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Boolean, (Any?) -> Boolean>()
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
         val subjectToSpyOn: Any = fixture.fixture()
         val expected: Boolean = fixture.fixture()
         var parentWasCalled = false
@@ -285,14 +285,14 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn15")
     fun `Given getConfiguration is called after useSpyIf while its spy is null it returns a configuration without spyOn`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Boolean, (Any?) -> Boolean>()
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
         // When
         configurator.useSpyIf(null) { fixture.fixture() }
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveConfiguration(
+        actual mustBe NonIntrusiveFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -304,7 +304,7 @@ class NonIntrusiveConfiguratorSpec {
     @JsName("fn16")
     fun `Given getConfiguration is called after useSpyIf while its spy is not null it returns a configuration with spyOn`() {
         // Given
-        val configurator = NonIntrusiveConfigurator<Any, (Any) -> Any>()
+        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
         var capturedValue: Any? = null
         val expected: Any = fixture.fixture()
         val expectedValue: Any = fixture.fixture()

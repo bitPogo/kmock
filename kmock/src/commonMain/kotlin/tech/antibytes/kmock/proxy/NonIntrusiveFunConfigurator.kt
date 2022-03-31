@@ -9,21 +9,23 @@ package tech.antibytes.kmock.proxy
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
-import tech.antibytes.kmock.KMockContract.NonIntrusiveConfiguration
+import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
 import kotlin.reflect.KClass
 
-internal class NonIntrusiveConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
-    KMockContract.NonIntrusiveConfigurator<ReturnValue, SideEffect>,
-    KMockContract.NonIntrusiveConfigurationReceiver<ReturnValue, SideEffect> {
+// FIXME: CLEAR according to hierarchies
+internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+    KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
+    KMockContract.NonIntrusiveFunConfigurationReceiver<ReturnValue, SideEffect> {
 
-    private var unitFunRelaxer: Relaxer<Unit>? = null
+    private var unitFunRelaxer: Relaxer<ReturnValue?>? = null
     private var buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null
     private var relaxer: Relaxer<ReturnValue>? = null
     private var spyOn: SideEffect? = null
 
+    @Suppress("UNCHECKED_CAST")
     override fun relaxUnitFunIf(condition: Boolean) {
         unitFunRelaxer = if (condition) {
-            kmockUnitFunRelaxer
+            kmockUnitFunRelaxer as Relaxer<ReturnValue?>?
         } else {
             null
         }
@@ -81,8 +83,8 @@ internal class NonIntrusiveConfigurator<ReturnValue, SideEffect : Function<Retur
         }
     }
 
-    override fun getConfiguration(): NonIntrusiveConfiguration<ReturnValue, SideEffect> {
-        return NonIntrusiveConfiguration(
+    override fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect> {
+        return NonIntrusiveFunConfiguration(
             unitFunRelaxer = unitFunRelaxer,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,
