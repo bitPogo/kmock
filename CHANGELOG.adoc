@@ -35,6 +35,8 @@ toc::[]
 
 === Changed
 
+* generated mocks don't contain runtime logic any longer
+
 === Deprecated
 
 === Removed
