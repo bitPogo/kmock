@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
     KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
-    KMockContract.NonIntrusiveFunConfigurationReceiver<ReturnValue, SideEffect> {
+    KMockContract.NonIntrusiveConfigurationReceiver<NonIntrusiveFunConfiguration<ReturnValue, SideEffect>> {
 
     private var unitFunRelaxer: Relaxer<ReturnValue?>? = null
     private var buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null
@@ -34,11 +34,7 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
 
     @Suppress("UNCHECKED_CAST")
     override fun useUnitFunRelaxerIf(condition: Boolean) {
-        unitFunRelaxer = if (condition) {
-            kmockUnitFunRelaxer as Relaxer<ReturnValue?>?
-        } else {
-            null
-        }
+        unitFunRelaxer = condition.guardRelaxer(::kmockUnitFunRelaxer as Function1<String, ReturnValue?>)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -56,20 +52,15 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         buildInRelaxer = ParameterizedRelaxer { other -> (parent == other) as ReturnValue }
     }
 
-    override fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, ReturnValue>) {
-        this.relaxer = if (condition) {
-            Relaxer { mockId -> relaxer.invoke(mockId) }
-        } else {
-            null
-        }
+    override fun useRelaxerIf(
+        condition: Boolean,
+        relaxer: Function1<String, ReturnValue>
+    ) {
+        this.relaxer = condition.guardRelaxer(relaxer)
     }
 
     override fun useSpyIf(spy: Any?, spyOn: SideEffect) {
-        this.spyOn = if (spy != null) {
-            spyOn
-        } else {
-            null
-        }
+        this.spyOn = spy.guardSpy(spyOn)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -78,7 +69,7 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         parent: Any,
         mockKlass: KClass<out Any>
     ) {
-        this.spyOn = if (spy != null) {
+        this.spyOn = spy.guardSpy(
             { other: Any? ->
                 val toCompareWith = if (other != null && other::class == mockKlass) {
                     parent
@@ -88,9 +79,7 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
 
                 toCompareWith == other
             } as SideEffect
-        } else {
-            null
-        }
+        )
     }
 
     override fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect> {

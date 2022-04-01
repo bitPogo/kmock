@@ -14,6 +14,6 @@ class UnitFunRelaxerSpec {
     @Test
     @JsName("fn0")
     fun `Given kmockUnitFunRelaxer is called it returns Unit if the refered type is Unit`() {
-        kmockUnitFunRelaxer.relax("xx") mustBe Unit
+        kmockUnitFunRelaxer("xx") mustBe Unit
     }
 }

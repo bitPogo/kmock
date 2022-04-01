@@ -29,7 +29,7 @@ class NonIntrusiveConfiguratorSpec {
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurationReceiver::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurationReceiver::class
     }
 
     @Test
@@ -80,7 +80,8 @@ class NonIntrusiveConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual.unitFunRelaxer sameAs kmockUnitFunRelaxer
+        actual.unitFunRelaxer isNot null
+        actual.unitFunRelaxer!!.relax("") mustBe Unit
     }
 
     @Test
@@ -326,6 +327,26 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn17")
+    fun `Given getConfiguration is called after useSpyIf while its spy is null after it was not it returns a configuration without spyOn`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
+
+        // When
+        configurator.useSpyIf(Any()) { fixture.fixture() }
+        configurator.useSpyIf(null) { fixture.fixture() }
+        val actual = configurator.getConfiguration()
+
+        // Then
+        actual mustBe NonIntrusiveFunConfiguration(
+            unitFunRelaxer = null,
+            buildInRelaxer = null,
+            relaxer = null,
+            spyOn = null
+        )
+    }
+
+    @Test
+    @JsName("fn18")
     fun `Given a Relaxer and UnitFunRelaxer is set, the UnitFunRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, (Any) -> Unit>()
@@ -342,7 +363,7 @@ class NonIntrusiveConfiguratorSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn19")
     fun `Given a Relaxer and BuildInRelaxer is set, the BuildInRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
@@ -359,7 +380,7 @@ class NonIntrusiveConfiguratorSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn20")
     fun `Given a Relaxer and Spy is set, the Spy wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
@@ -376,7 +397,7 @@ class NonIntrusiveConfiguratorSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn21")
     fun `Given a UnitFunRelaxer and Spy is set, the Spy wipes the UnitFunRelaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
@@ -393,7 +414,7 @@ class NonIntrusiveConfiguratorSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn22")
     fun `Given a BuildInRelaxer and Spy is set, the Spy wipes the BuildInRelaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
@@ -408,22 +429,22 @@ class NonIntrusiveConfiguratorSpec {
         actual.buildInRelaxer isNot null
         actual.unitFunRelaxer mustBe null
     }
-}
 
-private class MockOfMocks(
-    @JsName("fn0")
-    val equals: (() -> Boolean)? = null,
-    val methodToSpiedOn: ((Any) -> Any)? = null
-) {
-    override fun equals(other: Any?): Boolean {
-        return equals?.invoke()
-            ?: throw RuntimeException("Missing SideEffect equals.")
-    }
+    private class MockOfMocks(
+        @JsName("fn0")
+        val equals: (() -> Boolean)? = null,
+        val methodToSpiedOn: ((Any) -> Any)? = null
+    ) {
+        override fun equals(other: Any?): Boolean {
+            return equals?.invoke()
+                ?: throw RuntimeException("Missing SideEffect equals.")
+        }
 
-    override fun hashCode(): Int = TODO()
+        override fun hashCode(): Int = TODO()
 
-    fun methodToSpiedOn(parameter: Any): Any {
-        return methodToSpiedOn?.invoke(parameter)
-            ?: throw RuntimeException("Missing SideEffect methodToSpiedOn.")
+        fun methodToSpiedOn(parameter: Any): Any {
+            return methodToSpiedOn?.invoke(parameter)
+                ?: throw RuntimeException("Missing SideEffect methodToSpiedOn.")
+        }
     }
 }

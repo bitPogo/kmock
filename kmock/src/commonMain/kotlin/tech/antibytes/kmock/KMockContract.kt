@@ -657,7 +657,7 @@ object KMockContract {
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        var set: (Value) -> Unit
+        var set: Function1<Value, Unit>
 
         /**
          * Invocation of property getter. This is meant for internal use only.
@@ -690,15 +690,29 @@ object KMockContract {
         fun useSpyIf(spy: Any?, spyOn: SideEffect)
     }
 
+    interface NonIntrusivePropertyConfigurator<Value> {
+        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>)
+        fun useSpyOnGetIf(spy: Any?, spyOn: Function0<Value>)
+        fun useSpyOnSetIf(spy: Any?, spyOn: Function1<Value, Unit>)
+    }
+
+    interface NonIntrusiveConfiguration
+
     internal data class NonIntrusiveFunConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
         val unitFunRelaxer: Relaxer<ReturnValue?>?,
         val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         val relaxer: Relaxer<ReturnValue>?,
-        val spyOn: SideEffect?
-    )
+        val spyOn: SideEffect?,
+    ) : NonIntrusiveConfiguration
 
-    internal interface NonIntrusiveFunConfigurationReceiver<ReturnValue, SideEffect : Function<ReturnValue>> {
-        fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect>
+    internal data class NonIntrusivePropertyConfiguration<Value>(
+        val relaxer: Relaxer<Value>?,
+        val spyOnGet: Function0<Value>?,
+        val spyOnSet: Function1<Value, Unit>?,
+    ) : NonIntrusiveConfiguration
+
+    internal interface NonIntrusiveConfigurationReceiver<Configuration: NonIntrusiveConfiguration> {
+        fun getConfiguration(): Configuration
     }
 
     interface ProxyFactory {

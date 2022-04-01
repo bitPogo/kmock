@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.proxy
 
-import tech.antibytes.kmock.KMockContract.Relaxer
-
-internal val kmockUnitFunRelaxer: Relaxer<Unit> = Relaxer { /* Do nothing */ }
+@Suppress("UNUSED_PARAMETER")
+internal fun kmockUnitFunRelaxer(id: String) {
+    /* Do nothing */
+}
