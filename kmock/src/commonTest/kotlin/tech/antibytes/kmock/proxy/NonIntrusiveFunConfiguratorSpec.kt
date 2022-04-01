@@ -347,7 +347,7 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn18")
-    fun `Given a Relaxer and UnitFunRelaxer is set, the UnitFunRelaxer wipes the Relaxer`() {
+    fun `Given a Relaxer and UnitFunRelaxer is set the UnitFunRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, (Any) -> Unit>()
 
@@ -364,7 +364,7 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn19")
-    fun `Given a Relaxer and BuildInRelaxer is set, the BuildInRelaxer wipes the Relaxer`() {
+    fun `Given a Relaxer and BuildInRelaxer is set the BuildInRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
@@ -381,7 +381,7 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn20")
-    fun `Given a Relaxer and Spy is set, the Spy wipes the Relaxer`() {
+    fun `Given a Relaxer and Spy is set the Spy wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
 
@@ -398,7 +398,7 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn21")
-    fun `Given a UnitFunRelaxer and Spy is set, the Spy wipes the UnitFunRelaxer`() {
+    fun `Given a UnitFunRelaxer and Spy is set the Spy wipes the UnitFunRelaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
 
@@ -415,7 +415,7 @@ class NonIntrusiveConfiguratorSpec {
 
     @Test
     @JsName("fn22")
-    fun `Given a BuildInRelaxer and Spy is set, the Spy wipes the BuildInRelaxer`() {
+    fun `Given a BuildInRelaxer and Spy is set the Spy wipes the BuildInRelaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 

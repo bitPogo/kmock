@@ -216,7 +216,7 @@ class NonIntrusivePropertyConfiguratorSpec {
 
     @Test
     @JsName("fn12")
-    fun `Given a Relaxer and SpyOnGet is set, the SpyOnGet wipes the Relaxer`() {
+    fun `Given a Relaxer and SpyOnGet is set the SpyOnGet wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusivePropertyConfigurator<Int>()
 
@@ -232,7 +232,7 @@ class NonIntrusivePropertyConfiguratorSpec {
 
     @Test
     @JsName("fn14")
-    fun `Given a Relaxer and SpyOnSet is set, the SpyOnGet wipes the Relaxer`() {
+    fun `Given a Relaxer and SpyOnSet is set the SpyOnGet wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusivePropertyConfigurator<Int>()
 
