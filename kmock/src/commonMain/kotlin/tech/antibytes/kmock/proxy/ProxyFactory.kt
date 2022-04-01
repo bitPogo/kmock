@@ -10,8 +10,8 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
-import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfiguration
 import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfigurator
+import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfiguration
 import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfigurator
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 

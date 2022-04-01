@@ -9,13 +9,9 @@ import kotlin.Suppress
 import kotlin.Unit
 import mock.template.spy.relaxed
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class RelaxedMock<K : Any, L>(
     verifier: KMockContract.Collector = NoopCollector,
@@ -27,71 +23,100 @@ internal class RelaxedMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxed: Boolean = false
 ) : Relaxed<K, L> where L : Any, L : Comparable<L> {
+    private val __spyOn: Relaxed<K, L>? = spyOn
+
     public override var template: L
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
 
-    public val _template: KMockContract.PropertyProxy<L> = if (spyOn == null) {
-        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_template", spyOnGet = null,
-            spyOnSet = null, collector = verifier, freeze = freeze, relaxer = if (relaxed) { {
-                    mockId -> relaxed(mockId) } } else { null })} else {
-        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_template", spyOnGet = {
-            __spyOn!!.template }, spyOnSet = { __spyOn!!.template = it; Unit }, collector =
-        verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) } } else
-        { null })}
-
+    public val _template: KMockContract.PropertyProxy<L> =
+        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_template", collector =
+        verifier, freeze = freeze) {
+            useSpyOnGetIf(__spyOn) { __spyOn!!.template }
+            useSpyOnSetIf(__spyOn) { value -> __spyOn!!.template = value }
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public override val ozz: Int
         get() = _ozz.onGet()
 
-    public val _ozz: KMockContract.PropertyProxy<Int> = if (spyOn == null) {
-        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", spyOnGet = null,
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
-                relaxed(mockId) } } else { null })} else {
-        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", spyOnGet = {
-            __spyOn!!.ozz }, collector = verifier, freeze = freeze, relaxer = if (relaxed) { {
-                mockId -> relaxed(mockId) } } else { null })}
-
+    public val _ozz: KMockContract.PropertyProxy<Int> =
+        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", collector = verifier,
+            freeze = freeze) {
+            useSpyOnGetIf(__spyOn) { __spyOn!!.ozz }
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_foo", spyOn = if (spyOn !=
-            null) { { payload ->
-            __spyOn!!.foo(payload) } } else { null }, collector = verifier, freeze = freeze,
-            unitFunRelaxer = if (relaxUnitFun) { { relaxVoidFunction() } } else { null }, relaxer = if
-                                                                                                        (relaxed) { { mockId -> relaxed(mockId) } } else { null }, buildInRelaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_foo", collector = verifier,
+            freeze = freeze) {
+            useSpyIf(
+                spy = __spyOn,
+                spyOn = { payload ->
+                    __spyOn!!.foo(payload)
+                }
+            )
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_bar", spyOn = if (spyOn !=
-            null) { { arg0 ->
-            __spyOn!!.bar(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = if
-                                                                                                        (relaxed) { { mockId -> relaxed(mockId) } } else { null })
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_bar", collector = verifier,
+            freeze = freeze) {
+            useSpyIf(
+                spy = __spyOn,
+                spyOn = { arg0 ->
+                    __spyOn!!.bar(arg0)
+                }
+            )
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
-        ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", spyOn = if (spyOn !=
-            null) { { arg0 ->
-            __spyOn!!.buzz(arg0) } } else { null }, collector = verifier, freeze = freeze, relaxer = if
-                                                                                                         (relaxed) { { mockId -> relaxed(mockId) } } else { null })
-
-    private val __spyOn: Relaxed<K, L>? = spyOn
+        ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", collector = verifier,
+            freeze = freeze) {
+            useSpyIf(
+                spy = __spyOn,
+                spyOn = { arg0 ->
+                    __spyOn!!.buzz(arg0)
+                }
+            )
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_toString", spyOn = if (spyOn
-            != null) { { __spyOn!!.toString() } } else { null }, collector = verifier, freeze = freeze,
-            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.toString() },
-            ignorableForVerification = true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_toString", collector =
+        verifier, freeze = freeze, ignorableForVerification = true) {
+            useToStringRelaxer { super.toString() }
+            useSpyIf(
+                spy = __spyOn,
+                spyOn = { __spyOn!!.toString() }
+            )
+        }
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_equals", spyOn = if (spyOn !=
-            null) { { other ->
-            __spyOn!!.equals(other) } } else { null }, collector = verifier, freeze = freeze,
-            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { other -> super.equals(other) },
-            ignorableForVerification = true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_equals", collector = verifier,
+            freeze = freeze, ignorableForVerification = true) {
+            useEqualsRelaxer { other ->
+                super.equals(other)
+            }
+            useSpyOnEqualsIf(
+                spy = __spyOn,
+                parent = { other ->
+                    super.equals(other)
+                },
+                mockKlass = RelaxedMock::class
+            )
+        }
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_hashCode", spyOn = if (spyOn
-            != null) { { __spyOn!!.hashCode() } } else { null }, collector = verifier, freeze = freeze,
-            unitFunRelaxer = null, relaxer = null, buildInRelaxer = { super.hashCode() },
-            ignorableForVerification = true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_hashCode", collector =
+        verifier, freeze = freeze, ignorableForVerification = true) {
+            useHashCodeRelaxer { super.hashCode() }
+            useSpyIf(
+                spy = __spyOn,
+                spyOn = { __spyOn!!.hashCode() }
+            )
+        }
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload)
 
@@ -101,13 +126,7 @@ internal class RelaxedMock<K : Any, L>(
 
     public override fun toString(): String = _toString.invoke()
 
-    public override fun equals(other: Any?): Boolean {
-        return if(other is RelaxedMock<*, *> && __spyOn != null) {
-            super.equals(other)
-        } else {
-            _equals.invoke(other)
-        }
-    }
+    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
 
     public override fun hashCode(): Int = _hashCode.invoke()
 

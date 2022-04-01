@@ -9,32 +9,12 @@ package tech.antibytes.kmock.processor.mock
 import tech.antibytes.kmock.processor.ProcessorContract
 
 internal class KMockRelaxerGenerator : ProcessorContract.RelaxerGenerator {
-    override fun buildRelaxers(
-        relaxer: ProcessorContract.Relaxer?,
-        useUnitFunRelaxer: Boolean
-    ): String {
-        val unitFunRelaxerStr = if (useUnitFunRelaxer) {
-            "unitFunRelaxer = if (relaxUnitFun) { { ${ProcessorContract.UNIT_RELAXER.simpleName}() } } else { null }"
-        } else {
-            ""
-        }
-
-        val buildInRelaxerStr = if (useUnitFunRelaxer) {
-            "buildInRelaxer = null"
-        } else {
-            ""
-        }
-
-        val relaxerStr = if (relaxer != null) {
-            "relaxer = if (relaxed) { { mockId -> ${relaxer.functionName}(mockId) } } else { null }"
-        } else {
-            "relaxer = null"
-        }
-
-        return if (unitFunRelaxerStr.isEmpty()) {
-            relaxerStr
-        } else {
-            "$unitFunRelaxerStr, $relaxerStr, $buildInRelaxerStr"
+    override fun addRelaxer(
+        relaxerDefinitions: StringBuilder,
+        relaxer: ProcessorContract.Relaxer?
+    ) {
+        if (relaxer != null) {
+            relaxerDefinitions.append("useRelaxerIf(relaxed) { mockId -> ${relaxer.functionName}(mockId) }\n")
         }
     }
 }

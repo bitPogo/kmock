@@ -7,10 +7,10 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Proxy
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
+import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.util.test.annotations.NativeOnly
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue

@@ -13,16 +13,21 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
-import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
 import kotlin.test.Test
 
-class NonIntrusiveConfiguratorSpec {
+class NonIntrusiveFunConfiguratorSpec {
     private val fixture = kotlinFixture()
 
     @Test
-    @JsName("fn0")
+    @JsName("fn0a")
     fun `It fulfils NonIntrusiveConfigurator`() {
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurator::class
+    }
+
+    @Test
+    @JsName("fn0")
+    fun `It fulfils NonIntrusiveFunConfigurator`() {
         NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurator::class
     }
 
@@ -108,7 +113,7 @@ class NonIntrusiveConfiguratorSpec {
         // When
         val subject: Any = fixture.fixture()
 
-        configurator.useToStringRelaxer(subject)
+        configurator.useToStringRelaxer(subject::toString)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -125,7 +130,7 @@ class NonIntrusiveConfiguratorSpec {
         // When
         val subject: Any = fixture.fixture()
 
-        configurator.useHashCodeRelaxer(subject)
+        configurator.useHashCodeRelaxer(subject::hashCode)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -142,7 +147,7 @@ class NonIntrusiveConfiguratorSpec {
         // When
         val subject: Any = fixture.fixture()
 
-        configurator.useEqualsRelaxer(subject)
+        configurator.useEqualsRelaxer(subject::equals)
         val actual = configurator.getConfiguration()
 
         // Then
@@ -208,9 +213,9 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
         // When
-        configurator.useSpyOnEqualIf(
+        configurator.useSpyOnEqualsIf(
             null,
-            fixture.fixture(),
+            { fixture.fixture() },
             MockOfMocks::class
         )
         val actual = configurator.getConfiguration()
@@ -239,9 +244,9 @@ class NonIntrusiveConfiguratorSpec {
         )
 
         // When
-        configurator.useSpyOnEqualIf(
+        configurator.useSpyOnEqualsIf(
             subjectToSpyOn,
-            fixture.fixture(),
+            { fixture.fixture() },
             MockOfMocks::class
         )
         val actual = configurator.getConfiguration()
@@ -269,9 +274,9 @@ class NonIntrusiveConfiguratorSpec {
         val otherMock = MockOfMocks { !expected }
 
         // When
-        configurator.useSpyOnEqualIf(
+        configurator.useSpyOnEqualsIf(
             subjectToSpyOn,
-            parent,
+            parent::equals,
             MockOfMocks::class
         )
         val actual = configurator.getConfiguration()
@@ -369,7 +374,7 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
         // When
-        configurator.useEqualsRelaxer(fixture.fixture())
+        configurator.useEqualsRelaxer { fixture.fixture() }
         configurator.useRelaxerIf(true) { fixture.fixture() }
 
         val actual = configurator.getConfiguration()
@@ -420,7 +425,7 @@ class NonIntrusiveConfiguratorSpec {
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
 
         // When
-        configurator.useEqualsRelaxer(fixture.fixture())
+        configurator.useEqualsRelaxer { fixture.fixture() }
         configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
 
         val actual = configurator.getConfiguration()

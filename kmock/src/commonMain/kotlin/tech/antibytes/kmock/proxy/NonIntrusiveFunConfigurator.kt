@@ -7,9 +7,9 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Relaxer
-import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
+import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
+import tech.antibytes.kmock.KMockContract.Relaxer
 import kotlin.reflect.KClass
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
@@ -38,18 +38,18 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useToStringRelaxer(parent: Any) {
-        buildInRelaxer = ParameterizedRelaxer { parent.toString() as ReturnValue }
+    override fun useToStringRelaxer(parent: Function0<String>) {
+        buildInRelaxer = ParameterizedRelaxer { parent.invoke() as ReturnValue }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useHashCodeRelaxer(parent: Any) {
-        buildInRelaxer = ParameterizedRelaxer { parent.hashCode() as ReturnValue }
+    override fun useHashCodeRelaxer(parent: Function0<Int>) {
+        buildInRelaxer = ParameterizedRelaxer { parent.invoke() as ReturnValue }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useEqualsRelaxer(parent: Any) {
-        buildInRelaxer = ParameterizedRelaxer { other -> (parent == other) as ReturnValue }
+    override fun useEqualsRelaxer(parent: Function1<Any?, Boolean>) {
+        buildInRelaxer = ParameterizedRelaxer { other -> parent.invoke(other) as ReturnValue }
     }
 
     override fun useRelaxerIf(
@@ -64,20 +64,18 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useSpyOnEqualIf(
+    override fun useSpyOnEqualsIf(
         spy: Any?,
-        parent: Any,
+        parent: Function1<Any?, Boolean>,
         mockKlass: KClass<out Any>
     ) {
         this.spyOn = spy.guardSpy(
             { other: Any? ->
-                val toCompareWith = if (other != null && other::class == mockKlass) {
-                    parent
+                if (other != null && other::class == mockKlass) {
+                    parent.invoke(other)
                 } else {
-                    spy
+                    spy == other
                 }
-
-                toCompareWith == other
             } as SideEffect
         )
     }

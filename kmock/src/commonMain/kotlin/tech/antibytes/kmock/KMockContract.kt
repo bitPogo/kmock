@@ -674,24 +674,28 @@ object KMockContract {
         fun onSet(value: Value)
     }
 
-    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> {
-        fun useUnitFunRelaxerIf(condition: Boolean)
-        fun useToStringRelaxer(parent: Any)
-        fun useHashCodeRelaxer(parent: Any)
-        fun useEqualsRelaxer(parent: Any)
+    interface NonIntrusiveConfigurator<ReturnValue> {
         fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, ReturnValue>)
+    }
 
-        fun useSpyOnEqualIf(
+    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+        NonIntrusiveConfigurator<ReturnValue> {
+
+        fun useUnitFunRelaxerIf(condition: Boolean)
+        fun useToStringRelaxer(parent: Function0<String>)
+        fun useHashCodeRelaxer(parent: Function0<Int>)
+        fun useEqualsRelaxer(parent: Function1<Any?, Boolean>)
+
+        fun useSpyOnEqualsIf(
             spy: Any?,
-            parent: Any,
+            parent: Function1<Any?, Boolean>,
             mockKlass: KClass<out Any>,
         )
 
         fun useSpyIf(spy: Any?, spyOn: SideEffect)
     }
 
-    interface NonIntrusivePropertyConfigurator<Value> {
-        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>)
+    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value> {
         fun useSpyOnGetIf(spy: Any?, spyOn: Function0<Value>)
         fun useSpyOnSetIf(spy: Any?, spyOn: Function1<Value, Unit>)
     }
@@ -711,7 +715,7 @@ object KMockContract {
         val spyOnSet: Function1<Value, Unit>?,
     ) : NonIntrusiveConfiguration
 
-    internal interface NonIntrusiveConfigurationReceiver<Configuration: NonIntrusiveConfiguration> {
+    internal interface NonIntrusiveConfigurationReceiver<Configuration : NonIntrusiveConfiguration> {
         fun getConfiguration(): Configuration
     }
 

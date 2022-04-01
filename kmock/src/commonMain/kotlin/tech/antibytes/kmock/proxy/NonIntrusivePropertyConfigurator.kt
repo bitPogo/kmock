@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfiguration
+import tech.antibytes.kmock.KMockContract.Relaxer
 
 internal class NonIntrusivePropertyConfigurator<Value> :
     KMockContract.NonIntrusivePropertyConfigurator<Value>,

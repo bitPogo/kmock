@@ -6,13 +6,9 @@ import kotlin.Int
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class PlatformMock(
     verifier: KMockContract.Collector = NoopCollector,
@@ -25,20 +21,20 @@ internal class PlatformMock(
     relaxed: Boolean = false
 ) : Platform {
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_foo", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_foo", collector = verifier,
+            freeze = freeze)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_bar", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_bar", collector = verifier,
+            freeze = freeze)
 
     public val _ozz: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_ozz", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_ozz", collector = verifier,
+            freeze = freeze)
 
     public val _izz: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_izz", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_izz", collector = verifier,
+            freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

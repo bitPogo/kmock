@@ -6,13 +6,9 @@ import kotlin.Int
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class SharedMock(
     verifier: KMockContract.Collector = NoopCollector,
@@ -25,16 +21,16 @@ internal class SharedMock(
     relaxed: Boolean = false
 ) : Shared {
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = ProxyFactory.createAsyncFunProxy("mock.template.async.SharedMock#_foo", spyOn = null,
-        collector = verifier, freeze = freeze, relaxer = null)
+        = ProxyFactory.createAsyncFunProxy("mock.template.async.SharedMock#_foo", collector =
+    verifier, freeze = freeze)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.async.SharedMock#_bar", spyOn = null, collector
-        = verifier, freeze = freeze, relaxer = null)
+    public val _bar: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
+        = ProxyFactory.createAsyncFunProxy("mock.template.async.SharedMock#_bar", collector =
+    verifier, freeze = freeze)
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
-    public override fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
+    public override suspend fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
 
     public fun _clearMock(): Unit {
         _foo.clear()

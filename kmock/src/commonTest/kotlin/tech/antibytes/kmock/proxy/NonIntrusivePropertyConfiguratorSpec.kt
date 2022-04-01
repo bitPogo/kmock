@@ -20,6 +20,12 @@ class NonIntrusivePropertyConfiguratorSpec {
     private val fixture = kotlinFixture()
 
     @Test
+    @JsName("fn0a")
+    fun `It fulfils NonIntrusiveConfigurator`() {
+        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusiveConfigurator::class
+    }
+
+    @Test
     @JsName("fn0")
     fun `It fulfils NonIntrusivePropertyConfigurator`() {
         NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusivePropertyConfigurator::class

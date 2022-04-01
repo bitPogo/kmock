@@ -763,16 +763,15 @@ class KMockMocksSpec {
         )
         val expected = loadResource("/expected/spy/AllowedRecursive.kt")
 
-        val allowedRecursiveTypes = mapOf(
-            "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
-        )
-
         // When
         val compilerResult = compile(
             provider,
             source,
             isKmp = false,
-            kspArguments = allowedRecursiveTypes
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.AllowedRecursive",
+                "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
+            )
         )
         val actual = resolveGenerated("AllowedRecursiveMock.kt")
 
