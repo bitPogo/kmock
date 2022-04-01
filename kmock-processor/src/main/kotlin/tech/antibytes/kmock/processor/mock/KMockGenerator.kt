@@ -24,15 +24,11 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ASYNC_FUN_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROP_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.SYNC_FUN_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
@@ -156,6 +152,16 @@ internal class KMockGenerator(
             buildConstructor(superType)
         )
 
+        if (enableSpy) {
+            mock.addProperty(
+                PropertySpec.builder(
+                    "__spyOn",
+                    superType.copy(nullable = true),
+                    KModifier.PRIVATE,
+                ).initializer("spyOn").build()
+            )
+        }
+
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isPublicOpen()) {
                 val (proxy, property) = propertyGenerator.buildPropertyBundle(
@@ -191,21 +197,12 @@ internal class KMockGenerator(
             }
         }
 
-        // Note since it is not obvious right here useBuildInProxiesOn contains also spies
         if (templateName in useBuildInProxiesOn) {
-            mock.addProperty(
-                PropertySpec.builder(
-                    "__spyOn",
-                    superType.copy(nullable = true),
-                    KModifier.PRIVATE,
-                ).initializer("spyOn").build()
-            )
-
             val (proxies, functions) = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
                 existingProxies = overloadedMethods,
-                amountOfGenerics = generics?.size ?: 0
+                enableSpy = enableSpy
             )
 
             mock.addFunctions(functions)
@@ -242,12 +239,8 @@ internal class KMockGenerator(
         )
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-        file.addImport(PROP_NAME.packageName, PROP_NAME.simpleName)
-        file.addImport(SYNC_FUN_NAME.packageName, SYNC_FUN_NAME.simpleName)
-        file.addImport(ASYNC_FUN_NAME.packageName, ASYNC_FUN_NAME.simpleName)
         file.addImport(PROXY_FACTORY_NAME.packageName, PROXY_FACTORY_NAME.simpleName)
         file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
-        file.addImport(UNIT_RELAXER.packageName, UNIT_RELAXER.simpleName)
 
         if (relaxer != null) {
             file.addImport(relaxer.packageName, relaxer.functionName)

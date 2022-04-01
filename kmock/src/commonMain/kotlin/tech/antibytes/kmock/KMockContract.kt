@@ -14,6 +14,7 @@ import tech.antibytes.kmock.verification.constraints.eq
 import tech.antibytes.kmock.verification.constraints.isNot
 import tech.antibytes.kmock.verification.constraints.isNotSame
 import tech.antibytes.kmock.verification.constraints.isSame
+import kotlin.reflect.KClass
 
 /**
  * Contract Container of KMock
@@ -85,7 +86,7 @@ object KMockContract {
          * @param payload which is supported by the invoked build-in method.
          * @return the given Relaxer Type.
          */
-        fun relax(payload: Parameter): ReturnValue
+        fun invoke(payload: Parameter): ReturnValue
     }
 
     /**
@@ -119,7 +120,8 @@ object KMockContract {
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
      */
-    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> :
+        SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
@@ -655,7 +657,7 @@ object KMockContract {
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        var set: (Value) -> Unit
+        var set: Function1<Value, Unit>
 
         /**
          * Invocation of property getter. This is meant for internal use only.
@@ -672,36 +674,73 @@ object KMockContract {
         fun onSet(value: Value)
     }
 
+    interface NonIntrusiveConfigurator<ReturnValue> {
+        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, ReturnValue>)
+    }
+
+    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+        NonIntrusiveConfigurator<ReturnValue> {
+
+        fun useUnitFunRelaxerIf(condition: Boolean)
+        fun useToStringRelaxer(parent: Function0<String>)
+        fun useHashCodeRelaxer(parent: Function0<Int>)
+        fun useEqualsRelaxer(parent: Function1<Any?, Boolean>)
+
+        fun useSpyOnEqualsIf(
+            spy: Any?,
+            parent: Function1<Any?, Boolean>,
+            mockKlass: KClass<out Any>,
+        )
+
+        fun useSpyIf(spy: Any?, spyOn: SideEffect)
+    }
+
+    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value> {
+        fun useSpyOnGetIf(spy: Any?, spyOn: Function0<Value>)
+        fun useSpyOnSetIf(spy: Any?, spyOn: Function1<Value, Unit>)
+    }
+
+    interface NonIntrusiveConfiguration
+
+    internal data class NonIntrusiveFunConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
+        val unitFunRelaxer: Relaxer<ReturnValue?>?,
+        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        val relaxer: Relaxer<ReturnValue>?,
+        val spyOn: SideEffect?,
+    ) : NonIntrusiveConfiguration
+
+    internal data class NonIntrusivePropertyConfiguration<Value>(
+        val relaxer: Relaxer<Value>?,
+        val spyOnGet: Function0<Value>?,
+        val spyOnSet: Function1<Value, Unit>?,
+    ) : NonIntrusiveConfiguration
+
+    internal interface NonIntrusiveConfigurationReceiver<Configuration : NonIntrusiveConfiguration> {
+        fun getConfiguration(): Configuration
+    }
+
     interface ProxyFactory {
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
-            relaxer: Relaxer<ReturnValue>? = null,
-            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
-            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
             freeze: Boolean = true,
-            spyOn: SideEffect? = null
+            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): SyncFunProxy<ReturnValue, SideEffect>
 
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
-            relaxer: Relaxer<ReturnValue>? = null,
-            unitFunRelaxer: Relaxer<ReturnValue?>? = null,
-            buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
             freeze: Boolean = true,
-            spyOn: SideEffect? = null
+            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): AsyncFunProxy<ReturnValue, SideEffect>
 
         fun <Value> createPropertyProxy(
             id: String,
             collector: Collector = NoopCollector,
-            relaxer: Relaxer<Value>? = null,
             freeze: Boolean = true,
-            spyOnGet: (() -> Value)? = null,
-            spyOnSet: ((Value) -> Unit)? = null
+            relaxationConfiguration: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {}
         ): PropertyProxy<Value>
     }
 
@@ -825,9 +864,11 @@ object KMockContract {
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
     internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
     internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
-    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+    internal const val STRICT_MISSING_EXPECTATION =
+        "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
-    internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
+    internal const val NON_STRICT_CALL_NOT_FOUND =
+        "Expected %0 to be invoked, but no call was captured with the given arguments."
     internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
 
     internal const val NOT_CALLED = "Call not found."

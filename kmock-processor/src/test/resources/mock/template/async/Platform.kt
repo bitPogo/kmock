@@ -13,9 +13,9 @@ import tech.antibytes.kmock.Mock
 interface Platform {
     suspend fun foo(fuzz: Int, ozz: Any): dynamic
 
-    fun bar(buzz: Int, bozz: Any): Any = bozz
+    suspend fun bar(buzz: Int, bozz: Any): Any = bozz
 
-    fun ozz(vararg buzz: Int): Any
+    suspend fun ozz(vararg buzz: Int): Any
 
-    fun izz(vararg buzz: Any): Any
+    suspend fun izz(vararg buzz: Any): Any
 }

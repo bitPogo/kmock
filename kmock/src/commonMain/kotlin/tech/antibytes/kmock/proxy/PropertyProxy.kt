@@ -40,8 +40,8 @@ internal class PropertyProxy<Value>(
     collector: Collector = NoopCollector,
     relaxer: Relaxer<Value>? = null,
     private val freeze: Boolean = true,
-    private val spyOnGet: (Function0<Value>)? = null,
-    private val spyOnSet: (Function1<Value, Unit>)? = null
+    private val spyOnGet: Function0<Value>? = null,
+    private val spyOnSet: Function1<Value, Unit>? = null
 ) : KMockContract.PropertyProxy<Value> {
     private val provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
 

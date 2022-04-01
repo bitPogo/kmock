@@ -13,5 +13,5 @@ import tech.antibytes.kmock.MockShared
 interface Shared {
     suspend fun foo(fuzz: Int, ozz: Any): Any
 
-    fun bar(buzz: Int, bozz: Any): Any = bozz
+    suspend fun bar(buzz: Int, bozz: Any): Any = bozz
 }

@@ -6,14 +6,7 @@
 
 package tech.antibytes.kmock.proxy
 
-/**
- * Relaxer for functions which return Unit
- * @param T actual type of the return value.
- */
-inline fun <reified T> relaxVoidFunction(): T? {
-    return if (T::class == Unit::class) {
-        Unit as T
-    } else {
-        null
-    }
+@Suppress("UNUSED_PARAMETER")
+internal fun kmockUnitFunRelaxer(id: String) {
+    /* Do nothing */
 }

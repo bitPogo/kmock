@@ -22,15 +22,13 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
+import java.lang.StringBuilder
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -127,7 +125,10 @@ internal interface ProcessorContract {
     }
 
     interface RelaxerGenerator {
-        fun buildRelaxers(relaxer: Relaxer?, useUnitFunRelaxer: Boolean): String
+        fun addRelaxer(
+            relaxerDefinitions: StringBuilder,
+            relaxer: Relaxer?
+        )
     }
 
     interface PropertyGenerator {
@@ -156,7 +157,7 @@ internal interface ProcessorContract {
             mockName: String,
             qualifier: String,
             existingProxies: Set<String>,
-            amountOfGenerics: Int,
+            enableSpy: Boolean,
         ): Pair<List<PropertySpec>, List<FunSpec>>
     }
 
@@ -239,11 +240,6 @@ internal interface ProcessorContract {
             KMockContract::class.java.simpleName
         )
 
-        val UNIT_RELAXER = ClassName(
-            NoopCollector::class.java.packageName,
-            "relaxVoidFunction"
-        )
-
         val NOOP_COLLECTOR_NAME = ClassName(
             NoopCollector::class.java.packageName,
             NoopCollector::class.java.simpleName
@@ -252,19 +248,6 @@ internal interface ProcessorContract {
         val PROXY_FACTORY_NAME = ClassName(
             ProxyFactory::class.java.packageName,
             ProxyFactory::class.java.simpleName
-        )
-
-        val SYNC_FUN_NAME = ClassName(
-            KMockContract::class.java.packageName,
-            "KMockContract.${SyncFunProxy::class.java.simpleName}"
-        )
-        val ASYNC_FUN_NAME = ClassName(
-            KMockContract::class.java.packageName,
-            "KMockContract.${AsyncFunProxy::class.java.simpleName}"
-        )
-        val PROP_NAME = ClassName(
-            KMockContract::class.java.packageName,
-            "KMockContract.${PropertyProxy::class.java.simpleName}"
         )
 
         const val COMMON_INDICATOR = "commonTest"

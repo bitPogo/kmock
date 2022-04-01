@@ -217,7 +217,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
-        return buildInRelaxer.value?.relax(payload)
+        return buildInRelaxer.value?.invoke(payload)
             ?: unitFunRelaxer.value?.relax(id)
             ?: relaxer.value?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")

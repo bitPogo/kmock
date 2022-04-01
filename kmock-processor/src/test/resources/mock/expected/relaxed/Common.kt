@@ -7,13 +7,9 @@ import kotlin.Suppress
 import kotlin.Unit
 import mock.template.relaxed.relaxed
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import tech.antibytes.kmock.proxy.relaxVoidFunction
 
 internal class CommonMock(
     verifier: KMockContract.Collector = NoopCollector,
@@ -29,35 +25,40 @@ internal class CommonMock(
         get() = _buzz.onGet()
 
     public val _buzz: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("mock.template.relaxed.CommonMock#_buzz", spyOnGet = null,
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-            } else { null })
+        ProxyFactory.createPropertyProxy("mock.template.relaxed.CommonMock#_buzz", collector =
+        verifier, freeze = freeze) {
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_foo", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-            } else { null })
+        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_foo", collector = verifier,
+            freeze = freeze) {
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _oo: KMockContract.SyncFunProxy<String, (Array<out kotlin.Any>) -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_oo", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-            } else { null })
+        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_oo", collector = verifier,
+            freeze = freeze) {
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
-        ProxyFactory.createAsyncFunProxy("mock.template.relaxed.CommonMock#_bar", spyOn = null,
-            collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-            } else { null })
+        ProxyFactory.createAsyncFunProxy("mock.template.relaxed.CommonMock#_bar", collector =
+        verifier, freeze = freeze) {
+            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        }
 
     public val _ar: KMockContract.AsyncFunProxy<String, suspend (Array<out kotlin.Any>) ->
     kotlin.String> = ProxyFactory.createAsyncFunProxy("mock.template.relaxed.CommonMock#_ar",
-        spyOn = null, collector = verifier, freeze = freeze, relaxer = if (relaxed) { { mockId ->
-            relaxed(mockId) } } else { null })
+        collector = verifier, freeze = freeze) {
+        useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+    }
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_buzzWithVoid", spyOn =
-        null, collector = verifier, freeze = freeze, unitFunRelaxer = if (relaxUnitFun) { {
-            relaxVoidFunction() } } else { null }, relaxer = if (relaxed) { { mockId -> relaxed(mockId) }
-        } else { null }, buildInRelaxer = null)
+        ProxyFactory.createSyncFunProxy("mock.template.relaxed.CommonMock#_buzzWithVoid", collector =
+        verifier, freeze = freeze) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     public override fun foo(payload: Any): String = _foo.invoke(payload)
 
