@@ -20,7 +20,7 @@ internal class CommonMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Common<K, L> where L : Any, L : Comparable<L> {
     private val __spyOn: Common<K, L>? = spyOn
 

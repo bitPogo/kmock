@@ -24,7 +24,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : AllowedRecursive<K, L> where L : Any, L : Comparable<L> {
     private val __spyOn: AllowedRecursive<K, L>? = spyOn
 

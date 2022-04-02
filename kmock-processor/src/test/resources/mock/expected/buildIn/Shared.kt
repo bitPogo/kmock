@@ -19,7 +19,7 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Shared {
     public override val foo: String
         get() = _foo.onGet()

@@ -13,7 +13,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector,
-    freeze: Boolean
+    freeze: Boolean,
 ): Mock = when (Mock::class) {
     factory.template.spiesonly.Shared2Mock::class -> factory.template.spiesonly.Shared2Mock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.spiesonly.Shared2) as Mock
@@ -24,7 +24,7 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     spyOn: SpyOn,
     verifier: KMockContract.Collector,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.spiesonly.Shared1Mock::class -> factory.template.spiesonly.Shared1Mock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.spiesonly.Shared1<K, L>) as Mock

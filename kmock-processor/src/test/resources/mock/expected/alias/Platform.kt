@@ -18,7 +18,7 @@ internal class AliasPlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Platform {
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createAsyncFunProxy("mock.template.alias.AliasPlatformMock#_foo", collector =

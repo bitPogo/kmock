@@ -23,7 +23,7 @@ internal class SharedMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Shared<K, L> where L : Any, L : Comparable<L> {
     public override var template: L
         get() = _template.onGet()
