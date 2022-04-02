@@ -845,4 +845,82 @@ class KMockMocksSpec {
         ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for a Platform which contain TypeAliases is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/typealiaz/Platform.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Shared which contain TypeAliases is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/typealiaz/Shared.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/typealiaz/SharedMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Common which contain TypeAliases is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/typealiaz/Common.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/typealiaz/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
 }
