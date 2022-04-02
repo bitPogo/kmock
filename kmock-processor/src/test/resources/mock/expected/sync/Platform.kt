@@ -18,7 +18,7 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Platform {
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.sync.PlatformMock#_foo", collector = verifier,

@@ -20,7 +20,7 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Platform {
     public override val foo: Any
         get() = _foo.onGet()

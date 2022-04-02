@@ -21,7 +21,7 @@ internal class RelaxedMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Relaxed<K, L> where L : Any, L : Comparable<L> {
     private val __spyOn: Relaxed<K, L>? = spyOn
 

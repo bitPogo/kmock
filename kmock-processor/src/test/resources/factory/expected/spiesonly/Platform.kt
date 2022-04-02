@@ -14,7 +14,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     factory.template.spiesonly.Platform2Mock::class ->
         factory.template.spiesonly.Platform2Mock(verifier = verifier, freeze = freeze, spyOn = spyOn
@@ -29,7 +29,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : 
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Platform1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.spiesonly.Platform1Mock::class ->
         factory.template.spiesonly.Platform1Mock(verifier = verifier, freeze = freeze, spyOn = spyOn

@@ -15,7 +15,7 @@ internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     factory.template.interfaze.Platform2::class -> factory.template.interfaze.Platform2Mock(verifier =
     verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -33,7 +33,7 @@ internal inline fun <reified Mock> kmock(
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     factory.template.interfaze.Platform2::class -> factory.template.interfaze.Platform2Mock(verifier =
     verifier, freeze = freeze, spyOn = spyOn as factory.template.interfaze.Platform2) as Mock
@@ -48,7 +48,7 @@ internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.interfaze.Platform1::class -> factory.template.interfaze.AliasPlatformMock<K,
         L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -62,7 +62,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : 
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.interfaze.Platform1::class ->
         factory.template.interfaze.AliasPlatformMock(verifier = verifier, freeze = freeze, spyOn =

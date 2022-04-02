@@ -15,5 +15,5 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Shared1<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.spiesonly.Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

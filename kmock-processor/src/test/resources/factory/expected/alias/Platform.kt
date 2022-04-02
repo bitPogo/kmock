@@ -12,7 +12,7 @@ internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     factory.template.alias.AliasPlatformMock::class ->
         factory.template.alias.AliasPlatformMock(verifier = verifier, relaxUnitFun = relaxUnitFun,
@@ -23,7 +23,7 @@ internal inline fun <reified Mock> kmock(
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

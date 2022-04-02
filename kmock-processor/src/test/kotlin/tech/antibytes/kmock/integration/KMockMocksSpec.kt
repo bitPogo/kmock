@@ -73,7 +73,11 @@ class KMockMocksSpec {
             .getOrNull(0)
     }
 
-    private fun String.normalizeSource(): String = this.replace(Regex("[\t ]+"), "")
+    private fun String.normalizeSource(): String = this
+        .replace(Regex("[ \t\r\n]+\n"), "\n")
+        .replace(Regex("[\t\r]"), " ")
+        .replace(Regex("[ ]+"), " ")
+        .trim()
 
     @Test
     fun `Given a annotated Source for Properties for a Platform is processed, it writes a mock`() {

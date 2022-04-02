@@ -15,7 +15,7 @@ internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
@@ -23,7 +23,7 @@ internal inline fun <reified Mock> kmock(
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true
+    freeze: Boolean = true,
 ): Mock = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
@@ -33,7 +33,7 @@ internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generic.PlatformMock::class -> factory.template.generic.PlatformMock<K,
         L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
@@ -44,7 +44,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform<K, L>, K : A
     spyOn: SpyOn,
     verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>
+    templateType: kotlin.reflect.KClass<factory.template.generic.Platform<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }

@@ -20,7 +20,7 @@ internal class CommonMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Common {
     public override val foo: Any
         get() = _foo.onGet()

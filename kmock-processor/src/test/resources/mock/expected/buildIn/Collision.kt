@@ -19,7 +19,7 @@ internal class CollisionMock(
     @Suppress("UNUSED_PARAMETER")
     relaxUnitFun: Boolean = false,
     @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false
+    relaxed: Boolean = false,
 ) : Collision {
     public override val foo: String
         get() = _foo.onGet()
