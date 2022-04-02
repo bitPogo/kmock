@@ -48,7 +48,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_foo", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.foo(payload)
                 }
@@ -60,7 +60,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_oo", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.oo(*payload)
                 }
@@ -72,7 +72,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_bar", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.bar(arg0)
                 }
@@ -83,7 +83,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_ar", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.ar(*arg0)
                 }
@@ -94,7 +94,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_buzz", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.buzz(arg0)
                 }
@@ -105,7 +105,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_uzz", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.uzz(*arg0)
                 }
@@ -117,7 +117,7 @@ internal class CommonMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useToStringRelaxer { super.toString() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.toString() }
             )
         }
@@ -129,8 +129,8 @@ internal class CommonMock<K : Any, L>(
                 super.equals(other)
             }
             useSpyOnEqualsIf(
-                spy = __spyOn,
-                parent = { other ->
+               spyTarget  = __spyOn,
+               equals = { other ->
                     super.equals(other)
                 },
                 mockKlass = CommonMock::class
@@ -142,7 +142,7 @@ internal class CommonMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useHashCodeRelaxer { super.hashCode() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.hashCode() }
             )
         }

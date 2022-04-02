@@ -12,13 +12,13 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 
 internal class NonIntrusivePropertyConfigurator<Value> :
     KMockContract.NonIntrusivePropertyConfigurator<Value>,
-    KMockContract.NonIntrusiveConfigurationReceiver<NonIntrusivePropertyConfiguration<Value>> {
+    KMockContract.NonIntrusiveConfigurationExtractor<NonIntrusivePropertyConfiguration<Value>> {
     private var relaxer: Relaxer<Value>? = null
     private var spyOnGet: Function0<Value>? = null
     private var spyOnSet: Function1<Value, Unit>? = null
 
     private fun finalizeRelaxers() {
-        if (spyOnGet != null || spyOnSet != null) {
+        if (spyOnGet != null) {
             relaxer = null
         }
     }
@@ -27,12 +27,12 @@ internal class NonIntrusivePropertyConfigurator<Value> :
         this.relaxer = condition.guardRelaxer(relaxer)
     }
 
-    override fun useSpyOnGetIf(spy: Any?, spyOn: Function0<Value>) {
-        this.spyOnGet = spy.guardSpy(spyOn)
+    override fun useSpyOnGetIf(spyTarget: Any?, spyOn: Function0<Value>) {
+        this.spyOnGet = spyTarget.guardSpy(spyOn)
     }
 
-    override fun useSpyOnSetIf(spy: Any?, spyOn: Function1<Value, Unit>) {
-        this.spyOnSet = spy.guardSpy(spyOn)
+    override fun useSpyOnSetIf(spyTarget: Any?, spyOn: Function1<Value, Unit>) {
+        this.spyOnSet = spyTarget.guardSpy(spyOn)
     }
 
     override fun getConfiguration(): NonIntrusivePropertyConfiguration<Value> {

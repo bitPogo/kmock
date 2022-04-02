@@ -456,7 +456,7 @@ internal class KMockMethodGenerator(
 
         relaxationDefinitions.append(
             """useSpyIf(
-            |    spy = __spyOn,
+            |    spyTarget = __spyOn,
             |    spyOn = $spyBody
             |)
             """.trimMargin() + "\n"

@@ -674,34 +674,124 @@ object KMockContract {
         fun onSet(value: Value)
     }
 
-    interface NonIntrusiveConfigurator<ReturnValue> {
-        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, ReturnValue>)
+    /**
+     * Configures non intrusive behaviour for Proxies.
+     * @param Value the value of the Property.
+     * @author Matthias Geisler
+     */
+    interface NonIntrusiveConfigurator<Value> {
+        /**
+         * Binds a given Relaxer function to a Proxy if the condition is true.
+         * This will wipe a given relaxer.
+         * @param condition which determines if the relaxer should be invoked or not.
+         * @param relaxer the relaxer method.
+         */
+        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>)
     }
 
+    /**
+     * Configures non intrusive Behaviour for FunProxies.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @see NonIntrusiveConfigurator
+     * @author Matthias Geisler
+     */
     interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
         NonIntrusiveConfigurator<ReturnValue> {
 
+        /**
+         * Binds the internal UnitFunRelaxer to the Proxy, if the given condition is true.
+         * It wipes a given relaxer.
+         * @param condition Boolean to determine if the the function is relaxed or not.
+         */
         fun useUnitFunRelaxerIf(condition: Boolean)
-        fun useToStringRelaxer(parent: Function0<String>)
-        fun useHashCodeRelaxer(parent: Function0<Int>)
-        fun useEqualsRelaxer(parent: Function1<Any?, Boolean>)
 
+        /**
+         * Binds the given function, which should be toString, to the Proxy.
+         * It wipes a given relaxer.
+         * @param toString function which should reference the mocks parent toString method.
+         */
+        fun useToStringRelaxer(toString: Function0<String>)
+
+        /**
+         * Binds the given function, which should be hashCode, to the Proxy.
+         * It wipes a given relaxer.
+         * @param hashCode function which should reference the mocks parent hashCode method.
+         */
+        fun useHashCodeRelaxer(hashCode: Function0<Int>)
+
+        /**
+         * Binds the given function, which should be equals, to the Proxy.
+         * It wipes a given relaxer.
+         * @param equals function which should reference the mocks parent equals method.
+         */
+        fun useEqualsRelaxer(equals: Function1<Any?, Boolean>)
+
+        /**
+         * Binds the given function, which should be equals, to the Proxy.
+         * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
+         * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
+         * It wipes a given relaxer and buildInRelaxer.
+         * @param spyTarget the referenced object which is spied uppon.
+         * @param equals function which should reference the mocks parent equals method.
+         * @param mockKlass the KClass of the hosting mock.
+         */
         fun useSpyOnEqualsIf(
-            spy: Any?,
-            parent: Function1<Any?, Boolean>,
+            spyTarget: Any?,
+            equals: Function1<Any?, Boolean>,
             mockKlass: KClass<out Any>,
         )
 
-        fun useSpyIf(spy: Any?, spyOn: SideEffect)
+        /**
+         * Binds the given function to the Proxy.
+         * It wipes a given relaxer and buildInRelaxer.
+         * @param spyTarget the referenced object which is spied uppon.
+         * @param spyOn the referenced Spy method.
+         */
+        fun useSpyIf(spyTarget: Any?, spyOn: SideEffect)
     }
 
+    /**
+     * Configures non intrusive Behaviour for PropertyProxies.
+     * @param Value the value of the Property.
+     * @see NonIntrusiveConfigurator
+     * @author Matthias Geisler
+     */
     interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value> {
-        fun useSpyOnGetIf(spy: Any?, spyOn: Function0<Value>)
-        fun useSpyOnSetIf(spy: Any?, spyOn: Function1<Value, Unit>)
+        /**
+         * Binds a given Getter function to a PropertyProxy if the given spy is not null.
+         * This will wipe a given relaxer.
+         * @param spyTarget the referenced Spy object.
+         * @param spyOn the Getter which should be bounded.
+         */
+        fun useSpyOnGetIf(spyTarget: Any?, spyOn: Function0<Value>)
+
+        /**
+         * Binds a given Setter function to a PropertyProxy if the given spy is not null.
+         * @param spyTarget the referenced Spy object.
+         * @param spyOn the Setter which should be bounded.
+         */
+        fun useSpyOnSetIf(spyTarget: Any?, spyOn: Function1<Value, Unit>)
     }
 
-    interface NonIntrusiveConfiguration
+    /**
+     * Base value container for non intrusive behaviour.
+     * @author Matthias Geisler
+     */
+    internal interface NonIntrusiveConfiguration
 
+    /**
+     * Value container for non intrusive behaviour of FunProxy.
+     * @param ReturnValue the return value of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @constructor creates a NonIntrusiveFunConfiguration.
+     * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
+     * @param buildInRelaxer ParameterizedRelaxer which refers to a build-in method like toString or null.
+     * @param relaxer Relaxer which refers to a external defined general relaxation method.
+     * @param spyOn Function/SideEffect which contains a reference to a actual instance method  of a bounded spyTarget.
+     * @see NonIntrusiveConfiguration
+     * @author Matthias Geisler
+     */
     internal data class NonIntrusiveFunConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
         val unitFunRelaxer: Relaxer<ReturnValue?>?,
         val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
@@ -709,38 +799,104 @@ object KMockContract {
         val spyOn: SideEffect?,
     ) : NonIntrusiveConfiguration
 
+    /**
+     * Value container for non intrusive behaviour of PropertyProxy.
+     * @param Value the value of the hosting Proxy.
+     * @constructor creates a NonIntrusivePropertyConfiguration.
+     * @param relaxer Relaxer which refers to a external defined general relaxation method.
+     * @param spyOnSet Function/SideEffect which contains a reference to a actual instance setter method of a bounded spyTarget.
+     * @param spyOnGet Function/SideEffect which contains a reference to a actual instance getter method of a bounded spyTarget.
+     * @see NonIntrusiveConfiguration
+     * @author Matthias Geisler
+     */
     internal data class NonIntrusivePropertyConfiguration<Value>(
         val relaxer: Relaxer<Value>?,
         val spyOnGet: Function0<Value>?,
         val spyOnSet: Function1<Value, Unit>?,
     ) : NonIntrusiveConfiguration
 
-    internal interface NonIntrusiveConfigurationReceiver<Configuration : NonIntrusiveConfiguration> {
+    /**
+     * Extractor of configured NonIntrusiveConfiguration.
+     * @param Configuration the actual type of configuration (Fun/Property).
+     * @see NonIntrusivePropertyConfiguration
+     * @see NonIntrusiveFunConfiguration
+     * @see NonIntrusiveConfiguration
+     */
+    internal interface NonIntrusiveConfigurationExtractor<Configuration : NonIntrusiveConfiguration> {
+        /**
+         * Extracts the configured Configuration.
+         */
         fun getConfiguration(): Configuration
     }
 
+    /**
+     * Entrypoint to instantiate a Proxy.
+     * @author Matthias Geisler
+     */
     interface ProxyFactory {
+        /**
+         * Instantiates a SyncFunProxy.
+         * @param ReturnValue the return value of the Proxy.
+         * @param SideEffect the function signature.
+         * @param id a unique identifier for this Proxy.
+         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
+         * @param nonIntrusiveConfiguration optional configuration for non-intrusive behaviour.
+         * @param freeze boolean which indicates if freezing can be used or not. Default is true.
+         * Default is null.
+         * @see Collector
+         * @see Relaxer
+         * @see SyncFunProxy
+         * @see NonIntrusiveFunConfigurator
+         */
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
             freeze: Boolean = true,
-            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
+            nonIntrusiveConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): SyncFunProxy<ReturnValue, SideEffect>
 
+        /**
+         * Instantiates a AsyncFunProxy.
+         * @param ReturnValue the return value of the Proxy.
+         * @param SideEffect the function signature.
+         * @param id a unique identifier for this Proxy.
+         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
+         * @param nonIntrusiveConfiguration optional configuration for non-intrusive behaviour.
+         * @param freeze boolean which indicates if freezing can be used or not. Default is true.
+         * Default is null.
+         * @see Collector
+         * @see Relaxer
+         * @see AsyncFunProxy
+         * @see NonIntrusiveFunConfigurator
+         */
         fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
             freeze: Boolean = true,
-            relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
+            nonIntrusiveConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit = {},
         ): AsyncFunProxy<ReturnValue, SideEffect>
 
+        /**
+         * Instantiates a PropertyProxy.
+         * @param Value the value of the Property.
+         * @param id a unique identifier for this Proxy.
+         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param freeze boolean which indicates if freezing can be used or not. Default is true.
+         * @param nonIntrusiveConfiguration optional configuration for non-intrusive behaviour.
+         * Default is null.
+         * @see Collector
+         * @see Relaxer
+         * @see NonIntrusivePropertyConfigurator
+         */
         fun <Value> createPropertyProxy(
             id: String,
             collector: Collector = NoopCollector,
             freeze: Boolean = true,
-            relaxationConfiguration: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {}
+            nonIntrusiveConfiguration: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {}
         ): PropertyProxy<Value>
     }
 

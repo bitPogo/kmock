@@ -48,7 +48,7 @@ internal class AliasPlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_fooWithAny", collector =
         verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.foo(payload)
                 }
@@ -60,7 +60,7 @@ internal class AliasPlatformMock<K : Any, L>(
         = ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_fooWithAnys",
         collector = verifier, freeze = freeze) {
         useSpyIf(
-            spy = __spyOn,
+            spyTarget = __spyOn,
             spyOn = { payload ->
                 __spyOn!!.foo(*payload)
             }
@@ -72,7 +72,7 @@ internal class AliasPlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_barWithInt", collector =
         verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.bar(arg0)
                 }
@@ -83,7 +83,7 @@ internal class AliasPlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_barWithInts", collector
         = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.bar(*arg0)
                 }
@@ -94,7 +94,7 @@ internal class AliasPlatformMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzzWithString",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.buzz(arg0)
                 }
@@ -105,7 +105,7 @@ internal class AliasPlatformMock<K : Any, L>(
     L> = ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzzWithStrings",
         collector = verifier, freeze = freeze) {
         useSpyIf(
-            spy = __spyOn,
+            spyTarget = __spyOn,
             spyOn = { arg0 ->
                 __spyOn!!.buzz(*arg0)
             }
@@ -117,7 +117,7 @@ internal class AliasPlatformMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useToStringRelaxer { super.toString() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.toString() }
             )
         }
@@ -129,8 +129,8 @@ internal class AliasPlatformMock<K : Any, L>(
                 super.equals(other)
             }
             useSpyOnEqualsIf(
-                spy = __spyOn,
-                parent = { other ->
+                spyTarget = __spyOn,
+                equals = { other ->
                     super.equals(other)
                 },
                 mockKlass = AliasPlatformMock::class
@@ -142,7 +142,7 @@ internal class AliasPlatformMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useHashCodeRelaxer { super.hashCode() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.hashCode() }
             )
         }

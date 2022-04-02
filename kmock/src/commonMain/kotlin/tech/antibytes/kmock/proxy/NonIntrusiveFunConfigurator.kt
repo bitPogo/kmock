@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
     KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
-    KMockContract.NonIntrusiveConfigurationReceiver<NonIntrusiveFunConfiguration<ReturnValue, SideEffect>> {
+    KMockContract.NonIntrusiveConfigurationExtractor<NonIntrusiveFunConfiguration<ReturnValue, SideEffect>> {
 
     private var unitFunRelaxer: Relaxer<ReturnValue?>? = null
     private var buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null
@@ -38,18 +38,18 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useToStringRelaxer(parent: Function0<String>) {
-        buildInRelaxer = ParameterizedRelaxer { parent.invoke() as ReturnValue }
+    override fun useToStringRelaxer(toString: Function0<String>) {
+        buildInRelaxer = ParameterizedRelaxer { toString.invoke() as ReturnValue }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useHashCodeRelaxer(parent: Function0<Int>) {
-        buildInRelaxer = ParameterizedRelaxer { parent.invoke() as ReturnValue }
+    override fun useHashCodeRelaxer(hashCode: Function0<Int>) {
+        buildInRelaxer = ParameterizedRelaxer { hashCode.invoke() as ReturnValue }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun useEqualsRelaxer(parent: Function1<Any?, Boolean>) {
-        buildInRelaxer = ParameterizedRelaxer { other -> parent.invoke(other) as ReturnValue }
+    override fun useEqualsRelaxer(equals: Function1<Any?, Boolean>) {
+        buildInRelaxer = ParameterizedRelaxer { other -> equals.invoke(other) as ReturnValue }
     }
 
     override fun useRelaxerIf(
@@ -59,22 +59,22 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         this.relaxer = condition.guardRelaxer(relaxer)
     }
 
-    override fun useSpyIf(spy: Any?, spyOn: SideEffect) {
-        this.spyOn = spy.guardSpy(spyOn)
+    override fun useSpyIf(spyTarget: Any?, spyOn: SideEffect) {
+        this.spyOn = spyTarget.guardSpy(spyOn)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun useSpyOnEqualsIf(
-        spy: Any?,
-        parent: Function1<Any?, Boolean>,
+        spyTarget: Any?,
+        equals: Function1<Any?, Boolean>,
         mockKlass: KClass<out Any>
     ) {
-        this.spyOn = spy.guardSpy(
+        this.spyOn = spyTarget.guardSpy(
             { other: Any? ->
                 if (other != null && other::class == mockKlass) {
-                    parent.invoke(other)
+                    equals.invoke(other)
                 } else {
-                    spy == other
+                    spyTarget == other
                 }
             } as SideEffect
         )

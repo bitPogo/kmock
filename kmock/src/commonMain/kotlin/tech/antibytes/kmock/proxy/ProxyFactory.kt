@@ -41,9 +41,9 @@ object ProxyFactory : KMockContract.ProxyFactory {
         collector: Collector,
         ignorableForVerification: Boolean,
         freeze: Boolean,
-        relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit
+        nonIntrusiveConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit
     ): SyncFunProxy<ReturnValue, SideEffect> {
-        val (unitFunRelaxer, buildInRelaxer, relaxer, spyOn) = resolveFunProxyRelaxers(relaxationConfiguration)
+        val (unitFunRelaxer, buildInRelaxer, relaxer, spyOn) = resolveFunProxyRelaxers(nonIntrusiveConfiguration)
 
         return SyncFunProxy(
             id = id,
@@ -62,9 +62,9 @@ object ProxyFactory : KMockContract.ProxyFactory {
         collector: Collector,
         ignorableForVerification: Boolean,
         freeze: Boolean,
-        relaxationConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit
+        nonIntrusiveConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit
     ): AsyncFunProxy<ReturnValue, SideEffect> {
-        val configuration = resolveFunProxyRelaxers(relaxationConfiguration)
+        val configuration = resolveFunProxyRelaxers(nonIntrusiveConfiguration)
 
         return AsyncFunProxy(
             id = id,
@@ -81,9 +81,9 @@ object ProxyFactory : KMockContract.ProxyFactory {
         id: String,
         collector: Collector,
         freeze: Boolean,
-        relaxationConfiguration: NonIntrusivePropertyConfigurator<Value>.() -> Unit
+        nonIntrusiveConfiguration: NonIntrusivePropertyConfigurator<Value>.() -> Unit
     ): KMockContract.PropertyProxy<Value> {
-        val configuration = resolvePropertyProxyRelaxers(relaxationConfiguration)
+        val configuration = resolvePropertyProxyRelaxers(nonIntrusiveConfiguration)
 
         return PropertyProxy(
             id = id,

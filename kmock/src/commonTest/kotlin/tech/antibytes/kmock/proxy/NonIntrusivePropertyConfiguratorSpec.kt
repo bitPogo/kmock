@@ -34,7 +34,7 @@ class NonIntrusivePropertyConfiguratorSpec {
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusiveConfigurationReceiver::class
+        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusiveConfigurationExtractor::class
     }
 
     @Test
@@ -234,22 +234,6 @@ class NonIntrusivePropertyConfiguratorSpec {
         // Then
         actual.relaxer mustBe null
         actual.spyOnGet isNot null
-    }
-
-    @Test
-    @JsName("fn14")
-    fun `Given a Relaxer and SpyOnSet is set the SpyOnGet wipes the Relaxer`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useRelaxerIf(true) { fixture.fixture() }
-        configurator.useSpyOnSetIf(Any()) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.relaxer mustBe null
-        actual.spyOnSet isNot null
     }
 
     private class MockOfMocks(

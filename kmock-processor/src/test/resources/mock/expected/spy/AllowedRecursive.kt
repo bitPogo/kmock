@@ -43,7 +43,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithVoid",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { @Suppress("UNCHECKED_CAST")
                 __spyOn!!.oss() as kotlin.Comparable<Any?> }
             )
@@ -54,7 +54,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequence",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
 
                     @Suppress("UNCHECKED_CAST")
@@ -76,7 +76,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequences",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
 
                     @Suppress("UNCHECKED_CAST")
@@ -98,7 +98,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_brassWithVoid",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { @Suppress("UNCHECKED_CAST")
                 __spyOn!!.brass() as kotlin.Comparable<Any?> }
             )
@@ -109,7 +109,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_brassWithComparable",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.brass(payload)
                 }
@@ -122,7 +122,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_brassWithComparables",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.brass(*payload)
                 }
@@ -135,7 +135,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_issWithVoid",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { @Suppress("UNCHECKED_CAST")
                 __spyOn!!.iss() as kotlin.Comparable<Any?> }
             )
@@ -146,7 +146,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_issWithComparable",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.iss(payload)
                 }
@@ -159,7 +159,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_issWithComparables",
             collector = verifier, freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.iss(*payload)
                 }
@@ -172,7 +172,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         = verifier, freeze = freeze, ignorableForVerification = true) {
             useToStringRelaxer { super.toString() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.toString() }
             )
         }
@@ -184,8 +184,8 @@ internal class AllowedRecursiveMock<K : Any, L>(
                 super.equals(other)
             }
             useSpyOnEqualsIf(
-                spy = __spyOn,
-                parent = { other ->
+               spyTarget  = __spyOn,
+               equals = { other ->
                     super.equals(other)
                 },
                 mockKlass = AllowedRecursiveMock::class
@@ -197,7 +197,7 @@ internal class AllowedRecursiveMock<K : Any, L>(
         = verifier, freeze = freeze, ignorableForVerification = true) {
             useHashCodeRelaxer { super.hashCode() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.hashCode() }
             )
         }
