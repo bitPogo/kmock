@@ -87,8 +87,8 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
 
             relaxationDefinitions.append(
                 """useSpyOnEqualsIf(
-                |    spy = __spyOn,
-                |    parent = $spyBody,
+                |    spyTarget = __spyOn,
+                |    equals = $spyBody,
                 |    mockKlass = $mockName::class
                 |)
                 """.trimMargin() + "\n"
@@ -102,7 +102,7 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
 
             relaxationDefinitions.append(
                 """useSpyIf(
-                |    spy = __spyOn,
+                |    spyTarget = __spyOn,
                 |    spyOn = $spyBody
                 |)
                 """.trimMargin() + "\n"

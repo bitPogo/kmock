@@ -51,7 +51,7 @@ internal class RelaxedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_foo", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { payload ->
                     __spyOn!!.foo(payload)
                 }
@@ -63,7 +63,7 @@ internal class RelaxedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_bar", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.bar(arg0)
                 }
@@ -75,7 +75,7 @@ internal class RelaxedMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", collector = verifier,
             freeze = freeze) {
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { arg0 ->
                     __spyOn!!.buzz(arg0)
                 }
@@ -88,7 +88,7 @@ internal class RelaxedMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useToStringRelaxer { super.toString() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.toString() }
             )
         }
@@ -100,8 +100,8 @@ internal class RelaxedMock<K : Any, L>(
                 super.equals(other)
             }
             useSpyOnEqualsIf(
-                spy = __spyOn,
-                parent = { other ->
+               spyTarget  = __spyOn,
+               equals = { other ->
                     super.equals(other)
                 },
                 mockKlass = RelaxedMock::class
@@ -113,7 +113,7 @@ internal class RelaxedMock<K : Any, L>(
         verifier, freeze = freeze, ignorableForVerification = true) {
             useHashCodeRelaxer { super.hashCode() }
             useSpyIf(
-                spy = __spyOn,
+                spyTarget = __spyOn,
                 spyOn = { __spyOn!!.hashCode() }
             )
         }

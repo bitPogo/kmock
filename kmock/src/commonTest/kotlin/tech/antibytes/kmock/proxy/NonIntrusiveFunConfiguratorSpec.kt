@@ -34,7 +34,7 @@ class NonIntrusiveFunConfiguratorSpec {
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurationReceiver::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurationExtractor::class
     }
 
     @Test
