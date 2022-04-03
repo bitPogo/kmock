@@ -10,13 +10,10 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
-import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
@@ -453,7 +450,6 @@ class PropertyProxyUnfrozenSpec {
     }
 
     @Test
-    @IgnoreJs
     @JsName("fn24")
     fun `Given clear is called it clears the mock`() {
         // Given
@@ -476,79 +472,16 @@ class PropertyProxyUnfrozenSpec {
         // Then
         proxy.get mustBe null
 
-        try {
-            proxy.getMany
-        } catch (error: Throwable) {
-            (error is NullPointerException) mustBe true
-        }
-
-        try {
-            proxy.getSideEffect
-        } catch (error: Throwable) {
-            (error is NullPointerException) mustBe true
-        }
-
-        proxy.set isNot sideEffect
+        assertFailsWith<IndexOutOfBoundsException> { proxy.getMany[0] }
+        assertFailsWith<NullPointerException> { proxy.getSideEffect }
+        assertFailsWith<NullPointerException> { proxy.set }
 
         proxy.calls mustBe 0
-
-        try {
-            proxy.getArgumentsForCall(0)
-        } catch (error: Throwable) {
-            (error is IndexOutOfBoundsException) mustBe true
-        }
+        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsOnly
     @JsName("fn25")
-    fun `Given clear is called it clears the mock for Js`() {
-        // Given
-        val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
-        val value: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: (Any) -> Unit = { }
-
-        proxy.get = value
-        proxy.getMany = values
-        proxy.getSideEffect = { value }
-        proxy.set = sideEffect
-
-        proxy.onGet()
-        proxy.onSet(fixture.fixture())
-
-        // When
-
-        proxy.clear()
-
-        // Then
-        proxy.get mustBe null
-
-        try {
-            proxy.getMany
-        } catch (error: Throwable) {
-            (error is ClassCastException) mustBe true
-        }
-
-        try {
-            proxy.getSideEffect
-        } catch (error: Throwable) {
-            (error is ClassCastException) mustBe true
-        }
-
-        proxy.set isNot sideEffect
-
-        proxy.calls mustBe 0
-
-        try {
-            proxy.getArgumentsForCall(0)
-        } catch (error: Throwable) {
-            (error is IndexOutOfBoundsException) mustBe true
-        }
-    }
-
-    @Test
-    @JsName("fn26")
     fun `Given clear is called it clears the mock while repecting Spyies`() {
         // Given
         val implementation = Implementation<Any>()

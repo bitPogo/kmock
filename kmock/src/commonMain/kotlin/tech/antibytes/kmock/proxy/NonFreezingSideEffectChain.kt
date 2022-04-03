@@ -9,10 +9,8 @@ package tech.antibytes.kmock.proxy
 import tech.antibytes.kmock.KMockContract
 
 internal class NonFreezingSideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
-    onAdd: Function0<Unit>,
+    private val onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
-    private val onAdd: Function0<Unit> = onAdd
-
     private val sideEffects: MutableList<SideEffect> = mutableListOf()
 
     private fun _next(sideEffects: MutableList<SideEffect>): SideEffect {

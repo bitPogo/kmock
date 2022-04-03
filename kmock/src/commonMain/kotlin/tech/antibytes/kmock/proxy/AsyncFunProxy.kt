@@ -15,7 +15,7 @@ import tech.antibytes.kmock.KMockContract.Relaxer
 /**
  * Asynchronous function Proxy in order to stub/mock asynchronous function behaviour.
  * @constructor Creates an AsyncFunProxy
- * @param ReturnValue return value of the Proxy.
+ * @param ReturnValue the value type of the hosting PropertyProxy.
  * @param SideEffect the function signature.
  * @param id a unique identifier for this Proxy.
  * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
@@ -56,7 +56,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     ): ReturnValue {
         onEvent(arguments)
 
-        return when (provider) {
+        return when (invocationType) {
             FunProxyInvocationType.THROWS -> throw throws
             FunProxyInvocationType.RETURN_VALUE -> returnValue
             FunProxyInvocationType.RETURN_VALUES -> retrieveFromValues()

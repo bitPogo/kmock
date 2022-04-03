@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.proxy
 
-import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.AtomicRef
@@ -15,6 +14,7 @@ import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
+import tech.antibytes.kmock.KMockContract.FunProxyState
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
@@ -35,17 +35,16 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
-    private class FunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+    private class FreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
         collector: Collector,
         relaxer: Relaxer<ReturnValue>?,
         unitFunRelaxer: Relaxer<ReturnValue?>?,
         buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         setProvider: (FunProxyInvocationType) -> Unit,
-    ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
+    ) : FunProxyState<ReturnValue, SideEffect> {
         private val _throws: AtomicRef<Throwable?> = atomic(null)
         private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
-        private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
         private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
         override val sideEffects = SideEffectChain<ReturnValue, SideEffect> {
             setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
@@ -63,11 +62,11 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
 
         override var throws: Throwable? by _throws
         override var returnValue: ReturnValue? by _returnValue
-        override val returnValues: MutableList<ReturnValue> = _returnValues
+        override val returnValues: MutableList<ReturnValue> = sharedMutableListOf()
 
         override var sideEffect: SideEffect? by _sideEffect
-        override var invocationType: FunProxyInvocationType by _invocationType
 
+        override var invocationType: FunProxyInvocationType by _invocationType
         override val collector: Collector by _collector
 
         override val calls: Int by _calls
@@ -85,7 +84,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         override fun clear(defaultInvocationType: FunProxyInvocationType) {
             _throws.update { null }
             _returnValue.update { null }
-            _returnValues.clear()
+            returnValues.clear()
             _sideEffect.update { null }
             sideEffects.clear()
 
@@ -97,26 +96,25 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         }
     }
 
-    private class NonFreezingFunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+    private class NonFreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
         override val collector: Collector,
         override val relaxer: Relaxer<ReturnValue>?,
         override val unitFunRelaxer: Relaxer<ReturnValue?>?,
         override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         setProvider: (FunProxyInvocationType) -> Unit,
-    ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
-        override val sideEffects = NonFreezingSideEffectChain<ReturnValue, SideEffect> {
-            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
-        }
+    ) : FunProxyState<ReturnValue, SideEffect> {
         private var _calls = 0
 
         override var throws: Throwable? = null
         override var returnValue: ReturnValue? = null
         override val returnValues: MutableList<ReturnValue> = mutableListOf()
-
         override var sideEffect: SideEffect? = null
-        override var invocationType: FunProxyInvocationType = defaultInvocationType
+        override val sideEffects = NonFreezingSideEffectChain<ReturnValue, SideEffect> {
+            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
+        }
 
+        override var invocationType: FunProxyInvocationType = defaultInvocationType
         override val calls: Int
             get() = _calls
         override val arguments: MutableList<Array<out Any?>> = mutableListOf()
@@ -142,8 +140,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         }
     }
 
-    private val valueContainer: KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> = if (freeze) {
-        FunProxyValueContainer(
+    private val state: FunProxyState<ReturnValue, SideEffect> = if (freeze) {
+        FreezingFunProxyState(
             defaultInvocationType = useSpyOrDefault(),
             collector = collector,
             relaxer = relaxer,
@@ -152,7 +150,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             setProvider = ::setProvider,
         )
     } else {
-        NonFreezingFunProxyValueContainer(
+        NonFreezingFunProxyState(
             defaultInvocationType = useSpyOrDefault(),
             collector = collector,
             relaxer = relaxer,
@@ -161,13 +159,13 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             setProvider = ::setProvider,
         )
     }
-    internal val provider
-        get() = valueContainer.invocationType
+    internal val invocationType
+        get() = state.invocationType
 
     override var verificationChain: VerificationChain?
-        get() = valueContainer.verificationChain
+        get() = state.verificationChain
         set(value) {
-            valueContainer.verificationChain = value
+            state.verificationChain = value
         }
 
     private fun useSpyOrDefault(): FunProxyInvocationType {
@@ -181,42 +179,42 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     private fun setProvider(invocationType: FunProxyInvocationType) {
         val activeProvider = max(
             invocationType.value,
-            valueContainer.invocationType.value
+            state.invocationType.value
         )
 
         if (activeProvider == invocationType.value) {
-            valueContainer.invocationType = invocationType
+            state.invocationType = invocationType
         }
     }
 
     override var throws: Throwable
         get() {
-            return if (valueContainer.throws is Throwable) {
-                valueContainer.throws as Throwable
+            return if (state.throws is Throwable) {
+                state.throws as Throwable
             } else {
                 throw NullPointerException()
             }
         }
         set(value) {
             setProvider(FunProxyInvocationType.THROWS)
-            valueContainer.throws = value
+            state.throws = value
         }
 
     override var returnValue: ReturnValue
         @Suppress("UNCHECKED_CAST")
-        get() = valueContainer.returnValue as ReturnValue
+        get() = state.returnValue as ReturnValue
         set(value) {
             setProvider(FunProxyInvocationType.RETURN_VALUE)
-            valueContainer.returnValue = value
+            state.returnValue = value
         }
 
     private fun _setReturnValues(values: List<ReturnValue>) {
-        valueContainer.returnValues.clear()
-        valueContainer.returnValues.addAll(values)
+        state.returnValues.clear()
+        state.returnValues.addAll(values)
     }
 
     override var returnValues: List<ReturnValue>
-        get() = valueContainer.returnValues.toList()
+        get() = state.returnValues.toList()
         set(values) {
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
@@ -228,24 +226,24 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
 
     override var sideEffect: SideEffect
         get() {
-            return if (valueContainer.sideEffect is SideEffect) {
-                valueContainer.sideEffect as SideEffect
+            return if (state.sideEffect is SideEffect) {
+                state.sideEffect as SideEffect
             } else {
                 throw NullPointerException()
             }
         }
         set(value) {
             setProvider(FunProxyInvocationType.SIDE_EFFECT)
-            valueContainer.sideEffect = value
+            state.sideEffect = value
         }
 
-    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = valueContainer.sideEffects
+    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = state.sideEffects
 
     override val calls: Int
-        get() = valueContainer.calls
+        get() = state.calls
 
     protected fun retrieveFromValues(): ReturnValue {
-        val returnValues = valueContainer.returnValues
+        val returnValues = state.returnValues
 
         return if (returnValues.size == 1) {
             returnValues.first()
@@ -255,36 +253,36 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     }
 
     protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
-        return valueContainer.buildInRelaxer?.invoke(payload)
-            ?: valueContainer.unitFunRelaxer?.relax(id)
-            ?: valueContainer.relaxer?.relax(id)
+        return state.buildInRelaxer?.invoke(payload)
+            ?: state.unitFunRelaxer?.relax(id)
+            ?: state.relaxer?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")
     }
 
-    protected fun retrieveSideEffect(): SideEffect = valueContainer.sideEffects.next()
+    protected fun retrieveSideEffect(): SideEffect = state.sideEffects.next()
 
-    private fun captureArguments(arguments: Array<out Any?>) = valueContainer.arguments.add(arguments)
+    private fun captureArguments(arguments: Array<out Any?>) = state.arguments.add(arguments)
 
     private fun notifyCollector() {
-        valueContainer.collector.addReference(
+        state.collector.addReference(
             this,
-            valueContainer.calls
+            state.calls
         )
     }
 
     protected fun onEvent(arguments: Array<out Any?>) {
         notifyCollector()
         captureArguments(arguments)
-        valueContainer.incrementInvocations()
+        state.incrementInvocations()
     }
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
-        return valueContainer.arguments.getOrElse(callIndex) {
+        return state.arguments.getOrElse(callIndex) {
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
 
     override fun clear() {
-        valueContainer.clear(useSpyOrDefault())
+        state.clear(useSpyOrDefault())
     }
 }
