@@ -13,6 +13,7 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.FunProxyProvider
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
@@ -31,183 +32,200 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
-    private val freeze: Boolean,
+    freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
-    private val _throws: AtomicRef<Throwable?> = atomic(null)
-    private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
-    private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
-    private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
+    private inner class FunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultProvider: FunProxyProvider,
+        collector: Collector,
+        relaxer: Relaxer<ReturnValue>?,
+        unitFunRelaxer: Relaxer<ReturnValue?>?,
+        buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+    ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
+        private val _throws: AtomicRef<Throwable?> = atomic(null)
+        private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
+        private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
+        private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
+        override val sideEffects = SideEffectChain<ReturnValue, SideEffect> {
+            setProvider(FunProxyProvider.SIDE_EFFECT_CHAIN)
+        }
 
-    private var _throwsUnfrozen: Throwable? = null
-    private var _returnValueUnfrozen: ReturnValue? = null
-    private val _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
-    private var _sideEffectUnfrozen: SideEffect? = null
+        private val _calls: AtomicInt = atomic(0)
 
-    private val _sideEffects = SideEffectChain<ReturnValue, SideEffect>(freeze) {
-        setProvider(Provider.SIDE_EFFECT_CHAIN)
+        private val _collector: AtomicRef<Collector> = atomic(collector)
+        private val _provider: AtomicRef<FunProxyProvider> = atomic(defaultProvider)
+
+        private val _relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
+        private val _unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
+        private val _buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
+        private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
+
+        override var throws: Throwable? by _throws
+        override var returnValue: ReturnValue? by _returnValue
+        override val returnValues: MutableList<ReturnValue> = _returnValues
+
+        override var sideEffect: SideEffect? by _sideEffect
+        override var provider: FunProxyProvider by _provider
+
+        override val collector: Collector
+            get() = _collector.value
+
+        override val calls: Int by _calls
+        override val arguments: MutableList<Array<out Any?>> = sharedMutableListOf()
+
+        override val relaxer: Relaxer<ReturnValue>? by _relaxer
+        override val unitFunRelaxer: Relaxer<ReturnValue?>? by _unitFunRelaxer
+        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? by _buildInRelaxer
+        override var verificationChain: VerificationChain? by _verificationChain
+
+        override fun incrementInvocations() {
+            this._calls.incrementAndGet()
+        }
+
+        override fun clear(defaultProvider: FunProxyProvider) {
+            _throws.update { null }
+            _returnValue.update { null }
+            _returnValues.clear()
+            _sideEffect.update { null }
+            sideEffects.clear()
+
+            _calls.update { 0 }
+            arguments.clear()
+
+            _verificationChain.update { null }
+            _provider.update { defaultProvider }
+        }
     }
 
-    private val _calls: AtomicInt = atomic(0)
-    private val _provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
-    protected val provider by _provider
+    private inner class NonFreezingFunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultProvider: FunProxyProvider,
+        override val collector: Collector,
+        override val relaxer: Relaxer<ReturnValue>?,
+        override val unitFunRelaxer: Relaxer<ReturnValue?>?,
+        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+    ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
+        override val sideEffects = NonFreezingSideEffectChain<ReturnValue, SideEffect> {
+            setProvider(FunProxyProvider.SIDE_EFFECT_CHAIN)
+        }
+        private var _calls = 0
 
-    private val collector: AtomicRef<Collector?> = atomic(resolveAtomicCollector(collector))
-    private val collectorNonFreezing: Collector? = if (!freeze) {
-        collector
+        override var throws: Throwable? = null
+        override var returnValue: ReturnValue? = null
+        override val returnValues: MutableList<ReturnValue> = mutableListOf()
+
+        override var sideEffect: SideEffect? = null
+        override var provider: FunProxyProvider = defaultProvider
+
+        override val calls: Int = _calls
+        override val arguments: MutableList<Array<out Any?>> = mutableListOf()
+
+        override var verificationChain: VerificationChain? = null
+
+        override fun incrementInvocations() {
+            _calls += 1
+        }
+
+        override fun clear(defaultProvider: FunProxyProvider) {
+            throws = null
+            returnValue = null
+            returnValues.clear()
+            sideEffect = null
+            sideEffects.clear()
+
+            _calls = 0
+            arguments.clear()
+
+            verificationChain = null
+            provider = defaultProvider
+        }
+    }
+
+    private val valueContainer: KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> = if(freeze) {
+        FunProxyValueContainer(
+            defaultProvider = useSpyOrDefault(),
+            collector = collector,
+            relaxer = relaxer,
+            buildInRelaxer = buildInRelaxer,
+            unitFunRelaxer = unitFunRelaxer,
+        )
     } else {
-        null
+        NonFreezingFunProxyValueContainer(
+            defaultProvider = useSpyOrDefault(),
+            collector = collector,
+            relaxer = relaxer,
+            buildInRelaxer = buildInRelaxer,
+            unitFunRelaxer = unitFunRelaxer,
+        )
     }
+    protected val provider = valueContainer.provider
 
-    private val arguments: IsoMutableList<Array<out Any?>> = sharedMutableListOf()
-    private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
+    override var verificationChain: VerificationChain? = valueContainer.verificationChain
 
-    private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
-
-    private val buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
-
-    private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
-
-    override var verificationChain: VerificationChain? by _verificationChain
-
-    protected enum class Provider(val value: Int) {
-        NO_PROVIDER(0),
-        THROWS(1),
-        RETURN_VALUE(2),
-        RETURN_VALUES(3),
-        SIDE_EFFECT(4),
-        SIDE_EFFECT_CHAIN(5),
-        SPY(6),
-    }
-
-    private fun resolveAtomicCollector(collector: Collector): Collector? {
-        return if (freeze) {
-            collector
-        } else {
-            null
-        }
-    }
-
-    private fun useSpyOrDefault(): Provider {
+    private fun useSpyOrDefault(): FunProxyProvider {
         return if (spyOn == null) {
-            Provider.NO_PROVIDER
+            FunProxyProvider.NO_PROVIDER
         } else {
-            Provider.SPY
+            FunProxyProvider.SPY
         }
     }
 
-    private fun setProvider(provider: Provider) {
+    private fun setProvider(provider: FunProxyProvider) {
         val activeProvider = max(
             provider.value,
-            this._provider.value.value
+            valueContainer.provider.value
         )
 
         if (activeProvider == provider.value) {
-            this._provider.update { provider }
-        }
-    }
-
-    private fun setThrowableValue(value: Throwable) {
-        if (freeze) {
-            _throws.update { value }
-        } else {
-            _throwsUnfrozen = value
+            valueContainer.provider = provider
         }
     }
 
     override var throws: Throwable
         @Suppress("UNCHECKED_CAST")
-        get() {
-            return if (freeze) {
-                _throws.value
-            } else {
-                _throwsUnfrozen
-            } as Throwable
-        }
+        get() = valueContainer.throws as Throwable
         set(value) {
-            setProvider(Provider.THROWS)
-            setThrowableValue(value)
+            setProvider(FunProxyProvider.THROWS)
+            valueContainer.throws = value
         }
-
-    private fun _setReturnValue(value: ReturnValue) {
-        if (freeze) {
-            _returnValue.update { value }
-        } else {
-            _returnValueUnfrozen = value
-        }
-    }
 
     override var returnValue: ReturnValue
-        get() {
-            @Suppress("UNCHECKED_CAST")
-            return if (freeze) {
-                _returnValue.value
-            } else {
-                _returnValueUnfrozen
-            } as ReturnValue
-        }
+        @Suppress("UNCHECKED_CAST")
+        get() = valueContainer.returnValue as ReturnValue
         set(value) {
-            setProvider(Provider.RETURN_VALUE)
-            _setReturnValue(value)
+            setProvider(FunProxyProvider.RETURN_VALUE)
+            valueContainer.returnValue = value
         }
 
     private fun _setReturnValues(values: List<ReturnValue>) {
-        if (freeze) {
-            _returnValues.clear()
-            _returnValues.addAll(values)
-        } else {
-            _returnValuesUnfrozen.clear()
-            _returnValuesUnfrozen.addAll(values)
-        }
-    }
-
-    private fun _getReturnValues(): MutableList<ReturnValue> {
-        return if (freeze) {
-            _returnValues
-        } else {
-            _returnValuesUnfrozen
-        }
+        valueContainer.returnValues.clear()
+        valueContainer.returnValues.addAll(values)
     }
 
     override var returnValues: List<ReturnValue>
-        get() = _getReturnValues().toList()
+        get() = valueContainer.returnValues.toList()
         set(values) {
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(Provider.RETURN_VALUES)
+                setProvider(FunProxyProvider.RETURN_VALUES)
                 _setReturnValues(values)
             }
         }
 
-    private fun _setSideEffect(sideEffect: SideEffect) {
-        if (freeze) {
-            _sideEffect.update { sideEffect }
-        } else {
-            _sideEffectUnfrozen = sideEffect
-        }
-    }
-
     override var sideEffect: SideEffect
-        get() {
-            return if (freeze) {
-                _sideEffect.value
-            } else {
-                _sideEffectUnfrozen
-            } as SideEffect
-        }
+        get() = valueContainer.sideEffect as SideEffect
         set(value) {
-            setProvider(Provider.SIDE_EFFECT)
-            _setSideEffect(value)
+            setProvider(FunProxyProvider.SIDE_EFFECT)
+            valueContainer.sideEffect = value
         }
 
-    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = _sideEffects
+    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = valueContainer.sideEffects
 
     override val calls: Int
-        get() = _calls.value
+        get() = valueContainer.calls
 
     protected fun retrieveFromValues(): ReturnValue {
-        val returnValues = _getReturnValues()
+        val returnValues = valueContainer.returnValues
 
         return if (returnValues.size == 1) {
             returnValues.first()
@@ -217,64 +235,36 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
-        return buildInRelaxer.value?.invoke(payload)
-            ?: unitFunRelaxer.value?.relax(id)
-            ?: relaxer.value?.relax(id)
+        return valueContainer.buildInRelaxer?.invoke(payload)
+            ?: valueContainer.unitFunRelaxer?.relax(id)
+            ?: valueContainer.relaxer?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")
     }
 
-    protected fun retrieveSideEffect(): SideEffect = _sideEffects.next()
+    protected fun retrieveSideEffect(): SideEffect = valueContainer.sideEffects.next()
 
-    private fun captureArguments(arguments: Array<out Any?>) = this.arguments.add(arguments)
-
-    private fun incrementInvocations() {
-        this._calls.incrementAndGet()
-    }
+    private fun captureArguments(arguments: Array<out Any?>) = valueContainer.arguments.add(arguments)
 
     private fun notifyCollector() {
-        if (freeze) {
-            collector.value!!.addReference(
-                this,
-                this._calls.value
-            )
-        } else {
-            collectorNonFreezing!!.addReference(
-                this,
-                this._calls.value
-            )
-        }
+        valueContainer.collector.addReference(
+            this,
+            valueContainer.calls
+        )
     }
 
     protected fun onEvent(arguments: Array<out Any?>) {
         notifyCollector()
         captureArguments(arguments)
-        incrementInvocations()
+        valueContainer.incrementInvocations()
     }
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
-        return arguments.getOrElse(callIndex) {
+        return valueContainer.arguments.getOrElse(callIndex) {
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
 
-    private fun clearValueHolders() {
-        if (freeze) {
-            _returnValue.update { null }
-            _returnValues.clear()
-            _sideEffect.update { null }
-        } else {
-            _returnValueUnfrozen = null
-            _returnValuesUnfrozen.clear()
-            _sideEffectUnfrozen = null
-        }
-
-        _sideEffects.clear()
-    }
-
     override fun clear() {
-        clearValueHolders()
-        _calls.update { 0 }
-        _provider.update { useSpyOrDefault() }
-        arguments.clear()
+        valueContainer.clear(useSpyOrDefault())
     }
 }

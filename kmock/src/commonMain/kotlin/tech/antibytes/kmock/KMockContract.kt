@@ -136,6 +136,44 @@ object KMockContract {
     }
 
     /**
+     *
+     */
+    internal interface FunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>> {
+        var throws: Throwable?
+        var returnValue: ReturnValue?
+        val returnValues: MutableList<ReturnValue>
+        var sideEffect: SideEffect?
+        val sideEffects: SideEffectChain<ReturnValue, SideEffect>
+
+        var provider: FunProxyProvider
+        val collector: Collector
+
+        val calls: Int
+        val arguments: MutableList<Array<out Any?>>
+
+        val relaxer: Relaxer<ReturnValue>?
+        val unitFunRelaxer: Relaxer<ReturnValue?>?
+        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?
+        var verificationChain: VerificationChain?
+
+        fun incrementInvocations()
+        fun clear(defaultProvider: FunProxyProvider)
+    }
+
+    /**
+     *
+     */
+    enum class FunProxyProvider(val value: Int) {
+        NO_PROVIDER(0),
+        THROWS(1),
+        RETURN_VALUE(2),
+        RETURN_VALUES(3),
+        SIDE_EFFECT(4),
+        SIDE_EFFECT_CHAIN(5),
+        SPY(6),
+    }
+
+    /**
      * Shared Properties of synchronous and asynchronous functions Proxies.
      * @param ReturnValue the return value of the Function.
      * @param SideEffect the function signature.

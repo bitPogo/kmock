@@ -13,7 +13,6 @@ import kotlinx.atomicfu.atomic
 import tech.antibytes.kmock.KMockContract
 
 internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
-    private val freeze: Boolean = true,
     onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
     private val onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
