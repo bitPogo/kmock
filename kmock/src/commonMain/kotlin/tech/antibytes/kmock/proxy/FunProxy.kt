@@ -46,7 +46,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         private val _throws: AtomicRef<Throwable?> = atomic(null)
         private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
         private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
-        override val sideEffects = SideEffectChain<ReturnValue, SideEffect> {
+        override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(true) {
             setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
         }
 
@@ -110,7 +110,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         override var returnValue: ReturnValue? = null
         override val returnValues: MutableList<ReturnValue> = mutableListOf()
         override var sideEffect: SideEffect? = null
-        override val sideEffects = NonFreezingSideEffectChain<ReturnValue, SideEffect> {
+        override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(false) {
             setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
         }
 

@@ -150,8 +150,20 @@ object KMockContract {
     }
 
     /**
+     * Stae Container for SideEffectChains to separate frozen and unfrozen behaviour.
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @see SideEffectChain
+     * @author Matthias Geisler
+     */
+    internal interface SideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>> {
+        val onAdd: Function0<Unit>
+        val sideEffects: MutableList<SideEffect>
+    }
+
+    /**
      * Builder for chained SideEffects.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @author Matthias Geisler
      */
@@ -175,7 +187,7 @@ object KMockContract {
      * Container for chained SideEffects. If the given Container has
      * a smaller size than the actual invocation the last value of is repeatably used.
      * It acts in a FIFO manner.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
@@ -212,7 +224,7 @@ object KMockContract {
 
     /**
      * Mutable State Container for FunProxies to separate frozen and unfrozen behaviour.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @author Matthias Geisler
      */
@@ -853,7 +865,7 @@ object KMockContract {
 
     /**
      * Configures non intrusive Behaviour for FunProxies.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @see NonIntrusiveConfigurator
      * @author Matthias Geisler
@@ -944,7 +956,7 @@ object KMockContract {
 
     /**
      * Value container for non intrusive behaviour of FunProxy.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @constructor creates a NonIntrusiveFunConfiguration.
      * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
