@@ -6,19 +6,14 @@
 
 package tech.antibytes.kmock.proxy
 
-import co.touchlab.stately.collections.IsoMutableList
-import co.touchlab.stately.collections.sharedMutableListOf
-import kotlinx.atomicfu.AtomicRef
-import kotlinx.atomicfu.atomic
 import tech.antibytes.kmock.KMockContract
 
-internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
-    private val freeze: Boolean = true,
+internal class NonFreezingSideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
     onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
-    private val onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
+    private val onAdd: Function0<Unit> = onAdd
 
-    private val sideEffects: IsoMutableList<SideEffect> = sharedMutableListOf()
+    private val sideEffects: MutableList<SideEffect> = mutableListOf()
 
     private fun _next(sideEffects: MutableList<SideEffect>): SideEffect {
         return when (sideEffects.size) {
@@ -30,15 +25,15 @@ internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
 
     override fun next(): SideEffect = _next(sideEffects)
 
-    override fun add(sideEffect: SideEffect): SideEffectChain<ReturnValue, SideEffect> {
-        onAdd.value.invoke()
+    override fun add(sideEffect: SideEffect): NonFreezingSideEffectChain<ReturnValue, SideEffect> {
+        onAdd.invoke()
         sideEffects.add(sideEffect)
 
         return this
     }
 
-    override fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChain<ReturnValue, SideEffect> {
-        onAdd.value.invoke()
+    override fun addAll(sideEffect: Iterable<SideEffect>): NonFreezingSideEffectChain<ReturnValue, SideEffect> {
+        onAdd.invoke()
         sideEffects.addAll(sideEffect)
 
         return this
