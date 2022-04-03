@@ -6,54 +6,60 @@
 
 package tech.antibytes.kmock.proxy
 
-import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.SideEffectChainState
 
 internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
-    private val freeze: Boolean = true,
+    freeze: Boolean,
     onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
-    private val onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
+    private class FreezingSideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>>(
+        onAdd: Function0<Unit>
+    ) : SideEffectChainState<ReturnValue, SideEffect> {
+        private val _onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
 
-    private val sideEffects: IsoMutableList<SideEffect> = sharedMutableListOf()
-    private val sideEffectsUnfrozen: MutableList<SideEffect> = mutableListOf()
-
-    private fun resolveSideEffect(): MutableList<SideEffect> {
-        return if (freeze) {
-            sideEffects
-        } else {
-            sideEffectsUnfrozen
-        }
+        override val onAdd: Function0<Unit> by _onAdd
+        override val sideEffects: MutableList<SideEffect> = sharedMutableListOf()
     }
 
-    private fun _next(sideEffects: MutableList<SideEffect>): SideEffect {
-        return when (sideEffects.size) {
+    private class NonFreezingSideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>>(
+        override val onAdd: Function0<Unit>
+    ) : SideEffectChainState<ReturnValue, SideEffect> {
+        override val sideEffects: MutableList<SideEffect> = mutableListOf()
+    }
+
+    private val state: SideEffectChainState<ReturnValue, SideEffect> = if (freeze) {
+        FreezingSideEffectChainState(onAdd)
+    } else {
+        NonFreezingSideEffectChainState(onAdd)
+    }
+
+    override fun next(): SideEffect {
+        return when (state.sideEffects.size) {
             0 -> throw IllegalStateException("No SideEffect was stored.")
-            1 -> sideEffects.first()
-            else -> sideEffects.removeFirst()
+            1 -> state.sideEffects.first()
+            else -> state.sideEffects.removeFirst()
         }
     }
-
-    override fun next(): SideEffect = _next(resolveSideEffect())
 
     override fun add(sideEffect: SideEffect): SideEffectChain<ReturnValue, SideEffect> {
-        onAdd.value.invoke()
-        resolveSideEffect().add(sideEffect)
+        state.onAdd.invoke()
+        state.sideEffects.add(sideEffect)
 
         return this
     }
 
     override fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChain<ReturnValue, SideEffect> {
-        onAdd.value.invoke()
-        resolveSideEffect().addAll(sideEffect)
+        state.onAdd.invoke()
+        state.sideEffects.addAll(sideEffect)
 
         return this
     }
 
     override fun clear() {
-        resolveSideEffect().clear()
+        state.sideEffects.clear()
     }
 }

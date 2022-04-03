@@ -638,7 +638,7 @@ ArgumentConstraints work for both Assertions and Expectations.
 ===== Verification over multiple Proxies
 
 Lastly you can also verify multiple Proxies.
-You will need a `Verifier` or a `NonfreezingVerifier` for that.
+You will need a `Verifier` or a `NonFreezingVerifier` for that.
 The difference between both will be explained with the notes to the Memory Model.
 In order to apply Verification you can proceed as in the following example:
 
@@ -888,7 +888,7 @@ Therefore you might run into some trouble in certain cases. +
 Both factory functions - `kmock` and `kspy` - take an argument `freeze` which is true by default.
 This means everything which is delegated to an Proxy (including Relaxation) or Verifier must conform with the freezing Memory Model of Kotlin. +
 By switching `freeze` to `false` it changes the flavour to non-freezing.
-If you use non freezing Mocks, make sure you use the corresponding Verifier (`NonfreezingVerifier`) and all interacting Mocks are non-freezing as well. +
+If you use non freezing Mocks, make sure you use the corresponding Verifier (`NonFreezingVerifier`) and all interacting Mocks are non-freezing as well. +
 This is inconvenient for now but will go away once the new Memory Model is more stable.
 
 ==== Customization

@@ -34,7 +34,7 @@ class SideEffectChainSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils SideEffectChain`() {
-        SideEffectChain<Unit, Function<Unit>> { } fulfils KMockContract.SideEffectChain::class
+        SideEffectChain<Unit, Function<Unit>>(true) { } fulfils KMockContract.SideEffectChain::class
     }
 
     @Test
@@ -42,7 +42,7 @@ class SideEffectChainSpec {
     fun `Given add is called it adds a SideEffect and notifies its host threadsafe`(): AsyncTestReturnValue {
         // Given
         val notifications = AtomicReference(0)
-        val chain = SideEffectChain<Unit, () -> Unit> {
+        val chain = SideEffectChain<Unit, () -> Unit>(true) {
             val invocations = notifications.get()
             notifications.set(invocations + 1)
         }
@@ -66,7 +66,7 @@ class SideEffectChainSpec {
     fun `Given addAll is called it adds a SideEffect and notifies its host threadsafe`(): AsyncTestReturnValue {
         // Given
         val notifications = AtomicReference(0)
-        val chain = SideEffectChain<Unit, () -> Unit> {
+        val chain = SideEffectChain<Unit, () -> Unit>(true) {
             val invocations = notifications.get()
             notifications.set(invocations + 1)
         }
@@ -93,7 +93,7 @@ class SideEffectChainSpec {
     @JsName("fn3")
     fun `Given next is called it fails if no SideEffect was stored`() {
         // Given
-        val chain = SideEffectChain<Unit, () -> Unit> { }
+        val chain = SideEffectChain<Unit, () -> Unit>(true) { }
 
         // Then
         val error = assertFailsWith<IllegalStateException> {
@@ -108,7 +108,7 @@ class SideEffectChainSpec {
     @JsName("fn4")
     fun `Given next is called it returns the SideEffects in the order they were stored via add threadsafe`(): AsyncTestReturnValue {
         // Given
-        val chain = SideEffectChain<Unit, () -> Unit> { }
+        val chain = SideEffectChain<Unit, () -> Unit>(true) { }
         val sideEffects: IsoMutableList<() -> Unit> = sharedMutableListOf(
             {},
             {},
@@ -137,7 +137,7 @@ class SideEffectChainSpec {
     @JsName("fn5")
     fun `Given next is called it returns the SideEffects in the order they were stored via addAll threadsafe`(): AsyncTestReturnValue {
         // Given
-        val chain = SideEffectChain<Unit, () -> Unit> { }
+        val chain = SideEffectChain<Unit, () -> Unit>(true) { }
         val sideEffects: IsoMutableList<() -> Unit> = sharedMutableListOf(
             {},
             {},
@@ -164,7 +164,7 @@ class SideEffectChainSpec {
     @JsName("fn6")
     fun `Given next is called it returns the SideEffects in the order they while repeating the last one indefinitely if the invocation exceed the size of the chain`(): AsyncTestReturnValue {
         // Given
-        val chain = SideEffectChain<Unit, () -> Unit> { }
+        val chain = SideEffectChain<Unit, () -> Unit>(true) { }
         val sideEffects: IsoMutableList<() -> Unit> = sharedMutableListOf(
             {},
             {},
@@ -195,7 +195,7 @@ class SideEffectChainSpec {
     @JsName("fn7")
     fun `Given clear is called it purges the chain of any values`() {
         // Given
-        val chain = SideEffectChain<Unit, () -> Unit> { }
+        val chain = SideEffectChain<Unit, () -> Unit>(true) { }
 
         runBlockingTestInContext(testScope1.coroutineContext) {
             chain.add { /* Do nothing */ }

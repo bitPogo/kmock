@@ -64,7 +64,7 @@ object KMockContract {
      * @see tech.antibytes.kmock.Relaxer
      * @author Matthias Geisler
      */
-    fun interface Relaxer<ReturnValue> {
+    internal fun interface Relaxer<ReturnValue> {
         /**
          * Invokes the injected Relaxer.
          * @param id of the invoking Proxy in order to enable fine grained differentiation between overlapping types.
@@ -80,7 +80,7 @@ object KMockContract {
      * @see Relaxer
      * @author Matthias Geisler
      */
-    fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
+    internal fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
         /**
          * Invokes the injected Relaxer.
          * @param payload which is supported by the invoked build-in method.
@@ -90,8 +90,80 @@ object KMockContract {
     }
 
     /**
+     * Base State definition for FunProxies and PropertyProxies of shared mutable states to separate frozen and unfrozen behaviour.
+     * @param Value the return value of the hosting Proxy.
+     * @param InvocationType invocation type of the hosting proxy.
+     * @param Arguments type of arguments the hosting proxy can capture.
+     * @see FunProxyState
+     * @see PropertyProxyState
+     * @see FunProxyInvocationType
+     * @see PropertyProxyInvocationType
+     * @author Matthias Geisler
+     */
+    internal interface ProxyState<Value, InvocationType, Arguments> {
+        /**
+         * Holds the indicated the InvocationType.
+         */
+        var invocationType: InvocationType
+
+        /**
+         * Holds a given Collector/Verifier
+         * @see Verifier
+         * @see Collector
+         */
+        val collector: Collector
+
+        /**
+         * Holds the current call index/total amount of invocation of the hosting proxy
+         */
+        val calls: Int
+
+        /**
+         * Holds the captured arguments of invocations of the hosting proxy
+         */
+        val arguments: MutableList<Arguments>
+
+        /**
+         * Holds a given Relaxer.
+         * @see Relaxer
+         */
+        val relaxer: Relaxer<Value>?
+
+        /**
+         * Holds a given VerificationChain.
+         * @see VerificationChain
+         * @see tech.antibytes.kmock.verification.verify
+         * @see tech.antibytes.kmock.verification.verifyStrictOrder
+         */
+        var verificationChain: VerificationChain?
+
+        /**
+         * Increments calls.
+         */
+        fun incrementInvocations()
+
+        /**
+         * Resets all states to their default state (null/empty).
+         * @param defaultInvocationType the default state of invocationType.
+         */
+        fun clear(defaultInvocationType: InvocationType)
+    }
+
+    /**
+     * Stae Container for SideEffectChains to separate frozen and unfrozen behaviour.
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @see SideEffectChain
+     * @author Matthias Geisler
+     */
+    internal interface SideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>> {
+        val onAdd: Function0<Unit>
+        val sideEffects: MutableList<SideEffect>
+    }
+
+    /**
      * Builder for chained SideEffects.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @author Matthias Geisler
      */
@@ -115,7 +187,7 @@ object KMockContract {
      * Container for chained SideEffects. If the given Container has
      * a smaller size than the actual invocation the last value of is repeatably used.
      * It acts in a FIFO manner.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
@@ -133,6 +205,68 @@ object KMockContract {
          * Clears the chain
          */
         fun clear()
+    }
+
+    /**
+     * Invocation types for FunProxies.
+     * @param value indicates the invocation precedence.
+     * @author Matthias Geisler
+     */
+    internal enum class FunProxyInvocationType(val value: Int) {
+        NO_GIVEN_VALUE(0),
+        THROWS(1),
+        RETURN_VALUE(2),
+        RETURN_VALUES(3),
+        SIDE_EFFECT(4),
+        SIDE_EFFECT_CHAIN(5),
+        SPY(6),
+    }
+
+    /**
+     * Mutable State Container for FunProxies to separate frozen and unfrozen behaviour.
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @author Matthias Geisler
+     */
+    internal interface FunProxyState<ReturnValue, SideEffect : Function<ReturnValue>> :
+        ProxyState<ReturnValue, FunProxyInvocationType, Array<out Any?>> {
+        /**
+         * Holds a given Throwable.
+         */
+        var throws: Throwable?
+
+        /**
+         * Holds a given ReturnValue.
+         */
+        var returnValue: ReturnValue?
+
+        /**
+         * Holds given ReturnValues.
+         */
+        val returnValues: MutableList<ReturnValue>
+
+        /**
+         * Holds a given SideEffect.
+         */
+        var sideEffect: SideEffect?
+
+        /**
+         * Holds a given SideEffect.
+         */
+        val sideEffects: SideEffectChain<ReturnValue, SideEffect>
+
+        /**
+         * Holds the internal UnitFunRelaxer, if given.
+         * @see Relaxer
+         * @see tech.antibytes.kmock.proxy.kmockUnitFunRelaxer
+         */
+        val unitFunRelaxer: Relaxer<ReturnValue?>?
+
+        /**
+         * Holds a given BuildInRelaxer.
+         * @see ParameterizedRelaxer
+         */
+        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?
     }
 
     /**
@@ -182,7 +316,7 @@ object KMockContract {
 
     /**
      * Synchronous function Proxy in order to stub/mock synchronous function behaviour.
-     * @param ReturnValue return value of the Proxy.
+     * @param ReturnValue the value type of the hosting PropertyProxy.
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
@@ -398,7 +532,7 @@ object KMockContract {
 
     /**
      * Asynchronous function Proxy in order to stub/mock asynchronous function behaviour.
-     * @param ReturnValue return value of the Proxy.
+     * @param ReturnValue the value type of the hosting PropertyProxy.
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
@@ -626,8 +760,48 @@ object KMockContract {
     }
 
     /**
+     * Invocation types for PropertyProxies.
+     * @param value indicates the invocation precedence.
+     * @author Matthias Geisler
+     */
+    internal enum class PropertyProxyInvocationType(val value: Int) {
+        NO_PROVIDER(0),
+        VALUE(1),
+        VALUES(2),
+        SIDE_EFFECT(3),
+        SPY(4),
+    }
+
+    /**
+     * Mutable State Container for PropertyProxies to separate frozen and unfrozen behaviour.
+     * @param Value the value type of the hosting Proxy.
+     * @author Matthias Geisler
+     */
+    internal interface PropertyProxyState<Value> : ProxyState<Value, PropertyProxyInvocationType, GetOrSet> {
+        /**
+         * Holds the get value.
+         */
+        var get: Value?
+
+        /**
+         * Holds the (chained) get values
+         */
+        val getMany: MutableList<Value>
+
+        /**
+         * Holds the SideEffect for get
+         */
+        var sideEffect: Function0<Value>?
+
+        /**
+         * Holds the SideEffect for set
+         */
+        var set: Function1<Value, Unit>?
+    }
+
+    /**
      * Proxy in order to stub/mock property behaviour.
-     * @param Value the value of the Property.
+     * @param Value the value type of the hosting PropertyProxy.
      * @author Matthias Geisler
      */
     interface PropertyProxy<Value> : Proxy<Value, GetOrSet> {
@@ -676,7 +850,7 @@ object KMockContract {
 
     /**
      * Configures non intrusive behaviour for Proxies.
-     * @param Value the value of the Property.
+     * @param Value the value type of the hosting PropertyProxy.
      * @author Matthias Geisler
      */
     interface NonIntrusiveConfigurator<Value> {
@@ -691,7 +865,7 @@ object KMockContract {
 
     /**
      * Configures non intrusive Behaviour for FunProxies.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @see NonIntrusiveConfigurator
      * @author Matthias Geisler
@@ -753,7 +927,7 @@ object KMockContract {
 
     /**
      * Configures non intrusive Behaviour for PropertyProxies.
-     * @param Value the value of the Property.
+     * @param Value the value type of the hosting PropertyProxy.
      * @see NonIntrusiveConfigurator
      * @author Matthias Geisler
      */
@@ -782,7 +956,7 @@ object KMockContract {
 
     /**
      * Value container for non intrusive behaviour of FunProxy.
-     * @param ReturnValue the return value of the hosting Proxy.
+     * @param ReturnValue the return value type of the hosting Proxy.
      * @param SideEffect the function signature of the hosting Proxy.
      * @constructor creates a NonIntrusiveFunConfiguration.
      * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
@@ -882,7 +1056,7 @@ object KMockContract {
 
         /**
          * Instantiates a PropertyProxy.
-         * @param Value the value of the Property.
+         * @param Value the value type of the hosting PropertyProxy.
          * @param id a unique identifier for this Proxy.
          * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.

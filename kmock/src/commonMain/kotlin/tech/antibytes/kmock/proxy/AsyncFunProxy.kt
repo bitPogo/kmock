@@ -8,13 +8,14 @@ package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 
 /**
  * Asynchronous function Proxy in order to stub/mock asynchronous function behaviour.
  * @constructor Creates an AsyncFunProxy
- * @param ReturnValue return value of the Proxy.
+ * @param ReturnValue the value type of the hosting PropertyProxy.
  * @param SideEffect the function signature.
  * @param id a unique identifier for this Proxy.
  * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
@@ -55,13 +56,13 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     ): ReturnValue {
         onEvent(arguments)
 
-        return when (provider) {
-            Provider.THROWS -> throw throws
-            Provider.RETURN_VALUE -> returnValue
-            Provider.RETURN_VALUES -> retrieveFromValues()
-            Provider.SIDE_EFFECT -> function()
-            Provider.SIDE_EFFECT_CHAIN -> chainFunction()
-            Provider.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
+        return when (invocationType) {
+            FunProxyInvocationType.THROWS -> throw throws
+            FunProxyInvocationType.RETURN_VALUE -> returnValue
+            FunProxyInvocationType.RETURN_VALUES -> retrieveFromValues()
+            FunProxyInvocationType.SIDE_EFFECT -> function()
+            FunProxyInvocationType.SIDE_EFFECT_CHAIN -> chainFunction()
+            FunProxyInvocationType.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
             else -> invokeRelaxerOrFail(arguments.firstOrNull())
         }
     }

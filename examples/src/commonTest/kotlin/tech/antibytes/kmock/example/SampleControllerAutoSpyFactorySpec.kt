@@ -22,7 +22,7 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
-import tech.antibytes.kmock.verification.NonfreezingVerifier
+import tech.antibytes.kmock.verification.NonFreezingVerifier
 import tech.antibytes.kmock.verification.Verifier
 import tech.antibytes.kmock.verification.hasBeenCalled
 import tech.antibytes.kmock.verification.hasBeenCalledWith
@@ -177,7 +177,7 @@ class SampleControllerAutoSpyFactorySpec {
         // Given
         val idOrg = fixture.fixture<String>()
         val instance = DomainObject2("test", 21)
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
         val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
         val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
 

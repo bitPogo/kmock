@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.proxy
 
-import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.AtomicRef
@@ -14,6 +13,8 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
+import tech.antibytes.kmock.KMockContract.FunProxyState
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
@@ -24,190 +25,225 @@ import kotlin.math.max
 /**
  * @suppress
  */
-abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
+abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> internal constructor(
     override val id: String,
     override val ignorableForVerification: Boolean,
     collector: Collector = NoopCollector,
     relaxer: Relaxer<ReturnValue>?,
     unitFunRelaxer: Relaxer<ReturnValue?>?,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
-    private val freeze: Boolean,
+    freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
-    private val _throws: AtomicRef<Throwable?> = atomic(null)
-    private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
-    private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
-    private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
+    private class FreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultInvocationType: FunProxyInvocationType,
+        collector: Collector,
+        relaxer: Relaxer<ReturnValue>?,
+        unitFunRelaxer: Relaxer<ReturnValue?>?,
+        buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        setProvider: (FunProxyInvocationType) -> Unit,
+    ) : FunProxyState<ReturnValue, SideEffect> {
+        private val _throws: AtomicRef<Throwable?> = atomic(null)
+        private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
+        private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
+        override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(true) {
+            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
+        }
 
-    private var _throwsUnfrozen: Throwable? = null
-    private var _returnValueUnfrozen: ReturnValue? = null
-    private val _returnValuesUnfrozen: MutableList<ReturnValue> = mutableListOf()
-    private var _sideEffectUnfrozen: SideEffect? = null
+        private val _calls: AtomicInt = atomic(0)
 
-    private val _sideEffects = SideEffectChain<ReturnValue, SideEffect>(freeze) {
-        setProvider(Provider.SIDE_EFFECT_CHAIN)
+        private val _collector: AtomicRef<Collector> = atomic(collector)
+        private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
+
+        private val _relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
+        private val _unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
+        private val _buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
+        private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
+
+        override var throws: Throwable? by _throws
+        override var returnValue: ReturnValue? by _returnValue
+        override val returnValues: MutableList<ReturnValue> = sharedMutableListOf()
+
+        override var sideEffect: SideEffect? by _sideEffect
+
+        override var invocationType: FunProxyInvocationType by _invocationType
+        override val collector: Collector by _collector
+
+        override val calls: Int by _calls
+        override val arguments: MutableList<Array<out Any?>> = sharedMutableListOf()
+
+        override val relaxer: Relaxer<ReturnValue>? by _relaxer
+        override val unitFunRelaxer: Relaxer<ReturnValue?>? by _unitFunRelaxer
+        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? by _buildInRelaxer
+        override var verificationChain: VerificationChain? by _verificationChain
+
+        override fun incrementInvocations() {
+            this._calls.incrementAndGet()
+        }
+
+        override fun clear(defaultInvocationType: FunProxyInvocationType) {
+            _throws.update { null }
+            _returnValue.update { null }
+            returnValues.clear()
+            _sideEffect.update { null }
+            sideEffects.clear()
+
+            _calls.update { 0 }
+            arguments.clear()
+
+            _verificationChain.update { null }
+            _invocationType.update { defaultInvocationType }
+        }
     }
 
-    private val _calls: AtomicInt = atomic(0)
-    private val _provider: AtomicRef<Provider> = atomic(useSpyOrDefault())
-    protected val provider by _provider
+    private class NonFreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultInvocationType: FunProxyInvocationType,
+        override val collector: Collector,
+        override val relaxer: Relaxer<ReturnValue>?,
+        override val unitFunRelaxer: Relaxer<ReturnValue?>?,
+        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        setProvider: (FunProxyInvocationType) -> Unit,
+    ) : FunProxyState<ReturnValue, SideEffect> {
+        private var _calls = 0
 
-    private val collector: AtomicRef<Collector?> = atomic(resolveAtomicCollector(collector))
-    private val collectorNonFreezing: Collector? = if (!freeze) {
-        collector
+        override var throws: Throwable? = null
+        override var returnValue: ReturnValue? = null
+        override val returnValues: MutableList<ReturnValue> = mutableListOf()
+        override var sideEffect: SideEffect? = null
+        override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(false) {
+            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
+        }
+
+        override var invocationType: FunProxyInvocationType = defaultInvocationType
+        override val calls: Int
+            get() = _calls
+        override val arguments: MutableList<Array<out Any?>> = mutableListOf()
+
+        override var verificationChain: VerificationChain? = null
+
+        override fun incrementInvocations() {
+            _calls += 1
+        }
+
+        override fun clear(defaultInvocationType: FunProxyInvocationType) {
+            throws = null
+            returnValue = null
+            returnValues.clear()
+            sideEffect = null
+            sideEffects.clear()
+
+            _calls = 0
+            arguments.clear()
+
+            verificationChain = null
+            invocationType = defaultInvocationType
+        }
+    }
+
+    private val state: FunProxyState<ReturnValue, SideEffect> = if (freeze) {
+        FreezingFunProxyState(
+            defaultInvocationType = useSpyOrDefault(),
+            collector = collector,
+            relaxer = relaxer,
+            buildInRelaxer = buildInRelaxer,
+            unitFunRelaxer = unitFunRelaxer,
+            setProvider = ::setProvider,
+        )
     } else {
-        null
+        NonFreezingFunProxyState(
+            defaultInvocationType = useSpyOrDefault(),
+            collector = collector,
+            relaxer = relaxer,
+            buildInRelaxer = buildInRelaxer,
+            unitFunRelaxer = unitFunRelaxer,
+            setProvider = ::setProvider,
+        )
     }
+    internal val invocationType
+        get() = state.invocationType
 
-    private val arguments: IsoMutableList<Array<out Any?>> = sharedMutableListOf()
-    private val relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
-
-    private val unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
-
-    private val buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
-
-    private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
-
-    override var verificationChain: VerificationChain? by _verificationChain
-
-    protected enum class Provider(val value: Int) {
-        NO_PROVIDER(0),
-        THROWS(1),
-        RETURN_VALUE(2),
-        RETURN_VALUES(3),
-        SIDE_EFFECT(4),
-        SIDE_EFFECT_CHAIN(5),
-        SPY(6),
-    }
-
-    private fun resolveAtomicCollector(collector: Collector): Collector? {
-        return if (freeze) {
-            collector
-        } else {
-            null
+    override var verificationChain: VerificationChain?
+        get() = state.verificationChain
+        set(value) {
+            state.verificationChain = value
         }
-    }
 
-    private fun useSpyOrDefault(): Provider {
+    private fun useSpyOrDefault(): FunProxyInvocationType {
         return if (spyOn == null) {
-            Provider.NO_PROVIDER
+            FunProxyInvocationType.NO_GIVEN_VALUE
         } else {
-            Provider.SPY
+            FunProxyInvocationType.SPY
         }
     }
 
-    private fun setProvider(provider: Provider) {
+    private fun setProvider(invocationType: FunProxyInvocationType) {
         val activeProvider = max(
-            provider.value,
-            this._provider.value.value
+            invocationType.value,
+            state.invocationType.value
         )
 
-        if (activeProvider == provider.value) {
-            this._provider.update { provider }
-        }
-    }
-
-    private fun setThrowableValue(value: Throwable) {
-        if (freeze) {
-            _throws.update { value }
-        } else {
-            _throwsUnfrozen = value
+        if (activeProvider == invocationType.value) {
+            state.invocationType = invocationType
         }
     }
 
     override var throws: Throwable
-        @Suppress("UNCHECKED_CAST")
         get() {
-            return if (freeze) {
-                _throws.value
+            return if (state.throws is Throwable) {
+                state.throws as Throwable
             } else {
-                _throwsUnfrozen
-            } as Throwable
+                throw NullPointerException()
+            }
         }
         set(value) {
-            setProvider(Provider.THROWS)
-            setThrowableValue(value)
+            setProvider(FunProxyInvocationType.THROWS)
+            state.throws = value
         }
-
-    private fun _setReturnValue(value: ReturnValue) {
-        if (freeze) {
-            _returnValue.update { value }
-        } else {
-            _returnValueUnfrozen = value
-        }
-    }
 
     override var returnValue: ReturnValue
-        get() {
-            @Suppress("UNCHECKED_CAST")
-            return if (freeze) {
-                _returnValue.value
-            } else {
-                _returnValueUnfrozen
-            } as ReturnValue
-        }
+        @Suppress("UNCHECKED_CAST")
+        get() = state.returnValue as ReturnValue
         set(value) {
-            setProvider(Provider.RETURN_VALUE)
-            _setReturnValue(value)
+            setProvider(FunProxyInvocationType.RETURN_VALUE)
+            state.returnValue = value
         }
 
     private fun _setReturnValues(values: List<ReturnValue>) {
-        if (freeze) {
-            _returnValues.clear()
-            _returnValues.addAll(values)
-        } else {
-            _returnValuesUnfrozen.clear()
-            _returnValuesUnfrozen.addAll(values)
-        }
-    }
-
-    private fun _getReturnValues(): MutableList<ReturnValue> {
-        return if (freeze) {
-            _returnValues
-        } else {
-            _returnValuesUnfrozen
-        }
+        state.returnValues.clear()
+        state.returnValues.addAll(values)
     }
 
     override var returnValues: List<ReturnValue>
-        get() = _getReturnValues().toList()
+        get() = state.returnValues.toList()
         set(values) {
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(Provider.RETURN_VALUES)
+                setProvider(FunProxyInvocationType.RETURN_VALUES)
                 _setReturnValues(values)
             }
         }
 
-    private fun _setSideEffect(sideEffect: SideEffect) {
-        if (freeze) {
-            _sideEffect.update { sideEffect }
-        } else {
-            _sideEffectUnfrozen = sideEffect
-        }
-    }
-
     override var sideEffect: SideEffect
         get() {
-            return if (freeze) {
-                _sideEffect.value
+            return if (state.sideEffect is SideEffect) {
+                state.sideEffect as SideEffect
             } else {
-                _sideEffectUnfrozen
-            } as SideEffect
+                throw NullPointerException()
+            }
         }
         set(value) {
-            setProvider(Provider.SIDE_EFFECT)
-            _setSideEffect(value)
+            setProvider(FunProxyInvocationType.SIDE_EFFECT)
+            state.sideEffect = value
         }
 
-    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = _sideEffects
+    override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = state.sideEffects
 
     override val calls: Int
-        get() = _calls.value
+        get() = state.calls
 
     protected fun retrieveFromValues(): ReturnValue {
-        val returnValues = _getReturnValues()
+        val returnValues = state.returnValues
 
         return if (returnValues.size == 1) {
             returnValues.first()
@@ -217,64 +253,36 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
-        return buildInRelaxer.value?.invoke(payload)
-            ?: unitFunRelaxer.value?.relax(id)
-            ?: relaxer.value?.relax(id)
+        return state.buildInRelaxer?.invoke(payload)
+            ?: state.unitFunRelaxer?.relax(id)
+            ?: state.relaxer?.relax(id)
             ?: throw MockError.MissingStub("Missing stub value for $id")
     }
 
-    protected fun retrieveSideEffect(): SideEffect = _sideEffects.next()
+    protected fun retrieveSideEffect(): SideEffect = state.sideEffects.next()
 
-    private fun captureArguments(arguments: Array<out Any?>) = this.arguments.add(arguments)
-
-    private fun incrementInvocations() {
-        this._calls.incrementAndGet()
-    }
+    private fun captureArguments(arguments: Array<out Any?>) = state.arguments.add(arguments)
 
     private fun notifyCollector() {
-        if (freeze) {
-            collector.value!!.addReference(
-                this,
-                this._calls.value
-            )
-        } else {
-            collectorNonFreezing!!.addReference(
-                this,
-                this._calls.value
-            )
-        }
+        state.collector.addReference(
+            this,
+            state.calls
+        )
     }
 
     protected fun onEvent(arguments: Array<out Any?>) {
         notifyCollector()
         captureArguments(arguments)
-        incrementInvocations()
+        state.incrementInvocations()
     }
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
-        return arguments.getOrElse(callIndex) {
+        return state.arguments.getOrElse(callIndex) {
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
 
-    private fun clearValueHolders() {
-        if (freeze) {
-            _returnValue.update { null }
-            _returnValues.clear()
-            _sideEffect.update { null }
-        } else {
-            _returnValueUnfrozen = null
-            _returnValuesUnfrozen.clear()
-            _sideEffectUnfrozen = null
-        }
-
-        _sideEffects.clear()
-    }
-
     override fun clear() {
-        clearValueHolders()
-        _calls.update { 0 }
-        _provider.update { useSpyOrDefault() }
-        arguments.clear()
+        state.clear(useSpyOrDefault())
     }
 }

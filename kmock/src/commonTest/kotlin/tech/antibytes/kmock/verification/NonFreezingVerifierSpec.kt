@@ -25,19 +25,19 @@ class NonFreezingVerifierSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils Verifier`() {
-        NonfreezingVerifier() fulfils KMockContract.Verifier::class
+        NonFreezingVerifier() fulfils KMockContract.Verifier::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils Collector`() {
-        NonfreezingVerifier() fulfils KMockContract.Collector::class
+        NonFreezingVerifier() fulfils KMockContract.Collector::class
     }
 
     @Test
     @JsName("fn2")
     fun `It has a emptyMap of references by default`() {
-        NonfreezingVerifier().references mustBe emptyList()
+        NonFreezingVerifier().references mustBe emptyList()
     }
 
     @Test
@@ -47,7 +47,7 @@ class NonFreezingVerifierSpec {
         val index: Int = fixture.fixture<Int>().absoluteValue
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, index)
@@ -63,7 +63,7 @@ class NonFreezingVerifierSpec {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -78,7 +78,7 @@ class NonFreezingVerifierSpec {
         // Given
         val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -96,7 +96,7 @@ class NonFreezingVerifierSpec {
             fixture.fixture()
         )
 
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -115,7 +115,7 @@ class NonFreezingVerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -134,7 +134,7 @@ class NonFreezingVerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = NonfreezingVerifier(coverAllInvocations = true)
+        val verifier = NonFreezingVerifier(coverAllInvocations = true)
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -148,7 +148,7 @@ class NonFreezingVerifierSpec {
     fun `Given clear is called it clears the verifier`() {
         // Given
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
-        val verifier = NonfreezingVerifier()
+        val verifier = NonFreezingVerifier()
 
         // When
         verifier.addReference(proxy, fixture.fixture())

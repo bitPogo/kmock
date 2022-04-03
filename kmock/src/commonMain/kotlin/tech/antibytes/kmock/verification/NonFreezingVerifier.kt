@@ -15,6 +15,6 @@ import tech.antibytes.kmock.KMockContract.Reference
  * @see Verifier
  * @author Matthias Geisler
  */
-class NonfreezingVerifier(coverAllInvocations: Boolean = false) : VerifierBase(coverAllInvocations) {
+class NonFreezingVerifier(coverAllInvocations: Boolean = false) : VerifierBase(coverAllInvocations) {
     override val _references: MutableList<Reference> = mutableListOf()
 }

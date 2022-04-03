@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.annotations.JsOnly
+import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -762,11 +761,12 @@ class SyncFunProxySpec {
     }
 
     @Test
-    @IgnoreJs
     @JsName("fn25")
     fun `Given clear is called it clears the mock`() {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+
+        val error = Throwable()
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: () -> Any = {
@@ -776,10 +776,12 @@ class SyncFunProxySpec {
             fixture.fixture()
         }
 
+        proxy.throws = error
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChained)
+        proxy.verificationChain = VerificationChainStub()
 
         // When
         proxy.invoke()
@@ -787,6 +789,7 @@ class SyncFunProxySpec {
         proxy.clear()
 
         // Then
+        assertFailsWith<NullPointerException> { proxy.throws }
         proxy.returnValue mustBe null
 
         assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
@@ -794,53 +797,18 @@ class SyncFunProxySpec {
         assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
+        proxy.verificationChain mustBe null
 
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsOnly
     @JsName("fn26")
-    fun `Given clear is called it clears the mock for Js`() {
-        // Given
-        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
-        val value: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: () -> Any = {
-            fixture.fixture()
-        }
-        val sideEffectChain: () -> Any = {
-            fixture.fixture()
-        }
-
-        proxy.returnValue = value
-        proxy.returnValues = values
-        proxy.sideEffect = sideEffect
-        proxy.sideEffects.add(sideEffectChain)
-
-        // When
-        proxy.invoke()
-
-        proxy.clear()
-
-        // Then
-        proxy.returnValue mustBe null
-
-        assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
-        assertFailsWith<ClassCastException> { proxy.sideEffect }
-        assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
-
-        proxy.calls mustBe 0
-
-        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
-    }
-
-    @Test
-    @JsName("fn27")
     fun `Given clear is called it clears the mock while leave the spy intact`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
 
+        val error = Throwable()
         val valueImpl: Any = fixture.fixture()
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
@@ -858,10 +826,12 @@ class SyncFunProxySpec {
 
         implementation.fun0 = { valueImpl }
 
+        proxy.throws = error
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
+        proxy.verificationChain = VerificationChainStub()
 
         return runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.invoke()
