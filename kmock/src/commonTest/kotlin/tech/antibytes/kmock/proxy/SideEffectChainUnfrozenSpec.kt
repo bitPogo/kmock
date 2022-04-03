@@ -15,7 +15,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class NonFreezingSideEffectChainUnfrozenSpec {
+class SideEffectChainUnfrozenSpec {
     @BeforeTest
     fun setUp() {
         clearBlockingTest()

@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.FunProxyProvider
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 
@@ -59,12 +59,12 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         onEvent(arguments)
 
         return when (provider) {
-            FunProxyProvider.THROWS -> throw throws
-            FunProxyProvider.RETURN_VALUE -> returnValue
-            FunProxyProvider.RETURN_VALUES -> retrieveFromValues()
-            FunProxyProvider.SIDE_EFFECT -> function()
-            FunProxyProvider.SIDE_EFFECT_CHAIN -> chainFunction()
-            FunProxyProvider.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
+            FunProxyInvocationType.THROWS -> throw throws
+            FunProxyInvocationType.RETURN_VALUE -> returnValue
+            FunProxyInvocationType.RETURN_VALUES -> retrieveFromValues()
+            FunProxyInvocationType.SIDE_EFFECT -> function()
+            FunProxyInvocationType.SIDE_EFFECT_CHAIN -> chainFunction()
+            FunProxyInvocationType.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
             else -> invokeRelaxerOrFail(arguments.firstOrNull())
         }
     }

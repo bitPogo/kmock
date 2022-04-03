@@ -11,8 +11,7 @@ import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.annotations.JsOnly
+import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture
@@ -621,29 +620,34 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @IgnoreJs
     @JsName("fn25")
     fun `Given clear is called it clears the mock`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+
+        val error = Throwable()
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
-        val sideEffectChained: suspend () -> Any = {
+        val sideEffectChain: suspend () -> Any = {
             fixture.fixture()
         }
 
+        proxy.throws = error
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
-        proxy.sideEffects.add(sideEffectChained)
+        proxy.sideEffects.add(sideEffectChain)
+        proxy.verificationChain = VerificationChainStub()
 
         proxy.invoke()
 
         proxy.clear()
 
+        // Then
+        assertFailsWith<NullPointerException> { proxy.throws }
         proxy.returnValue mustBe null
 
         assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
@@ -651,58 +655,25 @@ class AsyncFunProxyUnfrozenSpec {
         assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
+        proxy.verificationChain mustBe null
 
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test
-    @JsOnly
     @JsName("fn26")
-    fun `Given clear is called it clears the mock for Js`() = runBlockingTest {
-        // Given
-        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
-        val value: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: suspend () -> Any = {
-            fixture.fixture()
-        }
-        val sideEffectChained: suspend () -> Any = {
-            fixture.fixture()
-        }
-
-        proxy.returnValue = value
-        proxy.returnValues = values
-        proxy.sideEffect = sideEffect
-        proxy.sideEffects.add(sideEffectChained)
-
-        proxy.invoke()
-
-        proxy.clear()
-
-        proxy.returnValue mustBe null
-
-        assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }
-        assertFailsWith<ClassCastException> { proxy.sideEffect }
-        assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
-
-        proxy.calls mustBe 0
-
-        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
-    }
-
-    @Test
-    @JsName("fn27")
     fun `Given clear is called it clears the mock while leave the spy intact`() = runBlockingTest {
         // Given
         val implementation = Implementation<Any>()
 
+        val error = Throwable()
         val valueImpl: Any = fixture.fixture()
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: suspend () -> Any = {
             fixture.fixture()
         }
-        val sideEffectChained: suspend () -> Any = {
+        val sideEffectChain: suspend () -> Any = {
             fixture.fixture()
         }
 
@@ -714,10 +685,12 @@ class AsyncFunProxyUnfrozenSpec {
 
         implementation.fun0 = { valueImpl }
 
+        proxy.throws = error
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
-        proxy.sideEffects.add(sideEffectChained)
+        proxy.sideEffects.add(sideEffectChain)
+        proxy.verificationChain = VerificationChainStub()
 
         proxy.invoke()
 

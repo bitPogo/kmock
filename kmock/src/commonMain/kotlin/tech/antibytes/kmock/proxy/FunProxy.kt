@@ -13,8 +13,8 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.FunProxyProvider
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
@@ -25,7 +25,7 @@ import kotlin.math.max
 /**
  * @suppress
  */
-abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
+abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> internal constructor(
     override val id: String,
     override val ignorableForVerification: Boolean,
     collector: Collector = NoopCollector,
@@ -35,25 +35,26 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     freeze: Boolean,
     protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
-    private inner class FunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
-        defaultProvider: FunProxyProvider,
+    private class FunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultInvocationType: FunProxyInvocationType,
         collector: Collector,
         relaxer: Relaxer<ReturnValue>?,
         unitFunRelaxer: Relaxer<ReturnValue?>?,
         buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        setProvider: (FunProxyInvocationType) -> Unit,
     ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
         private val _throws: AtomicRef<Throwable?> = atomic(null)
         private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
         private val _returnValues: IsoMutableList<ReturnValue> = sharedMutableListOf()
         private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
         override val sideEffects = SideEffectChain<ReturnValue, SideEffect> {
-            setProvider(FunProxyProvider.SIDE_EFFECT_CHAIN)
+            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
         }
 
         private val _calls: AtomicInt = atomic(0)
 
         private val _collector: AtomicRef<Collector> = atomic(collector)
-        private val _provider: AtomicRef<FunProxyProvider> = atomic(defaultProvider)
+        private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
 
         private val _relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
         private val _unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
@@ -65,10 +66,9 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         override val returnValues: MutableList<ReturnValue> = _returnValues
 
         override var sideEffect: SideEffect? by _sideEffect
-        override var provider: FunProxyProvider by _provider
+        override var invocationType: FunProxyInvocationType by _invocationType
 
-        override val collector: Collector
-            get() = _collector.value
+        override val collector: Collector by _collector
 
         override val calls: Int by _calls
         override val arguments: MutableList<Array<out Any?>> = sharedMutableListOf()
@@ -82,7 +82,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             this._calls.incrementAndGet()
         }
 
-        override fun clear(defaultProvider: FunProxyProvider) {
+        override fun clear(defaultInvocationType: FunProxyInvocationType) {
             _throws.update { null }
             _returnValue.update { null }
             _returnValues.clear()
@@ -93,19 +93,20 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arguments.clear()
 
             _verificationChain.update { null }
-            _provider.update { defaultProvider }
+            _invocationType.update { defaultInvocationType }
         }
     }
 
-    private inner class NonFreezingFunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
-        defaultProvider: FunProxyProvider,
+    private class NonFreezingFunProxyValueContainer<ReturnValue, SideEffect : Function<ReturnValue>>(
+        defaultInvocationType: FunProxyInvocationType,
         override val collector: Collector,
         override val relaxer: Relaxer<ReturnValue>?,
         override val unitFunRelaxer: Relaxer<ReturnValue?>?,
         override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
+        setProvider: (FunProxyInvocationType) -> Unit,
     ) : KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> {
         override val sideEffects = NonFreezingSideEffectChain<ReturnValue, SideEffect> {
-            setProvider(FunProxyProvider.SIDE_EFFECT_CHAIN)
+            setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
         }
         private var _calls = 0
 
@@ -114,9 +115,10 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         override val returnValues: MutableList<ReturnValue> = mutableListOf()
 
         override var sideEffect: SideEffect? = null
-        override var provider: FunProxyProvider = defaultProvider
+        override var invocationType: FunProxyInvocationType = defaultInvocationType
 
-        override val calls: Int = _calls
+        override val calls: Int
+            get() = _calls
         override val arguments: MutableList<Array<out Any?>> = mutableListOf()
 
         override var verificationChain: VerificationChain? = null
@@ -125,7 +127,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             _calls += 1
         }
 
-        override fun clear(defaultProvider: FunProxyProvider) {
+        override fun clear(defaultInvocationType: FunProxyInvocationType) {
             throws = null
             returnValue = null
             returnValues.clear()
@@ -136,55 +138,67 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arguments.clear()
 
             verificationChain = null
-            provider = defaultProvider
+            invocationType = defaultInvocationType
         }
     }
 
-    private val valueContainer: KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> = if(freeze) {
+    private val valueContainer: KMockContract.FunProxyValueContainer<ReturnValue, SideEffect> = if (freeze) {
         FunProxyValueContainer(
-            defaultProvider = useSpyOrDefault(),
+            defaultInvocationType = useSpyOrDefault(),
             collector = collector,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,
             unitFunRelaxer = unitFunRelaxer,
+            setProvider = ::setProvider,
         )
     } else {
         NonFreezingFunProxyValueContainer(
-            defaultProvider = useSpyOrDefault(),
+            defaultInvocationType = useSpyOrDefault(),
             collector = collector,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,
             unitFunRelaxer = unitFunRelaxer,
+            setProvider = ::setProvider,
         )
     }
-    protected val provider = valueContainer.provider
+    internal val provider
+        get() = valueContainer.invocationType
 
-    override var verificationChain: VerificationChain? = valueContainer.verificationChain
+    override var verificationChain: VerificationChain?
+        get() = valueContainer.verificationChain
+        set(value) {
+            valueContainer.verificationChain = value
+        }
 
-    private fun useSpyOrDefault(): FunProxyProvider {
+    private fun useSpyOrDefault(): FunProxyInvocationType {
         return if (spyOn == null) {
-            FunProxyProvider.NO_PROVIDER
+            FunProxyInvocationType.NO_GIVEN_VALUE
         } else {
-            FunProxyProvider.SPY
+            FunProxyInvocationType.SPY
         }
     }
 
-    private fun setProvider(provider: FunProxyProvider) {
+    private fun setProvider(invocationType: FunProxyInvocationType) {
         val activeProvider = max(
-            provider.value,
-            valueContainer.provider.value
+            invocationType.value,
+            valueContainer.invocationType.value
         )
 
-        if (activeProvider == provider.value) {
-            valueContainer.provider = provider
+        if (activeProvider == invocationType.value) {
+            valueContainer.invocationType = invocationType
         }
     }
 
     override var throws: Throwable
-        @Suppress("UNCHECKED_CAST")
-        get() = valueContainer.throws as Throwable
+        get() {
+            return if (valueContainer.throws is Throwable) {
+                valueContainer.throws as Throwable
+            } else {
+                throw NullPointerException()
+            }
+        }
         set(value) {
-            setProvider(FunProxyProvider.THROWS)
+            setProvider(FunProxyInvocationType.THROWS)
             valueContainer.throws = value
         }
 
@@ -192,7 +206,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         @Suppress("UNCHECKED_CAST")
         get() = valueContainer.returnValue as ReturnValue
         set(value) {
-            setProvider(FunProxyProvider.RETURN_VALUE)
+            setProvider(FunProxyInvocationType.RETURN_VALUE)
             valueContainer.returnValue = value
         }
 
@@ -207,15 +221,21 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(FunProxyProvider.RETURN_VALUES)
+                setProvider(FunProxyInvocationType.RETURN_VALUES)
                 _setReturnValues(values)
             }
         }
 
     override var sideEffect: SideEffect
-        get() = valueContainer.sideEffect as SideEffect
+        get() {
+            return if (valueContainer.sideEffect is SideEffect) {
+                valueContainer.sideEffect as SideEffect
+            } else {
+                throw NullPointerException()
+            }
+        }
         set(value) {
-            setProvider(FunProxyProvider.SIDE_EFFECT)
+            setProvider(FunProxyInvocationType.SIDE_EFFECT)
             valueContainer.sideEffect = value
         }
 
