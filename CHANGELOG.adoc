@@ -36,6 +36,7 @@ toc::[]
 === Changed
 
 * generated mocks don't contain runtime logic any longer
+* mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
 
 === Deprecated
 
