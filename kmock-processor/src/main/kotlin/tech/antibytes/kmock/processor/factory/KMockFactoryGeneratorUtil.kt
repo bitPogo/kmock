@@ -15,6 +15,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGeneratorUtil(
+    private val freezeOnDefault: Boolean,
     private val genericResolver: ProcessorContract.GenericResolver
 ) : ProcessorContract.MockFactoryGeneratorUtil {
     private fun buildGenericFactoryArgument(
@@ -90,7 +91,7 @@ internal class KMockFactoryGeneratorUtil(
     ): ParameterSpec {
         val parameter = ParameterSpec.builder("freeze", Boolean::class)
         if (hasDefault) {
-            parameter.defaultValue("true")
+            parameter.defaultValue(freezeOnDefault.toString())
         }
         return parameter.build()
     }

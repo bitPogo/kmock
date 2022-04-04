@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIAS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KSPY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
@@ -56,6 +57,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
+        var freezeOnDefault = true
         var allowInterfacesOnKmock = false
         var allowInterfacesOnKspy = false
         var spiesOnly = false
@@ -65,6 +67,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == KSP_DIR -> kspDir = value
                 key == ROOT_PACKAGE -> rootPackage = value
                 key == KMP_FLAG -> isKmp = value.toBoolean()
+                key == FREEZE -> freezeOnDefault = value.toBoolean()
                 key == INTERFACES_KMOCK -> allowInterfacesOnKmock = value.toBoolean()
                 key == INTERFACES_KSPY -> allowInterfacesOnKspy = value.toBoolean()
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
@@ -88,6 +91,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             kspDir = kspDir!!,
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
+            freezeOnDefault = freezeOnDefault,
             allowInterfacesOnKmock = allowInterfacesOnKmock,
             allowInterfacesOnKspy = allowInterfacesOnKspy,
             spiesOnly = spiesOnly,

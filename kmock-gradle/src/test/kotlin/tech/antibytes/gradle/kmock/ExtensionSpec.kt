@@ -258,7 +258,7 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its default spyOn is a empty set`() {
+    fun `Its freezeOnDefault is true by default`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
 
@@ -266,26 +266,24 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.spyOn mustBe emptySet()
+        extension.freezeOnDefault mustBe true
     }
 
     @Test
-    fun `It propagates spyOn changes to Ksp`() {
+    fun `It propagates freezeOnDefault changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: List<String> = fixture.listFixture(size = 3)
+        val expected: Boolean = fixture.fixture()
 
         every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.spyOn = expected.toSet()
+        extension.freezeOnDefault = expected
 
-        extension.spyOn mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_2", expected[2]) }
+        extension.freezeOnDefault mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_freeze", expected.toString()) }
     }
 
     @Test
@@ -344,6 +342,37 @@ class ExtensionSpec {
 
         extension.allowInterfacesOnKspy mustBe expected
         verify(exactly = 1) { kspExtension.arg("kmock_allowInterfacesOnKspy", expected.toString()) }
+    }
+
+    @Test
+    fun `Its default spyOn is a empty set`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.spyOn mustBe emptySet()
+    }
+
+    @Test
+    fun `It propagates spyOn changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: List<String> = fixture.listFixture(size = 3)
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.spyOn = expected.toSet()
+
+        extension.spyOn mustBe expected.toSet()
+        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_0", expected[0]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_1", expected[1]) }
+        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_2", expected[2]) }
     }
 
     @Test
