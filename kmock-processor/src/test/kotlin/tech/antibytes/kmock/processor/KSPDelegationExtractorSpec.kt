@@ -341,7 +341,49 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a false for allowInterfacesOnKmock if no value was propagated`() {
+    fun `Given convertOptions it returns true for freezeOnDefault if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.freezeOnDefault mustBe true
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for freezeOnDefault`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected = false
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_freeze" to expected.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.freezeOnDefault mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns false for allowInterfacesOnKmock if no value was propagated`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -383,7 +425,7 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a false for allowInterfacesOnKspy if no value was propagated`() {
+    fun `Given convertOptions it returns false for allowInterfacesOnKspy if no value was propagated`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -425,7 +467,7 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a false for spiesOnly if no value was propagated`() {
+    fun `Given convertOptions it returns false for spiesOnly if no value was propagated`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
