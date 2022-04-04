@@ -39,7 +39,21 @@ internal interface KMockPluginContract {
          * Selection of prefixes which are polluting names of Proxies while they referencing overloaded methods.
          * The order must be longest to shortest.
          */
+        @Deprecated("This will be removed with version 1.0. You can opt-in/out the new behaviour with enableNewOverloadingNames.")
         var uselessPrefixes: Set<String>
+
+        /**
+         * Opt-in/out the new name resolver for overloaded methods.
+         * It is opt-in on default.
+         */
+        var enableNewOverloadingNames: Boolean
+
+        /**
+         * Allows to prefix type names in order to resolve collisions for overloaded methods.
+         * The key must be the full qualified name of target which should use an additional prefix.
+         * The value is an arbitrary String, which is used as a prefix.
+         */
+        var useTypePrefixFor: Map<String, String>
 
         /**
          * Selection of targets which allow Proxies to use Spies.
@@ -50,7 +64,7 @@ internal interface KMockPluginContract {
 
         /**
          * Switch which will KMock tell generate only `kspy` instead of `kmock`.
-         * `kspy` will automatically reference all generated spies an addtional invocation of `spyOn` is not needed.
+         * `kspy` will automatically reference all generated spies an additional invocation of `spyOn` is not needed.
          */
         var spiesOnly: Boolean
 
@@ -82,15 +96,17 @@ internal interface KMockPluginContract {
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
+        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}newOverloadedNames"
         const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
         const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
-        const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
-        const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
-        const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
-        const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
+        const val ALIASES = "${KMOCK_PREFIX}alias_"
+        const val RECURSIVE = "${KMOCK_PREFIX}recursive_"
+        const val BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
-        const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
+        const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
+        const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
     }
 }
