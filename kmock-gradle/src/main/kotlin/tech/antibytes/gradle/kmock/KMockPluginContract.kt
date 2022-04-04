@@ -65,6 +65,12 @@ internal interface KMockPluginContract {
          * Default is false
          */
         var allowInterfacesOnKspy: Boolean
+
+        /**
+         * Sets a global default freeze value for kmock and kspy.
+         * Default is true
+         */
+        var freezeOnDefault: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -75,6 +81,7 @@ internal interface KMockPluginContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val FREEZE = "${KMOCK_PREFIX}freeze"
         const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
         const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"

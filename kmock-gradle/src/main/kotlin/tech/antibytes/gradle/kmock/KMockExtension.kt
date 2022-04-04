@@ -10,6 +10,7 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIAS_PREFIX
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KSPY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
@@ -40,6 +41,8 @@ abstract class KMockExtension(
         "kotlin",
     )
     private var _spyOn: Set<String> = emptySet()
+
+    private var _freeze = true
 
     private var _allowInterfacesOnKmock = false
     private var _allowInterfacesOnKspy = false
@@ -128,6 +131,13 @@ abstract class KMockExtension(
             )
 
             _spyOn = value
+        }
+
+    override var freezeOnDefault: Boolean
+        get() = _freeze
+        set(value) {
+            propagateValue(FREEZE, value.toString())
+            _freeze = value
         }
 
     override var allowInterfacesOnKmock: Boolean
