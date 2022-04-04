@@ -39,7 +39,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             relaxerGenerator = relaxerGenerator
         )
 
-        val factoryUtils = KMockFactoryGeneratorUtil(genericResolver)
+        val factoryUtils = KMockFactoryGeneratorUtil(
+            freezeOnDefault = options.freezeOnDefault,
+            genericResolver = genericResolver,
+        )
 
         return KMockProcessor(
             codeGenerator = codeGenerator,

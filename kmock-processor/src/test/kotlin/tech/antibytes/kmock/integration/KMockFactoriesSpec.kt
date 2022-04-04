@@ -703,4 +703,62 @@ class KMockFactoriesSpec {
         actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
         actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source with a changed freeze flag for a Platform is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/freeze/Platform.kt")
+        )
+        val expected = loadResource("/expected/freeze/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}freeze" to "false",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with a changed freeze flag for Common is processed, it writes a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/freeze/Common.kt")
+        )
+        val expectedActual = loadResource("/expected/freeze/CommonActual.kt")
+        val expectedExpect = loadResource("/expected/freeze/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            mapOf(
+                "${KMOCK_PREFIX}freeze" to "false",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
 }
