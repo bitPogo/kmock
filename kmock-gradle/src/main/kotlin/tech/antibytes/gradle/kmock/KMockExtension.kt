@@ -9,14 +9,14 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.BUILD_IN
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USE_BUILD_IN
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KSPY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.RECURSIVE
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALLOWED_RECURSIVE_TYPES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
@@ -105,7 +105,7 @@ abstract class KMockExtension(
         get() = _allowedRecursiveTypes
         set(value) {
             propagateIterable(
-                prefix = RECURSIVE,
+                prefix = ALLOWED_RECURSIVE_TYPES,
                 values = value
             )
 
@@ -116,7 +116,7 @@ abstract class KMockExtension(
         get() = _useBuildInProxiesOn
         set(value) {
             propagateIterable(
-                prefix = BUILD_IN,
+                prefix = USE_BUILD_IN,
                 values = value
             )
 

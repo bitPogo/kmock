@@ -330,7 +330,7 @@ class KSPDelegationExtractorSpec {
         val expected = fixture.listFixture<String>(size = 3).toSet()
 
         expected.forEachIndexed { idx, value ->
-            delegateKSP["kmock_namePrefix_$idx"] = value
+            delegateKSP["kmock_oldNamePrefix_$idx"] = value
         }
 
         // When
