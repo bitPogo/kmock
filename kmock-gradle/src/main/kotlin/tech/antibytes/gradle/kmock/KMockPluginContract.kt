@@ -46,6 +46,7 @@ internal interface KMockPluginContract {
          * Opt-in/out the new name resolver for overloaded methods.
          * It is opt-in on default.
          */
+        @Deprecated("This will be removed with version 1.0.")
         var enableNewOverloadingNames: Boolean
 
         /**

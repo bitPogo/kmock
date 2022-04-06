@@ -315,32 +315,6 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a set of target names where to use uselessPrefixes proxies`() {
-        // Given
-        val rootPackage: String = fixture.fixture()
-        val isKmp: Boolean = fixture.fixture()
-        val kspDir: String = fixture.fixture()
-
-        val delegateKSP = mutableMapOf(
-            "kmock_kspDir" to kspDir,
-            "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
-        )
-
-        val expected = fixture.listFixture<String>(size = 3).toSet()
-
-        expected.forEachIndexed { idx, value ->
-            delegateKSP["kmock_oldNamePrefix_$idx"] = value
-        }
-
-        // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
-
-        // Then
-        actual.uselessPrefixes mustBe expected
-    }
-
-    @Test
     fun `Given convertOptions it returns true for freezeOnDefault if no value was propagated`() {
         // Given
         val rootPackage: String = fixture.fixture()
@@ -506,5 +480,119 @@ class KSPDelegationExtractorSpec {
 
         // Then
         actual.spiesOnly mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns false for enableNewOverloadingNames if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.enableNewOverloadingNames mustBe true
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for enableNewOverloadingNames`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected = false
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_newOverloadedNames" to expected.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.enableNewOverloadingNames mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a empty map if no TypePrefixes were delegated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.useTypePrefixFor mustBe emptyMap()
+    }
+
+    @Test
+    fun `Given convertOptions it returns a map of declared TypePrefixes`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected: Map<String, String> = fixture.mapFixture(size = 3)
+
+        expected.forEach { (key, value) ->
+            delegateKSP["kmock_namePrefix_$key"] = value
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.useTypePrefixFor mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a set of target names where to use uselessPrefixes proxies`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected = fixture.listFixture<String>(size = 3).toSet()
+
+        expected.forEachIndexed { idx, value ->
+            delegateKSP["kmock_oldNamePrefix_$idx"] = value
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.uselessPrefixes mustBe expected
     }
 }
