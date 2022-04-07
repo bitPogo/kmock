@@ -34,6 +34,7 @@ toc::[]
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
 * `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
+* `customMethodNames` in order to allow complete custom names for methods
 
 === Changed
 
@@ -41,6 +42,8 @@ toc::[]
 * Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
 
 === Deprecated
+
+* `uselessPrefixes` in the Gradle Extension
 
 === Removed
 
