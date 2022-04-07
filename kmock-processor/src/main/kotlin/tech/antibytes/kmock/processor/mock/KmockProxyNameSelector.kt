@@ -18,6 +18,8 @@ import tech.antibytes.kmock.processor.titleCase
 import java.util.SortedSet
 
 internal class KmockProxyNameSelector(
+    enableNewOverloadingNames: Boolean,
+    private val useTypePrefixFor: Map<String, String>,
     private val uselessPrefixes: Set<String>,
 ) : ProxyNameSelector, ProxyNameCollector {
     private var overloadedProxies: SortedSet<String> = sortedSetOf()
@@ -26,6 +28,16 @@ internal class KmockProxyNameSelector(
         "_equals" to "_equalsWithAny",
         "_hashCode" to "_hashCodeWithVoid"
     )
+
+    private val prefixResolver: Function1<String, String> = if (enableNewOverloadingNames) {
+        { typeName -> typeName.resolvePrefixedTypeName(useTypePrefixFor) }
+    } else {
+        { typeName ->
+            typeName
+                .removePrefixes(uselessPrefixes)
+                .packageNameToVariableName()
+        }
+    }
 
     private fun collectPropertyNames(
         template: KSClassDeclaration,
@@ -79,6 +91,16 @@ internal class KmockProxyNameSelector(
         proxyName = "_$propertyName"
     )
 
+    private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
+        val className = this.substringAfterLast('.').titleCase()
+        val prefix = prefixMapping
+            .getOrDefault(this, "")
+            .titleCase()
+
+        return "$prefix$className"
+    }
+
+    // Deprecated
     private fun String.removePrefixes(prefixes: Iterable<String>): String {
         var cleaned = this
 
@@ -89,6 +111,7 @@ internal class KmockProxyNameSelector(
         return cleaned
     }
 
+    // Deprecated
     private fun String.packageNameToVariableName(): String {
         val partialNames = split('.')
 
@@ -100,10 +123,9 @@ internal class KmockProxyNameSelector(
     }
 
     private fun String.trimTypeName(): String {
-        return this
-            .substringBefore('<') // Generics
-            .removePrefixes(uselessPrefixes)
-            .packageNameToVariableName()
+        return prefixResolver(
+            this.substringBefore('<') // Generics
+        )
     }
 
     private fun resolveGenericName(

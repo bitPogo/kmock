@@ -55,9 +55,9 @@ internal class PlatformMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithStringAny",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithStringMockTemplateOverloadedAbc:
-        KMockContract.SyncFunProxy<Any, (kotlin.String, mock.template.overloaded.Abc) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithStringMockTemplateOverloadedAbc",
+    public val _fooWithStringAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
+        mock.template.overloaded.Abc) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithStringAbc",
             collector = verifier, freeze = freeze)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
@@ -71,17 +71,17 @@ internal class PlatformMock(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _fooWithMockTemplateOverloadedPlatform:
+    public val _fooWithPlatform:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Platform) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithMockTemplateOverloadedPlatform",
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithPlatform",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _fooWithMockTemplateOverloadedLPG:
-        KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithMockTemplateOverloadedLPG",
-            collector = verifier, freeze = freeze) {
+    public val _fooWithLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithLPG", collector
+        = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -97,17 +97,15 @@ internal class PlatformMock(
 
     public override fun foo(fuzz: String, ozz: Any): Any = _fooWithStringAny.invoke(fuzz, ozz)
 
-    public override fun foo(fuzz: String, ozz: Abc): Any =
-        _fooWithStringMockTemplateOverloadedAbc.invoke(fuzz, ozz)
+    public override fun foo(fuzz: String, ozz: Abc): Any = _fooWithStringAbc.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
     public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz)
 
-    public override fun <T : Platform> foo(fuzz: T): Unit =
-        _fooWithMockTemplateOverloadedPlatform.invoke(fuzz)
+    public override fun <T : Platform> foo(fuzz: T): Unit = _fooWithPlatform.invoke(fuzz)
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithMockTemplateOverloadedLPG.invoke(fuzz)
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz)
 
     public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)
 
@@ -118,11 +116,11 @@ internal class PlatformMock(
         _fooWithAnyInt.clear()
         _fooWithAnyString.clear()
         _fooWithStringAny.clear()
-        _fooWithStringMockTemplateOverloadedAbc.clear()
+        _fooWithStringAbc.clear()
         _fooWithFunction1.clear()
         _fooWithAny.clear()
-        _fooWithMockTemplateOverloadedPlatform.clear()
-        _fooWithMockTemplateOverloadedLPG.clear()
+        _fooWithPlatform.clear()
+        _fooWithLPG.clear()
         _fooWithAnys.clear()
     }
 }
