@@ -346,8 +346,6 @@ class ExtensionSpec {
         error.message mustBe "$illegal is not applicable!"
     }
 
-
-
     @Test
     fun `Its customMethodNames has no values`() {
         val project: Project = mockk(relaxed = true)

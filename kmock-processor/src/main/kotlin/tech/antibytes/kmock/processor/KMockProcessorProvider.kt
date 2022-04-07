@@ -33,6 +33,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val relaxerGenerator = KMockRelaxerGenerator()
         val nameSelector = KmockProxyNameSelector(
             enableNewOverloadingNames = options.enableNewOverloadingNames,
+            customMethodNames = options.customMethodNames,
             useTypePrefixFor = options.useTypePrefixFor,
             uselessPrefixes = options.uselessPrefixes,
         )
