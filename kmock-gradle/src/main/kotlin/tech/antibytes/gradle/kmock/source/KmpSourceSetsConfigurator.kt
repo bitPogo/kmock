@@ -11,7 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PRECEDENCE_PREFIX
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PRECEDENCE
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.config.MainConfig
 import java.util.Locale
@@ -98,7 +98,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
 
         precedences.forEach { (sourceSet, precedence) ->
-            ksp.arg("$PRECEDENCE_PREFIX$sourceSet", precedence.toString())
+            ksp.arg("$PRECEDENCE$sourceSet", precedence.toString())
         }
     }
 

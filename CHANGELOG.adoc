@@ -33,11 +33,12 @@ toc::[]
 * `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`, while adding all known mocks
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
+* `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
 
 === Changed
 
-* generated mocks don't contain runtime logic any longer
-* mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
+* Generated mocks don't contain runtime logic any longer
+* Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
 
 === Deprecated
 
@@ -45,7 +46,7 @@ toc::[]
 
 === Fixed
 
-* method names with nullable or multi-bounded types defined as generic parameter
+* Method names with nullable or multi-bounded types defined as generic parameter
 
 === Security
 

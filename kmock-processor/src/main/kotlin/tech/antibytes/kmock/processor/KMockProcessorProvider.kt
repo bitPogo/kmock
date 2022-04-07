@@ -32,7 +32,9 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
         val nameSelector = KmockProxyNameSelector(
-            uselessPrefixes = options.uselessPrefixes
+            enableNewOverloadingNames = options.enableNewOverloadingNames,
+            useTypePrefixFor = options.useTypePrefixFor,
+            uselessPrefixes = options.uselessPrefixes,
         )
 
         val propertyGenerator = KMockPropertyGenerator(

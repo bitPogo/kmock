@@ -17,7 +17,7 @@ import tech.antibytes.kmock.processor.KMockProcessorProvider
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE_PREFIX
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
@@ -46,10 +46,10 @@ class KMockMocksSpec {
         ).also {
             it.putAll(kspArguments)
         }.also {
-            it["${KMOCK_PREFIX}namePrefix_0"] = "kotlin.collections"
-            it["${KMOCK_PREFIX}namePrefix_1"] = "kotlin"
-            it["${PRECEDENCE_PREFIX}sharedTest"] = "0"
-            it["${PRECEDENCE_PREFIX}otherTest"] = "1"
+            it["${KMOCK_PREFIX}oldNamePrefix_0"] = "kotlin.collections"
+            it["${KMOCK_PREFIX}oldNamePrefix_1"] = "kotlin"
+            it["${PRECEDENCE}sharedTest"] = "0"
+            it["${PRECEDENCE}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {
@@ -410,7 +410,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Overload for a Platform is processed, it writes a mock`() {
+    fun `Given a annotated overloaded Source for a Platform is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
@@ -430,7 +430,34 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Overload for Shared is processed, it writes a mock`() {
+    fun `Given a annotated overloaded Source for a Platform is processed, which contains collisions, it uses the user induces mapping, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Collision.kt",
+            loadResource("/template/overloaded/Collision.kt")
+        )
+        val expected = loadResource("/expected/overloaded/Collision.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_namePrefix_mock.template.overloaded.Scope.Abc" to "Scoped"
+            )
+        )
+        val actual = resolveGenerated("CollisionMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated overloaded Source for Shared is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
@@ -453,7 +480,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Overload for Common is processed, it writes a mock`() {
+    fun `Given a annotated overloaded Source for Common is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
@@ -922,5 +949,59 @@ class KMockMocksSpec {
             "common/commonTest/kotlin/mock/template/typealiaz/CommonMock.kt"
         ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated overloaded Source for a Platform is processed while keeping the old name schema, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/compability/Platform.kt")
+        )
+        val expected = loadResource("/expected/compability/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_newOverloadedNames" to "false"
+            )
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated overloaded Source for Common, which contains also generic Parameter is processed while keeping the old name schema, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/compability/Common.kt")
+        )
+        val expected = loadResource("/expected/compability/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "kmock_newOverloadedNames" to "false"
+            )
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 }

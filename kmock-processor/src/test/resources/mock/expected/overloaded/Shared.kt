@@ -55,9 +55,9 @@ internal class SharedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithStringAny",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithStringMockTemplateOverloadedAbc:
-        KMockContract.SyncFunProxy<Any, (kotlin.String, mock.template.overloaded.Abc) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithStringMockTemplateOverloadedAbc",
+    public val _fooWithStringAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
+        mock.template.overloaded.Abc) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithStringAbc",
             collector = verifier, freeze = freeze)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
@@ -71,17 +71,17 @@ internal class SharedMock(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _fooWithMockTemplateOverloadedShared:
-        KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Shared) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithMockTemplateOverloadedShared",
+    public val _fooWithShared: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Shared) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithShared",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _fooWithMockTemplateOverloadedLPG:
-        KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithMockTemplateOverloadedLPG",
-            collector = verifier, freeze = freeze) {
+    public val _fooWithLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithLPG", collector =
+        verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -93,17 +93,15 @@ internal class SharedMock(
 
     public override fun foo(fuzz: String, ozz: Any): Any = _fooWithStringAny.invoke(fuzz, ozz)
 
-    public override fun foo(fuzz: String, ozz: Abc): Any =
-        _fooWithStringMockTemplateOverloadedAbc.invoke(fuzz, ozz)
+    public override fun foo(fuzz: String, ozz: Abc): Any = _fooWithStringAbc.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
     public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz)
 
-    public override fun <T : Shared> foo(fuzz: T): Unit =
-        _fooWithMockTemplateOverloadedShared.invoke(fuzz)
+    public override fun <T : Shared> foo(fuzz: T): Unit = _fooWithShared.invoke(fuzz)
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithMockTemplateOverloadedLPG.invoke(fuzz)
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz)
 
     public fun _clearMock(): Unit {
         _foo.clear()
@@ -112,10 +110,10 @@ internal class SharedMock(
         _fooWithAnyInt.clear()
         _fooWithAnyString.clear()
         _fooWithStringAny.clear()
-        _fooWithStringMockTemplateOverloadedAbc.clear()
+        _fooWithStringAbc.clear()
         _fooWithFunction1.clear()
         _fooWithAny.clear()
-        _fooWithMockTemplateOverloadedShared.clear()
-        _fooWithMockTemplateOverloadedLPG.clear()
+        _fooWithShared.clear()
+        _fooWithLPG.clear()
     }
 }

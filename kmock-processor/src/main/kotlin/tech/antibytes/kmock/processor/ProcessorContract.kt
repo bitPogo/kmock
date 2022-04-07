@@ -50,6 +50,8 @@ internal interface ProcessorContract {
         val allowedRecursiveTypes: Set<String>,
         val useBuildInProxiesOn: Set<String>,
         val spyOn: Set<String>,
+        val enableNewOverloadingNames: Boolean,
+        val useTypePrefixFor: Map<String, String>,
         val uselessPrefixes: Set<String>,
     )
 
@@ -293,12 +295,14 @@ internal interface ProcessorContract {
         const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
         const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
-        const val PRECEDENCE_PREFIX = "${KMOCK_PREFIX}precedence_"
-        const val ALIAS_PREFIX = "${KMOCK_PREFIX}alias_"
-        const val RECURSIVE_PREFIX = "${KMOCK_PREFIX}recursive_"
-        const val BUILD_IN_PREFIX = "${KMOCK_PREFIX}buildIn_"
+        const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
+        const val ALIASES = "${KMOCK_PREFIX}alias_"
+        const val ALLOWED_RECURSIVE_TYPES = "${KMOCK_PREFIX}recursive_"
+        const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
-        const val USELESS_PREFIXES_PREFIX = "${KMOCK_PREFIX}namePrefix_"
+        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}newOverloadedNames"
+        const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
+        const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
     }
 }
