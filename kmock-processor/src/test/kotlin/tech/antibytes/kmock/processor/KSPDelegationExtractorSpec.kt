@@ -514,7 +514,7 @@ class KSPDelegationExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_newOverloadedNames" to expected.toString()
+            "kmock_useNewOverloadedNames" to expected.toString()
         )
 
         // When

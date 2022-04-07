@@ -57,6 +57,13 @@ internal interface KMockPluginContract {
         var useTypePrefixFor: Map<String, String>
 
         /**
+         * Allows to replace auto resolved method names with a given name. This also affects the ProxyId.
+         * The key must be the original full Id of the Proxy.
+         * The value is an arbitrary String, which is used as method name.
+         */
+        var customMethodNames: Map<String, String>
+
+        /**
          * Selection of targets which allow Proxies to use Spies.
          * Set of full qualified name of target which should allow proxy to spy on.
          * Note: This will also activate build-in methods.
@@ -97,7 +104,6 @@ internal interface KMockPluginContract {
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
-        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}newOverloadedNames"
         const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
         const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
@@ -107,7 +113,9 @@ internal interface KMockPluginContract {
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
+        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
+        const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
     }
 }
