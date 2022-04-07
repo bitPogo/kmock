@@ -147,7 +147,6 @@ internal interface ProcessorContract {
             qualifier: String,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
-            existingProxies: Set<String>,
             enableSpy: Boolean,
             relaxer: Relaxer?,
         ): Pair<PropertySpec, FunSpec>
@@ -157,9 +156,44 @@ internal interface ProcessorContract {
         fun buildMethodBundles(
             mockName: String,
             qualifier: String,
-            existingProxies: Set<String>,
             enableSpy: Boolean,
         ): Pair<List<PropertySpec>, List<FunSpec>>
+    }
+
+    data class ProxyInfo(
+        val templateName: String,
+        val proxyName: String,
+        val proxyId: String
+    )
+
+    data class MethodTypeInfo(
+        val argumentName: String,
+        val typeName: TypeName,
+        val isVarArg: Boolean
+    )
+
+    interface ProxyNameCollector {
+        fun collect(template: KSClassDeclaration)
+    }
+
+    interface ProxyNameSelector {
+        fun selectPropertyName(
+            qualifier: String,
+            propertyName: String
+        ): ProxyInfo
+
+        fun selectBuildInMethodName(
+            qualifier: String,
+            methodName: String,
+        ): ProxyInfo
+
+        fun selectMethodName(
+            qualifier: String,
+            methodName: String,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver,
+            arguments: Array<MethodTypeInfo>
+        ): ProxyInfo
     }
 
     interface MockGenerator {

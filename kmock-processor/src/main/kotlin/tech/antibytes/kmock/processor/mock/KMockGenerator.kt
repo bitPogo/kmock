@@ -38,6 +38,7 @@ internal class KMockGenerator(
     private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val genericsResolver: ProcessorContract.GenericResolver,
+    private val nameCollector: ProcessorContract.ProxyNameCollector,
     private val propertyGenerator: ProcessorContract.PropertyGenerator,
     private val methodGenerator: ProcessorContract.MethodGenerator,
     private val buildInGenerator: ProcessorContract.BuildInMethodGenerator
@@ -90,28 +91,6 @@ internal class KMockGenerator(
         return function.build()
     }
 
-    private fun aggregateOverloading(template: KSClassDeclaration): Set<String> {
-        val nameCollector: MutableList<String> = mutableListOf()
-        val overloadedMethods: MutableSet<String> = mutableSetOf()
-
-        template.getAllProperties().forEach { ksProperty ->
-            val name = ksProperty.simpleName.asString()
-            nameCollector.add(name)
-        }
-
-        template.getAllFunctions().forEach { ksFunction ->
-            val name = ksFunction.simpleName.asString()
-
-            if (name in nameCollector || "_$name" in nameCollector) {
-                overloadedMethods.add("_$name")
-            } else {
-                nameCollector.add(name)
-            }
-        }
-
-        return overloadedMethods
-    }
-
     private fun constructQualifier(
         mockName: String,
         template: KSClassDeclaration,
@@ -120,6 +99,10 @@ internal class KMockGenerator(
     private fun KSDeclaration.isPublicOpen(): Boolean {
         return this.isPublic() && this.isOpen()
     }
+
+    private fun isNotBuildInMethod(
+        name: String
+    ): Boolean = name != "equals" && name != "toString" && name != "hashCode"
 
     private fun buildMock(
         mockName: String,
@@ -145,8 +128,6 @@ internal class KMockGenerator(
                 genericsResolver.mapDeclaredGenerics(generics, typeResolver)
             )
         }
-
-        val overloadedMethods = aggregateOverloading(template)
 
         mock.primaryConstructor(
             buildConstructor(superType)
@@ -181,12 +162,11 @@ internal class KMockGenerator(
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
 
-            if (ksFunction.isPublicOpen() && name != "equals" && name != "toString" && name != "hashCode") {
+            if (ksFunction.isPublicOpen() && isNotBuildInMethod(name)) {
                 val (proxy, function) = methodGenerator.buildMethodBundle(
                     qualifier = qualifier,
                     ksFunction = ksFunction,
                     typeResolver = typeResolver,
-                    existingProxies = overloadedMethods,
                     enableSpy = enableSpy,
                     relaxer = relaxer,
                 )
@@ -201,7 +181,6 @@ internal class KMockGenerator(
             val (proxies, functions) = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
-                existingProxies = overloadedMethods,
                 enableSpy = enableSpy
             )
 
@@ -230,6 +209,8 @@ internal class KMockGenerator(
             template.packageName.asString(),
             mockName
         )
+
+        nameCollector.collect(template)
 
         val implementation = buildMock(
             mockName = mockName,

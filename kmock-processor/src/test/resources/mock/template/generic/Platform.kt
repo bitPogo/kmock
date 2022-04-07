@@ -88,4 +88,10 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
     fun <R, T> iss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
+
+    fun <R, T : X, X : SomeGeneric<String>> pss(arg0: T): R where R : T
+    fun <R, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R) where R : T
+
+    fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence
+    fun <R, T> xss(arg0: T, arg1: R) where R : Sequence<Char>, R : CharSequence
 }

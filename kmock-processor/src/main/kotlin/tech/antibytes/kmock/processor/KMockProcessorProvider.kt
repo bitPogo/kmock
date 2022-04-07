@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
+import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
@@ -30,11 +31,20 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         )
         val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
         val relaxerGenerator = KMockRelaxerGenerator()
+        val nameSelector = KmockProxyNameSelector(
+            uselessPrefixes = options.uselessPrefixes
+        )
 
-        val propertyGenerator = KMockPropertyGenerator(relaxerGenerator)
+        val propertyGenerator = KMockPropertyGenerator(
+            nameSelector = nameSelector,
+            relaxerGenerator = relaxerGenerator
+        )
+        val buildInGenerator = KMockBuildInMethodGenerator(
+            nameSelector = nameSelector,
+        )
         val methodGenerator = KMockMethodGenerator(
             allowedRecursiveTypes = options.allowedRecursiveTypes,
-            uselessPrefixes = options.uselessPrefixes,
+            nameSelector = nameSelector,
             genericResolver = genericResolver,
             relaxerGenerator = relaxerGenerator
         )
@@ -52,9 +62,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
                 genericsResolver = genericResolver,
+                nameCollector = nameSelector,
                 propertyGenerator = propertyGenerator,
                 methodGenerator = methodGenerator,
-                buildInGenerator = KMockBuildInMethodGenerator
+                buildInGenerator = buildInGenerator
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,

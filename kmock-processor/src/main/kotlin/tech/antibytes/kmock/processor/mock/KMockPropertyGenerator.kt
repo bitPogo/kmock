@@ -17,12 +17,16 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
 
 internal class KMockPropertyGenerator(
-    private val relaxerGenerator: ProcessorContract.RelaxerGenerator
-) : ProcessorContract.PropertyGenerator {
+    private val nameSelector: ProxyNameSelector,
+    private val relaxerGenerator: RelaxerGenerator
+) : PropertyGenerator {
     private val proxy = PropertyProxy::class.asClassName()
     private val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze) %L"
 
@@ -78,7 +82,7 @@ internal class KMockPropertyGenerator(
     }
 
     private fun addRelaxation(
-        propertyName: String,
+        proxyInfo: ProxyInfo,
         enableSpy: Boolean,
         isMutable: Boolean,
         relaxer: Relaxer?
@@ -87,7 +91,11 @@ internal class KMockPropertyGenerator(
 
         relaxationDefinitions.append("{\n")
         if (enableSpy) {
-            addSpies(relaxationDefinitions, propertyName, isMutable)
+            addSpies(
+                relaxerDefinitions = relaxationDefinitions,
+                propertyName = proxyInfo.templateName,
+                isMutable = isMutable
+            )
         }
 
         relaxerGenerator.addRelaxer(relaxationDefinitions, relaxer)
@@ -101,8 +109,7 @@ internal class KMockPropertyGenerator(
     }
 
     private fun buildPropertyProxy(
-        proxyId: String,
-        propertyName: String,
+        proxyInfo: ProxyInfo,
         enableSpy: Boolean,
         isMutable: Boolean,
         relaxer: Relaxer?
@@ -110,9 +117,9 @@ internal class KMockPropertyGenerator(
         val initializer = CodeBlock.builder()
         initializer.add(
             template,
-            proxyId,
+            proxyInfo.proxyId,
             addRelaxation(
-                propertyName = propertyName,
+                proxyInfo = proxyInfo,
                 enableSpy = enableSpy,
                 isMutable = isMutable,
                 relaxer = relaxer
@@ -124,18 +131,14 @@ internal class KMockPropertyGenerator(
 
     private fun determinePropertyInitializer(
         propertyProxy: PropertySpec.Builder,
-        qualifier: String,
-        propertyName: String,
+        proxyInfo: ProxyInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): PropertySpec.Builder {
-        val proxyId = "$qualifier#_$propertyName"
-
         return propertyProxy.initializer(
             buildPropertyProxy(
-                proxyId = proxyId,
-                propertyName = propertyName,
+                proxyInfo = proxyInfo,
                 enableSpy = enableSpy,
                 isMutable = isMutable,
                 relaxer = relaxer
@@ -144,22 +147,20 @@ internal class KMockPropertyGenerator(
     }
 
     private fun buildPropertyProxy(
-        qualifier: String,
-        propertyName: String,
+        proxyInfo: ProxyInfo,
         propertyType: TypeName,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): PropertySpec {
         val property = PropertySpec.builder(
-            "_$propertyName",
+            proxyInfo.proxyName,
             proxy.parameterizedBy(propertyType),
         )
 
         return determinePropertyInitializer(
             propertyProxy = property,
-            qualifier = qualifier,
-            propertyName = propertyName,
+            proxyInfo = proxyInfo,
             isMutable = isMutable,
             enableSpy = enableSpy,
             relaxer = relaxer
@@ -176,11 +177,14 @@ internal class KMockPropertyGenerator(
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(typeResolver)
         val isMutable = ksProperty.isMutable
+        val proxyInfo = nameSelector.selectPropertyName(
+            qualifier = qualifier,
+            propertyName = propertyName
+        )
 
         return Pair(
             buildPropertyProxy(
-                qualifier = qualifier,
-                propertyName = propertyName,
+                proxyInfo = proxyInfo,
                 propertyType = propertyType,
                 isMutable = isMutable,
                 enableSpy = enableSpy,

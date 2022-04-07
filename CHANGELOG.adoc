@@ -45,6 +45,8 @@ toc::[]
 
 === Fixed
 
+* method names with nullable or multi-bounded types defined as generic parameter
+
 === Security
 
 === Bumped
