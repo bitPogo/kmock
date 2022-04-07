@@ -49,9 +49,9 @@ internal class AllowedRecursiveMock<K : Any, L>(
             )
         }
 
-    public val _ossWithSequencesSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
-    kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequence",
+    public val _ossWithSequencesSequenceCharSequenceComparable:
+        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequenceCharSequenceComparable",
             collector = verifier, freeze = freeze) {
             useSpyIf(
                 spyTarget = __spyOn,
@@ -71,9 +71,9 @@ internal class AllowedRecursiveMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _ossWithSequencesSequences: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) ->
-    kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequences",
+    public val _ossWithSequencesSequenceCharSequenceComparables:
+        KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AllowedRecursiveMock#_ossWithSequencesSequenceCharSequenceComparables",
             collector = verifier, freeze = freeze) {
             useSpyIf(
                 spyTarget = __spyOn,
@@ -184,8 +184,8 @@ internal class AllowedRecursiveMock<K : Any, L>(
                 super.equals(other)
             }
             useSpyOnEqualsIf(
-               spyTarget  = __spyOn,
-               equals = { other ->
+                spyTarget = __spyOn,
+                equals = { other ->
                     super.equals(other)
                 },
                 mockKlass = AllowedRecursiveMock::class
@@ -207,10 +207,10 @@ internal class AllowedRecursiveMock<K : Any, L>(
     Comparable<List<T>> = _ossWithVoid.invoke() as T
 
     public override fun <T> oss(payload: T): Unit where T : Sequence<Char>, T : CharSequence, T :
-    Comparable<List<T>> = _ossWithSequencesSequence.invoke(payload)
+    Comparable<List<T>> = _ossWithSequencesSequenceCharSequenceComparable.invoke(payload)
 
     public override fun <T> oss(vararg payload: T): Unit where T : Sequence<Char>, T : CharSequence, T
-    : Comparable<List<T>> = _ossWithSequencesSequences.invoke(payload)
+    : Comparable<List<T>> = _ossWithSequencesSequenceCharSequenceComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Comparable<List<T>>> brass(): T = _brassWithVoid.invoke() as T
@@ -238,8 +238,8 @@ internal class AllowedRecursiveMock<K : Any, L>(
     public fun _clearMock(): Unit {
         _template.clear()
         _ossWithVoid.clear()
-        _ossWithSequencesSequence.clear()
-        _ossWithSequencesSequences.clear()
+        _ossWithSequencesSequenceCharSequenceComparable.clear()
+        _ossWithSequencesSequenceCharSequenceComparables.clear()
         _brassWithVoid.clear()
         _brassWithComparable.clear()
         _brassWithComparables.clear()

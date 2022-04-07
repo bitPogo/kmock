@@ -79,6 +79,33 @@ internal class KmockProxyNameSelector(
         proxyName = "_$propertyName"
     )
 
+    private fun String.removePrefixes(prefixes: Iterable<String>): String {
+        var cleaned = this
+
+        prefixes.forEach { prefix ->
+            cleaned = removePrefix(prefix)
+        }
+
+        return cleaned
+    }
+
+    private fun String.packageNameToVariableName(): String {
+        val partialNames = split('.')
+
+        return if (partialNames.size == 1) {
+            this
+        } else {
+            partialNames.joinToString("") { partialName -> partialName.titleCase() }
+        }
+    }
+
+    private fun String.trimTypeName(): String {
+        return this
+            .substringBefore('<') // Generics
+            .removePrefixes(uselessPrefixes)
+            .packageNameToVariableName()
+    }
+
     private fun resolveGenericName(
         boundaries: List<KSTypeReference>?,
         typeResolver: TypeParameterResolver
@@ -87,7 +114,10 @@ internal class KmockProxyNameSelector(
             null
         } else {
             boundaries.joinToString("") { typeName ->
-                typeName.toTypeName(typeResolver).toString()
+                typeName
+                    .toTypeName(typeResolver)
+                    .toString()
+                    .trimTypeName()
             }
         }
     }
@@ -125,26 +155,6 @@ internal class KmockProxyNameSelector(
         }
     }
 
-    private fun String.removePrefixes(prefixes: Iterable<String>): String {
-        var cleaned = this
-
-        prefixes.forEach { prefix ->
-            cleaned = removePrefix(prefix)
-        }
-
-        return cleaned
-    }
-
-    private fun String.packageNameToVariableName(): String {
-        val partialNames = split('.')
-
-        return if (partialNames.size == 1) {
-            this
-        } else {
-            partialNames.joinToString("") { partialName -> partialName.titleCase() }
-        }
-    }
-
     private fun resolveProxySuffixFromArguments(
         arguments: Array<MethodTypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
@@ -155,10 +165,7 @@ internal class KmockProxyNameSelector(
                 .toString()
                 .trimEnd('?')
                 .resolveActualName(generics, typeResolver)
-                .substringBefore('<') // Generis
-                .removePrefixes(uselessPrefixes)
-                .packageNameToVariableName()
-                .trimStart('.')
+                .trimTypeName()
                 .amendPlural(usePlural)
         }
     }
