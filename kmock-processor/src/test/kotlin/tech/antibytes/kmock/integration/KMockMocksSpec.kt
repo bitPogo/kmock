@@ -333,8 +333,6 @@ class KMockMocksSpec {
         val compilerResult = compile(provider, source, isKmp = true)
         val actual = resolveGenerated("CommonMock.kt")
 
-        println(actual!!.readText())
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
@@ -999,8 +997,6 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("CommonMock.kt")
-
-        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

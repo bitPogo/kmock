@@ -37,8 +37,8 @@ toc::[]
 
 === Changed
 
-* generated mocks don't contain runtime logic any longer
-* mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
+* Generated mocks don't contain runtime logic any longer
+* Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
 
 === Deprecated
 
@@ -46,7 +46,7 @@ toc::[]
 
 === Fixed
 
-* method names with nullable or multi-bounded types defined as generic parameter
+* Method names with nullable or multi-bounded types defined as generic parameter
 
 === Security
 
