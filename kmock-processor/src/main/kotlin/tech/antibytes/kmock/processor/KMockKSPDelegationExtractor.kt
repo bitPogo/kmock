@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALLOWED_RECURSIVE_TYPES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KSPY
@@ -15,12 +15,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALLOWED_RECURSIVE_TYPES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PREFIXES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
 import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
 

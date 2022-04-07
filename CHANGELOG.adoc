@@ -33,6 +33,7 @@ toc::[]
 * `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`, while adding all known mocks
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
+* `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
 
 === Changed
 
