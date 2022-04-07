@@ -110,8 +110,6 @@ internal class KmockProxyNameSelector(
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): String {
-        println(generics)
-
         return if (this in generics) {
             determineGenericName(this, generics, typeResolver)
         } else {

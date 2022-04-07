@@ -22,6 +22,7 @@ class KMockGeneratorSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             mockk()
         ) fulfils ProcessorContract.MockGenerator::class
     }

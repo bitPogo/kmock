@@ -16,9 +16,13 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.titleCase
 
-internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
+internal class KMockBuildInMethodGenerator(
+    private val nameSelector: ProxyNameSelector
+) : BuildInMethodGenerator {
     private val buildIns = mapOf(
         "toString" to String::class,
         "equals" to Boolean::class,
@@ -27,27 +31,6 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
 
     private val any = Any::class.asTypeName().copy(nullable = true)
     private val proxy = SyncFunProxy::class.asClassName()
-
-    private fun determineSuffixedProxyName(proxyName: String): String {
-        return when (proxyName) {
-            "_toString" -> "_toStringWithVoid"
-            "_equals" -> "_equalsWithAny"
-            else -> "_hashCodeWithVoid"
-        }
-    }
-
-    private fun determineProxyName(
-        methodName: String,
-        existingProxies: Set<String>
-    ): String {
-        val proxyName = "_$methodName"
-
-        return if (proxyName in existingProxies) {
-            determineSuffixedProxyName(proxyName)
-        } else {
-            proxyName
-        }
-    }
 
     private fun resolveArgument(methodName: String): Pair<String, TypeName>? {
         return if (methodName == "equals") {
@@ -145,21 +128,17 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
 
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
-        qualifier: String,
         mockName: String,
-        methodName: String,
         argument: Pair<String, TypeName>?,
-        proxyName: String,
+        proxyInfo: ProxyInfo,
         enableSpy: Boolean
     ): PropertySpec.Builder {
-        val proxyId = "$qualifier#$proxyName"
-
         return proxySpec.initializer(
             "ProxyFactory.createSyncFunProxy(%S, collector = verifier, freeze = freeze, ignorableForVerification = true) %L",
-            proxyId,
+            proxyInfo.proxyId,
             addRelaxation(
                 mockName = mockName,
-                methodName = methodName,
+                methodName = proxyInfo.templateName,
                 argument = argument,
                 enableSpy = enableSpy
             )
@@ -176,14 +155,12 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
     }
 
     private fun buildProxy(
-        qualifier: String,
         mockName: String,
-        methodName: String,
-        proxyName: String,
+        proxyInfo: ProxyInfo,
         proxyArgument: Pair<String, TypeName>?,
         enableSpy: Boolean
     ): PropertySpec {
-        val proxyReturnType = buildIns[methodName]!!.asTypeName()
+        val proxyReturnType = buildIns[proxyInfo.templateName]!!.asTypeName()
 
         val sideEffect = buildSideEffectSignature(
             proxyArgument?.second,
@@ -191,36 +168,33 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
         )
 
         return PropertySpec.builder(
-            proxyName,
+            proxyInfo.proxyName,
             proxy.parameterizedBy(proxyReturnType, sideEffect)
         ).let { proxySpec ->
             buildProxyInitializer(
                 proxySpec = proxySpec,
                 mockName = mockName,
-                methodName = methodName,
                 argument = proxyArgument,
-                qualifier = qualifier,
-                proxyName = proxyName,
+                proxyInfo = proxyInfo,
                 enableSpy = enableSpy
             )
         }.build()
     }
 
     private fun buildMethod(
-        methodName: String,
+        proxyInfo: ProxyInfo,
         argument: Pair<String, TypeName>?,
-        proxyName: String,
     ): FunSpec {
         val method = FunSpec
-            .builder(methodName)
+            .builder(proxyInfo.templateName)
             .addModifiers(KModifier.OVERRIDE)
-            .returns(buildIns[methodName]!!)
+            .returns(buildIns[proxyInfo.templateName]!!)
 
         if (argument != null) {
             method.addParameter(argument.first, argument.second)
         }
 
-        method.addCode("return $proxyName.invoke(${argument?.first ?: ""})")
+        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.first ?: ""})")
 
         return method.build()
     }
@@ -229,23 +203,23 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
         mockName: String,
         qualifier: String,
         methodName: String,
-        existingProxies: Set<String>,
         enableSpy: Boolean
     ): Pair<PropertySpec, FunSpec> {
-        val proxyName = determineProxyName(methodName, existingProxies)
-        val argument = resolveArgument(methodName)
-        val proxy = buildProxy(
+        val proxyInfo = nameSelector.selectBuildInMethodName(
             qualifier = qualifier,
-            mockName = mockName,
-            proxyName = proxyName,
-            proxyArgument = argument,
             methodName = methodName,
+        )
+        val argument = resolveArgument(methodName)
+
+        val proxy = buildProxy(
+            mockName = mockName,
+            proxyInfo = proxyInfo,
+            proxyArgument = argument,
             enableSpy = enableSpy
         )
 
         val method = buildMethod(
-            methodName = methodName,
-            proxyName = proxyName,
+            proxyInfo = proxyInfo,
             argument = argument
         )
 
@@ -255,7 +229,6 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
     override fun buildMethodBundles(
         mockName: String,
         qualifier: String,
-        existingProxies: Set<String>,
         enableSpy: Boolean,
     ): Pair<List<PropertySpec>, List<FunSpec>> {
         val proxies: MutableList<PropertySpec> = mutableListOf()
@@ -266,7 +239,6 @@ internal object KMockBuildInMethodGenerator : BuildInMethodGenerator {
                 mockName = mockName,
                 qualifier = qualifier,
                 methodName = methodName,
-                existingProxies = existingProxies,
                 enableSpy = enableSpy,
             )
 
