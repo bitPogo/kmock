@@ -571,6 +571,52 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
+    fun `Given convertOptions it returns a empty map if no CustomMethodNames were delegated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.customMethodNames mustBe emptyMap()
+    }
+
+    @Test
+    fun `Given convertOptions it returns a map of declared CustomMethodNames`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected: Map<String, String> = fixture.mapFixture(size = 3)
+
+        expected.forEach { (key, value) ->
+            delegateKSP["kmock_customMethodName_$key"] = value
+        }
+
+        // When
+        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.customMethodNames mustBe expected
+    }
+
+    @Test
     fun `Given convertOptions it returns a set of target names where to use uselessPrefixes proxies`() {
         // Given
         val rootPackage: String = fixture.fixture()

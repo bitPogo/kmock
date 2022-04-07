@@ -52,6 +52,7 @@ internal interface ProcessorContract {
         val spyOn: Set<String>,
         val enableNewOverloadingNames: Boolean,
         val useTypePrefixFor: Map<String, String>,
+        val customMethodNames: Map<String, String>,
         val uselessPrefixes: Set<String>,
     )
 
@@ -304,5 +305,6 @@ internal interface ProcessorContract {
         const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
+        const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
     }
 }
