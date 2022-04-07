@@ -10,6 +10,7 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALLOWED_RECURSIVE_TYPES
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KSPY
@@ -42,6 +43,9 @@ abstract class KMockExtension(
 
     private var _enableNewOverloadingNames = true
     private var _typePrefixMapping: Map<String, String> = emptyMap()
+    private var _customMethodNames: Map<String, String> = emptyMap()
+
+    // Deprecated
     private var _uselessPrefixes: Set<String> = setOf(
         "kotlin.collections",
         "kotlin",
@@ -150,6 +154,17 @@ abstract class KMockExtension(
             )
 
             _typePrefixMapping = value
+        }
+
+    override var customMethodNames: Map<String, String>
+        get() = _customMethodNames
+        set(value) {
+            propagateMapping(
+                kmockKey = CUSTOM_METHOD_NAME,
+                mapping = value
+            )
+
+            _customMethodNames = value
         }
 
     override var freezeOnDefault: Boolean

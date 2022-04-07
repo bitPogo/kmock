@@ -347,6 +347,95 @@ class ExtensionSpec {
     }
 
     @Test
+    fun `Its customMethodNames has no values`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.customMethodNames mustBe emptyMap()
+    }
+
+    @Test
+    fun `It propagates customMethodNames changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Map<String, String> = fixture.mapFixture(
+            size = 3,
+            valueQualifier = named("stringAlpha")
+        )
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.customMethodNames = expected
+
+        extension.customMethodNames mustBe expected
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[0]}", expected.values.toList()[0])
+        }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[1]}", expected.values.toList()[1])
+        }
+        verify(exactly = 1) {
+            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[2]}", expected.values.toList()[2])
+        }
+    }
+
+    @Test
+    fun `It fails if the customMethodNames contains internal names`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+
+        val internalNames = listOf(
+            "kmock_rootPackage",
+            "kmock_isKmp",
+            "kmock_kspDir"
+        )
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        internalNames.forEach { name ->
+            val extension = createExtension<KMockExtension>(project)
+            // Then
+            val error = assertFailsWith<IllegalArgumentException> {
+                // When
+                extension.customMethodNames = mapOf(
+                    name to fixture.fixture(named("stringAlpha"))
+                )
+            }
+
+            error.message mustBe "$name is not allowed!"
+        }
+    }
+
+    @Test
+    fun `It fails if the customMethodNames contains special chars in the value`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val illegal = "some.thing"
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+        // Then
+        val error = assertFailsWith<IllegalArgumentException> {
+            // When
+            extension.customMethodNames = mapOf(
+                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
+            )
+        }
+
+        error.message mustBe "$illegal is not applicable!"
+    }
+
+    @Test
     fun `Its enableNewOverloadingNames is true by default`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
@@ -372,7 +461,7 @@ class ExtensionSpec {
         extension.enableNewOverloadingNames = expected
 
         extension.enableNewOverloadingNames mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_newOverloadedNames", expected.toString()) }
+        verify(exactly = 1) { kspExtension.arg("kmock_useNewOverloadedNames", expected.toString()) }
     }
 
     @Test

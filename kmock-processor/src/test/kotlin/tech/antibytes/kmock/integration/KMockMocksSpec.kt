@@ -874,7 +874,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform which contain TypeAliases is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
@@ -898,7 +898,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Shared which contain TypeAliases is processed, it writes a mock`() {
+    fun `Given a annotated Source for Shared which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
@@ -925,7 +925,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Common which contain TypeAliases is processed, it writes a mock`() {
+    fun `Given a annotated Source for Common which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
@@ -952,6 +952,99 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform is processed, it allows renaming its method names, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/renamed/Platform.kt")
+        )
+        val expected = loadResource("/expected/renamed/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Platform",
+                "kmock_customMethodName_mock.template.renamed.PlatformMock#_buzz" to "customName",
+                "kmock_customMethodName_mock.template.renamed.PlatformMock#_hashCode" to "noHash"
+            )
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Shared is processed, it allows renaming its method names, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/renamed/Shared.kt")
+        )
+        val expected = loadResource("/expected/renamed/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Shared",
+                "kmock_customMethodName_mock.template.renamed.SharedMock#_buzz" to "customName",
+                "kmock_customMethodName_mock.template.renamed.SharedMock#_hashCode" to "noHash"
+            )
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/renamed/SharedMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Common is processed, it allows renaming its method names, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/renamed/Common.kt")
+        )
+        val expected = loadResource("/expected/renamed/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Common",
+                "kmock_customMethodName_mock.template.renamed.CommonMock#_buzz" to "customName",
+                "kmock_customMethodName_mock.template.renamed.CommonMock#_hashCode" to "noHash"
+            )
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/renamed/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated overloaded Source for a Platform is processed while keeping the old name schema, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -966,7 +1059,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_newOverloadedNames" to "false"
+                "kmock_useNewOverloadedNames" to "false"
             )
         )
         val actual = resolveGenerated("PlatformMock.kt")
@@ -993,7 +1086,7 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "kmock_newOverloadedNames" to "false"
+                "kmock_useNewOverloadedNames" to "false"
             )
         )
         val actual = resolveGenerated("CommonMock.kt")
@@ -1002,6 +1095,9 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/compability/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 }

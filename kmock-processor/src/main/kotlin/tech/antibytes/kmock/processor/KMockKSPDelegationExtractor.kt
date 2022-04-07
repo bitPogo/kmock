@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALLOWED_RECURSIVE_TYPES
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KSPY
@@ -57,6 +58,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         var enableNewOverloadingNames = true
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
+        val customMethodNames: MutableMap<String, String> = mutableMapOf()
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -80,6 +82,13 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                     value
                 ) { qualifiedName, prefix ->
                     useTypePrefixFor[qualifiedName] = prefix
+                }
+                key.startsWith(CUSTOM_METHOD_NAME) -> extractMappedValue(
+                    CUSTOM_METHOD_NAME,
+                    key,
+                    value
+                ) { proxyId, replacement ->
+                    customMethodNames[proxyId] = replacement
                 }
                 key.startsWith(USELESS_PREFIXES) -> uselessPrefixes.add(value)
                 key.startsWith(ALLOWED_RECURSIVE_TYPES) -> allowedRecursiveTypes.add(value)
@@ -107,6 +116,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             spyOn = spyOn,
             enableNewOverloadingNames = enableNewOverloadingNames,
             useTypePrefixFor = useTypePrefixFor,
+            customMethodNames = customMethodNames,
             uselessPrefixes = uselessPrefixes,
         )
     }

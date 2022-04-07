@@ -19,6 +19,7 @@ import java.util.SortedSet
 
 internal class KmockProxyNameSelector(
     enableNewOverloadingNames: Boolean,
+    private val customMethodNames: Map<String, String>,
     private val useTypePrefixFor: Map<String, String>,
     private val uselessPrefixes: Set<String>,
 ) : ProxyNameSelector, ProxyNameCollector {
@@ -240,24 +241,42 @@ internal class KmockProxyNameSelector(
     }
 
     private fun createMethodProxyInfo(
-        qualifier: String,
+        proxyId: String,
         methodName: String,
         proxyName: String,
     ): ProxyInfo = ProxyInfo(
         templateName = methodName,
-        proxyId = "$qualifier#$proxyName",
+        proxyId = proxyId,
         proxyName = proxyName
     )
+
+    private fun resolveMethodProxyId(
+        proxyIdCandidate: String,
+        qualifier: String,
+        customMethodName: String?,
+    ): String {
+        return if (customMethodName != null) {
+            "$qualifier#$customMethodName"
+        } else {
+            proxyIdCandidate
+        }
+    }
 
     override fun selectBuildInMethodName(
         qualifier: String,
         methodName: String
     ): ProxyInfo {
         val proxyName = selectBuildInMethodProxyName("_$methodName")
+        val proxyIdCandidate = "$qualifier#$proxyName"
+        val customName = customMethodNames[proxyIdCandidate]
 
         return createMethodProxyInfo(
-            qualifier = qualifier,
-            proxyName = proxyName,
+            proxyId = resolveMethodProxyId(
+                proxyIdCandidate = proxyIdCandidate,
+                qualifier = qualifier,
+                customMethodName = customName,
+            ),
+            proxyName = customName ?: proxyName,
             methodName = methodName,
         )
     }
@@ -277,9 +296,16 @@ internal class KmockProxyNameSelector(
             typeResolver = typeResolver,
         )
 
+        val proxyIdCandidate = "$qualifier#$proxyName"
+        val customName = customMethodNames[proxyIdCandidate]
+
         return createMethodProxyInfo(
-            qualifier = qualifier,
-            proxyName = proxyName,
+            proxyId = resolveMethodProxyId(
+                proxyIdCandidate = proxyIdCandidate,
+                qualifier = qualifier,
+                customMethodName = customName,
+            ),
+            proxyName = customName ?: proxyName,
             methodName = methodName,
         )
     }
