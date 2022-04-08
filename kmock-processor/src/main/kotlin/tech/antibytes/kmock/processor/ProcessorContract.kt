@@ -28,7 +28,7 @@ import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import java.lang.StringBuilder
+import kotlin.text.StringBuilder
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -128,11 +128,69 @@ internal interface ProcessorContract {
         fun closeFiles()
     }
 
+    data class ProxyInfo(
+        val templateName: String,
+        val proxyName: String,
+        val proxyId: String
+    )
+
+    data class MethodTypeInfo(
+        val argumentName: String,
+        val typeName: TypeName,
+        val isVarArg: Boolean
+    )
+
+    data class MethodArgumentTypeInfo(
+        val typeInfo: MethodTypeInfo,
+        val generic: GenericDeclaration?
+    )
+
+    data class MethodReturnTypeInfo(
+        val typeName: TypeName,
+        val generic: GenericDeclaration?
+    )
+
+    interface ProxyNameCollector {
+        fun collect(template: KSClassDeclaration)
+    }
+
+    interface ProxyNameSelector {
+        fun selectPropertyName(
+            qualifier: String,
+            propertyName: String
+        ): ProxyInfo
+
+        fun selectBuildInMethodName(
+            qualifier: String,
+            methodName: String,
+        ): ProxyInfo
+
+        fun selectMethodName(
+            qualifier: String,
+            methodName: String,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver,
+            arguments: Array<MethodTypeInfo>
+        ): ProxyInfo
+    }
+
     interface RelaxerGenerator {
-        fun addRelaxer(
-            relaxerDefinitions: StringBuilder,
-            relaxer: Relaxer?
-        )
+        fun addPropertyRelaxation(
+            relaxer: Relaxer?,
+            addSpy: Function1<StringBuilder, Unit>
+        ): String
+
+        fun addMethodRelaxation(
+            relaxer: Relaxer?,
+            methodReturnType: MethodReturnTypeInfo,
+            addSpy: Function1<StringBuilder, Unit>
+        ): String
+
+        fun addBuildInRelaxation(
+            methodName: String,
+            argument: MethodTypeInfo?,
+            addSpy: Function1<StringBuilder, Unit>
+        ): String
     }
 
     interface PropertyGenerator {
@@ -161,42 +219,6 @@ internal interface ProcessorContract {
             qualifier: String,
             enableSpy: Boolean,
         ): Pair<List<PropertySpec>, List<FunSpec>>
-    }
-
-    data class ProxyInfo(
-        val templateName: String,
-        val proxyName: String,
-        val proxyId: String
-    )
-
-    data class MethodTypeInfo(
-        val argumentName: String,
-        val typeName: TypeName,
-        val isVarArg: Boolean
-    )
-
-    interface ProxyNameCollector {
-        fun collect(template: KSClassDeclaration)
-    }
-
-    interface ProxyNameSelector {
-        fun selectPropertyName(
-            qualifier: String,
-            propertyName: String
-        ): ProxyInfo
-
-        fun selectBuildInMethodName(
-            qualifier: String,
-            methodName: String,
-        ): ProxyInfo
-
-        fun selectMethodName(
-            qualifier: String,
-            methodName: String,
-            generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver,
-            arguments: Array<MethodTypeInfo>
-        ): ProxyInfo
     }
 
     interface MockGenerator {

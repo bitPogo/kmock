@@ -27,31 +27,31 @@ internal class PlatformMock(
     public val _buzz: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.PlatformMock#_buzz", collector =
         verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.PlatformMock#_foo", collector =
         verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _oo: KMockContract.SyncFunProxy<String, (Array<out kotlin.Any>) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.PlatformMock#_oo", collector =
         verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.PlatformMock#_bar", collector =
         verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _ar: KMockContract.AsyncFunProxy<String, suspend (Array<out kotlin.Any>) ->
     kotlin.String> = ProxyFactory.createAsyncFunProxy("mock.template.relaxed.PlatformMock#_ar",
         collector = verifier, freeze = freeze) {
-        useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
     }
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
