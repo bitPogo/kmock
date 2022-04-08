@@ -15,11 +15,3 @@ internal fun <ReturnValue> Boolean.guardRelaxer(relaxer: Function1<String, Retur
         null
     }
 }
-
-internal fun <ReturnValue, SideEffect : Function<ReturnValue>> Any?.guardSpy(spyOn: SideEffect): SideEffect? {
-    return if (this != null) {
-        spyOn
-    } else {
-        null
-    }
-}

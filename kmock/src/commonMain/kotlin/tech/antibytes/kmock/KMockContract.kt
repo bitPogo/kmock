@@ -208,6 +208,54 @@ object KMockContract {
     }
 
     /**
+     *
+     */
+    interface SpyTargetInvocation<Value, SpyTarget : Function<Value>> {
+        fun unwrap(): SpyTarget?
+    }
+
+    /**
+     * @param Value the value type of the hosting Proxy.
+     */
+    interface PropertySpyTargetInvocation<Value> : SpyTargetInvocation<Value, Function0<Value>> {
+        /**
+         * Binds the given function to the Proxy.
+         * It wipes a given relaxer and buildInRelaxer.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param spyOn the referenced Spy method.
+         */
+        fun useSpyIf(spyTarget: Any?, spyOn: Function0<Value>)
+    }
+
+    /**
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SpyTarget the function signature of the hosting Proxy.
+     */
+    interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> : SpyTargetInvocation<ReturnValue, SpyTarget>{
+        /**
+         * Binds the given function to the Proxy.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param spyOn the referenced Spy method.
+         */
+        fun useSpyIf(spyTarget: Any?, spyOn: SpyTarget)
+
+        /**
+         * Binds the given function, which should be equals, to the Proxy.
+         * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
+         * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param spyOn function which should reference the mocks parent equals method.
+         * @param mockKlass the KClass of the hosting mock.
+         */
+        fun useSpyOnEqualsIf(
+            spyTarget: Any?,
+            other: Any?,
+            spyOn: Function1<Any?, Boolean>,
+            mockKlass: KClass<out Any>,
+        )
+    }
+
+    /**
      * Invocation types for FunProxies.
      * @param value indicates the invocation precedence.
      * @author Matthias Geisler
