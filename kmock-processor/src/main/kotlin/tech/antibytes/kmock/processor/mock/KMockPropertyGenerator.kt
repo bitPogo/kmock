@@ -87,24 +87,16 @@ internal class KMockPropertyGenerator(
         isMutable: Boolean,
         relaxer: Relaxer?
     ): String {
-        val relaxationDefinitions = StringBuilder(3)
-
-        relaxationDefinitions.append("{\n")
-        if (enableSpy) {
-            addSpies(
-                relaxerDefinitions = relaxationDefinitions,
-                propertyName = proxyInfo.templateName,
-                isMutable = isMutable
-            )
-        }
-
-        relaxerGenerator.addRelaxer(relaxationDefinitions, relaxer)
-        relaxationDefinitions.append("}")
-
-        return if (relaxationDefinitions.length == 3) {
-            ""
-        } else {
-            relaxationDefinitions.toString()
+        return relaxerGenerator.addPropertyRelaxation(
+            relaxer = relaxer
+        ) { relaxationDefinitions ->
+            if (enableSpy) {
+                addSpies(
+                    relaxerDefinitions = relaxationDefinitions,
+                    propertyName = proxyInfo.templateName,
+                    isMutable = isMutable
+                )
+            }
         }
     }
 

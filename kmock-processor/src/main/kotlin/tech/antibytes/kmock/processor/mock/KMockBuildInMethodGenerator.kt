@@ -16,12 +16,14 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
-import tech.antibytes.kmock.processor.titleCase
+import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
 
 internal class KMockBuildInMethodGenerator(
-    private val nameSelector: ProxyNameSelector
+    private val nameSelector: ProxyNameSelector,
+    private val relaxerGenerator: RelaxerGenerator,
 ) : BuildInMethodGenerator {
     private val buildIns = mapOf(
         "toString" to String::class,
@@ -32,9 +34,9 @@ internal class KMockBuildInMethodGenerator(
     private val any = Any::class.asTypeName().copy(nullable = true)
     private val proxy = SyncFunProxy::class.asClassName()
 
-    private fun resolveArgument(methodName: String): Pair<String, TypeName>? {
+    private fun resolveArgument(methodName: String): MethodTypeInfo? {
         return if (methodName == "equals") {
-            Pair("other", any)
+            MethodTypeInfo("other", any, false)
         } else {
             null
         }
@@ -96,40 +98,30 @@ internal class KMockBuildInMethodGenerator(
     private fun addRelaxation(
         mockName: String,
         methodName: String,
-        argument: Pair<String, TypeName>?,
+        argument: MethodTypeInfo?,
         enableSpy: Boolean,
     ): String {
-        val argumentName = argument?.first ?: ""
-        val relaxerBody = buildRelaxationInvocation(
-            parent = "super",
+        return relaxerGenerator.addBuildInRelaxation(
             methodName = methodName,
-            argumentName = argumentName
-        )
+            argument = argument
+        ) { relaxationDefinitions ->
+            val argumentName = argument?.argumentName ?: ""
 
-        val relaxationDefinitions = StringBuilder(3 + relaxerBody.length)
-
-        relaxationDefinitions.append("{\n")
-
-        relaxationDefinitions.append("use${methodName.titleCase()}Relaxer $relaxerBody\n")
-
-        if (enableSpy) {
-            addSpy(
-                relaxationDefinitions = relaxationDefinitions,
-                mockName = mockName,
-                methodName = methodName,
-                argumentName = argumentName
-            )
+            if (enableSpy) {
+                addSpy(
+                    relaxationDefinitions = relaxationDefinitions,
+                    mockName = mockName,
+                    methodName = methodName,
+                    argumentName = argumentName
+                )
+            }
         }
-
-        relaxationDefinitions.append("}")
-
-        return relaxationDefinitions.toString()
     }
 
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
         mockName: String,
-        argument: Pair<String, TypeName>?,
+        argument: MethodTypeInfo?,
         proxyInfo: ProxyInfo,
         enableSpy: Boolean
     ): PropertySpec.Builder {
@@ -157,13 +149,13 @@ internal class KMockBuildInMethodGenerator(
     private fun buildProxy(
         mockName: String,
         proxyInfo: ProxyInfo,
-        proxyArgument: Pair<String, TypeName>?,
+        proxyArgument: MethodTypeInfo?,
         enableSpy: Boolean
     ): PropertySpec {
         val proxyReturnType = buildIns[proxyInfo.templateName]!!.asTypeName()
 
         val sideEffect = buildSideEffectSignature(
-            proxyArgument?.second,
+            proxyArgument?.typeName,
             proxyReturnType,
         )
 
@@ -183,7 +175,7 @@ internal class KMockBuildInMethodGenerator(
 
     private fun buildMethod(
         proxyInfo: ProxyInfo,
-        argument: Pair<String, TypeName>?,
+        argument: MethodTypeInfo?,
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
@@ -191,10 +183,10 @@ internal class KMockBuildInMethodGenerator(
             .returns(buildIns[proxyInfo.templateName]!!)
 
         if (argument != null) {
-            method.addParameter(argument.first, argument.second)
+            method.addParameter(argument.argumentName, argument.typeName)
         }
 
-        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.first ?: ""})")
+        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.argumentName ?: ""})")
 
         return method.build()
     }

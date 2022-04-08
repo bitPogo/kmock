@@ -28,7 +28,9 @@ import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
@@ -37,8 +39,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 internal class KMockMethodGenerator(
     private val allowedRecursiveTypes: Set<String>,
     private val nameSelector: ProxyNameSelector,
+    private val relaxerGenerator: ProcessorContract.RelaxerGenerator,
     private val genericResolver: ProcessorContract.GenericResolver,
-    private val relaxerGenerator: ProcessorContract.RelaxerGenerator
 ) : MethodGenerator {
     private val any = Any::class.asTypeName()
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
@@ -59,16 +61,6 @@ internal class KMockMethodGenerator(
         UShort::class.asTypeName() to UShortArray::class.asTypeName(),
         UInt::class.asTypeName() to UIntArray::class.asTypeName(),
         ULong::class.asTypeName() to ULongArray::class.asTypeName(),
-    )
-
-    private data class ProxyArgumentTypeInfo(
-        val typeInfo: MethodTypeInfo,
-        val generic: GenericDeclaration?
-    )
-
-    private data class ProxyReturnTypeInfo(
-        val typeName: TypeName,
-        val generic: GenericDeclaration?
     )
 
     private data class SpyArguments(
@@ -124,7 +116,7 @@ internal class KMockMethodGenerator(
     private fun mapGenericProxyType(
         typeName: TypeName,
         proxyGenericTypes: Map<String, GenericDeclaration>,
-    ): ProxyReturnTypeInfo {
+    ): MethodReturnTypeInfo {
         val isNullable = typeName.isNullable
         val generic = proxyGenericTypes[typeName.toString().trimEnd('?')]
 
@@ -133,7 +125,7 @@ internal class KMockMethodGenerator(
             generic
         )
 
-        return ProxyReturnTypeInfo(
+        return MethodReturnTypeInfo(
             typeName = actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable),
             generic = generic
         )
@@ -143,11 +135,11 @@ internal class KMockMethodGenerator(
         returnType: KSType,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
         typeResolver: TypeParameterResolver,
-    ): ProxyReturnTypeInfo {
+    ): MethodReturnTypeInfo {
         val typeName = returnType.toTypeName(typeResolver)
 
         return if (proxyGenericTypes == null) {
-            ProxyReturnTypeInfo(
+            MethodReturnTypeInfo(
                 typeName = typeName,
                 generic = null,
             )
@@ -159,14 +151,14 @@ internal class KMockMethodGenerator(
     private fun resolveGenericArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>,
         argumentTypes: Array<MethodTypeInfo>,
-    ): List<ProxyArgumentTypeInfo> {
+    ): List<MethodArgumentTypeInfo> {
         return argumentTypes.map { typeInfo ->
             val (typeName, declaration) = mapGenericProxyType(
                 typeInfo.typeName,
                 proxyGenericTypes
             )
 
-            ProxyArgumentTypeInfo(
+            MethodArgumentTypeInfo(
                 typeInfo = typeInfo.copy(typeName = typeName),
                 generic = declaration
             )
@@ -176,10 +168,10 @@ internal class KMockMethodGenerator(
     private fun determineProxyArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>?,
         argumentTypes: Array<MethodTypeInfo>,
-    ): List<ProxyArgumentTypeInfo> {
+    ): List<MethodArgumentTypeInfo> {
         return if (proxyGenericTypes == null) {
             argumentTypes.map { typeInfo ->
-                ProxyArgumentTypeInfo(
+                MethodArgumentTypeInfo(
                     typeInfo = typeInfo,
                     generic = null,
                 )
@@ -190,7 +182,7 @@ internal class KMockMethodGenerator(
     }
 
     private fun mapProxyArgumentTypeNames(
-        proxyArguments: List<ProxyArgumentTypeInfo>
+        proxyArguments: List<MethodArgumentTypeInfo>
     ): List<TypeName> {
         return proxyArguments.map { argument ->
             if (!argument.typeInfo.isVarArg) {
@@ -206,7 +198,7 @@ internal class KMockMethodGenerator(
     }
 
     private fun buildSideEffectSignature(
-        proxyArguments: List<ProxyArgumentTypeInfo>,
+        proxyArguments: List<MethodArgumentTypeInfo>,
         proxyReturnType: TypeName,
         prefix: String
     ): TypeName {
@@ -218,8 +210,8 @@ internal class KMockMethodGenerator(
     }
 
     private fun determineSpyConstrains(
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
     ): Boolean {
         var isRecursive = proxyReturnType.generic?.recursive ?: false
 
@@ -232,7 +224,7 @@ internal class KMockMethodGenerator(
 
     private fun buildSpyArgumentCasts(
         body: StringBuilder,
-        proxyArguments: List<ProxyArgumentTypeInfo>
+        proxyArguments: List<MethodArgumentTypeInfo>
     ) {
         proxyArguments.forEach { (typeInfo, generics) ->
             if (generics != null && generics.types.size >= 2) {
@@ -266,8 +258,8 @@ internal class KMockMethodGenerator(
     private fun buildSpyBody(
         spyTargetName: String,
         spyArguments: SpyArguments,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
     ): String {
         val body = StringBuilder(1)
 
@@ -292,8 +284,8 @@ internal class KMockMethodGenerator(
     private fun buildSpyBodyIfNotRecursive(
         spyTargetName: String,
         spyArguments: SpyArguments,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
     ): String {
         val isRecursive = determineSpyConstrains(proxyArguments, proxyReturnType)
 
@@ -320,7 +312,7 @@ internal class KMockMethodGenerator(
     }
 
     private fun extractSpyArgumentNames(
-        proxyArguments: List<ProxyArgumentTypeInfo>,
+        proxyArguments: List<MethodArgumentTypeInfo>,
     ): SpyArguments {
         val declaredArguments = StringBuilder()
         val invokedArguments = StringBuilder()
@@ -340,8 +332,8 @@ internal class KMockMethodGenerator(
 
     private fun buildFunctionSpyInvocation(
         spyTargetName: String,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
     ): String {
         val spyArguments = extractSpyArgumentNames(proxyArguments)
 
@@ -362,8 +354,8 @@ internal class KMockMethodGenerator(
     private fun addSpy(
         relaxationDefinitions: StringBuilder,
         spyTargetName: String,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
     ) {
         val spyBody = buildFunctionSpyInvocation(
             spyTargetName = spyTargetName,
@@ -380,48 +372,25 @@ internal class KMockMethodGenerator(
         )
     }
 
-    private fun addFunRelaxer(
-        relaxationDefinitions: StringBuilder,
-        proxyReturnType: ProxyReturnTypeInfo,
-        relaxer: Relaxer?
-    ) {
-        if (proxyReturnType.typeName.toString() == "kotlin.Unit") {
-            relaxationDefinitions.append("useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n")
-        } else {
-            relaxerGenerator.addRelaxer(relaxationDefinitions, relaxer)
-        }
-    }
-
     private fun addRelaxation(
         enableSpy: Boolean,
         spyTargetName: String,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
-        val relaxationDefinitions = StringBuilder(3)
-
-        relaxationDefinitions.append("{\n")
-        if (enableSpy) {
-            addSpy(
-                relaxationDefinitions = relaxationDefinitions,
-                spyTargetName = spyTargetName,
-                proxyArguments = proxyArguments,
-                proxyReturnType = proxyReturnType
-            )
-        }
-
-        addFunRelaxer(
-            relaxationDefinitions = relaxationDefinitions,
-            proxyReturnType = proxyReturnType,
-            relaxer = relaxer
-        )
-        relaxationDefinitions.append("}")
-
-        return if (relaxationDefinitions.length == 3) {
-            ""
-        } else {
-            relaxationDefinitions.toString()
+        return relaxerGenerator.addMethodRelaxation(
+            relaxer = relaxer,
+            methodReturnType = proxyReturnType
+        ) { relaxationDefinitions ->
+            if (enableSpy) {
+                addSpy(
+                    relaxationDefinitions = relaxationDefinitions,
+                    spyTargetName = spyTargetName,
+                    proxyArguments = proxyArguments,
+                    proxyReturnType = proxyReturnType
+                )
+            }
         }
     }
 
@@ -429,8 +398,8 @@ internal class KMockMethodGenerator(
         proxySpec: PropertySpec.Builder,
         proxyInfo: ProxyInfo,
         proxyFactoryMethod: String,
-        proxyArguments: List<ProxyArgumentTypeInfo>,
-        proxyReturnType: ProxyReturnTypeInfo,
+        proxyArguments: List<MethodArgumentTypeInfo>,
+        proxyReturnType: MethodReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): PropertySpec.Builder {

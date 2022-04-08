@@ -40,16 +40,17 @@ class KMockProcessorProvider : SymbolProcessorProvider {
 
         val propertyGenerator = KMockPropertyGenerator(
             nameSelector = nameSelector,
-            relaxerGenerator = relaxerGenerator
+            relaxerGenerator = relaxerGenerator,
         )
         val buildInGenerator = KMockBuildInMethodGenerator(
             nameSelector = nameSelector,
+            relaxerGenerator = relaxerGenerator,
         )
         val methodGenerator = KMockMethodGenerator(
             allowedRecursiveTypes = options.allowedRecursiveTypes,
             nameSelector = nameSelector,
             genericResolver = genericResolver,
-            relaxerGenerator = relaxerGenerator
+            relaxerGenerator = relaxerGenerator,
         )
 
         val factoryUtils = KMockFactoryGeneratorUtil(
@@ -68,7 +69,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 nameCollector = nameSelector,
                 propertyGenerator = propertyGenerator,
                 methodGenerator = methodGenerator,
-                buildInGenerator = buildInGenerator
+                buildInGenerator = buildInGenerator,
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
@@ -78,19 +79,19 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 spiesOnly = options.spiesOnly,
                 utils = factoryUtils,
                 genericResolver = genericResolver,
-                codeGenerator = codeGenerator
+                codeGenerator = codeGenerator,
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
                 spiesOnly = options.spiesOnly,
                 genericResolver = genericResolver,
-                codeGenerator = codeGenerator
+                codeGenerator = codeGenerator,
             ),
             aggregator = KMockAggregator(
                 logger = logger,
                 knownSourceSets = options.knownSourceSets,
                 generics = genericResolver,
-                aliases = options.aliases
+                aliases = options.aliases,
             ),
             options = options,
             filter = SourceFilter(options.precedences, logger)

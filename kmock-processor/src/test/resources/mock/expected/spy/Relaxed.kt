@@ -34,7 +34,7 @@ internal class RelaxedMock<K : Any, L>(
         verifier, freeze = freeze) {
             useSpyOnGetIf(__spyOn) { __spyOn!!.template }
             useSpyOnSetIf(__spyOn) { value -> __spyOn!!.template = value }
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public override val ozz: Int
@@ -44,7 +44,7 @@ internal class RelaxedMock<K : Any, L>(
         ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", collector = verifier,
             freeze = freeze) {
             useSpyOnGetIf(__spyOn) { __spyOn!!.ozz }
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
@@ -68,7 +68,7 @@ internal class RelaxedMock<K : Any, L>(
                     __spyOn!!.bar(arg0)
                 }
             )
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
@@ -80,7 +80,7 @@ internal class RelaxedMock<K : Any, L>(
                     __spyOn!!.buzz(arg0)
                 }
             )
-            useRelaxerIf(relaxed) { mockId -> relaxed(mockId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
         }
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
