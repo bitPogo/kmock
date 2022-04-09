@@ -43,17 +43,16 @@ object ProxyFactory : KMockContract.ProxyFactory {
         freeze: Boolean,
         nonIntrusiveConfiguration: NonIntrusiveFunConfigurator<ReturnValue, SideEffect>.() -> Unit
     ): SyncFunProxy<ReturnValue, SideEffect> {
-        val (unitFunRelaxer, buildInRelaxer, relaxer, spyOn) = resolveFunProxyRelaxers(nonIntrusiveConfiguration)
+        val configuration = resolveFunProxyRelaxers(nonIntrusiveConfiguration)
 
         return SyncFunProxy(
             id = id,
             collector = collector,
             ignorableForVerification = ignorableForVerification,
-            relaxer = relaxer,
-            unitFunRelaxer = unitFunRelaxer,
-            buildInRelaxer = buildInRelaxer,
+            relaxer = configuration.relaxer,
+            unitFunRelaxer = configuration.unitFunRelaxer,
+            buildInRelaxer = configuration.buildInRelaxer,
             freeze = freeze,
-            spyOn = spyOn
         )
     }
 
@@ -73,7 +72,6 @@ object ProxyFactory : KMockContract.ProxyFactory {
             unitFunRelaxer = configuration.unitFunRelaxer,
             buildInRelaxer = configuration.buildInRelaxer,
             freeze = freeze,
-            spyOn = configuration.spyOn
         )
     }
 
@@ -90,8 +88,6 @@ object ProxyFactory : KMockContract.ProxyFactory {
             collector = collector,
             relaxer = configuration.relaxer,
             freeze = freeze,
-            spyOnGet = configuration.spyOnGet,
-            spyOnSet = configuration.spyOnSet,
         )
     }
 }

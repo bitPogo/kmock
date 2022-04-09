@@ -51,7 +51,6 @@ class NonIntrusiveFunConfiguratorSpec {
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
-            spyOn = null
         )
     }
 
@@ -70,7 +69,6 @@ class NonIntrusiveFunConfiguratorSpec {
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
-            spyOn = null
         )
     }
 
@@ -171,7 +169,6 @@ class NonIntrusiveFunConfiguratorSpec {
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
-            spyOn = null
         )
     }
 
@@ -208,150 +205,6 @@ class NonIntrusiveFunConfiguratorSpec {
 
     @Test
     @JsName("fn12")
-    fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is null it returns a configuration without spyOn`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-
-        // When
-        configurator.useSpyOnEqualsIf(
-            null,
-            { fixture.fixture() },
-            MockOfMocks::class
-        )
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusiveFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-            spyOn = null
-        )
-    }
-
-    @Test
-    @JsName("fn13")
-    fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses the subjectToSpyOn`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-        val expected: Boolean = fixture.fixture()
-        var spyWasCalled = false
-        val subjectToSpyOn = MockOfMocks(
-            equals = {
-                spyWasCalled = true
-                expected
-            }
-        )
-
-        // When
-        configurator.useSpyOnEqualsIf(
-            subjectToSpyOn,
-            { fixture.fixture() },
-            MockOfMocks::class
-        )
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.spyOn isNot null
-        actual.spyOn?.invoke(fixture.fixture()) mustBe expected
-        spyWasCalled mustBe true
-    }
-
-    @Test
-    @JsName("fn14")
-    fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses its parent when invoked with another mock of the same Class`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-        val subjectToSpyOn: Any = fixture.fixture()
-        val expected: Boolean = fixture.fixture()
-        var parentWasCalled = false
-        val parent: Any = MockOfMocks(
-            equals = {
-                parentWasCalled = true
-                expected
-            }
-        )
-        val otherMock = MockOfMocks { !expected }
-
-        // When
-        configurator.useSpyOnEqualsIf(
-            subjectToSpyOn,
-            parent::equals,
-            MockOfMocks::class
-        )
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.spyOn isNot null
-        actual.spyOn?.invoke(otherMock) mustBe expected
-        parentWasCalled mustBe true
-    }
-
-    @Test
-    @JsName("fn15")
-    fun `Given getConfiguration is called after useSpyIf while its spy is null it returns a configuration without spyOn`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-
-        // When
-        configurator.useSpyIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusiveFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-            spyOn = null
-        )
-    }
-
-    @Test
-    @JsName("fn16")
-    fun `Given getConfiguration is called after useSpyIf while its spy is not null it returns a configuration with spyOn`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
-        var capturedValue: Any? = null
-        val expected: Any = fixture.fixture()
-        val expectedValue: Any = fixture.fixture()
-        val subjectToSpyOn = MockOfMocks(
-            methodToSpiedOn = { payload ->
-                capturedValue = payload
-                expected
-            }
-        )
-
-        // When
-        configurator.useSpyIf(Any()) { payload: Any -> subjectToSpyOn.methodToSpiedOn(payload) }
-        val actual = configurator.getConfiguration().spyOn!!.invoke(expectedValue)
-
-        // Then
-        actual mustBe expected
-        capturedValue mustBe expectedValue
-    }
-
-    @Test
-    @JsName("fn17")
-    fun `Given getConfiguration is called after useSpyIf while its spy is null after it was not it returns a configuration without spyOn`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-
-        // When
-        configurator.useSpyIf(Any()) { fixture.fixture() }
-        configurator.useSpyIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusiveFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-            spyOn = null
-        )
-    }
-
-    @Test
-    @JsName("fn18")
     fun `Given a Relaxer and UnitFunRelaxer is set the UnitFunRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, (Any) -> Unit>()
@@ -368,7 +221,7 @@ class NonIntrusiveFunConfiguratorSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn13")
     fun `Given a Relaxer and BuildInRelaxer is set the BuildInRelaxer wipes the Relaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
@@ -382,74 +235,5 @@ class NonIntrusiveFunConfiguratorSpec {
         // Then
         actual.buildInRelaxer isNot null
         actual.relaxer mustBe null
-    }
-
-    @Test
-    @JsName("fn20")
-    fun `Given a Relaxer and Spy is set the Spy wipes the Relaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
-
-        // When
-        configurator.useRelaxerIf(fixture.fixture()) { fixture.fixture() }
-        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
-
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.spyOn isNot null
-        actual.relaxer mustBe null
-    }
-
-    @Test
-    @JsName("fn21")
-    fun `Given a UnitFunRelaxer and Spy is set the Spy wipes the UnitFunRelaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Any, (Any) -> Any>()
-
-        // When
-        configurator.useUnitFunRelaxerIf(true)
-        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
-
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.spyOn isNot null
-        actual.unitFunRelaxer mustBe null
-    }
-
-    @Test
-    @JsName("fn22")
-    fun `Given a BuildInRelaxer and Spy is set the Spy wipes the BuildInRelaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
-
-        // When
-        configurator.useEqualsRelaxer { fixture.fixture() }
-        configurator.useSpyIf(fixture.fixture<Any>()) { fixture.fixture() }
-
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.buildInRelaxer isNot null
-        actual.unitFunRelaxer mustBe null
-    }
-
-    private class MockOfMocks(
-        @JsName("fn0")
-        val equals: (() -> Boolean)? = null,
-        val methodToSpiedOn: ((Any) -> Any)? = null
-    ) {
-        override fun equals(other: Any?): Boolean {
-            return equals?.invoke()
-                ?: throw RuntimeException("Missing SideEffect equals.")
-        }
-
-        override fun hashCode(): Int = TODO()
-
-        fun methodToSpiedOn(parameter: Any): Any {
-            return methodToSpiedOn?.invoke(parameter)
-                ?: throw RuntimeException("Missing SideEffect methodToSpiedOn.")
-        }
     }
 }

@@ -948,29 +948,6 @@ object KMockContract {
          * @param equals function which should reference the mocks parent equals method.
          */
         fun useEqualsRelaxer(equals: Function1<Any?, Boolean>)
-
-        /**
-         * Binds the given function, which should be equals, to the Proxy.
-         * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
-         * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
-         * It wipes a given relaxer and buildInRelaxer.
-         * @param spyTarget the referenced object which is spied uppon.
-         * @param equals function which should reference the mocks parent equals method.
-         * @param mockKlass the KClass of the hosting mock.
-         */
-        fun useSpyOnEqualsIf(
-            spyTarget: Any?,
-            equals: Function1<Any?, Boolean>,
-            mockKlass: KClass<out Any>,
-        )
-
-        /**
-         * Binds the given function to the Proxy.
-         * It wipes a given relaxer and buildInRelaxer.
-         * @param spyTarget the referenced object which is spied uppon.
-         * @param spyOn the referenced Spy method.
-         */
-        fun useSpyIf(spyTarget: Any?, spyOn: SideEffect)
     }
 
     /**
@@ -979,22 +956,7 @@ object KMockContract {
      * @see NonIntrusiveConfigurator
      * @author Matthias Geisler
      */
-    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value> {
-        /**
-         * Binds a given Getter function to a PropertyProxy if the given spy is not null.
-         * This will wipe a given relaxer.
-         * @param spyTarget the referenced Spy object.
-         * @param spyOn the Getter which should be bounded.
-         */
-        fun useSpyOnGetIf(spyTarget: Any?, spyOn: Function0<Value>)
-
-        /**
-         * Binds a given Setter function to a PropertyProxy if the given spy is not null.
-         * @param spyTarget the referenced Spy object.
-         * @param spyOn the Setter which should be bounded.
-         */
-        fun useSpyOnSetIf(spyTarget: Any?, spyOn: Function1<Value, Unit>)
-    }
+    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value>
 
     /**
      * Base value container for non intrusive behaviour.
@@ -1010,7 +972,6 @@ object KMockContract {
      * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
      * @param buildInRelaxer ParameterizedRelaxer which refers to a build-in method like toString or null.
      * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @param spyOn Function/SideEffect which contains a reference to a actual instance method  of a bounded spyTarget.
      * @see NonIntrusiveConfiguration
      * @author Matthias Geisler
      */
@@ -1018,7 +979,6 @@ object KMockContract {
         val unitFunRelaxer: Relaxer<ReturnValue?>?,
         val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         val relaxer: Relaxer<ReturnValue>?,
-        val spyOn: SideEffect?,
     ) : NonIntrusiveConfiguration
 
     /**
@@ -1026,15 +986,11 @@ object KMockContract {
      * @param Value the value of the hosting Proxy.
      * @constructor creates a NonIntrusivePropertyConfiguration.
      * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @param spyOnSet Function/SideEffect which contains a reference to a actual instance setter method of a bounded spyTarget.
-     * @param spyOnGet Function/SideEffect which contains a reference to a actual instance getter method of a bounded spyTarget.
      * @see NonIntrusiveConfiguration
      * @author Matthias Geisler
      */
     internal data class NonIntrusivePropertyConfiguration<Value>(
         val relaxer: Relaxer<Value>?,
-        val spyOnGet: Function0<Value>?,
-        val spyOnSet: Function1<Value, Unit>?,
     ) : NonIntrusiveConfiguration
 
     /**
