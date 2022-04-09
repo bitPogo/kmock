@@ -32,5 +32,7 @@ internal class MethodSpyTargetInvocation<Value, SpyTarget : Function<Value>> : K
         } as SpyTarget
     }
 
+    override fun isSpyable(): Boolean = spyOn != null
+
     override fun unwrap(): SpyTarget? = spyOn
 }

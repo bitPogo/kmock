@@ -43,23 +43,41 @@ class SyncFunProxyStub(
         }
     }
 
-    override fun invoke(): Any {
+    override fun invoke(spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit): Any {
         TODO("Not yet implemented")
     }
 
-    override fun <Arg0> invoke(arg0: Arg0): Any {
+    override fun <Arg0> invoke(
+        arg0: Arg0,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
+    ): Any {
         TODO("Not yet implemented")
     }
 
-    override fun <Arg0, Arg1> invoke(arg0: Arg0, arg1: Arg1): Any {
+    override fun <Arg0, Arg1> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
+    ): Any {
         TODO("Not yet implemented")
     }
 
-    override fun <Arg0, Arg1, Arg2> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2): Any {
+    override fun <Arg0, Arg1, Arg2> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        arg2: Arg2,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
+    ): Any {
         TODO("Not yet implemented")
     }
 
-    override fun <Arg0, Arg1, Arg2, Arg3> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3): Any {
+    override fun <Arg0, Arg1, Arg2, Arg3> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        arg2: Arg2,
+        arg3: Arg3,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
+    ): Any {
         TODO("Not yet implemented")
     }
 
@@ -68,7 +86,8 @@ class SyncFunProxyStub(
         arg1: Arg1,
         arg2: Arg2,
         arg3: Arg3,
-        arg4: Arg4
+        arg4: Arg4,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -79,7 +98,8 @@ class SyncFunProxyStub(
         arg2: Arg2,
         arg3: Arg3,
         arg4: Arg4,
-        arg5: Arg5
+        arg5: Arg5,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -91,7 +111,8 @@ class SyncFunProxyStub(
         arg3: Arg3,
         arg4: Arg4,
         arg5: Arg5,
-        arg6: Arg6
+        arg6: Arg6,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -104,7 +125,8 @@ class SyncFunProxyStub(
         arg4: Arg4,
         arg5: Arg5,
         arg6: Arg6,
-        arg7: Arg7
+        arg7: Arg7,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -118,7 +140,8 @@ class SyncFunProxyStub(
         arg5: Arg5,
         arg6: Arg6,
         arg7: Arg7,
-        arg8: Arg8
+        arg8: Arg8,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -133,7 +156,8 @@ class SyncFunProxyStub(
         arg6: Arg6,
         arg7: Arg7,
         arg8: Arg8,
-        arg9: Arg9
+        arg9: Arg9,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -149,7 +173,8 @@ class SyncFunProxyStub(
         arg7: Arg7,
         arg8: Arg8,
         arg9: Arg9,
-        arg10: Arg10
+        arg10: Arg10,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -166,7 +191,8 @@ class SyncFunProxyStub(
         arg8: Arg8,
         arg9: Arg9,
         arg10: Arg10,
-        arg11: Arg11
+        arg11: Arg11,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }
@@ -184,7 +210,8 @@ class SyncFunProxyStub(
         arg9: Arg9,
         arg10: Arg10,
         arg11: Arg11,
-        arg12: Arg12
+        arg12: Arg12,
+        spyOn: KMockContract.MethodSpyTargetInvocation<Any, () -> Any>.() -> Unit
     ): Any {
         TODO("Not yet implemented")
     }

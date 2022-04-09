@@ -112,7 +112,7 @@ class MethodSpyTargetInvocationSpec {
 
     @Test
     @JsName("fn6")
-    fun `Given getConfiguration is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses its parent when invoked with another mock of the same Class`() {
+    fun `Given unwrap is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses its parent when invoked with another mock of the same Class`() {
         // Given
         val spyTarget = MethodSpyTargetInvocation<Boolean, () -> Boolean>()
         val subjectToSpyOn: Any = fixture.fixture()
@@ -139,6 +139,95 @@ class MethodSpyTargetInvocationSpec {
         actual isNot null
         actual?.invoke() mustBe expected
         parentWasCalled mustBe true
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given isSpyable is called it returns false`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn8")
+    fun `Given isSpyable is called after useSpyIf while its target is null it returns false`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        spyTarget.useSpyIf(null) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn9")
+    fun `Given isSpyable is called after useSpyIf while its target is not null it returns true`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        spyTarget.useSpyIf(Any()) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn10")
+    fun `Given isSpyable is called after useSpyOnEqualsIf while it uses the given target it returns true`() {
+        // Given
+        val spyTarget = MethodSpyTargetInvocation<Boolean, () -> Boolean>()
+        val subjectToSpyOn = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            Any(),
+            { fixture.fixture() },
+            MockOfMocks::class
+        )
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn11")
+    fun `Given isSpyable is called after useSpyIf while it uses the given parent it returns true`() {
+        // Given
+        val spyTarget = MethodSpyTargetInvocation<Boolean, () -> Boolean>()
+        val subjectToSpyOn = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+        val parent: Any = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+        val otherMock = MockOfMocks { fixture.fixture() }
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            otherMock,
+            parent::equals,
+            MockOfMocks::class
+        )
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
     }
 
     private class MockOfMocks(

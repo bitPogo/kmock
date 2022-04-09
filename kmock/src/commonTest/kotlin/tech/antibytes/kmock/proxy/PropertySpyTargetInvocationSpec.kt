@@ -66,4 +66,45 @@ class PropertySpyTargetInvocationSpec {
         actual isNot null
         actual!!.invoke() mustBe expected
     }
+
+    @Test
+    @JsName("fn4")
+    fun `Given isSpyable is called it returns false`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn5")
+    fun `Given isSpyable is called after useSpyIf while its target is null it returns false`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        spyTarget.useSpyIf(null) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given isSpyable is called after useSpyIf while its target is not null it returns true`() {
+        // Given
+        val spyTarget = PropertySpyTargetInvocation<Boolean>()
+
+        // When
+        spyTarget.useSpyIf(Any()) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
 }

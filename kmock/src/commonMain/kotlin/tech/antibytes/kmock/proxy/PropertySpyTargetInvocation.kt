@@ -15,5 +15,8 @@ internal class PropertySpyTargetInvocation<Value> : KMockContract.PropertySpyTar
         this.spyOn = spyTarget.guardSpy(spyOn)
     }
 
+    override fun isSpyable(): Boolean = spyOn != null
+
     override fun unwrap(): Function0<Value>? = spyOn
+
 }

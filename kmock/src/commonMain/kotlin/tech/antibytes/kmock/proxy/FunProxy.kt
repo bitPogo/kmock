@@ -12,6 +12,7 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.MethodSpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.FunProxyState
@@ -33,7 +34,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     unitFunRelaxer: Relaxer<ReturnValue?>?,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
     freeze: Boolean,
-    protected val spyOn: SideEffect?
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
     private class FreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
@@ -142,7 +142,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
 
     private val state: FunProxyState<ReturnValue, SideEffect> = if (freeze) {
         FreezingFunProxyState(
-            defaultInvocationType = useSpyOrDefault(),
+            defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,
@@ -151,7 +151,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         )
     } else {
         NonFreezingFunProxyState(
-            defaultInvocationType = useSpyOrDefault(),
+            defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,
@@ -167,14 +167,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         set(value) {
             state.verificationChain = value
         }
-
-    private fun useSpyOrDefault(): FunProxyInvocationType {
-        return if (spyOn == null) {
-            FunProxyInvocationType.NO_GIVEN_VALUE
-        } else {
-            FunProxyInvocationType.SPY
-        }
-    }
 
     private fun setProvider(invocationType: FunProxyInvocationType) {
         val activeProvider = max(
@@ -276,6 +268,24 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         state.incrementInvocations()
     }
 
+    private fun <Value, Invocation : Function<Value>> setInvocationType(
+        spyTarget: MethodSpyTargetInvocation<Value, Invocation>
+    ) {
+        if (spyTarget.isSpyable()) {
+            state.invocationType = FunProxyInvocationType.SPY
+        }
+    }
+
+    protected fun <Value, Invocation : Function<Value>> configureSpy(
+        spyOn: MethodSpyTargetInvocation<Value, Invocation>.() -> Unit,
+    ): MethodSpyTargetInvocation<Value, Invocation> {
+        val spyTarget = MethodSpyTargetInvocation<Value, Invocation>()
+        spyOn(spyTarget)
+        setInvocationType(spyTarget)
+
+        return spyTarget
+    }
+
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {
         return state.arguments.getOrElse(callIndex) {
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
@@ -283,6 +293,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     }
 
     override fun clear() {
-        state.clear(useSpyOrDefault())
+        state.clear(FunProxyInvocationType.NO_GIVEN_VALUE)
     }
 }

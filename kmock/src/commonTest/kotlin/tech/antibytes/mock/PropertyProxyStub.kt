@@ -37,11 +37,11 @@ class PropertyProxyStub(
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
 
-    override fun onGet(): Any {
+    override fun onGet(spyOn: KMockContract.PropertySpyTargetInvocation<Any>.() -> Unit): Any {
         TODO("Not yet implemented")
     }
 
-    override fun onSet(value: Any) {
+    override fun onSet(value: Any, spyOn: KMockContract.PropertySpyTargetInvocation<Unit>.() -> Unit) {
         TODO("Not yet implemented")
     }
 

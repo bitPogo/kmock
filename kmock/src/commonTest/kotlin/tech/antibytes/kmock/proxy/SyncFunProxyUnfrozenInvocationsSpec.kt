@@ -71,7 +71,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         val implementation = Implementation<Any>()
         val proxy = SyncFunProxy<Any, () -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun0,
             freeze = false
         )
 
@@ -80,7 +79,11 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
-        val actual = proxy.invoke()
+        val actual = proxy.invoke {
+            useSpyIf(implementation) {
+                implementation.fun0()
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -161,7 +164,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun1,
             freeze = false
         )
 
@@ -175,7 +177,15 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         }
 
         // When
-        val actual = proxy.invoke(argument0)
+        val actual = proxy.invoke(
+            argument0,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun1(
+                    argument0,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -271,7 +281,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun2,
             freeze = false
         )
 
@@ -288,7 +297,17 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         }
 
         // When
-        val actual = proxy.invoke(argument0, argument1)
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun2(
+                    argument0,
+                    argument1,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -403,7 +422,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun3,
             freeze = false
         )
 
@@ -417,7 +435,19 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         }
 
         // When
-        val actual = proxy.invoke(argument0, argument1, argument2)
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+            argument2,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun3(
+                    argument0,
+                    argument1,
+                    argument2,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -540,7 +570,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun4,
             freeze = false
         )
 
@@ -559,7 +588,21 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         }
 
         // When
-        val actual = proxy.invoke(argument0, argument1, argument2, argument3)
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+            argument2,
+            argument3,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun4(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -702,7 +745,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun5,
             freeze = false
         )
 
@@ -717,7 +759,24 @@ class SyncFunProxyUnfrozenInvocationsSpec {
         }
 
         // When
-        val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4)
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+            argument2,
+            argument3,
+            argument4,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun5(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                )
+            }
+        }
+
         actual mustBe expected
 
         // Then
@@ -876,7 +935,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun6,
             freeze = false
         )
 
@@ -892,8 +950,25 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
-        // When
-        val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+            argument2,
+            argument3,
+            argument4,
+            argument5,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun6(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -1064,7 +1139,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun7,
             freeze = false
         )
 
@@ -1081,7 +1155,28 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
-        val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
+        // When
+        val actual = proxy.invoke(
+            argument0,
+            argument1,
+            argument2,
+            argument3,
+            argument4,
+            argument5,
+            argument6,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun7(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -1284,7 +1379,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun8,
             freeze = false
         )
 
@@ -1310,8 +1404,21 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument4,
             argument5,
             argument6,
-            argument7
-        )
+            argument7,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun8(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -1530,7 +1637,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun9,
             freeze = false
         )
 
@@ -1558,8 +1664,22 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument5,
             argument6,
             argument7,
-            argument8
-        )
+            argument8,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun9(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                    argument8,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -1796,7 +1916,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun10,
             freeze = false
         )
 
@@ -1826,8 +1945,23 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument6,
             argument7,
             argument8,
-            argument9
-        )
+            argument9,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun10(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                    argument8,
+                    argument9,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -2078,7 +2212,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun11,
             freeze = false
         )
 
@@ -2110,8 +2243,24 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument7,
             argument8,
             argument9,
-            argument10
-        )
+            argument10,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun11(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                    argument8,
+                    argument9,
+                    argument10,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -2196,6 +2345,7 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
+        // When
         val actual = proxy.invoke(
             argument0,
             argument1,
@@ -2378,7 +2528,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun12,
             freeze = false
         )
 
@@ -2400,6 +2549,7 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
+        // When
         val actual = proxy.invoke(
             argument0,
             argument1,
@@ -2412,8 +2562,25 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument8,
             argument9,
             argument10,
-            argument11
-        )
+            argument11,
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun12(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                    argument8,
+                    argument9,
+                    argument10,
+                    argument11,
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
@@ -2698,7 +2865,6 @@ class SyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = SyncFunProxy<Any, (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            spyOn = implementation::fun13,
             freeze = false
         )
 
@@ -2721,6 +2887,7 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             expected
         }
 
+        // When
         val actual = proxy.invoke(
             argument0,
             argument1,
@@ -2735,7 +2902,25 @@ class SyncFunProxyUnfrozenInvocationsSpec {
             argument10,
             argument11,
             argument12
-        )
+        ) {
+            useSpyIf(implementation) {
+                implementation.fun13(
+                    argument0,
+                    argument1,
+                    argument2,
+                    argument3,
+                    argument4,
+                    argument5,
+                    argument6,
+                    argument7,
+                    argument8,
+                    argument9,
+                    argument10,
+                    argument11,
+                    argument12
+                )
+            }
+        }
 
         // Then
         actual mustBe expected
