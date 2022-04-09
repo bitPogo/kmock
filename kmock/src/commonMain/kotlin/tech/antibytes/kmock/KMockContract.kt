@@ -216,6 +216,7 @@ object KMockContract {
     }
 
     /**
+     * * Binds a SpyTarget to a invocation.
      * @param Value the value type of the hosting Proxy.
      */
     interface PropertySpyTargetInvocation<Value> : SpyTargetInvocation<Value, Function0<Value>> {
@@ -229,8 +230,9 @@ object KMockContract {
     }
 
     /**
+     * Binds a SpyTarget to a invocation.
      * @param ReturnValue the return value type of the hosting Proxy.
-     * @param SpyTarget the function signature of the hosting Proxy.
+     * @param SpyTarget the function signature of the spy target closure.
      */
     interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> : SpyTargetInvocation<ReturnValue, SpyTarget> {
         /**
@@ -245,7 +247,8 @@ object KMockContract {
          * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
          * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
          * @param spyTarget the referenced object which is spied upon.
-         * @param spyOn function which should reference the mocks parent equals method.
+         * @param other the object to compare to if the hosting mock is used instead of the spy target.
+         * @param spyOn function which should reference the spy target equals method.
          * @param mockKlass the KClass of the hosting mock.
          */
         fun useSpyOnEqualsIf(
