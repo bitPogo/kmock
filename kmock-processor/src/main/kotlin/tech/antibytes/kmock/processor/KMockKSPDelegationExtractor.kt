@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALLOWED_RECURSIVE_TYPES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
@@ -48,7 +47,6 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         var isKmp: Boolean? = null
         val precedences: MutableMap<String, Int> = mutableMapOf()
         val aliases: MutableMap<String, String> = mutableMapOf()
-        val allowedRecursiveTypes: MutableSet<String> = mutableSetOf()
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
         var freezeOnDefault = true
@@ -91,7 +89,6 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                     customMethodNames[proxyId] = replacement
                 }
                 key.startsWith(USELESS_PREFIXES) -> uselessPrefixes.add(value)
-                key.startsWith(ALLOWED_RECURSIVE_TYPES) -> allowedRecursiveTypes.add(value)
                 key.startsWith(USE_BUILD_IN) -> useBuildInProxiesOn.add(value)
                 key.startsWith(SPY_ON) -> {
                     useBuildInProxiesOn.add(value)
@@ -111,7 +108,6 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
-            allowedRecursiveTypes = allowedRecursiveTypes,
             useBuildInProxiesOn = useBuildInProxiesOn,
             spyOn = spyOn,
             enableNewOverloadingNames = enableNewOverloadingNames,

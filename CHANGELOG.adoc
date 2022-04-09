@@ -47,6 +47,8 @@ toc::[]
 
 === Removed
 
+* `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
+
 === Fixed
 
 * Method names with nullable or multi-bounded types defined as generic parameter

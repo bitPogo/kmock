@@ -14,6 +14,6 @@ import tech.antibytes.util.test.fulfils
 class KMockGenericsSpec {
     @Test
     fun `It fulfils FunctionUtils`() {
-        KMockGenerics(emptySet()) fulfils ProcessorContract.GenericResolver::class
+        KMockGenerics fulfils ProcessorContract.GenericResolver::class
     }
 }

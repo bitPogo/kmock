@@ -208,6 +208,58 @@ object KMockContract {
     }
 
     /**
+     *
+     */
+    interface SpyTargetInvocation<Value, SpyTarget : Function<Value>> {
+        fun isSpyable(): Boolean
+        fun unwrap(): SpyTarget?
+    }
+
+    /**
+     * * Binds a SpyTarget to a invocation.
+     * @param Value the value type of the hosting Proxy.
+     */
+    interface PropertySpyTargetInvocation<Value> : SpyTargetInvocation<Value, Function0<Value>> {
+        /**
+         * Binds the given function to the Proxy.
+         * It wipes a given relaxer and buildInRelaxer.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param spyOn the referenced Spy method.
+         */
+        fun useSpyIf(spyTarget: Any?, spyOn: Function0<Value>)
+    }
+
+    /**
+     * Binds a SpyTarget to a invocation.
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SpyTarget the function signature of the spy target closure.
+     */
+    interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> : SpyTargetInvocation<ReturnValue, SpyTarget> {
+        /**
+         * Binds the given function to the Proxy.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param spyOn the referenced Spy method.
+         */
+        fun useSpyIf(spyTarget: Any?, spyOn: SpyTarget)
+
+        /**
+         * Binds the given function, which should be equals, to the Proxy.
+         * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
+         * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
+         * @param spyTarget the referenced object which is spied upon.
+         * @param other the object to compare to if the hosting mock is used instead of the spy target.
+         * @param spyOn function which should reference the spy target equals method.
+         * @param mockKlass the KClass of the hosting mock.
+         */
+        fun useSpyOnEqualsIf(
+            spyTarget: Any?,
+            other: Any?,
+            spyOn: Function1<Any?, Boolean>,
+            mockKlass: KClass<out Any>,
+        )
+    }
+
+    /**
      * Invocation types for FunProxies.
      * @param value indicates the invocation precedence.
      * @author Matthias Geisler
@@ -328,7 +380,9 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun invoke(): ReturnValue
+        fun invoke(
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+        ): ReturnValue
 
         /**
          * Invocation for functions with 1 argument. This is meant for internal use only.
@@ -336,7 +390,10 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0> invoke(arg0: Arg0): ReturnValue
+        fun <Arg0> invoke(
+            arg0: Arg0,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+        ): ReturnValue
 
         /**
          * Invocation for functions with 2 arguments. This is meant for internal use only.
@@ -346,7 +403,8 @@ object KMockContract {
          */
         fun <Arg0, Arg1> invoke(
             arg0: Arg0,
-            arg1: Arg1
+            arg1: Arg1,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -358,7 +416,8 @@ object KMockContract {
         fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
             arg1: Arg1,
-            arg2: Arg2
+            arg2: Arg2,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -371,7 +430,8 @@ object KMockContract {
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
-            arg3: Arg3
+            arg3: Arg3,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -385,7 +445,8 @@ object KMockContract {
             arg1: Arg1,
             arg2: Arg2,
             arg3: Arg3,
-            arg4: Arg4
+            arg4: Arg4,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -400,7 +461,8 @@ object KMockContract {
             arg2: Arg2,
             arg3: Arg3,
             arg4: Arg4,
-            arg5: Arg5
+            arg5: Arg5,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -415,7 +477,8 @@ object KMockContract {
             arg3: Arg3,
             arg4: Arg4,
             arg5: Arg5,
-            arg6: Arg6
+            arg6: Arg6,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -431,7 +494,8 @@ object KMockContract {
             arg4: Arg4,
             arg5: Arg5,
             arg6: Arg6,
-            arg7: Arg7
+            arg7: Arg7,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -448,7 +512,8 @@ object KMockContract {
             arg5: Arg5,
             arg6: Arg6,
             arg7: Arg7,
-            arg8: Arg8
+            arg8: Arg8,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -466,7 +531,8 @@ object KMockContract {
             arg6: Arg6,
             arg7: Arg7,
             arg8: Arg8,
-            arg9: Arg9
+            arg9: Arg9,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -485,7 +551,8 @@ object KMockContract {
             arg7: Arg7,
             arg8: Arg8,
             arg9: Arg9,
-            arg10: Arg10
+            arg10: Arg10,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -505,7 +572,8 @@ object KMockContract {
             arg8: Arg8,
             arg9: Arg9,
             arg10: Arg10,
-            arg11: Arg11
+            arg11: Arg11,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -527,6 +595,7 @@ object KMockContract {
             arg10: Arg10,
             arg11: Arg11,
             arg12: Arg12,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
     }
 
@@ -543,14 +612,19 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun invoke(): ReturnValue
+        suspend fun invoke(
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+        ): ReturnValue
 
         /**
          * Invocation for functions with 1 argument. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0> invoke(arg0: Arg0): ReturnValue
+        suspend fun <Arg0> invoke(
+            arg0: Arg0,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+        ): ReturnValue
 
         /**
          * Invocation for functions with 2 arguments. This is meant for internal use only.
@@ -559,7 +633,8 @@ object KMockContract {
          */
         suspend fun <Arg0, Arg1> invoke(
             arg0: Arg0,
-            arg1: Arg1
+            arg1: Arg1,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -570,7 +645,8 @@ object KMockContract {
         suspend fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
             arg1: Arg1,
-            arg2: Arg2
+            arg2: Arg2,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -582,7 +658,8 @@ object KMockContract {
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
-            arg3: Arg3
+            arg3: Arg3,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -595,7 +672,8 @@ object KMockContract {
             arg1: Arg1,
             arg2: Arg2,
             arg3: Arg3,
-            arg4: Arg4
+            arg4: Arg4,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -609,7 +687,8 @@ object KMockContract {
             arg2: Arg2,
             arg3: Arg3,
             arg4: Arg4,
-            arg5: Arg5
+            arg5: Arg5,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -624,7 +703,8 @@ object KMockContract {
             arg3: Arg3,
             arg4: Arg4,
             arg5: Arg5,
-            arg6: Arg6
+            arg6: Arg6,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -640,7 +720,8 @@ object KMockContract {
             arg4: Arg4,
             arg5: Arg5,
             arg6: Arg6,
-            arg7: Arg7
+            arg7: Arg7,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -657,7 +738,8 @@ object KMockContract {
             arg5: Arg5,
             arg6: Arg6,
             arg7: Arg7,
-            arg8: Arg8
+            arg8: Arg8,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -675,7 +757,8 @@ object KMockContract {
             arg6: Arg6,
             arg7: Arg7,
             arg8: Arg8,
-            arg9: Arg9
+            arg9: Arg9,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -694,7 +777,8 @@ object KMockContract {
             arg7: Arg7,
             arg8: Arg8,
             arg9: Arg9,
-            arg10: Arg10
+            arg10: Arg10,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -714,7 +798,8 @@ object KMockContract {
             arg8: Arg8,
             arg9: Arg9,
             arg10: Arg10,
-            arg11: Arg11
+            arg11: Arg11,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -736,6 +821,7 @@ object KMockContract {
             arg10: Arg10,
             arg11: Arg11,
             arg12: Arg12,
+            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
     }
 
@@ -838,14 +924,19 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun onGet(): Value
+        fun onGet(
+            spyOn: PropertySpyTargetInvocation<Value>.() -> Unit = {},
+        ): Value
 
         /**
          * Invocation of property setter. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun onSet(value: Value)
+        fun onSet(
+            value: Value,
+            spyOn: PropertySpyTargetInvocation<Unit>.() -> Unit = {},
+        )
     }
 
     /**
@@ -900,29 +991,6 @@ object KMockContract {
          * @param equals function which should reference the mocks parent equals method.
          */
         fun useEqualsRelaxer(equals: Function1<Any?, Boolean>)
-
-        /**
-         * Binds the given function, which should be equals, to the Proxy.
-         * The spy equals method will be used if the other object is not of the same type as the given Class of the hosting mock.
-         * The equals method will be used if the other object is of the same type as the given Class of the hosting mock.
-         * It wipes a given relaxer and buildInRelaxer.
-         * @param spyTarget the referenced object which is spied uppon.
-         * @param equals function which should reference the mocks parent equals method.
-         * @param mockKlass the KClass of the hosting mock.
-         */
-        fun useSpyOnEqualsIf(
-            spyTarget: Any?,
-            equals: Function1<Any?, Boolean>,
-            mockKlass: KClass<out Any>,
-        )
-
-        /**
-         * Binds the given function to the Proxy.
-         * It wipes a given relaxer and buildInRelaxer.
-         * @param spyTarget the referenced object which is spied uppon.
-         * @param spyOn the referenced Spy method.
-         */
-        fun useSpyIf(spyTarget: Any?, spyOn: SideEffect)
     }
 
     /**
@@ -931,22 +999,7 @@ object KMockContract {
      * @see NonIntrusiveConfigurator
      * @author Matthias Geisler
      */
-    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value> {
-        /**
-         * Binds a given Getter function to a PropertyProxy if the given spy is not null.
-         * This will wipe a given relaxer.
-         * @param spyTarget the referenced Spy object.
-         * @param spyOn the Getter which should be bounded.
-         */
-        fun useSpyOnGetIf(spyTarget: Any?, spyOn: Function0<Value>)
-
-        /**
-         * Binds a given Setter function to a PropertyProxy if the given spy is not null.
-         * @param spyTarget the referenced Spy object.
-         * @param spyOn the Setter which should be bounded.
-         */
-        fun useSpyOnSetIf(spyTarget: Any?, spyOn: Function1<Value, Unit>)
-    }
+    interface NonIntrusivePropertyConfigurator<Value> : NonIntrusiveConfigurator<Value>
 
     /**
      * Base value container for non intrusive behaviour.
@@ -962,7 +1015,6 @@ object KMockContract {
      * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
      * @param buildInRelaxer ParameterizedRelaxer which refers to a build-in method like toString or null.
      * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @param spyOn Function/SideEffect which contains a reference to a actual instance method  of a bounded spyTarget.
      * @see NonIntrusiveConfiguration
      * @author Matthias Geisler
      */
@@ -970,7 +1022,6 @@ object KMockContract {
         val unitFunRelaxer: Relaxer<ReturnValue?>?,
         val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         val relaxer: Relaxer<ReturnValue>?,
-        val spyOn: SideEffect?,
     ) : NonIntrusiveConfiguration
 
     /**
@@ -978,15 +1029,11 @@ object KMockContract {
      * @param Value the value of the hosting Proxy.
      * @constructor creates a NonIntrusivePropertyConfiguration.
      * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @param spyOnSet Function/SideEffect which contains a reference to a actual instance setter method of a bounded spyTarget.
-     * @param spyOnGet Function/SideEffect which contains a reference to a actual instance getter method of a bounded spyTarget.
      * @see NonIntrusiveConfiguration
      * @author Matthias Geisler
      */
     internal data class NonIntrusivePropertyConfiguration<Value>(
         val relaxer: Relaxer<Value>?,
-        val spyOnGet: Function0<Value>?,
-        val spyOnSet: Function1<Value, Unit>?,
     ) : NonIntrusiveConfiguration
 
     /**

@@ -162,37 +162,6 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its default allowedRecursiveTypes is a empty set`() {
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
-
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-
-        val extension = createExtension<KMockExtension>(project)
-
-        extension.allowedRecursiveTypes mustBe emptySet()
-    }
-
-    @Test
-    fun `It propagates allowedRecursiveTypes changes to Ksp`() {
-        // Given
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: List<String> = fixture.listFixture(size = 3)
-
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-
-        // When
-        val extension = createExtension<KMockExtension>(project)
-        extension.allowedRecursiveTypes = expected.toSet()
-
-        extension.allowedRecursiveTypes mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("kmock_recursive_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_recursive_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_recursive_2", expected[2]) }
-    }
-
-    @Test
     fun `Its default allowBuildInProxies is a empty set`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()

@@ -49,8 +49,6 @@ class NonIntrusivePropertyConfiguratorSpec {
         // Then
         actual mustBe NonIntrusivePropertyConfiguration(
             relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
         )
     }
 
@@ -67,8 +65,6 @@ class NonIntrusivePropertyConfiguratorSpec {
         // Then
         actual mustBe NonIntrusivePropertyConfiguration(
             relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
         )
     }
 
@@ -102,146 +98,6 @@ class NonIntrusivePropertyConfiguratorSpec {
         // Then
         actual mustBe NonIntrusivePropertyConfiguration(
             relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
         )
-    }
-
-    @Test
-    @JsName("fn6")
-    fun `Given getConfiguration is called after useSpyOnGetIf while its spy is null it returns a configuration without spyOnGet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useSpyOnGetIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
-            relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
-        )
-    }
-
-    @Test
-    @JsName("fn7")
-    fun `Given getConfiguration is called after useSpyOnGetIf while its spy is not null it returns a configuration with spyOnGet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-        val expected: Int = fixture.fixture()
-        val subjectToSpyOn = MockOfMocks(
-            getterSpiedOn = { expected }
-        )
-
-        // When
-        configurator.useSpyOnGetIf(Any(), subjectToSpyOn::property::get)
-        val actual = configurator.getConfiguration().spyOnGet!!.invoke()
-
-        // Then
-        actual mustBe expected
-    }
-
-    @Test
-    @JsName("fn8")
-    fun `Given getConfiguration is called after useSpyOnGetIf while its spy is null after it was not it returns a configuration without spyOnGet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useSpyOnGetIf(Any()) { fixture.fixture() }
-        configurator.useSpyOnGetIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
-            relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
-        )
-    }
-
-    @Test
-    @JsName("fn9")
-    fun `Given getConfiguration is called after useSpyOnSetIf while its spy is null it returns a configuration without spyOnSet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useSpyOnSetIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
-            relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
-        )
-    }
-
-    @Test
-    @JsName("fn10")
-    fun `Given getConfiguration is called after useSpyOnSetIf while its spy is not null it returns a configuration with spyOnSet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-        val expected: Int = fixture.fixture()
-        var actual: Int? = null
-        val subjectToSpyOn = MockOfMocks(
-            setterSpiedOn = { givenValue ->
-                actual = givenValue
-            }
-        )
-
-        // When
-        configurator.useSpyOnSetIf(Any(), subjectToSpyOn::property::set)
-        configurator.getConfiguration().spyOnSet!!.invoke(expected)
-
-        // Then
-        actual mustBe expected
-    }
-
-    @Test
-    @JsName("fn11")
-    fun `Given getConfiguration is called after useSpyOnSetIf while its spy is null after it was not it returns a configuration without spyOnSet`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useSpyOnSetIf(Any()) { fixture.fixture() }
-        configurator.useSpyOnSetIf(null) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
-            relaxer = null,
-            spyOnGet = null,
-            spyOnSet = null,
-        )
-    }
-
-    @Test
-    @JsName("fn12")
-    fun `Given a Relaxer and SpyOnGet is set the SpyOnGet wipes the Relaxer`() {
-        // Given
-        val configurator = NonIntrusivePropertyConfigurator<Int>()
-
-        // When
-        configurator.useRelaxerIf(true) { fixture.fixture() }
-        configurator.useSpyOnGetIf(Any()) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.relaxer mustBe null
-        actual.spyOnGet isNot null
-    }
-
-    private class MockOfMocks(
-        val getterSpiedOn: (() -> Int)? = null,
-        val setterSpiedOn: ((Int) -> Unit)? = null
-    ) {
-        var property: Int
-            get() = getterSpiedOn?.invoke() ?: throw RuntimeException("Missing SideEffect getterSpiedOn.")
-            set(value) = setterSpiedOn?.invoke(value) ?: throw RuntimeException("Missing SideEffect setterSpiedOn.")
     }
 }

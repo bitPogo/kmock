@@ -9,7 +9,6 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALLOWED_RECURSIVE_TYPES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
@@ -38,7 +37,6 @@ abstract class KMockExtension(
     private var _rootPackage: String = ""
 
     private var _aliasNameMapping: Map<String, String> = emptyMap()
-    private var _allowedRecursiveTypes: Set<String> = emptySet()
     private var _useBuildInProxiesOn: Set<String> = emptySet()
 
     private var _enableNewOverloadingNames = true
@@ -104,17 +102,6 @@ abstract class KMockExtension(
             ksp.arg("$prefix$idx", type)
         }
     }
-
-    override var allowedRecursiveTypes: Set<String>
-        get() = _allowedRecursiveTypes
-        set(value) {
-            propagateIterable(
-                prefix = ALLOWED_RECURSIVE_TYPES,
-                values = value
-            )
-
-            _allowedRecursiveTypes = value
-        }
 
     override var useBuildInProxiesOn: Set<String>
         get() = _useBuildInProxiesOn

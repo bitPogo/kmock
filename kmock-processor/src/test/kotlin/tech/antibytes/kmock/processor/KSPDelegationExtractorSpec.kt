@@ -211,32 +211,6 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a set of allowed recursive types`() {
-        // Given
-        val rootPackage: String = fixture.fixture()
-        val isKmp: Boolean = fixture.fixture()
-        val kspDir: String = fixture.fixture()
-
-        val delegateKSP = mutableMapOf(
-            "kmock_kspDir" to kspDir,
-            "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
-        )
-
-        val expected = fixture.listFixture<String>(size = 3).toSet()
-
-        expected.forEachIndexed { idx, value ->
-            delegateKSP["kmock_recursive_$idx"] = value
-        }
-
-        // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
-
-        // Then
-        actual.allowedRecursiveTypes mustBe expected
-    }
-
-    @Test
     fun `Given convertOptions it returns a set of target names where to use buildIn proxies`() {
         // Given
         val rootPackage: String = fixture.fixture()

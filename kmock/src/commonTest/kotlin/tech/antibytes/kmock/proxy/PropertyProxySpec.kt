@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
+import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -213,16 +214,13 @@ class PropertyProxySpec {
         val value: Any = fixture.fixture()
 
         val implementation = Implementation<Any>()
-        val proxy = PropertyProxy(
-            name,
-            spyOnGet = implementation::foo::get
-        )
+        val proxy = PropertyProxy<Any>(name)
 
         implementation.fooProp = value
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.onGet()
+            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -377,9 +375,8 @@ class PropertyProxySpec {
         // Given
         val value: Any = fixture.fixture()
         val implementation = Implementation(fooProp = value)
-        val proxy = PropertyProxy(
+        val proxy = PropertyProxy<Any>(
             fixture.fixture(),
-            spyOnGet = implementation::foo::get
         )
         val sideEffect = { fixture.fixture<Any>() }
 
@@ -389,7 +386,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet()
+            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -482,15 +479,12 @@ class PropertyProxySpec {
         // Given
         val implementation = Implementation<Any>()
 
-        val proxy = PropertyProxy(
-            fixture.fixture(),
-            spyOnSet = implementation::bar::set
-        )
+        val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onSet(value)
+            proxy.onSet(value) { useSpyIf(implementation) { implementation.bar = value } }
         }
 
         runBlockingTest {
@@ -656,34 +650,22 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn26")
-    fun `Given clear is called it clears the mock while repecting Spyies`() {
+    fun `It has no VerificationChain by default`() {
+        PropertyProxy<Any>(fixture.fixture()).verificationChain mustBe null
+    }
+
+    @Test
+    @JsName("fn27")
+    fun `It holds a given VerificationChain`() {
         // Given
-        val implementation = Implementation<Any>()
-
-        val value: Any = fixture.fixture()
-        val valueImp: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: (Any) -> Unit = { }
-
-        implementation.fooProp = valueImp
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val chain = VerificationChainStub()
 
         // When
-        val proxy = PropertyProxy(
-            fixture.fixture(),
-            spyOnGet = implementation::foo::get
-        )
-        proxy.get = value
-        proxy.getMany = values
-        proxy.getSideEffect = { value }
-        proxy.set = sideEffect
-
-        proxy.onGet()
-        proxy.onSet(fixture.fixture())
-
-        proxy.clear()
+        proxy.verificationChain = chain
 
         // Then
-        proxy.onGet() mustBe valueImp
+        proxy.verificationChain sameAs chain
     }
 
     private class Implementation<T>(

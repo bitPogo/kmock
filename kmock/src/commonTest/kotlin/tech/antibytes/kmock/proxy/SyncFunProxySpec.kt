@@ -263,12 +263,15 @@ class SyncFunProxySpec {
 
         val proxy = SyncFunProxy<Any, () -> Any>(
             name,
-            spyOn = implementation::fun0
         )
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.invoke()
+            val actual = proxy.invoke {
+                useSpyIf(implementation) {
+                    implementation.fun0()
+                }
+            }
 
             // Then
             actual mustBe value
@@ -804,44 +807,22 @@ class SyncFunProxySpec {
 
     @Test
     @JsName("fn26")
-    fun `Given clear is called it clears the mock while leave the spy intact`(): AsyncTestReturnValue {
+    fun `It has no VerificationChain by default`() {
+        SyncFunProxy<Any, () -> Any>(fixture.fixture()).verificationChain mustBe null
+    }
+
+    @Test
+    @JsName("fn27")
+    fun `It holds a given VerificationChain`() {
         // Given
-        val implementation = Implementation<Any>()
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val chain = VerificationChainStub()
 
-        val error = Throwable()
-        val valueImpl: Any = fixture.fixture()
-        val value: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: () -> Any = {
-            fixture.fixture()
-        }
-        val sideEffectChain: () -> Any = {
-            fixture.fixture()
-        }
+        // When
+        proxy.verificationChain = chain
 
-        val proxy = SyncFunProxy<Any, () -> Any>(
-            fixture.fixture(),
-            spyOn = implementation::fun0
-        )
-
-        implementation.fun0 = { valueImpl }
-
-        proxy.throws = error
-        proxy.returnValue = value
-        proxy.returnValues = values
-        proxy.sideEffect = sideEffect
-        proxy.sideEffects.add(sideEffectChain)
-        proxy.verificationChain = VerificationChainStub()
-
-        return runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.invoke()
-
-            proxy.clear()
-
-            val actual = proxy.invoke()
-
-            actual mustBe valueImpl
-        }
+        // Then
+        proxy.verificationChain sameAs chain
     }
 
     private class Implementation<T>(

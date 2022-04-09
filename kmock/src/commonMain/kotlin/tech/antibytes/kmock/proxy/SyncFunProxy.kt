@@ -9,6 +9,7 @@ package tech.antibytes.kmock.proxy
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
+import tech.antibytes.kmock.KMockContract.MethodSpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 
@@ -38,7 +39,6 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
     unitFunRelaxer: Relaxer<ReturnValue?>? = null,
     buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null,
     freeze: Boolean = true,
-    spyOn: SideEffect? = null
 ) : KMockContract.SyncFunProxy<ReturnValue, SideEffect>,
     FunProxy<ReturnValue, SideEffect>(
         id = id,
@@ -48,12 +48,11 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         unitFunRelaxer = unitFunRelaxer,
         buildInRelaxer = buildInRelaxer,
         freeze = freeze,
-        spyOn = spyOn
     ) {
     private fun execute(
-        function: () -> ReturnValue,
+        method: () -> ReturnValue,
         chainFunction: () -> ReturnValue,
-        spy: (() -> ReturnValue)?,
+        spyTarget: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>,
         vararg arguments: Any?
     ): ReturnValue {
         onEvent(arguments)
@@ -62,15 +61,18 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             FunProxyInvocationType.THROWS -> throw throws
             FunProxyInvocationType.RETURN_VALUE -> returnValue
             FunProxyInvocationType.RETURN_VALUES -> retrieveFromValues()
-            FunProxyInvocationType.SIDE_EFFECT -> function()
+            FunProxyInvocationType.SIDE_EFFECT -> method()
             FunProxyInvocationType.SIDE_EFFECT_CHAIN -> chainFunction()
-            FunProxyInvocationType.SPY -> spy?.invoke() ?: throw IllegalStateException("Unexpected missing spy!")
+            FunProxyInvocationType.SPY -> spyTarget.unwrap()?.invoke()
+                ?: throw IllegalStateException("Unexpected missing spy!")
             else -> invokeRelaxerOrFail(arguments.firstOrNull())
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun invoke(): ReturnValue {
+    override fun invoke(
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
+    ): ReturnValue {
         val invocation = {
             (sideEffect as () -> ReturnValue)
                 .invoke()
@@ -81,17 +83,18 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke()
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            { (spyOn as () -> ReturnValue).invoke() }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn)
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <Arg0> invoke(arg0: Arg0): ReturnValue {
+    override fun <Arg0> invoke(
+        arg0: Arg0,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
+    ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0) -> ReturnValue)
                 .invoke(arg0)
@@ -102,20 +105,20 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0) -> ReturnValue)
-                    .invoke(arg0)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <Arg0, Arg1> invoke(arg0: Arg0, arg1: Arg1): ReturnValue {
+    override fun <Arg0, Arg1> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
+    ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1) -> ReturnValue)
                 .invoke(arg0, arg1)
@@ -126,20 +129,22 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1) -> ReturnValue)
-                    .invoke(arg0, arg1)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <Arg0, Arg1, Arg2> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2): ReturnValue {
+    override fun <Arg0, Arg1, Arg2> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        arg2: Arg2,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
+    ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2) -> ReturnValue)
                 .invoke(arg0, arg1, arg2)
@@ -150,20 +155,24 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <Arg0, Arg1, Arg2, Arg3> invoke(arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3): ReturnValue {
+    override fun <Arg0, Arg1, Arg2, Arg3> invoke(
+        arg0: Arg0,
+        arg1: Arg1,
+        arg2: Arg2,
+        arg3: Arg3,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
+    ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
                 .invoke(arg0, arg1, arg2, arg3)
@@ -174,16 +183,15 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -192,7 +200,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg1: Arg1,
         arg2: Arg2,
         arg3: Arg3,
-        arg4: Arg4
+        arg4: Arg4,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
@@ -204,16 +213,16 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -223,7 +232,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg2: Arg2,
         arg3: Arg3,
         arg4: Arg4,
-        arg5: Arg5
+        arg5: Arg5,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
@@ -235,16 +245,17 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -255,7 +266,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg3: Arg3,
         arg4: Arg4,
         arg5: Arg5,
-        arg6: Arg6
+        arg6: Arg6,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
@@ -267,16 +279,18 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5,
+            arg6
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -288,7 +302,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg4: Arg4,
         arg5: Arg5,
         arg6: Arg6,
-        arg7: Arg7
+        arg7: Arg7,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
@@ -300,16 +315,19 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5,
+            arg6,
+            arg7
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -322,7 +340,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg5: Arg5,
         arg6: Arg6,
         arg7: Arg7,
-        arg8: Arg8
+        arg8: Arg8,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
@@ -334,16 +353,20 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5,
+            arg6,
+            arg7,
+            arg8
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -357,7 +380,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg6: Arg6,
         arg7: Arg7,
         arg8: Arg8,
-        arg9: Arg9
+        arg9: Arg9,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
@@ -369,16 +393,21 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-            }
-        } else {
-            null
-        }
-
-        return execute(invocation, chainInvocation, spyOn, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+        return execute(
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5,
+            arg6,
+            arg7,
+            arg8,
+            arg9
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -393,7 +422,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg7: Arg7,
         arg8: Arg8,
         arg9: Arg9,
-        arg10: Arg10
+        arg10: Arg10,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
@@ -405,19 +435,10 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-            }
-        } else {
-            null
-        }
-
         return execute(
-            invocation,
-            chainInvocation,
-            spyOn,
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
             arg0,
             arg1,
             arg2,
@@ -445,7 +466,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg8: Arg8,
         arg9: Arg9,
         arg10: Arg10,
-        arg11: Arg11
+        arg11: Arg11,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
@@ -457,19 +479,10 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
-            }
-        } else {
-            null
-        }
-
         return execute(
-            invocation,
-            chainInvocation,
-            spyOn,
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
             arg0,
             arg1,
             arg2,
@@ -499,7 +512,8 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         arg9: Arg9,
         arg10: Arg10,
         arg11: Arg11,
-        arg12: Arg12
+        arg12: Arg12,
+        spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit,
     ): ReturnValue {
         val invocation = {
             (sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
@@ -511,19 +525,10 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
                 .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
         }
 
-        val spyOn = if (spyOn is SideEffect) {
-            {
-                (spyOn as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)
-                    .invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
-            }
-        } else {
-            null
-        }
-
         return execute(
-            invocation,
-            chainInvocation,
-            spyOn,
+            method = invocation,
+            chainFunction = chainInvocation,
+            spyTarget = configureSpy(spyOn),
             arg0,
             arg1,
             arg2,

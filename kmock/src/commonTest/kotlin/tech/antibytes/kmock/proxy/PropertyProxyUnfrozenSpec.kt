@@ -10,6 +10,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
+import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -158,16 +159,15 @@ class PropertyProxyUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         val implementation = Implementation<Any>()
-        val proxy = PropertyProxy(
+        val proxy = PropertyProxy<Any>(
             name,
-            spyOnGet = implementation::foo::get,
             freeze = false
         )
 
         implementation.fooProp = value
 
         // When
-        val actual = proxy.onGet()
+        val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
         // Then
         actual mustBe value
@@ -341,15 +341,14 @@ class PropertyProxyUnfrozenSpec {
         // Given
         val implementation = Implementation<Any>()
 
-        val proxy = PropertyProxy(
+        val proxy = PropertyProxy<Any>(
             fixture.fixture(),
-            spyOnSet = implementation::bar::set,
             freeze = false
         )
         val value: Any = fixture.fixture()
 
         // When
-        proxy.onSet(value)
+        proxy.onSet(value) { useSpyIf(implementation) { implementation.bar = value } }
 
         implementation.barProp.value mustBe value
     }
@@ -481,36 +480,23 @@ class PropertyProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn25")
-    fun `Given clear is called it clears the mock while repecting Spyies`() {
+    @JsName("fn26")
+    fun `It has no VerificationChain by default`() {
+        PropertyProxy<Any>(fixture.fixture()).verificationChain mustBe null
+    }
+
+    @Test
+    @JsName("fn27")
+    fun `It holds a given VerificationChain`() {
         // Given
-        val implementation = Implementation<Any>()
-
-        val value: Any = fixture.fixture()
-        val valueImp: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture()
-        val sideEffect: (Any) -> Unit = { }
-
-        implementation.fooProp = valueImp
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val chain = VerificationChainStub()
 
         // When
-        val proxy = PropertyProxy(
-            fixture.fixture(),
-            spyOnGet = implementation::foo::get,
-            freeze = false
-        )
-        proxy.get = value
-        proxy.getMany = values
-        proxy.getSideEffect = { value }
-        proxy.set = sideEffect
-
-        proxy.onGet()
-        proxy.onSet(fixture.fixture())
-
-        proxy.clear()
+        proxy.verificationChain = chain
 
         // Then
-        proxy.onGet() mustBe valueImp
+        proxy.verificationChain sameAs chain
     }
 
     private class Implementation<T>(

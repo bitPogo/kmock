@@ -786,34 +786,6 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Spies with Generics which allows Recursive Types is processed, it writes a mock`() {
-        // Given
-        val source = SourceFile.kotlin(
-            "AllowedRecursive.kt",
-            loadResource("/template/spy/AllowedRecursive.kt")
-        )
-        val expected = loadResource("/expected/spy/AllowedRecursive.kt")
-
-        // When
-        val compilerResult = compile(
-            provider,
-            source,
-            isKmp = false,
-            kspArguments = mapOf(
-                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.AllowedRecursive",
-                "${KMOCK_PREFIX}recursive_0" to "kotlin.Comparable"
-            )
-        )
-        val actual = resolveGenerated("AllowedRecursiveMock.kt")
-
-        // Then
-        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        actual isNot null
-
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
-    }
-
-    @Test
     fun `Given a annotated Source which spies on Shared is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
