@@ -835,8 +835,6 @@ class KMockMocksSpec {
         )
         val actual = resolveGenerated("CommonMock.kt")
 
-        println(actual!!.readText())
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null

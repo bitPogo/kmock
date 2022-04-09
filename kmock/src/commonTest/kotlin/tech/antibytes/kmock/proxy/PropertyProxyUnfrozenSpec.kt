@@ -167,7 +167,7 @@ class PropertyProxyUnfrozenSpec {
         implementation.fooProp = value
 
         // When
-        val actual = proxy.onGet{ useSpyIf(implementation) { implementation.foo } }
+        val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
         // Then
         actual mustBe value
@@ -348,7 +348,7 @@ class PropertyProxyUnfrozenSpec {
         val value: Any = fixture.fixture()
 
         // When
-        proxy.onSet(value){ useSpyIf(implementation) { implementation.bar = value } }
+        proxy.onSet(value) { useSpyIf(implementation) { implementation.bar = value } }
 
         implementation.barProp.value mustBe value
     }

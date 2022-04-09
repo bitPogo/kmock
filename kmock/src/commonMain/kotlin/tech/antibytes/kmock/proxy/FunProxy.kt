@@ -12,10 +12,10 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.MethodSpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.FunProxyState
+import tech.antibytes.kmock.KMockContract.MethodSpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder

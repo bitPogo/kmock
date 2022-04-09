@@ -28,7 +28,6 @@ import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import kotlin.text.StringBuilder
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -47,7 +46,6 @@ internal interface ProcessorContract {
         val knownSourceSets: Set<String>,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
-        val allowedRecursiveTypes: Set<String>,
         val useBuildInProxiesOn: Set<String>,
         val spyOn: Set<String>,
         val enableNewOverloadingNames: Boolean,
@@ -327,7 +325,6 @@ internal interface ProcessorContract {
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"
-        const val ALLOWED_RECURSIVE_TYPES = "${KMOCK_PREFIX}recursive_"
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"

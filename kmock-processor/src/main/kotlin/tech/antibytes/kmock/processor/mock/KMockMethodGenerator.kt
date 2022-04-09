@@ -26,10 +26,8 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
-import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
@@ -37,6 +35,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockMethodGenerator(
     private val spyGenerator: SpyGenerator,
@@ -340,7 +340,7 @@ internal class KMockMethodGenerator(
 
         val cast = if (returnType != proxyReturnType) {
             method.addAnnotation(unused)
-            "as $returnType"
+            " as $returnType"
         } else {
             ""
         }
@@ -353,7 +353,7 @@ internal class KMockMethodGenerator(
         )
 
         method.addCode(
-            "return %L.invoke(%L) %L %L",
+            "return %L.invoke(%L)%L%L",
             proxyInfo.proxyName,
             invocation,
             spy,

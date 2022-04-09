@@ -17,12 +17,12 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockPropertyGenerator(
     private val spyGenerator: SpyGenerator,
@@ -60,7 +60,7 @@ internal class KMockPropertyGenerator(
         enableSpy: Boolean
     ): FunSpec.Builder {
         val statement = if (enableSpy) {
-            "return _$propertyName.onSet(value) ${spyGenerator.buildSetterSpy(propertyName)}"
+            "return _$propertyName.onSet(value)${spyGenerator.buildSetterSpy(propertyName)}"
         } else {
             "return _$propertyName.onSet(value)"
         }

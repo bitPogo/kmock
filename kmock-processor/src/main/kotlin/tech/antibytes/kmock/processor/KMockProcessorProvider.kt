@@ -30,7 +30,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             kspDir = options.kspDir,
             kspGenerator = environment.codeGenerator
         )
-        val genericResolver = KMockGenerics(options.allowedRecursiveTypes)
+
         val relaxerGenerator = KMockRelaxerGenerator()
         val nameSelector = KmockProxyNameSelector(
             enableNewOverloadingNames = options.enableNewOverloadingNames,
@@ -52,13 +52,13 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val methodGenerator = KMockMethodGenerator(
             spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
-            genericResolver = genericResolver,
+            genericResolver = KMockGenerics,
             relaxerGenerator = relaxerGenerator,
         )
 
         val factoryUtils = KMockFactoryGeneratorUtil(
             freezeOnDefault = options.freezeOnDefault,
-            genericResolver = genericResolver,
+            genericResolver = KMockGenerics,
         )
 
         return KMockProcessor(
@@ -68,7 +68,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 spyOn = options.spyOn,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
-                genericsResolver = genericResolver,
+                genericsResolver = KMockGenerics,
                 nameCollector = nameSelector,
                 propertyGenerator = propertyGenerator,
                 methodGenerator = methodGenerator,
@@ -81,19 +81,19 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 spyOn = options.spyOn,
                 spiesOnly = options.spiesOnly,
                 utils = factoryUtils,
-                genericResolver = genericResolver,
+                genericResolver = KMockGenerics,
                 codeGenerator = codeGenerator,
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
                 spiesOnly = options.spiesOnly,
-                genericResolver = genericResolver,
+                genericResolver = KMockGenerics,
                 codeGenerator = codeGenerator,
             ),
             aggregator = KMockAggregator(
                 logger = logger,
                 knownSourceSets = options.knownSourceSets,
-                generics = genericResolver,
+                generics = KMockGenerics,
                 aliases = options.aliases,
             ),
             options = options,

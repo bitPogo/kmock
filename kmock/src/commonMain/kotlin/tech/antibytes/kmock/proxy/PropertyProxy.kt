@@ -12,11 +12,11 @@ import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.PropertySpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.PropertyProxyInvocationType
 import tech.antibytes.kmock.KMockContract.PropertyProxyState
+import tech.antibytes.kmock.KMockContract.PropertySpyTargetInvocation
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.error.MockError

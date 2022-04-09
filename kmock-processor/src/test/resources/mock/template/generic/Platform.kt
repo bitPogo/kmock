@@ -21,7 +21,7 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <T : Int> bla(): T
     fun <T : Int> bla(payload: T)
-    fun <T : Int> bla(vararg  payload: T)
+    fun <T : Int> bla(vararg payload: T)
 
     fun <T : List<Array<String>>> bar(): T
     fun <T : List<Array<String>>> bar(payload: T)

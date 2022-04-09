@@ -15,12 +15,12 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
-import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockBuildInMethodGenerator(
     private val spyGenerator: SpyGenerator,
@@ -139,7 +139,9 @@ internal class KMockBuildInMethodGenerator(
             proxyInfo = proxyInfo
         )
 
-        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.argumentName ?: ""}) $spy")
+        val invocationArgument = argument?.argumentName ?: ""
+
+        method.addCode("return ${proxyInfo.proxyName}.invoke($invocationArgument)$spy")
 
         return method.build()
     }

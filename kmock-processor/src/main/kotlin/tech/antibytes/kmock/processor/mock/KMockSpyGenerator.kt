@@ -13,9 +13,10 @@ internal object KMockSpyGenerator : SpyGenerator {
     private fun buildSpy(
         invocation: String,
     ): String {
-        return """{
+        return """ {
             |   useSpyIf(__spyOn) { $invocation }
-            |}""".trimMargin()
+            |}
+        """.trimMargin()
     }
 
     override fun buildGetterSpy(propertyName: String): String {
@@ -49,13 +50,14 @@ internal object KMockSpyGenerator : SpyGenerator {
     }
 
     override fun buildEqualsSpy(mockName: String): String {
-        return """{
+        return """ {
             |   useSpyOnEqualsIf(
             |       spyTarget = __spyOn,
             |       other = other,
             |       spyOn = { super.equals(other) },
             |       mockKlass = $mockName::class
             |   )
-            |}""".trimMargin()
+            |}
+        """.trimMargin()
     }
 }

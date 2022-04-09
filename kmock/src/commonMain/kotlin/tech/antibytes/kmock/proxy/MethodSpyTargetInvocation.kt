@@ -29,7 +29,7 @@ internal class MethodSpyTargetInvocation<Value, SpyTarget : Function<Value>> : K
             } else {
                 spyTarget == other
             }
-        } as SpyTarget
+        } as SpyTarget?
     }
 
     override fun isSpyable(): Boolean = spyOn != null

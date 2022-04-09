@@ -220,7 +220,7 @@ class PropertyProxySpec {
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.onGet{ useSpyIf(implementation) { implementation.foo } }
+            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -386,7 +386,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet{ useSpyIf(implementation) { implementation.foo } }
+            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -484,7 +484,7 @@ class PropertyProxySpec {
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onSet(value){ useSpyIf(implementation) { implementation.bar = value } }
+            proxy.onSet(value) { useSpyIf(implementation) { implementation.bar = value } }
         }
 
         runBlockingTest {

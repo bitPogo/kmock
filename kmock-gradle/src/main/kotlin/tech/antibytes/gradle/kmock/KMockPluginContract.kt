@@ -23,13 +23,6 @@ internal interface KMockPluginContract {
         var aliasNameMapping: Map<String, String>
 
         /**
-         * Selection of allowed recursive generic types (e.g. Comparable).
-         * List of full qualified names of generics types which are used for recursive declaration.
-         * This property can be used to allow them for spying.
-         */
-        var allowedRecursiveTypes: Set<String>
-
-        /**
          * Selection of targets which allow Proxies on build-in method (e.g. toString).
          * Set of full qualified name of target which should proxy build-in methods.
          */
@@ -109,7 +102,6 @@ internal interface KMockPluginContract {
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"
-        const val ALLOWED_RECURSIVE_TYPES = "${KMOCK_PREFIX}recursive_"
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"

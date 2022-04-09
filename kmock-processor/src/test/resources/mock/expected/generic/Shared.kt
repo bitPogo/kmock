@@ -137,7 +137,7 @@ internal class SharedMock<K : Any, L>(
         verifier, freeze = freeze)
 
     public val _brassWithComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithComparable",
             collector = verifier, freeze = freeze) {
@@ -145,13 +145,13 @@ internal class SharedMock<K : Any, L>(
         }
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithVoid", collector =
         verifier, freeze = freeze)
 
     public val _blissWithComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithComparable",
             collector = verifier, freeze = freeze) {
@@ -159,8 +159,8 @@ internal class SharedMock<K : Any, L>(
         }
 
     public val _blissWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithVoid", collector =
         verifier, freeze = freeze)
 
@@ -287,103 +287,107 @@ internal class SharedMock<K : Any, L>(
         }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T> foo(): T = _fooWithVoid.invoke() as T
+    public override fun <T> foo(): T = _fooWithVoid.invoke()  as T
 
     public override fun <T> foo(payload: T): Unit = _fooWithAny.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
+    public override fun <T : Int> bla(): T = _blaWithVoid.invoke()  as T
 
     public override fun <T : Int> bla(payload: T): Unit = _blaWithInt.invoke(payload)
 
     public override fun <T : List<Array<String>>> bar(payload: T): Unit = _barWithList.invoke(payload)
 
+
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke() as T
+    public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke()  as T
 
     public override fun <T : List<Array<String?>>> blubb(payload: T): Unit =
         _blubbWithList.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<String?>>> blubb(): T = _blubbWithVoid.invoke() as T
+    public override fun <T : List<Array<String?>>> blubb(): T = _blubbWithVoid.invoke()  as T
 
     public override fun <T : List<Array<Int>>?> buss(payload: T): Unit = _bussWithList.invoke(payload)
 
+
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>>?> buss(): T = _bussWithVoid.invoke() as T
+    public override fun <T : List<Array<Int>>?> buss(): T = _bussWithVoid.invoke()  as T
 
     public override fun <T : List<Array<Int>?>> boss(payload: T): Unit = _bossWithList.invoke(payload)
 
+
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>?>> boss(): T = _bossWithVoid.invoke() as T
+    public override fun <T : List<Array<Int>?>> boss(): T = _bossWithVoid.invoke()  as T
 
     public override fun <T : List<Array<Int>>> buzz(payload: T?): Unit = _buzzWithList.invoke(payload)
 
+
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>>> buzz(): T? = _buzzWithVoid.invoke() as T?
+    public override fun <T : List<Array<Int>>> buzz(): T? = _buzzWithVoid.invoke()  as T?
 
     public override fun <T : L> ozz(payload: T): Unit = _ozzWithL.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : L> ozz(): T = _ozzWithVoid.invoke() as T
+    public override fun <T : L> ozz(): T = _ozzWithVoid.invoke()  as T
 
     public override fun <T : Comparable<List<Array<T>>>> brass(payload: T): Unit =
         _brassWithComparable.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke() as T
+    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke()  as T
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(payload: T): Unit =
         _blissWithComparable.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke() as T
+    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke()  as T
 
     public override fun <T : Map<String, String>> loss(payload: T): Unit =
         _lossWithMap.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Map<String, String>> loss(): T = _lossWithVoid.invoke() as T
+    public override fun <T : Map<String, String>> loss(): T = _lossWithVoid.invoke()  as T
 
     public override fun <T> uzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String> =
         _uzzWithSomeGenericList.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> uzz(): T where T : SomeGeneric<String>, T : List<String> =
-        _uzzWithVoid.invoke() as T
+        _uzzWithVoid.invoke()  as T
 
     public override fun <T> lzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String>? =
         _lzzWithSomeGenericList.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> lzz(): T where T : SomeGeneric<String>, T : List<String>? =
-        _lzzWithVoid.invoke() as T
+        _lzzWithVoid.invoke()  as T
 
     public override fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T : List<String>? =
         _tzzWithSomeGenericList.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithVoid.invoke() as T
+        _tzzWithVoid.invoke()  as T
 
     public override fun <T> rzz(payload: T): Unit where T : SomeGeneric<String>, T :
     Map<String, String> = _rzzWithSomeGenericMap.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> rzz(): T where T : SomeGeneric<String>, T : Map<String, String> =
-        _rzzWithVoid.invoke() as T
+        _rzzWithVoid.invoke()  as T
 
     public override fun <T> izz(payload: T): Unit where T : SomeGeneric<String>, T :
     Comparable<List<Array<T>>> = _izzWithSomeGenericComparable.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> izz(): T where T : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
-        _izzWithVoid.invoke() as T
+        _izzWithVoid.invoke()  as T
 
     public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithAnyAny.invoke(arg0, arg1)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithAny.invoke(arg0) as R
+    public override fun <T : R, R> oss(arg0: T): R = _ossWithAny.invoke(arg0)  as R
 
     public override fun <T : R, R> kss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
     Comparable<List<Array<R>>> = _kssWithSomeGenericComparableSomeGenericComparable.invoke(arg0,
@@ -391,25 +395,25 @@ internal class SharedMock<K : Any, L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithSomeGenericComparable.invoke(arg0) as R
+    Comparable<List<Array<R>>> = _kssWithSomeGenericComparable.invoke(arg0)  as R
 
     public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _issWithAnySomeGenericComparable.invoke(arg0, arg1)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0) as R
+    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0)  as R
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T): R =
-        _pssWithSomeGeneric.invoke(arg0) as R
+        _pssWithSomeGeneric.invoke(arg0)  as R
 
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R): Unit =
         _pssWithSomeGenericSomeGeneric.invoke(arg0, arg1)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence =
-        _xssWithAny.invoke(arg0) as R
+        _xssWithAny.invoke(arg0)  as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
         = _xssWithAnySequenceCharSequence.invoke(arg0, arg1)
