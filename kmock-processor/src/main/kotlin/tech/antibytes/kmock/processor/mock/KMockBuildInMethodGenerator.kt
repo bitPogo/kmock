@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
+import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -22,9 +23,11 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
 
 internal class KMockBuildInMethodGenerator(
+    private val spyGenerator: SpyGenerator,
     private val nameSelector: ProxyNameSelector,
     private val relaxerGenerator: RelaxerGenerator,
 ) : BuildInMethodGenerator {
+    private val buildInArguments: Array<MethodTypeInfo> = arrayOf()
     private val buildIns = mapOf(
         "toString" to String::class,
         "equals" to Boolean::class,
@@ -42,97 +45,17 @@ internal class KMockBuildInMethodGenerator(
         }
     }
 
-    private fun buildRelaxationInvocation(
-        parent: String,
-        methodName: String,
-        argumentName: String,
-    ): String {
-        val body = "$parent.$methodName($argumentName)"
-
-        return if (argumentName.isEmpty()) {
-            "{ $body }"
-        } else {
-            "{ $argumentName ->\n$body\n}"
-        }
-    }
-
-    private fun addSpy(
-        relaxationDefinitions: StringBuilder,
-        mockName: String,
-        methodName: String,
-        argumentName: String
-    ) {
-
-        if (methodName == "equals") {
-            val spyBody = buildRelaxationInvocation(
-                parent = "super",
-                methodName = methodName,
-                argumentName = argumentName
-            )
-
-            relaxationDefinitions.append(
-                """useSpyOnEqualsIf(
-                |    spyTarget = __spyOn,
-                |    equals = $spyBody,
-                |    mockKlass = $mockName::class
-                |)
-                """.trimMargin() + "\n"
-            )
-        } else {
-            val spyBody = buildRelaxationInvocation(
-                parent = "__spyOn!!",
-                methodName = methodName,
-                argumentName = argumentName
-            )
-
-            relaxationDefinitions.append(
-                """useSpyIf(
-                |    spyTarget = __spyOn,
-                |    spyOn = $spyBody
-                |)
-                """.trimMargin() + "\n"
-            )
-        }
-    }
-
-    private fun addRelaxation(
-        mockName: String,
-        methodName: String,
-        argument: MethodTypeInfo?,
-        enableSpy: Boolean,
-    ): String {
-        return relaxerGenerator.addBuildInRelaxation(
-            methodName = methodName,
-            argument = argument
-        ) { relaxationDefinitions ->
-            val argumentName = argument?.argumentName ?: ""
-
-            if (enableSpy) {
-                addSpy(
-                    relaxationDefinitions = relaxationDefinitions,
-                    mockName = mockName,
-                    methodName = methodName,
-                    argumentName = argumentName
-                )
-            }
-        }
-    }
-
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
-        mockName: String,
         argument: MethodTypeInfo?,
         proxyInfo: ProxyInfo,
-        enableSpy: Boolean
     ): PropertySpec.Builder {
         return proxySpec.initializer(
             "ProxyFactory.createSyncFunProxy(%S, collector = verifier, freeze = freeze, ignorableForVerification = true) %L",
             proxyInfo.proxyId,
-            addRelaxation(
-                mockName = mockName,
+            relaxerGenerator.addBuildInRelaxation(
                 methodName = proxyInfo.templateName,
-                argument = argument,
-                enableSpy = enableSpy
+                argument = argument
             )
         )
     }
@@ -147,10 +70,8 @@ internal class KMockBuildInMethodGenerator(
     }
 
     private fun buildProxy(
-        mockName: String,
         proxyInfo: ProxyInfo,
         proxyArgument: MethodTypeInfo?,
-        enableSpy: Boolean
     ): PropertySpec {
         val proxyReturnType = buildIns[proxyInfo.templateName]!!.asTypeName()
 
@@ -165,17 +86,43 @@ internal class KMockBuildInMethodGenerator(
         ).let { proxySpec ->
             buildProxyInitializer(
                 proxySpec = proxySpec,
-                mockName = mockName,
                 argument = proxyArgument,
                 proxyInfo = proxyInfo,
-                enableSpy = enableSpy
             )
         }.build()
     }
 
+    private fun useEqualsOrElse(
+        mockName: String,
+        proxyInfo: ProxyInfo,
+    ): String {
+        return if (proxyInfo.templateName == "equals") {
+            spyGenerator.buildEqualsSpy(mockName)
+        } else {
+            spyGenerator.buildMethodSpy(
+                methodName = proxyInfo.templateName,
+                arguments = buildInArguments
+            )
+        }
+    }
+
+    private fun determineSpy(
+        enableSpy: Boolean,
+        mockName: String,
+        proxyInfo: ProxyInfo,
+    ): String {
+        return if (enableSpy) {
+            useEqualsOrElse(mockName, proxyInfo)
+        } else {
+            ""
+        }
+    }
+
     private fun buildMethod(
+        mockName: String,
         proxyInfo: ProxyInfo,
         argument: MethodTypeInfo?,
+        enableSpy: Boolean
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
@@ -186,7 +133,13 @@ internal class KMockBuildInMethodGenerator(
             method.addParameter(argument.argumentName, argument.typeName)
         }
 
-        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.argumentName ?: ""})")
+        val spy = determineSpy(
+            enableSpy = enableSpy,
+            mockName = mockName,
+            proxyInfo = proxyInfo
+        )
+
+        method.addCode("return ${proxyInfo.proxyName}.invoke(${argument?.argumentName ?: ""}) $spy")
 
         return method.build()
     }
@@ -195,7 +148,7 @@ internal class KMockBuildInMethodGenerator(
         mockName: String,
         qualifier: String,
         methodName: String,
-        enableSpy: Boolean
+        enableSpy: Boolean,
     ): Pair<PropertySpec, FunSpec> {
         val proxyInfo = nameSelector.selectBuildInMethodName(
             qualifier = qualifier,
@@ -204,15 +157,15 @@ internal class KMockBuildInMethodGenerator(
         val argument = resolveArgument(methodName)
 
         val proxy = buildProxy(
-            mockName = mockName,
             proxyInfo = proxyInfo,
             proxyArgument = argument,
-            enableSpy = enableSpy
         )
 
         val method = buildMethod(
+            mockName = mockName,
             proxyInfo = proxyInfo,
-            argument = argument
+            argument = argument,
+            enableSpy = enableSpy
         )
 
         return Pair(proxy, method)

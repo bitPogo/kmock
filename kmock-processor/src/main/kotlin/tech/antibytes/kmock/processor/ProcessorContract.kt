@@ -175,22 +175,29 @@ internal interface ProcessorContract {
     }
 
     interface RelaxerGenerator {
-        fun addPropertyRelaxation(
-            relaxer: Relaxer?,
-            addSpy: Function1<StringBuilder, Unit>
-        ): String
+        fun addPropertyRelaxation(relaxer: Relaxer?): String
 
         fun addMethodRelaxation(
             relaxer: Relaxer?,
             methodReturnType: MethodReturnTypeInfo,
-            addSpy: Function1<StringBuilder, Unit>
         ): String
 
         fun addBuildInRelaxation(
             methodName: String,
             argument: MethodTypeInfo?,
-            addSpy: Function1<StringBuilder, Unit>
         ): String
+    }
+
+    interface SpyGenerator {
+        fun buildGetterSpy(propertyName: String): String
+        fun buildSetterSpy(propertyName: String): String
+
+        fun buildMethodSpy(
+            methodName: String,
+            arguments: Array<MethodTypeInfo>
+        ): String
+
+        fun buildEqualsSpy(mockName: String): String
     }
 
     interface PropertyGenerator {

@@ -53,11 +53,8 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     override fun addPropertyRelaxation(
-        relaxer: Relaxer?,
-        addSpy: Function1<StringBuilder, Unit>
+        relaxer: Relaxer?
     ): String = addRelaxation { relaxationDefinitions ->
-        addSpy(relaxationDefinitions)
-
         addRelaxer(
             relaxationDefinitions = relaxationDefinitions,
             relaxer = relaxer
@@ -67,10 +64,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     override fun addMethodRelaxation(
         relaxer: Relaxer?,
         methodReturnType: MethodReturnTypeInfo,
-        addSpy: Function1<StringBuilder, Unit>
     ): String = addRelaxation { relaxationDefinitions ->
-        addSpy(relaxationDefinitions)
-
         addFunRelaxer(
             relaxationDefinitions = relaxationDefinitions,
             methodReturnType = methodReturnType,
@@ -94,7 +88,6 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     override fun addBuildInRelaxation(
         methodName: String,
         argument: MethodTypeInfo?,
-        addSpy: Function1<StringBuilder, Unit>
     ): String = addRelaxation { relaxationDefinitions ->
         val argumentName = argument?.argumentName ?: ""
         val relaxerBody = buildRelaxationInvocation(
@@ -103,7 +96,5 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         )
 
         relaxationDefinitions.append("use${methodName.titleCase()}Relaxer $relaxerBody\n")
-
-        addSpy(relaxationDefinitions)
     }
 }

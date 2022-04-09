@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
+import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
 
 class KMockProcessorProvider : SymbolProcessorProvider {
@@ -39,15 +40,17 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         )
 
         val propertyGenerator = KMockPropertyGenerator(
+            spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
             relaxerGenerator = relaxerGenerator,
         )
         val buildInGenerator = KMockBuildInMethodGenerator(
+            spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
             relaxerGenerator = relaxerGenerator,
         )
         val methodGenerator = KMockMethodGenerator(
-            allowedRecursiveTypes = options.allowedRecursiveTypes,
+            spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
             genericResolver = genericResolver,
             relaxerGenerator = relaxerGenerator,

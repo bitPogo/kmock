@@ -6,14 +6,13 @@
 
 package tech.antibytes.kmock.processor.mock
 
-import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
 
-class KMockBuildInFunctionGeneratorSpec {
+class KMockSpyGeneratorSpec {
     @Test
-    fun `It fulfils BuildInFunctionGenerator`() {
-        KMockBuildInMethodGenerator(mockk(), mockk(), mockk()) fulfils ProcessorContract.BuildInMethodGenerator::class
+    fun `It fulfils SpyGenerator`() {
+        KMockSpyGenerator fulfils ProcessorContract.SpyGenerator::class
     }
 }
