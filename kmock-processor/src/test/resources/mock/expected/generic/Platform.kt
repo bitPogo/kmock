@@ -472,7 +472,7 @@ internal class PlatformMock<K : Any, L>(
     public override fun <T : L> ozz(vararg payload: T): Unit = _ozzWithLs.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke()  as T
+    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>> brass(payload: T): Unit =
         _brassWithComparable.invoke(payload)
@@ -481,7 +481,7 @@ internal class PlatformMock<K : Any, L>(
         _brassWithComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke()  as T
+    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(payload: T): Unit =
         _blissWithComparable.invoke(payload)

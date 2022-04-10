@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package mock.template.compability
+package mock.template.compatibility
 
 import mock.template.async.Platform
 import tech.antibytes.kmock.Mock

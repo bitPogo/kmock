@@ -86,11 +86,13 @@ internal class KmockProxyNameSelector(
     override fun selectPropertyName(
         qualifier: String,
         propertyName: String
-    ): ProxyInfo = ProxyInfo(
-        templateName = propertyName,
-        proxyId = "$qualifier#_$propertyName",
-        proxyName = "_$propertyName"
-    )
+    ): ProxyInfo {
+        return ProxyInfo(
+            templateName = propertyName,
+            proxyId = "$qualifier#_$propertyName",
+            proxyName = "_$propertyName"
+        )
+    }
 
     private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
         val className = this.substringAfterLast('.').titleCase()
@@ -247,7 +249,7 @@ internal class KmockProxyNameSelector(
     ): ProxyInfo = ProxyInfo(
         templateName = methodName,
         proxyId = proxyId,
-        proxyName = proxyName
+        proxyName = proxyName,
     )
 
     private fun resolveMethodProxyId(

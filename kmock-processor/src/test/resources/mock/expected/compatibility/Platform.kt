@@ -1,4 +1,4 @@
-package mock.template.compability
+package mock.template.compatibility
 
 import kotlin.Any
 import kotlin.Array
@@ -33,37 +33,37 @@ internal class PlatformMock<K : Any, L>(
         set(`value`) = _template.onSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> =
-        ProxyFactory.createPropertyProxy("mock.template.compability.PlatformMock#_template", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createPropertyProxy("mock.template.compatibility.PlatformMock#_template",
+            collector = verifier, freeze = freeze)
 
     public val _fooWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_fooWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_fooWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_fooWithAny",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_fooWithAny",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _fooWithAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) -> kotlin.Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_fooWithAnys",
+        = ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_fooWithAnys",
         collector = verifier, freeze = freeze) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blaWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blaWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _blaWithInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blaWithInt",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blaWithInt",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _blaWithInts: KMockContract.SyncFunProxy<Unit, (kotlin.IntArray) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blaWithInts",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blaWithInts",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -71,20 +71,20 @@ internal class PlatformMock<K : Any, L>(
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String>>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_barWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_barWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _barWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_barWithCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_barWithCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _barWithCollectionsLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_barWithCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_barWithCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -92,20 +92,20 @@ internal class PlatformMock<K : Any, L>(
     public val _blubbWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String?>>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blubbWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blubbWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _blubbWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String?>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blubbWithCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blubbWithCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _blubbWithCollectionsLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blubbWithCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blubbWithCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -113,20 +113,20 @@ internal class PlatformMock<K : Any, L>(
     public val _bussWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bussWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bussWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _bussWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bussWithCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bussWithCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _bussWithCollectionsLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bussWithCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bussWithCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -134,20 +134,20 @@ internal class PlatformMock<K : Any, L>(
     public val _bossWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bossWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bossWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _bossWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bossWithCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bossWithCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _bossWithCollectionsLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_bossWithCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_bossWithCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -155,57 +155,57 @@ internal class PlatformMock<K : Any, L>(
     public val _buzzWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_buzzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_buzzWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _buzzWithCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_buzzWithCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_buzzWithCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _buzzWithCollectionsLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_buzzWithCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_buzzWithCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _ozzWithVoid: KMockContract.SyncFunProxy<L, () -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ozzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ozzWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _ozzWithL: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ozzWithL", collector
-        = verifier, freeze = freeze) {
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ozzWithL",
+            collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _ozzWithLs: KMockContract.SyncFunProxy<Unit, (Array<out L>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ozzWithLs", collector
-        = verifier, freeze = freeze) {
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ozzWithLs",
+            collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _brassWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_brassWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_brassWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _brassWithComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_brassWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_brassWithComparable",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _brassWithComparables: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_brassWithComparables",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_brassWithComparables",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -213,217 +213,217 @@ internal class PlatformMock<K : Any, L>(
     public val _blissWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blissWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blissWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _blissWithComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blissWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blissWithComparable",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _blissWithComparables: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_blissWithComparables",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_blissWithComparables",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
         kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lossWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lossWithVoid",
             collector = verifier, freeze = freeze)
 
     public val _lossWithCollectionsMap:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String, kotlin.String>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lossWithCollectionsMap",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lossWithCollectionsMap",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _lossWithCollectionsMaps: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lossWithCollectionsMaps",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lossWithCollectionsMaps",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _uzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_uzzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_uzzWithVoid",
             collector = verifier, freeze = freeze)
 
-    public val _uzzWithMockTemplateCompabilitySomeGenericCollectionsList:
+    public val _uzzWithMockTemplateCompatibilitySomeGenericCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_uzzWithMockTemplateCompabilitySomeGenericCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_uzzWithMockTemplateCompatibilitySomeGenericCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _uzzWithMockTemplateCompabilitySomeGenericCollectionsLists:
+    public val _uzzWithMockTemplateCompatibilitySomeGenericCollectionsLists:
         KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_uzzWithMockTemplateCompabilitySomeGenericCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_uzzWithMockTemplateCompatibilitySomeGenericCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lzzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lzzWithVoid",
             collector = verifier, freeze = freeze)
 
-    public val _lzzWithMockTemplateCompabilitySomeGenericCollectionsList:
+    public val _lzzWithMockTemplateCompatibilitySomeGenericCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lzzWithMockTemplateCompabilitySomeGenericCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lzzWithMockTemplateCompatibilitySomeGenericCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _lzzWithMockTemplateCompabilitySomeGenericCollectionsLists:
+    public val _lzzWithMockTemplateCompatibilitySomeGenericCollectionsLists:
         KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_lzzWithMockTemplateCompabilitySomeGenericCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_lzzWithMockTemplateCompatibilitySomeGenericCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_tzzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_tzzWithVoid",
             collector = verifier, freeze = freeze)
 
-    public val _tzzWithMockTemplateCompabilitySomeGenericCollectionsList:
+    public val _tzzWithMockTemplateCompatibilitySomeGenericCollectionsList:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_tzzWithMockTemplateCompabilitySomeGenericCollectionsList",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_tzzWithMockTemplateCompatibilitySomeGenericCollectionsList",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _tzzWithMockTemplateCompabilitySomeGenericCollectionsLists:
+    public val _tzzWithMockTemplateCompatibilitySomeGenericCollectionsLists:
         KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_tzzWithMockTemplateCompabilitySomeGenericCollectionsLists",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_tzzWithMockTemplateCompatibilitySomeGenericCollectionsLists",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_rzzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_rzzWithVoid",
             collector = verifier, freeze = freeze)
 
-    public val _rzzWithMockTemplateCompabilitySomeGenericCollectionsMap:
+    public val _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMap:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_rzzWithMockTemplateCompabilitySomeGenericCollectionsMap",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_rzzWithMockTemplateCompatibilitySomeGenericCollectionsMap",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _rzzWithMockTemplateCompabilitySomeGenericCollectionsMaps:
+    public val _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMaps:
         KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_rzzWithMockTemplateCompabilitySomeGenericCollectionsMaps",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_rzzWithMockTemplateCompatibilitySomeGenericCollectionsMaps",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_izzWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_izzWithVoid",
             collector = verifier, freeze = freeze)
 
-    public val _izzWithMockTemplateCompabilitySomeGenericComparable:
+    public val _izzWithMockTemplateCompatibilitySomeGenericComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_izzWithMockTemplateCompabilitySomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_izzWithMockTemplateCompatibilitySomeGenericComparable",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _izzWithMockTemplateCompabilitySomeGenericComparables:
+    public val _izzWithMockTemplateCompatibilitySomeGenericComparables:
         KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_izzWithMockTemplateCompabilitySomeGenericComparables",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_izzWithMockTemplateCompatibilitySomeGenericComparables",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _ossWithAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ossWithAny",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ossWithAny",
             collector = verifier, freeze = freeze)
 
     public val _ossWithAnyAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ossWithAnyAny",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ossWithAnyAny",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _ossWithAnyAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, Array<out
     kotlin.Any?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_ossWithAnyAnys",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_ossWithAnyAnys",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _kssWithMockTemplateCompabilitySomeGenericComparable:
+    public val _kssWithMockTemplateCompatibilitySomeGenericComparable:
         KMockContract.SyncFunProxy<Any, (kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_kssWithMockTemplateCompabilitySomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_kssWithMockTemplateCompatibilitySomeGenericComparable",
             collector = verifier, freeze = freeze)
 
     public
-    val _kssWithMockTemplateCompabilitySomeGenericComparableMockTemplateCompabilitySomeGenericComparable:
+    val _kssWithMockTemplateCompatibilitySomeGenericComparableMockTemplateCompatibilitySomeGenericComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_kssWithMockTemplateCompabilitySomeGenericComparableMockTemplateCompabilitySomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_kssWithMockTemplateCompatibilitySomeGenericComparableMockTemplateCompatibilitySomeGenericComparable",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _issWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_issWithAny",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_issWithAny",
             collector = verifier, freeze = freeze)
 
-    public val _issWithAnyMockTemplateCompabilitySomeGenericComparable:
+    public val _issWithAnyMockTemplateCompatibilitySomeGenericComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_issWithAnyMockTemplateCompabilitySomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_issWithAnyMockTemplateCompatibilitySomeGenericComparable",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public val _pssWithMockTemplateCompabilitySomeGeneric:
-        KMockContract.SyncFunProxy<mock.template.compability.SomeGeneric<kotlin.String>, (mock.template.compability.SomeGeneric<kotlin.String>) ->
-        mock.template.compability.SomeGeneric<kotlin.String>> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_pssWithMockTemplateCompabilitySomeGeneric",
+    public val _pssWithMockTemplateCompatibilitySomeGeneric:
+        KMockContract.SyncFunProxy<mock.template.compatibility.SomeGeneric<kotlin.String>, (mock.template.compatibility.SomeGeneric<kotlin.String>) ->
+        mock.template.compatibility.SomeGeneric<kotlin.String>> =
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_pssWithMockTemplateCompatibilitySomeGeneric",
             collector = verifier, freeze = freeze)
 
-    public val _pssWithMockTemplateCompabilitySomeGenericMockTemplateCompabilitySomeGeneric:
-        KMockContract.SyncFunProxy<Unit, (mock.template.compability.SomeGeneric<kotlin.String>,
-            mock.template.compability.SomeGeneric<kotlin.String>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_pssWithMockTemplateCompabilitySomeGenericMockTemplateCompabilitySomeGeneric",
+    public val _pssWithMockTemplateCompatibilitySomeGenericMockTemplateCompatibilitySomeGeneric:
+        KMockContract.SyncFunProxy<Unit, (mock.template.compatibility.SomeGeneric<kotlin.String>,
+            mock.template.compatibility.SomeGeneric<kotlin.String>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_pssWithMockTemplateCompatibilitySomeGenericMockTemplateCompatibilitySomeGeneric",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public val _xssWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_xssWithAny",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_xssWithAny",
             collector = verifier, freeze = freeze)
 
     public val _xssWithAnySequencesSequenceCharSequence:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compability.PlatformMock#_xssWithAnySequencesSequenceCharSequence",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.PlatformMock#_xssWithAnySequencesSequenceCharSequence",
             collector = verifier, freeze = freeze) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T> foo(): T = _fooWithVoid.invoke()  as T
+    public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
     public override fun <T> foo(payload: T): Unit = _fooWithAny.invoke(payload)
 
     public override fun <T> foo(vararg payload: T): Unit = _fooWithAnys.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Int> bla(): T = _blaWithVoid.invoke()  as T
+    public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
 
     public override fun <T : Int> bla(payload: T): Unit = _blaWithInt.invoke(payload)
 
     public override fun <T : Int> bla(vararg payload: T): Unit = _blaWithInts.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke()  as T
+    public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke() as T
 
     public override fun <T : List<Array<String>>> bar(payload: T): Unit =
         _barWithCollectionsList.invoke(payload)
@@ -432,7 +432,7 @@ internal class PlatformMock<K : Any, L>(
         _barWithCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<String?>>> blubb(): T = _blubbWithVoid.invoke()  as T
+    public override fun <T : List<Array<String?>>> blubb(): T = _blubbWithVoid.invoke() as T
 
     public override fun <T : List<Array<String?>>> blubb(payload: T): Unit =
         _blubbWithCollectionsList.invoke(payload)
@@ -441,7 +441,7 @@ internal class PlatformMock<K : Any, L>(
         _blubbWithCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>>?> buss(): T = _bussWithVoid.invoke()  as T
+    public override fun <T : List<Array<Int>>?> buss(): T = _bussWithVoid.invoke() as T
 
     public override fun <T : List<Array<Int>>?> buss(payload: T): Unit =
         _bussWithCollectionsList.invoke(payload)
@@ -450,7 +450,7 @@ internal class PlatformMock<K : Any, L>(
         _bussWithCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>?>> boss(): T = _bossWithVoid.invoke()  as T
+    public override fun <T : List<Array<Int>?>> boss(): T = _bossWithVoid.invoke() as T
 
     public override fun <T : List<Array<Int>?>> boss(payload: T): Unit =
         _bossWithCollectionsList.invoke(payload)
@@ -459,7 +459,7 @@ internal class PlatformMock<K : Any, L>(
         _bossWithCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : List<Array<Int>>> buzz(): T? = _buzzWithVoid.invoke()  as T?
+    public override fun <T : List<Array<Int>>> buzz(): T? = _buzzWithVoid.invoke() as T?
 
     public override fun <T : List<Array<Int>>> buzz(payload: T?): Unit =
         _buzzWithCollectionsList.invoke(payload)
@@ -468,14 +468,14 @@ internal class PlatformMock<K : Any, L>(
         _buzzWithCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : L> ozz(): T = _ozzWithVoid.invoke()  as T
+    public override fun <T : L> ozz(): T = _ozzWithVoid.invoke() as T
 
     public override fun <T : L> ozz(payload: T): Unit = _ozzWithL.invoke(payload)
 
     public override fun <T : L> ozz(vararg payload: T): Unit = _ozzWithLs.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke()  as T
+    public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>> brass(payload: T): Unit =
         _brassWithComparable.invoke(payload)
@@ -484,7 +484,7 @@ internal class PlatformMock<K : Any, L>(
         _brassWithComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke()  as T
+    public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(payload: T): Unit =
         _blissWithComparable.invoke(payload)
@@ -493,7 +493,7 @@ internal class PlatformMock<K : Any, L>(
         _blissWithComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Map<String, String>> loss(): T = _lossWithVoid.invoke()  as T
+    public override fun <T : Map<String, String>> loss(): T = _lossWithVoid.invoke() as T
 
     public override fun <T : Map<String, String>> loss(payload: T): Unit =
         _lossWithCollectionsMap.invoke(payload)
@@ -503,60 +503,60 @@ internal class PlatformMock<K : Any, L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> uzz(): T where T : SomeGeneric<String>, T : List<String> =
-        _uzzWithVoid.invoke()  as T
+        _uzzWithVoid.invoke() as T
 
     public override fun <T> uzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String> =
-        _uzzWithMockTemplateCompabilitySomeGenericCollectionsList.invoke(payload)
+        _uzzWithMockTemplateCompatibilitySomeGenericCollectionsList.invoke(payload)
 
     public override fun <T> uzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    List<String> = _uzzWithMockTemplateCompabilitySomeGenericCollectionsLists.invoke(payload)
+    List<String> = _uzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> lzz(): T where T : SomeGeneric<String>, T : List<String>? =
-        _lzzWithVoid.invoke()  as T
+        _lzzWithVoid.invoke() as T
 
     public override fun <T> lzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String>? =
-        _lzzWithMockTemplateCompabilitySomeGenericCollectionsList.invoke(payload)
+        _lzzWithMockTemplateCompatibilitySomeGenericCollectionsList.invoke(payload)
 
     public override fun <T> lzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    List<String>? = _lzzWithMockTemplateCompabilitySomeGenericCollectionsLists.invoke(payload)
+    List<String>? = _lzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithVoid.invoke()  as T
+        _tzzWithVoid.invoke() as T
 
     public override fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithMockTemplateCompabilitySomeGenericCollectionsList.invoke(payload)
+        _tzzWithMockTemplateCompatibilitySomeGenericCollectionsList.invoke(payload)
 
     public override fun <T> tzz(vararg payload: T): Unit where T : SomeGeneric<String>?, T :
-    List<String>? = _tzzWithMockTemplateCompabilitySomeGenericCollectionsLists.invoke(payload)
+    List<String>? = _tzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> rzz(): T where T : SomeGeneric<String>, T : Map<String, String> =
-        _rzzWithVoid.invoke()  as T
+        _rzzWithVoid.invoke() as T
 
     public override fun <T> rzz(payload: T): Unit where T : SomeGeneric<String>, T :
-    Map<String, String> = _rzzWithMockTemplateCompabilitySomeGenericCollectionsMap.invoke(payload)
-
+    Map<String, String> =
+        _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMap.invoke(payload)
 
     public override fun <T> rzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
     Map<String, String> =
-        _rzzWithMockTemplateCompabilitySomeGenericCollectionsMaps.invoke(payload)
+        _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMaps.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> izz(): T where T : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
-        _izzWithVoid.invoke()  as T
+        _izzWithVoid.invoke() as T
 
     public override fun <T> izz(payload: T): Unit where T : SomeGeneric<String>, T :
     Comparable<List<Array<T>>> =
-        _izzWithMockTemplateCompabilitySomeGenericComparable.invoke(payload)
+        _izzWithMockTemplateCompatibilitySomeGenericComparable.invoke(payload)
 
     public override fun <T> izz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
     Comparable<List<Array<T>>> =
-        _izzWithMockTemplateCompabilitySomeGenericComparables.invoke(payload)
+        _izzWithMockTemplateCompatibilitySomeGenericComparables.invoke(payload)
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithAny.invoke(arg0)  as R
+    public override fun <T : R, R> oss(arg0: T): R = _ossWithAny.invoke(arg0) as R
 
     public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithAnyAny.invoke(arg0, arg1)
 
@@ -565,33 +565,33 @@ internal class PlatformMock<K : Any, L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithMockTemplateCompabilitySomeGenericComparable.invoke(arg0)
-        as R
+    Comparable<List<Array<R>>> =
+        _kssWithMockTemplateCompatibilitySomeGenericComparable.invoke(arg0) as R
 
     public override fun <T : R, R> kss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
     Comparable<List<Array<R>>> =
-        _kssWithMockTemplateCompabilitySomeGenericComparableMockTemplateCompabilitySomeGenericComparable.invoke(arg0,
+        _kssWithMockTemplateCompatibilitySomeGenericComparableMockTemplateCompatibilitySomeGenericComparable.invoke(arg0,
             arg1)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0)  as R
+    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0) as R
 
     public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> =
-        _issWithAnyMockTemplateCompabilitySomeGenericComparable.invoke(arg0, arg1)
+        _issWithAnyMockTemplateCompatibilitySomeGenericComparable.invoke(arg0, arg1)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T): R =
-        _pssWithMockTemplateCompabilitySomeGeneric.invoke(arg0)  as R
+        _pssWithMockTemplateCompatibilitySomeGeneric.invoke(arg0) as R
 
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R): Unit =
-        _pssWithMockTemplateCompabilitySomeGenericMockTemplateCompabilitySomeGeneric.invoke(arg0,
+        _pssWithMockTemplateCompatibilitySomeGenericMockTemplateCompatibilitySomeGeneric.invoke(arg0,
             arg1)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence =
-        _xssWithAny.invoke(arg0)  as R
+        _xssWithAny.invoke(arg0) as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
         = _xssWithAnySequencesSequenceCharSequence.invoke(arg0, arg1)
@@ -632,29 +632,29 @@ internal class PlatformMock<K : Any, L>(
         _lossWithCollectionsMap.clear()
         _lossWithCollectionsMaps.clear()
         _uzzWithVoid.clear()
-        _uzzWithMockTemplateCompabilitySomeGenericCollectionsList.clear()
-        _uzzWithMockTemplateCompabilitySomeGenericCollectionsLists.clear()
+        _uzzWithMockTemplateCompatibilitySomeGenericCollectionsList.clear()
+        _uzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.clear()
         _lzzWithVoid.clear()
-        _lzzWithMockTemplateCompabilitySomeGenericCollectionsList.clear()
-        _lzzWithMockTemplateCompabilitySomeGenericCollectionsLists.clear()
+        _lzzWithMockTemplateCompatibilitySomeGenericCollectionsList.clear()
+        _lzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.clear()
         _tzzWithVoid.clear()
-        _tzzWithMockTemplateCompabilitySomeGenericCollectionsList.clear()
-        _tzzWithMockTemplateCompabilitySomeGenericCollectionsLists.clear()
+        _tzzWithMockTemplateCompatibilitySomeGenericCollectionsList.clear()
+        _tzzWithMockTemplateCompatibilitySomeGenericCollectionsLists.clear()
         _rzzWithVoid.clear()
-        _rzzWithMockTemplateCompabilitySomeGenericCollectionsMap.clear()
-        _rzzWithMockTemplateCompabilitySomeGenericCollectionsMaps.clear()
+        _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMap.clear()
+        _rzzWithMockTemplateCompatibilitySomeGenericCollectionsMaps.clear()
         _izzWithVoid.clear()
-        _izzWithMockTemplateCompabilitySomeGenericComparable.clear()
-        _izzWithMockTemplateCompabilitySomeGenericComparables.clear()
+        _izzWithMockTemplateCompatibilitySomeGenericComparable.clear()
+        _izzWithMockTemplateCompatibilitySomeGenericComparables.clear()
         _ossWithAny.clear()
         _ossWithAnyAny.clear()
         _ossWithAnyAnys.clear()
-        _kssWithMockTemplateCompabilitySomeGenericComparable.clear()
-        _kssWithMockTemplateCompabilitySomeGenericComparableMockTemplateCompabilitySomeGenericComparable.clear()
+        _kssWithMockTemplateCompatibilitySomeGenericComparable.clear()
+        _kssWithMockTemplateCompatibilitySomeGenericComparableMockTemplateCompatibilitySomeGenericComparable.clear()
         _issWithAny.clear()
-        _issWithAnyMockTemplateCompabilitySomeGenericComparable.clear()
-        _pssWithMockTemplateCompabilitySomeGeneric.clear()
-        _pssWithMockTemplateCompabilitySomeGenericMockTemplateCompabilitySomeGeneric.clear()
+        _issWithAnyMockTemplateCompatibilitySomeGenericComparable.clear()
+        _pssWithMockTemplateCompatibilitySomeGeneric.clear()
+        _pssWithMockTemplateCompatibilitySomeGenericMockTemplateCompatibilitySomeGeneric.clear()
         _xssWithAny.clear()
         _xssWithAnySequencesSequenceCharSequence.clear()
     }

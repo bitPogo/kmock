@@ -6,11 +6,8 @@
 
 package tech.antibytes.kmock.processor.mock
 
-import com.google.devtools.ksp.isOpen
-import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.AnnotationSpec
@@ -96,10 +93,6 @@ internal class KMockGenerator(
         template: KSClassDeclaration,
     ): String = "${template.packageName.asString()}.$mockName"
 
-    private fun KSDeclaration.isPublicOpen(): Boolean {
-        return this.isPublic() && this.isOpen()
-    }
-
     private fun isNotBuildInMethod(
         name: String
     ): Boolean = name != "equals" && name != "toString" && name != "hashCode"
@@ -153,17 +146,22 @@ internal class KMockGenerator(
                     relaxer = relaxer,
                 )
 
-                proxyNameCollector.add(proxy.name)
                 mock.addProperty(property)
-                mock.addProperty(proxy)
+
+                if (proxy != null) {
+                    proxyNameCollector.add(proxy.name)
+                    mock.addProperty(proxy)
+                }
             }
         }
 
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
+            val scope = ksFunction.determineScope()
 
-            if (ksFunction.isPublicOpen() && isNotBuildInMethod(name)) {
-                val (proxy, function) = methodGenerator.buildMethodBundle(
+            if (ksFunction.isPublicOpen() && (isNotBuildInMethod(name) || scope != null)) {
+                val (proxy, method) = methodGenerator.buildMethodBundle(
+                    methodScope = scope,
                     qualifier = qualifier,
                     ksFunction = ksFunction,
                     typeResolver = typeResolver,
@@ -171,9 +169,12 @@ internal class KMockGenerator(
                     relaxer = relaxer,
                 )
 
-                proxyNameCollector.add(proxy.name)
-                mock.addFunction(function)
-                mock.addProperty(proxy)
+                mock.addFunction(method)
+
+                if (proxy != null) {
+                    proxyNameCollector.add(proxy.name)
+                    mock.addProperty(proxy)
+                }
             }
         }
 
