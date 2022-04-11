@@ -205,17 +205,18 @@ internal interface ProcessorContract {
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, PropertySpec>
+        ): Pair<PropertySpec?, PropertySpec>
     }
 
     interface MethodGenerator {
         fun buildMethodBundle(
+            methodScope: TypeName?,
             qualifier: String,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, FunSpec>
+        ): Pair<PropertySpec?, FunSpec>
     }
 
     interface BuildInMethodGenerator {

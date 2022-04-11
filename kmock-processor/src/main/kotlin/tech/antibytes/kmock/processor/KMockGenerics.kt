@@ -51,11 +51,11 @@ internal object KMockGenerics : GenericResolver {
 
     override fun mapDeclaredGenerics(
         generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
+        resolver: TypeParameterResolver
     ): List<TypeVariableName> = generics.map { (type, bounds) ->
         TypeVariableName(
             type,
-            bounds = bounds.map { ksReference -> ksReference.resolve().toTypeName(typeResolver) }
+            bounds = bounds.map { ksReference -> ksReference.resolve().toTypeName(resolver) }
         )
     }
 

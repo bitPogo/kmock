@@ -52,16 +52,13 @@ toc::[]
 === Fixed
 
 * Method names with nullable or multi-bounded types defined as generic parameter
+* Scoped extension are now correctly resolved
 
 === Security
 
 === Bumped
 
 * KotlinPoet 1.10.2 -> 1.11.0
-
-=== Deprecated
-
-=== Migration
 
 
 == https://github.com/bitPogo/kmock/compare/v0.1.0\...v0.1.1[0.1.1]
