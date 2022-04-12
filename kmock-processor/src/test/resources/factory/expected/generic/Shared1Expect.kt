@@ -20,24 +20,10 @@ internal expect inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L>
 
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>, K : Any, L> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>,
-): Mock where L : Any, L : Comparable<L>
-
 internal expect inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>,
-): Mock where L : Any, L : Comparable<L>
-
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared2<K, L>, K : Any, L> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

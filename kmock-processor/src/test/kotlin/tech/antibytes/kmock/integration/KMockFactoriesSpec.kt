@@ -719,6 +719,7 @@ class KMockFactoriesSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}freeze" to "false",
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform",
             ),
             source
         )
@@ -747,6 +748,7 @@ class KMockFactoriesSpec {
             isKmp = true,
             mapOf(
                 "${KMOCK_PREFIX}freeze" to "false",
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Common",
             ),
             source
         )

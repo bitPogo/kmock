@@ -61,7 +61,7 @@ internal interface KMockPluginContract {
          * Set of full qualified name of target which should allow proxy to spy on.
          * Note: This will also activate build-in methods.
          */
-        var spyOn: Set<String>
+        var enableSpies: Set<String>
 
         /**
          * Switch which will KMock tell generate only `kspy` instead of `kmock`.

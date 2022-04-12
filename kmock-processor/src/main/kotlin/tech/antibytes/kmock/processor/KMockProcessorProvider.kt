@@ -86,6 +86,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             entryPointGenerator = KMockFactoryEntryPointGenerator(
                 utils = factoryUtils,
+                spyOn = options.spyOn,
                 spiesOnly = options.spiesOnly,
                 genericResolver = KMockGenerics,
                 codeGenerator = codeGenerator,
