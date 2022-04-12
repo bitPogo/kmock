@@ -12,12 +12,42 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGeneratorUtil(
-    private val freezeOnDefault: Boolean,
+    freezeOnDefault: Boolean,
     private val genericResolver: ProcessorContract.GenericResolver
 ) : ProcessorContract.MockFactoryGeneratorUtil {
+    private val spyOn = ParameterSpec.builder(
+        "spyOn",
+        TypeVariableName("SpyOn").copy(nullable = false)
+    ).build()
+    private val spyOnNullable = ParameterSpec.builder(
+        "spyOn",
+        TypeVariableName("SpyOn").copy(nullable = true)
+    ).build()
+
+    private val relaxed = ParameterSpec.builder("relaxed", Boolean::class).build()
+    private val relaxedWithDefault = ParameterSpec.builder("relaxed", Boolean::class)
+        .defaultValue("false")
+        .build()
+
+    private val relaxedUnit = ParameterSpec.builder("relaxUnitFun", Boolean::class).build()
+    private val relaxedUnitWithDefault = ParameterSpec.builder("relaxUnitFun", Boolean::class)
+        .defaultValue("false")
+        .build()
+
+    private val verifier = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME).build()
+    private val verifierWithDefault = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME)
+        .defaultValue("NoopCollector")
+        .build()
+
+    private val freeze = ParameterSpec.builder("freeze", Boolean::class).build()
+    private val freezeWithDefault = ParameterSpec.builder("freeze", Boolean::class)
+        .defaultValue(freezeOnDefault.toString())
+        .build()
+
     private fun buildGenericFactoryArgument(
         identifier: TypeVariableName,
         generics: List<TypeVariableName>
@@ -56,44 +86,41 @@ internal class KMockFactoryGeneratorUtil(
     private fun buildRelaxedParameter(
         hasDefault: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("relaxed", Boolean::class)
-        if (hasDefault) {
-            parameter.defaultValue("false")
+        return if (hasDefault) {
+            relaxedWithDefault
+        } else {
+            relaxed
         }
-
-        return parameter.build()
     }
 
     private fun buildUnitRelaxedParameter(
         hasDefault: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("relaxUnitFun", Boolean::class)
-        if (hasDefault) {
-            parameter.defaultValue("false")
+        return if (hasDefault) {
+            relaxedUnitWithDefault
+        } else {
+            relaxedUnit
         }
-
-        return parameter.build()
     }
 
     private fun buildVerifierParameter(
         hasDefault: Boolean
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME)
-        if (hasDefault) {
-            parameter.defaultValue("NoopCollector")
+        return if (hasDefault) {
+            verifierWithDefault
+        } else {
+            verifier
         }
-
-        return parameter.build()
     }
 
     private fun buildFreezeParameter(
         hasDefault: Boolean,
     ): ParameterSpec {
-        val parameter = ParameterSpec.builder("freeze", Boolean::class)
-        if (hasDefault) {
-            parameter.defaultValue(freezeOnDefault.toString())
+        return if (hasDefault) {
+            freezeWithDefault
+        } else {
+            freeze
         }
-        return parameter.build()
     }
 
     override fun generateKmockSignature(
@@ -118,9 +145,12 @@ internal class KMockFactoryGeneratorUtil(
         return kmock.amendGenericValues(type, generics)
     }
 
-    private fun buildSpyParameter(): ParameterSpec {
-        return ParameterSpec.builder("spyOn", TypeVariableName("SpyOn"))
-            .build()
+    private fun buildSpyParameter(nullable: Boolean = false): ParameterSpec {
+        return if (nullable) {
+            spyOnNullable
+        } else {
+            spyOn
+        }
     }
 
     override fun generateKspySignature(
@@ -145,6 +175,26 @@ internal class KMockFactoryGeneratorUtil(
         }
 
         return kspy.amendGenericValues(spyType, generics)
+    }
+
+    override fun generateMockFactorySignature(
+        mockType: TypeVariableName,
+        spyType: TypeVariableName,
+        generics: List<TypeVariableName>,
+    ): FunSpec.Builder {
+        val mockFactory = FunSpec.builder(SHARED_MOCK_FACTORY)
+
+        mockFactory.addModifiers(KModifier.PRIVATE, KModifier.INLINE)
+            .addTypeVariable(mockType.copy(reified = true))
+            .addTypeVariable(spyType.copy(reified = true))
+            .returns(mockType)
+            .addParameter(buildSpyParameter(true))
+            .addParameter(buildVerifierParameter(false))
+            .addParameter(buildRelaxedParameter(false))
+            .addParameter(buildUnitRelaxedParameter(false))
+            .addParameter(buildFreezeParameter(false))
+
+        return mockFactory.amendGenericValues(spyType, generics)
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(

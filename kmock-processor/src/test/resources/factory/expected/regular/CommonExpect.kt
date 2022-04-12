@@ -14,9 +14,3 @@ internal expect inline fun <reified Mock> kmock(
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
 ): Mock
-
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
-): Mock

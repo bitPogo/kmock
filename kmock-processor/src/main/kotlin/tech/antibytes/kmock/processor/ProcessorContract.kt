@@ -14,6 +14,7 @@ import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -39,8 +40,7 @@ internal interface ProcessorContract {
         val kspDir: String,
         val isKmp: Boolean,
         val freezeOnDefault: Boolean,
-        val allowInterfacesOnKmock: Boolean,
-        val allowInterfacesOnKspy: Boolean,
+        val allowInterfaces: Boolean,
         val spiesOnly: Boolean,
         val rootPackage: String,
         val knownSourceSets: Set<String>,
@@ -248,6 +248,12 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryGeneratorUtil {
+        fun generateMockFactorySignature(
+            mockType: TypeVariableName,
+            spyType: TypeVariableName,
+            generics: List<TypeVariableName>,
+        ): FunSpec.Builder
+
         fun generateKmockSignature(
             type: TypeVariableName,
             generics: List<TypeVariableName>,
@@ -294,6 +300,8 @@ internal interface ProcessorContract {
     companion object {
         const val KMOCK_FACTORY_TYPE_NAME = "Mock"
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
+        const val SHARED_MOCK_FACTORY = "getMockInstance"
+        const val FACTORY_FILE_NAME = "MockFactory"
         val ANNOTATION_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
@@ -316,13 +324,19 @@ internal interface ProcessorContract {
             ProxyFactory::class.java.simpleName
         )
 
+        val UNUSED = AnnotationSpec.builder(Suppress::class).addMember(
+            "%S, %S",
+            "UNUSED_PARAMETER",
+            "UNUSED_EXPRESSION"
+        ).build()
+
         const val COMMON_INDICATOR = "commonTest"
+
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
-        const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
-        const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
+        const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"

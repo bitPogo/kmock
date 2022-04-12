@@ -18,23 +18,10 @@ internal expect inline fun <reified Mock> kmock(
     freeze: Boolean = true,
 ): Mock
 
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
-): Mock
-
 internal expect inline fun <reified Mock : Common<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Common<*, *>>,
-): Mock where L : Any, L : Comparable<L>
-
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Common<K, L>, K : Any, L> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.generic.Common<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

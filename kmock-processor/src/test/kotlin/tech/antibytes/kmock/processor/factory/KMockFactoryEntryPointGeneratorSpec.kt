@@ -16,6 +16,7 @@ internal class KMockFactoryEntryPointGeneratorSpec {
     fun `It fulfils KMockFactoryEntryPointGenerator`() {
         KMockFactoryEntryPointGenerator(
             false,
+            setOf(),
             mockk(),
             mockk(),
             mockk()

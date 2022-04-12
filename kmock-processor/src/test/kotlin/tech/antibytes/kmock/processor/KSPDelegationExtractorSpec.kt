@@ -331,7 +331,7 @@ class KSPDelegationExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns false for allowInterfacesOnKmock if no value was propagated`() {
+    fun `Given convertOptions it returns false for allowInterfaces if no value was propagated`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -347,11 +347,11 @@ class KSPDelegationExtractorSpec {
         val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.allowInterfacesOnKmock mustBe false
+        actual.allowInterfaces mustBe false
     }
 
     @Test
-    fun `Given convertOptions it returns the propagated value for allowInterfacesOnKmock`() {
+    fun `Given convertOptions it returns the propagated value for allowInterfaces`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -362,56 +362,14 @@ class KSPDelegationExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_allowInterfacesOnKmock" to expected.toString()
+            "kmock_allowInterfaces" to expected.toString()
         )
 
         // When
         val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.allowInterfacesOnKmock mustBe expected
-    }
-
-    @Test
-    fun `Given convertOptions it returns false for allowInterfacesOnKspy if no value was propagated`() {
-        // Given
-        val rootPackage: String = fixture.fixture()
-        val isKmp: Boolean = fixture.fixture()
-        val kspDir: String = fixture.fixture()
-
-        val delegateKSP = mutableMapOf(
-            "kmock_kspDir" to kspDir,
-            "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
-        )
-
-        // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
-
-        // Then
-        actual.allowInterfacesOnKspy mustBe false
-    }
-
-    @Test
-    fun `Given convertOptions it returns the propagated value for allowInterfacesOnKspy`() {
-        // Given
-        val rootPackage: String = fixture.fixture()
-        val isKmp: Boolean = fixture.fixture()
-        val kspDir: String = fixture.fixture()
-        val expected = true
-
-        val delegateKSP = mutableMapOf(
-            "kmock_kspDir" to kspDir,
-            "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString(),
-            "kmock_allowInterfacesOnKspy" to expected.toString()
-        )
-
-        // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
-
-        // Then
-        actual.allowInterfacesOnKspy mustBe expected
+        actual.allowInterfaces mustBe expected
     }
 
     @Test

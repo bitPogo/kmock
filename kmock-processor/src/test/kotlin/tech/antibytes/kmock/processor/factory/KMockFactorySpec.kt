@@ -16,8 +16,7 @@ class KMockFactorySpec {
     fun `It fulfils MockFactoryGenerator`() {
         KMockFactoryGenerator(
             mockk(),
-            mockk(),
-            false,
+            setOf(),
             false,
             false,
             mockk(),

@@ -9,8 +9,7 @@ package tech.antibytes.kmock.processor
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KMOCK
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES_KSPY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
@@ -50,7 +49,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
         var freezeOnDefault = true
-        var allowInterfacesOnKmock = false
+        var allowInterfaces = false
         var allowInterfacesOnKspy = false
         var spiesOnly = false
         var enableNewOverloadingNames = true
@@ -64,8 +63,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == ROOT_PACKAGE -> rootPackage = value
                 key == KMP_FLAG -> isKmp = value.toBoolean()
                 key == FREEZE -> freezeOnDefault = value.toBoolean()
-                key == INTERFACES_KMOCK -> allowInterfacesOnKmock = value.toBoolean()
-                key == INTERFACES_KSPY -> allowInterfacesOnKspy = value.toBoolean()
+                key == INTERFACES -> allowInterfaces = value.toBoolean()
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
                 key.startsWith(PRECEDENCE) -> extractMappedValue(PRECEDENCE, key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence.toInt()
@@ -102,8 +100,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
             freezeOnDefault = freezeOnDefault,
-            allowInterfacesOnKmock = allowInterfacesOnKmock,
-            allowInterfacesOnKspy = allowInterfacesOnKspy,
+            allowInterfaces = allowInterfaces,
             spiesOnly = spiesOnly,
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,

@@ -6,30 +6,29 @@
 
 package tech.antibytes.kmock.processor.factory
 
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
     private val spiesOnly: Boolean,
+    spyOn: Set<String>,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
 ) : ProcessorContract.MockFactoryEntryPointGenerator {
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember(
-        "%S, %S",
-        "UNUSED_PARAMETER",
-        "UNUSED_EXPRESSION"
-    ).build()
+    private val hasSpies = spyOn.isNotEmpty() || spiesOnly
 
     private fun buildMockFactory(): FunSpec {
         val type = TypeVariableName(KMOCK_FACTORY_TYPE_NAME)
@@ -115,7 +114,10 @@ internal class KMockFactoryEntryPointGenerator(
             if (!spiesOnly) {
                 file.addFunction(mockFactory)
             }
-            file.addFunction(spyFactory)
+
+            if (hasSpies) {
+                file.addFunction(spyFactory)
+            }
         }
     }
 
@@ -126,25 +128,28 @@ internal class KMockFactoryEntryPointGenerator(
         if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 options.rootPackage,
-                "MockFactory"
+                FACTORY_FILE_NAME
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
-            file.addAnnotation(unused)
+            file.addAnnotation(UNUSED)
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
             file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
 
             if (!spiesOnly) {
                 file.addFunction(buildMockFactory())
             }
-            file.addFunction(buildSpyFactory())
+
+            if (hasSpies) {
+                file.addFunction(buildSpyFactory())
+            }
 
             generateGenericEntryPoints(
                 file,
                 generics
             )
 
-            codeGenerator.setOneTimeSourceSet("commonTest")
+            codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
             file.build().writeTo(
                 codeGenerator = codeGenerator,
                 aggregating = false,
@@ -162,9 +167,9 @@ internal class KMockFactoryEntryPointGenerator(
             if (generics.isNotEmpty()) {
                 val file = FileSpec.builder(
                     options.rootPackage,
-                    "MockFactory"
+                    FACTORY_FILE_NAME
                 )
-                file.addAnnotation(unused)
+                file.addAnnotation(UNUSED)
 
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
                 file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
