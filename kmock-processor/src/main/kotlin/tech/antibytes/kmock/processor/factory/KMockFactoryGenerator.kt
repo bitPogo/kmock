@@ -29,8 +29,7 @@ internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     spyOn: Set<String>,
     private val spiesOnly: Boolean,
-    private val allowInterfacesOnKmock: Boolean,
-    private val allowInterfacesOnKspy: Boolean,
+    private val allowInterfaces: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
     private val genericResolver: ProcessorContract.GenericResolver,
     private val codeGenerator: CodeGenerator,
@@ -236,7 +235,7 @@ internal class KMockFactoryGenerator(
         relaxer: Relaxer?
     ) {
         val (interfaceInvocationTemplate, mockInvocationTemplate) = determineMockTemplate(relaxer)
-        if (allowInterfacesOnKmock || allowInterfacesOnKspy) {
+        if (allowInterfaces) {
             mockFactory.addStatement(
                 interfaceInvocationTemplate,
                 qualifiedName,

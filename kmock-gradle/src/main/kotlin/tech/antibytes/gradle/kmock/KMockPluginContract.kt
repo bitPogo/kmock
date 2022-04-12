@@ -70,16 +70,10 @@ internal interface KMockPluginContract {
         var spiesOnly: Boolean
 
         /**
-         * Enable the kmock factory function to reference Mocks by their interfaces.
+         * Enable factory functions to reference Mocks by their interfaces.
          * Default is false
          */
-        var allowInterfacesOnKmock: Boolean
-
-        /**
-         * Enable the kspy factory function to reference Mocks by their interfaces.
-         * Default is false
-         */
-        var allowInterfacesOnKspy: Boolean
+        var allowInterfaces: Boolean
 
         /**
          * Sets a global default freeze value for kmock and kspy.
@@ -97,8 +91,7 @@ internal interface KMockPluginContract {
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
-        const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
-        const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
+        const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"

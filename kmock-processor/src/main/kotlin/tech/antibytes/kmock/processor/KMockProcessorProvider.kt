@@ -76,8 +76,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = KMockFactoryGenerator(
                 logger = logger,
-                allowInterfacesOnKmock = options.allowInterfacesOnKmock,
-                allowInterfacesOnKspy = options.allowInterfacesOnKspy,
+                allowInterfaces = options.allowInterfaces,
                 spyOn = options.spyOn,
                 spiesOnly = options.spiesOnly,
                 utils = factoryUtils,

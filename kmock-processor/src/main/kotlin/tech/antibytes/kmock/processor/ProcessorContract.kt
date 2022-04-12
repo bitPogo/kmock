@@ -40,8 +40,7 @@ internal interface ProcessorContract {
         val kspDir: String,
         val isKmp: Boolean,
         val freezeOnDefault: Boolean,
-        val allowInterfacesOnKmock: Boolean,
-        val allowInterfacesOnKspy: Boolean,
+        val allowInterfaces: Boolean,
         val spiesOnly: Boolean,
         val rootPackage: String,
         val knownSourceSets: Set<String>,
@@ -337,8 +336,7 @@ internal interface ProcessorContract {
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
-        const val INTERFACES_KMOCK = "${KMOCK_PREFIX}allowInterfacesOnKmock"
-        const val INTERFACES_KSPY = "${KMOCK_PREFIX}allowInterfacesOnKspy"
+        const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"

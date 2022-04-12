@@ -463,7 +463,7 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `Its allowInterfacesOnKmock is false by default`() {
+    fun `Its allowInterfaces is false by default`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()
 
@@ -471,11 +471,11 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.allowInterfacesOnKmock mustBe false
+        extension.allowInterfaces mustBe false
     }
 
     @Test
-    fun `It propagates allowInterfacesOnKmock changes to Ksp`() {
+    fun `It propagates allowInterfaces changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk(relaxed = true)
@@ -485,39 +485,10 @@ class ExtensionSpec {
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.allowInterfacesOnKmock = expected
+        extension.allowInterfaces = expected
 
-        extension.allowInterfacesOnKmock mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_allowInterfacesOnKmock", expected.toString()) }
-    }
-
-    @Test
-    fun `Its allowInterfacesOnKspy is false by default`() {
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
-
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-
-        val extension = createExtension<KMockExtension>(project)
-
-        extension.allowInterfacesOnKspy mustBe false
-    }
-
-    @Test
-    fun `It propagates allowInterfacesOnKspy changes to Ksp`() {
-        // Given
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: Boolean = fixture.fixture()
-
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-
-        // When
-        val extension = createExtension<KMockExtension>(project)
-        extension.allowInterfacesOnKspy = expected
-
-        extension.allowInterfacesOnKspy mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_allowInterfacesOnKspy", expected.toString()) }
+        extension.allowInterfaces mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_allowInterfaces", expected.toString()) }
     }
 
     @Test

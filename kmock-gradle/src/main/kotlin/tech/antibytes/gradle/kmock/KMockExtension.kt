@@ -11,8 +11,7 @@ import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KMOCK
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES_KSPY
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
@@ -51,8 +50,7 @@ abstract class KMockExtension(
 
     private var _freeze = true
 
-    private var _allowInterfacesOnKmock = false
-    private var _allowInterfacesOnKspy = false
+    private var _allowInterfaces = false
 
     private var _spyOn: Set<String> = emptySet()
     private var _spiesOnly = false
@@ -161,18 +159,11 @@ abstract class KMockExtension(
             _freeze = value
         }
 
-    override var allowInterfacesOnKmock: Boolean
-        get() = _allowInterfacesOnKmock
+    override var allowInterfaces: Boolean
+        get() = _allowInterfaces
         set(value) {
-            propagateValue(INTERFACES_KMOCK, value.toString())
-            _allowInterfacesOnKmock = value
-        }
-
-    override var allowInterfacesOnKspy: Boolean
-        get() = _allowInterfacesOnKspy
-        set(value) {
-            propagateValue(INTERFACES_KSPY, value.toString())
-            _allowInterfacesOnKspy = value
+            propagateValue(INTERFACES, value.toString())
+            _allowInterfaces = value
         }
 
     override var enableSpies: Set<String>

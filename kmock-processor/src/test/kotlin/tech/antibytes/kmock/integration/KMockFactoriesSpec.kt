@@ -476,8 +476,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             kspArguments = mapOf(
-                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
-                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
             source
         )
@@ -506,8 +505,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
-                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
-                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
             source
         )
@@ -537,8 +535,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
                 "${KMOCK_PREFIX}alias_factory.template.interfaze.Platform1" to "AliasPlatform",
-                "${KMOCK_PREFIX}allowInterfacesOnKmock" to "true",
-                "${KMOCK_PREFIX}allowInterfacesOnKspy" to "true",
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
             source
         )
