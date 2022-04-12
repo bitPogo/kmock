@@ -35,11 +35,13 @@ toc::[]
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
 * `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
 * `customMethodNames` in order to allow complete custom names for methods
+* `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
 
 === Changed
 
 * Generated mocks don't contain runtime logic any longer
 * Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
+* `kmock` and `kspy` are using now a shared function to improve compile time
 
 === Deprecated
 
@@ -48,6 +50,8 @@ toc::[]
 === Removed
 
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
+* `allowInterfacesOnKmock`, use allowInterfaces instead
+* `allowInterfacesOnKspy`, use allowInterfaces instead
 
 === Fixed
 

@@ -166,7 +166,7 @@ abstract class KMockExtension(
             _allowInterfaces = value
         }
 
-    override var enableSpies: Set<String>
+    override var spyOn: Set<String>
         get() = _spyOn
         set(value) {
             propagateIterable(

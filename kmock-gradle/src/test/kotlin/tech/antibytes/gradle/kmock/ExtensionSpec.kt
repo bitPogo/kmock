@@ -500,7 +500,7 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.enableSpies mustBe emptySet()
+        extension.spyOn mustBe emptySet()
     }
 
     @Test
@@ -514,9 +514,9 @@ class ExtensionSpec {
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.enableSpies = expected.toSet()
+        extension.spyOn = expected.toSet()
 
-        extension.enableSpies mustBe expected.toSet()
+        extension.spyOn mustBe expected.toSet()
         verify(exactly = 1) { kspExtension.arg("kmock_spyOn_0", expected[0]) }
         verify(exactly = 1) { kspExtension.arg("kmock_spyOn_1", expected[1]) }
         verify(exactly = 1) { kspExtension.arg("kmock_spyOn_2", expected[2]) }
