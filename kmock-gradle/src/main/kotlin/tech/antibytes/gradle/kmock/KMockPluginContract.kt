@@ -98,7 +98,7 @@ internal interface KMockPluginContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
-        const val DISABLE_FACTORIES = "${KMOCK_PREFIX}factories"
+        const val DISABLE_FACTORIES = "${KMOCK_PREFIX}disable_factories"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
         const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"

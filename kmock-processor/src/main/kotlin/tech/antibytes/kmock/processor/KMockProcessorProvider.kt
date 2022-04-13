@@ -24,7 +24,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         val logger = environment.logger
 
-        val options = KMockKSPDelegationExtractor.convertOptions(environment.options)
+        val options = KMockOptionExtractor.convertOptions(environment.options)
 
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,

@@ -577,6 +577,6 @@ class ExtensionSpec {
         extension.disableFactories = expected
 
         extension.disableFactories mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_factories", expected.toString()) }
+        verify(exactly = 1) { kspExtension.arg("kmock_disable_factories", expected.toString()) }
     }
 }
