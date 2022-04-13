@@ -6,7 +6,6 @@
 
 package factory.template.regular
 
-import mock.template.async.Common
 import tech.antibytes.kmock.MockCommon
 
 @MockCommon(Common::class)

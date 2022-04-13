@@ -760,4 +760,80 @@ class KMockFactoriesSpec {
         actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
         actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source with disabled Factories for a Platform is processed, it does not write a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/nofactory/Platform.kt")
+        )
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}disable_factories" to "true",
+            ),
+            source
+        )
+        val actual = resolveGenerated("MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual mustBe null
+    }
+
+    @Test
+    fun `Given a annotated Source with disabled Factories for Shared is processed, it does not write a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/nofactory/Shared.kt")
+        )
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}disable_factories" to "true",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual mustBe null
+        actualExpect mustBe null
+    }
+
+    @Test
+    fun `Given a annotated Source with disabled Factories for Common is processed, it does not write a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/nofactory/Common.kt")
+        )
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            mapOf(
+                "${KMOCK_PREFIX}disable_factories" to "true",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual mustBe null
+        actualExpect mustBe null
+    }
 }

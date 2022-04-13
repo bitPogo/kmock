@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.alias
+package factory.template.nofactory
 
 import tech.antibytes.kmock.MockCommon
 

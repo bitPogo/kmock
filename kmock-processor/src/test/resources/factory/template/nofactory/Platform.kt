@@ -4,12 +4,12 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package factory.template.alias
+package factory.template.nofactory
 
-import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.Mock
 
-@MockCommon(Common::class)
-interface Common {
+@Mock(Platform::class)
+interface Platform {
     val foo: String
     val bar: Int
         get() = foo.length
