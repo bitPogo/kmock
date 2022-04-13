@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfiguration
+import tech.antibytes.kmock.KMockContract.RelaxationPropertyConfiguration
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -22,19 +22,19 @@ class NonIntrusivePropertyConfiguratorSpec {
     @Test
     @JsName("fn0a")
     fun `It fulfils NonIntrusiveConfigurator`() {
-        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusiveConfigurator::class
+        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.RelaxationConfigurator::class
     }
 
     @Test
     @JsName("fn0")
     fun `It fulfils NonIntrusivePropertyConfigurator`() {
-        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusivePropertyConfigurator::class
+        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.RelaxationPropertyConfigurator::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.NonIntrusiveConfigurationExtractor::class
+        NonIntrusivePropertyConfigurator<Any>() fulfils KMockContract.RelaxationConfigurationExtractor::class
     }
 
     @Test
@@ -47,7 +47,7 @@ class NonIntrusivePropertyConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
+        actual mustBe RelaxationPropertyConfiguration(
             relaxer = null,
         )
     }
@@ -63,7 +63,7 @@ class NonIntrusivePropertyConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
+        actual mustBe RelaxationPropertyConfiguration(
             relaxer = null,
         )
     }
@@ -96,7 +96,7 @@ class NonIntrusivePropertyConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusivePropertyConfiguration(
+        actual mustBe RelaxationPropertyConfiguration(
             relaxer = null,
         )
     }

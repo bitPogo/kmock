@@ -7,19 +7,19 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusivePropertyConfiguration
+import tech.antibytes.kmock.KMockContract.RelaxationPropertyConfiguration
 import tech.antibytes.kmock.KMockContract.Relaxer
 
 internal class NonIntrusivePropertyConfigurator<Value> :
-    KMockContract.NonIntrusivePropertyConfigurator<Value>,
-    KMockContract.NonIntrusiveConfigurationExtractor<NonIntrusivePropertyConfiguration<Value>> {
+    KMockContract.RelaxationPropertyConfigurator<Value>,
+    KMockContract.RelaxationConfigurationExtractor<RelaxationPropertyConfiguration<Value>> {
     private var relaxer: Relaxer<Value>? = null
 
     override fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>) {
         this.relaxer = condition.guardRelaxer(relaxer)
     }
 
-    override fun getConfiguration(): NonIntrusivePropertyConfiguration<Value> {
-        return NonIntrusivePropertyConfiguration(relaxer = relaxer,)
+    override fun getConfiguration(): RelaxationPropertyConfiguration<Value> {
+        return RelaxationPropertyConfiguration(relaxer = relaxer,)
     }
 }

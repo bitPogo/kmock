@@ -7,13 +7,13 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
+import tech.antibytes.kmock.KMockContract.RelaxationFunConfiguration
 import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
-    KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
-    KMockContract.NonIntrusiveConfigurationExtractor<NonIntrusiveFunConfiguration<ReturnValue, SideEffect>> {
+    KMockContract.RelaxationFunConfigurator<ReturnValue, SideEffect>,
+    KMockContract.RelaxationConfigurationExtractor<RelaxationFunConfiguration<ReturnValue, SideEffect>> {
 
     private var unitFunRelaxer: Relaxer<ReturnValue?>? = null
     private var buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null
@@ -52,10 +52,10 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         this.relaxer = condition.guardRelaxer(relaxer)
     }
 
-    override fun getConfiguration(): NonIntrusiveFunConfiguration<ReturnValue, SideEffect> {
+    override fun getConfiguration(): RelaxationFunConfiguration<ReturnValue, SideEffect> {
         finalizeRelaxers()
 
-        return NonIntrusiveFunConfiguration(
+        return RelaxationFunConfiguration(
             unitFunRelaxer = unitFunRelaxer,
             relaxer = relaxer,
             buildInRelaxer = buildInRelaxer,

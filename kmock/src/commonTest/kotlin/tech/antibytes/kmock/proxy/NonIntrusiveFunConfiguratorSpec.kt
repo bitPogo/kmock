@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfiguration
+import tech.antibytes.kmock.KMockContract.RelaxationFunConfiguration
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -22,19 +22,19 @@ class NonIntrusiveFunConfiguratorSpec {
     @Test
     @JsName("fn0a")
     fun `It fulfils NonIntrusiveConfigurator`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurator::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationConfigurator::class
     }
 
     @Test
     @JsName("fn0")
     fun `It fulfils NonIntrusiveFunConfigurator`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurator::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationFunConfigurator::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveConfigurationExtractor::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationConfigurationExtractor::class
     }
 
     @Test
@@ -47,7 +47,7 @@ class NonIntrusiveFunConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveFunConfiguration(
+        actual mustBe RelaxationFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -65,7 +65,7 @@ class NonIntrusiveFunConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveFunConfiguration(
+        actual mustBe RelaxationFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,
@@ -165,7 +165,7 @@ class NonIntrusiveFunConfiguratorSpec {
         val actual = configurator.getConfiguration()
 
         // Then
-        actual mustBe NonIntrusiveFunConfiguration(
+        actual mustBe RelaxationFunConfiguration(
             unitFunRelaxer = null,
             buildInRelaxer = null,
             relaxer = null,

@@ -107,18 +107,6 @@ class ProxyFactorySpec {
     }
 
     @Test
-    @JsName("fn5")
-    fun `Given createSyncFunProxy it creates a SyncFunProxy while setting up relaxers`() {
-        // When
-        val proxy = ProxyFactory.createSyncFunProxy<Any, (Any, Any) -> Unit>(
-            id = fixture.fixture(),
-        ) { useUnitFunRelaxerIf(true) }
-
-        // Then
-        proxy.invoke<Any, Any>(fixture.fixture(), fixture.fixture()) mustBe Unit
-    }
-
-    @Test
     @JsName("fn6")
     @Suppress("USELESS_IS_CHECK")
     fun `Given createAsyncFunProxy it creates a AsyncFunProxy`() {
@@ -192,18 +180,6 @@ class ProxyFactorySpec {
     }
 
     @Test
-    @JsName("fn10")
-    fun `Given createAsyncFunProxy it creates a AsyncFunProxy while setting up relaxers`() = runBlockingTest {
-        // When
-        val proxy = ProxyFactory.createAsyncFunProxy<Any, suspend (Any, Any) -> Unit>(
-            id = fixture.fixture(),
-        ) { useUnitFunRelaxerIf(true) }
-
-        // Then
-        proxy.invoke<Any, Any>(fixture.fixture(), fixture.fixture()) mustBe Unit
-    }
-
-    @Test
     @JsName("fn11")
     fun `Given createPropertyProxy it creates a PropertyProxy`() {
         // When
@@ -257,20 +233,5 @@ class ProxyFactorySpec {
             // Then
             proxy.onGet() // just runs
         }
-    }
-
-    @Test
-    @JsName("fn14")
-    fun `Given createPropertyProxy it creates a PropertyProxy while setting up relaxers`() {
-        // Given
-        val expected: Int = fixture.fixture()
-
-        // When
-        val proxy: PropertyProxy<Int> = ProxyFactory.createPropertyProxy(
-            id = fixture.fixture(),
-        ) { useRelaxerIf(true) { expected } }
-
-        // Then
-        proxy.onGet() mustBe expected
     }
 }
