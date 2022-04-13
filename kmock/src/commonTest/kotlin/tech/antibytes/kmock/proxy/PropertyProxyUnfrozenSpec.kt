@@ -135,16 +135,17 @@ class PropertyProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = PropertyProxy<Any>(
             name,
-            relaxer = { givenId ->
-                capturedId.set(givenId)
-
-                value
-            },
             freeze = false
         )
 
         // When
-        val actual = proxy.onGet()
+        val actual = proxy.onGet {
+            useRelaxerIf(true) { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        }
 
         // Then
         actual mustBe value

@@ -160,16 +160,17 @@ class AsyncFunProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(
             name,
-            relaxer = { givenId ->
-                capturedId.set(givenId)
-
-                value
-            },
             freeze = false
         )
 
         // When
-        val actual = proxy.invoke()
+        val actual = proxy.invoke {
+            useRelaxerIf(true) { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        }
 
         // Then
         actual mustBe value
@@ -178,135 +179,47 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn7b")
-    fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue =
-        runBlockingTest {
-            // Given
-            val name: String = fixture.fixture()
-            val value = AtomicReference(fixture.fixture<Any>())
-            val capturedId = AtomicReference<String?>(null)
-            val proxy = AsyncFunProxy<Any, suspend () -> Unit>(
-                name,
-                unitFunRelaxer = { givenId ->
-                    capturedId.set(givenId)
+    fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val proxy = AsyncFunProxy<Any, suspend () -> Unit>(
+            name,
+            freeze = false
+        )
 
-                    value
-                },
-                freeze = false
-            )
-
-            // When
-            val actual = proxy.invoke()
-
-            // Then
-            actual mustBe value
-            capturedId.value mustBe name
+        // When
+        val actual = proxy.invoke {
+            useUnitFunRelaxerIf(true)
         }
+
+        // Then
+        actual mustBe Unit
+    }
 
     @Test
     @JsName("fn7c")
-    fun `Given invoke is called it uses the given Implementation if no ReturnValue Provider is set`() =
-        runBlockingTest {
-            // Given
-            val name: String = fixture.fixture()
-            val value = AtomicReference(fixture.fixture<Any>())
-            val implementation = Implementation<Any>()
-            implementation.fun0 = { value }
+    fun `Given invoke is called it uses the given Implementation if no ReturnValue Provider is set`() = runBlockingTest {
+        // Given
+        val name: String = fixture.fixture()
+        val value = AtomicReference(fixture.fixture<Any>())
+        val implementation = Implementation<Any>()
+        implementation.fun0 = { value }
 
-            val proxy = AsyncFunProxy<Any, suspend () -> Any>(
-                name,
-                freeze = false
-            )
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(
+            name,
+            freeze = false
+        )
 
-            // When
-            val actual = proxy.invoke {
-                useSpyIf(implementation) {
-                    implementation.fun0()
-                }
+        // When
+        val actual = proxy.invoke {
+            useSpyIf(implementation) {
+                implementation.fun0()
             }
-
-            // Then
-            actual mustBe value
         }
 
-    @Test
-    @JsName("fn7d")
-    fun `Given invoke with 0 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() =
-        runBlockingTest {
-            // Given
-            val name: String = fixture.fixture()
-            val value = AtomicReference(fixture.fixture<Any>())
-            val capturedArgument = AtomicReference<Any?>(Any())
-            val proxy = AsyncFunProxy<Any, suspend () -> Any>(
-                name,
-                buildInRelaxer = { givenArgument ->
-                    capturedArgument.set(givenArgument)
-
-                    value
-                },
-                freeze = false
-            )
-
-            // When
-            val actual = proxy.invoke()
-
-            // Then
-            actual mustBe value
-            capturedArgument.value mustBe null
-        }
-
-    @Test
-    @JsName("fn7e")
-    fun `Given invoke with arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() =
-        runBlockingTest {
-            // Given
-            val name: String = fixture.fixture()
-            val argument: Any = fixture.fixture()
-            val value = AtomicReference(fixture.fixture<Any>())
-            val capturedArgument = AtomicReference<Any?>(null)
-            val proxy = AsyncFunProxy<Any, suspend () -> Any>(
-                name,
-                buildInRelaxer = { givenArgument ->
-                    capturedArgument.set(givenArgument)
-
-                    value
-                },
-                freeze = false
-            )
-
-            // When
-            val actual = proxy.invoke(argument)
-
-            // Then
-            actual mustBe value
-            capturedArgument.value sameAs argument
-        }
-
-    @Test
-    @JsName("fn7f")
-    fun `Given invoke with more than 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() =
-        runBlockingTest {
-            // Given
-            val name: String = fixture.fixture()
-            val argument: Any = fixture.fixture()
-            val value = AtomicReference(fixture.fixture<Any>())
-            val capturedArgument = AtomicReference<Any?>(null)
-            val proxy = AsyncFunProxy<Any, suspend () -> Any>(
-                name,
-                buildInRelaxer = { givenArgument ->
-                    capturedArgument.set(givenArgument)
-
-                    value
-                },
-                freeze = false
-            )
-
-            // When
-            val actual = proxy.invoke(argument)
-
-            // Then
-            actual mustBe value
-            capturedArgument.value sameAs argument
-        }
+        // Then
+        actual mustBe value
+    }
 
     @Test
     @JsName("fn8")

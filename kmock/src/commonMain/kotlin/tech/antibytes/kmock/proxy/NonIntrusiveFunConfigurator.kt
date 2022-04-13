@@ -7,42 +7,19 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.RelaxationFunConfiguration
-import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
 import tech.antibytes.kmock.KMockContract.Relaxer
+import kotlin.reflect.KClass
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
-    KMockContract.RelaxationFunConfigurator<ReturnValue, SideEffect>,
-    KMockContract.RelaxationConfigurationExtractor<RelaxationFunConfiguration<ReturnValue, SideEffect>> {
+    KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
+    KMockContract.NonIntrusiveFunTarget<ReturnValue, SideEffect> {
 
-    private var unitFunRelaxer: Relaxer<ReturnValue?>? = null
-    private var buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? = null
     private var relaxer: Relaxer<ReturnValue>? = null
-
-    private fun finalizeRelaxers() {
-        if (unitFunRelaxer != null || buildInRelaxer != null) {
-            relaxer = null
-        }
-    }
+    private var spyOn: SideEffect? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun useUnitFunRelaxerIf(condition: Boolean) {
-        unitFunRelaxer = condition.guardRelaxer(::kmockUnitFunRelaxer as Function1<String, ReturnValue?>)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun useToStringRelaxer(toString: Function0<String>) {
-        buildInRelaxer = ParameterizedRelaxer { toString.invoke() as ReturnValue }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun useHashCodeRelaxer(hashCode: Function0<Int>) {
-        buildInRelaxer = ParameterizedRelaxer { hashCode.invoke() as ReturnValue }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun useEqualsRelaxer(equals: Function1<Any?, Boolean>) {
-        buildInRelaxer = ParameterizedRelaxer { other -> equals.invoke(other) as ReturnValue }
+        relaxer = condition.guardRelaxer(::kmockUnitFunRelaxer as Function1<String, ReturnValue>)
     }
 
     override fun useRelaxerIf(
@@ -52,13 +29,31 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         this.relaxer = condition.guardRelaxer(relaxer)
     }
 
-    override fun getConfiguration(): RelaxationFunConfiguration<ReturnValue, SideEffect> {
-        finalizeRelaxers()
+    override fun isRelaxable(): Boolean = relaxer != null
 
-        return RelaxationFunConfiguration(
-            unitFunRelaxer = unitFunRelaxer,
-            relaxer = relaxer,
-            buildInRelaxer = buildInRelaxer,
-        )
+    override fun unwrapRelaxer(): Relaxer<ReturnValue>? = relaxer
+
+    override fun useSpyIf(spyTarget: Any?, spyOn: SideEffect) {
+        this.spyOn = spyTarget.guardSpy(spyOn)
     }
+
+    override fun useSpyOnEqualsIf(
+        spyTarget: Any?,
+        other: Any?,
+        spyOn: Function1<Any?, Boolean>,
+        mockKlass: KClass<out Any>
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        this.spyOn = spyTarget.guardSpy {
+            if (other != null && other::class == mockKlass) {
+                spyOn(other)
+            } else {
+                spyTarget == other
+            }
+        } as SideEffect?
+    }
+
+    override fun isSpyable(): Boolean = spyOn != null
+
+    override fun unwrapSpy(): SideEffect? = spyOn
 }

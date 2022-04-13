@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.RelaxationFunConfiguration
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -20,220 +19,375 @@ class NonIntrusiveFunConfiguratorSpec {
     private val fixture = kotlinFixture()
 
     @Test
-    @JsName("fn0a")
-    fun `It fulfils NonIntrusiveConfigurator`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationConfigurator::class
-    }
-
-    @Test
     @JsName("fn0")
     fun `It fulfils NonIntrusiveFunConfigurator`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationFunConfigurator::class
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunConfigurator::class
     }
 
     @Test
     @JsName("fn1")
-    fun `It fulfils NonIntrusiveConfigurationReceiver`() {
-        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.RelaxationConfigurationExtractor::class
+    fun `It fulfils NonIntrusivePropertyTarget`() {
+        NonIntrusiveFunConfigurator<Unit, () -> Unit>() fulfils KMockContract.NonIntrusiveFunTarget::class
     }
 
     @Test
     @JsName("fn2")
-    fun `Given getConfiguration is called while nothing else was invoked it returns the default configuration`() {
+    fun `Given unwrapRelaxer is called while nothing else was invoked it returns null`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        val actual = configurator.getConfiguration()
+        val actual = configurator.unwrapRelaxer()
 
         // Then
-        actual mustBe RelaxationFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-        )
+        actual mustBe null
     }
 
     @Test
     @JsName("fn3")
-    fun `Given getConfiguration is called after relaxUnitFunIf while its condition is falsum it returns a configuration without the unitFunRelaxer`() {
+    fun `Given isRelaxable is called while nothing else was invoked it returns false`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.useUnitFunRelaxerIf(false)
-        val actual = configurator.getConfiguration()
+        val actual = configurator.isRelaxable()
 
         // Then
-        actual mustBe RelaxationFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-        )
+        actual mustBe false
     }
 
     @Test
     @JsName("fn4")
-    fun `Given getConfiguration is called after relaxUnitFunIf while its condition is verum it returns a configuration with the unitFunRelaxer`() {
+    fun `Given unwrapRelaxer is called after relaxUnitFunIf while its condition is falsum it returns null`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.useUnitFunRelaxerIf(true)
-        val actual = configurator.getConfiguration()
+        configurator.useUnitFunRelaxerIf(false)
+        val actual = configurator.unwrapRelaxer()
 
         // Then
-        actual.unitFunRelaxer isNot null
-        actual.unitFunRelaxer!!.relax("") mustBe Unit
+        actual mustBe null
     }
 
     @Test
     @JsName("fn5")
-    fun `Given getConfiguration is called after relaxUnitFunIf while its condition falsum after a verum it returns a configuration without unitFunRelaxer`() {
+    fun `Given isRelaxable is called after relaxUnitFunIf while its condition is falsum it returns false`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.useUnitFunRelaxerIf(true)
         configurator.useUnitFunRelaxerIf(false)
-        val actual = configurator.getConfiguration()
+        val actual = configurator.isRelaxable()
 
         // Then
-        actual.unitFunRelaxer mustBe null
+        actual mustBe false
     }
 
     @Test
     @JsName("fn6")
-    fun `Given getConfiguration is called after useToStringRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<String, () -> String>()
-
-        // When
-        val subject: Any = fixture.fixture()
-
-        configurator.useToStringRelaxer(subject::toString)
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.buildInRelaxer isNot null
-        actual.buildInRelaxer?.invoke(null) mustBe subject.toString()
-    }
-
-    @Test
-    @JsName("fn7")
-    fun `Given getConfiguration is called after useHashCodeRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
-
-        // When
-        val subject: Any = fixture.fixture()
-
-        configurator.useHashCodeRelaxer(subject::hashCode)
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.buildInRelaxer isNot null
-        actual.buildInRelaxer?.invoke(null) mustBe subject.hashCode()
-    }
-
-    @Test
-    @JsName("fn8")
-    fun `Given getConfiguration is called after useEqualsRelaxer is called with a subject it returns a configuration with a buildInRelaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
-
-        // When
-        val subject: Any = fixture.fixture()
-
-        configurator.useEqualsRelaxer(subject::equals)
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.buildInRelaxer isNot null
-        actual.buildInRelaxer?.invoke(subject) mustBe true
-        actual.buildInRelaxer?.invoke(fixture.fixture()) mustBe false
-    }
-
-    @Test
-    @JsName("fn9")
-    fun `Given getConfiguration is called after useRelaxerIf while its condition is falsum it returns a configuration without the relaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
-
-        // When
-        configurator.useRelaxerIf(false) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual mustBe RelaxationFunConfiguration(
-            unitFunRelaxer = null,
-            buildInRelaxer = null,
-            relaxer = null,
-        )
-    }
-
-    @Test
-    @JsName("fn10")
-    fun `Given getConfiguration is called after useRelaxerIf while its condition is verum it returns a configuration without the relaxer`() {
-        // Given
-        val configurator = NonIntrusiveFunConfigurator<Int, () -> Int>()
-        val expected: Int = fixture.fixture()
-
-        // When
-        configurator.useRelaxerIf(true) { expected }
-        val actual = configurator.getConfiguration()
-
-        // Then
-        actual.relaxer isNot null
-        actual.relaxer!!.relax(fixture.fixture()) mustBe expected
-    }
-
-    @Test
-    @JsName("fn11")
-    fun `Given getConfiguration is called after useRelaxerIf while its condition falsum after a verum it returns a configuration without the relaxer`() {
+    fun `Given unwrapRelaxer is called after relaxUnitFunIf while its condition is verum it returns the unitFunRelaxer`() {
         // Given
         val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.useRelaxerIf(true) { fixture.fixture() }
-        configurator.useRelaxerIf(false) { fixture.fixture() }
-        val actual = configurator.getConfiguration()
+        configurator.useUnitFunRelaxerIf(true)
+        val actual = configurator.unwrapRelaxer()
 
         // Then
-        actual.relaxer mustBe null
+        actual isNot null
+        actual!!.relax("") mustBe Unit
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given isRelaxable is called after relaxUnitFunIf while its condition is verum it returns true`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
+
+        // When
+        configurator.useUnitFunRelaxerIf(true)
+        val actual = configurator.isRelaxable()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn8")
+    fun `Given unwrapRelaxer is called after useRelaxerIf while its condition is falsum it returns null`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Any, () -> Any>()
+
+        // When
+        configurator.useRelaxerIf(false) { fixture.fixture() }
+        val actual = configurator.unwrapRelaxer()
+
+        // Then
+        actual mustBe null
+    }
+
+    @Test
+    @JsName("fn9")
+    fun `Given isRelaxable is called after useRelaxerIf while its condition is falsum it returns false`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
+
+        // When
+        configurator.useRelaxerIf(false) { fixture.fixture() }
+        val actual = configurator.isRelaxable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn10")
+    fun `Given unwrapRelaxer is called after useRelaxerIf while its condition is true it returns the relaxer`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Any, () -> Any>()
+        val expected: Any = fixture.fixture()
+
+        // When
+        configurator.useRelaxerIf(true) { expected }
+        val actual = configurator.unwrapRelaxer()
+
+        // Then
+        actual!!.relax(fixture.fixture()) mustBe expected
+    }
+
+    @Test
+    @JsName("fn11")
+    fun `Given isRelaxable is called after useRelaxerIf while its condition is true it returns true`() {
+        // Given
+        val configurator = NonIntrusiveFunConfigurator<Any, () -> Any>()
+        val expected: Any = fixture.fixture()
+
+        // When
+        configurator.useRelaxerIf(true) { expected }
+        val actual = configurator.isRelaxable()
+
+        // Then
+        actual mustBe true
     }
 
     @Test
     @JsName("fn12")
-    fun `Given a Relaxer and UnitFunRelaxer is set the UnitFunRelaxer wipes the Relaxer`() {
+    fun `Given unwrapSpy is called it returns null`() {
         // Given
-        val configurator = NonIntrusiveFunConfigurator<Unit, (Any) -> Unit>()
+        val spyTarget = NonIntrusiveFunConfigurator<Unit, () -> Unit>()
 
         // When
-        configurator.useUnitFunRelaxerIf(true)
-        configurator.useRelaxerIf(true) { fixture.fixture() }
-
-        val actual = configurator.getConfiguration()
+        val actual = spyTarget.unwrapSpy()
 
         // Then
-        actual.unitFunRelaxer isNot null
-        actual.relaxer mustBe null
+        actual mustBe null
     }
 
     @Test
     @JsName("fn13")
-    fun `Given a Relaxer and BuildInRelaxer is set the BuildInRelaxer wipes the Relaxer`() {
+    fun `Given unwrapSpy is called after useSpyIf while its target is null it returns null`() {
         // Given
-        val configurator = NonIntrusiveFunConfigurator<Boolean, (Any?) -> Boolean>()
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
 
         // When
-        configurator.useEqualsRelaxer { fixture.fixture() }
-        configurator.useRelaxerIf(true) { fixture.fixture() }
-
-        val actual = configurator.getConfiguration()
+        spyTarget.useSpyIf(null) { fixture.fixture() }
+        val actual = spyTarget.unwrapSpy()
 
         // Then
-        actual.buildInRelaxer isNot null
-        actual.relaxer mustBe null
+        actual mustBe null
+    }
+
+    @Test
+    @JsName("fn14")
+    fun `Given unwrapSpy is called after useSpyIf while its target is null it returns the SpyTarget`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+        val expected: Boolean = fixture.fixture()
+
+        // When
+        spyTarget.useSpyIf(Any()) { expected }
+        val actual = spyTarget.unwrapSpy()
+
+        // Then
+        actual isNot null
+        actual!!.invoke() mustBe expected
+    }
+
+    @Test
+    @JsName("fn15")
+    fun `Given unwrapSpy is called after useSpyOnEqualsIf while its target is null it returns null`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+
+        // When
+        spyTarget.useSpyIf(null) { fixture.fixture() }
+        val actual = spyTarget.unwrapSpy()
+
+        // Then
+        actual mustBe null
+    }
+
+    @Test
+    @JsName("fn16")
+    fun `Given unwrapSpy is called after useSpyOnEqualIf while its spy is not null it returns the spyTarget which uses the subjectToSpyOn`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+        val expected: Boolean = fixture.fixture()
+        var spyWasCalled = false
+        val subjectToSpyOn = MockOfMocks(
+            equals = {
+                spyWasCalled = true
+                expected
+            }
+        )
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            Any(),
+            { fixture.fixture() },
+            MockOfMocks::class
+        )
+        val actual = spyTarget.unwrapSpy()
+
+        // Then
+        actual isNot null
+        actual!!.invoke() mustBe expected
+        spyWasCalled mustBe true
+    }
+
+    @Test
+    @JsName("fn17")
+    fun `Given unwrap is called after useSpyOnEqualIf while its spy is not null it returns a configuration with spyOn which uses its parent when invoked with another mock of the same Class`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+        val subjectToSpyOn: Any = fixture.fixture()
+        val expected: Boolean = fixture.fixture()
+        var parentWasCalled = false
+        val parent: Any = MockOfMocks(
+            equals = {
+                parentWasCalled = true
+                expected
+            }
+        )
+        val otherMock = MockOfMocks { !expected }
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            otherMock,
+            parent::equals,
+            MockOfMocks::class
+        )
+        val actual = spyTarget.unwrapSpy()
+
+        // Then
+        actual isNot null
+        actual?.invoke() mustBe expected
+        parentWasCalled mustBe true
+    }
+
+    @Test
+    @JsName("fn18")
+    fun `Given isSpyable is called it returns false`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+
+        // When
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn19")
+    fun `Given isSpyable is called after useSpyIf while its target is null it returns false`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+
+        // When
+        spyTarget.useSpyIf(null) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    @JsName("fn20")
+    fun `Given isSpyable is called after useSpyIf while its target is not null it returns true`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+
+        // When
+        spyTarget.useSpyIf(Any()) { fixture.fixture() }
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn21")
+    fun `Given isSpyable is called after useSpyOnEqualsIf while it uses the given target it returns true`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+        val subjectToSpyOn = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            Any(),
+            { fixture.fixture() },
+            MockOfMocks::class
+        )
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    @JsName("fn22")
+    fun `Given isSpyable is called after useSpyIf while it uses the given parent it returns true`() {
+        // Given
+        val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
+        val subjectToSpyOn = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+        val parent: Any = MockOfMocks(
+            equals = { fixture.fixture() }
+        )
+        val otherMock = MockOfMocks { fixture.fixture() }
+
+        // When
+        spyTarget.useSpyOnEqualsIf(
+            subjectToSpyOn,
+            otherMock,
+            parent::equals,
+            MockOfMocks::class
+        )
+        val actual = spyTarget.isSpyable()
+
+        // Then
+        actual mustBe true
+    }
+
+    private class MockOfMocks(
+        @JsName("fn0")
+        val equals: (() -> Boolean)? = null,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            return equals?.invoke()
+                ?: throw RuntimeException("Missing SideEffect equals.")
+        }
+
+        override fun hashCode(): Int {
+            return equals?.hashCode() ?: 0
+        }
     }
 }

@@ -180,16 +180,17 @@ class SyncFunProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = SyncFunProxy<Any, () -> Any>(
             name,
-            relaxer = { givenId ->
-                capturedId.set(givenId)
-
-                value
-            },
             freeze = false
         )
 
         // When
-        val actual = proxy.invoke()
+        val actual = proxy.invoke {
+            useRelaxerIf(true) { givenId ->
+                capturedId.set(givenId)
+
+                value
+            }
+        }
 
         // Then
         actual mustBe value
@@ -201,24 +202,18 @@ class SyncFunProxyUnfrozenSpec {
     fun `Given invoke is called it uses the given UnitFunRelaxer if no ReturnValue Provider is set`() {
         // Given
         val name: String = fixture.fixture()
-        val value = AtomicReference(fixture.fixture<Any>())
-        val capturedId = AtomicReference<String?>(null)
         val proxy = SyncFunProxy<Any, () -> Unit>(
             name,
-            unitFunRelaxer = { givenId ->
-                capturedId.set(givenId)
-
-                value
-            },
             freeze = false
         )
 
         // When
-        val actual = proxy.invoke()
+        val actual = proxy.invoke {
+            useUnitFunRelaxerIf(true)
+        }
 
         // Then
-        actual mustBe value
-        capturedId.value mustBe name
+        actual mustBe Unit
     }
 
     @Test
@@ -244,83 +239,6 @@ class SyncFunProxyUnfrozenSpec {
 
         // Then
         actual mustBe value
-    }
-
-    @Test
-    @JsName("fn7d")
-    fun `Given invoke with 0 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() {
-        // Given
-        val name: String = fixture.fixture()
-        val value = AtomicReference(fixture.fixture<Any>())
-        val capturedArgument = AtomicReference<Any?>(Any())
-        val proxy = SyncFunProxy<Any, () -> Any>(
-            name,
-            buildInRelaxer = { givenArgument ->
-                capturedArgument.set(givenArgument)
-
-                value
-            },
-            freeze = false
-        )
-
-        // When
-        val actual = proxy.invoke()
-
-        // Then
-        actual mustBe value
-        capturedArgument.value mustBe null
-    }
-
-    @Test
-    @JsName("fn7e")
-    fun `Given invoke with arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider is set`() {
-        // Given
-        val name: String = fixture.fixture()
-        val argument: Any = fixture.fixture()
-        val value = AtomicReference(fixture.fixture<Any>())
-        val capturedArgument = AtomicReference<Any?>(null)
-        val proxy = SyncFunProxy<Any, () -> Any>(
-            name,
-            buildInRelaxer = { givenArgument ->
-                capturedArgument.set(givenArgument)
-
-                value
-            },
-            freeze = false
-        )
-
-        // When
-        val actual = proxy.invoke(argument)
-
-        // Then
-        actual mustBe value
-        capturedArgument.value sameAs argument
-    }
-
-    @Test
-    @JsName("fn7f")
-    fun `Given invoke with more than 1 arguments is called it uses the given ParameterizedRelaxer if no ReturnValue Provider with only the first argument is set`() {
-        // Given
-        val name: String = fixture.fixture()
-        val argument: Any = fixture.fixture()
-        val value = AtomicReference(fixture.fixture<Any>())
-        val capturedArgument = AtomicReference<Any?>(null)
-        val proxy = SyncFunProxy<Any, () -> Any>(
-            name,
-            buildInRelaxer = { givenArgument ->
-                capturedArgument.set(givenArgument)
-
-                value
-            },
-            freeze = false
-        )
-
-        // When
-        val actual = proxy.invoke(argument)
-
-        // Then
-        actual mustBe value
-        capturedArgument.value sameAs argument
     }
 
     @Test

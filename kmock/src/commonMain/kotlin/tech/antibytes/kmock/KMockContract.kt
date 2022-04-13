@@ -74,34 +74,18 @@ object KMockContract {
     }
 
     /**
-     * Wrapper for build-in methods, which are internally used as Relaxer. Meant for internal usage only!.
-     * @param Parameter parameter supported by the build-in method.
-     * @param ReturnValue the return type of the Relaxer.
-     * @see Relaxer
-     * @author Matthias Geisler
-     */
-    internal fun interface ParameterizedRelaxer<Parameter, ReturnValue> {
-        /**
-         * Invokes the injected Relaxer.
-         * @param payload which is supported by the invoked build-in method.
-         * @return the given Relaxer Type.
-         */
-        fun invoke(payload: Parameter): ReturnValue
-    }
-
-    /**
      *
      */
-    interface SpyTargetInvocation<Value, SpyTarget : Function<Value>> {
+    interface SpyTarget<Value, SpyTarget : Function<Value>> {
         fun isSpyable(): Boolean
-        fun unwrap(): SpyTarget?
+        fun unwrapSpy(): SpyTarget?
     }
 
     /**
      * * Binds a SpyTarget to a invocation.
      * @param Value the value type of the hosting Proxy.
      */
-    interface PropertySpyTargetInvocation<Value> : SpyTargetInvocation<Value, Function0<Value>> {
+    interface PropertySpyTargetInvocation<Value> {
         /**
          * Binds the given function to the Proxy.
          * It wipes a given relaxer and buildInRelaxer.
@@ -116,7 +100,7 @@ object KMockContract {
      * @param ReturnValue the return value type of the hosting Proxy.
      * @param SpyTarget the function signature of the spy target closure.
      */
-    interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> : SpyTargetInvocation<ReturnValue, SpyTarget> {
+    interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> {
         /**
          * Binds the given function to the Proxy.
          * @param spyTarget the referenced object which is spied upon.
@@ -139,6 +123,11 @@ object KMockContract {
             spyOn: Function1<Any?, Boolean>,
             mockKlass: KClass<out Any>,
         )
+    }
+
+    internal interface RelaxationTarget<Value> {
+        fun isRelaxable(): Boolean
+        fun unwrapRelaxer(): Relaxer<Value>?
     }
 
     /**
@@ -171,27 +160,6 @@ object KMockContract {
          * @param condition Boolean to determine if the the function is relaxed or not.
          */
         fun useUnitFunRelaxerIf(condition: Boolean)
-
-        /**
-         * Binds the given function, which should be toString, to the Proxy.
-         * It wipes a given relaxer.
-         * @param toString function which should reference the mocks parent toString method.
-         */
-        fun useToStringRelaxer(toString: Function0<String>)
-
-        /**
-         * Binds the given function, which should be hashCode, to the Proxy.
-         * It wipes a given relaxer.
-         * @param hashCode function which should reference the mocks parent hashCode method.
-         */
-        fun useHashCodeRelaxer(hashCode: Function0<Int>)
-
-        /**
-         * Binds the given function, which should be equals, to the Proxy.
-         * It wipes a given relaxer.
-         * @param equals function which should reference the mocks parent equals method.
-         */
-        fun useEqualsRelaxer(equals: Function1<Any?, Boolean>)
     }
 
     /**
@@ -203,53 +171,25 @@ object KMockContract {
     interface RelaxationPropertyConfigurator<Value> : RelaxationConfigurator<Value>
 
     /**
-     * Base value container for non intrusive behaviour.
-     * @author Matthias Geisler
+     *
      */
-    internal interface RelaxationConfiguration
+    interface NonIntrusivePropertyConfigurator<Value> : RelaxationPropertyConfigurator<Value>, PropertySpyTargetInvocation<Value>
 
     /**
-     * Value container for non intrusive behaviour of FunProxy.
-     * @param ReturnValue the return value type of the hosting Proxy.
-     * @param SideEffect the function signature of the hosting Proxy.
-     * @constructor creates a NonIntrusiveFunConfiguration.
-     * @param unitFunRelaxer Relaxer with the internal UnitFunRelaxer or null.
-     * @param buildInRelaxer ParameterizedRelaxer which refers to a build-in method like toString or null.
-     * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @see RelaxationConfiguration
-     * @author Matthias Geisler
+     *
      */
-    internal data class RelaxationFunConfiguration<ReturnValue, SideEffect : Function<ReturnValue>>(
-        val unitFunRelaxer: Relaxer<ReturnValue?>?,
-        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
-        val relaxer: Relaxer<ReturnValue>?,
-    ) : RelaxationConfiguration
+    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+        RelaxationFunConfigurator<ReturnValue, SideEffect>, MethodSpyTargetInvocation<ReturnValue, SideEffect>
 
     /**
-     * Value container for non intrusive behaviour of PropertyProxy.
-     * @param Value the value of the hosting Proxy.
-     * @constructor creates a NonIntrusivePropertyConfiguration.
-     * @param relaxer Relaxer which refers to a external defined general relaxation method.
-     * @see RelaxationConfiguration
-     * @author Matthias Geisler
+     *
      */
-    internal data class RelaxationPropertyConfiguration<Value>(
-        val relaxer: Relaxer<Value>?,
-    ) : RelaxationConfiguration
+    internal interface NonIntrusivePropertyTarget<Value> : RelaxationTarget<Value>, SpyTarget<Value, Function0<Value>>
 
     /**
-     * Extractor of configured NonIntrusiveConfiguration.
-     * @param Configuration the actual type of configuration (Fun/Property).
-     * @see RelaxationPropertyConfiguration
-     * @see RelaxationFunConfiguration
-     * @see RelaxationConfiguration
+     *
      */
-    internal interface RelaxationConfigurationExtractor<Configuration : RelaxationConfiguration> {
-        /**
-         * Extracts the configured Configuration.
-         */
-        fun getConfiguration(): Configuration
-    }
+    internal interface NonIntrusiveFunTarget<ReturnValue, SideEffect : Function<ReturnValue>> : RelaxationTarget<ReturnValue>, SpyTarget<ReturnValue, SideEffect>
 
     /**
      * Base State definition for FunProxies and PropertyProxies of shared mutable states to separate frozen and unfrozen behaviour.
@@ -284,12 +224,6 @@ object KMockContract {
          * Holds the captured arguments of invocations of the hosting proxy
          */
         val arguments: MutableList<Arguments>
-
-        /**
-         * Holds a given Relaxer.
-         * @see Relaxer
-         */
-        val relaxer: Relaxer<Value>?
 
         /**
          * Holds a given VerificationChain.
@@ -354,8 +288,7 @@ object KMockContract {
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
      */
-    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> :
-        SideEffectChainBuilder<ReturnValue, SideEffect> {
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
@@ -417,19 +350,6 @@ object KMockContract {
          * Holds a given SideEffect.
          */
         val sideEffects: SideEffectChain<ReturnValue, SideEffect>
-
-        /**
-         * Holds the internal UnitFunRelaxer, if given.
-         * @see Relaxer
-         * @see tech.antibytes.kmock.proxy.kmockUnitFunRelaxer
-         */
-        val unitFunRelaxer: Relaxer<ReturnValue?>?
-
-        /**
-         * Holds a given BuildInRelaxer.
-         * @see ParameterizedRelaxer
-         */
-        val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?
     }
 
     /**
@@ -492,7 +412,7 @@ object KMockContract {
          * @suppress
          */
         fun invoke(
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -503,7 +423,7 @@ object KMockContract {
          */
         fun <Arg0> invoke(
             arg0: Arg0,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -515,7 +435,7 @@ object KMockContract {
         fun <Arg0, Arg1> invoke(
             arg0: Arg0,
             arg1: Arg1,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -528,7 +448,7 @@ object KMockContract {
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -542,7 +462,7 @@ object KMockContract {
             arg1: Arg1,
             arg2: Arg2,
             arg3: Arg3,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -557,7 +477,7 @@ object KMockContract {
             arg2: Arg2,
             arg3: Arg3,
             arg4: Arg4,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -573,7 +493,7 @@ object KMockContract {
             arg3: Arg3,
             arg4: Arg4,
             arg5: Arg5,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -589,7 +509,7 @@ object KMockContract {
             arg4: Arg4,
             arg5: Arg5,
             arg6: Arg6,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -606,7 +526,7 @@ object KMockContract {
             arg5: Arg5,
             arg6: Arg6,
             arg7: Arg7,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -624,7 +544,7 @@ object KMockContract {
             arg6: Arg6,
             arg7: Arg7,
             arg8: Arg8,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -643,7 +563,7 @@ object KMockContract {
             arg7: Arg7,
             arg8: Arg8,
             arg9: Arg9,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -663,7 +583,7 @@ object KMockContract {
             arg8: Arg8,
             arg9: Arg9,
             arg10: Arg10,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -684,7 +604,7 @@ object KMockContract {
             arg9: Arg9,
             arg10: Arg10,
             arg11: Arg11,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -706,7 +626,7 @@ object KMockContract {
             arg10: Arg10,
             arg11: Arg11,
             arg12: Arg12,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
     }
 
@@ -724,7 +644,7 @@ object KMockContract {
          * @suppress
          */
         suspend fun invoke(
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -734,7 +654,7 @@ object KMockContract {
          */
         suspend fun <Arg0> invoke(
             arg0: Arg0,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -745,7 +665,7 @@ object KMockContract {
         suspend fun <Arg0, Arg1> invoke(
             arg0: Arg0,
             arg1: Arg1,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -757,7 +677,7 @@ object KMockContract {
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -770,7 +690,7 @@ object KMockContract {
             arg1: Arg1,
             arg2: Arg2,
             arg3: Arg3,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -784,7 +704,7 @@ object KMockContract {
             arg2: Arg2,
             arg3: Arg3,
             arg4: Arg4,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -799,7 +719,7 @@ object KMockContract {
             arg3: Arg3,
             arg4: Arg4,
             arg5: Arg5,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -815,7 +735,7 @@ object KMockContract {
             arg4: Arg4,
             arg5: Arg5,
             arg6: Arg6,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -832,7 +752,7 @@ object KMockContract {
             arg5: Arg5,
             arg6: Arg6,
             arg7: Arg7,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -850,7 +770,7 @@ object KMockContract {
             arg6: Arg6,
             arg7: Arg7,
             arg8: Arg8,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -869,7 +789,7 @@ object KMockContract {
             arg7: Arg7,
             arg8: Arg8,
             arg9: Arg9,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -889,7 +809,7 @@ object KMockContract {
             arg8: Arg8,
             arg9: Arg9,
             arg10: Arg10,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -910,7 +830,7 @@ object KMockContract {
             arg9: Arg9,
             arg10: Arg10,
             arg11: Arg11,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
         /**
@@ -932,7 +852,7 @@ object KMockContract {
             arg10: Arg10,
             arg11: Arg11,
             arg12: Arg12,
-            spyOn: MethodSpyTargetInvocation<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
     }
 
@@ -1037,7 +957,7 @@ object KMockContract {
          * @suppress
          */
         fun onGet(
-            spyOn: PropertySpyTargetInvocation<Value>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {},
         ): Value
 
         /**
@@ -1047,7 +967,7 @@ object KMockContract {
          */
         fun onSet(
             value: Value,
-            spyOn: PropertySpyTargetInvocation<Unit>.() -> Unit = {},
+            nonIntrusiveHook: NonIntrusivePropertyConfigurator<Unit>.() -> Unit = {},
         )
     }
 
