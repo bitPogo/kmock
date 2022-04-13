@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
@@ -20,10 +21,10 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PREFIXES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
-import tech.antibytes.kmock.processor.ProcessorContract.KSPDelegationExtractor
+import tech.antibytes.kmock.processor.ProcessorContract.OptionExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
 
-internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
+internal object KMockOptionExtractor : OptionExtractor {
     private fun extractMappedValue(
         prefix: String,
         key: String,
@@ -50,8 +51,8 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
         val spyOn: MutableSet<String> = mutableSetOf()
         var freezeOnDefault = true
         var allowInterfaces = false
-        var allowInterfacesOnKspy = false
         var spiesOnly = false
+        var disableFactories = false
         var enableNewOverloadingNames = true
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
@@ -65,6 +66,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
                 key == FREEZE -> freezeOnDefault = value.toBoolean()
                 key == INTERFACES -> allowInterfaces = value.toBoolean()
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
+                key == DISABLE_FACTORIES -> disableFactories = value.toBoolean()
                 key.startsWith(PRECEDENCE) -> extractMappedValue(PRECEDENCE, key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence.toInt()
                 }
@@ -102,6 +104,7 @@ internal object KMockKSPDelegationExtractor : KSPDelegationExtractor {
             freezeOnDefault = freezeOnDefault,
             allowInterfaces = allowInterfaces,
             spiesOnly = spiesOnly,
+            disableFactories = disableFactories,
             knownSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,

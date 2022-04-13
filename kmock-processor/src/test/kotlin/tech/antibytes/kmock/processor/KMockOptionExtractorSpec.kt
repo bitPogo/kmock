@@ -14,12 +14,12 @@ import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
-class KSPDelegationExtractorSpec {
+class KMockOptionExtractorSpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `It fulfils KSPDelegationExtractor`() {
-        KMockKSPDelegationExtractor fulfils ProcessorContract.KSPDelegationExtractor::class
+        KMockOptionExtractor fulfils ProcessorContract.OptionExtractor::class
     }
 
     @Test
@@ -36,7 +36,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.isKmp mustBe isKmp
@@ -58,7 +58,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe emptyMap()
@@ -84,7 +84,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe expected
@@ -104,7 +104,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.knownSourceSets mustBe emptySet()
@@ -130,7 +130,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.knownSourceSets mustBe expected.keys
@@ -158,7 +158,7 @@ class KSPDelegationExtractorSpec {
         delegateKSP["kmock_precedence_commonTest"] = "23"
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.knownSourceSets mustBe expected.keys
@@ -178,7 +178,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.precedences mustBe emptyMap()
@@ -204,7 +204,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.aliases mustBe expected
@@ -230,7 +230,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.useBuildInProxiesOn mustBe expected
@@ -256,7 +256,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.useBuildInProxiesOn mustBe expected
@@ -282,7 +282,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.spyOn mustBe expected
@@ -302,7 +302,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.freezeOnDefault mustBe true
@@ -324,7 +324,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.freezeOnDefault mustBe expected
@@ -344,7 +344,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.allowInterfaces mustBe false
@@ -366,7 +366,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.allowInterfaces mustBe expected
@@ -386,7 +386,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.spiesOnly mustBe false
@@ -408,10 +408,52 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.spiesOnly mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns false for disableFactories if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.disableFactories mustBe false
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for disableFactories`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected = true
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_disable_factories" to expected.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.disableFactories mustBe expected
     }
 
     @Test
@@ -428,7 +470,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.enableNewOverloadingNames mustBe true
@@ -450,7 +492,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.enableNewOverloadingNames mustBe expected
@@ -470,7 +512,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.useTypePrefixFor mustBe emptyMap()
@@ -496,7 +538,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.useTypePrefixFor mustBe expected
@@ -516,7 +558,7 @@ class KSPDelegationExtractorSpec {
         )
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.customMethodNames mustBe emptyMap()
@@ -542,7 +584,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.customMethodNames mustBe expected
@@ -568,7 +610,7 @@ class KSPDelegationExtractorSpec {
         }
 
         // When
-        val actual = KMockKSPDelegationExtractor.convertOptions(delegateKSP)
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
         actual.uselessPrefixes mustBe expected

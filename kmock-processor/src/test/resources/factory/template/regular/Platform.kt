@@ -6,7 +6,6 @@
 
 package factory.template.regular
 
-import mock.template.async.Platform
 import tech.antibytes.kmock.Mock
 
 @Mock(Platform::class)

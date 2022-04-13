@@ -44,6 +44,7 @@ internal interface KMockPluginContract {
 
         /**
          * Allows to prefix type names in order to resolve collisions for overloaded methods.
+         * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
          * The key must be the full qualified name of target which should use an additional prefix.
          * The value is an arbitrary String, which is used as a prefix.
          */
@@ -51,6 +52,7 @@ internal interface KMockPluginContract {
 
         /**
          * Allows to replace auto resolved method names with a given name. This also affects the ProxyId.
+         * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
          * The key must be the original full Id of the Proxy.
          * The value is an arbitrary String, which is used as method name.
          */
@@ -80,6 +82,12 @@ internal interface KMockPluginContract {
          * Default is true
          */
         var freezeOnDefault: Boolean
+
+        /**
+         * Disables the generation of kmock and kspy.
+         * Default is false.
+         */
+        var disableFactories: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -90,6 +98,7 @@ internal interface KMockPluginContract {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
+        const val DISABLE_FACTORIES = "${KMOCK_PREFIX}disable_factories"
         const val FREEZE = "${KMOCK_PREFIX}freeze"
         const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"

@@ -10,6 +10,7 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
@@ -54,6 +55,8 @@ abstract class KMockExtension(
 
     private var _spyOn: Set<String> = emptySet()
     private var _spiesOnly = false
+
+    private var _disableFactories = false
 
     private fun propagateValue(
         id: String,
@@ -182,5 +185,12 @@ abstract class KMockExtension(
         set(value) {
             propagateValue(SPIES_ONLY, value.toString())
             _spiesOnly = value
+        }
+
+    override var disableFactories: Boolean
+        get() = _disableFactories
+        set(value) {
+            propagateValue(DISABLE_FACTORIES, value.toString())
+            _disableFactories = value
         }
 }

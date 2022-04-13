@@ -550,4 +550,33 @@ class ExtensionSpec {
         extension.spiesOnly mustBe expected
         verify(exactly = 1) { kspExtension.arg("kmock_spiesOnly", expected.toString()) }
     }
+
+    @Test
+    fun `Its disableFactories is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.disableFactories mustBe false
+    }
+
+    @Test
+    fun `It propagates disableFactories changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.disableFactories = expected
+
+        extension.disableFactories mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_disable_factories", expected.toString()) }
+    }
 }

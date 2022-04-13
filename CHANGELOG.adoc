@@ -36,6 +36,7 @@ toc::[]
 * `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
 * `customMethodNames` in order to allow complete custom names for methods
 * `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
+* `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
 
 === Changed
 
