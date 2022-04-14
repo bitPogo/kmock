@@ -17,17 +17,14 @@ import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
-import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockBuildInMethodGenerator(
-    private val spyGenerator: SpyGenerator,
     private val nameSelector: ProxyNameSelector,
-    private val relaxerGenerator: RelaxerGenerator,
+    private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator
 ) : BuildInMethodGenerator {
-    private val buildInArguments: Array<MethodTypeInfo> = arrayOf()
     private val buildIns = mapOf(
         "toString" to String::class,
         "equals" to Boolean::class,
@@ -47,16 +44,11 @@ internal class KMockBuildInMethodGenerator(
 
     private fun buildProxyInitializer(
         proxySpec: PropertySpec.Builder,
-        argument: MethodTypeInfo?,
         proxyInfo: ProxyInfo,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "ProxyFactory.createSyncFunProxy(%S, collector = verifier, freeze = freeze, ignorableForVerification = true) %L",
-            proxyInfo.proxyId,
-            relaxerGenerator.addBuildInRelaxation(
-                methodName = proxyInfo.templateName,
-                argument = argument
-            )
+            "ProxyFactory.createSyncFunProxy(%S, collector = verifier, freeze = freeze, ignorableForVerification = true)",
+            proxyInfo.proxyId
         )
     }
 
@@ -86,36 +78,9 @@ internal class KMockBuildInMethodGenerator(
         ).let { proxySpec ->
             buildProxyInitializer(
                 proxySpec = proxySpec,
-                argument = proxyArgument,
                 proxyInfo = proxyInfo,
             )
         }.build()
-    }
-
-    private fun useEqualsOrElse(
-        mockName: String,
-        proxyInfo: ProxyInfo,
-    ): String {
-        return if (proxyInfo.templateName == "equals") {
-            spyGenerator.buildEqualsSpy(mockName)
-        } else {
-            spyGenerator.buildMethodSpy(
-                methodName = proxyInfo.templateName,
-                arguments = buildInArguments
-            )
-        }
-    }
-
-    private fun determineSpy(
-        enableSpy: Boolean,
-        mockName: String,
-        proxyInfo: ProxyInfo,
-    ): String {
-        return if (enableSpy) {
-            useEqualsOrElse(mockName, proxyInfo)
-        } else {
-            ""
-        }
     }
 
     private fun buildMethod(
@@ -133,15 +98,16 @@ internal class KMockBuildInMethodGenerator(
             method.addParameter(argument.argumentName, argument.typeName)
         }
 
-        val spy = determineSpy(
+        val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildBuildInNonIntrusiveInvocation(
             enableSpy = enableSpy,
             mockName = mockName,
-            proxyInfo = proxyInfo
+            methodName = proxyInfo.templateName,
+            argument = argument
         )
 
         val invocationArgument = argument?.argumentName ?: ""
 
-        method.addCode("return ${proxyInfo.proxyName}.invoke($invocationArgument)$spy")
+        method.addCode("return ${proxyInfo.proxyName}.invoke($invocationArgument)$nonIntrusiveInvocation")
 
         return method.build()
     }

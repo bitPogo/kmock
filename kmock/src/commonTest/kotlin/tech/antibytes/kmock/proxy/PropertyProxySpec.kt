@@ -187,18 +187,17 @@ class PropertyProxySpec {
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
         val capturedId = AtomicReference<String?>(null)
-        val proxy = PropertyProxy<Any>(
-            name,
-            relaxer = { givenId ->
-                capturedId.set(givenId)
-
-                value
-            }
-        )
+        val proxy = PropertyProxy<Any>(name)
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.onGet()
+            val actual = proxy.onGet {
+                useRelaxerIf(true) { givenId ->
+                    capturedId.set(givenId)
+
+                    value
+                }
+            }
 
             // Then
             actual mustBe value

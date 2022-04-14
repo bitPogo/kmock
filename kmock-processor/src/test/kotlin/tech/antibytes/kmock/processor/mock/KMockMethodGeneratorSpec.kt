@@ -18,7 +18,6 @@ class KMockMethodGeneratorSpec {
             mockk(),
             mockk(),
             mockk(),
-            mockk(),
         ) fulfils ProcessorContract.MethodGenerator::class
     }
 }

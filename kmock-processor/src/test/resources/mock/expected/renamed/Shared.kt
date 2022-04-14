@@ -17,10 +17,10 @@ internal class SharedMock<K : Any, L>(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared<K, L>? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared<K, L> where L : Any, L : Comparable<L> {
     public override var template: L
         get() = _template.onGet()
@@ -47,33 +47,31 @@ internal class SharedMock<K : Any, L>(
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.SharedMock#_toString", collector =
-        verifier, freeze = freeze, ignorableForVerification = true) {
-            useToStringRelaxer { super.toString() }
-        }
+        verifier, freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.SharedMock#_equals", collector =
-        verifier, freeze = freeze, ignorableForVerification = true) {
-            useEqualsRelaxer { other ->
-                super.equals(other)
-            }
-        }
+        verifier, freeze = freeze, ignorableForVerification = true)
 
     public val noHash: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.SharedMock#noHash", collector =
-        verifier, freeze = freeze, ignorableForVerification = true) {
-            useHashCodeRelaxer { super.hashCode() }
-        }
+        verifier, freeze = freeze, ignorableForVerification = true)
 
     public override fun bar(arg0: Int): Any = _bar.invoke(arg0)
 
     public override suspend fun buzz(arg0: String): L = customName.invoke(arg0)
 
-    public override fun toString(): String = _toString.invoke()
+    public override fun toString(): String = _toString.invoke() {
+        useRelaxerIf(true) { super.toString() }
+    }
 
-    public override fun equals(other: Any?): Boolean = _equals.invoke(other)
+    public override fun equals(other: Any?): Boolean = _equals.invoke(other) {
+        useRelaxerIf(true) { super.equals(other) }
+    }
 
-    public override fun hashCode(): Int = noHash.invoke()
+    public override fun hashCode(): Int = noHash.invoke() {
+        useRelaxerIf(true) { super.hashCode() }
+    }
 
     public fun _clearMock(): Unit {
         _template.clear()

@@ -21,6 +21,7 @@ import tech.antibytes.kmock.processor.factory.NoopFactoryGenerator
 import tech.antibytes.kmock.processor.mock.KMockBuildInMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
+import tech.antibytes.kmock.processor.mock.KMockNonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
@@ -79,21 +80,23 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             uselessPrefixes = options.uselessPrefixes,
         )
 
-        val propertyGenerator = KMockPropertyGenerator(
+        val nonIntrusiveInvocationGenerator = KMockNonIntrusiveInvocationGenerator(
             spyGenerator = KMockSpyGenerator,
-            nameSelector = nameSelector,
             relaxerGenerator = relaxerGenerator,
+        )
+
+        val propertyGenerator = KMockPropertyGenerator(
+            nameSelector = nameSelector,
+            nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
         )
         val buildInGenerator = KMockBuildInMethodGenerator(
-            spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
-            relaxerGenerator = relaxerGenerator,
+            nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
         )
         val methodGenerator = KMockMethodGenerator(
-            spyGenerator = KMockSpyGenerator,
             nameSelector = nameSelector,
+            nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
             genericResolver = KMockGenerics,
-            relaxerGenerator = relaxerGenerator,
         )
 
         val (factoryGenerator, entryPointGenerator) = determineFactoryGenerator(

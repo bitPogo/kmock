@@ -18,10 +18,10 @@ internal class CommonMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Common {
     public override var Something.thing: Int
         get() = throw IllegalStateException("This action is not callable.")
@@ -49,9 +49,7 @@ internal class CommonMock(
 
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.scoped.CommonMock#_iDo", collector = verifier,
-            freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+            freeze = freeze)
 
     public override fun Something.doSomething(): Int = throw IllegalStateException(
         "This action is not callable."
@@ -83,7 +81,9 @@ internal class CommonMock(
         "This action is not callable."
     )
 
-    public override fun iDo(): Unit = _iDo.invoke()
+    public override fun iDo(): Unit = _iDo.invoke() {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public fun _clearMock(): Unit {
         _myThing.clear()

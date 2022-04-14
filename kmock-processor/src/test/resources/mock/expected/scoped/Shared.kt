@@ -18,10 +18,10 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared {
     public override var Something.thing: Int
         get() = throw IllegalStateException("This action is not callable.")
@@ -49,9 +49,7 @@ internal class SharedMock(
 
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.scoped.SharedMock#_iDo", collector = verifier,
-            freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+            freeze = freeze)
 
     public override fun Something.doSomething(): Int = throw IllegalStateException(
         "This action is not callable."
@@ -83,7 +81,9 @@ internal class SharedMock(
         "This action is not callable."
     )
 
-    public override fun iDo(): Unit = _iDo.invoke()
+    public override fun iDo(): Unit = _iDo.invoke() {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public fun _clearMock(): Unit {
         _myThing.clear()

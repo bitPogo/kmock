@@ -14,10 +14,10 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared {
     public val _doSomething: KMockContract.SyncFunProxy<Any, (kotlin.Any,
         mock.template.typealiaz.Alias0, mock.template.typealiaz.Alias1) -> kotlin.Any> =

@@ -17,10 +17,10 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared {
     public override val foo: Any
         get() = _foo.onGet()
@@ -67,23 +67,17 @@ internal class SharedMock(
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithAny", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
     public val _fooWithShared: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Shared) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithShared",
-            collector = verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+            collector = verifier, freeze = freeze)
 
     public val _fooWithLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithLPG", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
@@ -97,11 +91,17 @@ internal class SharedMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz)
+    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
-    public override fun <T : Shared> foo(fuzz: T): Unit = _fooWithShared.invoke(fuzz)
+    public override fun <T : Shared> foo(fuzz: T): Unit = _fooWithShared.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz)
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public fun _clearMock(): Unit {
         _foo.clear()

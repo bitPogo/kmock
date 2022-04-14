@@ -14,10 +14,10 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Platform {
     public val _doSomething: KMockContract.SyncFunProxy<Any, (kotlin.Any,
         mock.template.typealiaz.Alias0, mock.template.typealiaz.Alias1) -> kotlin.Any> =

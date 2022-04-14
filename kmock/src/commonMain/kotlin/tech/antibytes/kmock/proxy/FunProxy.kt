@@ -15,9 +15,6 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.FunProxyState
-import tech.antibytes.kmock.KMockContract.MethodSpyTargetInvocation
-import tech.antibytes.kmock.KMockContract.ParameterizedRelaxer
-import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.error.MockError
@@ -30,17 +27,11 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     override val id: String,
     override val ignorableForVerification: Boolean,
     collector: Collector = NoopCollector,
-    relaxer: Relaxer<ReturnValue>?,
-    unitFunRelaxer: Relaxer<ReturnValue?>?,
-    buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
     freeze: Boolean,
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
     private class FreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
         collector: Collector,
-        relaxer: Relaxer<ReturnValue>?,
-        unitFunRelaxer: Relaxer<ReturnValue?>?,
-        buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         setProvider: (FunProxyInvocationType) -> Unit,
     ) : FunProxyState<ReturnValue, SideEffect> {
         private val _throws: AtomicRef<Throwable?> = atomic(null)
@@ -55,9 +46,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         private val _collector: AtomicRef<Collector> = atomic(collector)
         private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
 
-        private val _relaxer: AtomicRef<Relaxer<ReturnValue>?> = atomic(relaxer)
-        private val _unitFunRelaxer: AtomicRef<Relaxer<ReturnValue?>?> = atomic(unitFunRelaxer)
-        private val _buildInRelaxer: AtomicRef<ParameterizedRelaxer<Any?, ReturnValue>?> = atomic(buildInRelaxer)
         private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
 
         override var throws: Throwable? by _throws
@@ -72,9 +60,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         override val calls: Int by _calls
         override val arguments: MutableList<Array<out Any?>> = sharedMutableListOf()
 
-        override val relaxer: Relaxer<ReturnValue>? by _relaxer
-        override val unitFunRelaxer: Relaxer<ReturnValue?>? by _unitFunRelaxer
-        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>? by _buildInRelaxer
         override var verificationChain: VerificationChain? by _verificationChain
 
         override fun incrementInvocations() {
@@ -99,9 +84,6 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     private class NonFreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
         override val collector: Collector,
-        override val relaxer: Relaxer<ReturnValue>?,
-        override val unitFunRelaxer: Relaxer<ReturnValue?>?,
-        override val buildInRelaxer: ParameterizedRelaxer<Any?, ReturnValue>?,
         setProvider: (FunProxyInvocationType) -> Unit,
     ) : FunProxyState<ReturnValue, SideEffect> {
         private var _calls = 0
@@ -144,19 +126,13 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         FreezingFunProxyState(
             defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
-            relaxer = relaxer,
-            buildInRelaxer = buildInRelaxer,
-            unitFunRelaxer = unitFunRelaxer,
-            setProvider = ::setProvider,
+            setProvider = ::setFunProxyInvocationType,
         )
     } else {
         NonFreezingFunProxyState(
             defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
-            relaxer = relaxer,
-            buildInRelaxer = buildInRelaxer,
-            unitFunRelaxer = unitFunRelaxer,
-            setProvider = ::setProvider,
+            setProvider = ::setFunProxyInvocationType,
         )
     }
     internal val invocationType
@@ -168,13 +144,13 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             state.verificationChain = value
         }
 
-    private fun setProvider(invocationType: FunProxyInvocationType) {
-        val activeProvider = max(
+    private fun setFunProxyInvocationType(invocationType: FunProxyInvocationType) {
+        val activeInvocationType = max(
             invocationType.value,
             state.invocationType.value
         )
 
-        if (activeProvider == invocationType.value) {
+        if (activeInvocationType == invocationType.value) {
             state.invocationType = invocationType
         }
     }
@@ -188,7 +164,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             }
         }
         set(value) {
-            setProvider(FunProxyInvocationType.THROWS)
+            setFunProxyInvocationType(FunProxyInvocationType.THROWS)
             state.throws = value
         }
 
@@ -196,7 +172,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         @Suppress("UNCHECKED_CAST")
         get() = state.returnValue as ReturnValue
         set(value) {
-            setProvider(FunProxyInvocationType.RETURN_VALUE)
+            setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUE)
             state.returnValue = value
         }
 
@@ -211,7 +187,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(FunProxyInvocationType.RETURN_VALUES)
+                setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUES)
                 _setReturnValues(values)
             }
         }
@@ -225,7 +201,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             }
         }
         set(value) {
-            setProvider(FunProxyInvocationType.SIDE_EFFECT)
+            setFunProxyInvocationType(FunProxyInvocationType.SIDE_EFFECT)
             state.sideEffect = value
         }
 
@@ -244,11 +220,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         }
     }
 
-    protected fun invokeRelaxerOrFail(payload: Any?): ReturnValue {
-        return state.buildInRelaxer?.invoke(payload)
-            ?: state.unitFunRelaxer?.relax(id)
-            ?: state.relaxer?.relax(id)
-            ?: throw MockError.MissingStub("Missing stub value for $id")
+    protected fun fail(): ReturnValue {
+        throw MockError.MissingStub("Missing stub value for $id")
     }
 
     protected fun retrieveSideEffect(): SideEffect = state.sideEffects.next()
@@ -269,21 +242,27 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     }
 
     private fun <Value, Invocation : Function<Value>> setInvocationType(
-        spyTarget: MethodSpyTargetInvocation<Value, Invocation>
+        nonIntrusiveHook: NonIntrusiveFunConfigurator<Value, Invocation>
     ) {
-        if (spyTarget.isSpyable()) {
-            state.invocationType = FunProxyInvocationType.SPY
+        if (nonIntrusiveHook.isSpyable()) {
+            setFunProxyInvocationType(FunProxyInvocationType.SPY)
+        }
+
+        if (nonIntrusiveHook.isRelaxable()) {
+            setFunProxyInvocationType(FunProxyInvocationType.RELAXED)
         }
     }
 
-    protected fun <Value, Invocation : Function<Value>> configureSpy(
-        spyOn: MethodSpyTargetInvocation<Value, Invocation>.() -> Unit,
-    ): MethodSpyTargetInvocation<Value, Invocation> {
-        val spyTarget = MethodSpyTargetInvocation<Value, Invocation>()
-        spyOn(spyTarget)
-        setInvocationType(spyTarget)
+    internal fun <Value, Invocation : Function<Value>> configureNonIntrusiveBehaviour(
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Value, Invocation>.() -> Unit,
+    ): KMockContract.NonIntrusiveFunTarget<Value, Invocation> {
+        val nonIntrusiveFunConfiguration = NonIntrusiveFunConfigurator<Value, Invocation>()
 
-        return spyTarget
+        nonIntrusiveHook(nonIntrusiveFunConfiguration)
+
+        setInvocationType(nonIntrusiveFunConfiguration)
+
+        return nonIntrusiveFunConfiguration
     }
 
     override fun getArgumentsForCall(callIndex: Int): Array<out Any?> {

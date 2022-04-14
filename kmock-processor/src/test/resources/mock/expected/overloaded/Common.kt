@@ -17,10 +17,10 @@ internal class CommonMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Common {
     public override val foo: Any
         get() = _foo.onGet()
@@ -67,23 +67,17 @@ internal class CommonMock(
 
     public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithAny", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
     public val _fooWithCommon: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Common) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithCommon",
-            collector = verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+            collector = verifier, freeze = freeze)
 
     public val _fooWithLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithLPG", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
     public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithAnys", collector
@@ -101,11 +95,17 @@ internal class CommonMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz)
+    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
-    public override fun <T : Common> foo(fuzz: T): Unit = _fooWithCommon.invoke(fuzz)
+    public override fun <T : Common> foo(fuzz: T): Unit = _fooWithCommon.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz)
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)
 
