@@ -74,16 +74,27 @@ object KMockContract {
     }
 
     /**
-     *
+     * Extractor of bounded SpyTarget.
+     * @param Value the value type of the hosting Proxy.
+     * @param SpyTarget the function signature of the spy target closure.
+     * @author Matthias Geisler
      */
-    interface SpyTarget<Value, SpyTarget : Function<Value>> {
+    internal interface SpyTarget<Value, SpyTarget : Function<Value>> {
+        /**
+         * Indicates if a SpyTarget was bound or not.
+         */
         fun isSpyable(): Boolean
+
+        /**
+         * Unwraps a bounded SpyTarget for an invocation.
+         */
         fun unwrapSpy(): SpyTarget?
     }
 
     /**
-     * * Binds a SpyTarget to a invocation.
+     * Binds a SpyTarget to a invocation.
      * @param Value the value type of the hosting Proxy.
+     * @author Matthias Geisler
      */
     interface PropertySpyTargetInvocation<Value> {
         /**
@@ -99,6 +110,7 @@ object KMockContract {
      * Binds a SpyTarget to a invocation.
      * @param ReturnValue the return value type of the hosting Proxy.
      * @param SpyTarget the function signature of the spy target closure.
+     * @author Matthias Geisler
      */
     interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> {
         /**
@@ -125,8 +137,20 @@ object KMockContract {
         )
     }
 
+    /**
+     * Extractor of bounded Relaxer.
+     * @param Value the value type of the hosting Proxy.
+     * @author Matthias Geisler
+     */
     internal interface RelaxationTarget<Value> {
+        /**
+         * Indicates if a Relaxer was bound or not.
+         */
         fun isRelaxable(): Boolean
+
+        /**
+         * Unwraps a bounded Relaxer for an invocation.
+         */
         fun unwrapRelaxer(): Relaxer<Value>?
     }
 
@@ -171,23 +195,27 @@ object KMockContract {
     interface RelaxationPropertyConfigurator<Value> : RelaxationConfigurator<Value>
 
     /**
-     *
+     * Configurator for non intrusive behaviour of PropertyProxies.
+     * @author Matthias Geisler
      */
     interface NonIntrusivePropertyConfigurator<Value> : RelaxationPropertyConfigurator<Value>, PropertySpyTargetInvocation<Value>
 
     /**
-     *
+     * Configurator for non intrusive behaviour of FunProxies.
+     * @author Matthias Geisler
      */
     interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
         RelaxationFunConfigurator<ReturnValue, SideEffect>, MethodSpyTargetInvocation<ReturnValue, SideEffect>
 
     /**
-     *
+     * Extractor for non intrusive behaviour of PropertyProxies.
+     * @author Matthias Geisler
      */
     internal interface NonIntrusivePropertyTarget<Value> : RelaxationTarget<Value>, SpyTarget<Value, Function0<Value>>
 
     /**
-     *
+     * Extractor for non intrusive behaviour of FunProxies.
+     * @author Matthias Geisler
      */
     internal interface NonIntrusiveFunTarget<ReturnValue, SideEffect : Function<ReturnValue>> : RelaxationTarget<ReturnValue>, SpyTarget<ReturnValue, SideEffect>
 

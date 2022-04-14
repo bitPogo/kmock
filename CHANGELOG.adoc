@@ -43,6 +43,7 @@ toc::[]
 * Generated mocks don't contain runtime logic any longer
 * Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
 * `kmock` and `kspy` are using now a shared function to improve compile time
+* Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
 
 === Deprecated
 
