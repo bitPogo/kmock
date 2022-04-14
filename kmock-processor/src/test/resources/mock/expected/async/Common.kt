@@ -15,10 +15,10 @@ internal class CommonMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Common {
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createAsyncFunProxy("mock.template.async.CommonMock#_foo", collector =

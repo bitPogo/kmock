@@ -16,10 +16,10 @@ internal class CommonMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Common {
     public override val foo: String
         get() = _foo.onGet()

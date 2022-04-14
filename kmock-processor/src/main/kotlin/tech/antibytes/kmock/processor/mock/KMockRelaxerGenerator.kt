@@ -10,91 +10,56 @@ import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.titleCase
 
 internal class KMockRelaxerGenerator : RelaxerGenerator {
     private fun addRelaxer(
-        relaxationDefinitions: StringBuilder,
         relaxer: Relaxer?
-    ) {
-        if (relaxer != null) {
-            relaxationDefinitions.append("useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId) }\n")
+    ): String {
+        return if (relaxer != null) {
+            "useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId) }\n"
+        } else {
+            ""
         }
     }
 
     private fun addFunRelaxer(
-        relaxationDefinitions: StringBuilder,
         methodReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
-    ) {
-        if (methodReturnType.typeName.toString() == "kotlin.Unit") {
-            relaxationDefinitions.append("useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n")
-        } else {
-            addRelaxer(relaxationDefinitions, relaxer)
-        }
-    }
-
-    private fun addRelaxation(
-        addRelaxer: Function1<StringBuilder, Unit>,
     ): String {
-        val relaxationDefinitions = StringBuilder(3)
-
-        relaxationDefinitions.append("{\n")
-
-        addRelaxer(relaxationDefinitions)
-
-        relaxationDefinitions.append("}")
-
-        return if (relaxationDefinitions.length == 3) {
-            ""
+        return if (methodReturnType.typeName.toString() == "kotlin.Unit") {
+            "useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n"
         } else {
-            relaxationDefinitions.toString()
+            addRelaxer(relaxer)
         }
     }
 
-    override fun addPropertyRelaxation(
+    override fun buildPropertyRelaxation(
         relaxer: Relaxer?
-    ): String = addRelaxation { relaxationDefinitions ->
-        addRelaxer(
-            relaxationDefinitions = relaxationDefinitions,
-            relaxer = relaxer
-        )
-    }
+    ): String = addRelaxer(relaxer)
 
-    override fun addMethodRelaxation(
+    override fun buildMethodRelaxation(
         relaxer: Relaxer?,
         methodReturnType: MethodReturnTypeInfo,
-    ): String = addRelaxation { relaxationDefinitions ->
-        addFunRelaxer(
-            relaxationDefinitions = relaxationDefinitions,
-            methodReturnType = methodReturnType,
-            relaxer = relaxer
-        )
-    }
+    ): String = addFunRelaxer(
+        methodReturnType = methodReturnType,
+        relaxer = relaxer
+    )
 
     private fun buildRelaxationInvocation(
         methodName: String,
         argumentName: String,
-    ): String {
-        val body = "super.$methodName($argumentName)"
+    ): String = "{ super.$methodName($argumentName) }"
 
-        return if (argumentName.isEmpty()) {
-            "{ $body }"
-        } else {
-            "{ $argumentName ->\n$body\n}"
-        }
-    }
-
-    override fun addBuildInRelaxation(
+    override fun buildBuildInRelaxation(
         methodName: String,
         argument: MethodTypeInfo?,
-    ): String = addRelaxation { relaxationDefinitions ->
+    ): String {
         val argumentName = argument?.argumentName ?: ""
         val relaxerBody = buildRelaxationInvocation(
             methodName = methodName,
             argumentName = argumentName
         )
 
-        relaxationDefinitions.append("use${methodName.titleCase()}Relaxer $relaxerBody\n")
+        return "useRelaxerIf(true) $relaxerBody\n"
     }
 }

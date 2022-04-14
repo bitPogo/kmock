@@ -16,10 +16,10 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared {
     public override val foo: String
         get() = _foo.onGet()

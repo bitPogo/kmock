@@ -309,13 +309,13 @@ object KMockContract {
      */
     internal enum class FunProxyInvocationType(val value: Int) {
         NO_GIVEN_VALUE(0),
-        THROWS(1),
-        RETURN_VALUE(2),
-        RETURN_VALUES(3),
-        SIDE_EFFECT(4),
-        SIDE_EFFECT_CHAIN(5),
-        SPY(6),
-        RELAXED(7)
+        RELAXED(1),
+        THROWS(2),
+        RETURN_VALUE(3),
+        RETURN_VALUES(4),
+        SIDE_EFFECT(5),
+        SIDE_EFFECT_CHAIN(6),
+        SPY(7),
     }
 
     /**
@@ -883,11 +883,11 @@ object KMockContract {
      */
     internal enum class PropertyProxyInvocationType(val value: Int) {
         NO_PROVIDER(0),
-        VALUE(1),
-        VALUES(2),
-        SIDE_EFFECT(3),
-        SPY(4),
-        RELAXED(5),
+        RELAXED(1),
+        VALUE(2),
+        VALUES(3),
+        SIDE_EFFECT(4),
+        SPY(5),
     }
 
     /**

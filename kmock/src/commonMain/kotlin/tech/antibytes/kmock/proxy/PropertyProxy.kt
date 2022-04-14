@@ -233,11 +233,11 @@ internal class PropertyProxy<Value>(
         nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>
     ) {
         if (nonIntrusiveHook.isSpyable()) {
-            state.invocationType = PropertyProxyInvocationType.SPY
+            setPropertyProxyInvocationType(PropertyProxyInvocationType.SPY)
         }
 
         if (nonIntrusiveHook.isRelaxable()) {
-            state.invocationType = PropertyProxyInvocationType.RELAXED
+            setPropertyProxyInvocationType(PropertyProxyInvocationType.RELAXED)
         }
     }
 

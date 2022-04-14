@@ -18,10 +18,10 @@ internal class PlatformMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Platform {
     public override var Something.thing: Int
         get() = throw IllegalStateException("This action is not callable.")
@@ -49,9 +49,7 @@ internal class PlatformMock(
 
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.scoped.PlatformMock#_iDo", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
     public override fun Something.equals(): Int = throw IllegalStateException(
         "This action is not callable."
@@ -83,7 +81,9 @@ internal class PlatformMock(
         "This action is not callable."
     )
 
-    public override fun iDo(): Unit = _iDo.invoke()
+    public override fun iDo(): Unit = _iDo.invoke() {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public fun _clearMock(): Unit {
         _myThing.clear()

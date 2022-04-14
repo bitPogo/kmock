@@ -126,13 +126,13 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         FreezingFunProxyState(
             defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
-            setProvider = ::setProvider,
+            setProvider = ::setFunProxyInvocationType,
         )
     } else {
         NonFreezingFunProxyState(
             defaultInvocationType = FunProxyInvocationType.NO_GIVEN_VALUE,
             collector = collector,
-            setProvider = ::setProvider,
+            setProvider = ::setFunProxyInvocationType,
         )
     }
     internal val invocationType
@@ -144,13 +144,13 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             state.verificationChain = value
         }
 
-    private fun setProvider(invocationType: FunProxyInvocationType) {
-        val activeProvider = max(
+    private fun setFunProxyInvocationType(invocationType: FunProxyInvocationType) {
+        val activeInvocationType = max(
             invocationType.value,
             state.invocationType.value
         )
 
-        if (activeProvider == invocationType.value) {
+        if (activeInvocationType == invocationType.value) {
             state.invocationType = invocationType
         }
     }
@@ -164,7 +164,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             }
         }
         set(value) {
-            setProvider(FunProxyInvocationType.THROWS)
+            setFunProxyInvocationType(FunProxyInvocationType.THROWS)
             state.throws = value
         }
 
@@ -172,7 +172,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         @Suppress("UNCHECKED_CAST")
         get() = state.returnValue as ReturnValue
         set(value) {
-            setProvider(FunProxyInvocationType.RETURN_VALUE)
+            setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUE)
             state.returnValue = value
         }
 
@@ -187,7 +187,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
             } else {
-                setProvider(FunProxyInvocationType.RETURN_VALUES)
+                setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUES)
                 _setReturnValues(values)
             }
         }
@@ -201,7 +201,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             }
         }
         set(value) {
-            setProvider(FunProxyInvocationType.SIDE_EFFECT)
+            setFunProxyInvocationType(FunProxyInvocationType.SIDE_EFFECT)
             state.sideEffect = value
         }
 
@@ -245,11 +245,11 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         nonIntrusiveHook: NonIntrusiveFunConfigurator<Value, Invocation>
     ) {
         if (nonIntrusiveHook.isSpyable()) {
-            state.invocationType = FunProxyInvocationType.SPY
+            setFunProxyInvocationType(FunProxyInvocationType.SPY)
         }
 
         if (nonIntrusiveHook.isRelaxable()) {
-            state.invocationType = FunProxyInvocationType.RELAXED
+            setFunProxyInvocationType(FunProxyInvocationType.RELAXED)
         }
     }
 

@@ -12,20 +12,15 @@ import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 internal object KMockSpyGenerator : SpyGenerator {
     private fun buildSpy(
         invocation: String,
-    ): String {
-        return """ {
-            |   useSpyIf(__spyOn) { $invocation }
-            |}
-        """.trimMargin()
-    }
+    ): String = "useSpyIf(__spyOn) { $invocation }\n"
 
-    override fun buildGetterSpy(propertyName: String): String {
-        return buildSpy("__spyOn!!.$propertyName")
-    }
+    override fun buildGetterSpy(
+        propertyName: String
+    ): String = buildSpy("__spyOn!!.$propertyName")
 
-    override fun buildSetterSpy(propertyName: String): String {
-        return buildSpy("__spyOn!!.$propertyName = value")
-    }
+    override fun buildSetterSpy(
+        propertyName: String
+    ): String = buildSpy("__spyOn!!.$propertyName = value")
 
     private fun determineSpyInvocationArgument(
         methodInfo: MethodTypeInfo
@@ -50,14 +45,14 @@ internal object KMockSpyGenerator : SpyGenerator {
     }
 
     override fun buildEqualsSpy(mockName: String): String {
-        return """ {
-            |   useSpyOnEqualsIf(
-            |       spyTarget = __spyOn,
-            |       other = other,
-            |       spyOn = { super.equals(other) },
-            |       mockKlass = $mockName::class
-            |   )
-            |}
+        return """
+            |useSpyOnEqualsIf(
+            |   spyTarget = __spyOn,
+            |   other = other,
+            |   spyOn = { super.equals(other) },
+            |   mockKlass = $mockName::class
+            |)
+            |
         """.trimMargin()
     }
 }

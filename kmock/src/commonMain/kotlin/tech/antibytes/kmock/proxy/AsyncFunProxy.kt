@@ -7,9 +7,9 @@
 package tech.antibytes.kmock.proxy
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfigurator
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
+import tech.antibytes.kmock.KMockContract.NonIntrusiveFunConfigurator
 import tech.antibytes.kmock.KMockContract.Relaxer
 
 /**

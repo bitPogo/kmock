@@ -69,7 +69,7 @@ class NonIntrusivePropertyConfiguratorSpec {
         // Then
         actual mustBe null
     }
-    
+
     @Test
     @JsName("fn5")
     fun `Given isRelaxable is called after useRelaxerIf while its condition is falsum it returns false`() {

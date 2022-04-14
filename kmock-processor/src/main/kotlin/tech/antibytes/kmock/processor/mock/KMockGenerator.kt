@@ -40,7 +40,8 @@ internal class KMockGenerator(
     private val methodGenerator: ProcessorContract.MethodGenerator,
     private val buildInGenerator: ProcessorContract.BuildInMethodGenerator
 ) : ProcessorContract.MockGenerator {
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+    private val unusedParameter = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
 
     private fun buildConstructor(superType: TypeName): FunSpec {
         val constructor = FunSpec.constructorBuilder()
@@ -52,7 +53,7 @@ internal class KMockGenerator(
         val spy = ParameterSpec.builder(
             "spyOn",
             superType.copy(nullable = true),
-        ).addAnnotation(unused).defaultValue("null")
+        ).addAnnotation(unusedParameter).defaultValue("null")
         constructor.addParameter(spy.build())
 
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
@@ -61,7 +62,7 @@ internal class KMockGenerator(
 
         val relaxUnit = ParameterSpec.builder(
             "relaxUnitFun",
-            Boolean::class
+            Boolean::class,
         ).addAnnotation(unused).defaultValue("false")
         constructor.addParameter(relaxUnit.build())
 
@@ -69,7 +70,6 @@ internal class KMockGenerator(
             "relaxed",
             Boolean::class
         ).addAnnotation(unused).defaultValue("false")
-
         constructor.addParameter(relaxed.build())
 
         return constructor.build()
@@ -124,6 +124,22 @@ internal class KMockGenerator(
 
         mock.primaryConstructor(
             buildConstructor(superType)
+        )
+
+        mock.addProperty(
+            PropertySpec.builder(
+                "relaxUnitFun",
+                Boolean::class,
+                KModifier.PRIVATE,
+            ).initializer("relaxUnitFun").build()
+        )
+
+        mock.addProperty(
+            PropertySpec.builder(
+                "relaxed",
+                Boolean::class,
+                KModifier.PRIVATE,
+            ).initializer("relaxed").build()
         )
 
         if (enableSpy) {

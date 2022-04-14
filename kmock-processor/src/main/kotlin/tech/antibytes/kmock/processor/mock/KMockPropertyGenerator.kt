@@ -18,29 +18,34 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockPropertyGenerator(
-    private val spyGenerator: SpyGenerator,
     private val nameSelector: ProxyNameSelector,
-    private val relaxerGenerator: RelaxerGenerator
+    private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator,
 ) : PropertyGenerator {
     private val proxy = PropertyProxy::class.asClassName()
-    private val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze) %L"
+    private val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze)"
     private val scopedBody = "throw IllegalStateException(\"This action is not callable.\")"
     private val scopedGetter = FunSpec.getterBuilder().addStatement(scopedBody)
 
     private fun FunSpec.Builder.addGetterInvocation(
         propertyName: String,
-        enableSpy: Boolean
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ): FunSpec.Builder {
-        val statement = if (enableSpy) {
-            "return $propertyName.onGet ${spyGenerator.buildGetterSpy(propertyName.drop(1))}"
+        val nonIntrusive = nonIntrusiveInvocationGenerator.buildGetterNonIntrusiveInvocation(
+            enableSpy = enableSpy,
+            propertyName = propertyName.drop(1),
+            relaxer
+        )
+
+        val statement = if (nonIntrusive.isNotEmpty()) {
+            "return $propertyName.onGet$nonIntrusive"
         } else {
             "return $propertyName.onGet()"
         }
@@ -51,10 +56,11 @@ internal class KMockPropertyGenerator(
     private fun buildGetter(
         propertyName: String,
         enableSpy: Boolean,
+        relaxer: Relaxer?
     ): FunSpec {
         return FunSpec
             .getterBuilder()
-            .addGetterInvocation(propertyName, enableSpy)
+            .addGetterInvocation(propertyName, enableSpy, relaxer)
             .build()
     }
 
@@ -62,8 +68,13 @@ internal class KMockPropertyGenerator(
         propertyName: String,
         enableSpy: Boolean
     ): FunSpec.Builder {
-        val statement = if (enableSpy) {
-            "return $propertyName.onSet(value)${spyGenerator.buildSetterSpy(propertyName.drop(1))}"
+        val nonIntrusive = nonIntrusiveInvocationGenerator.buildSetterNonIntrusiveInvocation(
+            enableSpy = enableSpy,
+            propertyName = propertyName.drop(1),
+        )
+
+        val statement = if (nonIntrusive.isNotEmpty()) {
+            "return $propertyName.onSet(value)$nonIntrusive"
         } else {
             "return $propertyName.onSet(value)"
         }
@@ -88,7 +99,8 @@ internal class KMockPropertyGenerator(
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
         isMutable: Boolean,
-        enableSpy: Boolean
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ) {
         if (isMutable) {
             property.mutable(true)
@@ -106,6 +118,7 @@ internal class KMockPropertyGenerator(
                 buildGetter(
                     propertyName = proxyInfo.proxyName,
                     enableSpy = enableSpy,
+                    relaxer = relaxer
                 )
             )
     }
@@ -133,7 +146,8 @@ internal class KMockPropertyGenerator(
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
         isMutable: Boolean,
-        enableSpy: Boolean
+        enableSpy: Boolean,
+        relaxer: Relaxer?
     ): PropertySpec {
         val property = PropertySpec.builder(
             proxyInfo.templateName,
@@ -158,6 +172,7 @@ internal class KMockPropertyGenerator(
                 propertyType = propertyType,
                 isMutable = isMutable,
                 enableSpy = enableSpy,
+                relaxer = relaxer
             )
         }
 
@@ -166,13 +181,11 @@ internal class KMockPropertyGenerator(
 
     private fun buildPropertyProxy(
         proxyInfo: ProxyInfo,
-        relaxer: Relaxer?
     ): CodeBlock {
         val initializer = CodeBlock.builder()
         initializer.add(
             template,
             proxyInfo.proxyId,
-            relaxerGenerator.addPropertyRelaxation(relaxer)
         )
 
         return initializer.build()
@@ -181,12 +194,10 @@ internal class KMockPropertyGenerator(
     private fun determinePropertyInitializer(
         propertyProxy: PropertySpec.Builder,
         proxyInfo: ProxyInfo,
-        relaxer: Relaxer?
     ): PropertySpec.Builder {
         return propertyProxy.initializer(
             buildPropertyProxy(
                 proxyInfo = proxyInfo,
-                relaxer = relaxer
             )
         )
     }
@@ -195,7 +206,6 @@ internal class KMockPropertyGenerator(
         propertyScope: TypeName?,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-        relaxer: Relaxer?
     ): PropertySpec? {
         return if (propertyScope == null) {
             val property = PropertySpec.builder(
@@ -206,7 +216,6 @@ internal class KMockPropertyGenerator(
             return determinePropertyInitializer(
                 propertyProxy = property,
                 proxyInfo = proxyInfo,
-                relaxer = relaxer
             ).build()
         } else {
             null
@@ -234,7 +243,6 @@ internal class KMockPropertyGenerator(
                 propertyScope = propertyScope,
                 proxyInfo = proxyInfo,
                 propertyType = propertyType,
-                relaxer = relaxer,
             ),
             buildProperty(
                 propertyScope = propertyScope,
@@ -242,6 +250,7 @@ internal class KMockPropertyGenerator(
                 propertyType = propertyType,
                 isMutable = isMutable,
                 enableSpy = enableSpy,
+                relaxer = relaxer,
             ),
         )
     }

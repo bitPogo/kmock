@@ -16,43 +16,43 @@ internal class SharedMock(
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
-    @Suppress("UNUSED_PARAMETER")
-    relaxUnitFun: Boolean = false,
-    @Suppress("UNUSED_PARAMETER")
-    relaxed: Boolean = false,
+    @Suppress("unused")
+    private val relaxUnitFun: Boolean = false,
+    @Suppress("unused")
+    private val relaxed: Boolean = false,
 ) : Shared {
     public override val buzz: String
-        get() = _buzz.onGet()
+        get() = _buzz.onGet {
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        }
 
     public val _buzz: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_buzz", collector =
-        verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
-        }
+        verifier, freeze = freeze)
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_foo", collector = verifier,
-            freeze = freeze) {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
-        }
+            freeze = freeze)
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.SharedMock#_bar", collector =
-        verifier, freeze = freeze) {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
-        }
+        verifier, freeze = freeze)
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", collector =
-        verifier, freeze = freeze) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+        verifier, freeze = freeze)
 
-    public override fun foo(payload: Any): String = _foo.invoke(payload)
+    public override fun foo(payload: Any): String = _foo.invoke(payload) {
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+    }
 
-    public override suspend fun bar(payload: Any): String = _bar.invoke(payload)
+    public override suspend fun bar(payload: Any): String = _bar.invoke(payload) {
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+    }
 
-    public override fun buzz(): Unit = _buzzWithVoid.invoke()
+    public override fun buzz(): Unit = _buzzWithVoid.invoke() {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public fun _clearMock(): Unit {
         _buzz.clear()

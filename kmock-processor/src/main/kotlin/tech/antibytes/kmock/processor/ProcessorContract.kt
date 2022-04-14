@@ -174,14 +174,14 @@ internal interface ProcessorContract {
     }
 
     interface RelaxerGenerator {
-        fun addPropertyRelaxation(relaxer: Relaxer?): String
+        fun buildPropertyRelaxation(relaxer: Relaxer?): String
 
-        fun addMethodRelaxation(
+        fun buildMethodRelaxation(
             relaxer: Relaxer?,
             methodReturnType: MethodReturnTypeInfo,
         ): String
 
-        fun addBuildInRelaxation(
+        fun buildBuildInRelaxation(
             methodName: String,
             argument: MethodTypeInfo?,
         ): String
@@ -197,6 +197,34 @@ internal interface ProcessorContract {
         ): String
 
         fun buildEqualsSpy(mockName: String): String
+    }
+
+    interface NonIntrusiveInvocationGenerator {
+        fun buildGetterNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            propertyName: String,
+            relaxer: Relaxer?
+        ): String
+
+        fun buildSetterNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            propertyName: String,
+        ): String
+
+        fun buildMethodNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            methodName: String,
+            arguments: Array<MethodTypeInfo>,
+            methodReturnType: MethodReturnTypeInfo,
+            relaxer: Relaxer?,
+        ): String
+
+        fun buildBuildInNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            mockName: String,
+            methodName: String,
+            argument: MethodTypeInfo?
+        ): String
     }
 
     interface PropertyGenerator {
