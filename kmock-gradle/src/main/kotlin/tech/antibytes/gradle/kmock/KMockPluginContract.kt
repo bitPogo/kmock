@@ -88,6 +88,11 @@ internal interface KMockPluginContract {
          * Default is false.
          */
         var disableFactories: Boolean
+
+        /**
+         *
+         */
+        var customSharedAnnotations: Map<String, String>
     }
 
     interface SourceSetConfigurator {
@@ -111,5 +116,6 @@ internal interface KMockPluginContract {
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
+        const val CUSTOM_SHARED_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
     }
 }
