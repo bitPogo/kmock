@@ -10,12 +10,12 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
-import tech.antibytes.kmock.Mock
-import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXATION_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.Relaxer as RelaxerAnnotation
 
 /*
  * Notices -> No deep checking in order to no drain performance
@@ -31,28 +31,28 @@ internal class KMockProcessor(
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            Mock::class.qualifiedName!!,
+            ANNOTATION_PLATFORM_NAME,
             false
         )
     }
 
     private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            MockCommon::class.qualifiedName!!,
+            ANNOTATION_COMMON_NAME,
             false
         )
     }
 
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            MockShared::class.qualifiedName!!,
+            ANNOTATION_SHARED_NAME,
             false
         )
     }
 
     private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            RelaxerAnnotation::class.qualifiedName!!,
+            RELAXATION_NAME,
             false
         )
     }

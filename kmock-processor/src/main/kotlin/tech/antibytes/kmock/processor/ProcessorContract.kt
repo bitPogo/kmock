@@ -29,6 +29,7 @@ import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
+import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -76,6 +77,10 @@ internal interface ProcessorContract {
         val extractedTemplates: List<TemplateSource>,
         val dependencies: List<KSFile>
     )
+
+    interface SourceSetValidator {
+        fun isValidateSourceSet(sourceSet: Any?): Boolean
+    }
 
     interface SourceFilter {
         fun filter(
@@ -331,9 +336,11 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
-        val ANNOTATION_NAME: String = Mock::class.java.canonicalName
+        val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
+        val RELAXATION_NAME: String = RelaxationAnnotation::class.java.canonicalName
+
         val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"

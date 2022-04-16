@@ -22,7 +22,7 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -54,7 +54,7 @@ internal class KMockAggregator(
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation? {
         val annotation = annotations.firstOrNull { annotation ->
             val annotationName = resolveAnnotationName(annotation)
-            ANNOTATION_NAME == annotationName ||
+            ANNOTATION_PLATFORM_NAME == annotationName ||
                 ANNOTATION_COMMON_NAME == annotationName ||
                 (ANNOTATION_SHARED_NAME == annotationName && validateSourceIndicator(annotation))
         }
