@@ -8,8 +8,6 @@ package tech.antibytes.gradle.kmock.source
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -211,16 +209,12 @@ class SingleSourceSetConfiguratorSpec {
     @Test
     fun `Given configure is called with a Project it adds the KSP dependencies`() {
         // Given
-        mockkObject(MainConfig)
-
         val project: Project = mockk()
         val dependencies: DependencyHandler = mockk()
-        val version: String = fixture.fixture()
 
-        every { project.buildDir.absolutePath } returns fixture.fixture()
+        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
-        every { MainConfig.version } returns version
 
         every { dependencies.add(any<String>(), any<String>()) } returns mockk()
 
@@ -234,26 +228,20 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
-
-        unmockkObject(MainConfig)
     }
 
     @Test
     fun `Given configure is called with a Project it adds an additional KSP dependencies for an AndroidLibrary`() {
         // Given
-        mockkObject(MainConfig)
-
         val project: Project = mockk()
         val dependencies: DependencyHandler = mockk()
-        val version: String = fixture.fixture()
 
-        every { project.buildDir.absolutePath } returns fixture.fixture()
+        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
-        every { MainConfig.version } returns version
 
         every { dependencies.add(any<String>(), any<String>()) } returns mockk()
 
@@ -267,26 +255,20 @@ class SingleSourceSetConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
-
-        unmockkObject(MainConfig)
     }
 
     @Test
     fun `Given configure is called with a Project it adds an additional KSP dependencies for an AndroidApplication`() {
         // Given
-        mockkObject(MainConfig)
-
         val project: Project = mockk()
         val dependencies: DependencyHandler = mockk()
-        val version: String = fixture.fixture()
 
         every { project.extensions } returns mockk(relaxed = true)
-        every { project.buildDir.absolutePath } returns fixture.fixture()
+        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
         every { project.dependencies } returns dependencies
-        every { MainConfig.version } returns version
 
         every { dependencies.add(any<String>(), any<String>()) } returns mockk()
 
@@ -300,10 +282,8 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
-
-        unmockkObject(MainConfig)
     }
 }

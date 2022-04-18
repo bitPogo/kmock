@@ -11,8 +11,6 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -20,8 +18,6 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionContainer
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
@@ -32,16 +28,6 @@ import tech.antibytes.util.test.fulfils
 
 class KmpSourceSetsConfiguratorSpec {
     private val fixture = kotlinFixture()
-
-    @BeforeEach
-    fun setUp() {
-        mockkObject(MainConfig)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        unmockkObject(MainConfig)
-    }
 
     @Test
     fun `It fulfils SourceSetConfigurator`() {
@@ -96,7 +82,6 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val version: String = fixture.fixture()
 
         val kspExtension: KspExtension = mockk()
 
@@ -125,7 +110,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
-        every { MainConfig.version } returns version
 
         every { dependencies.add(any(), any()) } returns mockk()
 
@@ -149,14 +133,14 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
                 "kspJsTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
@@ -180,7 +164,6 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val version: String = fixture.fixture()
 
         val kspExtension: KspExtension = mockk()
 
@@ -209,7 +192,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
-        every { MainConfig.version } returns version
 
         every { dependencies.add(any(), any()) } returns mockk()
 
@@ -233,14 +215,14 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
@@ -264,7 +246,6 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val version: String = fixture.fixture()
 
         val kspExtension: KspExtension = mockk()
 
@@ -288,7 +269,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
-        every { MainConfig.version } returns version
 
         every { source1.name } returns "nativeTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
@@ -311,14 +291,14 @@ class KmpSourceSetsConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspNativeTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosX64Test",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
@@ -342,7 +322,6 @@ class KmpSourceSetsConfiguratorSpec {
         val kotlin: KotlinMultiplatformExtension = mockk()
         val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
         val path: String = fixture.fixture()
-        val version: String = fixture.fixture()
 
         val kspExtension: KspExtension = mockk()
 
@@ -380,7 +359,6 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
-        every { MainConfig.version } returns version
 
         every { source0.name } returns "commonTest"
         every { source0.kotlin.srcDir(any()) } returns mockk()
@@ -434,63 +412,63 @@ class KmpSourceSetsConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspCommonTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspMetaTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspConcurrentTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspNativeTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosX64Test",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosArm32Test",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspLinuxX64Test",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:$version"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
             )
         }
 
