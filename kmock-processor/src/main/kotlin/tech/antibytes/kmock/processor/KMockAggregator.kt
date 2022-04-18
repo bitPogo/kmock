@@ -28,11 +28,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLA
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockAggregator(
     private val logger: KSPLogger,
-    private val knownSourceSets: Set<String>,
+    private val sourceSetValidator: SourceSetValidator,
     private val generics: GenericResolver,
     private val aliases: Map<String, String>
 ) : Aggregator {
@@ -40,25 +41,12 @@ internal class KMockAggregator(
         annotation: KSAnnotation
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
 
-    private fun validateSourceIndicator(
-        annotation: KSAnnotation
-    ): Boolean {
-        return when (val actualSourceSet = annotation.arguments.firstOrNull()?.value) {
-            !is String -> false
-            !in knownSourceSets -> {
-                logger.warn("$actualSourceSet is not a applicable sourceSet!")
-                false
-            }
-            else -> true
-        }
-    }
-
     private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation? {
         val annotation = annotations.firstOrNull { annotation ->
             val annotationName = resolveAnnotationName(annotation)
             ANNOTATION_PLATFORM_NAME == annotationName ||
                 ANNOTATION_COMMON_NAME == annotationName ||
-                (ANNOTATION_SHARED_NAME == annotationName && validateSourceIndicator(annotation))
+                (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
         }
 
         return annotation
@@ -184,12 +172,12 @@ internal class KMockAggregator(
     companion object : AggregatorFactory {
         override fun getInstance(
             logger: KSPLogger,
-            knownSourceSets: Set<String>,
+            sourceSetValidator: SourceSetValidator,
             generics: GenericResolver,
             aliases: Map<String, String>
         ): Aggregator = KMockAggregator(
             logger = logger,
-            knownSourceSets = knownSourceSets,
+            sourceSetValidator = sourceSetValidator,
             generics = generics,
             aliases = aliases
         )

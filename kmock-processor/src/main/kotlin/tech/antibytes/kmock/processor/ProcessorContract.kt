@@ -64,7 +64,7 @@ internal interface ProcessorContract {
     interface AggregatorFactory {
         fun getInstance(
             logger: KSPLogger,
-            knownSourceSets: Set<String>,
+            sourceSetValidator: SourceSetValidator,
             generics: GenericResolver,
             aliases: Map<String, String>
         ): Aggregator

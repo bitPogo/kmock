@@ -7,6 +7,8 @@
 package tech.antibytes.kmock.processor.utils
 
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSValueArgument
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -71,6 +73,58 @@ class SourceSetValidatorSpec {
 
         // When
         val actual = SourceSetValidator(logger, knownSourceSets).isValidateSourceSet(validSourceSet)
+
+        // Then
+        actual mustBe true
+
+        verify(exactly = 0) {
+            logger.warn(any())
+        }
+    }
+
+    @Test
+    fun `Given isValidateSourceSet with a KSAnnotation which is a invalid source it returns false`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val annotation: KSAnnotation = mockk()
+        val validSourceSet: String = fixture.fixture()
+        val knownSourceSets: Set<String> = setOf(validSourceSet)
+
+        every { logger.warn(any()) } just Runs
+        every { annotation.arguments } returns emptyList()
+
+        // When
+        val actual = SourceSetValidator(
+            logger,
+            knownSourceSets
+        ).isValidateSourceSet(annotation)
+
+        // Then
+        actual mustBe false
+
+        verify(exactly = 0) {
+            logger.warn(any())
+        }
+    }
+
+    @Test
+    fun `Given isValidateSourceSet with a KSAnnotation which is a valid source it returns true`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val annotation: KSAnnotation = mockk()
+        val value: KSValueArgument = mockk()
+        val validSourceSet: String = fixture.fixture()
+        val knownSourceSets: Set<String> = setOf(validSourceSet)
+
+        every { logger.warn(any()) } just Runs
+        every { annotation.arguments } returns listOf(value)
+        every { value.value } returns validSourceSet
+
+        // When
+        val actual = SourceSetValidator(
+            logger,
+            knownSourceSets
+        ).isValidateSourceSet(annotation)
 
         // Then
         actual mustBe true

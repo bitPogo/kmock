@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
@@ -29,14 +29,14 @@ class KMockAggregatorFactorySpec {
     fun `Given getInstance is called it returns a Aggregator`() {
         // Given
         val logger: KSPLogger = mockk()
-        val knownSources: Set<String> = fixture.listFixture<String>().toSet()
+        val sourceSetValidator: SourceSetValidator = mockk()
         val generics: GenericResolver = mockk()
         val aliases: Map<String, String> = fixture.mapFixture()
 
         // When
         val actual = KMockAggregator.getInstance(
             logger = logger,
-            knownSourceSets = knownSources,
+            sourceSetValidator = sourceSetValidator,
             generics = generics,
             aliases = aliases
         )

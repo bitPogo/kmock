@@ -26,6 +26,7 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.utils.SourceSetValidator
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
@@ -70,6 +71,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,
             kspGenerator = environment.codeGenerator
+        )
+
+        val sourceSetValidator = SourceSetValidator(
+            logger = logger,
+            knownSourceSets = options.knownSourceSets
         )
 
         val relaxerGenerator = KMockRelaxerGenerator()
@@ -122,7 +128,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             entryPointGenerator = entryPointGenerator,
             aggregator = KMockAggregator.getInstance(
                 logger = logger,
-                knownSourceSets = options.knownSourceSets,
+                sourceSetValidator = sourceSetValidator,
                 generics = KMockGenerics,
                 aliases = options.aliases,
             ),

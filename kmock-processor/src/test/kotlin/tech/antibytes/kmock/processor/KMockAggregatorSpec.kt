@@ -30,6 +30,7 @@ import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -48,7 +49,7 @@ class KMockAggregatorSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(mockk(), emptySet(), mockk(), emptyMap()) fulfils ProcessorContract.Aggregator::class
+        KMockAggregator(mockk(), mockk(), mockk(), emptyMap()) fulfils ProcessorContract.Aggregator::class
     }
 
     @Test
@@ -80,7 +81,7 @@ class KMockAggregatorSpec {
         // When
         val (illegal, _, _) = KMockAggregator(
             mockk(),
-            emptySet(),
+            mockk(),
             mockk(),
             emptyMap()
         ).extractInterfaces(annotated)
@@ -120,17 +121,18 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(mockk(), emptySet(), mockk(), emptyMap()).extractInterfaces(annotated)
+        val (illegal, _, _) = KMockAggregator(mockk(), mockk(), mockk(), emptyMap()).extractInterfaces(annotated)
 
         // Then
         illegal mustBe listOf(source)
     }
 
     @Test
-    fun `Given extractInterfaces is called it filters illegal shared sources which contain no indicator`() {
+    fun `Given extractInterfaces is called it filters illegal shared sources`() {
         // Given
         val source: KSAnnotated = mockk()
         val logger: KSPLogger = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -155,61 +157,22 @@ class KMockAggregatorSpec {
         every { annotation.arguments } returns arguments
         every { arguments[0].value } returns null
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns false
+
         // When
         val (illegal, _, _) = KMockAggregator(
             logger,
-            emptySet(),
+            sourceSetValidator,
             mockk(),
             emptyMap()
         ).extractInterfaces(annotated)
 
         // Then
         illegal mustBe listOf(source)
-    }
 
-    @Test
-    fun `Given extractInterfaces is called it filters illegal shared sources, which contain a illegal sourceSet name`() {
-        // Given
-        val source: KSAnnotated = mockk()
-        val logger: KSPLogger = mockk()
-        val sourceSet: String = fixture.fixture()
-
-        val annotation: KSAnnotation = mockk()
-        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
-            yield(annotation)
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
         }
-
-        val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
-        }
-
-        val arguments: List<KSValueArgument> = listOf(
-            mockk(),
-            mockk(relaxed = true)
-        )
-
-        every { source.annotations } returns sourceAnnotations
-
-        every {
-            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns MockShared::class.qualifiedName!!
-
-        every { annotation.arguments } returns arguments
-        every { arguments[0].value } returns sourceSet
-
-        every { logger.warn(any()) } just Runs
-
-        // When
-        val (illegal, _, _) = KMockAggregator(
-            logger,
-            emptySet(),
-            mockk(),
-            emptyMap()
-        ).extractInterfaces(annotated)
-
-        // Then
-        illegal mustBe listOf(source)
-        verify(exactly = 1) { logger.warn("$sourceSet is not a applicable sourceSet!") }
     }
 
     @Test
@@ -255,7 +218,12 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractInterfaces(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap()
+        ).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
@@ -267,6 +235,7 @@ class KMockAggregatorSpec {
         val logger: KSPLogger = mockk()
         val source: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -302,11 +271,21 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         // When
-        KMockAggregator(logger, allowedSourceSets, mockk(), emptyMap()).extractInterfaces(annotated)
+        KMockAggregator(
+            logger,
+            sourceSetValidator,
+            mockk(),
+            emptyMap()
+        ).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
     }
 
     @Test
@@ -372,7 +351,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractInterfaces(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
@@ -384,6 +363,7 @@ class KMockAggregatorSpec {
         val logger: KSPLogger = mockk()
         val source: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val selection = listOf(
             ClassKind.CLASS,
@@ -436,18 +416,23 @@ class KMockAggregatorSpec {
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         every { logger.error(any()) } just Runs
 
         // When
         KMockAggregator(
             logger,
-            allowedSourceSets,
+            sourceSetValidator,
             mockk(),
             emptyMap()
         ).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
     }
 
     @Test
@@ -514,7 +499,7 @@ class KMockAggregatorSpec {
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
-            emptySet(),
+            mockk(),
             genericResolver,
             emptyMap()
         ).extractInterfaces(annotated)
@@ -531,6 +516,7 @@ class KMockAggregatorSpec {
         val logger: KSPLogger = mockk()
         val source: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
         val marker = fixture.fixture<String>()
 
         val annotation: KSAnnotation = mockk()
@@ -550,7 +536,6 @@ class KMockAggregatorSpec {
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val allowedSourceSets = setOf(marker)
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -583,12 +568,14 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
-            allowedSourceSets,
+            sourceSetValidator,
             genericResolver,
             emptyMap()
         ).extractInterfaces(annotated)
@@ -597,6 +584,9 @@ class KMockAggregatorSpec {
         interfaces mustBe listOf(TemplateSource(marker, declaration, null, generics))
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
     }
 
     @Test
@@ -606,6 +596,7 @@ class KMockAggregatorSpec {
         val source0: KSAnnotated = mockk()
         val source1: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val marker0 = fixture.fixture<String>()
         val marker1 = fixture.fixture<String>()
@@ -640,10 +631,6 @@ class KMockAggregatorSpec {
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val allowedSourceSets: Set<String> = setOf(
-            marker0,
-            marker1
-        )
 
         every {
             annotation0.annotationType.resolve().declaration.qualifiedName!!.asString()
@@ -682,12 +669,14 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
-            allowedSourceSets,
+            sourceSetValidator,
             genericResolver,
             emptyMap()
         ).extractInterfaces(annotated)
@@ -699,6 +688,12 @@ class KMockAggregatorSpec {
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation0)
+        }
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation1)
+        }
     }
 
     @Test
@@ -756,7 +751,7 @@ class KMockAggregatorSpec {
         // When
         val (_, _, sourceFiles) = KMockAggregator(
             logger,
-            emptySet(),
+            mockk(),
             mockk(relaxed = true),
             emptyMap()
         ).extractInterfaces(annotated)
@@ -771,6 +766,7 @@ class KMockAggregatorSpec {
         val logger: KSPLogger = mockk()
         val source: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -817,16 +813,21 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         // When
         val (_, _, sourceFiles) = KMockAggregator(
             logger,
-            allowedSourceSets,
+            sourceSetValidator,
             mockk(relaxed = true),
             emptyMap()
         ).extractInterfaces(annotated)
 
         // Then
         sourceFiles mustBe listOf(file)
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
     }
 
     @Test
@@ -835,6 +836,7 @@ class KMockAggregatorSpec {
         val logger: KSPLogger = mockk()
         val source: KSAnnotated = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -912,12 +914,14 @@ class KMockAggregatorSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
-            allowedSourceSets,
+            sourceSetValidator,
             genericResolver,
             mapping
         ).extractInterfaces(annotated)
@@ -935,7 +939,7 @@ class KMockAggregatorSpec {
         val annotated: Sequence<KSAnnotated> = sequence {}
 
         // When
-        val relaxer = KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        val relaxer = KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         relaxer mustBe null
@@ -970,7 +974,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1008,7 +1012,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1046,7 +1050,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1088,7 +1092,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1126,7 +1130,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1164,7 +1168,7 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val actual = KMockAggregator(logger, emptySet(), mockk(), emptyMap()).extractRelaxer(annotated)
+        val actual = KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 0) { logger.error(any()) }
