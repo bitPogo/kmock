@@ -10,7 +10,7 @@ import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_SHARED_ANNOTATION
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
@@ -201,7 +201,7 @@ abstract class KMockExtension(
         get() = _customSharedAnnotations
         set(value) {
             propagateMapping(
-                CUSTOM_SHARED_ANNOTATION,
+                CUSTOM_ANNOTATION,
                 value
             )
 
