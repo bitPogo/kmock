@@ -17,6 +17,8 @@ class KMockFactorySpec {
         KMockFactoryGenerator(
             mockk(),
             setOf(),
+            "any",
+            false,
             false,
             false,
             mockk(),

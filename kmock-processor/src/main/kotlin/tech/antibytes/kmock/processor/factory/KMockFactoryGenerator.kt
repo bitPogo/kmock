@@ -28,6 +28,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
     spyOn: Set<String>,
+    private val rootPackage: String,
+    private val isKmp: Boolean,
     private val spiesOnly: Boolean,
     private val allowInterfaces: Boolean,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
@@ -119,9 +121,7 @@ internal class KMockFactoryGenerator(
         ).addCode(invocation)
     }
 
-    private fun buildKMock(
-        isKmp: Boolean,
-    ): FunSpec = fillMockFactory(
+    private fun buildKMock(): FunSpec = fillMockFactory(
         type = kmockType,
         generics = emptyList(),
         isKmp = isKmp,
@@ -150,9 +150,7 @@ internal class KMockFactoryGenerator(
         ).addCode(invocation)
     }
 
-    private fun buildSpyFactory(
-        isKmp: Boolean
-    ): FunSpec = fillSpyFactory(
+    private fun buildSpyFactory(): FunSpec = fillSpyFactory(
         mockType = kspyMockType,
         spyType = kspyType,
         generics = emptyList(),
@@ -199,7 +197,6 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildGenericFactories(
-        isKmp: Boolean,
         templateSources: List<TemplateSource>,
     ): List<Pair<FunSpec, FunSpec>> {
         return templateSources.map { template ->
@@ -429,19 +426,18 @@ internal class KMockFactoryGenerator(
     }
 
     private fun writeFactoryImplementation(
-        options: ProcessorContract.Options,
         templateSources: List<TemplateSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         val file = FileSpec.builder(
-            options.rootPackage,
+            rootPackage,
             FACTORY_FILE_NAME
         )
         file.addAnnotation(UNUSED)
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
-        if (!options.isKmp) {
+        if (!isKmp) {
             file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
         }
 
@@ -449,7 +445,6 @@ internal class KMockFactoryGenerator(
 
         val genericFactories = buildGenericFactories(
             templateSources = generics,
-            isKmp = options.isKmp,
         )
 
         val actualFactory = buildMockFactory(
@@ -464,17 +459,13 @@ internal class KMockFactoryGenerator(
 
         if (!spiesOnly) {
             file.addFunction(
-                buildKMock(
-                    isKmp = options.isKmp,
-                )
+                buildKMock()
             )
         }
 
         if (hasSpies) {
             file.addFunction(
-                buildSpyFactory(
-                    isKmp = options.isKmp,
-                )
+                buildSpyFactory()
             )
         }
 
@@ -498,14 +489,12 @@ internal class KMockFactoryGenerator(
     }
 
     override fun writeFactories(
-        options: ProcessorContract.Options,
         templateSources: List<TemplateSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         if (templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             writeFactoryImplementation(
-                options = options,
                 templateSources = templateSources,
                 dependencies = dependencies,
                 relaxer = relaxer

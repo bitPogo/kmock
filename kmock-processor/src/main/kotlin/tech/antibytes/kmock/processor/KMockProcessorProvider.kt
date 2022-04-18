@@ -45,6 +45,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             Pair(
                 KMockFactoryGenerator(
                     logger = logger,
+                    isKmp = options.isKmp,
+                    rootPackage = options.rootPackage,
                     allowInterfaces = options.allowInterfaces,
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,
@@ -53,6 +55,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     codeGenerator = codeGenerator,
                 ),
                 KMockFactoryEntryPointGenerator(
+                    isKmp = options.isKmp,
+                    rootPackage = options.rootPackage,
                     utils = factoryUtils,
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,
@@ -112,6 +116,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         )
 
         return KMockProcessor(
+            isKmp = options.isKmp,
             codeGenerator = codeGenerator,
             mockGenerator = KMockGenerator(
                 logger = logger,
@@ -132,7 +137,6 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 generics = KMockGenerics,
                 aliases = options.aliases,
             ),
-            options = options,
             filter = SourceFilter(options.precedences, logger)
         )
     }

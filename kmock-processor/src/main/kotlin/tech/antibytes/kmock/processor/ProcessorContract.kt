@@ -323,7 +323,6 @@ internal interface ProcessorContract {
 
     interface MockFactoryGenerator {
         fun writeFactories(
-            options: Options,
             templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
@@ -332,12 +331,10 @@ internal interface ProcessorContract {
 
     interface MockFactoryEntryPointGenerator {
         fun generateCommon(
-            options: Options,
             templateSources: List<TemplateSource>,
         )
 
         fun generateShared(
-            options: Options,
             templateSources: List<TemplateSource>,
         )
     }

@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_ANNOTATION
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES

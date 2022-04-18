@@ -21,12 +21,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
  * Notices -> No deep checking in order to no drain performance
  */
 internal class KMockProcessor(
+    private val isKmp: Boolean,
     private val codeGenerator: ProcessorContract.KmpCodeGenerator,
     private val mockGenerator: ProcessorContract.MockGenerator,
     private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
     private val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator,
     private val aggregator: ProcessorContract.Aggregator,
-    private val options: ProcessorContract.Options,
     private val filter: ProcessorContract.SourceFilter,
 ) : SymbolProcessor {
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -89,7 +89,6 @@ internal class KMockProcessor(
         )
 
         entryPointGenerator.generateCommon(
-            options,
             aggregated.extractedTemplates
         )
 
@@ -109,7 +108,6 @@ internal class KMockProcessor(
         )
 
         entryPointGenerator.generateShared(
-            options,
             filteredInterfaces,
         )
 
@@ -142,7 +140,6 @@ internal class KMockProcessor(
         )
 
         factoryGenerator.writeFactories(
-            options,
             totalAggregated.extractedTemplates,
             totalAggregated.dependencies,
             relaxer
@@ -156,7 +153,7 @@ internal class KMockProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
 
-        val sharedAggregated = if (options.isKmp) {
+        val sharedAggregated = if (isKmp) {
             val commonAggregated = stubCommonSources(resolver, relaxer)
             stubSharedSources(resolver, commonAggregated, relaxer)
         } else {
