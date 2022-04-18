@@ -30,7 +30,7 @@ object Version {
         /**
          * [Gradle Plugin Publishing](https://plugins.gradle.org/plugin/com.gradle.plugin-publish)
          */
-        const val pluginPublishing = "0.20.0"
+        const val pluginPublishing = "1.0.0-rc-1"
     }
 
     val antibytes = Antibytes
