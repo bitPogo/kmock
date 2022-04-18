@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
@@ -58,6 +59,15 @@ internal interface ProcessorContract {
 
     fun interface OptionExtractor {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
+    }
+
+    interface AggregatorFactory {
+        fun getInstance(
+            logger: KSPLogger,
+            knownSourceSets: Set<String>,
+            generics: GenericResolver,
+            aliases: Map<String, String>
+        ): Aggregator
     }
 
     interface Aggregator {

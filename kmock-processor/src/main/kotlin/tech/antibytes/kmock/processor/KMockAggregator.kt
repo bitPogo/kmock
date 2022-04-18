@@ -21,6 +21,8 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
+import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
@@ -33,7 +35,7 @@ internal class KMockAggregator(
     private val knownSourceSets: Set<String>,
     private val generics: GenericResolver,
     private val aliases: Map<String, String>
-) : ProcessorContract.Aggregator {
+) : Aggregator {
     private fun resolveAnnotationName(
         annotation: KSAnnotation
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
@@ -177,5 +179,19 @@ internal class KMockAggregator(
         } else {
             null
         }
+    }
+
+    companion object : AggregatorFactory {
+        override fun getInstance(
+            logger: KSPLogger,
+            knownSourceSets: Set<String>,
+            generics: GenericResolver,
+            aliases: Map<String, String>
+        ): Aggregator = KMockAggregator(
+            logger = logger,
+            knownSourceSets = knownSourceSets,
+            generics = generics,
+            aliases = aliases
+        )
     }
 }

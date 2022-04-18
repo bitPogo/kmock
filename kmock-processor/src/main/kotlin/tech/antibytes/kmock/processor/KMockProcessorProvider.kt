@@ -120,7 +120,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,
-            aggregator = KMockAggregator(
+            aggregator = KMockAggregator.getInstance(
                 logger = logger,
                 knownSourceSets = options.knownSourceSets,
                 generics = KMockGenerics,
