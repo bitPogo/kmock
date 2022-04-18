@@ -65,6 +65,7 @@ toc::[]
 === Bumped
 
 * KotlinPoet 1.10.2 -> 1.11.0
+* Gradle 7.4.1 -> 7.4.2
 
 
 == https://github.com/bitPogo/kmock/compare/v0.1.0\...v0.1.1[0.1.1]
