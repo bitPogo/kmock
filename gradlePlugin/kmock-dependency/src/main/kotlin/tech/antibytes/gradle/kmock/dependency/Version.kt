@@ -25,7 +25,7 @@ object Version {
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
-        const val spotless = "6.3.0"
+        const val spotless = "6.4.2"
 
         /**
          * [Gradle Plugin Publishing](https://plugins.gradle.org/plugin/com.gradle.plugin-publish)

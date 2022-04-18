@@ -34,7 +34,7 @@ import tech.antibytes.gradle.dependency.Version
  *     id("tech.antibytes.gradle.test.script.quality-spotless")
  * }
  */
-// TODO Integrade with dependency Plugin
+// TODO Integrate with dependency Plugin
 plugins {
     id("com.diffplug.spotless")
 }
@@ -48,7 +48,7 @@ spotless {
             "**/kmock-processor/src/test/resources/",
             "**/kmock-gradle/src/test/resources/"
         )
-        ktlint(Version.gradle.ktLint).userData(
+        ktlint(Version.gradle.ktLint).userData( // see: https://github.com/diffplug/spotless/issues/142
             mapOf(
                 "disabled_rules" to "no-wildcard-imports",
                 "ij_kotlin_imports_layout" to "*"
