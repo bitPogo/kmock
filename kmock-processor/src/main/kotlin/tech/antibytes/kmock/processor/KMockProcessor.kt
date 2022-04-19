@@ -11,10 +11,6 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXATION_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 /*
@@ -29,34 +25,6 @@ internal class KMockProcessor(
     private val aggregator: ProcessorContract.Aggregator,
     private val filter: ProcessorContract.SourceFilter,
 ) : SymbolProcessor {
-    private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            ANNOTATION_PLATFORM_NAME,
-            false
-        )
-    }
-
-    private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            ANNOTATION_COMMON_NAME,
-            false
-        )
-    }
-
-    private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            ANNOTATION_SHARED_NAME,
-            false
-        )
-    }
-
-    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            RELAXATION_NAME,
-            false
-        )
-    }
-
     private fun mergeSources(
         rootSource: Aggregated,
         dependentSource: Aggregated,
@@ -79,8 +47,7 @@ internal class KMockProcessor(
         resolver: Resolver,
         relaxer: Relaxer?
     ): Aggregated {
-        val annotated = fetchCommonAnnotated(resolver)
-        val aggregated = aggregator.extractInterfaces(annotated)
+        val aggregated = aggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
             aggregated.extractedTemplates,
@@ -100,8 +67,7 @@ internal class KMockProcessor(
         commonAggregated: Aggregated,
         relaxer: Relaxer?
     ): Aggregated {
-        val annotated = fetchSharedAnnotated(resolver)
-        val aggregated = aggregator.extractInterfaces(annotated)
+        val aggregated = aggregator.extractSharedInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             filter.filterSharedSources(aggregated.extractedTemplates),
             commonAggregated.extractedTemplates
@@ -125,8 +91,7 @@ internal class KMockProcessor(
         sharedAggregated: Aggregated,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
-        val annotated = fetchPlatformAnnotated(resolver)
-        val aggregated = aggregator.extractInterfaces(annotated)
+        val aggregated = aggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             aggregated.extractedTemplates,
             sharedAggregated.extractedTemplates
@@ -151,7 +116,7 @@ internal class KMockProcessor(
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val relaxer = aggregator.extractRelaxer(fetchRelaxerAnnotated(resolver))
+        val relaxer = aggregator.extractRelaxer(resolver)
 
         val sharedAggregated = if (isKmp) {
             val commonAggregated = stubCommonSources(resolver, relaxer)

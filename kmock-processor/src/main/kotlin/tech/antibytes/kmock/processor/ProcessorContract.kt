@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -100,8 +101,10 @@ internal interface ProcessorContract {
     }
 
     interface Aggregator {
-        fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
-        fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated
+        fun extractRelaxer(resolver: Resolver): Relaxer?
     }
 
     data class TemplateSource(

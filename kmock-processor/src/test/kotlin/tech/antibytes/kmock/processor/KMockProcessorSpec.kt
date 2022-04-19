@@ -16,9 +16,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.Mock
-import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.Relaxer
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -41,98 +38,48 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process is called it retrieves all Stub annotated sources`() {
-        // Given
-        val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
-        val aggregator: ProcessorContract.Aggregator = mockk()
-
-        every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
-
-        every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
-        every { aggregator.extractRelaxer(any()) } returns mockk()
-
-        // When
-        KMockProcessor(
-            fixture.fixture(),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            aggregator,
-            mockk(relaxed = true),
-        ).process(resolver)
-
-        // Then
-        verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
-        }
-    }
-
-    @Test
-    fun `Given process is called it retrieves all StubCommon annotated sources`() {
-        // Given
-        val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
-        val aggregator: ProcessorContract.Aggregator = mockk()
-
-        every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
-
-        every { aggregator.extractInterfaces(any()) } returns mockk(relaxed = true)
-        every { aggregator.extractRelaxer(any()) } returns mockk()
-
-        // When
-        KMockProcessor(
-            true,
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            aggregator,
-            mockk(relaxed = true),
-        ).process(resolver)
-
-        // Then
-        verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
-        }
-    }
-
-    @Test
     fun `Given process is called it returns all aggregated and merges illegal sources`() {
         // Given
         val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
+
+        val mockGenerator: ProcessorContract.MockGenerator = mockk()
+        val factoryGenerator: ProcessorContract.MockFactoryGenerator = mockk()
+        val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator = mockk()
 
         val illegalCommon: List<KSAnnotated> = listOf(mockk())
         val illegalShared: List<KSAnnotated> = listOf(mockk())
         val illegalPlatform: List<KSAnnotated> = listOf(mockk())
 
         every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
+            aggregator.extractCommonInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegalCommon, listOf(mockk()), listOf(mockk()))
 
         every {
-            aggregator.extractInterfaces(any())
-        } returnsMany listOf(
-            ProcessorContract.Aggregated(illegalCommon, listOf(mockk()), listOf(mockk())),
-            ProcessorContract.Aggregated(illegalShared, listOf(mockk()), listOf(mockk())),
-            ProcessorContract.Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
-        )
+            aggregator.extractSharedInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegalShared, listOf(mockk()), listOf(mockk()))
+
+        every {
+            aggregator.extractPlatformInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
+
         every { aggregator.extractRelaxer(any()) } returns mockk()
+
+        every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
+
+        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any()) } just Runs
+        every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
         val actual = KMockProcessor(
             true,
             mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
+            mockGenerator,
+            factoryGenerator,
+            entryPointGenerator,
             aggregator,
             mockk(relaxed = true),
         ).process(resolver)
@@ -146,47 +93,9 @@ class KMockProcessorSpec {
     }
 
     @Test
-    fun `Given process is called it and resolves the Relaxer`() {
-        // Given
-        val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
-        val aggregator: ProcessorContract.Aggregator = mockk()
-
-        val illegal: List<KSAnnotated> = listOf(mockk())
-
-        val templates: List<ProcessorContract.TemplateSource> = listOf(mockk())
-        val dependencies: List<KSFile> = listOf(mockk())
-
-        every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
-
-        every {
-            aggregator.extractInterfaces(any())
-        } returns ProcessorContract.Aggregated(illegal, templates, dependencies)
-        every { aggregator.extractRelaxer(any()) } returns mockk()
-
-        // When
-        KMockProcessor(
-            fixture.fixture(),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            aggregator,
-            mockk(relaxed = true),
-        ).process(resolver)
-
-        // Then
-        verify(exactly = 1) { resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false) }
-        verify(exactly = 1) { aggregator.extractRelaxer(annotated) }
-    }
-
-    @Test
     fun `Given process is called it delegates captured Stubs to the StubGenerator`() {
         // Given
         val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
 
         val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
@@ -207,16 +116,16 @@ class KMockProcessorSpec {
         val dependencies: List<KSFile> = listOf(mockk())
 
         every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
+            aggregator.extractCommonInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegal, interfacesCommon, dependencies)
 
         every {
-            aggregator.extractInterfaces(any())
-        } returnsMany listOf(
-            ProcessorContract.Aggregated(illegal, interfacesCommon, dependencies),
-            ProcessorContract.Aggregated(illegal, interfacesShared, dependencies),
-            ProcessorContract.Aggregated(illegal, interfacesPlatform, dependencies),
-        )
+            aggregator.extractSharedInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegal, interfacesShared, dependencies)
+
+        every {
+            aggregator.extractPlatformInterfaces(any())
+        } returns ProcessorContract.Aggregated(illegal, interfacesPlatform, dependencies)
 
         every { filter.filter(any(), any()) } returns interfacesFiltered
         every { filter.filterSharedSources(any()) } returns interfacesFiltered
@@ -291,7 +200,6 @@ class KMockProcessorSpec {
     fun `Given process is called it delegates it delegates only Platform sources`() {
         // Given
         val resolver: Resolver = mockk()
-        val annotated: Sequence<KSAnnotated> = sequence {}
         val aggregator: ProcessorContract.Aggregator = mockk()
 
         val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
@@ -311,11 +219,7 @@ class KMockProcessorSpec {
         val dependencies: List<KSFile> = listOf(mockk())
 
         every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
-
-        every {
-            aggregator.extractInterfaces(any())
+            aggregator.extractPlatformInterfaces(any())
         } returns ProcessorContract.Aggregated(illegal, interfacesPlatform, dependencies)
 
         every { filter.filter(any(), any()) } returns interfacesFiltered
@@ -344,7 +248,7 @@ class KMockProcessorSpec {
         ).process(resolver)
 
         // Then
-        verify(exactly = 1) { aggregator.extractInterfaces(any()) }
+        verify(exactly = 1) { aggregator.extractPlatformInterfaces(any()) }
 
         verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
 

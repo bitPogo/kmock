@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
@@ -21,6 +22,7 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
@@ -102,9 +104,9 @@ internal class KMockAggregator(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun extractInterfaces(
+    private fun extractInterfaces(
         annotated: Sequence<KSAnnotated>
-    ): ProcessorContract.Aggregated {
+    ): Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
         val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
@@ -127,12 +129,45 @@ internal class KMockAggregator(
 
         resolveInterfaces(typeContainer, templateCollector)
 
-        return ProcessorContract.Aggregated(
+        return Aggregated(
             illAnnotated,
             templateCollector.values.toList(),
             fileCollector
         )
     }
+
+    private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            ANNOTATION_COMMON_NAME,
+            false
+        )
+    }
+
+    override fun extractCommonInterfaces(
+        resolver: Resolver
+    ): Aggregated = extractInterfaces(fetchCommonAnnotated(resolver))
+
+    private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            ANNOTATION_SHARED_NAME,
+            false
+        )
+    }
+
+    override fun extractSharedInterfaces(
+        resolver: Resolver
+    ): Aggregated = extractInterfaces(fetchSharedAnnotated(resolver))
+
+    private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            ANNOTATION_PLATFORM_NAME,
+            false
+        )
+    }
+
+    override fun extractPlatformInterfaces(
+        resolver: Resolver
+    ): Aggregated = extractInterfaces(fetchPlatformAnnotated(resolver))
 
     private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
         return parameter.size == 1 &&
@@ -157,8 +192,15 @@ internal class KMockAggregator(
         }
     }
 
-    override fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer? {
-        val annotatedSymbol = annotated.firstOrNull()
+    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
+        return resolver.getSymbolsWithAnnotation(
+            ProcessorContract.RELAXATION_NAME,
+            false
+        )
+    }
+
+    override fun extractRelaxer(resolver: Resolver): Relaxer? {
+        val annotatedSymbol = fetchRelaxerAnnotated(resolver).firstOrNull()
 
         return if (annotatedSymbol is KSFunctionDeclaration) {
             validateRelaxer(annotatedSymbol)
