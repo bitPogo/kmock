@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
@@ -58,6 +59,8 @@ abstract class KMockExtension(
 
     private var _disableFactories = false
 
+    private var _customSharedAnnotations: Map<String, String> = emptyMap()
+
     private fun propagateValue(
         id: String,
         value: String
@@ -74,10 +77,10 @@ abstract class KMockExtension(
         kmockKey: String,
         mapping: Map<String, String>
     ) {
-        mapping.forEach { (qualifiedName, alias) ->
-            guardMapping(qualifiedName, alias)
+        mapping.forEach { (qualifiedName, value) ->
+            guardMapping(qualifiedName, value)
 
-            ksp.arg("$kmockKey$qualifiedName", alias)
+            ksp.arg("$kmockKey$qualifiedName", value)
         }
     }
 
@@ -192,5 +195,16 @@ abstract class KMockExtension(
         set(value) {
             propagateValue(DISABLE_FACTORIES, value.toString())
             _disableFactories = value
+        }
+
+    override var customAnnotationsForMeta: Map<String, String>
+        get() = _customSharedAnnotations
+        set(value) {
+            propagateMapping(
+                CUSTOM_ANNOTATION,
+                value
+            )
+
+            _customSharedAnnotations = value
         }
 }

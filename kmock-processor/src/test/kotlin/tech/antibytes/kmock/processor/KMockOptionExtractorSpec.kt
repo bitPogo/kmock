@@ -107,7 +107,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe emptySet()
+        actual.knownSharedSourceSets mustBe emptySet()
     }
 
     @Test
@@ -133,7 +133,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe expected.keys
     }
 
     @Test
@@ -161,7 +161,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe expected.keys
     }
 
     @Test
@@ -614,5 +614,51 @@ class KMockOptionExtractorSpec {
 
         // Then
         actual.uselessPrefixes mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a empty map if no CustomAnnotations were delegated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.customAnnotations mustBe emptyMap()
+    }
+
+    @Test
+    fun `Given convertOptions it returns a map of declared CustomAnnotations`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val expected: Map<String, String> = fixture.mapFixture(size = 3)
+
+        expected.forEach { (key, value) ->
+            delegateKSP["kmock_customAnnotation_$key"] = value
+        }
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.customAnnotations mustBe expected
     }
 }

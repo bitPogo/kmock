@@ -7,7 +7,10 @@
 package tech.antibytes.kmock.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
@@ -29,6 +32,7 @@ import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
+import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -39,12 +43,13 @@ internal interface ProcessorContract {
     data class Options(
         val kspDir: String,
         val isKmp: Boolean,
+        val customAnnotations: Map<String, String>,
         val freezeOnDefault: Boolean,
         val allowInterfaces: Boolean,
         val spiesOnly: Boolean,
         val disableFactories: Boolean,
         val rootPackage: String,
-        val knownSourceSets: Set<String>,
+        val knownSharedSourceSets: Set<String>,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
         val useBuildInProxiesOn: Set<String>,
@@ -59,9 +64,47 @@ internal interface ProcessorContract {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
     }
 
+    interface SourceSetValidator {
+        fun isValidateSourceSet(sourceSet: Any?): Boolean
+    }
+
+    interface AnnotationFilter {
+        fun filterAnnotation(
+            annotations: Map<String, String>
+        ): Map<String, String>
+
+        fun isApplicableAnnotation(
+            annotation: KSAnnotation
+        ): Boolean
+    }
+
+    interface SourceFilter {
+        fun filter(
+            templateSources: List<TemplateSource>,
+            filteredBy: List<TemplateSource>
+        ): List<TemplateSource>
+
+        fun filterSharedSources(
+            templateSources: List<TemplateSource>
+        ): List<TemplateSource>
+    }
+
+    interface AggregatorFactory {
+        fun getInstance(
+            logger: KSPLogger,
+            sourceSetValidator: SourceSetValidator,
+            annotationFilter: AnnotationFilter,
+            generics: GenericResolver,
+            customAnnotations: Map<String, String>,
+            aliases: Map<String, String>
+        ): Aggregator
+    }
+
     interface Aggregator {
-        fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
-        fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated
+        fun extractRelaxer(resolver: Resolver): Relaxer?
     }
 
     data class TemplateSource(
@@ -76,17 +119,6 @@ internal interface ProcessorContract {
         val extractedTemplates: List<TemplateSource>,
         val dependencies: List<KSFile>
     )
-
-    interface SourceFilter {
-        fun filter(
-            templateSources: List<TemplateSource>,
-            filteredBy: List<TemplateSource>
-        ): List<TemplateSource>
-
-        fun filterSharedSources(
-            templateSources: List<TemplateSource>
-        ): List<TemplateSource>
-    }
 
     data class GenericDeclaration(
         val types: List<TypeName>,
@@ -307,7 +339,6 @@ internal interface ProcessorContract {
 
     interface MockFactoryGenerator {
         fun writeFactories(
-            options: Options,
             templateSources: List<TemplateSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
@@ -316,12 +347,10 @@ internal interface ProcessorContract {
 
     interface MockFactoryEntryPointGenerator {
         fun generateCommon(
-            options: Options,
             templateSources: List<TemplateSource>,
         )
 
         fun generateShared(
-            options: Options,
             templateSources: List<TemplateSource>,
         )
     }
@@ -331,9 +360,11 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
-        val ANNOTATION_NAME: String = Mock::class.java.canonicalName
+        val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
+        val RELAXATION_NAME: String = RelaxationAnnotation::class.java.canonicalName
+
         val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"
@@ -377,5 +408,6 @@ internal interface ProcessorContract {
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
+        const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
     }
 }

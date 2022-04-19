@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
@@ -57,6 +58,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
         val customMethodNames: MutableMap<String, String> = mutableMapOf()
+        val customAnnotations: MutableMap<String, String> = mutableMapOf()
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -88,6 +90,13 @@ internal object KMockOptionExtractor : OptionExtractor {
                 ) { proxyId, replacement ->
                     customMethodNames[proxyId] = replacement
                 }
+                key.startsWith(CUSTOM_ANNOTATION) -> extractMappedValue(
+                    CUSTOM_ANNOTATION,
+                    key,
+                    value
+                ) { annotation, sourceSet ->
+                    customAnnotations[annotation] = sourceSet
+                }
                 key.startsWith(USELESS_PREFIXES) -> uselessPrefixes.add(value)
                 key.startsWith(USE_BUILD_IN) -> useBuildInProxiesOn.add(value)
                 key.startsWith(SPY_ON) -> {
@@ -102,10 +111,11 @@ internal object KMockOptionExtractor : OptionExtractor {
             rootPackage = rootPackage!!,
             isKmp = isKmp!!,
             freezeOnDefault = freezeOnDefault,
+            customAnnotations = customAnnotations,
             allowInterfaces = allowInterfaces,
             spiesOnly = spiesOnly,
             disableFactories = disableFactories,
-            knownSourceSets = extractSourceSets(precedences),
+            knownSharedSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
             useBuildInProxiesOn = useBuildInProxiesOn,

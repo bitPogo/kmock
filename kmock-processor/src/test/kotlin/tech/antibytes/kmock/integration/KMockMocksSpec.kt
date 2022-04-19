@@ -1144,4 +1144,34 @@ class KMockMocksSpec {
         ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for Shared is processed while using a custom annotation, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/customshared/Shared.kt")
+        )
+        val expected = loadResource("/expected/customshared/Shared.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+            kspArguments = mapOf(
+                "kmock_customAnnotation_mock.template.customshared.CustomShared" to "sharedTest"
+            )
+        )
+        val actual = resolveGenerated("SharedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/customshared/SharedMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
 }

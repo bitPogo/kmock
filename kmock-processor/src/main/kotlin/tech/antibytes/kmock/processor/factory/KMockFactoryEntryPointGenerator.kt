@@ -22,6 +22,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
+    private val isKmp: Boolean,
+    private val rootPackage: String,
     private val spiesOnly: Boolean,
     spyOn: Set<String>,
     private val utils: ProcessorContract.MockFactoryGeneratorUtil,
@@ -122,12 +124,11 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     override fun generateCommon(
-        options: ProcessorContract.Options,
         templateSources: List<TemplateSource>
     ) {
-        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
-                options.rootPackage,
+                rootPackage,
                 FACTORY_FILE_NAME
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
@@ -159,14 +160,13 @@ internal class KMockFactoryEntryPointGenerator(
 
     private fun generateShared(
         buckets: Map<String, List<TemplateSource>>,
-        options: ProcessorContract.Options,
     ) {
         buckets.forEach { (indicator, templateSources) ->
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
             if (generics.isNotEmpty()) {
                 val file = FileSpec.builder(
-                    options.rootPackage,
+                    rootPackage,
                     FACTORY_FILE_NAME
                 )
                 file.addAnnotation(UNUSED)
@@ -189,10 +189,9 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     override fun generateShared(
-        options: ProcessorContract.Options,
         templateSources: List<TemplateSource>
     ) {
-        if (options.isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val buckets: MutableMap<String, List<TemplateSource>> = mutableMapOf()
 
             templateSources.forEach { template ->
@@ -203,7 +202,7 @@ internal class KMockFactoryEntryPointGenerator(
                 buckets[indicator] = bucket
             }
 
-            generateShared(buckets, options)
+            generateShared(buckets)
         }
     }
 }

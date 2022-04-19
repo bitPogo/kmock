@@ -26,6 +26,9 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.utils.AnnotationFilter
+import tech.antibytes.kmock.processor.utils.SourceFilter
+import tech.antibytes.kmock.processor.utils.SourceSetValidator
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
@@ -44,6 +47,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             Pair(
                 KMockFactoryGenerator(
                     logger = logger,
+                    isKmp = options.isKmp,
+                    rootPackage = options.rootPackage,
                     allowInterfaces = options.allowInterfaces,
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,
@@ -52,6 +57,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     codeGenerator = codeGenerator,
                 ),
                 KMockFactoryEntryPointGenerator(
+                    isKmp = options.isKmp,
+                    rootPackage = options.rootPackage,
                     utils = factoryUtils,
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,
@@ -70,6 +77,16 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,
             kspGenerator = environment.codeGenerator
+        )
+
+        val sourceSetValidator = SourceSetValidator(
+            logger = logger,
+            knownSharedSourceSets = options.knownSharedSourceSets
+        )
+
+        val annotationFilter = AnnotationFilter(
+            logger = logger,
+            knownSharedSourceSets = options.knownSharedSourceSets
         )
 
         val relaxerGenerator = KMockRelaxerGenerator()
@@ -106,6 +123,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         )
 
         return KMockProcessor(
+            isKmp = options.isKmp,
             codeGenerator = codeGenerator,
             mockGenerator = KMockGenerator(
                 logger = logger,
@@ -120,13 +138,14 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,
-            aggregator = KMockAggregator(
+            aggregator = KMockAggregator.getInstance(
                 logger = logger,
-                knownSourceSets = options.knownSourceSets,
+                annotationFilter = annotationFilter,
+                sourceSetValidator = sourceSetValidator,
                 generics = KMockGenerics,
+                customAnnotations = options.customAnnotations,
                 aliases = options.aliases,
             ),
-            options = options,
             filter = SourceFilter(options.precedences, logger)
         )
     }
