@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
@@ -47,7 +48,7 @@ internal interface ProcessorContract {
         val spiesOnly: Boolean,
         val disableFactories: Boolean,
         val rootPackage: String,
-        val knownSourceSets: Set<String>,
+        val knownSharedSourceSets: Set<String>,
         val precedences: Map<String, Int>,
         val aliases: Map<String, String>,
         val useBuildInProxiesOn: Set<String>,
@@ -91,6 +92,16 @@ internal interface ProcessorContract {
 
     interface SourceSetValidator {
         fun isValidateSourceSet(sourceSet: Any?): Boolean
+    }
+
+    interface AnnotationFilter {
+        fun filterAnnotation(
+            annotations: Map<String, String>
+        ): Map<String, String>
+
+        fun isApplicableAnnotation(
+            annotation: KSAnnotation
+        )
     }
 
     interface SourceFilter {

@@ -26,6 +26,7 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
 
 class KMockProcessorProvider : SymbolProcessorProvider {
@@ -79,7 +80,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
 
         val sourceSetValidator = SourceSetValidator(
             logger = logger,
-            knownSourceSets = options.knownSourceSets
+            knownSharedSourceSets = options.knownSharedSourceSets
         )
 
         val relaxerGenerator = KMockRelaxerGenerator()

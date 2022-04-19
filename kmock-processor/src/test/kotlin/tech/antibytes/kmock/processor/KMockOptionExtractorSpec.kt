@@ -107,7 +107,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe emptySet()
+        actual.knownSharedSourceSets mustBe emptySet()
     }
 
     @Test
@@ -133,7 +133,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe expected.keys
     }
 
     @Test
@@ -161,7 +161,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe expected.keys
     }
 
     @Test

@@ -115,7 +115,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             allowInterfaces = allowInterfaces,
             spiesOnly = spiesOnly,
             disableFactories = disableFactories,
-            knownSourceSets = extractSourceSets(precedences),
+            knownSharedSourceSets = extractSourceSets(precedences),
             precedences = precedences,
             aliases = aliases,
             useBuildInProxiesOn = useBuildInProxiesOn,

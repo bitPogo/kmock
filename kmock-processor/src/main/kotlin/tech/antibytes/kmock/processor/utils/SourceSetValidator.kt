@@ -12,7 +12,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 
 internal class SourceSetValidator(
     private val logger: KSPLogger,
-    private val knownSourceSets: Set<String>,
+    private val knownSharedSourceSets: Set<String>,
 ) : ProcessorContract.SourceSetValidator {
     private fun extractSourceSet(sourceSet: Any?): Any? {
         return if (sourceSet is KSAnnotation) {
@@ -25,7 +25,7 @@ internal class SourceSetValidator(
     override fun isValidateSourceSet(sourceSet: Any?): Boolean {
         return when (extractSourceSet(sourceSet)) {
             !is String -> false
-            !in knownSourceSets -> {
+            !in knownSharedSourceSets -> {
                 logger.warn("$sourceSet is not a applicable sourceSet!")
                 false
             }
