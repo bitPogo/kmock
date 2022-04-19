@@ -75,7 +75,7 @@ internal interface ProcessorContract {
 
         fun isApplicableAnnotation(
             annotation: KSAnnotation
-        )
+        ): Boolean
     }
 
     interface SourceFilter {

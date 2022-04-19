@@ -46,6 +46,7 @@ class KMockAggregatorCommonSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ) fulfils ProcessorContract.Aggregator::class
@@ -87,6 +88,7 @@ class KMockAggregatorCommonSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractCommonInterfaces(resolver)
@@ -99,7 +101,7 @@ class KMockAggregatorCommonSpec {
     }
 
     @Test
-    fun `Given extractCommonInterfaces is called it filters all ill Stub Annotations`() {
+    fun `Given extractCommonInterfaces is called it filters all ill Annotations`() {
         // Given
         val source: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -127,6 +129,7 @@ class KMockAggregatorCommonSpec {
 
         // When
         val (illegal, _, _) = KMockAggregator(
+            mockk(),
             mockk(),
             mockk(),
             mockk(),
@@ -187,6 +190,7 @@ class KMockAggregatorCommonSpec {
         // When
         KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(),
             emptyMap(),
@@ -268,6 +272,7 @@ class KMockAggregatorCommonSpec {
             logger,
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractCommonInterfaces(resolver)
@@ -345,6 +350,7 @@ class KMockAggregatorCommonSpec {
         val (_, interfaces, _) = KMockAggregator(
             logger,
             mockk(),
+            mockk(),
             genericResolver,
             emptyMap(),
             emptyMap(),
@@ -415,6 +421,7 @@ class KMockAggregatorCommonSpec {
         // When
         val (_, _, sourceFiles) = KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
@@ -501,6 +508,7 @@ class KMockAggregatorCommonSpec {
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
+            mockk(),
             sourceSetValidator,
             genericResolver,
             emptyMap(),

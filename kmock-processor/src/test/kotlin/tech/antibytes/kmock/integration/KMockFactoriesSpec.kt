@@ -836,4 +836,35 @@ class KMockFactoriesSpec {
         actualActual mustBe null
         actualExpect mustBe null
     }
+
+    @Test
+    fun `Given a annotated Source with custom Annotation for Shared is processed, it does not write a mock factory`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/customshared/Shared.kt")
+        )
+        val expectedActual = loadResource("/expected/customshared/SharedActual.kt")
+        val expectedExpect = loadResource("/expected/customshared/SharedExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "kmock_customAnnotation_factory.template.customshared.CustomShared" to "sharedTest",
+            ),
+            source
+        )
+        val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
+        val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualActual isNot null
+        actualExpect isNot null
+
+        actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
+        actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
+    }
 }

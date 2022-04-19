@@ -46,6 +46,7 @@ class KMockAggregatorPlatformSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ) fulfils ProcessorContract.Aggregator::class
@@ -87,6 +88,7 @@ class KMockAggregatorPlatformSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractPlatformInterfaces(resolver)
@@ -99,7 +101,7 @@ class KMockAggregatorPlatformSpec {
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all ill Stub Annotations`() {
+    fun `Given extractPlatformInterfaces is called it filters all ill Annotations`() {
         // Given
         val source: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -127,6 +129,7 @@ class KMockAggregatorPlatformSpec {
 
         // When
         val (illegal, _, _) = KMockAggregator(
+            mockk(),
             mockk(),
             mockk(),
             mockk(),
@@ -187,6 +190,7 @@ class KMockAggregatorPlatformSpec {
         // When
         KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(),
             emptyMap(),
@@ -268,6 +272,7 @@ class KMockAggregatorPlatformSpec {
             logger,
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractPlatformInterfaces(resolver)
@@ -345,6 +350,7 @@ class KMockAggregatorPlatformSpec {
         val (_, interfaces, _) = KMockAggregator(
             logger,
             mockk(),
+            mockk(),
             genericResolver,
             emptyMap(),
             emptyMap(),
@@ -416,6 +422,7 @@ class KMockAggregatorPlatformSpec {
         // When
         val (_, _, sourceFiles) = KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
@@ -502,6 +509,7 @@ class KMockAggregatorPlatformSpec {
         // When
         val (_, interfaces, _) = KMockAggregator(
             logger,
+            mockk(),
             sourceSetValidator,
             genericResolver,
             emptyMap(),

@@ -36,6 +36,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockAggregator(
     private val logger: KSPLogger,
+    private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
     private val generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
@@ -50,6 +51,7 @@ internal class KMockAggregator(
             val annotationName = resolveAnnotationName(annotation)
             ANNOTATION_PLATFORM_NAME == annotationName ||
                 ANNOTATION_COMMON_NAME == annotationName ||
+                (annotationName in customAnnotations.keys && annotationFilter.isApplicableAnnotation(annotation)) ||
                 (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
         }
 
@@ -95,11 +97,11 @@ internal class KMockAggregator(
         }
     }
 
-    private fun determineSourceCategory(stub: KSAnnotation): String {
-        return if (stub.arguments.size == 2) {
-            stub.arguments.first().value as String
+    private fun determineSourceCategory(annotation: KSAnnotation): String {
+        return if (annotation.arguments.size == 2) {
+            annotation.arguments.first().value as String
         } else {
-            ""
+            customAnnotations[resolveAnnotationName(annotation)] ?: ""
         }
     }
 
@@ -113,15 +115,15 @@ internal class KMockAggregator(
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
-            val stub = findKMockAnnotation(annotatedSymbol.annotations)
+            val annotation = findKMockAnnotation(annotatedSymbol.annotations)
 
-            if (stub == null || stub.arguments.isEmpty()) {
+            if (annotation == null || annotation.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
             } else {
-                val sourceIndicator = determineSourceCategory(stub)
+                val sourceIndicator = determineSourceCategory(annotation)
                 val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
 
-                interfaces.addAll(stub.arguments.last().value as List<KSType>)
+                interfaces.addAll(annotation.arguments.last().value as List<KSType>)
                 typeContainer[sourceIndicator] = interfaces
                 fileCollector.add(annotatedSymbol.containingFile!!)
             }
@@ -148,10 +150,19 @@ internal class KMockAggregator(
     ): Aggregated = extractInterfaces(fetchCommonAnnotated(resolver))
 
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
+        val shared = resolver.getSymbolsWithAnnotation(
             ANNOTATION_SHARED_NAME,
             false
         )
+
+        val customShared = customAnnotations.keys.map { annotation ->
+            resolver.getSymbolsWithAnnotation(
+                annotation,
+                false
+            )
+        }.toTypedArray()
+
+        return sequenceOf(shared, *customShared).flatten()
     }
 
     override fun extractSharedInterfaces(
@@ -228,6 +239,7 @@ internal class KMockAggregator(
 
             return KMockAggregator(
                 logger = logger,
+                annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = generics,
                 customAnnotations = additionalAnnotations,

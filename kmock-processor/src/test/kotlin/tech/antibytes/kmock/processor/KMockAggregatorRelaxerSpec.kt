@@ -43,6 +43,7 @@ class KMockAggregatorRelaxerSpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ) fulfils ProcessorContract.Aggregator::class
@@ -61,7 +62,9 @@ class KMockAggregatorRelaxerSpec {
 
         // When
         val relaxer = KMockAggregator(
-            logger, mockk(),
+            logger,
+            mockk(),
+            mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
@@ -110,6 +113,7 @@ class KMockAggregatorRelaxerSpec {
         // When
         KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(),
             emptyMap(),
@@ -164,6 +168,7 @@ class KMockAggregatorRelaxerSpec {
             logger,
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractRelaxer(resolver)
@@ -214,6 +219,7 @@ class KMockAggregatorRelaxerSpec {
         // When
         KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(),
             emptyMap(),
@@ -272,6 +278,7 @@ class KMockAggregatorRelaxerSpec {
             logger,
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractRelaxer(resolver)
@@ -324,6 +331,7 @@ class KMockAggregatorRelaxerSpec {
             logger,
             mockk(),
             mockk(),
+            mockk(),
             emptyMap(),
             emptyMap(),
         ).extractRelaxer(resolver)
@@ -374,6 +382,7 @@ class KMockAggregatorRelaxerSpec {
         // When
         val actual = KMockAggregator(
             logger,
+            mockk(),
             mockk(),
             mockk(),
             emptyMap(),
