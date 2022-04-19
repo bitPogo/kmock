@@ -63,33 +63,6 @@ internal interface ProcessorContract {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
     }
 
-    interface AggregatorFactory {
-        fun getInstance(
-            logger: KSPLogger,
-            sourceSetValidator: SourceSetValidator,
-            generics: GenericResolver,
-            aliases: Map<String, String>
-        ): Aggregator
-    }
-
-    interface Aggregator {
-        fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
-        fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
-    }
-
-    data class TemplateSource(
-        val indicator: String,
-        val template: KSClassDeclaration,
-        val alias: String?,
-        val generics: Map<String, List<KSTypeReference>>?
-    )
-
-    data class Aggregated(
-        val illFormed: List<KSAnnotated>,
-        val extractedTemplates: List<TemplateSource>,
-        val dependencies: List<KSFile>
-    )
-
     interface SourceSetValidator {
         fun isValidateSourceSet(sourceSet: Any?): Boolean
     }
@@ -114,6 +87,35 @@ internal interface ProcessorContract {
             templateSources: List<TemplateSource>
         ): List<TemplateSource>
     }
+
+    interface AggregatorFactory {
+        fun getInstance(
+            logger: KSPLogger,
+            sourceSetValidator: SourceSetValidator,
+            annotationFilter: AnnotationFilter,
+            generics: GenericResolver,
+            customAnnotations: Map<String, String>,
+            aliases: Map<String, String>
+        ): Aggregator
+    }
+
+    interface Aggregator {
+        fun extractInterfaces(annotated: Sequence<KSAnnotated>): Aggregated
+        fun extractRelaxer(annotated: Sequence<KSAnnotated>): Relaxer?
+    }
+
+    data class TemplateSource(
+        val indicator: String,
+        val template: KSClassDeclaration,
+        val alias: String?,
+        val generics: Map<String, List<KSTypeReference>>?
+    )
+
+    data class Aggregated(
+        val illFormed: List<KSAnnotated>,
+        val extractedTemplates: List<TemplateSource>,
+        val dependencies: List<KSFile>
+    )
 
     data class GenericDeclaration(
         val types: List<TypeName>,

@@ -49,7 +49,13 @@ class KMockAggregatorSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(mockk(), mockk(), mockk(), emptyMap()) fulfils ProcessorContract.Aggregator::class
+        KMockAggregator(
+            mockk(),
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ) fulfils ProcessorContract.Aggregator::class
     }
 
     @Test
@@ -83,7 +89,8 @@ class KMockAggregatorSpec {
             mockk(),
             mockk(),
             mockk(),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -121,7 +128,13 @@ class KMockAggregatorSpec {
         every { source.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(mockk(), mockk(), mockk(), emptyMap()).extractInterfaces(annotated)
+        val (illegal, _, _) = KMockAggregator(
+            mockk(),
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractInterfaces(annotated)
 
         // Then
         illegal mustBe listOf(source)
@@ -164,7 +177,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             mockk(),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -222,7 +236,8 @@ class KMockAggregatorSpec {
             logger,
             mockk(),
             mockk(),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -278,7 +293,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             mockk(),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -351,7 +367,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractInterfaces(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractInterfaces(annotated)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
@@ -425,7 +447,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             mockk(),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -501,7 +524,8 @@ class KMockAggregatorSpec {
             logger,
             mockk(),
             genericResolver,
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -577,7 +601,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             genericResolver,
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -678,7 +703,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             genericResolver,
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -753,7 +779,8 @@ class KMockAggregatorSpec {
             logger,
             mockk(),
             mockk(relaxed = true),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -820,7 +847,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             mockk(relaxed = true),
-            emptyMap()
+            emptyMap(),
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -923,7 +951,8 @@ class KMockAggregatorSpec {
             logger,
             sourceSetValidator,
             genericResolver,
-            mapping
+            mapping,
+            emptyMap(),
         ).extractInterfaces(annotated)
 
         // Then
@@ -939,7 +968,12 @@ class KMockAggregatorSpec {
         val annotated: Sequence<KSAnnotated> = sequence {}
 
         // When
-        val relaxer = KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        val relaxer = KMockAggregator(
+            logger, mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         relaxer mustBe null
@@ -974,7 +1008,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1012,7 +1052,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1050,7 +1096,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1092,7 +1144,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1130,7 +1188,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 1) {
@@ -1168,7 +1232,13 @@ class KMockAggregatorSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val actual = KMockAggregator(logger, mockk(), mockk(), emptyMap()).extractRelaxer(annotated)
+        val actual = KMockAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ).extractRelaxer(annotated)
 
         // Then
         verify(exactly = 0) { logger.error(any()) }

@@ -12,13 +12,13 @@ import tech.antibytes.kmock.processor.ProcessorContract
 
 internal class AnnotationFilter(
     private val logger: KSPLogger,
-    private val knownSources: Set<String>,
+    private val knownSharedSourceSets: Set<String>,
 ) : ProcessorContract.AnnotationFilter {
     private fun filterBySourceSet(
         annotation: String,
         sourceSet: String
     ): Boolean {
-        return if (sourceSet !in knownSources) {
+        return if (sourceSet !in knownSharedSourceSets) {
             logger.warn(
                 "$annotation is not applicable since is SourceSet ($sourceSet) is not a know shared source."
             )

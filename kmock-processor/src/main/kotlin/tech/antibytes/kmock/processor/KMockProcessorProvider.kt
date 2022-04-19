@@ -26,6 +26,7 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.utils.AnnotationFilter
 import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
 
@@ -83,6 +84,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             knownSharedSourceSets = options.knownSharedSourceSets
         )
 
+        val annotationFilter = AnnotationFilter(
+            logger = logger,
+            knownSharedSourceSets = options.knownSharedSourceSets
+        )
+
         val relaxerGenerator = KMockRelaxerGenerator()
         val nameSelector = KmockProxyNameSelector(
             enableNewOverloadingNames = options.enableNewOverloadingNames,
@@ -134,8 +140,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             entryPointGenerator = entryPointGenerator,
             aggregator = KMockAggregator.getInstance(
                 logger = logger,
+                annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = KMockGenerics,
+                customAnnotations = options.customAnnotations,
                 aliases = options.aliases,
             ),
             filter = SourceFilter(options.precedences, logger)

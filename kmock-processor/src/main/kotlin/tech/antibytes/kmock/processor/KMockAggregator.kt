@@ -23,6 +23,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
+import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
@@ -35,6 +36,7 @@ internal class KMockAggregator(
     private val logger: KSPLogger,
     private val sourceSetValidator: SourceSetValidator,
     private val generics: GenericResolver,
+    private val customAnnotations: Map<String, String>,
     private val aliases: Map<String, String>
 ) : Aggregator {
     private fun resolveAnnotationName(
@@ -173,13 +175,22 @@ internal class KMockAggregator(
         override fun getInstance(
             logger: KSPLogger,
             sourceSetValidator: SourceSetValidator,
+            annotationFilter: AnnotationFilter,
             generics: GenericResolver,
-            aliases: Map<String, String>
-        ): Aggregator = KMockAggregator(
-            logger = logger,
-            sourceSetValidator = sourceSetValidator,
-            generics = generics,
-            aliases = aliases
-        )
+            customAnnotations: Map<String, String>,
+            aliases: Map<String, String>,
+        ): Aggregator {
+            val additionalAnnotations = annotationFilter.filterAnnotation(
+                customAnnotations
+            )
+
+            return KMockAggregator(
+                logger = logger,
+                sourceSetValidator = sourceSetValidator,
+                generics = generics,
+                customAnnotations = additionalAnnotations,
+                aliases = aliases,
+            )
+        }
     }
 }
