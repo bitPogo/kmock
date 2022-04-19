@@ -197,7 +197,7 @@ abstract class KMockExtension(
             _disableFactories = value
         }
 
-    override var customSharedAnnotations: Map<String, String>
+    override var customAnnotationsForMeta: Map<String, String>
         get() = _customSharedAnnotations
         set(value) {
             propagateMapping(

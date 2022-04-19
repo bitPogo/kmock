@@ -37,11 +37,12 @@ toc::[]
 * `customMethodNames` in order to allow complete custom names for methods
 * `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
 * `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
+* `customAnnotationsForMeta` to provide a hook for the usage of customized annotation for meta/shared sources
 
 === Changed
 
 * Generated mocks don't contain runtime logic any longer
-* Mutable properties of Proxies now separate froze/unfrozen state more cleaner to improve Runtime
+* Mutable properties of Proxies now separate froze/unfrozen state is cleaner to improve Runtime
 * `kmock` and `kspy` are using now a shared function to improve compile time
 * Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
 

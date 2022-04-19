@@ -17,6 +17,7 @@ internal interface KMockPluginContract {
 
         /**
          * Mapping to resolve Mock name conflicts.
+         *
          * The key must be the full qualified name of target which should use a alias instead.
          * The value must be an alias name which replaces the short name of the target.
          */
@@ -24,6 +25,7 @@ internal interface KMockPluginContract {
 
         /**
          * Selection of targets which allow Proxies on build-in method (e.g. toString).
+         *
          * Set of full qualified name of target which should proxy build-in methods.
          */
         var useBuildInProxiesOn: Set<String>
@@ -37,6 +39,7 @@ internal interface KMockPluginContract {
 
         /**
          * Opt-in/out the new name resolver for overloaded methods.
+         *
          * It is opt-in on default.
          */
         @Deprecated("This will be removed with version 1.0.")
@@ -45,6 +48,7 @@ internal interface KMockPluginContract {
         /**
          * Allows to prefix type names in order to resolve collisions for overloaded methods.
          * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
+         *
          * The key must be the full qualified name of target which should use an additional prefix.
          * The value is an arbitrary String, which is used as a prefix.
          */
@@ -53,6 +57,7 @@ internal interface KMockPluginContract {
         /**
          * Allows to replace auto resolved method names with a given name. This also affects the ProxyId.
          * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
+         *
          * The key must be the original full Id of the Proxy.
          * The value is an arbitrary String, which is used as method name.
          */
@@ -60,6 +65,7 @@ internal interface KMockPluginContract {
 
         /**
          * Selection of targets which allow Proxies to use Spies.
+         *
          * Set of full qualified name of target which should allow proxy to spy on.
          * Note: This will also activate build-in methods.
          */
@@ -73,26 +79,32 @@ internal interface KMockPluginContract {
 
         /**
          * Enable factory functions to reference Mocks by their interfaces.
+         *
          * Default is false
          */
         var allowInterfaces: Boolean
 
         /**
          * Sets a global default freeze value for kmock and kspy.
+         *
          * Default is true
          */
         var freezeOnDefault: Boolean
 
         /**
          * Disables the generation of kmock and kspy.
+         *
          * Default is false.
          */
         var disableFactories: Boolean
 
         /**
+         * Allows to use custom annotation for meta sources with the exception of commonTest
          *
+         * The key must be the original full qualified name of the Annotation.
+         * The value is the source set it is referring to.
          */
-        var customSharedAnnotations: Map<String, String>
+        var customAnnotationsForMeta: Map<String, String>
     }
 
     interface SourceSetConfigurator {

@@ -589,7 +589,7 @@ class ExtensionSpec {
 
         val extension = createExtension<KMockExtension>(project)
 
-        extension.customSharedAnnotations mustBe emptyMap()
+        extension.customAnnotationsForMeta mustBe emptyMap()
     }
 
     @Test
@@ -606,9 +606,9 @@ class ExtensionSpec {
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.customSharedAnnotations = expected
+        extension.customAnnotationsForMeta = expected
 
-        extension.customSharedAnnotations mustBe expected
+        extension.customAnnotationsForMeta mustBe expected
         verify(exactly = 1) {
             kspExtension.arg("kmock_customAnnotation_${expected.keys.toList()[0]}", expected.values.toList()[0])
         }
@@ -639,7 +639,7 @@ class ExtensionSpec {
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
                 // When
-                extension.customSharedAnnotations = mapOf(
+                extension.customAnnotationsForMeta = mapOf(
                     name to fixture.fixture(named("stringAlpha"))
                 )
             }
@@ -661,7 +661,7 @@ class ExtensionSpec {
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
             // When
-            extension.customSharedAnnotations = mapOf(
+            extension.customAnnotationsForMeta = mapOf(
                 fixture.fixture<String>(named("stringAlpha")) to "some.thing"
             )
         }
