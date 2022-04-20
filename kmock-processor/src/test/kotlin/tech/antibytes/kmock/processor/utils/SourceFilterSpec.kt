@@ -37,13 +37,33 @@ class SourceFilterSpec {
         val source0_1: KSClassDeclaration = mockk()
 
         val sources0 = listOf(
-            TemplateSource("", source0_0, null, null),
-            TemplateSource("", source0_1, null, null)
+            TemplateSource(
+                indicator = "",
+                template = source0_0,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = "",
+                template = source0_1,
+                templateName = fixture.fixture(),
+                generics = null
+            )
         )
 
         val sources1 = listOf(
-            TemplateSource("", source1_0, null, null),
-            TemplateSource("", source1_1, null, null)
+            TemplateSource(
+                indicator = "",
+                template = source1_0,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = "",
+                template = source1_1,
+                templateName = fixture.fixture(),
+                generics = null
+            )
         )
 
         val sameSource: String = fixture.fixture()
@@ -70,8 +90,18 @@ class SourceFilterSpec {
         val source1: KSClassDeclaration = mockk()
 
         val sources = listOf(
-            TemplateSource(fixture.fixture(), source0, null, null),
-            TemplateSource(fixture.fixture(), source1, null, null)
+            TemplateSource(
+                indicator = fixture.fixture(),
+                template = source0,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = fixture.fixture(),
+                template = source1,
+                templateName = fixture.fixture(),
+                generics = null
+            )
         )
 
         every { source0.qualifiedName!!.asString() } returns fixture.fixture()
@@ -95,8 +125,18 @@ class SourceFilterSpec {
         val marker1: String = fixture.fixture()
 
         val sources = listOf(
-            TemplateSource(marker0, source0, null, null),
-            TemplateSource(marker1, source1, null, null)
+            TemplateSource(
+                indicator = marker0,
+                template = source0,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker1,
+                template = source0,
+                templateName = fixture.fixture(),
+                generics = null
+            )
         )
 
         val interfaceName: String = fixture.fixture()
@@ -124,9 +164,24 @@ class SourceFilterSpec {
         val marker2: String = fixture.fixture()
 
         val sources = listOf(
-            TemplateSource(marker0, source0, null, null),
-            TemplateSource(marker1, source1, null, null),
-            TemplateSource(marker2, source2, null, null),
+            TemplateSource(
+                indicator = marker0,
+                template = source0,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker1,
+                template = source1,
+                templateName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker2,
+                template = source2,
+                templateName = fixture.fixture(),
+                generics = null
+            )
         )
 
         val interfaceName: String = fixture.fixture()

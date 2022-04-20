@@ -22,17 +22,6 @@ internal class KMockFactoryWithoutGenerics(
     private val allowInterfaces: Boolean,
     private val utils: MockFactoryGeneratorUtil,
 ) : MockFactoryWithoutGenerics {
-    private fun createAliasName(
-        alias: String?,
-        packageName: String
-    ): String? {
-        return if (alias != null) {
-            "$packageName.$alias"
-        } else {
-            null
-        }
-    }
-
     private fun buildMockSelectorFlow(
         mockFactory: FunSpec.Builder,
         addItems: FunSpec.Builder.() -> Unit,
@@ -67,7 +56,6 @@ internal class KMockFactoryWithoutGenerics(
         mockFactory: FunSpec.Builder,
         qualifiedName: String,
         interfaceName: String,
-        aliasInterfaceName: String?,
         relaxer: Relaxer?
     ) {
         val (interfaceInvocationTemplate, mockInvocationTemplate) = determineMockTemplate(relaxer)
@@ -75,15 +63,15 @@ internal class KMockFactoryWithoutGenerics(
             mockFactory.addStatement(
                 interfaceInvocationTemplate,
                 qualifiedName,
-                aliasInterfaceName ?: interfaceName,
+                interfaceName,
                 qualifiedName,
             )
         }
 
         mockFactory.addStatement(
             mockInvocationTemplate,
-            aliasInterfaceName ?: interfaceName,
-            aliasInterfaceName ?: interfaceName,
+            interfaceName,
+            interfaceName,
             qualifiedName,
         )
     }
@@ -95,13 +83,11 @@ internal class KMockFactoryWithoutGenerics(
     ) {
         val packageName = templateSource.template.packageName.asString()
         val qualifiedName = templateSource.template.qualifiedName!!.asString()
-        val aliasInterfaceName = createAliasName(templateSource.alias, packageName)
-        val interfaceName = "$packageName.${templateSource.template.simpleName.asString()}"
+        val interfaceName = "$packageName.${templateSource.templateName}"
 
         addMock(
             mockFactory = mockFactory,
             qualifiedName = qualifiedName,
-            aliasInterfaceName = aliasInterfaceName,
             interfaceName = interfaceName,
             relaxer = relaxer,
         )

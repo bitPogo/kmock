@@ -534,6 +534,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(fixture.fixture())
 
@@ -562,6 +563,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -624,6 +626,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(fixture.fixture())
 
@@ -652,6 +655,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { annotationFilter.isApplicableAnnotation(any()) } returns true
 
@@ -711,6 +715,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
@@ -745,6 +750,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -763,7 +769,14 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(TemplateSource(marker, declaration, null, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = marker,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 1) {
@@ -804,6 +817,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
@@ -838,6 +852,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -856,7 +871,14 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(TemplateSource(marker, declaration, null, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = marker,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
 
@@ -918,6 +940,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
@@ -958,6 +981,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -977,8 +1001,18 @@ class KMockAggregatorSharedSpec {
 
         // Then
         interfaces mustBe listOf(
-            TemplateSource(marker0, declaration, null, generics),
-            TemplateSource(marker1, declaration, null, generics)
+            TemplateSource(
+                indicator = marker0,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            ),
+            TemplateSource(
+                indicator = marker1,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            )
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
@@ -1039,6 +1073,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
@@ -1079,6 +1114,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -1098,8 +1134,18 @@ class KMockAggregatorSharedSpec {
 
         // Then
         interfaces mustBe listOf(
-            TemplateSource(marker0, declaration, null, generics),
-            TemplateSource(marker1, declaration, null, generics)
+            TemplateSource(
+                indicator = marker0,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            ),
+            TemplateSource(
+                indicator = marker1,
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            )
         )
 
         verify(exactly = 6) { genericResolver.extractGenerics(declaration, any()) }
@@ -1151,6 +1197,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(
             fixture.fixture()
@@ -1181,6 +1228,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -1233,6 +1281,7 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(
             fixture.fixture()
@@ -1458,6 +1507,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -1517,8 +1567,9 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
-        val alias: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val alias: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(
             fixture.fixture()
         )
@@ -1559,6 +1610,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -1577,7 +1629,14 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(TemplateSource(allowedSourceSets.first(), declaration, alias, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = allowedSourceSets.first(),
+                templateName = alias,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 1) {
@@ -1612,8 +1671,9 @@ class KMockAggregatorSharedSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
-        val alias: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val alias: String = fixture.fixture(named("stringAlpha"))
         val allowedSourceSets: Set<String> = setOf(
             fixture.fixture()
         )
@@ -1633,7 +1693,7 @@ class KMockAggregatorSharedSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns customAnnotations.keys.random()
+        } returns customAnnotations.keys.first()
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -1654,6 +1714,7 @@ class KMockAggregatorSharedSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -1672,7 +1733,14 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(TemplateSource(allowedSourceSets.first(), declaration, alias, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = allowedSourceSets.first(),
+                templateName = alias,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 2) {

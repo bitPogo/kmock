@@ -27,6 +27,7 @@ import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
@@ -240,6 +241,7 @@ class KMockAggregatorPlatformSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
@@ -266,6 +268,7 @@ class KMockAggregatorPlatformSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -310,6 +313,7 @@ class KMockAggregatorPlatformSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
@@ -343,6 +347,7 @@ class KMockAggregatorPlatformSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -359,7 +364,14 @@ class KMockAggregatorPlatformSpec {
         ).extractPlatformInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.TemplateSource("", declaration, null, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "",
+                templateName = simpleName,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
 
@@ -392,6 +404,7 @@ class KMockAggregatorPlatformSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
@@ -471,6 +484,7 @@ class KMockAggregatorPlatformSpec {
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -506,6 +520,7 @@ class KMockAggregatorPlatformSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -550,8 +565,9 @@ class KMockAggregatorPlatformSpec {
         val values: List<KSType> = listOf(type)
 
         val className: String = fixture.fixture(named("stringAlpha"))
-        val alias: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val alias: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -588,6 +604,7 @@ class KMockAggregatorPlatformSpec {
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
 
         every { logger.error(any()) } just Runs
 
@@ -604,7 +621,14 @@ class KMockAggregatorPlatformSpec {
         ).extractPlatformInterfaces(resolver)
 
         // Then
-        interfaces mustBe listOf(ProcessorContract.TemplateSource("", declaration, alias, generics))
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "",
+                templateName = alias,
+                template = declaration,
+                generics = generics
+            )
+        )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
 

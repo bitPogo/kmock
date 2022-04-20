@@ -77,8 +77,8 @@ internal class KMockAggregator(
                 val templateName = interfaze.qualifiedName!!.asString()
                 templateCollector[templateName + sourceIndicator] = TemplateSource(
                     indicator = sourceIndicator,
+                    templateName = aliases[templateName] ?: interfaze.simpleName.asString(),
                     template = interfaze,
-                    alias = aliases[templateName],
                     generics = resolveGenerics(interfaze)
                 )
             }

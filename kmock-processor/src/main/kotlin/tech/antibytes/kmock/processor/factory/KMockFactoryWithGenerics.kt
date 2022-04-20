@@ -25,17 +25,6 @@ internal class KMockFactoryWithGenerics(
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
 ) : MockFactoryWithGenerics {
-    private fun createAliasName(
-        alias: String?,
-        packageName: String
-    ): String? {
-        return if (alias != null) {
-            "$packageName.$alias"
-        } else {
-            null
-        }
-    }
-
     private fun resolveModifier(): KModifier? {
         return if (isKmp) {
             KModifier.ACTUAL
@@ -109,6 +98,20 @@ internal class KMockFactoryWithGenerics(
         ).build()
     }
 
+    private fun buildMockSelectorFlow(
+        mockFactory: FunSpec.Builder,
+        addItems: FunSpec.Builder.() -> Unit,
+    ): FunSpec.Builder {
+        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
+
+        addItems(mockFactory)
+
+        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        mockFactory.endControlFlow()
+
+        return mockFactory
+    }
+
     private fun determineMockTemplate(
         relaxer: Relaxer?
     ): Pair<String, String> {
@@ -129,7 +132,6 @@ internal class KMockFactoryWithGenerics(
         mockFactory: FunSpec.Builder,
         qualifiedName: String,
         interfaceName: String,
-        aliasInterfaceName: String?,
         typeInfo: String,
         relaxer: Relaxer?
     ) {
@@ -138,7 +140,7 @@ internal class KMockFactoryWithGenerics(
             mockFactory.addStatement(
                 interfaceInvocationTemplate,
                 qualifiedName,
-                aliasInterfaceName ?: interfaceName,
+                interfaceName,
                 typeInfo,
                 qualifiedName,
                 typeInfo,
@@ -147,26 +149,12 @@ internal class KMockFactoryWithGenerics(
 
         mockFactory.addStatement(
             mockInvocationTemplate,
-            aliasInterfaceName ?: interfaceName,
-            aliasInterfaceName ?: interfaceName,
+            interfaceName,
+            interfaceName,
             typeInfo,
             qualifiedName,
             typeInfo,
         )
-    }
-
-    private fun buildMockSelectorFlow(
-        mockFactory: FunSpec.Builder,
-        addItems: FunSpec.Builder.() -> Unit,
-    ): FunSpec.Builder {
-        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
-
-        addItems(mockFactory)
-
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
-        mockFactory.endControlFlow()
-
-        return mockFactory
     }
 
     private fun amendSource(
@@ -177,13 +165,11 @@ internal class KMockFactoryWithGenerics(
     ) {
         val packageName = templateSource.template.packageName.asString()
         val qualifiedName = templateSource.template.qualifiedName!!.asString()
-        val aliasInterfaceName = createAliasName(templateSource.alias, packageName)
-        val interfaceName = "$packageName.${templateSource.template.simpleName.asString()}"
+        val interfaceName = "$packageName.${templateSource.templateName}"
 
         addMock(
             mockFactory = mockFactory,
             qualifiedName = qualifiedName,
-            aliasInterfaceName = aliasInterfaceName,
             interfaceName = interfaceName,
             typeInfo = typeInfo,
             relaxer = relaxer,

@@ -109,8 +109,8 @@ internal interface ProcessorContract {
 
     data class TemplateSource(
         val indicator: String,
+        val templateName: String,
         val template: KSClassDeclaration,
-        val alias: String?,
         val generics: Map<String, List<KSTypeReference>>?
     )
 
