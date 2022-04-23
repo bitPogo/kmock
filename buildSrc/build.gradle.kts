@@ -19,8 +19,8 @@ repositories {
     mavenCentral()
     google()
     addCustomRepositories()
-    ensureKotlinVersion("1.5.31")
 }
+ensureKotlinVersion("1.5.31")
 
 dependencies {
     implementation(Dependency.gradle.dependency)
@@ -31,9 +31,4 @@ dependencies {
     implementation(Dependency.gradle.projectConfig)
     implementation(Dependency.gradle.runtimeConfig)
     implementation(Dependency.gradle.ksp)
-}
-
-with(extensions.getByType<JavaPluginExtension>()) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 }
