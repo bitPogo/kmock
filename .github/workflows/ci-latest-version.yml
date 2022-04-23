@@ -30,4 +30,4 @@ jobs:
       - name: Build
         run: ./gradlew build
       - name: Publish to Snapshot Repository
-        run: ./gradlew publishSnapshot
+        run: ./gradlew publishSnapshot --no-parallel

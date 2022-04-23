@@ -8,6 +8,7 @@ import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
 
 plugins {
@@ -192,6 +193,13 @@ kotlin {
         }
     }
 }
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 
 tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
     outputDirectory.set(buildDir.resolve("dokka"))

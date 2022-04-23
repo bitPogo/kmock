@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.dependency.Version
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.kmock.dependency.addCustomRepositories
+import tech.antibytes.gradle.kmock.dependency.ensureKotlinVersion
 
 plugins {
     id("tech.antibytes.gradle.kmock.dependency")
@@ -33,19 +34,7 @@ allprojects {
         jcenter()
     }
 
-    configurations.all {
-        resolutionStrategy.eachDependency {
-            if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-stdlib-jdk8" && requested.version == "1.6.0") {
-                useVersion(Version.kotlin.stdlib)
-                because("Avoid resolution conflicts")
-            }
-
-            if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-stdlib-jdk8" && requested.version == "1.5.30") {
-                useVersion(Version.kotlin.stdlib)
-                because("Avoid resolution conflicts")
-            }
-        }
-    }
+    ensureKotlinVersion(Version.kotlin.language)
 }
 
 tasks.named<Wrapper>("wrapper") {
