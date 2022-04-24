@@ -16,14 +16,17 @@ private fun noopClosure(argument: Any?, matcherIndex: Int): Unit = Unit
 
 internal fun Array<out Any?>.hasBeenCalledWithVoid(): Boolean = this.isEmpty()
 
-internal fun Array<out Any?>.hasBeenCalledWith(vararg constraints: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenCalledWith(
+    vararg constraints: Any?,
+    onFail: (Any?, Int) -> Unit = ::noopClosure
+): Boolean {
     return when {
         this.isEmpty() -> constraints.isEmpty()
         constraints.isEmpty() -> true
         else -> {
             var lastMatch = 0
 
-            for (constraint in constraints) {
+            constraints.forEachIndexed { constraintIdx, constraint ->
                 var matched = false
                 val expected = wrapValue(constraint)
 
@@ -38,6 +41,7 @@ internal fun Array<out Any?>.hasBeenCalledWith(vararg constraints: Any?): Boolea
                 }
 
                 if (!matched) {
+                    onFail(null, constraintIdx)
                     return false
                 }
             }

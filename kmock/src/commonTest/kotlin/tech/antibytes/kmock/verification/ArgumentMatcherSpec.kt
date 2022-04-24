@@ -152,6 +152,32 @@ class ArgumentMatcherSpec {
     }
 
     @Test
+    @JsName("fn9a")
+    fun `Given hasBeenCalledWith is called with Arguments it returns false if the Array contains not all of given Arguments, while propagating the contraint index`() {
+        // Given
+        val array = fixture.listFixture<String>(size = 8).toTypedArray()
+        var capturedIdx: Int? = null
+        var capturedArgument: Any? = fixture.fixture()
+
+        // When
+        val actual = array.hasBeenCalledWith(
+            array[0],
+            array[1],
+            array[2],
+            fixture.fixture<String>(),
+            onFail = { givenArgument, givenIdx ->
+                capturedIdx = givenIdx
+                capturedArgument = givenArgument
+            }
+        )
+
+        // Then
+        actual mustBe false
+        capturedIdx mustBe 3
+        capturedArgument mustBe null
+    }
+
+    @Test
     @JsName("fn10")
     fun `Given hasBeenCalledWith is called with Arguments it returns true if the Array contains all of given Arguments`() {
         // Given
@@ -237,22 +263,22 @@ class ArgumentMatcherSpec {
         // Given
         val array = fixture.listFixture<Any>(size = 5).toTypedArray()
         val expected = fixture.listFixture<Any>(size = 5).toTypedArray()
-        var givenArgument: Any? = null
-        var givenIndex: Int? = null
+        var capturedArgument: Any? = null
+        var capturedIndex: Int? = null
 
         // When
         val actual = array.hasBeenStrictlyCalledWith(
             *expected,
             onFail = { argument, idx ->
-                givenArgument = argument
-                givenIndex = idx
+                capturedArgument = argument
+                capturedIndex = idx
             }
         )
 
         // Then
         actual mustBe false
-        givenArgument mustBe array.first()
-        givenIndex mustBe 0
+        capturedArgument mustBe array.first()
+        capturedIndex mustBe 0
     }
 
     @Test
@@ -340,22 +366,22 @@ class ArgumentMatcherSpec {
     fun `Given hasBeenCalledWithout is called with an Argument it returns false if the Array contains the given Argument, while it propagates the error to a given closure`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
-        var givenArgument: Any? = null
-        var givenIndex: Int? = null
+        var capturedArgument: Any? = null
+        var capturedIndex: Int? = null
 
         // When
         val actual = array.hasBeenCalledWithout(
             array.first(),
             onFail = { argument, idx ->
-                givenArgument = argument
-                givenIndex = idx
+                capturedArgument = argument
+                capturedIndex = idx
             }
         )
 
         // Then
         actual mustBe false
-        givenArgument mustBe array.first()
-        givenIndex mustBe 0
+        capturedArgument mustBe array.first()
+        capturedIndex mustBe 0
     }
 
     @Test
