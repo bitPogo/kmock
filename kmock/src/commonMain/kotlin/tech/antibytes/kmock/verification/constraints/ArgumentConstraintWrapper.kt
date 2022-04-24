@@ -18,15 +18,9 @@ internal object ArgumentConstraintWrapper : KMockContract.ArgumentConstraintWrap
         }
     }
 
-    override fun wrapValues(values: Array<out Any?>): List<ArgumentConstraint> {
-        return values.map(::wrapValue)
-    }
-
-    override fun wrapNegatedValues(values: Array<out Any?>): List<ArgumentConstraint> {
-        return values.map { value ->
-            val wrappedValue = wrapValue(value)
-            not(wrappedValue)
-        }
+    override fun wrapNegatedValue(value: Any?): ArgumentConstraint {
+        val wrappedValue = wrapValue(value)
+        return not(wrappedValue)
     }
 }
 

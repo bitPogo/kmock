@@ -13,17 +13,20 @@ import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
+import kotlin.js.JsName
 import kotlin.test.Test
 
 class ArgumentConstraintWrapperSpec {
     private val fixture = kotlinFixture()
 
     @Test
+    @JsName("fn0")
     fun `It fulfils ArgumentConstraintWrapper`() {
         ArgumentConstraintWrapper fulfils KMockContract.ArgumentConstraintWrapper::class
     }
 
     @Test
+    @JsName("fn1")
     fun `Given wrapValue is called it wraps a arbitrary value with a eq-Constraint`() {
         // Given
         val value: Any = fixture.fixture()
@@ -37,6 +40,7 @@ class ArgumentConstraintWrapperSpec {
     }
 
     @Test
+    @JsName("fn2")
     fun `Given wrapValue is called it ignores Constraints`() {
         // Given
         val value = KMockContract.ArgumentConstraint { true }
@@ -49,69 +53,30 @@ class ArgumentConstraintWrapperSpec {
     }
 
     @Test
-    fun `Given wrapValues is called it wraps a arbitrary values with a eq-Constraint`() {
+    @JsName("fn3")
+    fun `Given wrapNegatedValue is called it wraps a arbitrary values with a eq-Constraint, while enclosing it with a not`() {
         // Given
-        val values: List<Any> = fixture.listFixture(size = 3)
+        val value: Any = fixture.fixture()
 
         // When
-        val actual = ArgumentConstraintWrapper.wrapValues(values.toTypedArray())
+        val actual = ArgumentConstraintWrapper.wrapNegatedValue(value)
 
         // Then
-        actual.forEachIndexed { idx, wrapped ->
-            wrapped fulfils eq::class
-            wrapped.matches(values[idx]) mustBe true
-        }
+        actual fulfils not::class
+        actual.matches(value) mustBe false
     }
 
     @Test
-    fun `Given wrapValues is called it ignores Constraints`() {
+    @JsName("fn4")
+    fun `Given wrapNegatedValue is called it ignores Constraints, while enclosing it with a not`() {
         // Given
-        val values = listOf(
-            KMockContract.ArgumentConstraint { true },
-            KMockContract.ArgumentConstraint { true },
-            KMockContract.ArgumentConstraint { false }
-        )
+        val value = KMockContract.ArgumentConstraint { true }
 
         // When
-        val actual = ArgumentConstraintWrapper.wrapValues(values.toTypedArray())
+        val actual = ArgumentConstraintWrapper.wrapValue(value)
 
         // Then
-        actual.forEachIndexed { idx, wrapped ->
-            wrapped sameAs values[idx]
-        }
-    }
-
-    @Test
-    fun `Given wrapNegatedValues is called it wraps a arbitrary values with a eq-Constraint, while enclosing it with a not`() {
-        // Given
-        val values: List<Any> = fixture.listFixture(size = 3)
-
-        // When
-        val actual = ArgumentConstraintWrapper.wrapNegatedValues(values.toTypedArray())
-
-        // Then
-        actual.forEachIndexed { idx, wrapped ->
-            wrapped fulfils not::class
-            wrapped.matches(values[idx]) mustBe false
-        }
-    }
-
-    @Test
-    fun `Given wrapNegatedValues is called it ignores Constraints, while enclosing it with a not`() {
-        // Given
-        val values = listOf(
-            KMockContract.ArgumentConstraint { true },
-            KMockContract.ArgumentConstraint { true },
-            KMockContract.ArgumentConstraint { false }
-        )
-
-        // When
-        val actual = ArgumentConstraintWrapper.wrapNegatedValues(values.toTypedArray())
-
-        // Then
-        actual.forEachIndexed { idx, wrapped ->
-            wrapped fulfils not::class
-            wrapped.matches(Unit) mustBe !values[idx].matches(Unit)
-        }
+        actual fulfils not::class
+        actual.matches(Unit) mustBe !value.matches(Unit)
     }
 }

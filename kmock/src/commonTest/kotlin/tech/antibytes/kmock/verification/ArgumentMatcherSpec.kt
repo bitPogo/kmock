@@ -225,10 +225,34 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<Any>(size = 5).toTypedArray()
 
         // When
-        val actual = array.hasBeenStrictlyCalledWith(fixture.listFixture<Any>(size = 5).toTypedArray())
+        val actual = array.hasBeenStrictlyCalledWith(*fixture.listFixture<Any>(size = 5).toTypedArray())
 
         // Then
         actual mustBe false
+    }
+
+    @Test
+    @JsName("fn15a")
+    fun `Given hasBeenStrictlyCalledWith is called with an Argument it returns false if the Array and Value do not match, while propagating the value to a given closure`() {
+        // Given
+        val array = fixture.listFixture<Any>(size = 5).toTypedArray()
+        val expected = fixture.listFixture<Any>(size = 5).toTypedArray()
+        var givenArgument: Any? = null
+        var givenIndex: Int? = null
+
+        // When
+        val actual = array.hasBeenStrictlyCalledWith(
+            *expected,
+            onFail = { argument, idx ->
+                givenArgument = argument
+                givenIndex = idx
+            }
+        )
+
+        // Then
+        actual mustBe false
+        givenArgument mustBe array.first()
+        givenIndex mustBe 0
     }
 
     @Test
@@ -238,10 +262,10 @@ class ArgumentMatcherSpec {
         val array = fixture.listFixture<Int>(size = 5)
 
         // When
-        val actual = array.toTypedArray().hasBeenStrictlyCalledWith(array.toTypedArray())
+        val actual = array.toTypedArray().hasBeenStrictlyCalledWith(*array.toTypedArray())
 
         // Then
-        actual mustBe false
+        actual mustBe true
     }
 
     @Test
@@ -252,11 +276,11 @@ class ArgumentMatcherSpec {
 
         // When
         val actual = array.hasBeenStrictlyCalledWith(
-            *(array.map { value -> isNotSame(value) }.toTypedArray())
+            *(array.map { value -> isSame(value) }.toTypedArray())
         )
 
         // Then
-        actual mustBe false
+        actual mustBe true
     }
 
     @Test
@@ -309,6 +333,29 @@ class ArgumentMatcherSpec {
 
         // Then
         actual mustBe false
+    }
+
+    @Test
+    @JsName("fn21")
+    fun `Given hasBeenCalledWithout is called with an Argument it returns false if the Array contains the given Argument, while it propagates the error to a given closure`() {
+        // Given
+        val array = fixture.listFixture<String>().toTypedArray()
+        var givenArgument: Any? = null
+        var givenIndex: Int? = null
+
+        // When
+        val actual = array.hasBeenCalledWithout(
+            array.first(),
+            onFail = { argument, idx ->
+                givenArgument = argument
+                givenIndex = idx
+            }
+        )
+
+        // Then
+        actual mustBe false
+        givenArgument mustBe array.first()
+        givenIndex mustBe 0
     }
 
     @Test

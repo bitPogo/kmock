@@ -1146,12 +1146,7 @@ object KMockContract {
         /**
          *
          */
-        fun wrapValues(values: Array<out Any?>): List<ArgumentConstraint>
-
-        /**
-         *
-         */
-        fun wrapNegatedValues(values: Array<out Any?>): List<ArgumentConstraint>
+        fun wrapNegatedValue(value: Any?): ArgumentConstraint
     }
 
     /**
@@ -1287,4 +1282,6 @@ object KMockContract {
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
     internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
+
+    internal const val EXPECTED_VOID_FUNCTION = "Expected a void function invocation, but the invocation contains Arguments."
 }

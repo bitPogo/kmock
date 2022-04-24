@@ -18,7 +18,7 @@ class PropertyProxyStub(
 ) : KMockContract.PropertyProxy<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {
-            throw MockError.MissingStub("Missing sideeffect getArgumentsForCall")
+            throw MockError.MissingStub("Missing SideEffect getArgumentsForCall")
         } else {
             getArgumentsForCall!!.invoke(callIndex)
         }
