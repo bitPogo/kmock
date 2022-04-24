@@ -477,7 +477,7 @@ class PropertyProxyUnfrozenSpec {
         assertFailsWith<NullPointerException> { proxy.set }
 
         proxy.calls mustBe 0
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     @Test

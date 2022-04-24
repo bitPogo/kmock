@@ -281,7 +281,11 @@ internal class PropertyProxy<Value>(
         nonIntrusiveConfiguration.unwrapSpy()?.invoke()
     }
 
-    override fun getArgumentsForCall(callIndex: Int): GetOrSet = state.arguments[callIndex]
+    override fun getArgumentsForCall(callIndex: Int): GetOrSet {
+        return state.arguments.getOrElse(callIndex) {
+            throw throw MockError.MissingCall("$callIndex was not found for $id!")
+        }
+    }
 
     override fun clear() {
         state.clear(PropertyProxyInvocationType.NO_PROVIDER)
