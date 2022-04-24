@@ -41,4 +41,6 @@ class eq(
             else -> expected == actual
         }
     }
+
+    override fun toString(): String = expected.toString()
 }

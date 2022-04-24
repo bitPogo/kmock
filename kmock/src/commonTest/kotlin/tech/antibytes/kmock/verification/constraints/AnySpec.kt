@@ -68,4 +68,24 @@ class AnySpec {
         // Then
         actual mustBe true
     }
+
+    @Test
+    @JsName("fn5")
+    fun `Given toString is called and no Klass was specified it returns a AnyMatcher String`() {
+        // When
+        val actual = any().toString()
+
+        // Then
+        actual mustBe "(Any value)"
+    }
+
+    @Test
+    @JsName("fn6")
+    fun `Given toString is called and a Klass was specified it returns a AnyMatcher String for the KClass`() {
+        // When
+        val actual = any(Boolean::class).toString()
+
+        // Then
+        actual mustBe "(Any value of kotlin.Boolean)"
+    }
 }

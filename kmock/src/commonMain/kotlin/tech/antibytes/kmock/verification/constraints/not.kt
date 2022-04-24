@@ -13,4 +13,6 @@ class not(
     private val constraint: ArgumentConstraint
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = !constraint.matches(actual)
+
+    override fun toString(): String = "not($constraint)"
 }

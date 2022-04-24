@@ -42,4 +42,28 @@ class NotSpec {
         actual mustBe !output
         capturedArgument mustBe argument
     }
+
+    @Test
+    @JsName("fn2")
+    fun `Given toString is called it uses the wrapped value`() {
+        // Given
+        val nested: String = fixture.fixture()
+        val constraint = StubConstraint(nested)
+
+        // When
+        val actual = not(constraint).toString()
+
+        // Then
+        actual mustBe "not($nested)"
+    }
+
+    private class StubConstraint(
+        val toString: String
+    ) : KMockContract.ArgumentConstraint {
+        override fun matches(actual: Any?): Boolean {
+            TODO()
+        }
+
+        override fun toString(): String = toString
+    }
 }

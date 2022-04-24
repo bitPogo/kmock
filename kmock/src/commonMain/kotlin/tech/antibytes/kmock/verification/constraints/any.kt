@@ -30,4 +30,12 @@ class any(
             else -> actual::class == expected
         }
     }
+
+    override fun toString(): String {
+        return if (expected == null) {
+            "(Any value)"
+        } else {
+            "(Any value of ${expected.qualifiedName})"
+        }
+    }
 }
