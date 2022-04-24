@@ -10,7 +10,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.VerificationChainStub
+import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -483,7 +483,7 @@ class PropertyProxyUnfrozenSpec {
     @Test
     @JsName("fn26")
     fun `It has no VerificationChain by default`() {
-        PropertyProxy<Any>(fixture.fixture()).verificationChain mustBe null
+        PropertyProxy<Any>(fixture.fixture()).assertionChain mustBe null
     }
 
     @Test
@@ -491,13 +491,13 @@ class PropertyProxyUnfrozenSpec {
     fun `It holds a given VerificationChain`() {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
-        val chain = VerificationChainStub()
+        val chain = AssertionChainStub()
 
         // When
-        proxy.verificationChain = chain
+        proxy.assertionChain = chain
 
         // Then
-        proxy.verificationChain sameAs chain
+        proxy.assertionChain sameAs chain
     }
 
     private class Implementation<T>(

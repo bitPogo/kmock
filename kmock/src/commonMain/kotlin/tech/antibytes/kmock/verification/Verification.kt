@@ -11,8 +11,8 @@ import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NOT_CALLED
 import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
-import tech.antibytes.kmock.KMockContract.VerificationInsurance
-import tech.antibytes.kmock.KMockContract.Verifier
+import tech.antibytes.kmock.KMockContract.AssertionInsurance
+import tech.antibytes.kmock.KMockContract.Asserter
 import tech.antibytes.kmock.util.format
 
 private fun determineAtLeastMessage(actual: Int, expected: Int): String {
@@ -77,12 +77,12 @@ fun verify(
     }
 }
 
-private fun <T> Verifier.verifyChain(
-    scope: VerificationInsurance.() -> Any?,
+private fun <T> Asserter.verifyChain(
+    scope: AssertionInsurance.() -> Any?,
     chain: T,
-) where T : VerificationInsurance, T : KMockContract.VerificationChain {
+) where T : AssertionInsurance, T : KMockContract.AssertionChain {
     references.forEach { reference ->
-        reference.proxy.verificationChain = chain
+        reference.proxy.assertionChain = chain
     }
 
     scope(chain)
@@ -90,7 +90,7 @@ private fun <T> Verifier.verifyChain(
     chain.ensureAllReferencesAreEvaluated()
 
     references.forEach { reference ->
-        reference.proxy.verificationChain = null
+        reference.proxy.assertionChain = null
     }
 }
 
@@ -109,12 +109,12 @@ private fun <T> Verifier.verifyChain(
  * @see wasSetTo
  * @author Matthias Geisler
  */
-fun Verifier.verifyStrictOrder(
-    scope: VerificationInsurance.() -> Any,
+fun Asserter.verifyStrictOrder(
+    scope: AssertionInsurance.() -> Any,
 ) {
     verifyChain(
         scope = scope,
-        chain = StrictVerificationChain(references),
+        chain = StrictAssertionChain(references),
     )
 }
 
@@ -133,11 +133,11 @@ fun Verifier.verifyStrictOrder(
  * @see wasSetTo
  * @author Matthias Geisler
  */
-fun Verifier.verifyOrder(
-    scope: VerificationInsurance.() -> Any
+fun Asserter.verifyOrder(
+    scope: AssertionInsurance.() -> Any
 ) {
     verifyChain(
         scope = scope,
-        chain = NonStrictVerificationChain(references),
+        chain = NonStrictAssertionChain(references),
     )
 }

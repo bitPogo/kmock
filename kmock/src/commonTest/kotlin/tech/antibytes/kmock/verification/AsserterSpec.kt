@@ -25,7 +25,7 @@ import kotlin.math.absoluteValue
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class VerifierSpec {
+class AsserterSpec {
     private val fixture = kotlinFixture()
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
     private val testScope2 = TestScopeDispatcher.dispatch("test2")
@@ -37,20 +37,26 @@ class VerifierSpec {
 
     @Test
     @JsName("fn0")
-    fun `It fulfils Verifier`() {
-        Verifier() fulfils KMockContract.Verifier::class
+    fun `It fulfils Asserter`() {
+        Asserter() fulfils KMockContract.Asserter::class
+    }
+
+    @Test
+    @JsName("fn0a")
+    fun `It typealiases Verifier`() {
+        Verifier() fulfils KMockContract.Asserter::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils Collector`() {
-        Verifier() fulfils KMockContract.Collector::class
+        Asserter() fulfils KMockContract.Collector::class
     }
 
     @Test
     @JsName("fn2")
     fun `It has a emptyMap of references by default`() {
-        Verifier().references mustBe emptyList()
+        Asserter().references mustBe emptyList()
     }
 
     @Test
@@ -60,17 +66,17 @@ class VerifierSpec {
         val index: Int = fixture.fixture<Int>().absoluteValue
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, index)
+            asserter.addReference(proxy, index)
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().proxy sameAs proxy
-            verifier.references.first().callIndex mustBe index
+            asserter.references.first().proxy sameAs proxy
+            asserter.references.first().callIndex mustBe index
         }
 
         return resolveMultiBlockCalls()
@@ -82,16 +88,16 @@ class VerifierSpec {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, fixture.fixture())
+            asserter.addReference(proxy, fixture.fixture())
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().proxy sameAs proxy
+            asserter.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -103,16 +109,16 @@ class VerifierSpec {
         // Given
         val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, fixture.fixture())
+            asserter.addReference(proxy, fixture.fixture())
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().proxy sameAs proxy
+            asserter.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -127,16 +133,16 @@ class VerifierSpec {
             fixture.fixture()
         )
 
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, fixture.fixture())
+            asserter.addReference(proxy, fixture.fixture())
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().proxy sameAs proxy
+            asserter.references.first().proxy sameAs proxy
         }
 
         return resolveMultiBlockCalls()
@@ -152,16 +158,16 @@ class VerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, fixture.fixture())
+            asserter.addReference(proxy, fixture.fixture())
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.firstOrNull() mustBe null
+            asserter.references.firstOrNull() mustBe null
         }
 
         return resolveMultiBlockCalls()
@@ -169,7 +175,7 @@ class VerifierSpec {
 
     @Test
     @JsName("fn8")
-    fun `Given addReference is called it adds SyncFunProxies if they are marked for ignoring but are overruled by the Verifier`(): AsyncTestReturnValue {
+    fun `Given addReference is called it adds SyncFunProxies if they are marked for ignoring but are overruled by the Asserter`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
@@ -177,16 +183,16 @@ class VerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = Verifier(coverAllInvocations = true)
+        val asserter = Asserter(coverAllInvocations = true)
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            verifier.addReference(proxy, fixture.fixture())
+            asserter.addReference(proxy, fixture.fixture())
         }
 
         // Then
         runBlockingTestInContext(testScope2.coroutineContext) {
-            verifier.references.first().proxy mustBe proxy
+            asserter.references.first().proxy mustBe proxy
         }
 
         return resolveMultiBlockCalls()
@@ -194,17 +200,17 @@ class VerifierSpec {
 
     @Test
     @JsName("fn9")
-    fun `Given clear is called it clears the verifier`() {
+    fun `Given clear is called it clears the Asserter`() {
         // Given
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
-        val verifier = Verifier()
+        val asserter = Asserter()
 
         // When
-        verifier.addReference(proxy, fixture.fixture())
+        asserter.addReference(proxy, fixture.fixture())
 
-        verifier.clear()
+        asserter.clear()
 
         // Then
-        verifier.references mustBe emptyList()
+        asserter.references mustBe emptyList()
     }
 }

@@ -13,7 +13,7 @@ class AsyncFunProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
-    override var verificationChain: KMockContract.VerificationChain? = null,
+    override var assertionChain: KMockContract.AssertionChain? = null,
 ) : KMockContract.AsyncFunProxy<Any, suspend () -> Any> {
     override val ignorableForVerification: Boolean
         get() = TODO()

@@ -24,13 +24,13 @@ class StrictVerificationChainSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils VerificationChain`() {
-        StrictVerificationChain(emptyList()) fulfils KMockContract.VerificationChain::class
+        StrictAssertionChain(emptyList()) fulfils KMockContract.AssertionChain::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils VerificationInsurance`() {
-        StrictVerificationChain(emptyList()) fulfils KMockContract.VerificationInsurance::class
+        StrictAssertionChain(emptyList()) fulfils KMockContract.AssertionInsurance::class
     }
 
     @Test
@@ -39,7 +39,7 @@ class StrictVerificationChainSpec {
         // Given
         val handle = fixture.fixtureVerificationHandle()
 
-        val chain = StrictVerificationChain(emptyList())
+        val chain = StrictAssertionChain(emptyList())
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -59,7 +59,7 @@ class StrictVerificationChainSpec {
             Reference(fixture.funProxyFixture(), fixture.fixture())
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -79,7 +79,7 @@ class StrictVerificationChainSpec {
             Reference(handle.proxy, fixture.fixture())
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -99,7 +99,7 @@ class StrictVerificationChainSpec {
             Reference(handle.proxy, fixture.fixture())
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -122,7 +122,7 @@ class StrictVerificationChainSpec {
             Reference(handle.proxy, 2)
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -151,7 +151,7 @@ class StrictVerificationChainSpec {
             Reference(handle2.proxy, 2),
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -182,7 +182,7 @@ class StrictVerificationChainSpec {
             Reference(handle2.proxy, 1),
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // When
         chain.propagate(handle1)
@@ -200,7 +200,7 @@ class StrictVerificationChainSpec {
             Reference(fixture.funProxyFixture(), 0),
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -226,7 +226,7 @@ class StrictVerificationChainSpec {
             Reference(handle2.proxy, 0),
         )
 
-        val chain = StrictVerificationChain(references)
+        val chain = StrictAssertionChain(references)
 
         // When
         chain.propagate(handle1)
@@ -241,7 +241,7 @@ class StrictVerificationChainSpec {
         val proxy = fixture.funProxyFixture()
 
         // When
-        val container = StrictVerificationChain(emptyList())
+        val container = StrictAssertionChain(emptyList())
 
         val error = assertFailsWith<IllegalStateException> {
             container.ensureVerificationOf(proxy)
@@ -256,9 +256,9 @@ class StrictVerificationChainSpec {
     fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
-        val container = StrictVerificationChain(emptyList())
+        val container = StrictAssertionChain(emptyList())
 
-        proxy.verificationChain = container
+        proxy.assertionChain = container
 
         // When
         container.ensureVerificationOf(proxy)

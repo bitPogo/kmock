@@ -19,7 +19,7 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
-import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.hasBeenCalledWith
 import tech.antibytes.kmock.verification.hasBeenCalledWithout
 import tech.antibytes.kmock.verification.hasBeenStrictlyCalledWith
@@ -51,7 +51,7 @@ import kotlin.test.Test
 )
 class SampleControllerAutoStubFactoryJsSpec {
     private val fixture = kotlinFixture()
-    private val verifier = Verifier()
+    private val verifier = Asserter()
     private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
     private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
     private val domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)

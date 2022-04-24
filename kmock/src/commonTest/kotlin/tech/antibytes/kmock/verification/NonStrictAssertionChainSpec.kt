@@ -18,19 +18,19 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class NonStrictVerificationChainSpec {
+class NonStrictAssertionChainSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
     fun `It fulfils VerificationChain`() {
-        NonStrictVerificationChain(emptyList()) fulfils KMockContract.VerificationChain::class
+        NonStrictAssertionChain(emptyList()) fulfils KMockContract.AssertionChain::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils VerificationInsurance`() {
-        NonStrictVerificationChain(emptyList()) fulfils KMockContract.VerificationInsurance::class
+        NonStrictAssertionChain(emptyList()) fulfils KMockContract.AssertionInsurance::class
     }
 
     @Test
@@ -39,7 +39,7 @@ class NonStrictVerificationChainSpec {
         // Given
         val handle = fixture.fixtureVerificationHandle()
 
-        val chain = NonStrictVerificationChain(emptyList())
+        val chain = NonStrictAssertionChain(emptyList())
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -59,7 +59,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle.proxy, fixture.fixture())
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -83,7 +83,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle.proxy, 2),
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -111,7 +111,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle2.proxy, 2),
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -142,7 +142,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle2.proxy, 1),
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // When
         chain.propagate(handle1)
@@ -169,7 +169,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle1.proxy, 2),
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // When
         chain.propagate(handle1)
@@ -194,7 +194,7 @@ class NonStrictVerificationChainSpec {
             Reference(handle2.proxy, 1),
         )
 
-        val chain = NonStrictVerificationChain(references)
+        val chain = NonStrictAssertionChain(references)
 
         // When
         chain.propagate(handle1)
@@ -211,7 +211,7 @@ class NonStrictVerificationChainSpec {
         val proxy = fixture.funProxyFixture()
 
         // When
-        val container = NonStrictVerificationChain(emptyList())
+        val container = NonStrictAssertionChain(emptyList())
 
         val error = assertFailsWith<IllegalStateException> {
             container.ensureVerificationOf(proxy)
@@ -226,9 +226,9 @@ class NonStrictVerificationChainSpec {
     fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
-        val container = NonStrictVerificationChain(emptyList())
+        val container = NonStrictAssertionChain(emptyList())
 
-        proxy.verificationChain = container
+        proxy.assertionChain = container
 
         // When
         container.ensureVerificationOf(proxy)

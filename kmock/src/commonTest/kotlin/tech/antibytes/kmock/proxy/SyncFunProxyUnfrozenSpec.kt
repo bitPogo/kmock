@@ -11,7 +11,7 @@ import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.VerificationChainStub
+import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -603,7 +603,7 @@ class SyncFunProxyUnfrozenSpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
-        proxy.verificationChain = VerificationChainStub()
+        proxy.assertionChain = AssertionChainStub()
 
         // When
         proxy.invoke()
@@ -619,7 +619,7 @@ class SyncFunProxyUnfrozenSpec {
         assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
-        proxy.verificationChain mustBe null
+        proxy.assertionChain mustBe null
 
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
@@ -627,7 +627,7 @@ class SyncFunProxyUnfrozenSpec {
     @Test
     @JsName("fn26")
     fun `It has no VerificationChain by default`() {
-        SyncFunProxy<Any, () -> Any>(fixture.fixture()).verificationChain mustBe null
+        SyncFunProxy<Any, () -> Any>(fixture.fixture()).assertionChain mustBe null
     }
 
     @Test
@@ -635,13 +635,13 @@ class SyncFunProxyUnfrozenSpec {
     fun `It holds a given VerificationChain`() {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
-        val chain = VerificationChainStub()
+        val chain = AssertionChainStub()
 
         // When
-        proxy.verificationChain = chain
+        proxy.assertionChain = chain
 
         // Then
-        proxy.verificationChain sameAs chain
+        proxy.assertionChain sameAs chain
     }
 
     private class Implementation<T>(

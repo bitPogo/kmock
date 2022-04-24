@@ -17,8 +17,8 @@ class SyncFunProxyStub(
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
     override val ignorableForVerification: Boolean = false
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
-    private val _verificationBuilder: AtomicRef<KMockContract.VerificationChain?> = atomic(null)
-    override var verificationChain: KMockContract.VerificationChain? by _verificationBuilder
+    private val _assertionBuilder: AtomicRef<KMockContract.AssertionChain?> = atomic(null)
+    override var assertionChain: KMockContract.AssertionChain? by _assertionBuilder
 
     override var throws: Throwable
         get() = TODO("Not yet implemented")

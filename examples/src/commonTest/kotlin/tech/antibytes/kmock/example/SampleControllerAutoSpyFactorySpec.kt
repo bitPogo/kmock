@@ -22,8 +22,8 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
-import tech.antibytes.kmock.verification.NonFreezingVerifier
-import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.NonFreezingAsserter
+import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.hasBeenCalled
 import tech.antibytes.kmock.verification.hasBeenCalledWith
 import tech.antibytes.kmock.verification.hasBeenCalledWithout
@@ -57,7 +57,7 @@ import kotlin.test.assertTrue
 )
 class SampleControllerAutoSpyFactorySpec {
     private val fixture = kotlinFixture()
-    private val verifier = Verifier()
+    private val verifier = Asserter()
     private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
     private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
     private val domainObjectInstance = DomainObject("test", 21)
@@ -177,7 +177,7 @@ class SampleControllerAutoSpyFactorySpec {
         // Given
         val idOrg = fixture.fixture<String>()
         val instance = DomainObject2("test", 21)
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
         val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
         val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
 

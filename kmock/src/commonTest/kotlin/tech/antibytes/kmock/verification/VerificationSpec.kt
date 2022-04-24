@@ -9,7 +9,7 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.fixture.fixtureVerificationHandle
 import tech.antibytes.kmock.fixture.funProxyFixture
-import tech.antibytes.mock.VerifierStub
+import tech.antibytes.mock.AsserterStub
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
@@ -126,12 +126,12 @@ class VerificationSpec {
     @JsName("fn6")
     fun `Given verifyStrictOrder is called it uses a StrictVerificationChain`() {
         // Given
-        val verifier = VerifierStub(emptyList())
+        val verifier = AsserterStub(emptyList())
 
         // When
         verifier.verifyStrictOrder {
             // Then
-            this fulfils StrictVerificationChain::class
+            this fulfils StrictAssertionChain::class
         }
     }
 
@@ -144,7 +144,7 @@ class VerificationSpec {
             Reference(fixture.funProxyFixture(), 0),
         )
 
-        val verifier = VerifierStub(references)
+        val verifier = AsserterStub(references)
 
         // Then
         val error = assertFailsWith<AssertionError> {
@@ -172,30 +172,30 @@ class VerificationSpec {
             Reference(handle2.proxy, 0),
         )
 
-        val verifier = VerifierStub(references)
+        val verifier = AsserterStub(references)
 
         // When
         verifier.verifyStrictOrder {
-            this as StrictVerificationChain
+            this as StrictAssertionChain
             this.propagate(handle1)
             this.propagate(handle2)
         }
 
         // Then
-        references[0].proxy.verificationChain mustBe null
-        references[1].proxy.verificationChain mustBe null
+        references[0].proxy.assertionChain mustBe null
+        references[1].proxy.assertionChain mustBe null
     }
 
     @Test
     @JsName("fn9")
     fun `Given verifyOrder is called it uses a StrictVerificationChain`() {
         // Given
-        val verifier = VerifierStub(emptyList())
+        val verifier = AsserterStub(emptyList())
 
         // When
         verifier.verifyOrder {
             // Then
-            this fulfils NonStrictVerificationChain::class
+            this fulfils NonStrictAssertionChain::class
         }
     }
 
@@ -208,7 +208,7 @@ class VerificationSpec {
             Reference(fixture.funProxyFixture(), 0),
         )
 
-        val verifier = VerifierStub(references)
+        val verifier = AsserterStub(references)
 
         // When
         verifier.verifyOrder {
@@ -231,17 +231,17 @@ class VerificationSpec {
             Reference(handle2.proxy, 0),
         )
 
-        val verifier = VerifierStub(references)
+        val verifier = AsserterStub(references)
 
         // When
         verifier.verifyOrder {
-            this as NonStrictVerificationChain
+            this as NonStrictAssertionChain
             this.propagate(handle1)
             this.propagate(handle2)
         }
 
         // Then
-        references[0].proxy.verificationChain mustBe null
-        references[1].proxy.verificationChain mustBe null
+        references[0].proxy.assertionChain mustBe null
+        references[1].proxy.assertionChain mustBe null
     }
 }

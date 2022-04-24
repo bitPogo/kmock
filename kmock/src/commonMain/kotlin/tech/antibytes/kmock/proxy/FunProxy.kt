@@ -16,7 +16,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.FunProxyState
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
-import tech.antibytes.kmock.KMockContract.VerificationChain
+import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
@@ -46,7 +46,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         private val _collector: AtomicRef<Collector> = atomic(collector)
         private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
 
-        private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
+        private val _assertionChain: AtomicRef<AssertionChain?> = atomic(null)
 
         override var throws: Throwable? by _throws
         override var returnValue: ReturnValue? by _returnValue
@@ -60,7 +60,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         override val calls: Int by _calls
         override val arguments: MutableList<Array<out Any?>> = sharedMutableListOf()
 
-        override var verificationChain: VerificationChain? by _verificationChain
+        override var assertionChain: AssertionChain? by _assertionChain
 
         override fun incrementInvocations() {
             this._calls.incrementAndGet()
@@ -76,7 +76,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             _calls.update { 0 }
             arguments.clear()
 
-            _verificationChain.update { null }
+            _assertionChain.update { null }
             _invocationType.update { defaultInvocationType }
         }
     }
@@ -101,7 +101,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             get() = _calls
         override val arguments: MutableList<Array<out Any?>> = mutableListOf()
 
-        override var verificationChain: VerificationChain? = null
+        override var assertionChain: AssertionChain? = null
 
         override fun incrementInvocations() {
             _calls += 1
@@ -117,7 +117,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             _calls = 0
             arguments.clear()
 
-            verificationChain = null
+            assertionChain = null
             invocationType = defaultInvocationType
         }
     }
@@ -138,10 +138,10 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     internal val invocationType
         get() = state.invocationType
 
-    override var verificationChain: VerificationChain?
-        get() = state.verificationChain
+    override var assertionChain: AssertionChain?
+        get() = state.assertionChain
         set(value) {
-            state.verificationChain = value
+            state.assertionChain = value
         }
 
     private fun setFunProxyInvocationType(invocationType: FunProxyInvocationType) {

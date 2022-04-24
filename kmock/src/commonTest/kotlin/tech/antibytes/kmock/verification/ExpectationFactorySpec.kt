@@ -10,7 +10,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
-import tech.antibytes.mock.VerificationChainStub
+import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -182,10 +182,10 @@ class ExpectationFactorySpec {
         val captured: MutableList<Expectation> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray().sortedArray()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -270,10 +270,10 @@ class ExpectationFactorySpec {
         val captured: MutableList<Expectation> = mutableListOf()
         val values = fixture.listFixture<String>().toTypedArray()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -358,10 +358,10 @@ class ExpectationFactorySpec {
         val name: String = fixture.fixture()
         val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.verificationChain = builder }
+        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -430,10 +430,10 @@ class ExpectationFactorySpec {
         val name: String = fixture.fixture()
         val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
+        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -502,10 +502,10 @@ class ExpectationFactorySpec {
         val name: String = fixture.fixture()
         val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
+        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->
@@ -599,10 +599,10 @@ class ExpectationFactorySpec {
 
         val captured: MutableList<Expectation> = mutableListOf()
 
-        val builder = VerificationChainStub { handle ->
+        val builder = AssertionChainStub { handle ->
             captured.add(handle)
         }
-        val proxy = PropertyProxyStub(name, 1).also { it.verificationChain = builder }
+        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
 
         var capturedIndex: Int? = null
         proxy.getArgumentsForCall = { givenIndex ->

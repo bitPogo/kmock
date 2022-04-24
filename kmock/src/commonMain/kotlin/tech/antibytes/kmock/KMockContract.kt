@@ -39,10 +39,10 @@ object KMockContract {
         val calls: Int
 
         /**
-         * Reference to its correspondent VerificationChain. This Property is intended for internal use only!
+         * Reference to its correspondent AssertionChain. This Property is intended for internal use only!
          * @suppress
          */
-        var verificationChain: VerificationChain?
+        var assertionChain: AssertionChain?
 
         /**
          * Resolves given arguments of an invocation.
@@ -238,7 +238,7 @@ object KMockContract {
 
         /**
          * Holds a given Collector/Verifier
-         * @see Verifier
+         * @see Asserter
          * @see Collector
          */
         val collector: Collector
@@ -254,12 +254,12 @@ object KMockContract {
         val arguments: MutableList<Arguments>
 
         /**
-         * Holds a given VerificationChain.
-         * @see VerificationChain
+         * Holds a given AssertionChain.
+         * @see AssertionChain
          * @see tech.antibytes.kmock.verification.verify
          * @see tech.antibytes.kmock.verification.verifyStrictOrder
          */
-        var verificationChain: VerificationChain?
+        var assertionChain: AssertionChain?
 
         /**
          * Increments calls.
@@ -1009,7 +1009,7 @@ object KMockContract {
          * @param ReturnValue the return value of the Proxy.
          * @param SideEffect the function signature.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
@@ -1028,7 +1028,7 @@ object KMockContract {
          * @param ReturnValue the return value of the Proxy.
          * @param SideEffect the function signature.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
@@ -1046,7 +1046,7 @@ object KMockContract {
          * Instantiates a PropertyProxy.
          * @param Value the value type of the hosting PropertyProxy.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
          * @see Collector
@@ -1087,6 +1087,33 @@ object KMockContract {
          * List with aggregated indices of invocation of the referred Proxy.
          */
         val callIndices: List<Int>
+    }
+
+    interface AssertionExpectation {
+        /**
+         * Reference of the Proxy.
+         */
+        val proxy: Proxy<*, *>
+
+        /**
+         *
+         */
+        val isGetter: Boolean
+
+        /**
+         *
+         */
+        val wildcard: Boolean
+
+        /**
+         *
+         */
+        val strict: Boolean
+
+        /**
+         *
+         */
+        val matchers: List<ArgumentConstraint>
     }
 
     /**
@@ -1145,23 +1172,73 @@ object KMockContract {
     )
 
     /**
-     * Insurance that given Proxies are covered by the VerificationChain.
+     *
+     */
+    interface ChainedAssertionContext {
+        /**
+         *
+         */
+        fun FunProxy<*, *>.hasBeenCalled()
+
+        /**
+         *
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithVoid()
+
+        /**
+         *
+         */
+        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
+
+        /**
+         *
+         */
+        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
+
+        /**
+         *
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
+
+        /**
+         *
+         */
+        fun PropertyProxy<*>.wasGotten()
+
+        /**
+         *
+         */
+        fun PropertyProxy<*>.wasSet()
+
+        /**
+         *
+         */
+        fun PropertyProxy<*>.wasSetTo(value: Any?)
+    }
+
+    /**
+     * Insurance that given Proxies are covered by the AssertionChain.
      * @author Matthias Geisler
      */
-    fun interface VerificationInsurance {
+    fun interface AssertionInsurance {
         /**
-         * Ensures that given Proxies are covered by the VerificationChain. Use this method with caution!
-         * @throws IllegalStateException if a given Proxy is not covered by a VerificationChain.
+         * Ensures that given Proxies are covered by the AssertionChain. Use this method with caution!
+         * @throws IllegalStateException if a given Proxy is not covered by a AssertionChain.
          */
         fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
     }
 
     /**
-     * VerificationChain in order to verify over multiple Handles.
+     *
+     */
+    interface Assertion : AssertionInsurance, ChainedAssertionContext
+
+    /**
+     * AssertionChain in order to verify over multiple Handles.
      * Meant for internal purpose only!
      * @author Matthias Geisler
      */
-    interface VerificationChain {
+    interface AssertionChain {
         /**
          * Propagates the expected invocation to the Chain and asserts it against the actual values.
          * @param expected the expected Invocation.
@@ -1182,7 +1259,7 @@ object KMockContract {
      * Container which holds actual references of proxy calls. The references are ordered by their invocation.
      * @author Matthias Geisler
      */
-    interface Verifier {
+    interface Asserter {
         /**
          * Holds the actual references
          */
@@ -1209,5 +1286,5 @@ object KMockContract {
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
-    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this VerificationChain."
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
 }

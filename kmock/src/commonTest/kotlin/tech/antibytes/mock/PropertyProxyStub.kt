@@ -14,7 +14,7 @@ class PropertyProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> GetOrSet)? = null,
-    override var verificationChain: KMockContract.VerificationChain? = null
+    override var assertionChain: KMockContract.AssertionChain? = null
 ) : KMockContract.PropertyProxy<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {

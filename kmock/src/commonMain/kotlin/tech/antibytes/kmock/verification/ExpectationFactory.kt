@@ -15,8 +15,8 @@ private fun propagateHandle(
     proxy: Proxy<*, *>,
     handle: Expectation
 ) {
-    if (proxy.verificationChain != null) {
-        proxy.verificationChain!!.propagate(handle)
+    if (proxy.assertionChain != null) {
+        proxy.assertionChain!!.propagate(handle)
     }
 }
 

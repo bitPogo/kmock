@@ -20,7 +20,7 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
-import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.hasBeenCalled
 import tech.antibytes.kmock.verification.hasBeenCalledWith
 import tech.antibytes.kmock.verification.hasBeenCalledWithout
@@ -69,7 +69,7 @@ internal inline fun <reified T> relax(id: String): T {
 )
 class SampleControllerAutoStubRelaxedSpec {
     private val fixture = kotlinFixture()
-    private val verifier = Verifier()
+    private val verifier = Asserter()
     private val local = SampleLocalRepositoryMock(verifier, relaxed = true)
     private val remote = SampleRemoteRepositoryMock(verifier, relaxed = true)
     private val domainObject = SampleDomainObjectMock(verifier, relaxed = true)

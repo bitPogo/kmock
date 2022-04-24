@@ -18,19 +18,19 @@ import tech.antibytes.kmock.KMockContract.STRICT_CALL_IDX_NOT_MATCH
 import tech.antibytes.kmock.KMockContract.STRICT_CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.STRICT_CALL_NOT_MATCH
 import tech.antibytes.kmock.KMockContract.STRICT_MISSING_EXPECTATION
-import tech.antibytes.kmock.KMockContract.VerificationChain
-import tech.antibytes.kmock.KMockContract.VerificationInsurance
+import tech.antibytes.kmock.KMockContract.AssertionChain
+import tech.antibytes.kmock.KMockContract.AssertionInsurance
 import tech.antibytes.kmock.util.format
 
-internal class StrictVerificationChain(
+internal class StrictAssertionChain(
     private val references: List<Reference>
-) : VerificationChain, VerificationInsurance {
+) : AssertionChain, AssertionInsurance {
     private val callCounter = atomic(0)
     private val invokedProxies: IsoMutableMap<String, Int> = sharedMutableMapOf()
 
     override fun ensureVerificationOf(vararg proxies: Proxy<*, *>) {
         proxies.forEach { proxy ->
-            if (proxy.verificationChain != this) {
+            if (proxy.assertionChain != this) {
                 throw IllegalStateException(KMockContract.NOT_PART_OF_CHAIN.format(proxy.id))
             }
         }

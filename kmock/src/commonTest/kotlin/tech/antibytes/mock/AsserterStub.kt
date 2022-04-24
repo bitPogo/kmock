@@ -8,9 +8,9 @@ package tech.antibytes.mock
 
 import tech.antibytes.kmock.KMockContract
 
-class VerifierStub(
+class AsserterStub(
     override val references: List<KMockContract.Reference>
-) : KMockContract.Verifier {
+) : KMockContract.Asserter {
     override fun clear() {
         TODO("Not yet implemented")
     }

@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.VerificationChainStub
+import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -650,7 +650,7 @@ class PropertyProxySpec {
     @Test
     @JsName("fn26")
     fun `It has no VerificationChain by default`() {
-        PropertyProxy<Any>(fixture.fixture()).verificationChain mustBe null
+        PropertyProxy<Any>(fixture.fixture()).assertionChain mustBe null
     }
 
     @Test
@@ -658,13 +658,13 @@ class PropertyProxySpec {
     fun `It holds a given VerificationChain`() {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
-        val chain = VerificationChainStub()
+        val chain = AssertionChainStub()
 
         // When
-        proxy.verificationChain = chain
+        proxy.assertionChain = chain
 
         // Then
-        proxy.verificationChain sameAs chain
+        proxy.assertionChain sameAs chain
     }
 
     private class Implementation<T>(
