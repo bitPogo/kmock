@@ -1108,6 +1108,26 @@ object KMockContract {
     }
 
     /**
+     *
+     */
+    internal interface ArgumentConstraintWrapper {
+        /**
+         *
+         */
+        fun wrapValue(value: Any?): ArgumentConstraint
+
+        /**
+         *
+         */
+        fun wrapValues(values: Array<out Any?>): List<ArgumentConstraint>
+
+        /**
+         *
+         */
+        fun wrapNegatedValues(values: Array<out Any?>): List<ArgumentConstraint>
+    }
+
+    /**
      * Reference to a Proxy invocation.
      * Meant for internal usage only!
      * @author Matthias Geisler
