@@ -47,4 +47,9 @@ class or(
     override fun matches(
         actual: Any?
     ): Boolean = subConstraints.any { expected -> expected.matches(actual) }
+
+    override fun toString(): String {
+        val constraints = subConstraints.joinToString(", ")
+        return "or[$constraints]"
+    }
 }
