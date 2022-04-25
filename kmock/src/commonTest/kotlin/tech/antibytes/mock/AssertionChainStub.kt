@@ -9,14 +9,7 @@ package tech.antibytes.mock
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
 
-internal class AssertionChainStub(
-    private val propagate: ((KMockContract.Expectation) -> Unit)? = null
-) : KMockContract.AssertionChain {
-    override fun propagate(expected: KMockContract.Expectation) {
-        return propagate?.invoke(expected)
-            ?: throw MockError.MissingStub("Missing SideEffect propagate")
-    }
-
+internal class AssertionChainStub : KMockContract.AssertionChain {
     override fun ensureAllReferencesAreEvaluated() {
         TODO("Not yet implemented")
     }

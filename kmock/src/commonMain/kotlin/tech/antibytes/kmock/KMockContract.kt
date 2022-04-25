@@ -1258,7 +1258,7 @@ object KMockContract {
     /**
      *
      */
-    interface Assert : AssertionInsurance, AssertionContext
+    internal interface Assert : AssertionInsurance, AssertionContext
 
     /**
      * AssertionChain in order to verify over multiple Handles.
@@ -1266,14 +1266,6 @@ object KMockContract {
      * @author Matthias Geisler
      */
     interface AssertionChain {
-        /**
-         * Propagates the expected invocation to the Chain and asserts it against the actual values.
-         * @param expected the expected Invocation.
-         * @throws AssertionError if the expected value does not match the actual value.
-         */
-        @Throws(AssertionError::class)
-        fun propagate(expected: Expectation)
-
         /**
          * Ensures that all expected or actual values are covered depending on the context.
          * @throws AssertionError if the context needs to be exhaustive and not all expected or actual values are covered.
