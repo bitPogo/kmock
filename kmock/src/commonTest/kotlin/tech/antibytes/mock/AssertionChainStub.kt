@@ -8,10 +8,8 @@ package tech.antibytes.mock
 
 import tech.antibytes.kmock.KMockContract
 
-class VerifierStub(
-    override val references: List<KMockContract.Reference>
-) : KMockContract.Verifier {
-    override fun clear() {
+internal class AssertionChainStub : KMockContract.AssertionChain {
+    override fun ensureAllReferencesAreEvaluated() {
         TODO("Not yet implemented")
     }
 }

@@ -99,9 +99,30 @@ class OrSpec {
         actual mustBe true
     }
 
+    @Test
+    @JsName("fn6")
+    fun `Given toString is called it returns a custom identifier string`() {
+        // Given
+        val id1: String = fixture.fixture()
+        val id2: String = fixture.fixture()
+        val values = arrayOf(
+            MockConstraint(false, id1),
+            MockConstraint(true, id2)
+        )
+        val constraint = or(*values)
+
+        // When
+        val actual = constraint.toString()
+
+        // Then
+        actual mustBe "or[$id1, $id2]"
+    }
+
     private class MockConstraint(
-        val matches: Boolean
+        val matches: Boolean,
+        val _toString: String = ""
     ) : KMockContract.ArgumentConstraint {
         override fun matches(actual: Any?): Boolean = matches
+        override fun toString(): String = _toString
     }
 }

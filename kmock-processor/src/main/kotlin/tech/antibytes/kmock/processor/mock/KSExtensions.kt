@@ -64,7 +64,7 @@ private fun resolveReceiver(
 
         KMockGenerics.mapDeclaredGenerics(
             generics = generics!!,
-            resolver = resolver
+            typeResolver = resolver
         ).first()
     }
 }

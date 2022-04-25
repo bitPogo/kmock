@@ -17,8 +17,6 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-class isNotSame(
-    private val illegal: Any?
-) : ArgumentConstraint {
-    override fun matches(actual: Any?): Boolean = illegal !== actual
-}
+fun isNotSame(
+    illegal: Any?
+): ArgumentConstraint = not(isSame(illegal))

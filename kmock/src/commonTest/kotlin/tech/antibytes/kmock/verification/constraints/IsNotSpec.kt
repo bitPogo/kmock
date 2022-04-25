@@ -395,4 +395,17 @@ class IsNotSpec {
         // Then
         actual mustBe false
     }
+
+    @Test
+    @JsName("fn29")
+    fun `Given toString is called it uses the wrapped value`() {
+        // Given
+        val value: String = fixture.fixture()
+
+        // When
+        val actual = isNot(value).toString()
+
+        // Then
+        actual mustBe "not($value)"
+    }
 }

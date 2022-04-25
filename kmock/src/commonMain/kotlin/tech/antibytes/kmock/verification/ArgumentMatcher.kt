@@ -6,30 +6,28 @@
 
 package tech.antibytes.kmock.verification
 
-import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.GetOrSet
-import tech.antibytes.kmock.verification.constraints.eq
+import tech.antibytes.kmock.verification.constraints.ArgumentConstraintWrapper.wrapNegatedValue
+import tech.antibytes.kmock.verification.constraints.ArgumentConstraintWrapper.wrapValue
+
+@Suppress("UNUSED_PARAMETER")
+private fun noopClosure(argument: Any?, matcherIndex: Int): Unit = Unit
 
 internal fun Array<out Any?>.hasBeenCalledWithVoid(): Boolean = this.isEmpty()
 
-private fun wrapValue(value: Any?): KMockContract.ArgumentConstraint {
-    return if (value is KMockContract.ArgumentConstraint) {
-        value
-    } else {
-        eq(value)
-    }
-}
-
-internal fun Array<out Any?>.hasBeenCalledWith(vararg values: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenCalledWith(
+    vararg constraints: Any?,
+    onFail: (Any?, Int) -> Unit = ::noopClosure
+): Boolean {
     return when {
-        this.isEmpty() -> values.isEmpty()
-        values.isEmpty() -> true
+        this.isEmpty() -> constraints.isEmpty()
+        constraints.isEmpty() -> true
         else -> {
             var lastMatch = 0
 
-            for (value in values) {
+            constraints.forEachIndexed { constraintIdx, constraint ->
                 var matched = false
-                val expected = wrapValue(value)
+                val expected = wrapValue(constraint)
 
                 for (idx in lastMatch until this.size) {
                     val actual = this[idx]
@@ -42,6 +40,7 @@ internal fun Array<out Any?>.hasBeenCalledWith(vararg values: Any?): Boolean {
                 }
 
                 if (!matched) {
+                    onFail(null, constraintIdx)
                     return false
                 }
             }
@@ -51,15 +50,19 @@ internal fun Array<out Any?>.hasBeenCalledWith(vararg values: Any?): Boolean {
     }
 }
 
-internal fun Array<out Any?>.hasBeenStrictlyCalledWith(vararg values: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenStrictlyCalledWith(
+    vararg constraints: Any?,
+    onFail: (Any?, Int) -> Unit = ::noopClosure
+): Boolean {
     return when {
-        this.isEmpty() && values.isEmpty() -> true
-        values.size != this.size -> false
+        this.isEmpty() && constraints.isEmpty() -> true
+        constraints.size != this.size -> false
         else -> {
             for (idx in this.indices) {
-                val expected = wrapValue(values[idx])
+                val expected = wrapValue(constraints[idx])
 
                 if (!expected.matches(this[idx])) {
+                    onFail(this[idx], idx)
                     return false
                 }
             }
@@ -69,16 +72,20 @@ internal fun Array<out Any?>.hasBeenStrictlyCalledWith(vararg values: Any?): Boo
     }
 }
 
-internal fun Array<out Any?>.hasBeenCalledWithout(vararg values: Any?): Boolean {
+internal fun Array<out Any?>.hasBeenCalledWithout(
+    vararg constraints: Any?,
+    onFail: (Any?, Int) -> Unit = ::noopClosure
+): Boolean {
     return if (this.isEmpty()) {
-        values.isNotEmpty()
+        constraints.isNotEmpty()
     } else {
-        for (value in values) {
+        constraints.forEachIndexed { idx, constraint ->
             var matched = false
-            val expected = wrapValue(value)
+            val expected = wrapNegatedValue(constraint)
 
             for (actual in this) {
-                if (expected.matches(actual)) {
+                if (!expected.matches(actual)) {
+                    onFail(actual, idx)
                     matched = true
                     break
                 }
@@ -97,11 +104,11 @@ internal fun GetOrSet.wasGotten(): Boolean = this is GetOrSet.Get
 
 internal fun GetOrSet.wasSet(): Boolean = this is GetOrSet.Set
 
-internal fun GetOrSet.wasSetTo(value: Any?): Boolean {
+internal fun GetOrSet.wasSetTo(constraint: Any?): Boolean {
     return when (this) {
         !is GetOrSet.Set -> false
         else -> {
-            val expected = wrapValue(value)
+            val expected = wrapValue(constraint)
             return expected.matches(this.value)
         }
     }

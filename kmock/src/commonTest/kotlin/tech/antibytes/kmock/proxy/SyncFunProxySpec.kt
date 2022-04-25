@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -695,7 +694,6 @@ class SyncFunProxySpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChained)
-        proxy.verificationChain = VerificationChainStub()
 
         // When
         proxy.invoke()
@@ -711,29 +709,8 @@ class SyncFunProxySpec {
         assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
-        proxy.verificationChain mustBe null
 
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
-    }
-
-    @Test
-    @JsName("fn26")
-    fun `It has no VerificationChain by default`() {
-        SyncFunProxy<Any, () -> Any>(fixture.fixture()).verificationChain mustBe null
-    }
-
-    @Test
-    @JsName("fn27")
-    fun `It holds a given VerificationChain`() {
-        // Given
-        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
-        val chain = VerificationChainStub()
-
-        // When
-        proxy.verificationChain = chain
-
-        // Then
-        proxy.verificationChain sameAs chain
     }
 
     private class Implementation<T>(

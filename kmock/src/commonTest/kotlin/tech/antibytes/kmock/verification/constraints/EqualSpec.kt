@@ -395,4 +395,17 @@ class EqualSpec {
         // Then
         actual mustBe true
     }
+
+    @Test
+    @JsName("fn29")
+    fun `Given toString is called it uses the wrapped value`() {
+        // Given
+        val value: String = fixture.fixture()
+
+        // When
+        val actual = eq(value).toString()
+
+        // Then
+        actual mustBe value
+    }
 }

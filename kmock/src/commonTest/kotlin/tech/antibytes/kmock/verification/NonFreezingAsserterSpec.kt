@@ -19,25 +19,31 @@ import kotlin.js.JsName
 import kotlin.math.absoluteValue
 import kotlin.test.Test
 
-class NonFreezingVerifierSpec {
+class NonFreezingAsserterSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
-    fun `It fulfils Verifier`() {
-        NonFreezingVerifier() fulfils KMockContract.Verifier::class
+    fun `It fulfils Asserter`() {
+        NonFreezingAsserter() fulfils KMockContract.Asserter::class
+    }
+
+    @Test
+    @JsName("fn0a")
+    fun `It typealiases Verifier`() {
+        NonFreezingVerifier() fulfils KMockContract.Asserter::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils Collector`() {
-        NonFreezingVerifier() fulfils KMockContract.Collector::class
+        NonFreezingAsserter() fulfils KMockContract.Collector::class
     }
 
     @Test
     @JsName("fn2")
     fun `It has a emptyMap of references by default`() {
-        NonFreezingVerifier().references mustBe emptyList()
+        NonFreezingAsserter().references mustBe emptyList()
     }
 
     @Test
@@ -47,7 +53,7 @@ class NonFreezingVerifierSpec {
         val index: Int = fixture.fixture<Int>().absoluteValue
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, index)
@@ -63,7 +69,7 @@ class NonFreezingVerifierSpec {
         // Given
         val proxy = PropertyProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -78,7 +84,7 @@ class NonFreezingVerifierSpec {
         // Given
         val proxy = AsyncFunProxyStub(fixture.fixture(), fixture.fixture())
 
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -96,7 +102,7 @@ class NonFreezingVerifierSpec {
             fixture.fixture()
         )
 
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -115,7 +121,7 @@ class NonFreezingVerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -134,7 +140,7 @@ class NonFreezingVerifierSpec {
             ignorableForVerification = true
         )
 
-        val verifier = NonFreezingVerifier(coverAllInvocations = true)
+        val verifier = NonFreezingAsserter(coverAllInvocations = true)
 
         // When
         verifier.addReference(proxy, fixture.fixture())
@@ -148,7 +154,7 @@ class NonFreezingVerifierSpec {
     fun `Given clear is called it clears the verifier`() {
         // Given
         val proxy = SyncFunProxyStub(fixture.fixture(), fixture.fixture())
-        val verifier = NonFreezingVerifier()
+        val verifier = NonFreezingAsserter()
 
         // When
         verifier.addReference(proxy, fixture.fixture())

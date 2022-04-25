@@ -17,6 +17,11 @@ import tech.antibytes.kmock.KMockContract.Reference
  * @param coverAllInvocations flag to enable/disable capturing including explicit ignorable Proxies. Default is false.
  * @author Matthias Geisler
  */
-class Verifier(coverAllInvocations: Boolean = false) : VerifierBase(coverAllInvocations) {
+class Asserter(coverAllInvocations: Boolean = false) : AsserterBase(coverAllInvocations) {
     override val _references: IsoMutableList<Reference> = sharedMutableListOf()
 }
+
+/**
+ *
+ */
+typealias Verifier = Asserter

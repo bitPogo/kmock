@@ -19,15 +19,13 @@ import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteReposit
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
-import tech.antibytes.kmock.verification.Verifier
+import tech.antibytes.kmock.verification.Asserter
+import tech.antibytes.kmock.verification.assertOrder
 import tech.antibytes.kmock.verification.hasBeenCalledWith
 import tech.antibytes.kmock.verification.hasBeenCalledWithout
 import tech.antibytes.kmock.verification.hasBeenStrictlyCalledWith
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
-import tech.antibytes.kmock.verification.verifyStrictOrder
-import tech.antibytes.kmock.verification.wasGotten
-import tech.antibytes.kmock.verification.wasSet
 import tech.antibytes.kmock.verification.wasSetTo
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -51,7 +49,7 @@ import kotlin.test.Test
 )
 class SampleControllerAutoStubFactorySpec {
     private val fixture = kotlinFixture()
-    private val verifier = Verifier()
+    private val verifier = Asserter()
     private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
     private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
     private val domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)
@@ -94,7 +92,7 @@ class SampleControllerAutoStubFactorySpec {
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
 
-            verifier.verifyStrictOrder {
+            verifier.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
                 domainObject._id.wasGotten()
                 domainObject._id.wasSet()
@@ -142,7 +140,7 @@ class SampleControllerAutoStubFactorySpec {
             verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
             verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.verifyStrictOrder {
+            verifier.assertOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()

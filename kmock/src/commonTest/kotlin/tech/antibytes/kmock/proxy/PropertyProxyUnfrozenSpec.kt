@@ -10,7 +10,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.VerificationChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -477,27 +476,7 @@ class PropertyProxyUnfrozenSpec {
         assertFailsWith<NullPointerException> { proxy.set }
 
         proxy.calls mustBe 0
-        assertFailsWith<IndexOutOfBoundsException> { proxy.getArgumentsForCall(0) }
-    }
-
-    @Test
-    @JsName("fn26")
-    fun `It has no VerificationChain by default`() {
-        PropertyProxy<Any>(fixture.fixture()).verificationChain mustBe null
-    }
-
-    @Test
-    @JsName("fn27")
-    fun `It holds a given VerificationChain`() {
-        // Given
-        val proxy = PropertyProxy<Any>(fixture.fixture())
-        val chain = VerificationChainStub()
-
-        // When
-        proxy.verificationChain = chain
-
-        // Then
-        proxy.verificationChain sameAs chain
+        assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
     private class Implementation<T>(

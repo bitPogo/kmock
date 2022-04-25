@@ -48,4 +48,17 @@ class IsSameSpec {
         // Then
         actual mustBe true
     }
+
+    @Test
+    @JsName("fn3")
+    fun `Given toString is called it returns a String which contains a marker for that Constraint`() {
+        // Given
+        val value: Any? = fixture.fixture()
+
+        // When
+        val actual = isSame(value).toString()
+
+        // Then
+        actual mustBe "same($value)"
+    }
 }

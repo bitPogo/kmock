@@ -17,7 +17,6 @@ import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.PropertyProxyInvocationType
 import tech.antibytes.kmock.KMockContract.PropertyProxyState
 import tech.antibytes.kmock.KMockContract.Relaxer
-import tech.antibytes.kmock.KMockContract.VerificationChain
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
 
@@ -52,8 +51,6 @@ internal class PropertyProxy<Value>(
         private val _collector: AtomicRef<Collector> = atomic(collector)
         private val _invocationType: AtomicRef<PropertyProxyInvocationType> = atomic(defaultInvocationType)
 
-        private val _verificationChain: AtomicRef<VerificationChain?> = atomic(null)
-
         override var get: Value? by _get
         override val getMany: MutableList<Value> = sharedMutableListOf()
         override var sideEffect: Function0<Value>? by _sideEffect
@@ -64,8 +61,6 @@ internal class PropertyProxy<Value>(
 
         override val calls: Int by _calls
         override val arguments: MutableList<GetOrSet> = sharedMutableListOf()
-
-        override var verificationChain: VerificationChain? by _verificationChain
 
         override fun incrementInvocations() {
             this._calls.incrementAndGet()
@@ -80,7 +75,6 @@ internal class PropertyProxy<Value>(
             _calls.update { 0 }
             arguments.clear()
 
-            _verificationChain.update { null }
             _invocationType.update { defaultInvocationType }
         }
     }
@@ -101,8 +95,6 @@ internal class PropertyProxy<Value>(
             get() = _calls
         override val arguments: MutableList<GetOrSet> = mutableListOf()
 
-        override var verificationChain: VerificationChain? = null
-
         override fun incrementInvocations() {
             _calls += 1
         }
@@ -116,7 +108,6 @@ internal class PropertyProxy<Value>(
             _calls = 0
             arguments.clear()
 
-            verificationChain = null
             invocationType = defaultInvocationType
         }
     }
@@ -195,12 +186,6 @@ internal class PropertyProxy<Value>(
 
     override val calls: Int
         get() = state.calls
-
-    override var verificationChain: VerificationChain?
-        get() = state.verificationChain
-        set(value) {
-            state.verificationChain = value
-        }
 
     private fun retrieveValue(): Value {
         val values = state.getMany
@@ -281,7 +266,11 @@ internal class PropertyProxy<Value>(
         nonIntrusiveConfiguration.unwrapSpy()?.invoke()
     }
 
-    override fun getArgumentsForCall(callIndex: Int): GetOrSet = state.arguments[callIndex]
+    override fun getArgumentsForCall(callIndex: Int): GetOrSet {
+        return state.arguments.getOrElse(callIndex) {
+            throw throw MockError.MissingCall("$callIndex was not found for $id!")
+        }
+    }
 
     override fun clear() {
         state.clear(PropertyProxyInvocationType.NO_PROVIDER)

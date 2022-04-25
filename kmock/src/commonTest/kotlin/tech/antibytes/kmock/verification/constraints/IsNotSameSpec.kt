@@ -48,4 +48,17 @@ class IsNotSameSpec {
         // Then
         actual mustBe false
     }
+
+    @Test
+    @JsName("fn3")
+    fun `Given toString is called it returns a String which contains a marker for that Constraint`() {
+        // Given
+        val value: Any? = fixture.fixture()
+
+        // When
+        val actual = isNotSame(value).toString()
+
+        // Then
+        actual mustBe "not(same($value))"
+    }
 }

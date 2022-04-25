@@ -39,12 +39,6 @@ object KMockContract {
         val calls: Int
 
         /**
-         * Reference to its correspondent VerificationChain. This Property is intended for internal use only!
-         * @suppress
-         */
-        var verificationChain: VerificationChain?
-
-        /**
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
@@ -238,7 +232,7 @@ object KMockContract {
 
         /**
          * Holds a given Collector/Verifier
-         * @see Verifier
+         * @see Asserter
          * @see Collector
          */
         val collector: Collector
@@ -252,14 +246,6 @@ object KMockContract {
          * Holds the captured arguments of invocations of the hosting proxy
          */
         val arguments: MutableList<Arguments>
-
-        /**
-         * Holds a given VerificationChain.
-         * @see VerificationChain
-         * @see tech.antibytes.kmock.verification.verify
-         * @see tech.antibytes.kmock.verification.verifyStrictOrder
-         */
-        var verificationChain: VerificationChain?
 
         /**
          * Increments calls.
@@ -388,7 +374,7 @@ object KMockContract {
      */
     interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
         /**
-         * Marks the proxy as ignore during verification (e.g. build-in methods). Meant for internal usage only!
+         * Marks the proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
          */
         val ignorableForVerification: Boolean
 
@@ -1009,7 +995,7 @@ object KMockContract {
          * @param ReturnValue the return value of the Proxy.
          * @param SideEffect the function signature.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
@@ -1028,7 +1014,7 @@ object KMockContract {
          * @param ReturnValue the return value of the Proxy.
          * @param SideEffect the function signature.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param ignorableForVerification marks the Proxy as ignorable for verification. Default is false and is intended for internal usage only.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
@@ -1046,7 +1032,7 @@ object KMockContract {
          * Instantiates a PropertyProxy.
          * @param Value the value type of the hosting PropertyProxy.
          * @param id a unique identifier for this Proxy.
-         * @param collector a optional Collector for VerificationChains. Default is a NoopCollector.
+         * @param collector a optional Collector for AssertionChains. Default is a NoopCollector.
          * @param freeze boolean which indicates if freezing can be used or not. Default is true.
          * Default is null.
          * @see Collector
@@ -1064,7 +1050,7 @@ object KMockContract {
      */
     fun interface Collector {
         /**
-         * Collects a invocation of a Proxy. Meant for internal use only.
+         * Collects a invocation of a Proxy. Intended for internal use only.
          * @param referredProxy the proxy it is referring to.
          * @param referredCall the invocation index of the Proxy it refers to.
          * @suppress
@@ -1074,7 +1060,7 @@ object KMockContract {
 
     /**
      * Handle with the aggregated information of a Proxy invocation.
-     * Meant for internal usage only!
+     * Intended for internal usage only!
      * @author Matthias Geisler
      */
     interface Expectation {
@@ -1108,8 +1094,27 @@ object KMockContract {
     }
 
     /**
+     * Wrapper for Arguments-Constraints
+     */
+    internal interface ArgumentConstraintWrapper {
+        /**
+         * Wraps a arbitrary value to eq-Constraint if it is not a Arguments-Constraints.
+         * @param value a arbitrary value.
+         * @return ArgumentConstraint
+         */
+        fun wrapValue(value: Any?): ArgumentConstraint
+
+        /**
+         * Wraps a arbitrary value to eq-Constraint if it is not a Arguments-Constraints and wraps that into a not-Constraint.
+         * @param value a arbitrary value.
+         * @return ArgumentConstraint the resulting not-Constraint.
+         */
+        fun wrapNegatedValue(value: Any?): ArgumentConstraint
+    }
+
+    /**
      * Reference to a Proxy invocation.
-     * Meant for internal usage only!
+     * Intended for internal usage only!
      * @author Matthias Geisler
      */
     data class Reference(
@@ -1125,31 +1130,197 @@ object KMockContract {
     )
 
     /**
-     * Insurance that given Proxies are covered by the VerificationChain.
+     * Internal Executor of Assertions.
      * @author Matthias Geisler
      */
-    fun interface VerificationInsurance {
+    internal interface Assertions {
         /**
-         * Ensures that given Proxies are covered by the VerificationChain. Use this method with caution!
-         * @throws IllegalStateException if a given Proxy is not covered by a VerificationChain.
+         * Asserts that a FunProxy was called.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun hasBeenCalledAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int
+        )
+
+        /**
+         * Asserts that a FunProxy was called without any parameter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun hasBeenCalledWithVoidAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int
+        )
+
+        /**
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun hasBeenCalledWithAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg arguments: Any?
+        )
+
+        /**
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments must be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun hasBeenStrictlyCalledWithAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg arguments: Any?
+        )
+
+        /**
+         * Asserts that a FunProxy was without called n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param illegal the forbidden arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun hasBeenCalledWithoutAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg illegal: Any?
+        )
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Getter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun wasGottenAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int
+        )
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Setter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun wasSetAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int
+        )
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Setter with a given value.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param value the expected value.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun wasSetToAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int,
+            value: Any?
+        )
+    }
+
+    /**
+     * Provider for Assertion.
+     * @author Matthias Geisler
+     */
+    interface AssertionContext {
+        /**
+         * Asserts that a FunProxy was called.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun FunProxy<*, *>.hasBeenCalled()
+
+        /**
+         * Asserts that a FunProxy was called without any parameter.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithVoid()
+
+        /**
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments do not need to be complete.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
+
+        /**
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments must be complete.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
+
+        /**
+         * Asserts that a FunProxy was without called n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param illegal the forbidden arguments.
+         * @throws AssertionError if the assertion fails
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Getter.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun PropertyProxy<*>.wasGotten()
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Setter.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun PropertyProxy<*>.wasSet()
+
+        /**
+         * Asserts that a PropertyProxy was invoked as a Setter with a given value.
+         * @param value the expected value.
+         * @throws AssertionError if the assertion fails.
+         */
+        fun PropertyProxy<*>.wasSetTo(value: Any?)
+    }
+
+    /**
+     * Insurance that given Proxies are covered by the AssertionChain.
+     * @author Matthias Geisler
+     */
+    fun interface AssertionInsurance {
+        /**
+         * Ensures that given Proxies are covered by the AssertionChain. Use this method with caution!
+         * @throws IllegalStateException if a given Proxy is not covered by a AssertionChain.
          */
         fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
     }
 
     /**
-     * VerificationChain in order to verify over multiple Handles.
-     * Meant for internal purpose only!
+     * Combination of AssertionInsurance and AssertionContext
+     * @see AssertionInsurance
+     * @see AssertionContext
+     */
+    interface ChainedAssertion : AssertionInsurance, AssertionContext
+
+    /**
+     * AssertionChain in order to verify over multiple Handles.
+     * Intended for internal purpose only!
      * @author Matthias Geisler
      */
-    interface VerificationChain {
-        /**
-         * Propagates the expected invocation to the Chain and asserts it against the actual values.
-         * @param expected the expected Invocation.
-         * @throws AssertionError if the expected value does not match the actual value.
-         */
-        @Throws(AssertionError::class)
-        fun propagate(expected: Expectation)
-
+    internal interface AssertionChain {
         /**
          * Ensures that all expected or actual values are covered depending on the context.
          * @throws AssertionError if the context needs to be exhaustive and not all expected or actual values are covered.
@@ -1162,7 +1333,7 @@ object KMockContract {
      * Container which holds actual references of proxy calls. The references are ordered by their invocation.
      * @author Matthias Geisler
      */
-    interface Verifier {
+    interface Asserter {
         /**
          * Holds the actual references
          */
@@ -1174,20 +1345,23 @@ object KMockContract {
         fun clear()
     }
 
-    internal const val STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
+    internal const val CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
-    internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
-    internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
-    internal const val STRICT_MISSING_EXPECTATION =
-        "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
-    internal const val NON_STRICT_CALL_NOT_FOUND =
-        "Expected %0 to be invoked, but no call was captured with the given arguments."
-    internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
+    internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
+    internal const val MISMATCH = "Expected <%0> got actual <%1>."
+    internal const val HAD_BEEN_CALLED_NO_MATCHER = "The given matcher %0 has not been found."
+    internal const val MISMATCHING_SIZE = "Expected <%0> arguments got actual <%1>."
+    internal const val ILLEGAL_VALUE = "Illegal value <%0> detected."
+    internal const val NON_VOID_FUNCTION = "Expected a non void function invocation."
+    internal const val VOID_FUNCTION = "Expected %0 to be void, but the invocation contains Arguments."
+    internal const val NOT_GET = "Expected a getter and got a setter."
+    internal const val NOT_SET = "Expected a setter and got a getter."
 
     internal const val NOT_CALLED = "Call not found."
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
-    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this VerificationChain."
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
 }

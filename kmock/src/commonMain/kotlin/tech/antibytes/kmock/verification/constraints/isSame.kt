@@ -21,4 +21,6 @@ class isSame(
     private val expected: Any?
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = expected === actual
+
+    override fun toString(): String = "same($expected)"
 }
