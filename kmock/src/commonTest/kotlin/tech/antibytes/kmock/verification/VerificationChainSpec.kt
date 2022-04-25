@@ -230,9 +230,11 @@ class VerificationChainSpec {
     fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
-        val container = VerificationChain(emptyList())
-
-        proxy.assertionChain = container
+        val container = AssertionChain(
+            listOf(
+                Reference(proxy, 0)
+            )
+        )
 
         // When
         container.ensureVerificationOf(proxy)

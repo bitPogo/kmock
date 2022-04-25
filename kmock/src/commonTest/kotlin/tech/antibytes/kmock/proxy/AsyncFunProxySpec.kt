@@ -684,7 +684,6 @@ class AsyncFunProxySpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
-        proxy.assertionChain = AssertionChainStub()
 
         return runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.invoke()
@@ -700,30 +699,9 @@ class AsyncFunProxySpec {
             assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
             proxy.calls mustBe 0
-            proxy.assertionChain = null
 
             assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
         }
-    }
-
-    @Test
-    @JsName("fn26")
-    fun `It has no VerificationChain by default`() {
-        AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture()).assertionChain mustBe null
-    }
-
-    @Test
-    @JsName("fn27")
-    fun `It holds a given VerificationChain`() {
-        // Given
-        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
-        val chain = AssertionChainStub()
-
-        // When
-        proxy.assertionChain = chain
-
-        // Then
-        proxy.assertionChain sameAs chain
     }
 
     private class Implementation<T>(

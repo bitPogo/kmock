@@ -27,9 +27,19 @@ internal class VerificationChain(
     private val invocation = atomic(0)
     private val invokedProxies: IsoMutableMap<String, Int> = sharedMutableMapOf()
 
+    private fun getProxyIdSet(): Set<String> {
+        val set: MutableSet<String> = mutableSetOf()
+
+        references.forEach { reference -> set.add(reference.proxy.id) }
+
+        return set
+    }
+
     override fun ensureVerificationOf(vararg proxies: Proxy<*, *>) {
+        val actual = getProxyIdSet()
+
         proxies.forEach { proxy ->
-            if (proxy.assertionChain != this) {
+            if (proxy.id !in actual) {
                 throw IllegalStateException(NOT_PART_OF_CHAIN.format(proxy.id))
             }
         }

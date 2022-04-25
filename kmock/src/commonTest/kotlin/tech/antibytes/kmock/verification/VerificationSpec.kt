@@ -18,6 +18,7 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
+/*
 class VerificationSpec {
     private val fixture = kotlinFixture()
 
@@ -245,3 +246,4 @@ class VerificationSpec {
         references[1].proxy.assertionChain mustBe null
     }
 }
+*/

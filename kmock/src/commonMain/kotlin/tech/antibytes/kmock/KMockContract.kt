@@ -39,12 +39,6 @@ object KMockContract {
         val calls: Int
 
         /**
-         * Reference to its correspondent AssertionChain. This Property is intended for internal use only!
-         * @suppress
-         */
-        var assertionChain: AssertionChain?
-
-        /**
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
@@ -252,14 +246,6 @@ object KMockContract {
          * Holds the captured arguments of invocations of the hosting proxy
          */
         val arguments: MutableList<Arguments>
-
-        /**
-         * Holds a given AssertionChain.
-         * @see AssertionChain
-         * @see tech.antibytes.kmock.verification.verify
-         * @see tech.antibytes.kmock.verification.verifyStrictOrder
-         */
-        var assertionChain: AssertionChain?
 
         /**
          * Increments calls.
@@ -1087,33 +1073,6 @@ object KMockContract {
          * List with aggregated indices of invocation of the referred Proxy.
          */
         val callIndices: List<Int>
-    }
-
-    interface AssertionExpectation {
-        /**
-         * Reference of the Proxy.
-         */
-        val proxy: Proxy<*, *>
-
-        /**
-         *
-         */
-        val isGetter: Boolean
-
-        /**
-         *
-         */
-        val wildcard: Boolean
-
-        /**
-         *
-         */
-        val strict: Boolean
-
-        /**
-         *
-         */
-        val matchers: List<ArgumentConstraint>
     }
 
     /**

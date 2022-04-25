@@ -603,7 +603,6 @@ class SyncFunProxyUnfrozenSpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
-        proxy.assertionChain = AssertionChainStub()
 
         // When
         proxy.invoke()
@@ -619,29 +618,8 @@ class SyncFunProxyUnfrozenSpec {
         assertFailsWith<Throwable> { (proxy.sideEffects as SideEffectChain).next() }
 
         proxy.calls mustBe 0
-        proxy.assertionChain mustBe null
 
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
-    }
-
-    @Test
-    @JsName("fn26")
-    fun `It has no VerificationChain by default`() {
-        SyncFunProxy<Any, () -> Any>(fixture.fixture()).assertionChain mustBe null
-    }
-
-    @Test
-    @JsName("fn27")
-    fun `It holds a given VerificationChain`() {
-        // Given
-        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
-        val chain = AssertionChainStub()
-
-        // When
-        proxy.assertionChain = chain
-
-        // Then
-        proxy.assertionChain sameAs chain
     }
 
     private class Implementation<T>(

@@ -81,17 +81,11 @@ private fun <T> Asserter.verifyChain(
     scope: AssertionInsurance.() -> Any?,
     chain: T,
 ) where T : AssertionInsurance, T : KMockContract.AssertionChain {
-    references.forEach { reference ->
-        reference.proxy.assertionChain = chain
-    }
+    TODO()
 
     scope(chain)
 
     chain.ensureAllReferencesAreEvaluated()
-
-    references.forEach { reference ->
-        reference.proxy.assertionChain = null
-    }
 }
 
 /**

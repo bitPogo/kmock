@@ -175,35 +175,6 @@ class ExpectationFactorySpec {
     }
 
     @Test
-    @JsName("fn8")
-    fun `Given hasBeenCalledWith is called with a FunProxy it propagtes its handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val captured: MutableList<Expectation> = mutableListOf()
-        val values = fixture.listFixture<String>().toTypedArray().sortedArray()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            values
-        }
-
-        // When
-        proxy.hasBeenCalledWith(*values)
-        val actual = captured.first()
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
     @JsName("fn9")
     fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it returns a VerficationHandle which contains no matches if nothing matches`() {
         // Given
@@ -256,36 +227,6 @@ class ExpectationFactorySpec {
 
         // When
         val actual = proxy.hasBeenStrictlyCalledWith(*values)
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
-    @JsName("fn12")
-    fun `Given hasBeenStrictlyCalledWith is called with a FunProxy it propagates its Handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val captured: MutableList<Expectation> = mutableListOf()
-        val values = fixture.listFixture<String>().toTypedArray()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            values
-        }
-
-        // When
-        proxy.hasBeenStrictlyCalledWith(*values)
-
-        val actual = captured.first()
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -352,34 +293,6 @@ class ExpectationFactorySpec {
     }
 
     @Test
-    @JsName("fn16")
-    fun `Given hasBeenCalledWithout is called with a FunProxy it propagates its Handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val captured: MutableList<Expectation> = mutableListOf()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = fixture.funProxyFixture(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            fixture.listFixture<String>().toTypedArray()
-        }
-
-        // When
-        proxy.hasBeenCalledWithout(fixture.fixture<String>())
-        val actual = captured.first()
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
     @JsName("fn17")
     fun `Given wasGotten is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
@@ -424,34 +337,6 @@ class ExpectationFactorySpec {
     }
 
     @Test
-    @JsName("fn19")
-    fun `Given wasGotten is called with a PropProxy it it propagates its Handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val captured: MutableList<Expectation> = mutableListOf()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            KMockContract.GetOrSet.Get
-        }
-
-        // When
-        proxy.wasGotten()
-        val actual = captured.first()
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
     @JsName("fn20")
     fun `Given wasSet is called with a PropProxy it returns a VerficationHandle while filtering mismatches`() {
         // Given
@@ -489,34 +374,6 @@ class ExpectationFactorySpec {
 
         // When
         val actual = proxy.wasSet()
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
-    @JsName("fn22")
-    fun `Given wasSet is called with a PropProxy it propagates its Handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val captured: MutableList<Expectation> = mutableListOf()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            KMockContract.GetOrSet.Set(null)
-        }
-
-        // When
-        proxy.wasSet()
-        val actual = captured.first()
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -584,36 +441,6 @@ class ExpectationFactorySpec {
 
         // When
         val actual = proxy.wasSetTo(value)
-
-        // Then
-        actual mustBe Expectation(proxy, listOf(0))
-        capturedIndex mustBe 0
-    }
-
-    @Test
-    @JsName("fn26")
-    fun `Given wasSetTo is called with a PropProxy it propagates its Handle`() {
-        // Given
-        val name: String = fixture.fixture()
-        val value: Any = fixture.fixture()
-
-        val captured: MutableList<Expectation> = mutableListOf()
-
-        val builder = AssertionChainStub { handle ->
-            captured.add(handle)
-        }
-        val proxy = PropertyProxyStub(name, 1).also { it.assertionChain = builder }
-
-        var capturedIndex: Int? = null
-        proxy.getArgumentsForCall = { givenIndex ->
-            capturedIndex = givenIndex
-
-            KMockContract.GetOrSet.Set(value)
-        }
-
-        // When
-        proxy.wasSetTo(value)
-        val actual = captured.first()
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))

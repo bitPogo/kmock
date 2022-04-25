@@ -480,26 +480,6 @@ class PropertyProxyUnfrozenSpec {
         assertFailsWith<MockError.MissingCall> { proxy.getArgumentsForCall(0) }
     }
 
-    @Test
-    @JsName("fn26")
-    fun `It has no VerificationChain by default`() {
-        PropertyProxy<Any>(fixture.fixture()).assertionChain mustBe null
-    }
-
-    @Test
-    @JsName("fn27")
-    fun `It holds a given VerificationChain`() {
-        // Given
-        val proxy = PropertyProxy<Any>(fixture.fixture())
-        val chain = AssertionChainStub()
-
-        // When
-        proxy.assertionChain = chain
-
-        // Then
-        proxy.assertionChain sameAs chain
-    }
-
     private class Implementation<T>(
         var fooProp: T? = null,
         var barProp: AtomicReference<T?> = AtomicReference(null)

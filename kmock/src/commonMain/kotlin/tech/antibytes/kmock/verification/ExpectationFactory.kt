@@ -11,15 +11,6 @@ import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 
-private fun propagateHandle(
-    proxy: Proxy<*, *>,
-    handle: Expectation
-) {
-    if (proxy.assertionChain != null) {
-        proxy.assertionChain!!.propagate(handle)
-    }
-}
-
 private fun <T> traverseMockAndShare(
     proxy: Proxy<*, T>,
     action: T.() -> Boolean
@@ -32,10 +23,7 @@ private fun <T> traverseMockAndShare(
         }
     }
 
-    val handle = Expectation(proxy, callIndices)
-    propagateHandle(proxy, handle)
-
-    return handle
+    return Expectation(proxy, callIndices)
 }
 
 /**
