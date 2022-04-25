@@ -1169,7 +1169,80 @@ object KMockContract {
     /**
      *
      */
-    interface ChainedAssertionContext {
+    internal interface Assertions {
+        /**
+         *
+         */
+        fun hasBeenCalledAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int
+        )
+
+        /**
+         *
+         */
+        fun hasBeenCalledWithVoidAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int
+        )
+
+        /**
+         *
+         */
+        fun hasBeenCalledWithAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg arguments: Any?
+        )
+
+        /**
+         *
+         */
+        fun hasBeenStrictlyCalledWithAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg arguments: Any?
+        )
+
+        /**
+         *
+         */
+        fun hasBeenCalledWithoutAtIndex(
+            proxy: FunProxy<*, *>,
+            callIndex: Int,
+            vararg illegal: Any?
+        )
+
+        /**
+         *
+         */
+        fun wasGottenAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int
+        )
+
+        /**
+         *
+         */
+        fun wasSetAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int
+        )
+
+        /**
+         *
+         */
+        fun wasSetToAtIndex(
+            proxy: PropertyProxy<*>,
+            callIndex: Int,
+            value: Any?
+        )
+    }
+
+    /**
+     *
+     */
+    interface AssertionContext {
         /**
          *
          */
@@ -1226,7 +1299,7 @@ object KMockContract {
     /**
      *
      */
-    interface Assertion : AssertionInsurance, ChainedAssertionContext
+    interface Assert : AssertionInsurance, AssertionContext
 
     /**
      * AssertionChain in order to verify over multiple Handles.
@@ -1266,23 +1339,23 @@ object KMockContract {
         fun clear()
     }
 
-    internal const val STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
+    internal const val CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
     internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
     internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
     internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
+    internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
     internal const val MISMATCH = "Expected <%0> got actual <%1>."
     internal const val HAD_BEEN_CALLED_NO_MATCHER = "The given matcher %0 has not been found."
     internal const val MISMATCHING_SIZE = "Expected <%0> arguments got actual <%1>."
     internal const val ILLEGAL_VALUE = "Illegal value <%0> detected."
     internal const val NON_VOID_FUNCTION = "Expected a non void function invocation."
-    internal const val VOID_FUNCTION = "Expected a void function invocation, but the invocation contains Arguments."
+    internal const val VOID_FUNCTION = "Expected %0 to be void, but the invocation contains Arguments."
     internal const val NOT_GET = "Expected a getter and got a setter."
     internal const val NOT_SET = "Expected a setter and got a getter."
 
     internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
-    internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
 
     internal const val NOT_CALLED = "Call not found."
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."

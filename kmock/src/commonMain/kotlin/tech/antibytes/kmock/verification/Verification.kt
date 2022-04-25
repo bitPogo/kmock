@@ -114,7 +114,7 @@ fun Asserter.verifyStrictOrder(
 ) {
     verifyChain(
         scope = scope,
-        chain = StrictAssertionChain(references),
+        chain = AssertionChain(references),
     )
 }
 
@@ -138,6 +138,6 @@ fun Asserter.verifyOrder(
 ) {
     verifyChain(
         scope = scope,
-        chain = NonStrictAssertionChain(references),
+        chain = VerificationChain(references),
     )
 }

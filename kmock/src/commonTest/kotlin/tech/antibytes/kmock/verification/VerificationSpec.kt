@@ -131,7 +131,7 @@ class VerificationSpec {
         // When
         verifier.verifyStrictOrder {
             // Then
-            this fulfils StrictAssertionChain::class
+            this fulfils AssertionChain::class
         }
     }
 
@@ -176,7 +176,7 @@ class VerificationSpec {
 
         // When
         verifier.verifyStrictOrder {
-            this as StrictAssertionChain
+            this as AssertionChain
             this.propagate(handle1)
             this.propagate(handle2)
         }
@@ -195,7 +195,7 @@ class VerificationSpec {
         // When
         verifier.verifyOrder {
             // Then
-            this fulfils NonStrictAssertionChain::class
+            this fulfils VerificationChain::class
         }
     }
 
@@ -235,7 +235,7 @@ class VerificationSpec {
 
         // When
         verifier.verifyOrder {
-            this as NonStrictAssertionChain
+            this as VerificationChain
             this.propagate(handle1)
             this.propagate(handle2)
         }
