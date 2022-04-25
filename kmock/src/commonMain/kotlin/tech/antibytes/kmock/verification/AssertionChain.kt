@@ -7,11 +7,13 @@
 package tech.antibytes.kmock.verification
 
 import kotlinx.atomicfu.atomic
-import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Assert
 import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.KMockContract.Assertions
 import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
+import tech.antibytes.kmock.KMockContract.ChainedAssertion
+import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
+import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.KMockContract.STRICT_CALL_NOT_MATCH
@@ -21,7 +23,7 @@ import tech.antibytes.kmock.util.format
 internal class AssertionChain(
     private val references: List<Reference>,
     private val assertions: Assertions = Assertions
-) : AssertionChain, Assert {
+) : AssertionChain, ChainedAssertion {
     private val invocation = atomic(0)
 
     private fun getProxyIdSet(): Set<String> {
@@ -37,7 +39,7 @@ internal class AssertionChain(
 
         proxies.forEach { proxy ->
             if (proxy.id !in actual) {
-                throw IllegalStateException(KMockContract.NOT_PART_OF_CHAIN.format(proxy.id))
+                throw IllegalStateException(NOT_PART_OF_CHAIN.format(proxy.id))
             }
         }
     }
@@ -68,19 +70,19 @@ internal class AssertionChain(
         invocation.incrementAndGet()
     }
 
-    override fun KMockContract.FunProxy<*, *>.hasBeenCalled() {
+    override fun FunProxy<*, *>.hasBeenCalled() {
         runAssertion(this) { callIndex ->
             assertions.hasBeenCalledAtIndex(this, callIndex)
         }
     }
 
-    override fun KMockContract.FunProxy<*, *>.hasBeenCalledWithVoid() {
+    override fun FunProxy<*, *>.hasBeenCalledWithVoid() {
         runAssertion(this) { callIndex ->
             assertions.hasBeenCalledWithVoidAtIndex(this, callIndex)
         }
     }
 
-    override fun KMockContract.FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?) {
+    override fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?) {
         runAssertion(this) { callIndex ->
             assertions.hasBeenCalledWithAtIndex(
                 proxy = this,
@@ -90,7 +92,7 @@ internal class AssertionChain(
         }
     }
 
-    override fun KMockContract.FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?) {
+    override fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?) {
         runAssertion(this) { callIndex ->
             assertions.hasBeenStrictlyCalledWithAtIndex(
                 proxy = this,
@@ -100,7 +102,7 @@ internal class AssertionChain(
         }
     }
 
-    override fun KMockContract.FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?) {
+    override fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?) {
         runAssertion(this) { callIndex ->
             assertions.hasBeenCalledWithoutAtIndex(
                 proxy = this,
@@ -110,19 +112,19 @@ internal class AssertionChain(
         }
     }
 
-    override fun KMockContract.PropertyProxy<*>.wasGotten() {
+    override fun PropertyProxy<*>.wasGotten() {
         runAssertion(this) { callIndex ->
             assertions.wasGottenAtIndex(proxy = this, callIndex = callIndex)
         }
     }
 
-    override fun KMockContract.PropertyProxy<*>.wasSet() {
+    override fun PropertyProxy<*>.wasSet() {
         runAssertion(this) { callIndex ->
             assertions.wasSetAtIndex(proxy = this, callIndex = callIndex)
         }
     }
 
-    override fun KMockContract.PropertyProxy<*>.wasSetTo(value: Any?) {
+    override fun PropertyProxy<*>.wasSetTo(value: Any?) {
         runAssertion(this) { callIndex ->
             assertions.wasSetToAtIndex(
                 proxy = this,

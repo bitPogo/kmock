@@ -30,6 +30,7 @@ toc::[]
 === Added
 
 * `or` ArgumentConstraint
+* `not` ArgumentConstraint
 * `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`, while adding all known mocks
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
@@ -38,6 +39,7 @@ toc::[]
 * `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
 * `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
 * `customAnnotationsForMeta` to provide a hook for the usage of customized annotation for meta/shared sources
+* `assertOrder` in order to make the names more consistent
 
 === Changed
 
@@ -45,10 +47,12 @@ toc::[]
 * Mutable properties of Proxies now separate froze/unfrozen state is cleaner to improve Runtime
 * `kmock` and `kspy` are using now a shared function to improve compile time
 * Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
+* Assertion-/VerificationChain is not coupled any longer directly to proxies and provide improved error messages
 
 === Deprecated
 
 * `uselessPrefixes` in the Gradle Extension
+* `verifyStrictOrder` use `assertOrder` instead
 
 === Removed
 
@@ -67,6 +71,7 @@ toc::[]
 
 * KotlinPoet 1.10.2 -> 1.11.0
 * Gradle 7.4.1 -> 7.4.2
+* Android Gradle Plugin 7.1.2 -> 7.1.3
 
 
 == https://github.com/bitPogo/kmock/compare/v0.1.0\...v0.1.1[0.1.1]

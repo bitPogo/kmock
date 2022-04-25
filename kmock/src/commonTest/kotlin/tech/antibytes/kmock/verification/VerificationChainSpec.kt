@@ -34,8 +34,8 @@ class VerificationChainSpec {
 
     @Test
     @JsName("fn1")
-    fun `It fulfils Assert`() {
-        VerificationChain(emptyList()) fulfils KMockContract.Assert::class
+    fun `It fulfils ChainedAssertion`() {
+        AssertionChain(emptyList()) fulfils KMockContract.ChainedAssertion::class
     }
 
     @Test

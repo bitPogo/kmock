@@ -374,7 +374,7 @@ object KMockContract {
      */
     interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
         /**
-         * Marks the proxy as ignore during verification (e.g. build-in methods). Meant for internal usage only!
+         * Marks the proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
          */
         val ignorableForVerification: Boolean
 
@@ -1050,7 +1050,7 @@ object KMockContract {
      */
     fun interface Collector {
         /**
-         * Collects a invocation of a Proxy. Meant for internal use only.
+         * Collects a invocation of a Proxy. Intended for internal use only.
          * @param referredProxy the proxy it is referring to.
          * @param referredCall the invocation index of the Proxy it refers to.
          * @suppress
@@ -1060,7 +1060,7 @@ object KMockContract {
 
     /**
      * Handle with the aggregated information of a Proxy invocation.
-     * Meant for internal usage only!
+     * Intended for internal usage only!
      * @author Matthias Geisler
      */
     interface Expectation {
@@ -1094,23 +1094,27 @@ object KMockContract {
     }
 
     /**
-     *
+     * Wrapper for Arguments-Constraints
      */
     internal interface ArgumentConstraintWrapper {
         /**
-         *
+         * Wraps a arbitrary value to eq-Constraint if it is not a Arguments-Constraints.
+         * @param value a arbitrary value.
+         * @return ArgumentConstraint
          */
         fun wrapValue(value: Any?): ArgumentConstraint
 
         /**
-         *
+         * Wraps a arbitrary value to eq-Constraint if it is not a Arguments-Constraints and wraps that into a not-Constraint.
+         * @param value a arbitrary value.
+         * @return ArgumentConstraint the resulting not-Constraint.
          */
         fun wrapNegatedValue(value: Any?): ArgumentConstraint
     }
 
     /**
      * Reference to a Proxy invocation.
-     * Meant for internal usage only!
+     * Intended for internal usage only!
      * @author Matthias Geisler
      */
     data class Reference(
@@ -1126,11 +1130,15 @@ object KMockContract {
     )
 
     /**
-     *
+     * Internal Executor of Assertions.
+     * @author Matthias Geisler
      */
     internal interface Assertions {
         /**
-         *
+         * Asserts that a FunProxy was called.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
          */
         fun hasBeenCalledAtIndex(
             proxy: FunProxy<*, *>,
@@ -1138,7 +1146,10 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a FunProxy was called without any parameter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
          */
         fun hasBeenCalledWithVoidAtIndex(
             proxy: FunProxy<*, *>,
@@ -1146,7 +1157,12 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun hasBeenCalledWithAtIndex(
             proxy: FunProxy<*, *>,
@@ -1155,7 +1171,12 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments must be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun hasBeenStrictlyCalledWithAtIndex(
             proxy: FunProxy<*, *>,
@@ -1164,7 +1185,12 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a FunProxy was without called n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param illegal the forbidden arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun hasBeenCalledWithoutAtIndex(
             proxy: FunProxy<*, *>,
@@ -1173,7 +1199,10 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Getter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
          */
         fun wasGottenAtIndex(
             proxy: PropertyProxy<*>,
@@ -1181,7 +1210,10 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Setter.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @throws AssertionError if the assertion fails.
          */
         fun wasSetAtIndex(
             proxy: PropertyProxy<*>,
@@ -1189,7 +1221,11 @@ object KMockContract {
         )
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Setter with a given value.
+         * @param proxy the actual proxy.
+         * @param callIndex the index of the invocation from the proxy.
+         * @param value the expected value.
+         * @throws AssertionError if the assertion fails.
          */
         fun wasSetToAtIndex(
             proxy: PropertyProxy<*>,
@@ -1199,46 +1235,63 @@ object KMockContract {
     }
 
     /**
-     *
+     * Provider for Assertion.
+     * @author Matthias Geisler
      */
     interface AssertionContext {
         /**
-         *
+         * Asserts that a FunProxy was called.
+         * @throws AssertionError if the assertion fails.
          */
         fun FunProxy<*, *>.hasBeenCalled()
 
         /**
-         *
+         * Asserts that a FunProxy was called without any parameter.
+         * @throws AssertionError if the assertion fails.
          */
         fun FunProxy<*, *>.hasBeenCalledWithVoid()
 
         /**
-         *
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments do not need to be complete.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
 
         /**
-         *
+         * Asserts that a FunProxy was called with n-parameter.
+         * The arguments must be complete.
+         * @param arguments the expected arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
 
         /**
-         *
+         * Asserts that a FunProxy was without called n-parameter.
+         * The arguments do not need to be complete.
+         * @param proxy the actual proxy.
+         * @param illegal the forbidden arguments.
+         * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Getter.
+         * @throws AssertionError if the assertion fails.
          */
         fun PropertyProxy<*>.wasGotten()
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Setter.
+         * @throws AssertionError if the assertion fails.
          */
         fun PropertyProxy<*>.wasSet()
 
         /**
-         *
+         * Asserts that a PropertyProxy was invoked as a Setter with a given value.
+         * @param value the expected value.
+         * @throws AssertionError if the assertion fails.
          */
         fun PropertyProxy<*>.wasSetTo(value: Any?)
     }
@@ -1256,16 +1309,18 @@ object KMockContract {
     }
 
     /**
-     *
+     * Combination of AssertionInsurance and AssertionContext
+     * @see AssertionInsurance
+     * @see AssertionContext
      */
-    interface Assert : AssertionInsurance, AssertionContext
+    interface ChainedAssertion : AssertionInsurance, AssertionContext
 
     /**
      * AssertionChain in order to verify over multiple Handles.
-     * Meant for internal purpose only!
+     * Intended for internal purpose only!
      * @author Matthias Geisler
      */
-    interface AssertionChain {
+    internal interface AssertionChain {
         /**
          * Ensures that all expected or actual values are covered depending on the context.
          * @throws AssertionError if the context needs to be exhaustive and not all expected or actual values are covered.
@@ -1292,8 +1347,6 @@ object KMockContract {
 
     internal const val CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
-    internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
-    internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
     internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
     internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
@@ -1305,8 +1358,6 @@ object KMockContract {
     internal const val VOID_FUNCTION = "Expected %0 to be void, but the invocation contains Arguments."
     internal const val NOT_GET = "Expected a getter and got a setter."
     internal const val NOT_SET = "Expected a setter and got a getter."
-
-    internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
 
     internal const val NOT_CALLED = "Call not found."
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."

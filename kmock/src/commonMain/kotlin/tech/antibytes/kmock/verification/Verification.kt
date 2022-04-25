@@ -7,10 +7,10 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Assert
 import tech.antibytes.kmock.KMockContract.Asserter
 import tech.antibytes.kmock.KMockContract.AssertionContext
 import tech.antibytes.kmock.KMockContract.AssertionInsurance
+import tech.antibytes.kmock.KMockContract.ChainedAssertion
 import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NOT_CALLED
 import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
@@ -81,8 +81,8 @@ fun verify(
 
 fun <T> runAssertion(
     chain: T,
-    scope: Assert.() -> Any
-) where T : Assert, T : KMockContract.AssertionChain {
+    scope: ChainedAssertion.() -> Any
+) where T : ChainedAssertion, T : KMockContract.AssertionChain {
     scope(chain)
 
     chain.ensureAllReferencesAreEvaluated()
@@ -96,7 +96,7 @@ fun <T> runAssertion(
 * @see AssertionContext
 * @author Matthias Geisler
 */
-fun Asserter.assertOrder(scope: Assert.() -> Any) = runAssertion(AssertionChain(references), scope)
+fun Asserter.assertOrder(scope: ChainedAssertion.() -> Any) = runAssertion(AssertionChain(references), scope)
 
 /**
  * Alias of assertOrder.
@@ -105,7 +105,11 @@ fun Asserter.assertOrder(scope: Assert.() -> Any) = runAssertion(AssertionChain(
  * @see assertOrder
  * @author Matthias Geisler
  */
-fun Asserter.verifyStrictOrder(scope: Assert.() -> Any) = assertOrder(scope)
+@Deprecated(
+    "This will be removed with version 1.0. Use assertOrder instead.",
+    ReplaceWith("assertOrder(scope)")
+)
+fun Asserter.verifyStrictOrder(scope: ChainedAssertion.() -> Any) = assertOrder(scope)
 
 /**
  * Verifies a chain of Expectations. Each Expectations must be in order but gaps are allowed.
