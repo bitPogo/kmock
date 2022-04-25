@@ -1270,11 +1270,18 @@ object KMockContract {
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
     internal const val STRICT_CALL_IDX_NOT_FOUND = "Expected %0th call of %1 was not made."
     internal const val STRICT_CALL_IDX_NOT_MATCH = "Expected %0th call of %1, but it refers to the %2th call."
-    internal const val STRICT_MISSING_EXPECTATION =
-        "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
-    internal const val NON_STRICT_CALL_NOT_FOUND =
-        "Expected %0 to be invoked, but no call was captured with the given arguments."
+    internal const val MISMATCH = "Expected <%0> got actual <%1>."
+    internal const val HAD_BEEN_CALLED_NO_MATCHER = "The given matcher %0 has not been found."
+    internal const val MISMATCHING_SIZE = "Expected <%0> arguments got actual <%1>."
+    internal const val ILLEGAL_VALUE = "Illegal value <%0> detected."
+    internal const val NON_VOID_FUNCTION = "Expected a non void function invocation."
+    internal const val VOID_FUNCTION = "Expected a void function invocation, but the invocation contains Arguments."
+    internal const val NOT_GET = "Expected a getter and got a setter."
+    internal const val NOT_SET = "Expected a setter and got a getter."
+
+    internal const val NON_STRICT_CALL_NOT_FOUND = "Expected %0 to be invoked, but no call was captured with the given arguments."
     internal const val NON_STRICT_CALL_IDX_NOT_FOUND = "Expected call of %0 was not made."
 
     internal const val NOT_CALLED = "Call not found."
@@ -1282,6 +1289,4 @@ object KMockContract {
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
     internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
-
-    internal const val EXPECTED_VOID_FUNCTION = "Expected a void function invocation, but the invocation contains Arguments."
 }
