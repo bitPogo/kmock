@@ -7,7 +7,6 @@
 package tech.antibytes.mock
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.error.MockError
 
 internal class AssertionChainStub : KMockContract.AssertionChain {
     override fun ensureAllReferencesAreEvaluated() {

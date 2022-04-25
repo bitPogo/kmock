@@ -10,7 +10,6 @@ import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.verification.constraints.ArgumentConstraintWrapper.wrapNegatedValue
 import tech.antibytes.kmock.verification.constraints.ArgumentConstraintWrapper.wrapValue
 
-
 @Suppress("UNUSED_PARAMETER")
 private fun noopClosure(argument: Any?, matcherIndex: Int): Unit = Unit
 

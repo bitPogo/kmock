@@ -153,7 +153,7 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn9a")
-    fun `Given hasBeenCalledWith is called with Arguments it returns false if the Array contains not all of given Arguments, while propagating the contraint index`() {
+    fun `Given hasBeenCalledWith is called with Arguments it returns false if the Array contains not all of given Arguments while propagating the contraint index`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
         var capturedIdx: Int? = null
@@ -259,7 +259,7 @@ class ArgumentMatcherSpec {
 
     @Test
     @JsName("fn15a")
-    fun `Given hasBeenStrictlyCalledWith is called with an Argument it returns false if the Array and Value do not match, while propagating the value to a given closure`() {
+    fun `Given hasBeenStrictlyCalledWith is called with an Argument it returns false if the Array and Value do not match while propagating the value to a given closure`() {
         // Given
         val array = fixture.listFixture<Any>(size = 5).toTypedArray()
         val expected = fixture.listFixture<Any>(size = 5).toTypedArray()
@@ -362,8 +362,8 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn21")
-    fun `Given hasBeenCalledWithout is called with an Argument it returns false if the Array contains the given Argument, while it propagates the error to a given closure`() {
+    @JsName("fn22")
+    fun `Given hasBeenCalledWithout is called with an Argument it returns false if the Array contains the given Argument while it propagates the error to a given closure`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
         var capturedArgument: Any? = null
@@ -385,7 +385,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn23")
     fun `Given hasBeenCalledWithout is called without Argument it returns true if the Array contains Argument`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -398,7 +398,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn24")
     fun `Given hasBeenCalledWithout is called with Arguments it returns false if the Array is null`() {
         // Given
         val array = fixture.listFixture<String>().toTypedArray()
@@ -411,7 +411,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn25")
     fun `Given hasBeenCalledWithout is called with Arguments it returns true if the Array none of given Arguments matches`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
@@ -425,7 +425,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn25")
+    @JsName("fn26")
     fun `Given hasBeenCalledWithout is called with Arguments it returns false if the Array matches at least one of given Arguments`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
@@ -443,7 +443,7 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn27")
     fun `Given hasBeenCalledWithout is called with Arguments it returns false while using Constraints`() {
         // Given
         val array = fixture.listFixture<String>(size = 8).toTypedArray()
@@ -461,50 +461,50 @@ class ArgumentMatcherSpec {
     }
 
     @Test
-    @JsName("fn27")
+    @JsName("fn28")
     fun `Given wasGotten is called it returns false if it is attacht to Set`() {
         KMockContract.GetOrSet.Set(null).wasGotten() mustBe false
     }
 
     @Test
-    @JsName("fn28")
+    @JsName("fn29")
     fun `Given wasGotten is called it returns true if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasGotten() mustBe true
     }
 
     @Test
-    @JsName("fn29")
+    @JsName("fn30")
     fun `Given wasSet is called it returns false if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasSet() mustBe false
     }
 
     @Test
-    @JsName("fn30")
+    @JsName("fn31")
     fun `Given wasGotten is called it returns true if it is attacht to Set`() {
         KMockContract.GetOrSet.Set(null).wasSet() mustBe true
     }
 
     @Test
-    @JsName("fn31")
+    @JsName("fn32")
     fun `Given wasSetTo is called it returns false if it is attacht to Get`() {
         KMockContract.GetOrSet.Get.wasSetTo(null) mustBe false
     }
 
     @Test
-    @JsName("fn32")
+    @JsName("fn33")
     fun `Given wasSetTo is called it returns false if the values do not match`() {
         KMockContract.GetOrSet.Set(fixture.fixture()).wasSetTo(fixture.fixture()) mustBe false
     }
 
     @Test
-    @JsName("fn33")
+    @JsName("fn34")
     fun `Given wasSetTo is called it returns true if the values do match`() {
         val value: Any = fixture.fixture()
         KMockContract.GetOrSet.Set(value).wasSetTo(value) mustBe true
     }
 
     @Test
-    @JsName("fn34")
+    @JsName("fn35")
     fun `Given wasSetTo is called it returns false if the values do match while using Constraints`() {
         val value: Any = fixture.fixture()
         KMockContract.GetOrSet.Set(value).wasSetTo(isNotSame(value)) mustBe false

@@ -144,7 +144,6 @@ class AssertionsSpec {
         val actual = assertFailsWith<AssertionError> {
             // When
             Assertions.hasBeenCalledWithAtIndex(proxy, 0, expectedValue)
-
         }
 
         actual.message mustBe "Expected <$expectedValue> got actual <$actualValue>."
@@ -225,7 +224,6 @@ class AssertionsSpec {
         val actual = assertFailsWith<AssertionError> {
             // When
             Assertions.hasBeenStrictlyCalledWithAtIndex(proxy, 0, expectedValue)
-
         }
 
         actual.message mustBe "Expected <$expectedValue> got actual <$actualValue>."

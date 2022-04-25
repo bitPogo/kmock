@@ -9,7 +9,6 @@ package tech.antibytes.kmock.verification.constraints
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
@@ -54,7 +53,7 @@ class ArgumentConstraintWrapperSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given wrapNegatedValue is called it wraps a arbitrary values with a eq-Constraint, while enclosing it with a not`() {
+    fun `Given wrapNegatedValue is called it wraps a arbitrary values with a eq-Constraint while enclosing it with a not`() {
         // Given
         val value: Any = fixture.fixture()
 
@@ -68,12 +67,12 @@ class ArgumentConstraintWrapperSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given wrapNegatedValue is called it ignores Constraints, while enclosing it with a not`() {
+    fun `Given wrapNegatedValue is called it ignores Constraints while enclosing it with a not`() {
         // Given
         val value = KMockContract.ArgumentConstraint { true }
 
         // When
-        val actual = ArgumentConstraintWrapper.wrapValue(value)
+        val actual = ArgumentConstraintWrapper.wrapNegatedValue(value)
 
         // Then
         actual fulfils not::class

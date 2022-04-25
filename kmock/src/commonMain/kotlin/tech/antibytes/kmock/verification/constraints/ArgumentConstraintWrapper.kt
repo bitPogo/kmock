@@ -23,4 +23,3 @@ internal object ArgumentConstraintWrapper : KMockContract.ArgumentConstraintWrap
         return not(wrappedValue)
     }
 }
-

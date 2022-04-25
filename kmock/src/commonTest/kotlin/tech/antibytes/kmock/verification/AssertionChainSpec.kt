@@ -9,7 +9,6 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.kmock.fixture.fixtureVerificationHandle
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.kmock.fixture.propertyProxyFixture
 import tech.antibytes.mock.AssertionsStub
@@ -454,7 +453,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn19")
     fun `Given hasBeenCalledWithout is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
         // Given
         val id1: String = fixture.fixture()
@@ -479,7 +478,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn19")
+    @JsName("fn20")
     fun `Given hasBeenCalledWithout is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -517,7 +516,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn21")
     fun `Given wasGotten is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
@@ -536,7 +535,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn22")
     fun `Given wasGotten is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
         // Given
         val id1: String = fixture.fixture()
@@ -561,7 +560,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn22")
+    @JsName("fn23")
     fun `Given wasGotten is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -594,7 +593,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn24")
     fun `Given wasSet is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
@@ -613,7 +612,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn25")
     fun `Given wasSet is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
         // Given
         val id1: String = fixture.fixture()
@@ -638,7 +637,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn25")
+    @JsName("fn26")
     fun `Given wasSet is called in a Chain it it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -671,7 +670,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn27")
     fun `Given wasSetTo is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
@@ -690,7 +689,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn27")
+    @JsName("fn28")
     fun `Given wasSetTo is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
         // Given
         val id1: String = fixture.fixture()
@@ -715,7 +714,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn28")
+    @JsName("fn29")
     fun `Given wasSetTo is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -753,7 +752,7 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn29")
+    @JsName("fn30")
     fun `It respects the order of the chain`() {
         // Given
         val proxy1 = fixture.funProxyFixture()
@@ -777,7 +776,6 @@ class AssertionChainSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedCallIdx.add(givenIdx)
-
             },
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)

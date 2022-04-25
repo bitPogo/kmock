@@ -8,14 +8,14 @@ package tech.antibytes.kmock.verification
 
 import kotlinx.atomicfu.atomic
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Assert
+import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.KMockContract.Assertions
+import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.STRICT_CALL_NOT_MATCH
 import tech.antibytes.kmock.KMockContract.STRICT_MISSING_EXPECTATION
-import tech.antibytes.kmock.KMockContract.AssertionChain
-import tech.antibytes.kmock.KMockContract.Assert
 import tech.antibytes.kmock.util.format
 
 internal class AssertionChain(

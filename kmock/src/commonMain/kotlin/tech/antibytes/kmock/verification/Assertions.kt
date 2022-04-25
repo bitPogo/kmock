@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.HAD_BEEN_CALLED_NO_MATCHER
 import tech.antibytes.kmock.KMockContract.ILLEGAL_VALUE
@@ -17,6 +16,7 @@ import tech.antibytes.kmock.KMockContract.MISSING_INVOCATION
 import tech.antibytes.kmock.KMockContract.NON_VOID_FUNCTION
 import tech.antibytes.kmock.KMockContract.NOT_GET
 import tech.antibytes.kmock.KMockContract.NOT_SET
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.VOID_FUNCTION
 import tech.antibytes.kmock.util.format
 

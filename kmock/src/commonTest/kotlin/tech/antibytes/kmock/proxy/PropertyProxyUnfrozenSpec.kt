@@ -10,7 +10,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture

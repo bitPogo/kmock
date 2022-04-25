@@ -9,12 +9,12 @@ package tech.antibytes.kmock.verification
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.KMockContract.Assertions
+import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.kmock.KMockContract.AssertionChain
-import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.util.format
 
 internal class VerificationChain(

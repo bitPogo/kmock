@@ -58,12 +58,12 @@ class NotSpec {
     }
 
     private class StubConstraint(
-        val toString: String
+        val _toString: String
     ) : KMockContract.ArgumentConstraint {
         override fun matches(actual: Any?): Boolean {
             TODO()
         }
 
-        override fun toString(): String = toString
+        override fun toString(): String = _toString
     }
 }

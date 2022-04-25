@@ -371,7 +371,7 @@ class VerificationChainSpec {
             }
         }
 
-       actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
@@ -453,7 +453,7 @@ class VerificationChainSpec {
             }
         }
 
-       actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
@@ -535,7 +535,7 @@ class VerificationChainSpec {
             }
         }
 
-       actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
@@ -612,7 +612,7 @@ class VerificationChainSpec {
             }
         }
 
-       actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
@@ -689,7 +689,7 @@ class VerificationChainSpec {
             }
         }
 
-       actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
@@ -777,8 +777,6 @@ class VerificationChainSpec {
             Reference(proxy1, expectedCallIndices[7]),
         )
 
-
-
         val capturedProxies: MutableList<Proxy<*, *>> = mutableListOf()
         val capturedCallIdx: MutableList<Int> = mutableListOf()
 
@@ -786,7 +784,6 @@ class VerificationChainSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedCallIdx.add(givenIdx)
-
             },
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)

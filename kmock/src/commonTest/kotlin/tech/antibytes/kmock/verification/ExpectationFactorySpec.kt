@@ -10,7 +10,6 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
-import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture

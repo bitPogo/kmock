@@ -1258,7 +1258,7 @@ object KMockContract {
     /**
      *
      */
-    internal interface Assert : AssertionInsurance, AssertionContext
+    interface Assert : AssertionInsurance, AssertionContext
 
     /**
      * AssertionChain in order to verify over multiple Handles.

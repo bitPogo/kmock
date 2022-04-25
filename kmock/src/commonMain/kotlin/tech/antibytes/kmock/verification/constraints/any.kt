@@ -9,6 +9,7 @@
 package tech.antibytes.kmock.verification.constraints
 
 import tech.antibytes.kmock.KMockContract.ArgumentConstraint
+import tech.antibytes.kmock.util.extractKClassName
 import kotlin.reflect.KClass
 
 /**
@@ -35,7 +36,7 @@ class any(
         return if (expected == null) {
             "(Any value)"
         } else {
-            "(Any value of ${expected.qualifiedName})"
+            "(Any value of ${extractKClassName(expected)})"
         }
     }
 }

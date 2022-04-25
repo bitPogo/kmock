@@ -11,7 +11,6 @@ import co.touchlab.stately.concurrency.value
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture

@@ -7,6 +7,8 @@
 package tech.antibytes.kmock.verification.constraints
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.util.test.annotations.IgnoreJs
+import tech.antibytes.util.test.annotations.JsOnly
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
@@ -80,12 +82,24 @@ class AnySpec {
     }
 
     @Test
+    @IgnoreJs
     @JsName("fn6")
-    fun `Given toString is called and a Klass was specified it returns a AnyMatcher String for the KClass`() {
+    fun `Given toString is called and a Klass was specified it returns a AnyMatcher String for the KClass non Js`() {
         // When
         val actual = any(Boolean::class).toString()
 
         // Then
         actual mustBe "(Any value of kotlin.Boolean)"
+    }
+
+    @Test
+    @JsOnly
+    @JsName("fn7")
+    fun `Given toString is called and a Klass was specified it returns a AnyMatcher String for the KClass Js`() {
+        // When
+        val actual = any(Boolean::class).toString()
+
+        // Then
+        actual mustBe "(Any value of ${Boolean::class})"
     }
 }

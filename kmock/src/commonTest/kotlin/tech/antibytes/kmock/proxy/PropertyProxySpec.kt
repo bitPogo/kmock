@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
-import tech.antibytes.mock.AssertionChainStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest

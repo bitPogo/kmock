@@ -120,9 +120,9 @@ class OrSpec {
 
     private class MockConstraint(
         val matches: Boolean,
-        val toString: String = ""
+        val _toString: String = ""
     ) : KMockContract.ArgumentConstraint {
         override fun matches(actual: Any?): Boolean = matches
-        override fun toString(): String = toString
+        override fun toString(): String = _toString
     }
 }

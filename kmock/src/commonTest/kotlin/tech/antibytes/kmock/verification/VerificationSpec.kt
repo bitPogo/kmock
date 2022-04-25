@@ -7,9 +7,9 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Reference
-import tech.antibytes.kmock.fixture.fixtureVerificationHandle
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.AsserterStub
+import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
@@ -18,7 +18,6 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-/*
 class VerificationSpec {
     private val fixture = kotlinFixture()
 
@@ -125,7 +124,39 @@ class VerificationSpec {
 
     @Test
     @JsName("fn6")
-    fun `Given verifyStrictOrder is called it uses a StrictVerificationChain`() {
+    fun `Given assertOrder is called it uses a AssertionChain`() {
+        // Given
+        val verifier = AsserterStub(emptyList())
+
+        // When
+        verifier.assertOrder {
+            // Then
+            this fulfils AssertionChain::class
+        }
+    }
+
+    @Test
+    @JsName("fn7")
+    fun `Given assertOrder is called it ensures all references had been evaluated`() {
+        // Given
+        val id: String = fixture.fixture()
+        val verifier = AsserterStub(
+            listOf(
+                Reference(fixture.funProxyFixture(id = id), fixture.fixture())
+            )
+        )
+
+        val actual = assertFailsWith<AssertionError> {
+            // When
+            verifier.assertOrder {}
+        }
+
+        actual.message mustBe "The given verification chain covers 1 items, but only 0 were expected ($id were referenced)."
+    }
+
+    @Test
+    @JsName("fn8")
+    fun `Given verifyStrictOrder is called it uses a AssertionChain`() {
         // Given
         val verifier = AsserterStub(emptyList())
 
@@ -137,58 +168,26 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn7")
-    fun `Given verifyStrictOrder is called it registers and ensures that all references had been taken into account`() {
-        // Given
-        val references = listOf(
-            Reference(fixture.funProxyFixture(), 0),
-            Reference(fixture.funProxyFixture(), 0),
-        )
-
-        val verifier = AsserterStub(references)
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {
-                // Do nothing
-            }
-        }
-
-        error.message mustBe "The given verification chain covers 2 items, but only 0 were expected (${references[0].proxy.id}, ${references[1].proxy.id} were referenced)."
-    }
-
-    @Test
-    @JsName("fn8")
-    fun `Given verifyStrictOrder is called it accepts and cleans its registration`() {
-        // Given
-        val handle1 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0)
-        )
-        val handle2 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0)
-        )
-        val references = listOf(
-            Reference(handle1.proxy, 0),
-            Reference(handle2.proxy, 0),
-        )
-
-        val verifier = AsserterStub(references)
-
-        // When
-        verifier.verifyStrictOrder {
-            this as AssertionChain
-            this.propagate(handle1)
-            this.propagate(handle2)
-        }
-
-        // Then
-        references[0].proxy.assertionChain mustBe null
-        references[1].proxy.assertionChain mustBe null
-    }
-
-    @Test
     @JsName("fn9")
+    fun `Given verifyStrictOrder is called it ensures all references had been evaluated`() {
+        // Given
+        val id: String = fixture.fixture()
+        val verifier = AsserterStub(
+            listOf(
+                Reference(fixture.funProxyFixture(id = id), fixture.fixture())
+            )
+        )
+
+        val actual = assertFailsWith<AssertionError> {
+            // When
+            verifier.verifyStrictOrder {}
+        }
+
+        actual.message mustBe "The given verification chain covers 1 items, but only 0 were expected ($id were referenced)."
+    }
+
+    @Test
+    @JsName("fn10")
     fun `Given verifyOrder is called it uses a StrictVerificationChain`() {
         // Given
         val verifier = AsserterStub(emptyList())
@@ -199,51 +198,4 @@ class VerificationSpec {
             this fulfils VerificationChain::class
         }
     }
-
-    @Test
-    @JsName("fn10")
-    fun `Given verifyOrder is called it registers and accepts`() {
-        // Given
-        val references = listOf(
-            Reference(fixture.funProxyFixture(), 0),
-            Reference(fixture.funProxyFixture(), 0),
-        )
-
-        val verifier = AsserterStub(references)
-
-        // When
-        verifier.verifyOrder {
-            // Do nothing
-        }
-    }
-
-    @Test
-    @JsName("fn11")
-    fun `Given verifyOrder is called it accepts and cleans its registration`() {
-        // Given
-        val handle1 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0)
-        )
-        val handle2 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0)
-        )
-        val references = listOf(
-            Reference(handle1.proxy, 0),
-            Reference(handle2.proxy, 0),
-        )
-
-        val verifier = AsserterStub(references)
-
-        // When
-        verifier.verifyOrder {
-            this as VerificationChain
-            this.propagate(handle1)
-            this.propagate(handle2)
-        }
-
-        // Then
-        references[0].proxy.assertionChain mustBe null
-        references[1].proxy.assertionChain mustBe null
-    }
 }
-*/
