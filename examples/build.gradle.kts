@@ -47,15 +47,6 @@ kotlin {
     linuxX64()
 
     sourceSets {
-        removeAll { sourceSet ->
-            setOf(
-                "androidAndroidTestRelease",
-                "androidTestFixtures",
-                "androidTestFixturesDebug",
-                "androidTestFixturesRelease",
-            ).contains(sourceSet.name)
-        }
-
         val commonMain by getting {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.common)
@@ -86,28 +77,33 @@ kotlin {
         }
 
         val concurrentMain by creating {
-            dependencies {
-                dependsOn(commonMain)
-            }
+            dependsOn(commonMain)
         }
 
         val concurrentTest by creating {
-            dependencies {
-                dependsOn(commonTest)
-            }
+            dependsOn(commonTest)
         }
 
         val androidMain by getting {
+            dependsOn(concurrentMain)
             dependencies {
-                dependsOn(concurrentMain)
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
+        val androidAndroidTestRelease by getting
+        val androidTestFixtures by getting
+        val androidTestFixturesDebug by getting
+        val androidTestFixturesRelease by getting
         val androidTest by getting {
-            dependencies {
-                kotlin.srcDir("build/generated/ksp/android/androidTest")
-                dependsOn(concurrentTest)
+            kotlin.srcDir("build/generated/ksp/android/androidTest")
 
+            dependsOn(concurrentTest)
+            dependsOn(androidAndroidTestRelease)
+            dependsOn(androidTestFixtures)
+            dependsOn(androidTestFixturesDebug)
+            dependsOn(androidTestFixturesRelease)
+
+            dependencies {
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
                 implementation(Dependency.android.test.robolectric)
@@ -116,7 +112,6 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-                dependsOn(commonMain)
                 implementation(Dependency.multiplatform.kotlin.js)
                 implementation(Dependency.js.nodejs)
             }
@@ -125,89 +120,65 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/js/jsTest")
 
             dependencies {
-                dependsOn(commonTest)
-
                 implementation(Dependency.multiplatform.test.js)
             }
         }
 
         val jvmMain by getting {
+            dependsOn(concurrentMain)
             dependencies {
-                dependsOn(concurrentMain)
                 implementation(Dependency.multiplatform.kotlin.jdk8)
             }
         }
         val jvmTest by getting {
             kotlin.srcDir("build/generated/ksp/jvm/jvmTest")
+            dependsOn(concurrentTest)
 
             dependencies {
-                dependsOn(concurrentTest)
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
             }
         }
 
         val nativeMain by creating {
-            dependencies {
-                dependsOn(concurrentMain)
-            }
+            dependsOn(concurrentMain)
         }
         val nativeTest by creating {
-            dependencies {
-                dependsOn(concurrentTest)
-            }
+            dependsOn(concurrentTest)
         }
 
         val darwinMain by creating {
-            dependencies {
-                dependsOn(nativeMain)
-            }
+            dependsOn(nativeMain)
         }
         val darwinTest by creating {
-            dependencies {
-                dependsOn(nativeTest)
-            }
+            dependsOn(nativeTest)
         }
 
         val otherMain by creating {
-            dependencies {
-                dependsOn(nativeMain)
-            }
+            dependsOn(nativeMain)
         }
         val otherTest by creating {
-            dependencies {
-                dependsOn(nativeTest)
-            }
+            dependsOn(nativeTest)
         }
 
         val linuxX64Main by getting {
-            dependencies {
-                dependsOn(otherMain)
-            }
+            dependsOn(otherMain)
         }
         val linuxX64Test by getting {
             kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test")
-            dependencies {
-                dependsOn(otherTest)
-            }
+            dependsOn(otherTest)
         }
 
         val iosMain by getting {
-            dependencies {
-                dependsOn(darwinMain)
-            }
+            dependsOn(darwinMain)
         }
         val iosTest by getting {
-            dependencies {
-                dependsOn(darwinTest)
-            }
+            dependsOn(darwinTest)
         }
 
         val iosX64Test by getting {
             kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test")
-            dependencies {
-                dependsOn(iosTest)
-            }
+            dependsOn(iosTest)
         }
     }
 }
