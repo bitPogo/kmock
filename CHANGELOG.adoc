@@ -61,6 +61,7 @@ toc::[]
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
 * `allowInterfacesOnKmock`, use allowInterfaces instead
 * `allowInterfacesOnKspy`, use allowInterfaces instead
+* old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
 
 === Fixed
 

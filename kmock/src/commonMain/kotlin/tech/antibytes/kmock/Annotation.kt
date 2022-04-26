@@ -72,7 +72,7 @@ annotation class Relaxer
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
-    message = "This API is experimental.  It may be removed or changed in future releases."
+    message = "This API is experimental. It may be removed or changed in future releases."
 )
 @Target(
     AnnotationTarget.CLASS,
