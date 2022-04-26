@@ -14,6 +14,7 @@ class PropertyProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> GetOrSet)? = null,
+    override val frozen: Boolean = true,
 ) : KMockContract.PropertyProxy<Any> {
     override fun getArgumentsForCall(callIndex: Int): GetOrSet {
         return if (getArgumentsForCall == null) {

@@ -13,7 +13,8 @@ class SyncFunProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
-    override val ignorableForVerification: Boolean = false
+    override val ignorableForVerification: Boolean = false,
+    override val frozen: Boolean = true
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
     override var throws: Throwable
         get() = TODO("Not yet implemented")

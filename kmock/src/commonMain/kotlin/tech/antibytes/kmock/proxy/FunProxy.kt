@@ -28,6 +28,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     collector: Collector = NoopCollector,
     freeze: Boolean,
 ) : KMockContract.FunProxy<ReturnValue, SideEffect> {
+    override val frozen: Boolean = freeze
+
     private class FreezingFunProxyState<ReturnValue, SideEffect : Function<ReturnValue>>(
         defaultInvocationType: FunProxyInvocationType,
         collector: Collector,

@@ -29,10 +29,10 @@ internal class VerificationChain(
 ) : AssertionChain, ChainedAssertion {
     private val invocation = atomic(0)
 
-    private fun getProxyIdSet(): Set<String> {
-        val set: MutableSet<String> = mutableSetOf()
+    private fun getProxyIdSet(): Set<Proxy<*, *>> {
+        val set: MutableSet<Proxy<*, *>> = mutableSetOf()
 
-        references.forEach { reference -> set.add(reference.proxy.id) }
+        references.forEach { reference -> set.add(reference.proxy) }
 
         return set
     }
@@ -41,7 +41,7 @@ internal class VerificationChain(
         val actual = getProxyIdSet()
 
         proxies.forEach { proxy ->
-            if (proxy.id !in actual) {
+            if (proxy !in actual) {
                 throw IllegalStateException(NOT_PART_OF_CHAIN.format(proxy.id))
             }
         }

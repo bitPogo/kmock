@@ -39,6 +39,11 @@ object KMockContract {
         val calls: Int
 
         /**
+         * Indicates that the proxies uses the frozen memory model.
+         */
+        val frozen: Boolean
+
+        /**
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.

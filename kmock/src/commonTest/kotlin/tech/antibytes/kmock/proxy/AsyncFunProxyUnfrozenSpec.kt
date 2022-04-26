@@ -52,6 +52,12 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn1")
+    fun `It is not frozen if told so`() {
+        AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false).frozen mustBe false
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a throws is set it is retrievable`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -65,7 +71,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn2a")
     fun `Given a returnValue is set it is retrievable`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)

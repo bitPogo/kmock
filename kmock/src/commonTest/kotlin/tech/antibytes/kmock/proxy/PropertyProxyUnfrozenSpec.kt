@@ -24,7 +24,19 @@ class PropertyProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
 
     @Test
+    @JsName("fn0")
+    fun `It fulfils PropProxy`() {
+        PropertyProxy<Unit>(fixture.fixture()) fulfils KMockContract.PropertyProxy::class
+    }
+
+    @Test
     @JsName("fn1")
+    fun `It is not frozen if told so`() {
+        PropertyProxy<Any>(fixture.fixture(), freeze = false).frozen mustBe false
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a get is set it is retrievable`() {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture(), freeze = false)
@@ -38,7 +50,7 @@ class PropertyProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn2a")
     fun `Given a get is set with nullable value it is retrievable`() {
         // Given
         val proxy = PropertyProxy<Any?>(

@@ -13,20 +13,24 @@ import tech.antibytes.util.test.fixture.fixture
 
 internal fun PublicApi.Fixture.funProxyFixture(
     id: String? = null,
-    calls: Int? = null
+    calls: Int? = null,
+    freeze: Boolean? = null
 ): SyncFunProxyStub {
     return SyncFunProxyStub(
         id ?: this.fixture(),
-        calls ?: this.fixture()
+        calls ?: this.fixture(),
+        frozen = freeze ?: this.fixture()
     )
 }
 
 internal fun PublicApi.Fixture.propertyProxyFixture(
     id: String? = null,
-    calls: Int? = null
+    calls: Int? = null,
+    freeze: Boolean? = null
 ): PropertyProxyStub {
     return PropertyProxyStub(
         id ?: this.fixture(),
-        calls ?: this.fixture()
+        calls ?: this.fixture(),
+        frozen = freeze ?: this.fixture()
     )
 }
