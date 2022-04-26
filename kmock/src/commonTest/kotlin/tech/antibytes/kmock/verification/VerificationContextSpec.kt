@@ -7,18 +7,28 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
+import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
 
-class ExpectationFactorySpec {
+class VerificationContextSpec {
     private val fixture = kotlinFixture()
+
+    @Test
+    @JsName("fn0a")
+    fun `It fulfils VerificationContext`() {
+        VerificationContext fulfils KMockContract.VerificationContext::class
+    }
+
+    private fun invoke(
+        action: VerificationContext.() -> Expectation
+    ): Expectation = action(VerificationContext)
 
     @Test
     @JsName("fn0")
@@ -28,7 +38,9 @@ class ExpectationFactorySpec {
         val proxy = fixture.funProxyFixture(name, 0)
 
         // When
-        val actual = proxy.hasBeenCalled()
+        val actual = invoke {
+            proxy.hasBeenCalled()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -49,7 +61,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalled()
+        val actual = invoke {
+            proxy.hasBeenCalled()
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -64,7 +78,9 @@ class ExpectationFactorySpec {
         val proxy = fixture.funProxyFixture(name, 0)
 
         // When
-        val actual = proxy.hasBeenCalledWithVoid()
+        val actual = invoke {
+            proxy.hasBeenCalledWithVoid()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -85,7 +101,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalledWithVoid()
+        val actual = invoke {
+            proxy.hasBeenCalledWithVoid()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -107,7 +125,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalled()
+        val actual = invoke {
+            proxy.hasBeenCalled()
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -122,7 +142,9 @@ class ExpectationFactorySpec {
         val proxy = fixture.funProxyFixture(name, 0)
 
         // When
-        val actual = proxy.hasBeenCalledWith()
+        val actual = invoke {
+            proxy.hasBeenCalledWith()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -143,7 +165,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalledWith(fixture.fixture<String>())
+        val actual = invoke {
+            proxy.hasBeenCalledWith(fixture.fixture<String>())
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -166,7 +190,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalledWith(*values)
+        val actual = invoke {
+            proxy.hasBeenCalledWith(*values)
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -181,7 +207,9 @@ class ExpectationFactorySpec {
         val proxy = fixture.funProxyFixture(name, 0)
 
         // When
-        val actual = proxy.hasBeenStrictlyCalledWith()
+        val actual = invoke {
+            proxy.hasBeenStrictlyCalledWith()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -202,7 +230,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenStrictlyCalledWith(fixture.fixture<String>())
+        val actual = invoke {
+            proxy.hasBeenStrictlyCalledWith(fixture.fixture<String>())
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -225,7 +255,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenStrictlyCalledWith(*values)
+        val actual = invoke {
+            proxy.hasBeenStrictlyCalledWith(*values)
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -240,7 +272,9 @@ class ExpectationFactorySpec {
         val proxy = fixture.funProxyFixture(name, 0)
 
         // When
-        val actual = proxy.hasBeenCalledWithout()
+        val actual = invoke {
+            proxy.hasBeenCalledWithout()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -262,7 +296,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalledWithout(*values)
+        val actual = invoke {
+            proxy.hasBeenCalledWithout(*values)
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -284,7 +320,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.hasBeenCalledWithout(fixture.fixture<String>())
+        val actual = invoke {
+            proxy.hasBeenCalledWithout(fixture.fixture<String>())
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -306,7 +344,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasGotten()
+        val actual = invoke {
+            proxy.wasGotten()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -328,7 +368,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasGotten()
+        val actual = invoke {
+            proxy.wasGotten()
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -350,7 +392,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasSet()
+        val actual = invoke {
+            proxy.wasSet()
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -372,7 +416,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasSet()
+        val actual = invoke {
+            proxy.wasSet()
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))
@@ -394,7 +440,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasSetTo(fixture.fixture())
+        val actual = invoke {
+            proxy.wasSetTo(fixture.fixture())
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -416,7 +464,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasSetTo(fixture.fixture())
+        val actual = invoke {
+            proxy.wasSetTo(fixture.fixture())
+        }
 
         // Then
         actual mustBe Expectation(proxy, emptyList())
@@ -439,7 +489,9 @@ class ExpectationFactorySpec {
         }
 
         // When
-        val actual = proxy.wasSetTo(value)
+        val actual = invoke {
+            proxy.wasSetTo(value)
+        }
 
         // Then
         actual mustBe Expectation(proxy, listOf(0))

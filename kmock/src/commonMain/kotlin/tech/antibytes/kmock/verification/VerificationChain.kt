@@ -8,20 +8,24 @@ package tech.antibytes.kmock.verification
 
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
+import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.AssertionChain
-import tech.antibytes.kmock.KMockContract.Assertions
 import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
+import tech.antibytes.kmock.KMockContract.CALL_WITH_ARGS_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.ChainedAssertion
 import tech.antibytes.kmock.KMockContract.FunProxy
+import tech.antibytes.kmock.KMockContract.ILLEGAL_VALUE
+import tech.antibytes.kmock.KMockContract.MISSING_INVOCATION
+import tech.antibytes.kmock.KMockContract.NOT_GET
 import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
+import tech.antibytes.kmock.KMockContract.NOT_SET
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
-import tech.antibytes.kmock.KMockContract.Reference
+import tech.antibytes.kmock.KMockContract.VOID_FUNCTION
 import tech.antibytes.kmock.util.format
 
 internal class VerificationChain(
-    private val references: List<Reference>,
-    private val assertions: Assertions = Assertions,
+    private val references: List<KMockContract.Reference>,
 ) : AssertionChain, ChainedAssertion {
     private val invocation = atomic(0)
 
@@ -62,72 +66,133 @@ internal class VerificationChain(
 
         val expectedCallIdxReference = references[actual].callIndex
 
-        action(expectedCallIdxReference)
-
         invocation.update { actual + 1 }
+
+        action(expectedCallIdxReference)
     }
 
-    override fun FunProxy<*, *>.hasBeenCalled() {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledAtIndex(this, callIndex)
+    private fun <T> Proxy<*, T>.guardActualRetrieval(callIndex: Int): T {
+        return try {
+            this.getArgumentsForCall(callIndex)
+        } catch (_: Throwable) {
+            throw AssertionError(MISSING_INVOCATION.format(callIndex + 1, this.id))
         }
     }
 
+    private fun mapValues(vararg values: Any?): List<Any?> = values.map { it }
+
+    override fun FunProxy<*, *>.hasBeenCalled() = runAssertion(this) { callIdx -> guardActualRetrieval(callIdx) }
+
     override fun FunProxy<*, *>.hasBeenCalledWithVoid() {
         runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithVoidAtIndex(this, callIndex)
+            val valid = this.guardActualRetrieval(callIndex).hasBeenCalledWithVoid()
+
+            if (!valid) {
+                try {
+                    this.hasBeenCalledWithVoid()
+                } catch (e: AssertionError) {
+                    throw AssertionError(VOID_FUNCTION.format(this.id))
+                }
+            }
         }
     }
 
     override fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?) {
         runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                arguments = arguments
-            )
+            val valid = this.guardActualRetrieval(callIndex).hasBeenCalledWith(*arguments)
+
+            if (!valid) {
+                try {
+                    this.hasBeenCalledWith(*arguments)
+                } catch (e: AssertionError) {
+                    throw AssertionError(
+                        CALL_WITH_ARGS_NOT_FOUND.format(
+                            this.id,
+                            mapValues(*arguments)
+                        )
+                    )
+                }
+            }
         }
     }
 
     override fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?) {
         runAssertion(this) { callIndex ->
-            assertions.hasBeenStrictlyCalledWithAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                arguments = arguments
-            )
+            val valid = this.guardActualRetrieval(callIndex).hasBeenStrictlyCalledWith(*arguments)
+
+            if (!valid) {
+                try {
+                    this.hasBeenStrictlyCalledWith(*arguments)
+                } catch (e: AssertionError) {
+                    throw AssertionError(
+                        CALL_WITH_ARGS_NOT_FOUND.format(
+                            this.id,
+                            mapValues(*arguments)
+                        )
+                    )
+                }
+            }
         }
     }
 
     override fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?) {
         runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithoutAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                illegal = illegal
-            )
+            val valid = this.guardActualRetrieval(callIndex).hasBeenCalledWithout(*illegal)
+
+            if (!valid) {
+                try {
+                    this.hasBeenCalledWithout(*illegal)
+                } catch (e: AssertionError) {
+                    throw AssertionError(ILLEGAL_VALUE.format(mapValues(*illegal)))
+                }
+            }
         }
     }
 
     override fun PropertyProxy<*>.wasGotten() {
         runAssertion(this) { callIndex ->
-            assertions.wasGottenAtIndex(proxy = this, callIndex = callIndex)
+            val valid = this.guardActualRetrieval(callIndex).wasGotten()
+
+            if (!valid) {
+                try {
+                    this.wasGotten()
+                } catch (e: AssertionError) {
+                    throw AssertionError(NOT_GET)
+                }
+            }
         }
     }
 
     override fun PropertyProxy<*>.wasSet() {
         runAssertion(this) { callIndex ->
-            assertions.wasSetAtIndex(proxy = this, callIndex = callIndex)
+            val valid = this.guardActualRetrieval(callIndex).wasSet()
+
+            if (!valid) {
+                try {
+                    this.wasSet()
+                } catch (e: AssertionError) {
+                    throw AssertionError(NOT_SET)
+                }
+            }
         }
     }
 
     override fun PropertyProxy<*>.wasSetTo(value: Any?) {
         runAssertion(this) { callIndex ->
-            assertions.wasSetToAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                value = value
-            )
+            val valid = this.guardActualRetrieval(callIndex).wasSetTo(value)
+
+            if (!valid) {
+                try {
+                    this.wasSetTo(value)
+                } catch (e: AssertionError) {
+                    throw AssertionError(
+                        CALL_WITH_ARGS_NOT_FOUND.format(
+                            this.id,
+                            value
+                        )
+                    )
+                }
+            }
         }
     }
 

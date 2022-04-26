@@ -22,6 +22,7 @@ class Asserter(coverAllInvocations: Boolean = false) : AsserterBase(coverAllInvo
 }
 
 /**
- *
+ * Alias to Asserter.
+ * @author Matthias Geisler
  */
 typealias Verifier = Asserter

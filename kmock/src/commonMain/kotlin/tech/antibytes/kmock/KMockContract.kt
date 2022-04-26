@@ -1253,25 +1253,21 @@ object KMockContract {
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
-         * The arguments do not need to be complete.
-         * @param arguments the expected arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
-         * The arguments must be complete.
-         * @param arguments the expected arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was without called n-parameter.
-         * The arguments do not need to be complete.
-         * @param proxy the actual proxy.
-         * @param illegal the forbidden arguments.
+         * @param illegal arguments or constraints which calls is not allowed not match.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
@@ -1297,12 +1293,72 @@ object KMockContract {
     }
 
     /**
+     * Provider for Verification.
+     * @author Matthias Geisler
+     */
+    interface VerificationContext {
+        /**
+         * Collects all invocation of a FunProxy.
+         * @return Expectation
+         */
+        fun FunProxy<*, *>.hasBeenCalled(): Expectation
+
+        /**
+         * Collects all invocation of a FunProxy which contain no Arguments.
+         * @return Expectation
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithVoid(): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param illegal arguments or constraints which calls is not allowed not match.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Getter.
+         */
+        fun PropertyProxy<*>.wasGotten(): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Setter.
+         */
+        fun PropertyProxy<*>.wasSet(): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Setter with the given Value.
+         * @return Expectation
+         * @param value argument/constraint which calls must match.
+         * @see ArgumentConstraint
+         */
+        fun PropertyProxy<*>.wasSetTo(value: Any?): Expectation
+    }
+
+    /**
      * Insurance that given Proxies are covered by the AssertionChain.
      * @author Matthias Geisler
      */
     fun interface AssertionInsurance {
         /**
-         * Ensures that given Proxies are covered by the AssertionChain. Use this method with caution!
+         * Ensures that given Proxies are covered by the AssertionChain.
          * @throws IllegalStateException if a given Proxy is not covered by a AssertionChain.
          */
         fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
@@ -1351,6 +1407,7 @@ object KMockContract {
 
     internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
     internal const val MISMATCH = "Expected <%0> got actual <%1>."
+    internal const val CALL_WITH_ARGS_NOT_FOUND = "Expected %0 to be invoked with %1, but no matching call was found."
     internal const val HAD_BEEN_CALLED_NO_MATCHER = "The given matcher %0 has not been found."
     internal const val MISMATCHING_SIZE = "Expected <%0> arguments got actual <%1>."
     internal const val ILLEGAL_VALUE = "Illegal value <%0> detected."
@@ -1363,5 +1420,5 @@ object KMockContract {
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
-    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this chain."
 }

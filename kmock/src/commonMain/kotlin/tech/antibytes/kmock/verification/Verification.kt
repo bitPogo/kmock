@@ -9,7 +9,6 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Asserter
 import tech.antibytes.kmock.KMockContract.AssertionContext
-import tech.antibytes.kmock.KMockContract.AssertionInsurance
 import tech.antibytes.kmock.KMockContract.ChainedAssertion
 import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NOT_CALLED
@@ -52,23 +51,16 @@ private infix fun Expectation.mustBeAtMost(value: Int) {
  * @param atMost optional parameter which indicates the maximum amount of calls.
  * @param action producer of a VerificationHandle.
  * @throws AssertionError if given criteria are not met.
- * @see hasBeenCalled
- * @see hasBeenCalledWithVoid
- * @see hasBeenCalledWith
- * @see hasBeenStrictlyCalledWith
- * @see hasBeenCalledWithout
- * @see wasGotten
- * @see wasSet
- * @see wasSetTo
+ * @see KMockContract.VerificationContext
  * @author Matthias Geisler
  */
 fun verify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
-    action: () -> Expectation
+    action: KMockContract.VerificationContext.() -> Expectation
 ) {
-    val handle = action()
+    val handle = action(VerificationContext)
     val minimum = exactly ?: atLeast
     val maximum = exactly ?: atMost
 
@@ -81,9 +73,9 @@ fun verify(
 
 fun <T> runAssertion(
     chain: T,
-    scope: ChainedAssertion.() -> Any
+    action: ChainedAssertion.() -> Any
 ) where T : ChainedAssertion, T : KMockContract.AssertionChain {
-    scope(chain)
+    action(chain)
 
     chain.ensureAllReferencesAreEvaluated()
 }
@@ -91,32 +83,30 @@ fun <T> runAssertion(
 /**
 * Asserts a chain of Expectations. Each Expectations must be in strict order of the referenced Proxy invocations
 * and all invocations must be present.
-* @param scope chain of Expectation Methods.
+* @param action chain of Expectation Methods.
 * @throws AssertionError if given criteria are not met.
 * @see AssertionContext
 * @author Matthias Geisler
 */
-fun Asserter.assertOrder(scope: ChainedAssertion.() -> Any) = runAssertion(AssertionChain(references), scope)
+fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runAssertion(AssertionChain(references), action)
 
 /**
- * Alias of assertOrder.
- * @param scope chain of Expectation Methods.
+ * Verifies a chain of Expectations. Expectation between different proxies can contain gaps.
+ * Also the chain does not need to be exhaustive.
+ * @param action chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
- * @see assertOrder
  * @author Matthias Geisler
  */
-@Deprecated(
-    "This will be removed with version 1.0. Use assertOrder instead.",
-    ReplaceWith("assertOrder(scope)")
-)
-fun Asserter.verifyStrictOrder(scope: ChainedAssertion.() -> Any) = assertOrder(scope)
+fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
+    runAssertion(StrictVerificationChain(references), action)
+}
 
 /**
  * Verifies a chain of Expectations. Each Expectations must be in order but gaps are allowed.
  * Also the chain does not need to be exhaustive.
- * @param scope chain of Expectation Methods.
+ * @param action chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(scope: AssertionInsurance.() -> Any) = runAssertion(VerificationChain(references), scope)
+fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(VerificationChain(references), action)

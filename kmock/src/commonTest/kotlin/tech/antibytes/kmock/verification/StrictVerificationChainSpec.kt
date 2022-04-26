@@ -14,6 +14,7 @@ import tech.antibytes.kmock.fixture.propertyProxyFixture
 import tech.antibytes.mock.AssertionsStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
@@ -21,80 +22,48 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class AssertionChainSpec {
+class StrictVerificationChainSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
     fun `It fulfils AssertionChain`() {
-        AssertionChain(emptyList()) fulfils KMockContract.AssertionChain::class
+        StrictVerificationChain(emptyList()) fulfils KMockContract.AssertionChain::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils ChainedAssertion`() {
-        AssertionChain(emptyList()) fulfils KMockContract.ChainedAssertion::class
+        StrictVerificationChain(emptyList()) fulfils KMockContract.ChainedAssertion::class
     }
-
-    private fun invoke(
-        chain: AssertionChain,
-        action: AssertionChain.() -> Unit
-    ) = action(chain)
 
     @Test
     @JsName("fn2")
-    fun `Given ensureAllReferencesAreEvaluated is called it fails if not all References had been evaluated`() {
-        // Given
-        val references = listOf(
-            Reference(fixture.funProxyFixture(), 0),
-            Reference(fixture.funProxyFixture(), 0),
-        )
-
-        val chain = AssertionChain(references)
-
-        // Then
-        val error = assertFailsWith<AssertionError> {
-            // When
-            chain.ensureAllReferencesAreEvaluated()
-        }
-
-        error.message mustBe "The given verification chain covers 2 items, but only 0 were expected (${references[0].proxy.id}, ${references[1].proxy.id} were referenced)."
-    }
-
-    @Test
-    @JsName("fn3")
-    fun `Given ensureAllReferencesAreEvaluated is called it accepts if all References had been evaluated`() {
+    fun `Given ensureAllReferencesAreEvaluated is called it accepts allways`() {
         // Given
         val proxy1 = fixture.funProxyFixture()
         val proxy2 = fixture.funProxyFixture()
         val references = listOf(
-            Reference(proxy1, 0),
-            Reference(proxy2, 0),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy2, fixture.fixture()),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy2, fixture.fixture()),
         )
 
-        val assertions = AssertionsStub(
-            hasBeenCalledAtIndex = { _, _ -> Unit }
-        )
-
-        val chain = AssertionChain(references, assertions)
+        val chain = StrictVerificationChain(references)
 
         // When
-        invoke(chain) {
-            proxy1.hasBeenCalled()
-            proxy2.hasBeenCalled()
-        }
-
         chain.ensureAllReferencesAreEvaluated()
     }
 
     @Test
-    @JsName("fn4")
-    fun `Given ensureVerification it fails if the given mock is not part of it`() {
+    @JsName("fn3")
+    fun `Given ensureVerification it fails if the given Proxy is not part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
 
         // When
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         val error = assertFailsWith<IllegalStateException> {
             container.ensureVerificationOf(proxy)
@@ -105,11 +74,11 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn5")
+    @JsName("fn4")
     fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
-        val container = AssertionChain(
+        val container = StrictVerificationChain(
             listOf(
                 Reference(proxy, 0)
             )
@@ -119,13 +88,18 @@ class AssertionChainSpec {
         container.ensureVerificationOf(proxy)
     }
 
+    private fun invoke(
+        chain: StrictVerificationChain,
+        action: StrictVerificationChain.() -> Unit
+    ) = action(chain)
+
     @Test
-    @JsName("fn6")
+    @JsName("fn5")
     fun `Given hasBeenCalled is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -139,8 +113,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn7")
-    fun `Given hasBeenCalled is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn6")
+    fun `Given hasBeenCalled is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -150,7 +124,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -160,11 +134,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn7")
     fun `Given hasBeenCalled is called in a Chain it delegates the call to the given Assertions`() {
         // Given
         val expectedProxy = fixture.funProxyFixture()
@@ -182,7 +156,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -195,12 +169,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn8")
     fun `Given hasBeenCalledWithVoid is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -214,8 +188,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn10")
-    fun `Given hasBeenCalledWithVoid is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn9")
+    fun `Given hasBeenCalledWithVoid is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -225,7 +199,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -235,11 +209,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn11")
+    @JsName("fn10")
     fun `Given hasBeenCalledWithVoid is called in a Chain it the delegates the call to the Assertions`() {
         // Given
         val expectedProxy = fixture.funProxyFixture()
@@ -257,7 +231,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -270,12 +244,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn12")
+    @JsName("fn11")
     fun `Given hasBeenCalledWith is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -289,8 +263,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn13")
-    fun `Given hasBeenCalledWith is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn12")
+    fun `Given hasBeenCalledWith is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -300,7 +274,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -310,11 +284,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn14")
+    @JsName("fn13")
     fun `Given hasBeenCalledWith is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -338,7 +312,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -352,12 +326,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn15")
+    @JsName("fn14")
     fun `Given hasBeenStrictlyCalledWith is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -371,8 +345,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn16")
-    fun `Given hasBeenStrictlyCalledWith is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn15")
+    fun `Given hasBeenStrictlyCalledWith is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -382,7 +356,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -392,11 +366,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn17")
+    @JsName("fn16")
     fun `Given hasBeenStrictlyCalledWith is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -420,7 +394,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -434,12 +408,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn18")
+    @JsName("fn17")
     fun `Given hasBeenCalledWithout is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -453,8 +427,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn19")
-    fun `Given hasBeenCalledWithout is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn18")
+    fun `Given hasBeenCalledWithout is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -464,7 +438,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -474,11 +448,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn20")
+    @JsName("fn19")
     fun `Given hasBeenCalledWithout is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -502,7 +476,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -516,12 +490,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn21")
+    @JsName("fn20")
     fun `Given wasGotten is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -535,8 +509,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn22")
-    fun `Given wasGotten is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn21")
+    fun `Given wasGotten is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -546,7 +520,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -556,11 +530,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn23")
+    @JsName("fn22")
     fun `Given wasGotten is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -580,7 +554,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -593,12 +567,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn24")
+    @JsName("fn23")
     fun `Given wasSet is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -612,8 +586,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn25")
-    fun `Given wasSet is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn24")
+    fun `Given wasSet is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -623,7 +597,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -633,11 +607,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn26")
+    @JsName("fn25")
     fun `Given wasSet is called in a Chain it it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -657,7 +631,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -670,12 +644,12 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn27")
+    @JsName("fn26")
     fun `Given wasSetTo is called in a Chain it fails if the current References are exhausted`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = AssertionChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -689,8 +663,8 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn28")
-    fun `Given wasSetTo is called in a Chain it fails if the current Reference and the expected Proxies are not the same`() {
+    @JsName("fn27")
+    fun `Given wasSetTo is called in a Chain it fails if the expected Proxies was not found`() {
         // Given
         val id1: String = fixture.fixture()
         val id2: String = fixture.fixture()
@@ -700,7 +674,7 @@ class AssertionChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = AssertionChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -710,11 +684,11 @@ class AssertionChainSpec {
             }
         }
 
-        actual.message mustBe "Expected $id1 to be invoked, but $id2 was called."
+        actual.message mustBe "Expected $id1 to be invoked, but no further calls were captured."
     }
 
     @Test
-    @JsName("fn29")
+    @JsName("fn28")
     fun `Given wasSetTo is called in a Chain it delegates the call to the assertions`() {
         // Given
         val id: String = fixture.fixture()
@@ -738,7 +712,7 @@ class AssertionChainSpec {
             }
         )
 
-        val container = AssertionChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -752,21 +726,50 @@ class AssertionChainSpec {
     }
 
     @Test
-    @JsName("fn30")
-    fun `It respects the order of the chain`() {
+    @JsName("fn29")
+    fun `It respects the pratial order of the chain`() {
         // Given
         val proxy1 = fixture.funProxyFixture()
         val proxy2 = fixture.funProxyFixture()
         val proxy3 = fixture.propertyProxyFixture()
+
+        val expectedProxies = listOf(
+            proxy1,
+            proxy3,
+            proxy2,
+            proxy1,
+            proxy3,
+            proxy2,
+            proxy3,
+            proxy1,
+        )
+
+        val expectedCallIndices: List<Int> = fixture.listFixture(size = 8)
+
         val references = listOf(
-            Reference(proxy1, fixture.fixture()),
             Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy1, expectedCallIndices[0]),
+            Reference(proxy3, expectedCallIndices[1]),
+            Reference(proxy2, expectedCallIndices[2]),
             Reference(proxy2, fixture.fixture()),
-            Reference(proxy1, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
             Reference(proxy2, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
+            Reference(proxy1, expectedCallIndices[3]),
             Reference(proxy1, fixture.fixture()),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy3, expectedCallIndices[4]),
+            Reference(proxy2, expectedCallIndices[5]),
+            Reference(proxy3, expectedCallIndices[6]),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, fixture.fixture()),
+            Reference(proxy1, expectedCallIndices[7]),
         )
 
         val capturedProxies: MutableList<Proxy<*, *>> = mutableListOf()
@@ -807,7 +810,7 @@ class AssertionChainSpec {
             }
         )
 
-        val chain = AssertionChain(references, assertions)
+        val chain = StrictVerificationChain(references, assertions)
 
         // When
         invoke(chain) {
@@ -822,7 +825,7 @@ class AssertionChainSpec {
         }
 
         // Then
-        capturedProxies mustBe references.map { it.proxy }
-        capturedCallIdx mustBe references.map { it.callIndex }
+        capturedProxies mustBe expectedProxies
+        capturedCallIdx mustBe expectedCallIndices
     }
 }

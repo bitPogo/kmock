@@ -23,8 +23,9 @@ import tech.antibytes.kmock.KMockExperimental
 fun FunProxy<*, *>.assertHasBeenCalled(
     exactly: Int,
 ) {
+    val proxy = this
     verify(exactly = exactly) {
-        this.hasBeenCalledWith()
+        proxy.hasBeenCalledWith()
     }
 }
 
@@ -40,8 +41,9 @@ fun FunProxy<*, *>.assertHasBeenCalled(
 fun FunProxy<*, *>.assertHasBeenCalledWithVoid(
     exactly: Int,
 ) {
+    val proxy = this
     verify(exactly = exactly) {
-        this.hasBeenCalledWithVoid()
+        proxy.hasBeenCalledWithVoid()
     }
 }
 
@@ -60,8 +62,9 @@ fun FunProxy<*, *>.assertHasBeenCalledWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
+    val proxy = this
     verify(exactly = exactly) {
-        this.hasBeenCalledWith(*arguments)
+        proxy.hasBeenCalledWith(*arguments)
     }
 }
 
@@ -80,8 +83,9 @@ fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
     exactly: Int,
     vararg arguments: Any?
 ) {
+    val proxy = this
     verify(exactly = exactly) {
-        this.hasBeenStrictlyCalledWith(*arguments)
+        proxy.hasBeenStrictlyCalledWith(*arguments)
     }
 }
 
@@ -94,8 +98,9 @@ fun FunProxy<*, *>.assertHasBeenCalledStrictlyWith(
  */
 @KMockExperimental
 fun FunProxy<*, *>.assertHasNotBeenCalled() {
+    val proxy = this
     verify(exactly = 0) {
-        this.hasBeenCalledWith()
+        proxy.hasBeenCalledWith()
     }
 }
 
@@ -112,8 +117,9 @@ fun FunProxy<*, *>.assertHasNotBeenCalled() {
 fun FunProxy<*, *>.assertHasBeenCalledWithout(
     vararg illegal: Any?
 ) {
+    val proxy = this
     verify(atMost = Int.MAX_VALUE) {
-        this.hasBeenCalledWithout(*illegal)
+        proxy.hasBeenCalledWithout(*illegal)
     }
 }
 
@@ -127,7 +133,8 @@ fun FunProxy<*, *>.assertHasBeenCalledWithout(
  */
 @KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasGotten(exactly: Int) {
-    verify(exactly = exactly) { this.wasGotten() }
+    val proxy = this
+    verify(exactly = exactly) { proxy.wasGotten() }
 }
 
 /**
@@ -140,7 +147,8 @@ fun KMockContract.PropertyProxy<*>.assertWasGotten(exactly: Int) {
  */
 @KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
-    verify(exactly = exactly) { this.wasSet() }
+    val proxy = this
+    verify(exactly = exactly) { proxy.wasSet() }
 }
 
 /**
@@ -155,5 +163,6 @@ fun KMockContract.PropertyProxy<*>.assertWasSet(exactly: Int) {
  */
 @KMockExperimental
 fun KMockContract.PropertyProxy<*>.assertWasSetTo(exactly: Int, value: Any?) {
-    verify(exactly = exactly) { this.wasSetTo(value) }
+    val proxy = this
+    verify(exactly = exactly) { proxy.wasSetTo(value) }
 }
