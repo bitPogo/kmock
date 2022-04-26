@@ -1358,7 +1358,7 @@ object KMockContract {
      */
     fun interface AssertionInsurance {
         /**
-         * Ensures that given Proxies are covered by the AssertionChain. Use this method with caution!
+         * Ensures that given Proxies are covered by the AssertionChain.
          * @throws IllegalStateException if a given Proxy is not covered by a AssertionChain.
          */
         fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
@@ -1407,6 +1407,7 @@ object KMockContract {
 
     internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
     internal const val MISMATCH = "Expected <%0> got actual <%1>."
+    internal const val CALL_WITH_ARGS_NOT_FOUND = "Expected %0 to be invoked with %1, but no matching call was found."
     internal const val HAD_BEEN_CALLED_NO_MATCHER = "The given matcher %0 has not been found."
     internal const val MISMATCHING_SIZE = "Expected <%0> arguments got actual <%1>."
     internal const val ILLEGAL_VALUE = "Illegal value <%0> detected."
@@ -1419,5 +1420,5 @@ object KMockContract {
     internal const val TOO_LESS_CALLS = "Expected at least %0 calls, but found only %1."
     internal const val TOO_MANY_CALLS = "Expected at most %0 calls, but exceeded with %1."
 
-    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this AssertionChain."
+    internal const val NOT_PART_OF_CHAIN = "The given proxy %0 is not part of this chain."
 }

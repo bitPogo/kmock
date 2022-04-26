@@ -172,14 +172,14 @@ class AssertionsSpec {
 
     @Test
     @JsName("fn10")
-    fun `Given hasBeenCalledWithAtIndex is called it accepts if the invocation if the expected and actual values match`() {
+    fun `Given hasBeenCalledWithAtIndex is called it accepts if the invocation if the expected and actual values match without beeing in linear order`() {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
 
         val expectedValue: String = fixture.fixture()
 
-        proxy.getArgumentsForCall = { arrayOf(expectedValue) }
+        proxy.getArgumentsForCall = { arrayOf(fixture.fixture(), expectedValue) }
 
         // When
         Assertions.hasBeenCalledWithAtIndex(proxy, 0, expectedValue)

@@ -28,31 +28,27 @@ class StrictVerificationChainSpec {
 
     @Test
     @JsName("fn0")
-    fun `It fulfils VerificationChain`() {
+    fun `It fulfils AssertionChain`() {
         StrictVerificationChain(emptyList()) fulfils KMockContract.AssertionChain::class
     }
 
     @Test
     @JsName("fn1")
     fun `It fulfils ChainedAssertion`() {
-        AssertionChain(emptyList()) fulfils KMockContract.ChainedAssertion::class
+        StrictVerificationChain(emptyList()) fulfils KMockContract.ChainedAssertion::class
     }
 
     @Test
     @JsName("fn2")
-    fun `Given ensureAllReferencesAreEvaluated is calledit accepts allways`() {
+    fun `Given ensureAllReferencesAreEvaluated is called it accepts allways`() {
         // Given
-        val handle1 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0, 1)
-        )
-        val handle2 = fixture.fixtureVerificationHandle(
-            callIndices = listOf(0, 1)
-        )
+        val proxy1 = fixture.funProxyFixture()
+        val proxy2 = fixture.funProxyFixture()
         val references = listOf(
-            Reference(handle1.proxy, 0),
-            Reference(handle2.proxy, 0),
-            Reference(handle1.proxy, 1),
-            Reference(handle2.proxy, 1),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy2, fixture.fixture()),
+            Reference(proxy1, fixture.fixture()),
+            Reference(proxy2, fixture.fixture()),
         )
 
         val chain = StrictVerificationChain(references)
@@ -75,7 +71,7 @@ class StrictVerificationChainSpec {
         }
 
         // Then
-        error.message mustBe "The given proxy ${proxy.id} is not part of this AssertionChain."
+        error.message mustBe "The given proxy ${proxy.id} is not part of this chain."
     }
 
     @Test
@@ -83,7 +79,7 @@ class StrictVerificationChainSpec {
     fun `Given ensureVerification it accepts if the given Proxy is part of it`() {
         // Given
         val proxy = fixture.funProxyFixture()
-        val container = AssertionChain(
+        val container = StrictVerificationChain(
             listOf(
                 Reference(proxy, 0)
             )
