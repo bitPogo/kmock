@@ -9,18 +9,18 @@ package tech.antibytes.kmock.verification
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.FunProxy
-import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.CALL_WITH_ARGS_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.ChainedAssertion
+import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.ILLEGAL_VALUE
 import tech.antibytes.kmock.KMockContract.MISSING_INVOCATION
 import tech.antibytes.kmock.KMockContract.NOT_GET
 import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
 import tech.antibytes.kmock.KMockContract.NOT_SET
+import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.VOID_FUNCTION
 import tech.antibytes.kmock.util.format
 

@@ -11,10 +11,8 @@ import tech.antibytes.kmock.KMockContract.GetOrSet
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.kmock.fixture.propertyProxyFixture
-import tech.antibytes.mock.AssertionsStub
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName

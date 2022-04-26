@@ -20,6 +20,7 @@ class NonFreezingAsserter(coverAllInvocations: Boolean = false) : AsserterBase(c
 }
 
 /**
- *
+ * Alias to NonFreezingAsserter.
+ * @author Matthias Geisler
  */
 typealias NonFreezingVerifier = NonFreezingAsserter

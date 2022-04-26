@@ -39,7 +39,7 @@ toc::[]
 * `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
 * `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
 * `customAnnotationsForMeta` to provide a hook for the usage of customized annotation for meta/shared sources
-* `assertOrder` in order to make the names more consistent and which should be used to validate a total linear order of Proxies
+* `assertOrder` in order to make the names more consistent and preserves the old behaviour of `verifyStrictOrder`
 
 === Changed
 
@@ -49,11 +49,11 @@ toc::[]
 * Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
 * Assertion-/VerificationChain is not coupled any longer directly to proxies and provide improved error messages
 * Expectation-methods do not bleed into the global context any longer
+* `verifyStrictOrder` is now used for total order of certain Proxies but allows partial order between different Proxies
 
 === Deprecated
 
 * `uselessPrefixes` in the Gradle Extension
-* `verifyStrictOrder` use `assertOrder` instead
 
 === Removed
 

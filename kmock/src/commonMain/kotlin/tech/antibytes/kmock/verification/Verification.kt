@@ -91,10 +91,10 @@ fun <T> runAssertion(
 fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runAssertion(AssertionChain(references), action)
 
 /**
- * Alias of assertOrder.
+ * Verifies a chain of Expectations. Expectation between different proxies can contain gaps.
+ * Also the chain does not need to be exhaustive.
  * @param action chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
- * @see assertOrder
  * @author Matthias Geisler
  */
 fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
