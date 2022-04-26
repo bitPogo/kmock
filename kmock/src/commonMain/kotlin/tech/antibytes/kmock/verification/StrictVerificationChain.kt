@@ -12,23 +12,21 @@ import tech.antibytes.kmock.KMockContract.AssertionChain
 import tech.antibytes.kmock.KMockContract.Assertions
 import tech.antibytes.kmock.KMockContract.CALL_NOT_FOUND
 import tech.antibytes.kmock.KMockContract.ChainedAssertion
-import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.NOT_PART_OF_CHAIN
-import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.util.format
 
 internal class StrictVerificationChain(
     private val references: List<Reference>,
-    private val assertions: Assertions = Assertions,
-) : AssertionChain, ChainedAssertion {
+    assertions: Assertions = Assertions,
+) : AssertionChain, ChainedAssertion, BaseAssertionContext(assertions) {
     private val invocation = atomic(0)
 
-    private fun getProxyIdSet(): Set<String> {
-        val set: MutableSet<String> = mutableSetOf()
+    private fun getProxyIdSet(): Set<Proxy<*, *>> {
+        val set: MutableSet<Proxy<*, *>> = mutableSetOf()
 
-        references.forEach { reference -> set.add(reference.proxy.id) }
+        references.forEach { reference -> set.add(reference.proxy) }
 
         return set
     }
@@ -37,7 +35,7 @@ internal class StrictVerificationChain(
         val actual = getProxyIdSet()
 
         proxies.forEach { proxy ->
-            if (proxy.id !in actual) {
+            if (proxy !in actual) {
                 throw IllegalStateException(NOT_PART_OF_CHAIN.format(proxy.id))
             }
         }
@@ -53,82 +51,18 @@ internal class StrictVerificationChain(
         return null
     }
 
-    private fun runAssertion(
-        expected: Proxy<*, *>,
+    override fun runAssertion(
+        proxy: Proxy<*, *>,
         action: (callIndex: Int) -> Unit
     ) {
-        val actual = findProxy(expected)
-            ?: throw AssertionError(CALL_NOT_FOUND.format(expected.id))
+        val actual = findProxy(proxy)
+            ?: throw AssertionError(CALL_NOT_FOUND.format(proxy.id))
 
         val expectedCallIdxReference = references[actual].callIndex
 
         action(expectedCallIdxReference)
 
         invocation.update { actual + 1 }
-    }
-
-    override fun FunProxy<*, *>.hasBeenCalled() {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledAtIndex(this, callIndex)
-        }
-    }
-
-    override fun FunProxy<*, *>.hasBeenCalledWithVoid() {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithVoidAtIndex(this, callIndex)
-        }
-    }
-
-    override fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?) {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                arguments = arguments
-            )
-        }
-    }
-
-    override fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?) {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenStrictlyCalledWithAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                arguments = arguments
-            )
-        }
-    }
-
-    override fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?) {
-        runAssertion(this) { callIndex ->
-            assertions.hasBeenCalledWithoutAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                illegal = illegal
-            )
-        }
-    }
-
-    override fun PropertyProxy<*>.wasGotten() {
-        runAssertion(this) { callIndex ->
-            assertions.wasGottenAtIndex(proxy = this, callIndex = callIndex)
-        }
-    }
-
-    override fun PropertyProxy<*>.wasSet() {
-        runAssertion(this) { callIndex ->
-            assertions.wasSetAtIndex(proxy = this, callIndex = callIndex)
-        }
-    }
-
-    override fun PropertyProxy<*>.wasSetTo(value: Any?) {
-        runAssertion(this) { callIndex ->
-            assertions.wasSetToAtIndex(
-                proxy = this,
-                callIndex = callIndex,
-                value = value
-            )
-        }
     }
 
     @Throws(AssertionError::class)

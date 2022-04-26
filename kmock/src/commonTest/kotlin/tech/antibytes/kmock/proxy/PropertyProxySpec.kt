@@ -47,6 +47,12 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn1")
+    fun `It is frozen by default`() {
+        PropertyProxy<Unit>(fixture.fixture()).frozen mustBe true
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a get is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
@@ -66,7 +72,7 @@ class PropertyProxySpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn2a")
     fun `Given a get is set with nullable value it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any?>(

@@ -40,6 +40,7 @@ toc::[]
 * `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
 * `customAnnotationsForMeta` to provide a hook for the usage of customized annotation for meta/shared sources
 * `assertOrder` in order to make the names more consistent and preserves the old behaviour of `verifyStrictOrder`
+* `assertProxy` as alternative to `verify`
 
 === Changed
 
@@ -60,6 +61,7 @@ toc::[]
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
 * `allowInterfacesOnKmock`, use allowInterfaces instead
 * `allowInterfacesOnKspy`, use allowInterfaces instead
+* old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
 
 === Fixed
 

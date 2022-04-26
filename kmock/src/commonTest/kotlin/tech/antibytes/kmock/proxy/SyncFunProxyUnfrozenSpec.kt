@@ -54,6 +54,12 @@ class SyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn1")
+    fun `It is not frozen if told so`() {
+        SyncFunProxy<Any, () -> Any>(fixture.fixture(), freeze = false).frozen mustBe false
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a throws is set it is retrievable`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -70,7 +76,7 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn2a")
     fun `Given a returnValue is set it is retrievable`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(

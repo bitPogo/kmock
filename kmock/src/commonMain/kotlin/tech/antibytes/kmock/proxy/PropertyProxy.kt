@@ -37,6 +37,8 @@ internal class PropertyProxy<Value>(
     collector: Collector = NoopCollector,
     freeze: Boolean = true,
 ) : KMockContract.PropertyProxy<Value> {
+    override val frozen: Boolean = freeze
+
     private class FreezingPropertyProxyState<Value>(
         defaultInvocationType: PropertyProxyInvocationType,
         collector: Collector,

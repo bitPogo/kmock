@@ -13,6 +13,7 @@ class AsyncFunProxyStub(
     override val id: String,
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
+    override val frozen: Boolean = true,
 ) : KMockContract.AsyncFunProxy<Any, suspend () -> Any> {
     override val ignorableForVerification: Boolean
         get() = TODO()

@@ -58,6 +58,12 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn1")
+    fun `It is frozen by default`() {
+        AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture()).frozen mustBe true
+    }
+
+    @Test
+    @JsName("fn2")
     fun `Given a throws is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -77,7 +83,7 @@ class AsyncFunProxySpec {
     }
 
     @Test
-    @JsName("fn2")
+    @JsName("fn2a")
     fun `Given a returnValue is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())

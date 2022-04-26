@@ -71,7 +71,17 @@ fun verify(
     }
 }
 
-fun <T> runAssertion(
+/**
+ * Asserts Expectations of proxies. Each Expectation relates to a specific Proxy and they must be in order.
+ * Also multiple Proxies are allowed but no relation between them is covered (use assertOrder in this case).
+ * @param action Expectation Methods.
+ * @throws AssertionError if given criteria are not met.
+ * @see AssertionContext
+ * @author Matthias Geisler
+ */
+fun assertProxy(action: AssertionContext.() -> Unit) = action(UnchainedAssertion())
+
+private fun <T> runChainedAssertion(
     chain: T,
     action: ChainedAssertion.() -> Any
 ) where T : ChainedAssertion, T : KMockContract.AssertionChain {
@@ -81,14 +91,14 @@ fun <T> runAssertion(
 }
 
 /**
-* Asserts a chain of Expectations. Each Expectations must be in strict order of the referenced Proxy invocations
+* Asserts a chain of Expectations. Each Expectation must be in strict order of the referenced Proxy invocations
 * and all invocations must be present.
 * @param action chain of Expectation Methods.
 * @throws AssertionError if given criteria are not met.
 * @see AssertionContext
 * @author Matthias Geisler
 */
-fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runAssertion(AssertionChain(references), action)
+fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runChainedAssertion(AssertionChain(references), action)
 
 /**
  * Verifies a chain of Expectations. Expectation between different proxies can contain gaps.
@@ -98,15 +108,15 @@ fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runAssertion(Asse
  * @author Matthias Geisler
  */
 fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
-    runAssertion(StrictVerificationChain(references), action)
+    runChainedAssertion(StrictVerificationChain(references), action)
 }
 
 /**
- * Verifies a chain of Expectations. Each Expectations must be in order but gaps are allowed.
+ * Verifies a chain of Expectations. Each Expectation must be in order but gaps are allowed.
  * Also the chain does not need to be exhaustive.
  * @param action chain of Expectation Methods.
  * @throws AssertionError if given criteria are not met.
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(VerificationChain(references), action)
+fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runChainedAssertion(VerificationChain(references), action)
