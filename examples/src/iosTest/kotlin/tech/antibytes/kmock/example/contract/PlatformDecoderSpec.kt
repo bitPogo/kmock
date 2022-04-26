@@ -13,6 +13,6 @@ import kotlin.test.Test
 class PlatformDecoderSpec {
     @Test
     fun doSomething() {
-        // TODO
+        TODO()
     }
 }

@@ -1253,25 +1253,21 @@ object KMockContract {
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
-         * The arguments do not need to be complete.
-         * @param arguments the expected arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
-         * The arguments must be complete.
-         * @param arguments the expected arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was without called n-parameter.
-         * The arguments do not need to be complete.
-         * @param proxy the actual proxy.
-         * @param illegal the forbidden arguments.
+         * @param illegal arguments or constraints which calls is not allowed not match.
          * @throws AssertionError if the assertion fails
          */
         fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
@@ -1294,6 +1290,66 @@ object KMockContract {
          * @throws AssertionError if the assertion fails.
          */
         fun PropertyProxy<*>.wasSetTo(value: Any?)
+    }
+
+    /**
+     * Provider for Verification.
+     * @author Matthias Geisler
+     */
+    interface VerificationContext {
+        /**
+         * Collects all invocation of a FunProxy.
+         * @return Expectation
+         */
+        fun FunProxy<*, *>.hasBeenCalled(): Expectation
+
+        /**
+         * Collects all invocation of a FunProxy which contain no Arguments.
+         * @return Expectation
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithVoid(): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?): Expectation
+
+        /**
+         * Collects all invocation of an FunProxy which matches the given Arguments.
+         * @param illegal arguments or constraints which calls is not allowed not match.
+         * @return Expectation
+         * @see ArgumentConstraint
+         */
+        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Getter.
+         */
+        fun PropertyProxy<*>.wasGotten(): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Setter.
+         */
+        fun PropertyProxy<*>.wasSet(): Expectation
+
+        /**
+         * Collects all invocation of an PropertyProxy Setter with the given Value.
+         * @return Expectation
+         * @param value argument/constraint which calls must match.
+         * @see ArgumentConstraint
+         */
+        fun PropertyProxy<*>.wasSetTo(value: Any?): Expectation
     }
 
     /**
