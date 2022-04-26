@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 /*
  * Notice -> No deep checking in order to not drain performance
@@ -28,7 +29,7 @@ internal class KMockProcessor(
     private fun mergeSources(
         rootSource: Aggregated,
         dependentSource: Aggregated,
-        filteredTemplates: List<ProcessorContract.TemplateSource>
+        filteredTemplates: List<TemplateSource>
     ): Aggregated {
         return Aggregated(
             illFormed = rootSource.illFormed.toMutableList().also {

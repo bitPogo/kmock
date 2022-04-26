@@ -79,14 +79,14 @@ internal interface ProcessorContract {
     }
 
     interface SourceFilter {
-        fun filter(
-            templateSources: List<TemplateSource>,
-            filteredBy: List<TemplateSource>
-        ): List<TemplateSource>
+        fun <T : Source> filter(
+            templateSources: List<T>,
+            filteredBy: List<T>
+        ): List<T>
 
-        fun filterSharedSources(
-            templateSources: List<TemplateSource>
-        ): List<TemplateSource>
+        fun <T : Source> filterSharedSources(
+            templateSources: List<T>
+        ): List<T>
     }
 
     interface AggregatorFactory {
@@ -107,12 +107,19 @@ internal interface ProcessorContract {
         fun extractRelaxer(resolver: Resolver): Relaxer?
     }
 
+    sealed interface Source {
+        val indicator: String
+        val templateName: String
+        val packageName: String
+    }
+
     data class TemplateSource(
-        val indicator: String,
-        val templateName: String,
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
         val template: KSClassDeclaration,
         val generics: Map<String, List<KSTypeReference>>?
-    )
+    ) : Source
 
     data class Aggregated(
         val illFormed: List<KSAnnotated>,

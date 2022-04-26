@@ -78,6 +78,7 @@ internal class KMockAggregator(
                 templateCollector[templateName + sourceIndicator] = TemplateSource(
                     indicator = sourceIndicator,
                     templateName = aliases[templateName] ?: interfaze.simpleName.asString(),
+                    packageName = interfaze.packageName.asString(),
                     template = interfaze,
                     generics = resolveGenerics(interfaze)
                 )

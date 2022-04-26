@@ -368,6 +368,7 @@ class KMockAggregatorPlatformSpec {
             TemplateSource(
                 indicator = "",
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -625,6 +626,7 @@ class KMockAggregatorPlatformSpec {
             TemplateSource(
                 indicator = "",
                 templateName = alias,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )

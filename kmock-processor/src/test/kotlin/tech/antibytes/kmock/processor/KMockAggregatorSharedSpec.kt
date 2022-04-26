@@ -773,6 +773,7 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = marker,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -875,6 +876,7 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = marker,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -1004,12 +1006,14 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = marker0,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             ),
             TemplateSource(
                 indicator = marker1,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -1137,12 +1141,14 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = marker0,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             ),
             TemplateSource(
                 indicator = marker1,
                 templateName = simpleName,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -1633,6 +1639,7 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = allowedSourceSets.first(),
                 templateName = alias,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
@@ -1737,6 +1744,7 @@ class KMockAggregatorSharedSpec {
             TemplateSource(
                 indicator = allowedSourceSets.first(),
                 templateName = alias,
+                packageName = packageName,
                 template = declaration,
                 generics = generics
             )
