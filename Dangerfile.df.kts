@@ -70,8 +70,8 @@ danger(args) {
         }
 
         // Changelog
-        if (isChangelogUpdated) {
-            warn("Changes should be reflected in the CHANGELOG.adoc")
+        if (!isChangelogUpdated) {
+            warn("Functional changes should be reflected in the CHANGELOG.adoc")
         }
 
         // Size
