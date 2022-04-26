@@ -163,31 +163,12 @@ class VerificationSpec {
         // When
         verifier.verifyStrictOrder {
             // Then
-            this fulfils AssertionChain::class
+            this fulfils StrictVerificationChain::class
         }
     }
 
     @Test
     @JsName("fn9")
-    fun `Given verifyStrictOrder is called it ensures all references had been evaluated`() {
-        // Given
-        val id: String = fixture.fixture()
-        val verifier = AsserterStub(
-            listOf(
-                Reference(fixture.funProxyFixture(id = id), fixture.fixture())
-            )
-        )
-
-        val actual = assertFailsWith<AssertionError> {
-            // When
-            verifier.verifyStrictOrder {}
-        }
-
-        actual.message mustBe "The given verification chain covers 1 items, but only 0 were expected ($id were referenced)."
-    }
-
-    @Test
-    @JsName("fn10")
     fun `Given verifyOrder is called it uses a StrictVerificationChain`() {
         // Given
         val verifier = AsserterStub(emptyList())
@@ -195,7 +176,7 @@ class VerificationSpec {
         // When
         verifier.verifyOrder {
             // Then
-            this fulfils StrictVerificationChain::class
+            this fulfils VerificationChain::class
         }
     }
 }

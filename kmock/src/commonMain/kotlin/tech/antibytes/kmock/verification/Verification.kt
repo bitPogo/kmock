@@ -97,11 +97,9 @@ fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runAssertion(Asse
  * @see assertOrder
  * @author Matthias Geisler
  */
-@Deprecated(
-    "This will be removed with version 1.0. Use assertOrder instead.",
-    ReplaceWith("assertOrder(scope)")
-)
-fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) = assertOrder(action)
+fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
+    runAssertion(StrictVerificationChain(references), action)
+}
 
 /**
  * Verifies a chain of Expectations. Each Expectations must be in order but gaps are allowed.
@@ -111,4 +109,4 @@ fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) = assertOrder
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(StrictVerificationChain(references), action)
+fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(VerificationChain(references), action)
