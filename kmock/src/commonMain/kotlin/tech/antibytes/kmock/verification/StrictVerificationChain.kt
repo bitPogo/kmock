@@ -19,7 +19,7 @@ import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.util.format
 
-internal class VerificationChain(
+internal class StrictVerificationChain(
     private val references: List<Reference>,
     private val assertions: Assertions = Assertions,
 ) : AssertionChain, ChainedAssertion {

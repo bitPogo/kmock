@@ -23,13 +23,13 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class VerificationChainSpec {
+class StrictVerificationChainSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
     fun `It fulfils VerificationChain`() {
-        VerificationChain(emptyList()) fulfils KMockContract.AssertionChain::class
+        StrictVerificationChain(emptyList()) fulfils KMockContract.AssertionChain::class
     }
 
     @Test
@@ -55,7 +55,7 @@ class VerificationChainSpec {
             Reference(handle2.proxy, 1),
         )
 
-        val chain = VerificationChain(references)
+        val chain = StrictVerificationChain(references)
 
         // When
         chain.ensureAllReferencesAreEvaluated()
@@ -68,7 +68,7 @@ class VerificationChainSpec {
         val proxy = fixture.funProxyFixture()
 
         // When
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         val error = assertFailsWith<IllegalStateException> {
             container.ensureVerificationOf(proxy)
@@ -94,8 +94,8 @@ class VerificationChainSpec {
     }
 
     private fun invoke(
-        chain: VerificationChain,
-        action: VerificationChain.() -> Unit
+        chain: StrictVerificationChain,
+        action: StrictVerificationChain.() -> Unit
     ) = action(chain)
 
     @Test
@@ -104,7 +104,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -129,7 +129,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -161,7 +161,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -179,7 +179,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -204,7 +204,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -236,7 +236,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -254,7 +254,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -279,7 +279,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -317,7 +317,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -336,7 +336,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -361,7 +361,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -399,7 +399,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -418,7 +418,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.funProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -443,7 +443,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -481,7 +481,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -500,7 +500,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -525,7 +525,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -559,7 +559,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -577,7 +577,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -602,7 +602,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -636,7 +636,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -654,7 +654,7 @@ class VerificationChainSpec {
         // Given
         val id: String = fixture.fixture()
         val proxy = fixture.propertyProxyFixture(id = id)
-        val container = VerificationChain(emptyList())
+        val container = StrictVerificationChain(emptyList())
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -679,7 +679,7 @@ class VerificationChainSpec {
             Reference(actualProxy, 0),
         )
 
-        val container = VerificationChain(references)
+        val container = StrictVerificationChain(references)
 
         // Then
         val actual = assertFailsWith<AssertionError> {
@@ -717,7 +717,7 @@ class VerificationChainSpec {
             }
         )
 
-        val container = VerificationChain(references, assertions)
+        val container = StrictVerificationChain(references, assertions)
 
         // Then
         invoke(container) {
@@ -815,7 +815,7 @@ class VerificationChainSpec {
             }
         )
 
-        val chain = VerificationChain(references, assertions)
+        val chain = StrictVerificationChain(references, assertions)
 
         // When
         invoke(chain) {

@@ -195,7 +195,7 @@ class VerificationSpec {
         // When
         verifier.verifyOrder {
             // Then
-            this fulfils VerificationChain::class
+            this fulfils StrictVerificationChain::class
         }
     }
 }

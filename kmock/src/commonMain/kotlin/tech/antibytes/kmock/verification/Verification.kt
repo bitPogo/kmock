@@ -111,4 +111,4 @@ fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) = assertOrder
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(VerificationChain(references), action)
+fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runAssertion(StrictVerificationChain(references), action)
