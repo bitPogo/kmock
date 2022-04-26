@@ -18,7 +18,7 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class VerificationSpec {
+class VerificationAndAssertionSpec {
     private val fixture = kotlinFixture()
 
     @Test
@@ -124,6 +124,16 @@ class VerificationSpec {
 
     @Test
     @JsName("fn6")
+    fun `Given assertProxy is called it uses a UnchainedAssertion`() {
+        // When
+        assertProxy {
+            // Then
+            this fulfils UnchainedAssertion::class
+        }
+    }
+
+    @Test
+    @JsName("fn7")
     fun `Given assertOrder is called it uses a AssertionChain`() {
         // Given
         val verifier = AsserterStub(emptyList())
@@ -136,7 +146,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn7")
+    @JsName("fn8")
     fun `Given assertOrder is called it ensures all references had been evaluated`() {
         // Given
         val id: String = fixture.fixture()
@@ -155,7 +165,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn8")
+    @JsName("fn9")
     fun `Given verifyStrictOrder is called it uses a AssertionChain`() {
         // Given
         val verifier = AsserterStub(emptyList())
@@ -168,7 +178,7 @@ class VerificationSpec {
     }
 
     @Test
-    @JsName("fn9")
+    @JsName("fn10")
     fun `Given verifyOrder is called it uses a StrictVerificationChain`() {
         // Given
         val verifier = AsserterStub(emptyList())

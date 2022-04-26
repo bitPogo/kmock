@@ -6,11 +6,11 @@
 
 package tech.antibytes.kmock.verification
 
+import tech.antibytes.kmock.KMockContract.AssertionContext
 import tech.antibytes.kmock.KMockContract.Assertions
-import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.KMockContract.AssertionContext
+import tech.antibytes.kmock.KMockContract.Proxy
 
 internal abstract class BaseAssertionContext(
     private val assertions: Assertions

@@ -7,9 +7,8 @@
 package tech.antibytes.kmock.verification
 
 import co.touchlab.stately.isFrozen
-import tech.antibytes.kmock.KMockContract.Proxy
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.kmock.KMockContract.AssertionContext
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.kmock.fixture.propertyProxyFixture
 import tech.antibytes.mock.AssertionsStub
@@ -17,6 +16,7 @@ import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
@@ -24,7 +24,7 @@ import kotlin.test.Test
 
 class UnchainedAssertionSpec {
     private val fixture = kotlinFixture()
-    
+
     @Test
     @JsName("fn0")
     fun `It fulfils AssertionContext`() {
@@ -41,7 +41,7 @@ class UnchainedAssertionSpec {
     fun `Given hasBeenCalled is called it delegates the call to the given Assertions`() {
         // Given
         val expectedProxy = fixture.funProxyFixture()
-        
+
         var capturedProxy: Proxy<*, *>? = null
         var capturedIdx: Int? = null
 
