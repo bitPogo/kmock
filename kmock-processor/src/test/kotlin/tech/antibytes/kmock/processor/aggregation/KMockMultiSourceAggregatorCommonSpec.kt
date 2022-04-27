@@ -24,14 +24,13 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.Mock
-import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
-import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
@@ -39,7 +38,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
-class KMockSourceAggregatorPlatformSpec {
+class KMockMultiSourceAggregatorCommonSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -50,30 +49,28 @@ class KMockSourceAggregatorPlatformSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockSourceAggregator(
+        KMockMultiSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
-            emptyMap(),
             emptyMap(),
         ) fulfils Aggregator::class
     }
 
     @Test
-    fun `It fulfils SourceAggregator`() {
-        KMockSourceAggregator(
+    fun `It fulfils MultiSourceAggregator`() {
+        KMockMultiSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
-            emptyMap(),
-        ) fulfils SourceAggregator::class
+        ) fulfils MultiSourceAggregator::class
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it resolves the Annotated Thing as ill, if no KMockAnnotation was found`() {
+    fun `Given extractCommonInterfaces is called it resolves the Annotated Thing as ill, if no KMockAnnotation was found`() {
         // Given
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -104,24 +101,23 @@ class KMockSourceAggregatorPlatformSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockSourceAggregator(
+        val (illegal, _, _) = KMockMultiSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         illegal mustBe listOf(symbol)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all ill Annotations`() {
+    fun `Given extractCommonInterfaces is called it filters all ill Annotations`() {
         // Given
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -143,29 +139,28 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockSourceAggregator(
+        val (illegal, _, _) = KMockMultiSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         illegal mustBe listOf(symbol)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all non class types and reports an error`() {
+    fun `Given extractCommonInterfaces is called it filters all non class types and reports an error`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -186,6 +181,7 @@ class KMockSourceAggregatorPlatformSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
+        val mockName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -193,14 +189,16 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { file.parent } returns null
         every { symbol.parent } returns file
@@ -209,26 +207,25 @@ class KMockSourceAggregatorPlatformSpec {
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
-            KMockSourceAggregator(
+            KMockMultiSourceAggregator(
                 logger,
                 mockk(),
                 mockk(),
                 mockk(),
                 emptyMap(),
-                emptyMap(),
-            ).extractPlatformInterfaces(resolver)
+            ).extractCommonInterfaces(resolver)
         }
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all implementation class types and reports an error`() {
+    fun `Given extractCommonInterfaces is called it filters all implementation class types and reports an error`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -259,10 +256,11 @@ class KMockSourceAggregatorPlatformSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
+        val mockName: String = fixture.fixture(named("stringAlpha"))
 
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -270,21 +268,23 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { declaration.classKind } returns selection[selector]
+
+        every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
@@ -293,26 +293,25 @@ class KMockSourceAggregatorPlatformSpec {
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
-            KMockSourceAggregator(
+            KMockMultiSourceAggregator(
                 logger,
                 mockk(),
                 mockk(),
                 mockk(),
                 emptyMap(),
-                emptyMap(),
-            ).extractPlatformInterfaces(resolver)
+            ).extractCommonInterfaces(resolver)
         }
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns all found interfaces`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -333,9 +332,7 @@ class KMockSourceAggregatorPlatformSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
-
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
@@ -351,58 +348,57 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockSourceAggregator(
+        val (_, interfaces, _) = KMockMultiSourceAggregator(
             logger,
             mockk(),
             mockk(),
             genericResolver,
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         interfaces mustBe listOf(
-            TemplateSource(
+            TemplateMultiSource(
                 indicator = "",
-                templateName = simpleName,
+                templateName = mockName,
                 packageName = packageName,
-                template = declaration,
-                generics = generics
+                templates = listOf(declaration),
+                generics = listOf(generics)
             )
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns all found interfaces while filtering douplets`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces, while filtering douplets`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -412,9 +408,11 @@ class KMockSourceAggregatorPlatformSpec {
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
             yield(annotation)
+            yield(annotation)
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbol)
             yield(symbol)
         }
 
@@ -422,10 +420,8 @@ class KMockSourceAggregatorPlatformSpec {
         val declaration: KSClassDeclaration = mockk(relaxed = true)
         val arguments: List<KSValueArgument> = mockk()
 
-        val values: List<KSType> = listOf(type, type)
-
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
+        val values: List<KSType> = listOf(type)
+        val mockName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
@@ -441,58 +437,168 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockSourceAggregator(
+        val (_, interfaces, _) = KMockMultiSourceAggregator(
             logger,
             mockk(),
             mockk(),
             genericResolver,
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         interfaces mustBe listOf(
-            TemplateSource(
+            TemplateMultiSource(
                 indicator = "",
-                templateName = simpleName,
+                templateName = mockName,
                 packageName = packageName,
-                template = declaration,
-                generics = generics
+                templates = listOf(declaration),
+                generics = listOf(generics)
             )
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns the corresponding source files`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces while using the shortest package name`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val symbol: KSAnnotated = mockk()
+        val resolver: Resolver = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbol)
+        }
+
+        val type1: KSType = mockk(relaxed = true)
+        val type2: KSType = mockk(relaxed = true)
+        val type3: KSType = mockk(relaxed = true)
+        val declaration1: KSClassDeclaration = mockk(relaxed = true)
+        val declaration2: KSClassDeclaration = mockk(relaxed = true)
+        val declaration3: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type1, type2, type3)
+        val mockName: String = fixture.fixture(named("stringAlpha"))
+
+        val className1: String = fixture.fixture(named("stringAlpha"))
+        val packageName1 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
+        val className2: String = fixture.fixture(named("stringAlpha"))
+        val packageName2 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
+        val className3: String = fixture.fixture(named("stringAlpha"))
+        val packageName3 = fixture.fixture<String>(named("stringAlpha"))
+
+        val genericResolver: ProcessorContract.GenericResolver = mockk()
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
+            emptyMap()
+        } else {
+            null
+        }
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every { symbol.annotations } returns sourceAnnotations
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MultiMockCommon::class.qualifiedName!!
+
+        every { annotation.arguments } returns arguments
+        every { arguments.size } returns 2
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
+
+        every { file.parent } returns null
+        every { symbol.parent } returns file
+
+        every { type1.declaration } returns declaration1
+        every { declaration1.classKind } returns ClassKind.INTERFACE
+        every { declaration1.parentDeclaration } returns null
+        every { declaration1.qualifiedName!!.asString() } returns className1
+        every { declaration1.packageName.asString() } returns packageName1
+
+        every { type2.declaration } returns declaration2
+        every { declaration2.classKind } returns ClassKind.INTERFACE
+        every { declaration2.parentDeclaration } returns null
+        every { declaration2.qualifiedName!!.asString() } returns className2
+        every { declaration2.packageName.asString() } returns packageName2
+
+        every { type3.declaration } returns declaration3
+        every { declaration3.classKind } returns ClassKind.INTERFACE
+        every { declaration3.parentDeclaration } returns null
+        every { declaration3.qualifiedName!!.asString() } returns className3
+        every { declaration3.packageName.asString() } returns packageName3
+
+        every { logger.error(any()) } just Runs
+
+        every { genericResolver.extractGenerics(any(), any()) } returns generics
+
+        // When
+        val (_, interfaces, _) = KMockMultiSourceAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            genericResolver,
+            emptyMap(),
+        ).extractCommonInterfaces(resolver)
+
+        // Then
+        interfaces mustBe listOf(
+            TemplateMultiSource(
+                indicator = "",
+                templateName = mockName,
+                packageName = packageName3,
+                templates = listOf(declaration1, declaration2, declaration3),
+                generics = listOf(generics, generics, generics)
+            )
+        )
+
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration1, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration2, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration3, any()) }
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
+        }
+    }
+
+    @Test
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -513,9 +619,7 @@ class KMockSourceAggregatorPlatformSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
-
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
         every {
@@ -524,46 +628,45 @@ class KMockSourceAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockSourceAggregator(
+        val (_, _, sourceFiles) = KMockMultiSourceAggregator(
             logger,
             mockk(),
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns the corresponding source files, while filter non related annotations`() {
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files, while filter non related annotations`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -592,10 +695,8 @@ class KMockSourceAggregatorPlatformSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type)
-
+        val mockName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -605,154 +706,55 @@ class KMockSourceAggregatorPlatformSpec {
             notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returnsMany listOf(
             MockShared::class.qualifiedName!!,
-            MockCommon::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         )
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MultiMockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
         every { notRelatedSymbol.annotations } returns notRelatedSource
 
         every { annotation.arguments } returns arguments
-        every { arguments.size } returns 1
+        every { arguments.size } returns 2
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns values
+        every { arguments[0].value } returns mockName
+        every { arguments[1].value } returns values
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, interfaces, sourceFiles) = KMockSourceAggregator(
+        val (_, interfaces, sourceFiles) = KMockMultiSourceAggregator(
             logger,
             mockk(),
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
-            emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
         interfaces mustBe listOf(
-            TemplateSource(
+            TemplateMultiSource(
                 indicator = "",
-                templateName = simpleName,
+                templateName = mockName,
                 packageName = packageName,
-                template = declaration,
-                generics = emptyMap()
+                templates = listOf(declaration),
+                generics = listOf(emptyMap())
             )
         )
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
-        }
-    }
-
-    @Test
-    fun `Given extractPlatformInterfaces is called it returns while mapping aliases`() {
-        // Given
-        val logger: KSPLogger = mockk()
-        val symbol: KSAnnotated = mockk()
-        val resolver: Resolver = mockk()
-        val file: KSFile = mockk()
-        val sourceSetValidator: SourceSetValidator = mockk()
-
-        val annotation: KSAnnotation = mockk()
-        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
-            yield(annotation)
-        }
-
-        val annotated: Sequence<KSAnnotated> = sequence {
-            yield(symbol)
-        }
-
-        val type: KSType = mockk(relaxed = true)
-        val declaration: KSClassDeclaration = mockk(relaxed = true)
-        val arguments: List<KSValueArgument> = mockk()
-
-        val values: List<KSType> = listOf(type)
-
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
-        val alias: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-
-        val genericResolver: ProcessorContract.GenericResolver = mockk()
-        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
-            emptyMap()
-        } else {
-            null
-        }
-
-        val mapping = mapOf(qualifiedName to alias)
-
-        every {
-            resolver.getSymbolsWithAnnotation(any(), any())
-        } returns annotated
-
-        every {
-            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
-
-        every { symbol.annotations } returns sourceAnnotations
-
-        every { annotation.arguments } returns arguments
-        every { arguments.isEmpty() } returns false
-
-        every { arguments.size } returns 1
-        every { arguments[0].value } returns values
-
-        every { type.declaration } returns declaration
-        every { declaration.classKind } returns ClassKind.INTERFACE
-
-        every { file.parent } returns null
-        every { symbol.parent } returns file
-
-        every { declaration.parentDeclaration } returns null
-        every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
-
-        every { logger.error(any()) } just Runs
-
-        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
-
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
-
-        // When
-        val (_, interfaces, _) = KMockSourceAggregator(
-            logger,
-            mockk(),
-            sourceSetValidator,
-            genericResolver,
-            emptyMap(),
-            mapping,
-        ).extractPlatformInterfaces(resolver)
-
-        // Then
-        interfaces mustBe listOf(
-            TemplateSource(
-                indicator = "",
-                templateName = alias,
-                packageName = packageName,
-                template = declaration,
-                generics = generics
-            )
-        )
-
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
-        verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
     }
 }

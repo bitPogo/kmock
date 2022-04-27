@@ -10,8 +10,11 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSType
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXATION_NAME
 
@@ -69,8 +72,11 @@ internal class AnnotationFilter(
     private companion object {
         val RESERVED = sortedSetOf(
             ANNOTATION_PLATFORM_NAME,
+            ANNOTATION_PLATFORM_MULTI_NAME,
             ANNOTATION_SHARED_NAME,
+            ANNOTATION_SHARED_MULTI_NAME,
             ANNOTATION_COMMON_NAME,
+            ANNOTATION_COMMON_MULTI_NAME,
             RELAXATION_NAME,
         )
     }

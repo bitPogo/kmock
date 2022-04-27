@@ -37,6 +37,7 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
+import kotlin.test.assertFailsWith
 
 class KMockSourceAggregatorCommonSpec {
     private val fixture = kotlinFixture { configuration ->
@@ -207,16 +208,19 @@ class KMockSourceAggregatorCommonSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockSourceAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        val error = assertFailsWith<IllegalArgumentException> {
+            KMockSourceAggregator(
+                logger,
+                mockk(),
+                mockk(),
+                mockk(),
+                emptyMap(),
+                emptyMap(),
+            ).extractCommonInterfaces(resolver)
+        }
 
         // Then
+        error.message mustBe "Cannot stub non interfaces."
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
@@ -256,7 +260,7 @@ class KMockSourceAggregatorCommonSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -277,29 +281,31 @@ class KMockSourceAggregatorCommonSpec {
         every { type.declaration } returns declaration
         every { declaration.classKind } returns selection[selector]
 
-        every { declaration.parentDeclaration } returns null
-
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         // When
-        KMockSourceAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        val error = assertFailsWith<IllegalArgumentException> {
+            KMockSourceAggregator(
+                logger,
+                mockk(),
+                mockk(),
+                mockk(),
+                emptyMap(),
+                emptyMap(),
+            ).extractCommonInterfaces(resolver)
+        }
 
         // Then
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
+        error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
+        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
@@ -328,7 +334,7 @@ class KMockSourceAggregatorCommonSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -356,14 +362,13 @@ class KMockSourceAggregatorCommonSpec {
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 
-        every { declaration.parentDeclaration } returns null
-
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
@@ -397,6 +402,96 @@ class KMockSourceAggregatorCommonSpec {
     }
 
     @Test
+    fun `Given extractCommonInterfaces is called it returns all found interfaces while filtering douplets`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val symbol: KSAnnotated = mockk()
+        val resolver: Resolver = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbol)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type, type)
+
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        val genericResolver: ProcessorContract.GenericResolver = mockk()
+        val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
+            emptyMap()
+        } else {
+            null
+        }
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockCommon::class.qualifiedName!!
+
+        every { symbol.annotations } returns sourceAnnotations
+
+        every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { file.parent } returns null
+        every { symbol.parent } returns file
+
+        every { declaration.parentDeclaration } returns null
+        every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+
+        every { logger.error(any()) } just Runs
+
+        every { genericResolver.extractGenerics(any(), any()) } returns generics
+
+        // When
+        val (_, interfaces, _) = KMockSourceAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            genericResolver,
+            emptyMap(),
+            emptyMap(),
+        ).extractCommonInterfaces(resolver)
+
+        // Then
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "",
+                templateName = simpleName,
+                packageName = packageName,
+                template = declaration,
+                generics = generics
+            )
+        )
+
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
+        }
+    }
+
+    @Test
     fun `Given extractCommonInterfaces is called it returns the corresponding source files`() {
         // Given
         val logger: KSPLogger = mockk()
@@ -419,7 +514,7 @@ class KMockSourceAggregatorCommonSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -440,18 +535,18 @@ class KMockSourceAggregatorCommonSpec {
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 
-        every { declaration.parentDeclaration } returns null
-
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
+        every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(
+        val (_, _, sourceFiles) = KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -498,8 +593,9 @@ class KMockSourceAggregatorCommonSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val simpleName: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -526,19 +622,18 @@ class KMockSourceAggregatorCommonSpec {
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 
-        every { declaration.parentDeclaration } returns null
-
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockSourceAggregator(
+        val (_, interfaces, sourceFiles) = KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -549,6 +644,15 @@ class KMockSourceAggregatorCommonSpec {
 
         // Then
         sourceFiles mustBe listOf(file)
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "",
+                templateName = simpleName,
+                packageName = packageName,
+                template = declaration,
+                generics = emptyMap()
+            )
+        )
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
@@ -578,10 +682,10 @@ class KMockSourceAggregatorCommonSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val className: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val alias: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -590,7 +694,7 @@ class KMockSourceAggregatorCommonSpec {
             null
         }
 
-        val mapping = mapOf(className to alias)
+        val mapping = mapOf(qualifiedName to alias)
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -611,14 +715,13 @@ class KMockSourceAggregatorCommonSpec {
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 
-        every { declaration.parentDeclaration } returns null
-
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
+        every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
         every { logger.error(any()) } just Runs
 

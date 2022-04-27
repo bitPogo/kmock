@@ -28,10 +28,10 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
-import tech.antibytes.kmock.MultiMock
 import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.MultiMock
+import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.MultiMockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory

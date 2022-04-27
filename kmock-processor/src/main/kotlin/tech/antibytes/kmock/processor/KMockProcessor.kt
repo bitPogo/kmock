@@ -60,9 +60,9 @@ internal class KMockProcessor(
         val aggregated = sourceAggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
-            aggregated.extractedTemplates,
-            aggregated.dependencies,
-            relaxer
+            templateSources = aggregated.extractedTemplates,
+            dependencies = aggregated.dependencies,
+            relaxer = relaxer
         )
 
         return aggregated
@@ -79,14 +79,12 @@ internal class KMockProcessor(
             commonAggregated.extractedTemplates
         )
 
-        entryPointGenerator.generateShared(
-            filteredInterfaces,
-        )
+        entryPointGenerator.generateShared(filteredInterfaces)
 
         mockGenerator.writeSharedMocks(
-            filteredInterfaces,
-            aggregated.dependencies,
-            relaxer
+            templateSources = filteredInterfaces,
+            dependencies = aggregated.dependencies,
+            relaxer = relaxer
         )
 
         return mergeSources(commonAggregated, aggregated, filteredInterfaces)
@@ -100,8 +98,8 @@ internal class KMockProcessor(
     ): List<KSAnnotated> {
         val aggregated = sourceAggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
-            aggregated.extractedTemplates,
-            sharedAggregated.extractedTemplates
+            templateSources = aggregated.extractedTemplates,
+            filteredBy = sharedAggregated.extractedTemplates
         )
         val totalAggregated = mergeSources(sharedAggregated, aggregated, filteredInterfaces)
 
@@ -136,10 +134,7 @@ internal class KMockProcessor(
 
             Pair(commonAggregated, sharedAggregated)
         } else {
-            Pair(
-                Aggregated(emptyList(), emptyList(), emptyList()),
-                Aggregated(emptyList(), emptyList(), emptyList())
-            )
+            Pair(NON_KMP_AGGREGATED_SINGLE, NON_KMP_AGGREGATED_SINGLE)
         }
     }
 
@@ -155,5 +150,9 @@ internal class KMockProcessor(
             sharedAggregated = sharedAggregated,
             relaxer = relaxer
         )
+    }
+
+    private companion object {
+        val NON_KMP_AGGREGATED_SINGLE = Aggregated<TemplateSource>(emptyList(), emptyList(), emptyList())
     }
 }

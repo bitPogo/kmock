@@ -15,8 +15,11 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXATION_NAME
 import tech.antibytes.util.test.fixture.fixture
@@ -84,8 +87,11 @@ class AnnotationFilterSpec {
         // Given
         val annotations: Map<String, String> = mapOf(
             ANNOTATION_PLATFORM_NAME to fixture.fixture(),
-            ANNOTATION_COMMON_NAME to fixture.fixture(),
+            ANNOTATION_PLATFORM_MULTI_NAME to fixture.fixture(),
             ANNOTATION_SHARED_NAME to fixture.fixture(),
+            ANNOTATION_SHARED_MULTI_NAME to fixture.fixture(),
+            ANNOTATION_COMMON_NAME to fixture.fixture(),
+            ANNOTATION_COMMON_MULTI_NAME to fixture.fixture(),
             RELAXATION_NAME to fixture.fixture(),
         )
         val logger: KSPLogger = mockk(relaxUnitFun = true)

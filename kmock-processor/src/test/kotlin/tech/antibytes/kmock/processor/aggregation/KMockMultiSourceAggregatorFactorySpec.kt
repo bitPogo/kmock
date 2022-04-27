@@ -14,22 +14,22 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
-class KMockSourceAggregatorFactorySpec {
+class KMockMultiSourceAggregatorFactorySpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `It fulfils AggregatorFactory`() {
-        KMockSourceAggregator fulfils AggregatorFactory::class
+        KMockMultiSourceAggregator fulfils AggregatorFactory::class
     }
 
     @Test
-    fun `Given getInstance is called it returns a SourceAggregator`() {
+    fun `Given getInstance is called it returns a MultiSourceAggregator`() {
         // Given
         val logger: KSPLogger = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -42,7 +42,7 @@ class KMockSourceAggregatorFactorySpec {
         every { annotationFilter.filterAnnotation(any()) } returns customAnnotations
 
         // When
-        val actual = KMockSourceAggregator.getInstance(
+        val actual = KMockMultiSourceAggregator.getInstance(
             logger = logger,
             sourceSetValidator = sourceSetValidator,
             annotationFilter = annotationFilter,
@@ -52,7 +52,7 @@ class KMockSourceAggregatorFactorySpec {
         )
 
         // Then
-        actual fulfils SourceAggregator::class
+        actual fulfils MultiSourceAggregator::class
 
         verify(exactly = 1) {
             annotationFilter.filterAnnotation(customAnnotations)

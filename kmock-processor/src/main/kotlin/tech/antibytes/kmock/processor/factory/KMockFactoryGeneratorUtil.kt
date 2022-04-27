@@ -200,18 +200,7 @@ internal class KMockFactoryGeneratorUtil(
     override fun splitInterfacesIntoRegularAndGenerics(
         templateSources: List<TemplateSource>
     ): Pair<List<TemplateSource>, List<TemplateSource>> {
-        val regular: MutableList<TemplateSource> = mutableListOf()
-        val generics: MutableList<TemplateSource> = mutableListOf()
-
-        templateSources.forEach { source ->
-            if (source.generics == null) {
-                regular.add(source)
-            } else {
-                generics.add(source)
-            }
-        }
-
-        return Pair(regular, generics)
+        return templateSources.partition { source -> source.generics == null }
     }
 
     override fun resolveGenerics(

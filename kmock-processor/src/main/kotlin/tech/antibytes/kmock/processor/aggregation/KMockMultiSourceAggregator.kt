@@ -11,71 +11,119 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeReference
+import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
-import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_MULTI_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 
-internal class KMockSourceAggregator(
+internal class KMockMultiSourceAggregator(
     private val logger: KSPLogger,
     private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
-    generics: GenericResolver,
+    private val generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
-    private val aliases: Map<String, String>
-) : SourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
-    private fun resolveInterface(
-        declaration: KSDeclaration,
-        sourceIndicator: String,
-        templateCollector: MutableMap<String, TemplateSource>
-    ) {
-        val interfaze = safeCastInterface(declaration)
-        val templateName = interfaze.qualifiedName!!.asString()
-        templateCollector[templateName + sourceIndicator] = TemplateSource(
-            indicator = sourceIndicator,
-            templateName = aliases[templateName] ?: interfaze.simpleName.asString(),
-            packageName = interfaze.packageName.asString(),
-            template = interfaze,
-            generics = resolveGenerics(interfaze)
-        )
+) : MultiSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
+    private fun isPackageIndicator(char: Char) = char == '.'
+
+    private fun resolvePackageName(
+        currentName: String?,
+        nameCandidate: String
+    ): String {
+        val currentDepth = currentName?.count(::isPackageIndicator) ?: Int.MAX_VALUE
+        val candidateDepth = nameCandidate.count(::isPackageIndicator)
+
+        return if (currentDepth > candidateDepth) {
+            nameCandidate
+        } else {
+            currentName!!
+        }
     }
 
     private fun resolveInterfaces(
-        raw: Map<String, MutableList<KSType>>,
-        templateCollector: MutableMap<String, TemplateSource>
+        interfaceName: String,
+        interfaces: List<KSDeclaration>,
+        sourceIndicator: String,
+        templateCollector: MutableMap<String, TemplateMultiSource>
+    ) {
+        var packageName: String? = null
+        val interfazes: MutableList<KSClassDeclaration> = mutableListOf()
+        val generics: MutableList<Map<String, List<KSTypeReference>>?> = mutableListOf()
+
+        interfaces.forEach { declaration ->
+            val interfaze = safeCastInterface(declaration)
+            packageName = resolvePackageName(
+                currentName = packageName,
+                nameCandidate = interfaze.packageName.asString()
+            )
+
+            generics.add(resolveGenerics(interfaze))
+            interfazes.add(interfaze)
+        }
+
+        val qualifiedName = "$packageName.$interfaceName"
+
+        templateCollector[qualifiedName + sourceIndicator] = TemplateMultiSource(
+            indicator = sourceIndicator,
+            templateName = interfaceName,
+            packageName = packageName!!,
+            templates = interfazes,
+            generics = generics
+        )
+    }
+
+    private fun List<KSType>.extractDeclarations(): List<KSDeclaration> = this.map { type -> type.declaration }
+
+    private fun resolveInterfaces(
+        raw: Map<String, List<Pair<String, List<KSType>>>>,
+        templateCollector: MutableMap<String, TemplateMultiSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
-            interfaces.forEach { interfaze ->
-                resolveInterface(interfaze.declaration, sourceIndicator, templateCollector)
+            interfaces.forEach { interfacesBundle ->
+                resolveInterfaces(
+                    interfaceName = interfacesBundle.first,
+                    interfaces = interfacesBundle.second.extractDeclarations(),
+                    sourceIndicator = sourceIndicator,
+                    templateCollector = templateCollector
+                )
             }
         }
     }
 
     private fun determineSourceCategory(annotation: KSAnnotation): String {
-        return if (annotation.arguments.size == 2) {
+        return if (annotation.arguments.size == 3) {
             annotation.arguments.first().value as String
         } else {
             customAnnotations[resolveAnnotationName(annotation)] ?: ""
         }
     }
 
+    private fun determineMockName(annotation: KSAnnotation): String {
+        return if (annotation.arguments.size == 3) {
+            annotation.arguments[1].value
+        } else {
+            annotation.arguments.first().value
+        } as String
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
         annotated: Sequence<KSAnnotated>,
         condition: (String, KSAnnotation) -> Boolean,
-    ): Aggregated<TemplateSource> {
+    ): Aggregated<TemplateMultiSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
-        val typeContainer = mutableMapOf<String, MutableList<KSType>>()
-        val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
+        val typeContainer = mutableMapOf<String, MutableList<Pair<String, List<KSType>>>>()
+        val templateCollector: MutableMap<String, TemplateMultiSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
@@ -87,7 +135,12 @@ internal class KMockSourceAggregator(
                 val sourceIndicator = determineSourceCategory(annotation)
                 val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
 
-                interfaces.addAll(annotation.arguments.last().value as List<KSType>)
+                interfaces.add(
+                    Pair(
+                        determineMockName(annotation),
+                        annotation.arguments.last().value as List<KSType>
+                    )
+                )
                 typeContainer[sourceIndicator] = interfaces
                 fileCollector.add(annotatedSymbol.containingFile!!)
             }
@@ -104,24 +157,24 @@ internal class KMockSourceAggregator(
 
     private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            ANNOTATION_COMMON_NAME,
+            ANNOTATION_COMMON_MULTI_NAME,
             false
         )
     }
 
     override fun extractCommonInterfaces(
         resolver: Resolver
-    ): Aggregated<TemplateSource> {
+    ): Aggregated<TemplateMultiSource> {
         val annotated = fetchCommonAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->
-            ANNOTATION_COMMON_NAME == annotationName
+            ANNOTATION_COMMON_MULTI_NAME == annotationName
         }
     }
 
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         val shared = resolver.getSymbolsWithAnnotation(
-            ANNOTATION_SHARED_NAME,
+            ANNOTATION_SHARED_MULTI_NAME,
             false
         )
         val customShared = fetchCustomShared(resolver)
@@ -130,13 +183,13 @@ internal class KMockSourceAggregator(
     }
 
     private fun isSharedAnnotation(annotationName: String, annotation: KSAnnotation): Boolean {
-        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableSingleSourceAnnotation(annotation)) ||
-            (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
+        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableMultiSourceAnnotation(annotation)) ||
+            (ANNOTATION_SHARED_MULTI_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
     }
 
     override fun extractSharedInterfaces(
         resolver: Resolver
-    ): Aggregated<TemplateSource> {
+    ): Aggregated<TemplateMultiSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
         return extractInterfaces(annotated, ::isSharedAnnotation)
@@ -144,22 +197,22 @@ internal class KMockSourceAggregator(
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
-            ANNOTATION_PLATFORM_NAME,
+            ANNOTATION_PLATFORM_MULTI_NAME,
             false
         )
     }
 
     override fun extractPlatformInterfaces(
         resolver: Resolver
-    ): Aggregated<TemplateSource> {
+    ): Aggregated<TemplateMultiSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->
-            ANNOTATION_PLATFORM_NAME == annotationName
+            ANNOTATION_PLATFORM_MULTI_NAME == annotationName
         }
     }
 
-    companion object : AggregatorFactory<SourceAggregator> {
+    companion object : ProcessorContract.AggregatorFactory<MultiSourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
             sourceSetValidator: SourceSetValidator,
@@ -167,18 +220,17 @@ internal class KMockSourceAggregator(
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>,
-        ): SourceAggregator {
+        ): MultiSourceAggregator {
             val additionalAnnotations = annotationFilter.filterAnnotation(
                 customAnnotations
             )
 
-            return KMockSourceAggregator(
+            return KMockMultiSourceAggregator(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = generics,
                 customAnnotations = additionalAnnotations,
-                aliases = aliases,
             )
         }
     }
