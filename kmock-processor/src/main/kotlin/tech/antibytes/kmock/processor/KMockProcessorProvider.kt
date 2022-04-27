@@ -14,6 +14,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Options
+import tech.antibytes.kmock.processor.aggregation.KMockRelaxationAggregator
+import tech.antibytes.kmock.processor.aggregation.KMockSourceAggregator
 import tech.antibytes.kmock.processor.factory.KMockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGeneratorUtil
@@ -149,7 +151,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,
-            aggregator = KMockAggregator.getInstance(
+            sourceAggregator = KMockSourceAggregator.getInstance(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
@@ -157,6 +159,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 customAnnotations = options.customAnnotations,
                 aliases = options.aliases,
             ),
+            relaxationAggregator = KMockRelaxationAggregator(logger),
             filter = SourceFilter(options.precedences, logger)
         )
     }

@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -27,6 +27,10 @@ import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -34,7 +38,7 @@ import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
-class KMockAggregatorPlatformSpec {
+class KMockSourceAggregatorCommonSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -45,18 +49,30 @@ class KMockAggregatorPlatformSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(
+        KMockSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ) fulfils ProcessorContract.Aggregator::class
+        ) fulfils Aggregator::class
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it resolves the Annotated Thing as ill, if no KMockAnnotation was found`() {
+    fun `It fulfils SourceAggregator`() {
+        KMockSourceAggregator(
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ) fulfils SourceAggregator::class
+    }
+
+    @Test
+    fun `Given extractCommonInterfaces is called it resolves the Annotated Thing as ill, if no KMockAnnotation was found`() {
         // Given
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -87,24 +103,24 @@ class KMockAggregatorPlatformSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         illegal mustBe listOf(symbol)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all ill Annotations`() {
+    fun `Given extractCommonInterfaces is called it filters all ill Annotations`() {
         // Given
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
@@ -126,29 +142,29 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         illegal mustBe listOf(symbol)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all non class types and reports an error`() {
+    fun `Given extractCommonInterfaces is called it filters all non class types and reports an error`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -176,7 +192,7 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -191,24 +207,24 @@ class KMockAggregatorPlatformSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it filters all implementation class types and reports an error`() {
+    fun `Given extractCommonInterfaces is called it filters all implementation class types and reports an error`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -250,7 +266,7 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -273,24 +289,24 @@ class KMockAggregatorPlatformSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$className.") }
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns all found interfaces`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -329,7 +345,7 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -354,14 +370,14 @@ class KMockAggregatorPlatformSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -375,14 +391,13 @@ class KMockAggregatorPlatformSpec {
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
-
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns the corresponding source files`() {
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -414,7 +429,7 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -443,17 +458,17 @@ class KMockAggregatorPlatformSpec {
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns the corresponding source files, while filter non related annotations`() {
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files, while filter non related annotations`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -485,7 +500,6 @@ class KMockAggregatorPlatformSpec {
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val simpleName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -495,22 +509,20 @@ class KMockAggregatorPlatformSpec {
             notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returnsMany listOf(
             MockShared::class.qualifiedName!!,
-            MockCommon::class.qualifiedName!!
+            Mock::class.qualifiedName!!
         )
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
         every { notRelatedSymbol.annotations } returns notRelatedSource
 
         every { annotation.arguments } returns arguments
-        every { arguments.isEmpty() } returns false
-
         every { arguments.size } returns 1
+        every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns values
-
         every { type.declaration } returns declaration
         every { declaration.classKind } returns ClassKind.INTERFACE
 
@@ -526,29 +538,30 @@ class KMockAggregatorPlatformSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(
+        val (_, _, sourceFiles) = KMockSourceAggregator(
             logger,
             mockk(),
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 
     @Test
-    fun `Given extractPlatformInterfaces is called it returns while mapping aliases`() {
+    fun `Given extractCommonInterfaces is called it returns while mapping aliases`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -567,8 +580,8 @@ class KMockAggregatorPlatformSpec {
 
         val className: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
         val alias: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -585,7 +598,7 @@ class KMockAggregatorPlatformSpec {
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-        } returns Mock::class.qualifiedName!!
+        } returns MockCommon::class.qualifiedName!!
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -609,17 +622,19 @@ class KMockAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             mockk(),
-            mockk(),
+            sourceSetValidator,
             genericResolver,
             emptyMap(),
             mapping,
-        ).extractPlatformInterfaces(resolver)
+        ).extractCommonInterfaces(resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -633,9 +648,8 @@ class KMockAggregatorPlatformSpec {
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
-
         verify(exactly = 1) {
-            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+            resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
     }
 }

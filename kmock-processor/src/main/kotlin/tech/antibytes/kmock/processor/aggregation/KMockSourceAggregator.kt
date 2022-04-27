@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
@@ -15,33 +15,29 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
-import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
-internal class KMockAggregator(
+internal class KMockSourceAggregator(
     private val logger: KSPLogger,
     private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
     private val generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
     private val aliases: Map<String, String>
-) : Aggregator {
+) : SourceAggregator {
     private fun resolveAnnotationName(
         annotation: KSAnnotation
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
@@ -202,51 +198,7 @@ internal class KMockAggregator(
         }
     }
 
-    private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
-        return parameter.size == 1 &&
-            parameter.first().type.resolve().toString() == "String"
-    }
-
-    private fun hasValidTypeParameter(
-        typeParameter: List<KSTypeParameter>,
-        returnType: KSTypeReference?
-    ): Boolean {
-        return typeParameter.size == 1 &&
-            typeParameter.first().bounds.toList().isEmpty() &&
-            typeParameter.first().toString() == returnType.toString()
-    }
-
-    private fun validateRelaxer(symbol: KSFunctionDeclaration) {
-        val isValid = hasValidParameter(symbol.parameters) &&
-            hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
-
-        if (!isValid) {
-            logger.error("Invalid Relaxer!")
-        }
-    }
-
-    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            ProcessorContract.RELAXATION_NAME,
-            false
-        )
-    }
-
-    override fun extractRelaxer(resolver: Resolver): Relaxer? {
-        val annotatedSymbol = fetchRelaxerAnnotated(resolver).firstOrNull()
-
-        return if (annotatedSymbol is KSFunctionDeclaration) {
-            validateRelaxer(annotatedSymbol)
-            Relaxer(
-                annotatedSymbol.packageName.asString(),
-                annotatedSymbol.simpleName.asString()
-            )
-        } else {
-            null
-        }
-    }
-
-    companion object : AggregatorFactory {
+    companion object : AggregatorFactory<SourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
             sourceSetValidator: SourceSetValidator,
@@ -254,12 +206,12 @@ internal class KMockAggregator(
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>,
-        ): Aggregator {
+        ): SourceAggregator {
             val additionalAnnotations = annotationFilter.filterAnnotation(
                 customAnnotations
             )
 
-            return KMockAggregator(
+            return KMockSourceAggregator(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,

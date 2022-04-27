@@ -10,9 +10,16 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
-import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MockGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.RelaxationAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.Source
+import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SourceFilter
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 /*
@@ -20,14 +27,15 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
  */
 internal class KMockProcessor(
     private val isKmp: Boolean,
-    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
-    private val mockGenerator: ProcessorContract.MockGenerator,
-    private val factoryGenerator: ProcessorContract.MockFactoryGenerator,
-    private val entryPointGenerator: ProcessorContract.MockFactoryEntryPointGenerator,
-    private val aggregator: ProcessorContract.Aggregator,
-    private val filter: ProcessorContract.SourceFilter,
+    private val codeGenerator: KmpCodeGenerator,
+    private val mockGenerator: MockGenerator,
+    private val factoryGenerator: MockFactoryGenerator,
+    private val entryPointGenerator: MockFactoryEntryPointGenerator,
+    private val sourceAggregator: SourceAggregator,
+    private val relaxationAggregator: RelaxationAggregator,
+    private val filter: SourceFilter,
 ) : SymbolProcessor {
-    private fun <T: Source> mergeSources(
+    private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
         filteredTemplates: List<T>
@@ -49,7 +57,7 @@ internal class KMockProcessor(
         resolver: Resolver,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val aggregated = aggregator.extractCommonInterfaces(resolver)
+        val aggregated = sourceAggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
             aggregated.extractedTemplates,
@@ -65,7 +73,7 @@ internal class KMockProcessor(
         commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val aggregated = aggregator.extractSharedInterfaces(resolver)
+        val aggregated = sourceAggregator.extractSharedInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             filter.filterSharedSources(aggregated.extractedTemplates),
             commonAggregated.extractedTemplates
@@ -90,7 +98,7 @@ internal class KMockProcessor(
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
-        val aggregated = aggregator.extractPlatformInterfaces(resolver)
+        val aggregated = sourceAggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             aggregated.extractedTemplates,
             sharedAggregated.extractedTemplates
@@ -137,7 +145,7 @@ internal class KMockProcessor(
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val relaxer = aggregator.extractRelaxer(resolver)
+        val relaxer = relaxationAggregator.extractRelaxer(resolver)
 
         val (commonAggregated, sharedAggregated) = extractMetaSources(resolver, relaxer)
 

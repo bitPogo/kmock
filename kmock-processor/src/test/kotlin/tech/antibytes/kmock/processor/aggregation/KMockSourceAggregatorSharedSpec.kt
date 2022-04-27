@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -27,7 +27,10 @@ import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
+import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
@@ -37,7 +40,7 @@ import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
-class KMockAggregatorSharedSpec {
+class KMockSourceAggregatorSharedSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -48,14 +51,26 @@ class KMockAggregatorSharedSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(
+        KMockSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ) fulfils ProcessorContract.Aggregator::class
+        ) fulfils Aggregator::class
+    }
+
+    @Test
+    fun `It fulfils SourceAggregator`() {
+        KMockSourceAggregator(
+            mockk(),
+            mockk(),
+            mockk(),
+            mockk(),
+            emptyMap(),
+            emptyMap(),
+        ) fulfils SourceAggregator::class
     }
 
     @Test
@@ -91,7 +106,7 @@ class KMockAggregatorSharedSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
@@ -151,7 +166,7 @@ class KMockAggregatorSharedSpec {
         every { sourceSetValidator.isValidateSourceSet(any()) } returns false
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -211,7 +226,7 @@ class KMockAggregatorSharedSpec {
         every { annotationFilter.isApplicableAnnotation(any()) } returns false
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -270,7 +285,7 @@ class KMockAggregatorSharedSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             mockk(),
             mockk(),
             sourceSetValidator,
@@ -322,7 +337,7 @@ class KMockAggregatorSharedSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockAggregator(
+        val (illegal, _, _) = KMockSourceAggregator(
             mockk(),
             annotationFilter,
             sourceSetValidator,
@@ -399,7 +414,7 @@ class KMockAggregatorSharedSpec {
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -472,7 +487,7 @@ class KMockAggregatorSharedSpec {
         every { annotationFilter.isApplicableAnnotation(any()) } returns true
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -570,7 +585,7 @@ class KMockAggregatorSharedSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -662,7 +677,7 @@ class KMockAggregatorSharedSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
+        KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -759,7 +774,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -862,7 +877,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -992,7 +1007,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -1127,7 +1142,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -1241,7 +1256,7 @@ class KMockAggregatorSharedSpec {
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(
+        val (_, _, sourceFiles) = KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -1520,7 +1535,7 @@ class KMockAggregatorSharedSpec {
         every { annotationFilter.isApplicableAnnotation(any()) } returns true
 
         // When
-        val (_, _, sourceFiles) = KMockAggregator(
+        val (_, _, sourceFiles) = KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,
@@ -1625,7 +1640,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,
@@ -1730,7 +1745,7 @@ class KMockAggregatorSharedSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockAggregator(
+        val (_, interfaces, _) = KMockSourceAggregator(
             logger,
             annotationFilter,
             sourceSetValidator,

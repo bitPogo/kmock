@@ -64,6 +64,34 @@ internal interface ProcessorContract {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
     }
 
+    sealed interface Source {
+        val indicator: String
+        val templateName: String
+        val packageName: String
+    }
+
+    data class TemplateSource(
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
+        val template: KSClassDeclaration,
+        val generics: Map<String, List<KSTypeReference>>?
+    ) : Source
+
+    data class TemplateMultiSource(
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
+        val templates: List<KSClassDeclaration>,
+        val generics: List<Map<String, List<KSTypeReference>>?>
+    ) : Source
+
+    data class Aggregated<out T : Source>(
+        val illFormed: List<KSAnnotated>,
+        val extractedTemplates: List<T>,
+        val dependencies: List<KSFile>
+    )
+
     interface SourceSetValidator {
         fun isValidateSourceSet(sourceSet: Any?): Boolean
     }
@@ -89,7 +117,25 @@ internal interface ProcessorContract {
         ): List<T>
     }
 
-    interface AggregatorFactory {
+    interface Aggregator
+
+    interface RelaxationAggregator : Aggregator {
+        fun extractRelaxer(resolver: Resolver): Relaxer?
+    }
+
+    interface SourceAggregator : Aggregator {
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+    }
+
+    interface MultiSourceAggregator : Aggregator {
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+    }
+
+    interface AggregatorFactory<T : Aggregator> {
         fun getInstance(
             logger: KSPLogger,
             sourceSetValidator: SourceSetValidator,
@@ -97,43 +143,8 @@ internal interface ProcessorContract {
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>
-        ): Aggregator
+        ): T
     }
-
-    interface Aggregator {
-        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
-        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
-        fun extractRelaxer(resolver: Resolver): Relaxer?
-    }
-
-    sealed interface Source {
-        val indicator: String
-        val templateName: String
-        val packageName: String
-    }
-
-    data class TemplateSource(
-        override val indicator: String,
-        override val templateName: String,
-        override val packageName: String,
-        val template: KSClassDeclaration,
-        val generics: Map<String, List<KSTypeReference>>?
-    ) : Source
-
-    data class TemplateMultiSource(
-        override val indicator: String,
-        override val templateName: String,
-        override val packageName: String,
-        val template: List<KSClassDeclaration>,
-        val generics: List<Map<String, List<KSTypeReference>>?>
-    ) : Source
-
-    data class Aggregated<out T : Source>(
-        val illFormed: List<KSAnnotated>,
-        val extractedTemplates: List<T>,
-        val dependencies: List<KSFile>
-    )
 
     data class GenericDeclaration(
         val types: List<TypeName>,

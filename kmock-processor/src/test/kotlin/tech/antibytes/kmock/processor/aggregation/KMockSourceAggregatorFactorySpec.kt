@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.processing.KSPLogger
 import io.mockk.every
@@ -20,12 +20,12 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
-class KMockAggregatorFactorySpec {
+class KMockSourceAggregatorFactorySpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `It fulfils AggregatorFactory`() {
-        KMockAggregator fulfils AggregatorFactory::class
+        KMockSourceAggregator fulfils AggregatorFactory::class
     }
 
     @Test
@@ -42,7 +42,7 @@ class KMockAggregatorFactorySpec {
         every { annotationFilter.filterAnnotation(any()) } returns customAnnotations
 
         // When
-        val actual = KMockAggregator.getInstance(
+        val actual = KMockSourceAggregator.getInstance(
             logger = logger,
             sourceSetValidator = sourceSetValidator,
             annotationFilter = annotationFilter,
