@@ -108,8 +108,8 @@ internal class KMockAggregator(
     @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
         annotated: Sequence<KSAnnotated>,
-        condition: (String, KSAnnotation) -> Boolean
-    ): Aggregated {
+        condition: (String, KSAnnotation) -> Boolean,
+    ): Aggregated<TemplateSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
         val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
@@ -148,7 +148,7 @@ internal class KMockAggregator(
 
     override fun extractCommonInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource>  {
         val annotated = fetchCommonAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->
@@ -179,7 +179,7 @@ internal class KMockAggregator(
 
     override fun extractSharedInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource>  {
         val annotated = fetchSharedAnnotated(resolver)
 
         return extractInterfaces(annotated, ::isSharedAnnotation)
@@ -194,7 +194,7 @@ internal class KMockAggregator(
 
     override fun extractPlatformInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource>  {
         val annotated = fetchPlatformAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->

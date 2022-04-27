@@ -101,9 +101,9 @@ internal interface ProcessorContract {
     }
 
     interface Aggregator {
-        fun extractCommonInterfaces(resolver: Resolver): Aggregated
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated
-        fun extractPlatformInterfaces(resolver: Resolver): Aggregated
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
         fun extractRelaxer(resolver: Resolver): Relaxer?
     }
 
@@ -121,9 +121,17 @@ internal interface ProcessorContract {
         val generics: Map<String, List<KSTypeReference>>?
     ) : Source
 
-    data class Aggregated(
+    data class TemplateMultiSource(
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
+        val template: List<KSClassDeclaration>,
+        val generics: List<Map<String, List<KSTypeReference>>?>
+    ) : Source
+
+    data class Aggregated<out T : Source>(
         val illFormed: List<KSAnnotated>,
-        val extractedTemplates: List<TemplateSource>,
+        val extractedTemplates: List<T>,
         val dependencies: List<KSFile>
     )
 

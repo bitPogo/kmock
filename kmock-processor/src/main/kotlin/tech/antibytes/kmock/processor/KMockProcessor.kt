@@ -10,6 +10,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
+import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
@@ -26,11 +27,11 @@ internal class KMockProcessor(
     private val aggregator: ProcessorContract.Aggregator,
     private val filter: ProcessorContract.SourceFilter,
 ) : SymbolProcessor {
-    private fun mergeSources(
-        rootSource: Aggregated,
-        dependentSource: Aggregated,
-        filteredTemplates: List<TemplateSource>
-    ): Aggregated {
+    private fun <T: Source> mergeSources(
+        rootSource: Aggregated<T>,
+        dependentSource: Aggregated<T>,
+        filteredTemplates: List<T>
+    ): Aggregated<T> {
         return Aggregated(
             illFormed = rootSource.illFormed.toMutableList().also {
                 it.addAll(dependentSource.illFormed)
@@ -47,7 +48,7 @@ internal class KMockProcessor(
     private fun stubCommonSources(
         resolver: Resolver,
         relaxer: Relaxer?
-    ): Aggregated {
+    ): Aggregated<TemplateSource> {
         val aggregated = aggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
@@ -61,9 +62,9 @@ internal class KMockProcessor(
 
     private fun stubSharedSources(
         resolver: Resolver,
-        commonAggregated: Aggregated,
+        commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
-    ): Aggregated {
+    ): Aggregated<TemplateSource> {
         val aggregated = aggregator.extractSharedInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             filter.filterSharedSources(aggregated.extractedTemplates),
@@ -85,8 +86,8 @@ internal class KMockProcessor(
 
     private fun stubPlatformAndEntryPointSources(
         resolver: Resolver,
-        commonAggregated: Aggregated,
-        sharedAggregated: Aggregated,
+        commonAggregated: Aggregated<TemplateSource>,
+        sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
         val aggregated = aggregator.extractPlatformInterfaces(resolver)
@@ -120,7 +121,7 @@ internal class KMockProcessor(
     private fun extractMetaSources(
         resolver: Resolver,
         relaxer: Relaxer?
-    ): Pair<Aggregated, Aggregated> {
+    ): Pair<Aggregated<TemplateSource>, Aggregated<TemplateSource>> {
         return if (isKmp) {
             val commonAggregated = stubCommonSources(resolver, relaxer)
             val sharedAggregated = stubSharedSources(resolver, commonAggregated, relaxer)
