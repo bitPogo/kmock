@@ -28,8 +28,11 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MultiMock
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.MultiMockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
@@ -101,7 +104,11 @@ internal interface ProcessorContract {
             annotations: Map<String, String>
         ): Map<String, String>
 
-        fun isApplicableAnnotation(
+        fun isApplicableSingleSourceAnnotation(
+            annotation: KSAnnotation
+        ): Boolean
+
+        fun isApplicableMultiSourceAnnotation(
             annotation: KSAnnotation
         ): Boolean
     }
@@ -411,8 +418,11 @@ internal interface ProcessorContract {
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
+        val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
+        val ANNOTATION_COMMON_MULTI_NAME: String = MultiMockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
+        val ANNOTATION_SHARED_MULTI_NAME: String = MultiMockShared::class.java.canonicalName
         val RELAXATION_NAME: String = RelaxationAnnotation::class.java.canonicalName
 
         val COLLECTOR_NAME = ClassName(

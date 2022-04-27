@@ -11,7 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
@@ -29,7 +29,7 @@ class KMockSourceAggregatorFactorySpec {
     }
 
     @Test
-    fun `Given getInstance is called it returns a Aggregator`() {
+    fun `Given getInstance is called it returns a SourceAggregator`() {
         // Given
         val logger: KSPLogger = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -52,7 +52,7 @@ class KMockSourceAggregatorFactorySpec {
         )
 
         // Then
-        actual fulfils Aggregator::class
+        actual fulfils SourceAggregator::class
 
         verify(exactly = 1) {
             annotationFilter.filterAnnotation(customAnnotations)

@@ -169,7 +169,7 @@ internal class KMockSourceAggregator(
     }
 
     private fun isSharedAnnotation(annotationName: String, annotation: KSAnnotation): Boolean {
-        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableAnnotation(annotation)) ||
+        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableSingleSourceAnnotation(annotation)) ||
             (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
     }
 

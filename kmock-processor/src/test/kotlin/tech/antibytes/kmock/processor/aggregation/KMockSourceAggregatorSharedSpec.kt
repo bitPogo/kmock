@@ -223,7 +223,7 @@ class KMockSourceAggregatorSharedSpec {
         every { annotation.arguments } returns arguments
         every { arguments[0].value } returns null
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns false
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns false
 
         // When
         val (illegal, _, _) = KMockSourceAggregator(
@@ -242,7 +242,7 @@ class KMockSourceAggregatorSharedSpec {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
         verify(exactly = 4) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
@@ -332,7 +332,7 @@ class KMockSourceAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         every { symbol.annotations } returns sourceAnnotations
 
@@ -352,7 +352,7 @@ class KMockSourceAggregatorSharedSpec {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
         verify(exactly = 4) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
@@ -484,7 +484,7 @@ class KMockSourceAggregatorSharedSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         // When
         KMockSourceAggregator(
@@ -502,7 +502,7 @@ class KMockSourceAggregatorSharedSpec {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
         verify(exactly = 4) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
@@ -672,7 +672,7 @@ class KMockSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.simpleName.asString() } returns simpleName
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         every { logger.error(any()) } just Runs
 
@@ -692,7 +692,7 @@ class KMockSourceAggregatorSharedSpec {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
         verify(exactly = 4) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
@@ -872,7 +872,7 @@ class KMockSourceAggregatorSharedSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
@@ -903,7 +903,7 @@ class KMockSourceAggregatorSharedSpec {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
         verify(exactly = 2) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
@@ -1137,7 +1137,7 @@ class KMockSourceAggregatorSharedSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
@@ -1171,10 +1171,10 @@ class KMockSourceAggregatorSharedSpec {
 
         verify(exactly = 6) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 3) {
-            annotationFilter.isApplicableAnnotation(annotation0)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation0)
         }
         verify(exactly = 3) {
-            annotationFilter.isApplicableAnnotation(annotation1)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation1)
         }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation0)
@@ -1532,7 +1532,7 @@ class KMockSourceAggregatorSharedSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         // When
         val (_, _, sourceFiles) = KMockSourceAggregator(
@@ -1547,7 +1547,7 @@ class KMockSourceAggregatorSharedSpec {
         // Then
         sourceFiles mustBe listOf(file, file)
         verify(exactly = 2) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -1740,7 +1740,7 @@ class KMockSourceAggregatorSharedSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+        every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
@@ -1767,7 +1767,7 @@ class KMockSourceAggregatorSharedSpec {
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
         verify(exactly = 2) {
-            annotationFilter.isApplicableAnnotation(annotation)
+            annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)

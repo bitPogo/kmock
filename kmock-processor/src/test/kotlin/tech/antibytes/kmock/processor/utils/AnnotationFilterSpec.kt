@@ -133,7 +133,7 @@ class AnnotationFilterSpec {
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns false if it takes less then 1 argument`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns false if it takes less then 1 argument`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -148,14 +148,14 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
         actual mustBe false
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns false if it takes more then 1 argument`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns false if it takes more then 1 argument`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -170,14 +170,14 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
         actual mustBe false
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns false if its argument is not an Array`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns false if its argument is not a ListType`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -197,14 +197,14 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
         actual mustBe false
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns false if its argument contains not an List of KSType`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns false if its argument contains not a List of KSType`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -224,14 +224,14 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
         actual mustBe false
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns true if its argument contains an empty List`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns true if its argument contains an empty List`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -251,14 +251,14 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
         actual mustBe true
     }
 
     @Test
-    fun `Given isApplicableAnnotation is called with a KSAnnotation it returns true if its argument contains an List of KSType`() {
+    fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns true if its argument contains a List of KSType`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk(relaxUnitFun = true)
@@ -278,7 +278,206 @@ class AnnotationFilterSpec {
         val actual = AnnotationFilter(
             logger,
             annotations.values.toSet()
-        ).isApplicableAnnotation(annotation)
+        ).isApplicableSingleSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns false if it takes less then 2 argument`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(mockk())
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns false if it takes more then 2 argument`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(mockk(), mockk(), mockk())
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns false if its first argument is not a String`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+        val argument: KSValueArgument = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(argument, mockk())
+
+        every {
+            argument.value
+        } returns Any()
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns false if its second argument is not a ListType`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+        val argument1: KSValueArgument = mockk()
+        val argument2: KSValueArgument = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(argument1, argument2)
+
+        every {
+            argument1.value
+        } returns fixture.fixture<String>()
+
+        every {
+            argument2.value
+        } returns Any()
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns false if its argument contains not a List of KSType`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+        val argument1: KSValueArgument = mockk()
+        val argument2: KSValueArgument = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(argument1, argument2)
+
+        every {
+            argument1.value
+        } returns fixture.fixture<String>()
+
+        every {
+            argument2.value
+        } returns listOf(Any(), Any())
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns true if its argument contains an empty List`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+        val argument1: KSValueArgument = mockk()
+        val argument2: KSValueArgument = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(argument1, argument2)
+
+        every {
+            argument1.value
+        } returns fixture.fixture<String>()
+
+        every {
+            argument2.value
+        } returns listOf<Any?>()
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given isApplicableMultiSourceAnnotation is called with a KSAnnotation it returns true if its argument contains a List of KSType`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        val annotation: KSAnnotation = mockk()
+        val argument1: KSValueArgument = mockk()
+        val argument2: KSValueArgument = mockk()
+
+        every {
+            annotation.arguments
+        } returns listOf(argument1, argument2)
+
+        every {
+            argument1.value
+        } returns fixture.fixture<String>()
+
+        every {
+            argument2.value
+        } returns listOf(mockk<KSType>(), mockk<KSType>())
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.toSet()
+        ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
         actual mustBe true

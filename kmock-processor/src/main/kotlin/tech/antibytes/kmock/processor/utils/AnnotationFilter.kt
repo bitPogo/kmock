@@ -51,12 +51,19 @@ internal class AnnotationFilter(
         }
     }
 
-    override fun isApplicableAnnotation(
+    override fun isApplicableSingleSourceAnnotation(
         annotation: KSAnnotation
     ): Boolean {
         return annotation.arguments.size == 1 &&
-            annotation.arguments.first().value is List<*> &&
-            ((annotation.arguments.first().value as List<*>).size == 0 || (annotation.arguments.first().value as List<*>).random() is KSType)
+            annotation.arguments[0].value is List<*> &&
+            ((annotation.arguments[0].value as List<*>).size == 0 || (annotation.arguments[0].value as List<*>).random() is KSType)
+    }
+
+    override fun isApplicableMultiSourceAnnotation(annotation: KSAnnotation): Boolean {
+        return annotation.arguments.size == 2 &&
+            annotation.arguments[0].value is String &&
+            annotation.arguments[1].value is List<*> &&
+            ((annotation.arguments[1].value as List<*>).size == 0 || (annotation.arguments[1].value as List<*>).random() is KSType)
     }
 
     private companion object {
