@@ -43,6 +43,7 @@ kotlin {
     jvm()
 
     ios()
+    iosSimulatorArm64()
 
     linuxX64()
 
@@ -180,6 +181,13 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test")
             dependsOn(iosTest)
         }
+
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+        val iosSimulatorArm64Test by getting {
+            dependsOn(iosTest)
+        }
     }
 }
 
@@ -189,4 +197,5 @@ dependencies {
     add("kspJsTest", project(":kmock-processor"))
     add("kspLinuxX64Test", project(":kmock-processor"))
     add("kspIosX64Test", project(":kmock-processor"))
+    add("kspIosSimulatorArm64Test", project(":kmock-processor"))
 }
