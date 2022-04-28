@@ -52,6 +52,7 @@ toc::[]
 * Assertion-/VerificationChain is not coupled any longer directly to proxies and provide improved error messages
 * Expectation-methods do not bleed into the global context any longer
 * `verifyStrictOrder` is now used for total order of certain Proxies but allows partial order between different Proxies
+* Android MinSDK 23 -> 21
 
 === Deprecated
 
