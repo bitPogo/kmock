@@ -14,7 +14,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 /*
- * Notices -> No deep checking in order to no drain performance
+ * Notice -> No deep checking in order to not drain performance
  */
 internal class KMockProcessor(
     private val isKmp: Boolean,

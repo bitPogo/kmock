@@ -23,6 +23,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
@@ -60,7 +62,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it resolves the Annotated Thing as ill, if no KMockAnnotation or CustomAnnotation was found`() {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 3)
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
 
         val annotation1: KSAnnotation = mockk()
@@ -71,7 +73,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         every {
@@ -86,7 +88,7 @@ class KMockAggregatorSharedSpec {
             annotation2.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns fixture.fixture()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         // When
         val (illegal, _, _) = KMockAggregator(
@@ -99,7 +101,7 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        illegal mustBe listOf(source, source, source, source)
+        illegal mustBe listOf(symbol, symbol, symbol, symbol)
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
         }
@@ -114,7 +116,7 @@ class KMockAggregatorSharedSpec {
     @Test
     fun `Given extractSharedInterfaces is called it filters illegal shared sources`() {
         // Given
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val logger: KSPLogger = mockk()
         val resolver: Resolver = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -125,7 +127,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val arguments: List<KSValueArgument> = listOf(
@@ -137,7 +139,7 @@ class KMockAggregatorSharedSpec {
             resolver.getSymbolsWithAnnotation(any(), any())
         } returns annotated
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
@@ -159,7 +161,7 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        illegal mustBe listOf(source)
+        illegal mustBe listOf(symbol)
 
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -173,7 +175,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it filters illegal custom shared sources`() {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 3)
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val logger: KSPLogger = mockk()
         val resolver: Resolver = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -185,7 +187,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val arguments: List<KSValueArgument> = listOf(
@@ -197,7 +199,7 @@ class KMockAggregatorSharedSpec {
             resolver.getSymbolsWithAnnotation(any(), any())
         } returns annotated
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
@@ -219,7 +221,7 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        illegal mustBe listOf(source, source, source, source)
+        illegal mustBe listOf(symbol, symbol, symbol, symbol)
 
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -240,7 +242,7 @@ class KMockAggregatorSharedSpec {
     @Test
     fun `Given extractSharedInterfaces is called it filters all ill Shared Annotations`() {
         // Given
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
 
@@ -250,7 +252,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         every {
@@ -265,7 +267,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         // When
         val (illegal, _, _) = KMockAggregator(
@@ -278,7 +280,7 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        illegal mustBe listOf(source)
+        illegal mustBe listOf(symbol)
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -291,7 +293,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it filters all ill custom Shared Annotations`() {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 3)
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val annotationFilter: AnnotationFilter = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -302,7 +304,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         every {
@@ -317,7 +319,7 @@ class KMockAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableAnnotation(any()) } returns true
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         // When
         val (illegal, _, _) = KMockAggregator(
@@ -330,7 +332,7 @@ class KMockAggregatorSharedSpec {
         ).extractSharedInterfaces(resolver)
 
         // Then
-        illegal mustBe listOf(source, source, source, source)
+        illegal mustBe listOf(symbol, symbol, symbol, symbol)
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -351,7 +353,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it filters all non class types and reports an error for Shared Sources`() {
         // Given
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -362,7 +364,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -381,7 +383,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -390,7 +392,7 @@ class KMockAggregatorSharedSpec {
         every { arguments.size } returns 2
         every { type.declaration } returns declaration
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { logger.error(any()) } just Runs
 
@@ -421,7 +423,7 @@ class KMockAggregatorSharedSpec {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -433,7 +435,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -452,16 +454,18 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
+
         every { arguments.isEmpty() } returns false
         every { arguments[0].value } returns allowedSourceSets.first()
         every { arguments[1].value } returns values
         every { arguments.size } returns 2
+
         every { type.declaration } returns declaration
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { logger.error(any()) } just Runs
 
@@ -499,7 +503,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it filters all implementation class types and reports an error for Shared Sources`() {
         // Given
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -520,7 +524,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -541,7 +545,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -554,7 +558,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -588,7 +592,7 @@ class KMockAggregatorSharedSpec {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 3)
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -610,7 +614,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -631,7 +635,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -644,7 +648,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -685,7 +689,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it returns all found interfaces for SharedSources`() {
         // Given
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -697,7 +701,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -724,7 +728,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -737,7 +741,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -778,7 +782,7 @@ class KMockAggregatorSharedSpec {
             fixture.fixture<String>() to marker
         )
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -790,7 +794,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -817,7 +821,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -830,7 +834,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -1126,7 +1130,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it returns the corresponding source files for Shared Sources`() {
         // Given
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -1137,7 +1141,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -1160,7 +1164,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -1173,7 +1177,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -1207,7 +1211,7 @@ class KMockAggregatorSharedSpec {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 1)
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -1219,7 +1223,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -1242,7 +1246,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -1255,7 +1259,202 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
+
+        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.packageName.asString() } returns packageName
+
+        every { logger.error(any()) } just Runs
+
+        every { annotationFilter.isApplicableAnnotation(any()) } returns true
+
+        // When
+        val (_, _, sourceFiles) = KMockAggregator(
+            logger,
+            annotationFilter,
+            sourceSetValidator,
+            mockk(relaxed = true),
+            customAnnotations,
+            emptyMap(),
+        ).extractSharedInterfaces(resolver)
+
+        // Then
+        sourceFiles mustBe listOf(file, file)
+        verify(exactly = 2) {
+            annotationFilter.isApplicableAnnotation(annotation)
+        }
+        verify(exactly = 0) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
+
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
+        }
+        customAnnotations.forEach { (annotation, _) ->
+            verify(exactly = 1) {
+                resolver.getSymbolsWithAnnotation(annotation, false)
+            }
+        }
+    }
+
+    @Test
+    fun `Given getSymbolsWithAnnotation is called it returns the corresponding source files, while filter non related annotations`() {
+        // Given
+        val sourceSetValidator: SourceSetValidator = mockk()
+        val logger: KSPLogger = mockk()
+        val symbol: KSAnnotated = mockk()
+        val notRelatedSymbol: KSAnnotated = mockk()
+        val resolver: Resolver = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val notRelatedAnnotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val notRelatedSource: Sequence<KSAnnotation> = sequence {
+            yield(notRelatedAnnotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(notRelatedSymbol)
+            yield(notRelatedSymbol)
+            yield(symbol)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returnsMany listOf(
+            Mock::class.qualifiedName!!,
+            MockCommon::class.qualifiedName!!
+        )
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockShared::class.qualifiedName!!
+
+        every { symbol.annotations } returns sourceAnnotations
+        every { notRelatedSymbol.annotations } returns notRelatedSource
+
+        every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
+
+        every { file.parent } returns null
+        every { symbol.parent } returns file
+
+        every { declaration.qualifiedName!!.asString() } returns className
+        every { declaration.packageName.asString() } returns packageName
+
+        every { logger.error(any()) } just Runs
+
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
+        // When
+        val (_, _, sourceFiles) = KMockAggregator(
+            logger,
+            mockk(),
+            sourceSetValidator,
+            mockk(relaxed = true),
+            emptyMap(),
+            emptyMap(),
+        ).extractSharedInterfaces(resolver)
+
+        // Then
+        sourceFiles mustBe listOf(file)
+        verify(exactly = 1) {
+            sourceSetValidator.isValidateSourceSet(annotation)
+        }
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
+        }
+    }
+
+    @Test
+    fun `Given getSymbolsWithAnnotation is called it returns the corresponding source files, while filter non related annotations for custom annotations`() {
+        // Given
+        val customAnnotations: Map<String, String> = fixture.mapFixture(size = 1)
+        val annotationFilter: AnnotationFilter = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
+        val logger: KSPLogger = mockk()
+        val symbol: KSAnnotated = mockk()
+        val notRelatedSymbol: KSAnnotated = mockk()
+        val resolver: Resolver = mockk()
+        val file: KSFile = mockk()
+
+        val annotation: KSAnnotation = mockk()
+        val notRelatedAnnotation: KSAnnotation = mockk()
+        val sourceAnnotations: Sequence<KSAnnotation> = sequence {
+            yield(annotation)
+        }
+
+        val notRelatedSource: Sequence<KSAnnotation> = sequence {
+            yield(notRelatedAnnotation)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(notRelatedSymbol)
+            yield(notRelatedSymbol)
+            yield(symbol)
+        }
+
+        val type: KSType = mockk(relaxed = true)
+        val declaration: KSClassDeclaration = mockk(relaxed = true)
+        val arguments: List<KSValueArgument> = mockk()
+
+        val values: List<KSType> = listOf(type)
+
+        val className: String = fixture.fixture(named("stringAlpha"))
+        val packageName: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returnsMany listOf(
+            Mock::class.qualifiedName!!,
+            MockCommon::class.qualifiedName!!
+        )
+
+        every {
+            annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns customAnnotations.keys.random()
+
+        every { symbol.annotations } returns sourceAnnotations
+        every { notRelatedSymbol.annotations } returns notRelatedSource
+
+        every { annotation.arguments } returns arguments
+        every { arguments.size } returns 1
+        every { arguments.isEmpty() } returns false
+        every { arguments[0].value } returns values
+        every { type.declaration } returns declaration
+        every { declaration.classKind } returns ClassKind.INTERFACE
+
+        every { declaration.parentDeclaration } returns null
+
+        every { file.parent } returns null
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -1297,7 +1496,7 @@ class KMockAggregatorSharedSpec {
     fun `Given extractSharedInterfaces is called it returns while mapping aliases`() {
         // Given
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -1308,7 +1507,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -1341,7 +1540,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns MockShared::class.qualifiedName!!
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -1356,7 +1555,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
@@ -1391,7 +1590,7 @@ class KMockAggregatorSharedSpec {
         // Given
         val customAnnotations: Map<String, String> = fixture.mapFixture(size = 1)
         val logger: KSPLogger = mockk()
-        val source: KSAnnotated = mockk()
+        val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
         val annotationFilter: AnnotationFilter = mockk()
@@ -1403,7 +1602,7 @@ class KMockAggregatorSharedSpec {
         }
 
         val annotated: Sequence<KSAnnotated> = sequence {
-            yield(source)
+            yield(symbol)
         }
 
         val type: KSType = mockk(relaxed = true)
@@ -1436,7 +1635,7 @@ class KMockAggregatorSharedSpec {
             annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returns customAnnotations.keys.random()
 
-        every { source.annotations } returns sourceAnnotations
+        every { symbol.annotations } returns sourceAnnotations
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
@@ -1451,7 +1650,7 @@ class KMockAggregatorSharedSpec {
         every { declaration.parentDeclaration } returns null
 
         every { file.parent } returns null
-        every { source.parent } returns file
+        every { symbol.parent } returns file
 
         every { declaration.qualifiedName!!.asString() } returns className
         every { declaration.packageName.asString() } returns packageName
