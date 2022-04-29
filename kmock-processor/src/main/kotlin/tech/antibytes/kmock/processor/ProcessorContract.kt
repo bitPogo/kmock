@@ -348,6 +348,7 @@ internal interface ProcessorContract {
     interface MockFactoryEntryPointGenerator {
         fun generateCommon(
             templateSources: List<TemplateSource>,
+            totalTemplates: List<TemplateSource>,
         )
 
         fun generateShared(

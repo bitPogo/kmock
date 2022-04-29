@@ -124,9 +124,10 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     override fun generateCommon(
-        templateSources: List<TemplateSource>
+        templateSources: List<TemplateSource>,
+        totalTemplates: List<TemplateSource>,
     ) {
-        if (isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && totalTemplates.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 rootPackage,
                 FACTORY_FILE_NAME

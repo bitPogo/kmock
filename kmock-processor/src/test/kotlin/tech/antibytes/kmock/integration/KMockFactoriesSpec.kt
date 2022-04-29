@@ -867,4 +867,54 @@ class KMockFactoriesSpec {
         actualActual!!.readText().normalizeSource() mustBe expectedActual.normalizeSource()
         actualExpect!!.readText().normalizeSource() mustBe expectedExpect.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source with only a Platform is processed, it writes a mock factory entryPoint`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/nocommon/Platform.kt")
+        )
+        val expected = loadResource("/expected/nocommon/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            emptyMap(),
+            source
+        )
+        val actual = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source only for Shared is processed, it writes a mock factory entryPoint`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/nocommon/Shared.kt")
+        )
+        val expected = loadResource("/expected/nocommon/CommonExpect.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            emptyMap(),
+            source
+        )
+        val actual = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
 }

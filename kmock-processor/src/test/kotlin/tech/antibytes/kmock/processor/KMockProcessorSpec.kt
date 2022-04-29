@@ -70,7 +70,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -139,7 +139,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -188,7 +188,14 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 1) {
-            entryPointGenerator.generateCommon(interfacesCommon)
+            entryPointGenerator.generateCommon(
+                interfacesCommon,
+                listOf(
+                    interfacesCommon.first(),
+                    interfacesFiltered.first(),
+                    interfacesFiltered.first(),
+                )
+            )
         }
 
         verify(exactly = 1) { entryPointGenerator.generateShared(interfacesFiltered) }
@@ -234,7 +241,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
 
         // When
         KMockProcessor(
@@ -276,7 +283,7 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 0) {
-            entryPointGenerator.generateCommon(interfacesCommon)
+            entryPointGenerator.generateCommon(interfacesCommon, interfacesFiltered)
         }
 
         verify(exactly = 1) { codeGenerator.closeFiles() }
