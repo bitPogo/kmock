@@ -46,13 +46,12 @@ internal class KMockAggregator(
         annotation: KSAnnotation
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
 
-    private fun findKMockAnnotation(annotations: Sequence<KSAnnotation>): KSAnnotation? {
+    private fun findKMockAnnotation(
+        annotations: Sequence<KSAnnotation>,
+        condition: (String, KSAnnotation) -> Boolean
+    ): KSAnnotation? {
         val annotation = annotations.firstOrNull { annotation ->
-            val annotationName = resolveAnnotationName(annotation)
-            ANNOTATION_PLATFORM_NAME == annotationName ||
-                ANNOTATION_COMMON_NAME == annotationName ||
-                (annotationName in customAnnotations.keys && annotationFilter.isApplicableAnnotation(annotation)) ||
-                (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
+            condition(resolveAnnotationName(annotation), annotation)
         }
 
         return annotation
@@ -107,7 +106,8 @@ internal class KMockAggregator(
 
     @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
-        annotated: Sequence<KSAnnotated>
+        annotated: Sequence<KSAnnotated>,
+        condition: (String, KSAnnotation) -> Boolean
     ): Aggregated {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
@@ -115,7 +115,7 @@ internal class KMockAggregator(
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
-            val annotation = findKMockAnnotation(annotatedSymbol.annotations)
+            val annotation = findKMockAnnotation(annotatedSymbol.annotations, condition)
 
             if (annotation == null || annotation.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
@@ -147,7 +147,13 @@ internal class KMockAggregator(
 
     override fun extractCommonInterfaces(
         resolver: Resolver
-    ): Aggregated = extractInterfaces(fetchCommonAnnotated(resolver))
+    ): Aggregated {
+        val annotated = fetchCommonAnnotated(resolver)
+
+        return extractInterfaces(annotated) { annotationName, _ ->
+            ANNOTATION_COMMON_NAME == annotationName
+        }
+    }
 
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         val shared = resolver.getSymbolsWithAnnotation(
@@ -165,9 +171,18 @@ internal class KMockAggregator(
         return sequenceOf(shared, *customShared).flatten()
     }
 
+    private fun isSharedAnnotation(annotationName: String, annotation: KSAnnotation): Boolean {
+        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableAnnotation(annotation)) ||
+            (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
+    }
+
     override fun extractSharedInterfaces(
         resolver: Resolver
-    ): Aggregated = extractInterfaces(fetchSharedAnnotated(resolver))
+    ): Aggregated {
+        val annotated = fetchSharedAnnotated(resolver)
+
+        return extractInterfaces(annotated, ::isSharedAnnotation)
+    }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
@@ -178,7 +193,13 @@ internal class KMockAggregator(
 
     override fun extractPlatformInterfaces(
         resolver: Resolver
-    ): Aggregated = extractInterfaces(fetchPlatformAnnotated(resolver))
+    ): Aggregated {
+        val annotated = fetchPlatformAnnotated(resolver)
+
+        return extractInterfaces(annotated) { annotationName, _ ->
+            ANNOTATION_PLATFORM_NAME == annotationName
+        }
+    }
 
     private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
         return parameter.size == 1 &&

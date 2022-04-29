@@ -1174,4 +1174,40 @@ class KMockMocksSpec {
         ) mustBe true
         actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
+
+    @Test
+    fun `Given a Source with multiple Annotations is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Sample.kt",
+            loadResource("/template/mixedannotation/Sample.kt")
+        )
+        val expectedPlatform = loadResource("/expected/mixedannotation/Platform.kt")
+        val expectedShared = loadResource("/expected/mixedannotation/Shared.kt")
+        val expectedCommon = loadResource("/expected/mixedannotation/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+        )
+        val actualPlatform = resolveGenerated("PlatformMock.kt")
+        val actualShared = resolveGenerated("SharedMock.kt")
+        val actualCommon = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+
+        actualShared!!.absolutePath.toString().endsWith(
+            "shared/sharedTest/kotlin/mock/template/mixedannotation/SharedMock.kt"
+        ) mustBe true
+        actualCommon!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/mixedannotation/CommonMock.kt"
+        ) mustBe true
+
+        actualPlatform!!.readText().normalizeSource() mustBe expectedPlatform.normalizeSource()
+        actualShared.readText().normalizeSource() mustBe expectedShared.normalizeSource()
+        actualCommon.readText().normalizeSource() mustBe expectedCommon.normalizeSource()
+    }
 }

@@ -14,7 +14,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 /*
- * Notices -> No deep checking in order to no drain performance
+ * Notice -> No deep checking in order to not drain performance
  */
 internal class KMockProcessor(
     private val isKmp: Boolean,
@@ -55,10 +55,6 @@ internal class KMockProcessor(
             relaxer
         )
 
-        entryPointGenerator.generateCommon(
-            aggregated.extractedTemplates
-        )
-
         return aggregated
     }
 
@@ -86,8 +82,9 @@ internal class KMockProcessor(
         return mergeSources(commonAggregated, aggregated, filteredInterfaces)
     }
 
-    private fun stubPlatformSources(
+    private fun stubPlatformAndEntryPointSources(
         resolver: Resolver,
+        commonAggregated: Aggregated,
         sharedAggregated: Aggregated,
         relaxer: Relaxer?
     ): List<KSAnnotated> {
@@ -110,25 +107,43 @@ internal class KMockProcessor(
             relaxer
         )
 
+        entryPointGenerator.generateCommon(
+            templateSources = commonAggregated.extractedTemplates,
+            totalTemplates = totalAggregated.extractedTemplates
+        )
+
         codeGenerator.closeFiles()
         return totalAggregated.illFormed
+    }
+
+    private fun extractMetaSources(
+        resolver: Resolver,
+        relaxer: Relaxer?
+    ): Pair<Aggregated, Aggregated> {
+        return if (isKmp) {
+            val commonAggregated = stubCommonSources(resolver, relaxer)
+            val sharedAggregated = stubSharedSources(resolver, commonAggregated, relaxer)
+
+            Pair(commonAggregated, sharedAggregated)
+        } else {
+            Pair(
+                Aggregated(emptyList(), emptyList(), emptyList()),
+                Aggregated(emptyList(), emptyList(), emptyList())
+            )
+        }
     }
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = aggregator.extractRelaxer(resolver)
 
-        val sharedAggregated = if (isKmp) {
-            val commonAggregated = stubCommonSources(resolver, relaxer)
-            stubSharedSources(resolver, commonAggregated, relaxer)
-        } else {
-            Aggregated(emptyList(), emptyList(), emptyList())
-        }
+        val (commonAggregated, sharedAggregated) = extractMetaSources(resolver, relaxer)
 
-        return stubPlatformSources(
-            resolver,
-            sharedAggregated,
-            relaxer
+        return stubPlatformAndEntryPointSources(
+            resolver = resolver,
+            commonAggregated = commonAggregated,
+            sharedAggregated = sharedAggregated,
+            relaxer = relaxer
         )
     }
 }
