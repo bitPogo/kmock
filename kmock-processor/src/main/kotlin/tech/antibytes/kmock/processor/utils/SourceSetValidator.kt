@@ -24,7 +24,10 @@ internal class SourceSetValidator(
 
     override fun isValidateSourceSet(sourceSet: Any?): Boolean {
         return when (extractSourceSet(sourceSet)) {
-            !is String -> false
+            !is String -> {
+                logger.warn("Unexpected annotation payload!")
+                false
+            }
             !in knownSharedSourceSets -> {
                 logger.warn("$sourceSet is not a applicable sourceSet!")
                 false
