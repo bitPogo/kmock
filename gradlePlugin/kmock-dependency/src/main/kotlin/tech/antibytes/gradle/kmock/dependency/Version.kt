@@ -36,7 +36,7 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "6be4f13"
+        const val test = "dd59a45"
     }
 
     val google = Google

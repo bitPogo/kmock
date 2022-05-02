@@ -80,7 +80,6 @@ open class KMockPublishingConfiguration {
 
     val versioning = VersioningConfiguration(
         featurePrefixes = listOf("feature"),
-        useGitHashSnapshotSuffix = true
     )
 
     companion object {
