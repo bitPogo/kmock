@@ -34,9 +34,24 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         sourceSet: KotlinSourceSet,
         buildDir: String
     ) {
-        sourceSet.kotlin.srcDir(
-            "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
-        )
+        when {
+            sourceSet.name == "androidAndroidTestDebug" -> {
+                sourceSet.kotlin.srcDir(
+                    "$buildDir/generated/ksp/android/androidDebugAndroidTest"
+                )
+            }
+            sourceSet.name == "androidAndroidTestRelease" -> {
+                sourceSet.kotlin.srcDir(
+                    "$buildDir/generated/ksp/android/androidReleaseAndroidTest"
+                )
+            }
+            platformName == "androidAndroid" -> { /* Do nothing*/ }
+            else -> {
+                sourceSet.kotlin.srcDir(
+                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
+                )
+            }
+        }
     }
 
     private fun collectDependencies(
@@ -54,6 +69,14 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         }
     }
 
+    private fun resolveKspDependency(platformName: String): String {
+        return if (platformName == "androidAndroid") {
+            "kspAndroidTestKotlinAndroid"
+        } else {
+            "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
+        }
+    }
+
     private fun addSource(
         sourceSetName: String,
         platformName: String,
@@ -63,21 +86,22 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         metaDependencies: MutableMap<String, Set<String>>,
         dependencyHandler: DependencyHandler
     ) {
-        val kspDependency = "kspTestKotlin${platformName.capitalize(Locale.ROOT)}"
-        try {
-            addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
-        } catch (e: Throwable) {
-            collectDependencies(
-                sourceSetName,
-                dependencies,
-                metaDependencies
-            )
-            return
+        if (sourceSetName != "androidAndroidTestDebug" && sourceSetName != "androidAndroidTestRelease") {
+            val kspDependency = resolveKspDependency(platformName)
+            try {
+                addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
+            } catch (e: Throwable) {
+                collectDependencies(
+                    sourceSetName,
+                    dependencies,
+                    metaDependencies
+                )
+                return
+            }
+
+            collectDependencies(platformName, dependencies, dependencyCollector)
+            kspCollector[platformName] = kspDependency
         }
-
-        collectDependencies(platformName, dependencies, dependencyCollector)
-
-        kspCollector[platformName] = kspDependency
     }
 
     private fun setPrecedence(
@@ -149,6 +173,14 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         return precedences
     }
 
+    private fun isAllowedSourceSet(sourceSetName: String): Boolean {
+        return sourceSetName == "androidTest" ||
+            sourceSetName == "androidAndroidTest" ||
+            sourceSetName == "androidAndroidTestDebug" ||
+            sourceSetName == "androidAndroidTestRelease" ||
+            (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
+    }
+
     override fun configure(project: Project) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
@@ -158,9 +190,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
-                if (
-                    sourceSet.name == "androidTest" || (sourceSet.name.endsWith("Test") && !sourceSet.name.startsWith("android"))
-                ) {
+                if (isAllowedSourceSet(sourceSet.name)) {
                     val platformName = cleanSourceName(sourceSet.name)
                     extendSourceSet(platformName, sourceSet, buildDir)
 

@@ -42,6 +42,7 @@ toc::[]
 * `assertOrder` in order to make the names more consistent and preserves the old behaviour of `verifyStrictOrder`
 * `assertProxy` as alternative to `verify`
 * iosSimulatorArm64 support
+* support for instrumented Android tests (aka androidAndroidTest) on KMP
 
 === Changed
 

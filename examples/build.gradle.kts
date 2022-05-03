@@ -33,7 +33,10 @@ ksp {
 }
 
 kotlin {
-    android()
+    android {
+        publishAllLibraryVariants()
+        publishLibraryVariantsGroupedByFlavor = true
+    }
 
     js(IR) {
         nodejs()
@@ -91,7 +94,12 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
-        val androidAndroidTestRelease by getting
+        val androidAndroidTestRelease by getting {
+            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
+        }
+        val androidAndroidTestDebug by getting {
+            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
+        }
         val androidTestFixtures by getting
         val androidTestFixturesDebug by getting
         val androidTestFixturesRelease by getting
@@ -99,15 +107,25 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/android/androidTest")
 
             dependsOn(concurrentTest)
-            dependsOn(androidAndroidTestRelease)
             dependsOn(androidTestFixtures)
             dependsOn(androidTestFixturesDebug)
             dependsOn(androidTestFixturesRelease)
+            dependsOn(androidAndroidTestRelease)
 
             dependencies {
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
                 implementation(Dependency.android.test.robolectric)
+            }
+        }
+
+        val androidAndroidTest by getting {
+            dependsOn(concurrentTest)
+
+            dependencies {
+                implementation(Dependency.multiplatform.test.jvm)
+                implementation(Dependency.android.test.junit)
+                implementation(Dependency.android.test.junit5)
             }
         }
 
@@ -192,10 +210,41 @@ kotlin {
 }
 
 dependencies {
+    androidTestImplementation("org.junit.jupiter:junit-jupiter")
+    add("kspAndroidAndroidTest", project(":kmock-processor"))
     add("kspJvmTest", project(":kmock-processor"))
     add("kspAndroidTest", project(":kmock-processor"))
     add("kspJsTest", project(":kmock-processor"))
     add("kspLinuxX64Test", project(":kmock-processor"))
     add("kspIosX64Test", project(":kmock-processor"))
     add("kspIosSimulatorArm64Test", project(":kmock-processor"))
+}
+
+android {
+    defaultConfig {
+        minSdk = 30
+    }
+
+    sourceSets {
+        val androidTest = getByName("androidTest")
+        androidTest.java.setSrcDirs(setOf("src/androidAndroidTest/kotlin"))
+        androidTest.res.setSrcDirs(setOf("src/androidAndroidTest/res"))
+    }
+
+    packagingOptions {
+        resources.excludes.addAll(
+            setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/LICENSE-notice.md",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0"
+            )
+        )
+    }
 }
