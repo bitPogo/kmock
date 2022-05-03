@@ -20,7 +20,7 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "1b95abe"
+        const val antibytes = "e5793eb"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
@@ -36,7 +36,7 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "dd59a45"
+        const val test = "5238ed6"
     }
 
     val google = Google

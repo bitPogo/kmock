@@ -175,9 +175,24 @@ class KmpSourceSetsConfiguratorSpec {
         val source2Dependencies: KotlinSourceSet = mockk()
         val source2DependenciesName: String = fixture.fixture()
 
+        val source3: KotlinSourceSet = mockk()
+        val source3Dependencies: KotlinSourceSet = mockk()
+        val source3DependenciesName: String = fixture.fixture()
+
+        val source4: KotlinSourceSet = mockk()
+        val source4Dependencies: KotlinSourceSet = mockk()
+        val source4DependenciesName: String = fixture.fixture()
+
+        val source5: KotlinSourceSet = mockk()
+        val source5Dependencies: KotlinSourceSet = mockk()
+        val source5DependenciesName: String = fixture.fixture()
+
         val sourceSets = mutableListOf(
             source1,
-            source2
+            source2,
+            source3,
+            source4,
+            source5,
         )
 
         every { project.dependencies } returns dependencies
@@ -205,6 +220,21 @@ class KmpSourceSetsConfiguratorSpec {
         every { source2.dependsOn } returns setOf(source2Dependencies)
         every { source2Dependencies.name } returns source2DependenciesName
 
+        every { source3.name } returns "androidAndroidTest"
+        every { source3.kotlin.srcDir(any()) } returns mockk()
+        every { source3.dependsOn } returns setOf(source3Dependencies)
+        every { source3Dependencies.name } returns source3DependenciesName
+
+        every { source4.name } returns "androidAndroidTestDebug"
+        every { source4.kotlin.srcDir(any()) } returns mockk()
+        every { source4.dependsOn } returns setOf(source4Dependencies)
+        every { source4Dependencies.name } returns source4DependenciesName
+
+        every { source5.name } returns "androidAndroidTestRelease"
+        every { source5.kotlin.srcDir(any()) } returns mockk()
+        every { source5.dependsOn } returns setOf(source5Dependencies)
+        every { source5Dependencies.name } returns source5DependenciesName
+
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
 
@@ -227,11 +257,30 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
+            dependencies.add(
+                "kspAndroidAndroidTest",
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+            )
+        }
+
+        verify(exactly = 1) {
             source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
         }
 
         verify(exactly = 1) {
             source2.kotlin.srcDir("$path/generated/ksp/android/androidTest")
+        }
+
+        verify(exactly = 0) {
+            source3.kotlin.srcDir(any())
+        }
+
+        verify(exactly = 1) {
+            source4.kotlin.srcDir("$path/generated/ksp/android/androidDebugAndroidTest")
+        }
+
+        verify(exactly = 1) {
+            source5.kotlin.srcDir("$path/generated/ksp/android/androidReleaseAndroidTest")
         }
 
         verify(exactly = 0) { kspExtension.arg(any(), any()) }
