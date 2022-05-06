@@ -18,6 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockFactoryWithGenerics(
     private val isKmp: Boolean,
@@ -36,7 +37,6 @@ internal class KMockFactoryWithGenerics(
     private fun fillMockFactory(
         type: TypeVariableName,
         generics: List<TypeVariableName>,
-        isKmp: Boolean,
     ): FunSpec.Builder {
         val modifier = resolveModifier()
 
@@ -52,7 +52,6 @@ internal class KMockFactoryWithGenerics(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
-        isKmp: Boolean,
     ): FunSpec.Builder {
         val modifier = resolveModifier()
 
@@ -76,7 +75,6 @@ internal class KMockFactoryWithGenerics(
         return fillMockFactory(
             generics = generics,
             type = type,
-            isKmp = isKmp,
         ).build()
     }
 
@@ -94,7 +92,6 @@ internal class KMockFactoryWithGenerics(
             mockType = mockType,
             spyType = spyType,
             generics = generics,
-            isKmp = isKmp,
         ).build()
     }
 
@@ -163,9 +160,9 @@ internal class KMockFactoryWithGenerics(
         templateSource: TemplateSource,
         relaxer: Relaxer?
     ) {
-        val packageName = templateSource.template.packageName.asString()
-        val qualifiedName = templateSource.template.qualifiedName!!.asString()
-        val interfaceName = "$packageName.${templateSource.templateName}"
+        val packageName = templateSource.packageName
+        val qualifiedName = ensureNotNullClassName(templateSource.template.qualifiedName?.asString())
+        val interfaceName = "$packageName.${templateSource.templateName.substringAfterLast('.')}"
 
         addMock(
             mockFactory = mockFactory,

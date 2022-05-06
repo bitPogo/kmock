@@ -24,6 +24,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.deriveSimpleName
+import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockSingleSourceAggregator(
     private val logger: KSPLogger,
@@ -39,11 +41,13 @@ internal class KMockSingleSourceAggregator(
         templateCollector: MutableMap<String, TemplateSource>
     ) {
         val interfaze = safeCastInterface(declaration)
-        val templateName = interfaze.qualifiedName!!.asString()
-        templateCollector[templateName + sourceIndicator] = TemplateSource(
+        val qualifiedName = ensureNotNullClassName(interfaze.qualifiedName?.asString())
+        val packageName = interfaze.packageName.asString()
+
+        templateCollector[qualifiedName + sourceIndicator] = TemplateSource(
             indicator = sourceIndicator,
-            templateName = aliases[templateName] ?: interfaze.simpleName.asString(),
-            packageName = interfaze.packageName.asString(),
+            templateName = aliases[qualifiedName] ?: interfaze.deriveSimpleName(packageName),
+            packageName = packageName,
             template = interfaze,
             generics = resolveGenerics(interfaze)
         )

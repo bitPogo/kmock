@@ -103,6 +103,7 @@ internal class KMockFactoryGenerator(
         relaxer: Relaxer?
     ) {
         if (templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+
             writeFactoryImplementation(
                 templateSources = templateSources,
                 dependencies = dependencies,

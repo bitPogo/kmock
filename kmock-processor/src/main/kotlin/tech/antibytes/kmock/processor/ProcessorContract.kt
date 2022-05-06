@@ -37,7 +37,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
-internal interface ProcessorContract {
+interface ProcessorContract {
     data class Relaxer(
         val packageName: String,
         val functionName: String
@@ -130,7 +130,7 @@ internal interface ProcessorContract {
         fun extractRelaxer(resolver: Resolver): Relaxer?
     }
 
-    interface SourceAggregator : Aggregator {
+    interface SingleSourceAggregator : Aggregator {
         fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
         fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
         fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
@@ -336,8 +336,23 @@ internal interface ProcessorContract {
 
         fun writeCommonMocks(
             templateSources: List<TemplateSource>,
+            templateMultiSources: Aggregated<TemplateMultiSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
+        )
+    }
+
+    fun interface ParentFinder {
+        fun find(
+            templateSource: TemplateSource,
+            templateMultiSources: Aggregated<TemplateMultiSource>,
+        ): List<KSClassDeclaration>
+    }
+
+    interface MultiInterfaceBinder {
+        fun bind(
+            templateSources: List<TemplateMultiSource>,
+            dependencies: List<KSFile>,
         )
     }
 
@@ -449,6 +464,9 @@ internal interface ProcessorContract {
             "UNUSED_PARAMETER",
             "UNUSED_EXPRESSION"
         ).build()
+
+        const val MULTI_MOCK = "MultiMock"
+        val multiMock = TypeVariableName(MULTI_MOCK)
 
         const val COMMON_INDICATOR = "commonTest"
 

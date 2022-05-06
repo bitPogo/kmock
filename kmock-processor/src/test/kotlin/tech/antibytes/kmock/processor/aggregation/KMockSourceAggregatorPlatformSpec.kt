@@ -260,7 +260,6 @@ class KMockSourceAggregatorPlatformSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -286,8 +285,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 
@@ -304,8 +302,8 @@ class KMockSourceAggregatorPlatformSpec {
         }
 
         // Then
-        error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
+        error.message mustBe "Cannot stub non interface $packageName.$simpleName."
+        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$simpleName.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }
@@ -334,7 +332,6 @@ class KMockSourceAggregatorPlatformSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -367,8 +364,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 
@@ -424,7 +420,6 @@ class KMockSourceAggregatorPlatformSpec {
 
         val values: List<KSType> = listOf(type, type)
 
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -457,8 +452,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 
@@ -514,7 +508,6 @@ class KMockSourceAggregatorPlatformSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
 
@@ -540,8 +533,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 
@@ -595,7 +587,6 @@ class KMockSourceAggregatorPlatformSpec {
 
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -627,8 +618,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 
@@ -685,7 +675,6 @@ class KMockSourceAggregatorPlatformSpec {
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val alias: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -694,7 +683,7 @@ class KMockSourceAggregatorPlatformSpec {
             null
         }
 
-        val mapping = mapOf(qualifiedName to alias)
+        val mapping = mapOf("$packageName.$simpleName" to alias)
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -720,8 +709,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         every { declaration.parentDeclaration } returns null
         every { declaration.packageName.asString() } returns packageName
-        every { declaration.simpleName.asString() } returns simpleName
-        every { declaration.qualifiedName!!.asString() } returns qualifiedName
+        every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
         every { logger.error(any()) } just Runs
 

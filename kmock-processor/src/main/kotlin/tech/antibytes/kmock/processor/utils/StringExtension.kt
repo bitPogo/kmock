@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.utils
 
 import java.util.Locale
 
@@ -16,4 +16,8 @@ internal fun String.titleCase(): String {
             it.toString()
         }
     }
+}
+
+internal fun ensureNotNullClassName(name: String?): String {
+    return name ?: throw IllegalStateException("Expected non null class name!")
 }

@@ -16,6 +16,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockFactoryWithoutGenerics(
     private val isKmp: Boolean,
@@ -81,9 +82,9 @@ internal class KMockFactoryWithoutGenerics(
         templateSource: TemplateSource,
         relaxer: Relaxer?
     ) {
-        val packageName = templateSource.template.packageName.asString()
-        val qualifiedName = templateSource.template.qualifiedName!!.asString()
-        val interfaceName = "$packageName.${templateSource.templateName}"
+        val packageName = templateSource.packageName
+        val qualifiedName = ensureNotNullClassName(templateSource.template.qualifiedName?.asString())
+        val interfaceName = "$packageName.${templateSource.templateName.substringAfterLast('.')}"
 
         addMock(
             mockFactory = mockFactory,

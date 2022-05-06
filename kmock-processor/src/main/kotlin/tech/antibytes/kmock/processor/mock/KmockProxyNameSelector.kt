@@ -14,7 +14,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
-import tech.antibytes.kmock.processor.titleCase
+import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
 
 internal class KmockProxyNameSelector(

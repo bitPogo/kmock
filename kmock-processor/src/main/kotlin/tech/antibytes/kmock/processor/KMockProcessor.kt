@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -15,23 +16,24 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MultiInterfaceBinder
+import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxationAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.Source
-import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.SourceFilter
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
-import tech.antibytes.kmock.processor.ProcessorContract.MultiInterfaceBinder
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 /*
  * Notice -> No deep checking in order to not drain performance
  */
 internal class KMockProcessor(
+    private val logger: KSPLogger,
     private val isKmp: Boolean,
     private val codeGenerator: KmpCodeGenerator,
-    private val interfazeGenerator: MultiInterfaceBinder,
+    private val interfaceGenerator: MultiInterfaceBinder,
     private val mockGenerator: MockGenerator,
     private val factoryGenerator: MockFactoryGenerator,
     private val entryPointGenerator: MockFactoryEntryPointGenerator,
@@ -42,16 +44,20 @@ internal class KMockProcessor(
 ) : SymbolProcessor {
     private var commonAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var commonMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
+    private var relaxer: Relaxer? = null
+
+    private fun isFinalRound(): Boolean {
+        return commonAggregated.extractedTemplates.isEmpty()
+    }
 
     private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
-        filteredTemplates: List<T>
+        filteredTemplates: List<T>,
+        additionalIllSources: List<KSAnnotated> = emptyList()
     ): Aggregated<T> {
         return Aggregated(
-            illFormed = rootSource.illFormed.toMutableList().also {
-                it.addAll(dependentSource.illFormed)
-            },
+            illFormed = listOf(rootSource.illFormed, dependentSource.illFormed, additionalIllSources).flatten(),
             extractedTemplates = rootSource.extractedTemplates.toMutableList().also {
                 it.addAll(filteredTemplates)
             },
@@ -64,11 +70,13 @@ internal class KMockProcessor(
     private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
+        additionalIllSources: List<KSAnnotated>
     ): Aggregated<T> {
         return mergeSources(
             rootSource = rootSource,
             dependentSource = dependentSource,
-            filteredTemplates = dependentSource.extractedTemplates
+            filteredTemplates = dependentSource.extractedTemplates,
+            additionalIllSources = additionalIllSources
         )
     }
 
@@ -76,16 +84,26 @@ internal class KMockProcessor(
         singleCommonSources: Aggregated<TemplateSource>,
         multiCommonSources: Aggregated<TemplateMultiSource>
     ): Aggregated<TemplateSource> {
-        return if (multiCommonSources.extractedTemplates.isNotEmpty()) {
-            commonAggregated = singleCommonSources
-            commonMultiAggregated = multiCommonSources
+        return when {
+            multiCommonSources.extractedTemplates.isEmpty() && commonMultiAggregated.extractedTemplates.isEmpty() -> {
+                singleCommonSources
+            }
+            multiCommonSources.extractedTemplates.isNotEmpty() -> {
+                commonAggregated = singleCommonSources
+                commonMultiAggregated = multiCommonSources
 
-            singleCommonSources
-        } else {
-            val commonAggregated = commonAggregated
-            this.commonAggregated = EMPTY_AGGREGATED_SINGLE
+                singleCommonSources
+            }
+            else -> {
+                val commonAggregated = commonAggregated
+                this.commonAggregated = EMPTY_AGGREGATED_SINGLE
 
-            commonAggregated
+                mergeSources(
+                    rootSource = commonAggregated,
+                    dependentSource = singleCommonSources,
+                    additionalIllSources = commonMultiAggregated.illFormed
+                )
+            }
         }
     }
 
@@ -93,23 +111,24 @@ internal class KMockProcessor(
         resolver: Resolver,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractCommonInterfaces(resolver)
-        val multiAggregated = multiSourceAggregator.extractCommonInterfaces(resolver)
+        val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(resolver)
+        val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
-            templateSources = singleAggregated.extractedTemplates,
+            templateSources = singleCommonSources.extractedTemplates,
             templateMultiSources = commonMultiAggregated,
-            dependencies = singleAggregated.dependencies,
-            relaxer = relaxer
+            dependencies = singleCommonSources.dependencies,
+            relaxer = relaxer,
         )
-        interfazeGenerator.bind(
-            templateSources = multiAggregated.extractedTemplates,
-            dependencies = multiAggregated.dependencies
+
+        interfaceGenerator.bind(
+            templateSources = multiCommonSources.extractedTemplates,
+            dependencies = multiCommonSources.dependencies
         )
 
         return resolveCommonAggregated(
-            singleCommonSources = singleAggregated,
-            multiCommonSources = multiAggregated
+            singleCommonSources = singleCommonSources,
+            multiCommonSources = multiCommonSources,
         )
     }
 
@@ -124,27 +143,30 @@ internal class KMockProcessor(
             commonAggregated.extractedTemplates
         )
 
-        entryPointGenerator.generateShared(filteredInterfaces)
+        entryPointGenerator.generateShared(
+            filteredInterfaces,
+        )
 
         mockGenerator.writeSharedMocks(
-            templateSources = filteredInterfaces,
-            dependencies = aggregated.dependencies,
-            relaxer = relaxer
+            filteredInterfaces,
+            aggregated.dependencies,
+            relaxer
         )
 
         return mergeSources(commonAggregated, aggregated, filteredInterfaces)
     }
 
-    private fun stubPlatformAndEntryPointSources(
+    private fun stubPlatformSources(
         resolver: Resolver,
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
         val aggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
-            templateSources = aggregated.extractedTemplates,
-            filteredBy = sharedAggregated.extractedTemplates
+            aggregated.extractedTemplates,
+            sharedAggregated.extractedTemplates
         )
+        val totalAggregated = mergeSources(sharedAggregated, aggregated, filteredInterfaces)
 
         mockGenerator.writePlatformMocks(
             filteredInterfaces,
@@ -152,7 +174,7 @@ internal class KMockProcessor(
             relaxer
         )
 
-        return mergeSources(sharedAggregated, aggregated, filteredInterfaces)
+        return totalAggregated
     }
 
     private fun extractMetaSources(
@@ -161,64 +183,80 @@ internal class KMockProcessor(
     ): Pair<Aggregated<TemplateSource>, Aggregated<TemplateSource>> {
         return if (isKmp) {
             val commonAggregated = stubCommonSources(resolver, relaxer)
-            val sharedAggregated = stubSharedSources(resolver, commonAggregated, relaxer)
-
-            Pair(commonAggregated, sharedAggregated)
-        } else {
-            Pair(EMPTY_AGGREGATED_SINGLE, EMPTY_AGGREGATED_SINGLE)
-        }
-    }
-
-    private fun generateFactories(
-        commonAggregated: Aggregated<TemplateSource>,
-        sharedAggregated: Aggregated<TemplateSource>,
-        platformAggregated: Aggregated<TemplateSource>,
-        relaxer: Relaxer?
-    ): List<KSAnnotated> {
-        val totalAggregated = mergeSources(
-            sharedAggregated,
-            platformAggregated,
-        )
-
-        if (this.commonAggregated.extractedTemplates.isEmpty()) {
-            factoryGenerator.writeFactories(
-                templateSources = totalAggregated.extractedTemplates,
-                templateMultiSources = commonMultiAggregated,
-                dependencies = totalAggregated.dependencies,
+            val sharedAggregated = stubSharedSources(
+                resolver = resolver,
+                commonAggregated = commonAggregated,
                 relaxer = relaxer
             )
 
-            entryPointGenerator.generateCommon(
-                templateSources = commonAggregated.extractedTemplates,
-                templateMultiSources = commonMultiAggregated,
-                totalTemplates = totalAggregated.extractedTemplates
+            Pair(commonAggregated, sharedAggregated)
+        } else {
+            Pair(
+                Aggregated(emptyList(), emptyList(), emptyList()),
+                Aggregated(emptyList(), emptyList(), emptyList())
             )
         }
+    }
 
-        return totalAggregated.illFormed
+    private fun writeFactories(
+        commonAggregated: Aggregated<TemplateSource>,
+        totalAggregated: Aggregated<TemplateSource>,
+        relaxer: Relaxer?
+    ) {
+        factoryGenerator.writeFactories(
+            totalAggregated.extractedTemplates,
+            totalAggregated.dependencies,
+            relaxer
+        )
+
+        entryPointGenerator.generateCommon(
+            templateSources = commonAggregated.extractedTemplates,
+            totalTemplates = totalAggregated.extractedTemplates
+        )
+    }
+
+    private fun finalize(
+        commonAggregated: Aggregated<TemplateSource>,
+        totalAggregated: Aggregated<TemplateSource>,
+        relaxer: Relaxer?
+    ) {
+        if (isFinalRound()) {
+            writeFactories(
+                commonAggregated = commonAggregated,
+                totalAggregated = totalAggregated,
+                relaxer = relaxer
+            )
+
+            codeGenerator.closeFiles()
+        }
+    }
+
+    private fun extractRelaxer(resolver: Resolver): Relaxer? {
+        val relaxer = relaxationAggregator.extractRelaxer(resolver) ?: this.relaxer
+        this.relaxer = relaxer
+
+        return relaxer
     }
 
     @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val relaxer = relaxationAggregator.extractRelaxer(resolver)
+        val relaxer = extractRelaxer(resolver)
 
         val (commonAggregated, sharedAggregated) = extractMetaSources(resolver, relaxer)
-        val platformAggregated = stubPlatformAndEntryPointSources(
+
+        val totalAggregated = stubPlatformSources(
             resolver = resolver,
             sharedAggregated = sharedAggregated,
             relaxer = relaxer
         )
 
-        val illAnnotated = generateFactories(
+        finalize(
             commonAggregated = commonAggregated,
-            sharedAggregated = sharedAggregated,
-            platformAggregated = platformAggregated,
+            totalAggregated = totalAggregated,
             relaxer = relaxer
         )
 
-        codeGenerator.closeFiles()
-
-        return illAnnotated
+        return totalAggregated.illFormed
     }
 
     private companion object {

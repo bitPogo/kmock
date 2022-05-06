@@ -10,14 +10,13 @@ import com.google.devtools.ksp.symbol.KSFile
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import tech.antibytes.util.test.sameAs
 
 class ParentFinderSpec {
     private val fixture = kotlinFixture()
@@ -49,23 +48,20 @@ class ParentFinderSpec {
             generics = emptyList()
         )
 
-        val singleDependency: KSFile = mockk()
         val multiDependency: KSFile = mockk()
 
         // When
-        val (parents, dependency) = KMockParentFinder.find(
+        val parents = KMockParentFinder.find(
             templateSource = templateSource,
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
                 dependencies = listOf(multiDependency)
             ),
-            dependency = singleDependency
         )
 
         // Then
         parents mustBe emptyList()
-        dependency sameAs singleDependency
     }
 
     @Test
@@ -90,23 +86,20 @@ class ParentFinderSpec {
             generics = emptyList()
         )
 
-        val singleDependency: KSFile = mockk()
         val multiDependency: KSFile = mockk()
 
         // When
-        val (parents, dependency) = KMockParentFinder.find(
+        val parents = KMockParentFinder.find(
             templateSource = templateSource,
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
                 dependencies = listOf(multiDependency)
             ),
-            dependency = singleDependency
         )
 
         // Then
         parents mustBe emptyList()
-        dependency sameAs singleDependency
     }
 
     @Test
@@ -131,23 +124,20 @@ class ParentFinderSpec {
             generics = emptyList()
         )
 
-        val singleDependency: KSFile = mockk()
         val multiDependency: KSFile = mockk()
 
         // When
-        val (parents, dependency) = KMockParentFinder.find(
+        val parents = KMockParentFinder.find(
             templateSource = templateSource,
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
                 dependencies = listOf(multiDependency)
             ),
-            dependency = singleDependency
         )
 
         // Then
         parents mustBe emptyList()
-        dependency sameAs singleDependency
     }
 
     @Test
@@ -173,22 +163,19 @@ class ParentFinderSpec {
             generics = emptyList()
         )
 
-        val singleDependency: KSFile = mockk()
         val multiDependency: KSFile = mockk()
 
         // When
-        val (parents, dependency) = KMockParentFinder.find(
+        val parents = KMockParentFinder.find(
             templateSource = templateSource,
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
                 dependencies = listOf(multiDependency)
             ),
-            dependency = singleDependency
         )
 
         // Then
         parents mustBe templateMultiSource.templates
-        dependency sameAs multiDependency
     }
 }

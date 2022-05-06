@@ -7,19 +7,16 @@
 package tech.antibytes.kmock.processor.multi
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFile
-import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal object KMockParentFinder : ParentFinder {
     override fun find(
         templateSource: TemplateSource,
         templateMultiSources: Aggregated<TemplateMultiSource>,
-        dependency: KSFile
-    ): Pair<List<KSClassDeclaration>, KSFile> {
+    ): List<KSClassDeclaration> {
         val parentsIdx = templateMultiSources.extractedTemplates.indexOfFirst { parent ->
             templateSource.packageName == parent.packageName &&
                 templateSource.indicator == parent.indicator &&
@@ -27,12 +24,9 @@ internal object KMockParentFinder : ParentFinder {
         }
 
         return if (parentsIdx == -1) {
-            Pair(emptyList(), dependency)
+            emptyList()
         } else {
-            Pair(
-                templateMultiSources.extractedTemplates[parentsIdx].templates,
-                templateMultiSources.dependencies[parentsIdx]
-            )
+            templateMultiSources.extractedTemplates[parentsIdx].templates
         }
     }
 }

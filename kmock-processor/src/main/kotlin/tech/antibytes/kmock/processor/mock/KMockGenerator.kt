@@ -23,24 +23,24 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
-import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.multiMock
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
+import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
@@ -270,10 +270,10 @@ internal class KMockGenerator(
         templateName: String,
         packageName: String,
         generics: Map<String, List<KSTypeReference>>?,
-        dependency: KSFile,
+        dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        val mockName = "${templateName}Mock"
+        val mockName = "${templateName.substringAfterLast('.')}Mock"
         val file = FileSpec.builder(
             packageName,
             mockName
@@ -301,7 +301,7 @@ internal class KMockGenerator(
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = true,
-            originatingKSFiles = listOf(dependency)
+            originatingKSFiles = dependencies
         )
     }
 
@@ -311,13 +311,12 @@ internal class KMockGenerator(
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        templateSources.forEachIndexed { idx, template ->
+        templateSources.forEach { template ->
             codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
 
-            val (parents, dependency) = parentFinder.find(
+            val parents = parentFinder.find(
                 templateSource = template,
                 templateMultiSources = templateMultiSources,
-                dependency = dependencies[idx]
             )
 
             writeMock(
@@ -326,7 +325,7 @@ internal class KMockGenerator(
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependency = dependency,
+                dependencies = dependencies,
                 relaxer = relaxer
             )
         }
@@ -337,7 +336,7 @@ internal class KMockGenerator(
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        templateSources.forEachIndexed { idx, template ->
+        templateSources.forEach { template ->
             codeGenerator.setOneTimeSourceSet(template.indicator)
 
             writeMock(
@@ -346,7 +345,7 @@ internal class KMockGenerator(
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependency = dependencies[idx],
+                dependencies = dependencies,
                 relaxer = relaxer
             )
         }
@@ -357,14 +356,15 @@ internal class KMockGenerator(
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        templateSources.forEachIndexed { idx, template ->
+        templateSources.forEach { template ->
+
             writeMock(
                 template = template.template,
                 parents = emptyList(),
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependency = dependencies[idx],
+                dependencies = dependencies,
                 relaxer = relaxer
             )
         }

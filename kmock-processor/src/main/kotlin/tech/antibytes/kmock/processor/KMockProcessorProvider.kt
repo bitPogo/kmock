@@ -139,9 +139,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         )
 
         return KMockProcessor(
+            logger = logger,
             isKmp = options.isKmp,
             codeGenerator = codeGenerator,
-            interfazeGenerator = KMockMultiInterfaceBinder(
+            interfaceGenerator = KMockMultiInterfaceBinder(
                 logger = logger,
                 codeGenerator = codeGenerator
             ),

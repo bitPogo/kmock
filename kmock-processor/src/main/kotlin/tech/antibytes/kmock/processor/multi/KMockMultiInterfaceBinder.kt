@@ -14,10 +14,10 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
-import tech.antibytes.kmock.processor.ProcessorContract.MultiInterfaceBinder
-import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MultiInterfaceBinder
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 
 internal class KMockMultiInterfaceBinder(
     private val logger: KSPLogger,
