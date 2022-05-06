@@ -14,8 +14,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Options
+import tech.antibytes.kmock.processor.aggregation.KMockMultiSourceAggregator
 import tech.antibytes.kmock.processor.aggregation.KMockRelaxationAggregator
-import tech.antibytes.kmock.processor.aggregation.KMockSourceAggregator
+import tech.antibytes.kmock.processor.aggregation.KMockSingleSourceAggregator
 import tech.antibytes.kmock.processor.factory.KMockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGeneratorUtil
@@ -30,6 +31,8 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.multi.KMockMultiInterfaceBinder
+import tech.antibytes.kmock.processor.multi.KMockParentFinder
 import tech.antibytes.kmock.processor.utils.AnnotationFilter
 import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
@@ -138,6 +141,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         return KMockProcessor(
             isKmp = options.isKmp,
             codeGenerator = codeGenerator,
+            interfazeGenerator = KMockMultiInterfaceBinder(
+                logger = logger,
+                codeGenerator = codeGenerator
+            ),
             mockGenerator = KMockGenerator(
                 logger = logger,
                 spyOn = options.spyOn,
@@ -145,13 +152,22 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                 codeGenerator = codeGenerator,
                 genericsResolver = KMockGenerics,
                 nameCollector = nameSelector,
+                parentFinder = KMockParentFinder,
                 propertyGenerator = propertyGenerator,
                 methodGenerator = methodGenerator,
                 buildInGenerator = buildInGenerator,
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,
-            sourceAggregator = KMockSourceAggregator.getInstance(
+            multiSourceAggregator = KMockMultiSourceAggregator.getInstance(
+                logger = logger,
+                annotationFilter = annotationFilter,
+                sourceSetValidator = sourceSetValidator,
+                generics = KMockGenerics,
+                customAnnotations = options.customAnnotations,
+                aliases = options.aliases,
+            ),
+            singleSourceAggregator = KMockSingleSourceAggregator.getInstance(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,

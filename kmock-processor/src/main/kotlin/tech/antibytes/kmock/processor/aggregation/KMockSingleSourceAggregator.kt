@@ -21,18 +21,18 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COM
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
-internal class KMockSourceAggregator(
+internal class KMockSingleSourceAggregator(
     private val logger: KSPLogger,
     private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
     generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
     private val aliases: Map<String, String>
-) : SourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
+) : SingleSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
     private fun resolveInterface(
         declaration: KSDeclaration,
         sourceIndicator: String,
@@ -159,7 +159,7 @@ internal class KMockSourceAggregator(
         }
     }
 
-    companion object : AggregatorFactory<SourceAggregator> {
+    companion object : AggregatorFactory<SingleSourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
             sourceSetValidator: SourceSetValidator,
@@ -167,12 +167,12 @@ internal class KMockSourceAggregator(
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>,
-        ): SourceAggregator {
+        ): SingleSourceAggregator {
             val additionalAnnotations = annotationFilter.filterAnnotation(
                 customAnnotations
             )
 
-            return KMockSourceAggregator(
+            return KMockSingleSourceAggregator(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,

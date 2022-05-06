@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
@@ -25,7 +25,7 @@ class KMockSourceAggregatorFactorySpec {
 
     @Test
     fun `It fulfils AggregatorFactory`() {
-        KMockSourceAggregator fulfils AggregatorFactory::class
+        KMockSingleSourceAggregator fulfils AggregatorFactory::class
     }
 
     @Test
@@ -42,7 +42,7 @@ class KMockSourceAggregatorFactorySpec {
         every { annotationFilter.filterAnnotation(any()) } returns customAnnotations
 
         // When
-        val actual = KMockSourceAggregator.getInstance(
+        val actual = KMockSingleSourceAggregator.getInstance(
             logger = logger,
             sourceSetValidator = sourceSetValidator,
             annotationFilter = annotationFilter,
@@ -52,7 +52,7 @@ class KMockSourceAggregatorFactorySpec {
         )
 
         // Then
-        actual fulfils SourceAggregator::class
+        actual fulfils SingleSourceAggregator::class
 
         verify(exactly = 1) {
             annotationFilter.filterAnnotation(customAnnotations)

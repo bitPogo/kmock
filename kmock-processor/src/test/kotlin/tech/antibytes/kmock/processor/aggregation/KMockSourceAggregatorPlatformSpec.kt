@@ -29,7 +29,7 @@ import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
-import tech.antibytes.kmock.processor.ProcessorContract.SourceAggregator
+import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fixture.fixture
@@ -50,7 +50,7 @@ class KMockSourceAggregatorPlatformSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockSourceAggregator(
+        KMockSingleSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
@@ -62,14 +62,14 @@ class KMockSourceAggregatorPlatformSpec {
 
     @Test
     fun `It fulfils SourceAggregator`() {
-        KMockSourceAggregator(
+        KMockSingleSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
             mockk(),
             emptyMap(),
             emptyMap(),
-        ) fulfils SourceAggregator::class
+        ) fulfils SingleSourceAggregator::class
     }
 
     @Test
@@ -104,7 +104,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockSourceAggregator(
+        val (illegal, _, _) = KMockSingleSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
@@ -148,7 +148,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { symbol.annotations } returns sourceAnnotations
 
         // When
-        val (illegal, _, _) = KMockSourceAggregator(
+        val (illegal, _, _) = KMockSingleSourceAggregator(
             mockk(),
             mockk(),
             mockk(),
@@ -209,7 +209,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
-            KMockSourceAggregator(
+            KMockSingleSourceAggregator(
                 logger,
                 mockk(),
                 mockk(),
@@ -293,7 +293,7 @@ class KMockSourceAggregatorPlatformSpec {
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
-            KMockSourceAggregator(
+            KMockSingleSourceAggregator(
                 logger,
                 mockk(),
                 mockk(),
@@ -375,7 +375,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockSourceAggregator(
+        val (_, interfaces, _) = KMockSingleSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -465,7 +465,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockSourceAggregator(
+        val (_, interfaces, _) = KMockSingleSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -546,7 +546,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, _, sourceFiles) = KMockSourceAggregator(
+        val (_, _, sourceFiles) = KMockSingleSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -633,7 +633,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val (_, interfaces, sourceFiles) = KMockSourceAggregator(
+        val (_, interfaces, sourceFiles) = KMockSingleSourceAggregator(
             logger,
             mockk(),
             mockk(),
@@ -730,7 +730,7 @@ class KMockSourceAggregatorPlatformSpec {
         every { genericResolver.extractGenerics(any(), any()) } returns generics
 
         // When
-        val (_, interfaces, _) = KMockSourceAggregator(
+        val (_, interfaces, _) = KMockSingleSourceAggregator(
             logger,
             mockk(),
             sourceSetValidator,

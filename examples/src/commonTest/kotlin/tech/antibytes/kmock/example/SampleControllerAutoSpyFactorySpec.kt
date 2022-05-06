@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
@@ -45,6 +46,11 @@ import kotlin.test.assertTrue
 @MockCommon(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
+    SampleDomainObject::class,
+    ExampleContract.DecoderFactory::class
+)
+@MultiMockCommon(
+    "Merged",
     SampleDomainObject::class,
     ExampleContract.DecoderFactory::class
 )
