@@ -23,6 +23,18 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
+internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector,
+    freeze: Boolean,
+): Mock = getMockInstance(
+    spyOn = spyOn,
+    verifier = verifier,
+    relaxed = false,
+    relaxUnitFun = false,
+    freeze = freeze,
+)
+
 private inline fun <reified Mock : SpyOn, reified SpyOn : Common1<K, L>, K : Any, L>
     getMockInstance(
     spyOn: SpyOn?,
@@ -37,18 +49,6 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Common1<K, L>, K : Any
         factory.template.spiesonly.Common1<K, L>?) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
-
-internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector,
-    freeze: Boolean,
-): Mock = getMockInstance(
-    spyOn = spyOn,
-    verifier = verifier,
-    relaxed = false,
-    relaxUnitFun = false,
-    freeze = freeze,
-)
 
 internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Common1<K, L>, K : Any, L> kspy(
     spyOn: SpyOn,

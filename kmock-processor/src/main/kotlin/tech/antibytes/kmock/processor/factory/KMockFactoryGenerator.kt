@@ -16,11 +16,11 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_N
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
@@ -65,10 +65,6 @@ internal class KMockFactoryGenerator(
             )
         )
 
-        genericFactories.forEach { factories ->
-            file.addFunction(factories.shared)
-        }
-
         if (!spiesOnly) {
             file.addFunction(
                 nonGenericGenerator.buildKMockFactory()
@@ -83,6 +79,8 @@ internal class KMockFactoryGenerator(
 
         // Shell
         genericFactories.forEach { factories ->
+            file.addFunction(factories.shared)
+
             if (!spiesOnly) {
                 file.addFunction(factories.kmock)
             }

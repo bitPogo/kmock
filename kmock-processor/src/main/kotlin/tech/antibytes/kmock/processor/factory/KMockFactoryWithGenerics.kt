@@ -9,15 +9,15 @@ package tech.antibytes.kmock.processor.factory
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
-import tech.antibytes.kmock.processor.ProcessorContract.FactoryBundle
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
-import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.ProcessorContract.FactoryBundle
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryWithGenerics(
     private val isKmp: Boolean,
@@ -159,11 +159,11 @@ internal class KMockFactoryWithGenerics(
         mockFactory: FunSpec.Builder,
         addItems: FunSpec.Builder.() -> Unit,
     ): FunSpec.Builder {
-        mockFactory.beginControlFlow("return when (${KMOCK_FACTORY_TYPE_NAME}::class)")
+        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
 
         addItems(mockFactory)
 
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${${KMOCK_FACTORY_TYPE_NAME}::class.simpleName}.\")")
+        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
         mockFactory.endControlFlow()
 
         return mockFactory
@@ -279,7 +279,7 @@ internal class KMockFactoryWithGenerics(
 
     private companion object {
         private val factoryInvocationWithTemplate = """
-                |return ${SHARED_MOCK_FACTORY}(
+                |return $SHARED_MOCK_FACTORY(
                 |   spyOn = null,
                 |   verifier = verifier,
                 |   relaxed = relaxed,
@@ -290,7 +290,7 @@ internal class KMockFactoryWithGenerics(
         """.trimMargin()
 
         private val spyFactoryInvocationWithTemplate = """
-                |return ${SHARED_MOCK_FACTORY}(
+                |return $SHARED_MOCK_FACTORY(
                 |   spyOn = spyOn,
                 |   verifier = verifier,
                 |   relaxed = false,

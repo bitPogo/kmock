@@ -9,13 +9,13 @@ package tech.antibytes.kmock.processor.factory
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryWithoutGenerics(
     private val isKmp: Boolean,
@@ -193,7 +193,7 @@ internal class KMockFactoryWithoutGenerics(
         private val kspyMockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(kspyType))
 
         private val factoryInvocation = """
-                |return ${SHARED_MOCK_FACTORY}(
+                |return $SHARED_MOCK_FACTORY(
                 |   spyOn = null,
                 |   verifier = verifier,
                 |   relaxed = relaxed,
