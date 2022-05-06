@@ -20,8 +20,6 @@ class KMockFactorySpec {
             "any",
             false,
             false,
-            false,
-            mockk(),
             mockk(),
             mockk(),
             mockk(),

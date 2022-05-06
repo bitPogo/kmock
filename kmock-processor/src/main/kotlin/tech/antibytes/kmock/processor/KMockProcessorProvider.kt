@@ -51,7 +51,6 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     logger = logger,
                     isKmp = options.isKmp,
                     rootPackage = options.rootPackage,
-                    allowInterfaces = options.allowInterfaces,
                     nonGenericGenerator = KMockFactoryWithoutGenerics(
                         isKmp = options.isKmp,
                         allowInterfaces = options.allowInterfaces,
@@ -66,7 +65,6 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,
                     utils = factoryUtils,
-                    genericResolver = KMockGenerics,
                     codeGenerator = codeGenerator,
                 ),
                 KMockFactoryEntryPointGenerator(
