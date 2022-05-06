@@ -11,21 +11,14 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
 
-class KMockFactorySpec {
+class MockFactoryWithGenericsSpec {
     @Test
-    fun `It fulfils MockFactoryGenerator`() {
-        KMockFactoryGenerator(
-            mockk(),
-            setOf(),
-            "any",
-            false,
-            false,
-            false,
+    fun `It fulfils MockFactoryWithGenerics`() {
+        KMockFactoryWithGenerics(
+            true,
+            true,
             mockk(),
             mockk(),
-            mockk(),
-            mockk(),
-            mockk(),
-        ) fulfils ProcessorContract.MockFactoryGenerator::class
+        ) fulfils ProcessorContract.MockFactoryWithGenerics::class
     }
 }

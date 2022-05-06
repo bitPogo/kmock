@@ -166,7 +166,7 @@ internal class KMockFactoryWithoutGenerics(
 
     override fun buildSpyFactory(): FunSpec = fillSpyFactory().build()
 
-    override fun buildSharedFactory(
+    override fun buildSharedMockFactory(
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
     ): FunSpec {

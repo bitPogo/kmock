@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Options
 import tech.antibytes.kmock.processor.factory.KMockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.factory.KMockFactoryWithGenerics
 import tech.antibytes.kmock.processor.factory.KMockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.factory.NoopFactoryGenerator
 import tech.antibytes.kmock.processor.mock.KMockBuildInMethodGenerator
@@ -55,6 +56,12 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                         isKmp = options.isKmp,
                         allowInterfaces = options.allowInterfaces,
                         utils = factoryUtils,
+                    ),
+                    genericGenerator = KMockFactoryWithGenerics(
+                        isKmp = options.isKmp,
+                        allowInterfaces = options.allowInterfaces,
+                        utils = factoryUtils,
+                        genericResolver = KMockGenerics,
                     ),
                     spyOn = options.spyOn,
                     spiesOnly = options.spiesOnly,

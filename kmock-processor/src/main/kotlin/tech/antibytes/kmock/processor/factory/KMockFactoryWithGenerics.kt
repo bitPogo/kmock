@@ -6,84 +6,25 @@
 
 package tech.antibytes.kmock.processor.factory
 
-import com.google.devtools.ksp.processing.CodeGenerator
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSFile
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.ksp.writeTo
-import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
+import tech.antibytes.kmock.processor.ProcessorContract.FactoryBundle
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 
-internal class KMockFactoryGenerator(
-    private val logger: KSPLogger,
-    spyOn: Set<String>,
-    private val rootPackage: String,
+internal class KMockFactoryWithGenerics(
     private val isKmp: Boolean,
-    private val spiesOnly: Boolean,
     private val allowInterfaces: Boolean,
-    private val nonGenericGenerator: MockFactoryWithoutGenerics,
-    private val genericGenerator: MockFactoryWithGenerics,
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
-    private val codeGenerator: CodeGenerator,
-) : ProcessorContract.MockFactoryGenerator {
-    private val hasSpies = spyOn.isNotEmpty() || spiesOnly
-    private val factoryInvocation = """
-                |return $SHARED_MOCK_FACTORY(
-                |   spyOn = null,
-                |   verifier = verifier,
-                |   relaxed = relaxed,
-                |   relaxUnitFun = relaxUnitFun,
-                |   freeze = freeze,
-                |)
-    """.trimMargin()
-    private val factoryInvocationWithTemplate = """
-                |return $SHARED_MOCK_FACTORY(
-                |   spyOn = null,
-                |   verifier = verifier,
-                |   relaxed = relaxed,
-                |   relaxUnitFun = relaxUnitFun,
-                |   freeze = freeze,
-                |   templateType = templateType,
-                |)
-    """.trimMargin()
-
-    private val spyFactoryInvocation = """
-                |return $SHARED_MOCK_FACTORY(
-                |   spyOn = spyOn,
-                |   verifier = verifier,
-                |   relaxed = false,
-                |   relaxUnitFun = false,
-                |   freeze = freeze,
-                |)
-    """.trimMargin()
-
-    private val spyFactoryInvocationWithTemplate = """
-                |return $SHARED_MOCK_FACTORY(
-                |   spyOn = spyOn,
-                |   verifier = verifier,
-                |   relaxed = false,
-                |   relaxUnitFun = false,
-                |   freeze = freeze,
-                |   templateType = templateType,
-                |)
-    """.trimMargin()
-
+) : MockFactoryWithGenerics {
     private fun createAliasName(
         alias: String?,
         packageName: String
@@ -95,7 +36,7 @@ internal class KMockFactoryGenerator(
         }
     }
 
-    private fun resolveModifier(isKmp: Boolean): KModifier? {
+    private fun resolveModifier(): KModifier? {
         return if (isKmp) {
             KModifier.ACTUAL
         } else {
@@ -108,20 +49,14 @@ internal class KMockFactoryGenerator(
         generics: List<TypeVariableName>,
         isKmp: Boolean,
     ): FunSpec.Builder {
-        val modifier = resolveModifier(isKmp)
-
-        val invocation = if (generics.isEmpty()) {
-            factoryInvocation
-        } else {
-            factoryInvocationWithTemplate
-        }
+        val modifier = resolveModifier()
 
         return utils.generateKmockSignature(
             type = type,
             generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
-        ).addCode(invocation)
+        ).addCode(factoryInvocationWithTemplate)
     }
 
     private fun fillSpyFactory(
@@ -130,13 +65,7 @@ internal class KMockFactoryGenerator(
         generics: List<TypeVariableName>,
         isKmp: Boolean,
     ): FunSpec.Builder {
-        val modifier = resolveModifier(isKmp)
-
-        val invocation = if (generics.isEmpty()) {
-            spyFactoryInvocation
-        } else {
-            spyFactoryInvocationWithTemplate
-        }
+        val modifier = resolveModifier()
 
         return utils.generateKspySignature(
             mockType = mockType,
@@ -144,13 +73,10 @@ internal class KMockFactoryGenerator(
             generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
-        ).addCode(invocation)
+        ).addCode(spyFactoryInvocationWithTemplate)
     }
 
-    private fun buildGenericMockFactory(
-        isKmp: Boolean,
-        templateSource: TemplateSource,
-    ): FunSpec {
+    private fun buildGenericMockFactory(templateSource: TemplateSource): FunSpec {
         val generics = utils.resolveGenerics(templateSource)
 
         val type = genericResolver.resolveKMockFactoryType(
@@ -165,10 +91,7 @@ internal class KMockFactoryGenerator(
         ).build()
     }
 
-    private fun buildGenericSpyFactory(
-        isKmp: Boolean,
-        templateSource: TemplateSource,
-    ): FunSpec {
+    private fun buildGenericSpyFactory(templateSource: TemplateSource): FunSpec {
         val generics = utils.resolveGenerics(templateSource)
 
         val spyType = genericResolver.resolveKMockFactoryType(
@@ -184,17 +107,6 @@ internal class KMockFactoryGenerator(
             generics = generics,
             isKmp = isKmp,
         ).build()
-    }
-
-    private fun buildGenericFactories(
-        templateSources: List<TemplateSource>,
-    ): List<Pair<FunSpec, FunSpec>> {
-        return templateSources.map { template ->
-            Pair(
-                buildGenericMockFactory(isKmp, template),
-                buildGenericSpyFactory(isKmp, template)
-            )
-        }
     }
 
     private fun determineMockTemplate(
@@ -247,11 +159,11 @@ internal class KMockFactoryGenerator(
         mockFactory: FunSpec.Builder,
         addItems: FunSpec.Builder.() -> Unit,
     ): FunSpec.Builder {
-        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
+        mockFactory.beginControlFlow("return when (${KMOCK_FACTORY_TYPE_NAME}::class)")
 
         addItems(mockFactory)
 
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${${KMOCK_FACTORY_TYPE_NAME}::class.simpleName}.\")")
         mockFactory.endControlFlow()
 
         return mockFactory
@@ -317,10 +229,10 @@ internal class KMockFactoryGenerator(
         )
     }
 
-    private fun buildGenericMockFactory(
+    private fun buildGenericSharedMockFactory(
         templateSource: TemplateSource,
         relaxer: Relaxer?
-    ): FunSpec.Builder {
+    ): FunSpec {
         val genericTypes = utils.resolveGenerics(templateSource)
 
         val spyType = genericResolver.resolveKMockFactoryType(
@@ -336,102 +248,56 @@ internal class KMockFactoryGenerator(
             templateSource = templateSource,
             generics = genericTypes,
             relaxer = relaxer
-        )
+        ).build()
     }
 
-    private fun buildMockFactory(
-        generics: List<TemplateSource>,
+    override fun buildGenericFactories(
+        templateSources: List<TemplateSource>,
         relaxer: Relaxer?
-    ): List<FunSpec> {
-        val factories: MutableList<FunSpec> = mutableListOf()
+    ): List<FactoryBundle> {
+        val factories: MutableList<FactoryBundle> = mutableListOf()
 
-        generics.forEach { source ->
+        templateSources.forEach { source ->
+            val kmock = buildGenericMockFactory(source)
+            val kspy = buildGenericSpyFactory(source)
+            val shared = buildGenericSharedMockFactory(
+                templateSource = source,
+                relaxer = relaxer
+            )
+
             factories.add(
-                buildGenericMockFactory(
-                    templateSource = source,
-                    relaxer = relaxer,
-                ).build()
+                FactoryBundle(
+                    kmock = kmock,
+                    kspy = kspy,
+                    shared = shared
+                )
             )
         }
 
         return factories
     }
 
-    private fun writeFactoryImplementation(
-        templateSources: List<TemplateSource>,
-        dependencies: List<KSFile>,
-        relaxer: Relaxer?
-    ) {
-        val file = FileSpec.builder(
-            rootPackage,
-            FACTORY_FILE_NAME
-        )
-        file.addAnnotation(UNUSED)
-        file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
+    private companion object {
+        private val factoryInvocationWithTemplate = """
+                |return ${SHARED_MOCK_FACTORY}(
+                |   spyOn = null,
+                |   verifier = verifier,
+                |   relaxed = relaxed,
+                |   relaxUnitFun = relaxUnitFun,
+                |   freeze = freeze,
+                |   templateType = templateType,
+                |)
+        """.trimMargin()
 
-        if (!isKmp) {
-            file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
-        }
-
-        val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
-
-        val genericFactories = genericGenerator.buildGenericFactories(
-            templateSources = generics,
-            relaxer = relaxer
-        )
-
-        file.addFunction(
-            nonGenericGenerator.buildSharedMockFactory(
-                templateSources = regular,
-                relaxer = relaxer
-            )
-        )
-
-        genericFactories.forEach { factories ->
-            file.addFunction(factories.shared)
-        }
-
-        if (!spiesOnly) {
-            file.addFunction(
-                nonGenericGenerator.buildKMockFactory()
-            )
-        }
-
-        if (hasSpies) {
-            file.addFunction(
-                nonGenericGenerator.buildSpyFactory()
-            )
-        }
-
-        // Shell
-        genericFactories.forEach { factories ->
-            if (!spiesOnly) {
-                file.addFunction(factories.kmock)
-            }
-
-            if (hasSpies) {
-                file.addFunction(factories.kspy)
-            }
-        }
-
-        file.build().writeTo(
-            codeGenerator = codeGenerator,
-            aggregating = false,
-            originatingKSFiles = dependencies
-        )
-    }
-
-    override fun writeFactories(
-        templateSources: List<TemplateSource>,
-        dependencies: List<KSFile>,
-        relaxer: Relaxer?
-    ) {
-        if (templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            writeFactoryImplementation(
-                templateSources = templateSources,
-                dependencies = dependencies,
-                relaxer = relaxer
-            )
-        }
+        private val spyFactoryInvocationWithTemplate = """
+                |return ${SHARED_MOCK_FACTORY}(
+                |   spyOn = spyOn,
+                |   verifier = verifier,
+                |   relaxed = false,
+                |   relaxUnitFun = false,
+                |   freeze = freeze,
+                |   templateType = templateType,
+                |)
+        """.trimMargin()
     }
 }

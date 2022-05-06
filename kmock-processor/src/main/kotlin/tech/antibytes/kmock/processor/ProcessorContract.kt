@@ -341,17 +341,23 @@ internal interface ProcessorContract {
         fun buildKMockFactory(): FunSpec
         fun buildSpyFactory(): FunSpec
 
-        fun buildSharedFactory(
+        fun buildSharedMockFactory(
             templateSources: List<TemplateSource>,
             relaxer: Relaxer?
         ): FunSpec
     }
 
+    data class FactoryBundle(
+        val kmock: FunSpec,
+        val kspy: FunSpec,
+        val shared: FunSpec
+    )
+
     interface MockFactoryWithGenerics {
-        fun buildMockFactories(
+        fun buildGenericFactories(
             templateSources: List<TemplateSource>,
             relaxer: Relaxer?
-        ): List<FunSpec>
+        ): List<FactoryBundle>
     }
 
     interface MockFactoryGenerator {
