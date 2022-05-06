@@ -24,6 +24,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FA
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
@@ -32,14 +35,12 @@ internal class KMockFactoryGenerator(
     private val isKmp: Boolean,
     private val spiesOnly: Boolean,
     private val allowInterfaces: Boolean,
-    private val utils: ProcessorContract.MockFactoryGeneratorUtil,
-    private val genericResolver: ProcessorContract.GenericResolver,
+    private val nonGenericGenerator: MockFactoryWithoutGenerics,
+    private val utils: MockFactoryGeneratorUtil,
+    private val genericResolver: GenericResolver,
     private val codeGenerator: CodeGenerator,
 ) : ProcessorContract.MockFactoryGenerator {
     private val hasSpies = spyOn.isNotEmpty() || spiesOnly
-    private val kmockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(reified = true)
-    private val kspyType = TypeVariableName(KSPY_FACTORY_TYPE_NAME)
-    private val kspyMockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(kspyType))
     private val factoryInvocation = """
                 |return $SHARED_MOCK_FACTORY(
                 |   spyOn = null,
@@ -121,12 +122,6 @@ internal class KMockFactoryGenerator(
         ).addCode(invocation)
     }
 
-    private fun buildKMock(): FunSpec = fillMockFactory(
-        type = kmockType,
-        generics = emptyList(),
-        isKmp = isKmp,
-    ).build()
-
     private fun fillSpyFactory(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
@@ -149,13 +144,6 @@ internal class KMockFactoryGenerator(
             modifier = modifier
         ).addCode(invocation)
     }
-
-    private fun buildSpyFactory(): FunSpec = fillSpyFactory(
-        mockType = kspyMockType,
-        spyType = kspyType,
-        generics = emptyList(),
-        isKmp = isKmp,
-    ).build()
 
     private fun buildGenericMockFactory(
         isKmp: Boolean,
@@ -288,31 +276,6 @@ internal class KMockFactoryGenerator(
         )
     }
 
-    private fun buildShallowMock(
-        mockFactory: FunSpec.Builder,
-    ): FunSpec.Builder {
-        return mockFactory.addCode(
-            "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
-        )
-    }
-
-    private fun buildMockSelector(
-        mockFactory: FunSpec.Builder,
-        templateSources: List<TemplateSource>,
-        relaxer: Relaxer?
-    ): FunSpec.Builder {
-        return buildMockSelectorFlow(mockFactory) {
-            templateSources.forEach { source ->
-                amendSource(
-                    mockFactory = this,
-                    typeInfo = "",
-                    templateSource = source,
-                    relaxer = relaxer
-                )
-            }
-        }
-    }
-
     private fun buildMockSelector(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateSource,
@@ -326,29 +289,6 @@ internal class KMockFactoryGenerator(
                 mockFactory = this,
                 typeInfo = typeInfo,
                 templateSource = templateSource,
-                relaxer = relaxer
-            )
-        }
-    }
-
-    private fun fillMockFactory(
-        mockType: TypeVariableName,
-        spyType: TypeVariableName,
-        templateSources: List<TemplateSource>,
-        relaxer: Relaxer?
-    ): FunSpec.Builder {
-        val mockFactory = utils.generateMockFactorySignature(
-            mockType = mockType,
-            spyType = spyType,
-            generics = emptyList(),
-        )
-
-        return if (templateSources.isEmpty()) {
-            buildShallowMock(mockFactory)
-        } else {
-            buildMockSelector(
-                mockFactory = mockFactory,
-                templateSources = templateSources,
                 relaxer = relaxer
             )
         }
@@ -398,20 +338,10 @@ internal class KMockFactoryGenerator(
     }
 
     private fun buildMockFactory(
-        regular: List<TemplateSource>,
         generics: List<TemplateSource>,
         relaxer: Relaxer?
     ): List<FunSpec> {
         val factories: MutableList<FunSpec> = mutableListOf()
-
-        factories.add(
-            fillMockFactory(
-                mockType = kspyMockType,
-                spyType = kspyType,
-                templateSources = regular,
-                relaxer = relaxer
-            ).build()
-        )
 
         generics.forEach { source ->
             factories.add(
@@ -448,9 +378,15 @@ internal class KMockFactoryGenerator(
         )
 
         val actualFactory = buildMockFactory(
-            regular = regular,
             generics = generics,
             relaxer = relaxer,
+        )
+
+        file.addFunction(
+            nonGenericGenerator.buildSharedFactory(
+                templateSources = regular,
+                relaxer = relaxer
+            )
         )
 
         actualFactory.forEach { factory ->
@@ -459,13 +395,13 @@ internal class KMockFactoryGenerator(
 
         if (!spiesOnly) {
             file.addFunction(
-                buildKMock()
+                nonGenericGenerator.buildKMockFactory()
             )
         }
 
         if (hasSpies) {
             file.addFunction(
-                buildSpyFactory()
+                nonGenericGenerator.buildSpyFactory()
             )
         }
 
