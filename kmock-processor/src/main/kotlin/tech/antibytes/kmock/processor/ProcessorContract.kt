@@ -337,6 +337,29 @@ internal interface ProcessorContract {
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
     }
 
+    interface MockFactoryWithoutGenerics {
+        fun buildKMockFactory(): FunSpec
+        fun buildSpyFactory(): FunSpec
+
+        fun buildSharedMockFactory(
+            templateSources: List<TemplateSource>,
+            relaxer: Relaxer?
+        ): FunSpec
+    }
+
+    data class FactoryBundle(
+        val kmock: FunSpec,
+        val kspy: FunSpec,
+        val shared: FunSpec
+    )
+
+    interface MockFactoryWithGenerics {
+        fun buildGenericFactories(
+            templateSources: List<TemplateSource>,
+            relaxer: Relaxer?
+        ): List<FactoryBundle>
+    }
+
     interface MockFactoryGenerator {
         fun writeFactories(
             templateSources: List<TemplateSource>,

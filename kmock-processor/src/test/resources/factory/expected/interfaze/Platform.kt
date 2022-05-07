@@ -33,24 +33,6 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
-private inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : Any, L>
-    getMockInstance(
-    spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
-    relaxed: Boolean,
-    relaxUnitFun: Boolean,
-    freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
-): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
-    factory.template.interfaze.Platform1::class -> factory.template.interfaze.Platform1Mock<K,
-        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
-        factory.template.interfaze.Platform1<K, L>?) as Mock
-    factory.template.interfaze.Platform1Mock::class -> factory.template.interfaze.Platform1Mock<K,
-        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
-        factory.template.interfaze.Platform1<K, L>?) as Mock
-    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
-}
-
 internal inline fun <reified Mock> kmock(
     verifier: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
@@ -75,6 +57,24 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     relaxUnitFun = false,
     freeze = freeze,
 )
+
+private inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : Any, L>
+    getMockInstance(
+    spyOn: SpyOn?,
+    verifier: KMockContract.Collector,
+    relaxed: Boolean,
+    relaxUnitFun: Boolean,
+    freeze: Boolean,
+    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
+): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
+    factory.template.interfaze.Platform1::class -> factory.template.interfaze.Platform1Mock<K,
+        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
+        factory.template.interfaze.Platform1<K, L>?) as Mock
+    factory.template.interfaze.Platform1Mock::class -> factory.template.interfaze.Platform1Mock<K,
+        L>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
+        factory.template.interfaze.Platform1<K, L>?) as Mock
+    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
+}
 
 internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
     verifier: KMockContract.Collector = NoopCollector,
