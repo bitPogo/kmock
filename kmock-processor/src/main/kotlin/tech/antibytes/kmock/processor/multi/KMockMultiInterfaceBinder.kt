@@ -11,6 +11,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -31,11 +32,12 @@ internal class KMockMultiInterfaceBinder(
     ): TypeSpec {
         val interfaze = TypeSpec.interfaceBuilder(interfaceName)
         interfaze.addSuperinterfaces(
-            templates.map { parent -> parent.asStarProjectedType().toTypeName().also { println(it) } }
+            templates.map { parent -> parent.asStarProjectedType().toTypeName() }
         )
         interfaze.addAnnotation(
             AnnotationSpec.builder(MockCommon::class).addMember("$interfaceName::class").build()
         )
+        interfaze.addModifiers(KModifier.PRIVATE)
 
         return interfaze.build()
     }

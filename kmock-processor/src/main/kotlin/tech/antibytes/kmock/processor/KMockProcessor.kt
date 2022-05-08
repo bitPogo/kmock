@@ -107,6 +107,13 @@ internal class KMockProcessor(
         }
     }
 
+    private fun interfaceBinderIsApplicable(
+        templateSources: List<TemplateMultiSource>
+    ): Boolean {
+        return templateSources.isNotEmpty() &&
+            commonMultiAggregated.extractedTemplates.isEmpty() // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
+    }
+
     private fun stubCommonSources(
         resolver: Resolver,
         relaxer: Relaxer?
@@ -121,7 +128,7 @@ internal class KMockProcessor(
             relaxer = relaxer,
         )
 
-        if (multiCommonSources.extractedTemplates.isNotEmpty()) {
+        if (interfaceBinderIsApplicable(multiCommonSources.extractedTemplates)) {
             interfaceGenerator.bind(
                 templateSources = multiCommonSources.extractedTemplates,
                 dependencies = multiCommonSources.dependencies

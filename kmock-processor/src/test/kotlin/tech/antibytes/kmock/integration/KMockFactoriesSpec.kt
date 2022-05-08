@@ -73,6 +73,7 @@ class KMockFactoriesSpec {
 
     private fun String.normalizeSource(): String = this
         .replace(Regex("[ \t\r\n]+\n"), "\n")
+        .replace(Regex("\n[ \t\r]+"), "\n")
         .replace(Regex("[\t\r]"), " ")
         .replace(Regex("[ ]+"), " ")
         .trim()
