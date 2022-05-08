@@ -15,12 +15,14 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERMEDIATE_INTERFACES_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MultiInterfaceBinder
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 
 internal class KMockMultiInterfaceBinder(
     private val logger: KSPLogger,
+    private val rootPackage: String,
     private val codeGenerator: KmpCodeGenerator,
 ) : MultiInterfaceBinder {
     private fun createInterface(
@@ -29,7 +31,7 @@ internal class KMockMultiInterfaceBinder(
     ): TypeSpec {
         val interfaze = TypeSpec.interfaceBuilder(interfaceName)
         interfaze.addSuperinterfaces(
-            templates.map { parent -> parent.asStarProjectedType().toTypeName() }
+            templates.map { parent -> parent.asStarProjectedType().toTypeName().also { println(it) } }
         )
         interfaze.addAnnotation(
             AnnotationSpec.builder(MockCommon::class).addMember("$interfaceName::class").build()
@@ -38,41 +40,29 @@ internal class KMockMultiInterfaceBinder(
         return interfaze.build()
     }
 
-    private fun writeInterface(
-        interfaceName: String,
-        packageName: String,
-        templates: List<KSClassDeclaration>,
-        dependencies: KSFile,
-    ) {
-        val file = FileSpec.builder(
-            packageName,
-            interfaceName
-        )
-
-        val implementation = createInterface(
-            interfaceName = interfaceName,
-            templates = templates
-        )
-
-        file.addType(implementation)
-        file.build().writeTo(
-            codeGenerator = codeGenerator,
-            aggregating = true,
-            originatingKSFiles = listOf(dependencies)
-        )
-    }
-
     override fun bind(
         templateSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>
     ) {
-        templateSources.mapIndexed { idx, source ->
-            writeInterface(
+        val file = FileSpec.builder(
+            rootPackage,
+            INTERMEDIATE_INTERFACES_FILE_NAME
+        )
+
+        templateSources.map { source ->
+            val implementation = createInterface(
                 interfaceName = source.templateName,
-                packageName = source.packageName,
-                templates = source.templates,
-                dependencies = dependencies[idx]
+                templates = source.templates
             )
+
+            file.addType(implementation)
         }
+
+
+        file.build().writeTo(
+            codeGenerator = codeGenerator,
+            aggregating = true,
+            originatingKSFiles = dependencies
+        )
     }
 }

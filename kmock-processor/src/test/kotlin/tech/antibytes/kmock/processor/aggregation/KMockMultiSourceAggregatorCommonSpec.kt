@@ -51,6 +51,7 @@ class KMockMultiSourceAggregatorCommonSpec {
     fun `It fulfils Aggregator`() {
         KMockMultiSourceAggregator(
             mockk(),
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -62,6 +63,7 @@ class KMockMultiSourceAggregatorCommonSpec {
     fun `It fulfils MultiSourceAggregator`() {
         KMockMultiSourceAggregator(
             mockk(),
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -103,6 +105,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (illegal, _, _) = KMockMultiSourceAggregator(
             mockk(),
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -146,6 +149,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (illegal, _, _) = KMockMultiSourceAggregator(
             mockk(),
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -209,6 +213,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         val error = assertFailsWith<IllegalArgumentException> {
             KMockMultiSourceAggregator(
                 logger,
+                fixture.fixture(),
                 mockk(),
                 mockk(),
                 mockk(),
@@ -295,6 +300,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         val error = assertFailsWith<IllegalArgumentException> {
             KMockMultiSourceAggregator(
                 logger,
+                fixture.fixture(),
                 mockk(),
                 mockk(),
                 mockk(),
@@ -317,6 +323,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
+        val rootPackage: String = fixture.fixture()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -374,6 +381,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
             logger,
+            rootPackage,
             mockk(),
             mockk(),
             genericResolver,
@@ -385,7 +393,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             TemplateMultiSource(
                 indicator = "",
                 templateName = mockName,
-                packageName = packageName,
+                packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(generics)
             )
@@ -398,12 +406,13 @@ class KMockMultiSourceAggregatorCommonSpec {
     }
 
     @Test
-    fun `Given extractCommonInterfaces is called it returns all found interfaces, while filtering douplets`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces while filtering doublets`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
+        val rootPackage: String = fixture.fixture()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -463,6 +472,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
             logger,
+            rootPackage,
             mockk(),
             mockk(),
             genericResolver,
@@ -474,7 +484,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             TemplateMultiSource(
                 indicator = "",
                 templateName = mockName,
-                packageName = packageName,
+                packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(generics)
             )
@@ -487,12 +497,13 @@ class KMockMultiSourceAggregatorCommonSpec {
     }
 
     @Test
-    fun `Given extractCommonInterfaces is called it returns all found interfaces while using the shortest package name`() {
+    fun `Given extractCommonInterfaces is called it returns all found interfaces while using the RootPackage`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
+        val rootPackage: String = fixture.fixture()
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -572,6 +583,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
             logger,
+            rootPackage,
             mockk(),
             mockk(),
             genericResolver,
@@ -583,7 +595,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             TemplateMultiSource(
                 indicator = "",
                 templateName = mockName,
-                packageName = packageName3,
+                packageName = rootPackage,
                 templates = listOf(declaration1, declaration2, declaration3),
                 generics = listOf(generics, generics, generics)
             )
@@ -652,6 +664,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (_, _, sourceFiles) = KMockMultiSourceAggregator(
             logger,
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(relaxed = true),
@@ -673,6 +686,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         val notRelatedSymbol: KSAnnotated = mockk()
         val resolver: Resolver = mockk()
         val file: KSFile = mockk()
+        val rootPackage: String = fixture.fixture()
 
         val annotation: KSAnnotation = mockk()
         val notRelatedAnnotation: KSAnnotation = mockk()
@@ -736,6 +750,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // When
         val (_, interfaces, sourceFiles) = KMockMultiSourceAggregator(
             logger,
+            rootPackage,
             mockk(),
             mockk(),
             mockk(relaxed = true),
@@ -748,7 +763,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             TemplateMultiSource(
                 indicator = "",
                 templateName = mockName,
-                packageName = packageName,
+                packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(emptyMap())
             )

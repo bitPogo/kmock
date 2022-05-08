@@ -166,6 +166,7 @@ internal class KMockSingleSourceAggregator(
     companion object : AggregatorFactory<SingleSourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
+            rootPackage: String,
             sourceSetValidator: SourceSetValidator,
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,

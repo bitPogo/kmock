@@ -144,6 +144,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             codeGenerator = codeGenerator,
             interfaceGenerator = KMockMultiInterfaceBinder(
                 logger = logger,
+                rootPackage = options.rootPackage,
                 codeGenerator = codeGenerator
             ),
             mockGenerator = KMockGenerator(
@@ -162,6 +163,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             entryPointGenerator = entryPointGenerator,
             multiSourceAggregator = KMockMultiSourceAggregator.getInstance(
                 logger = logger,
+                rootPackage = options.rootPackage,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = KMockGenerics,
@@ -170,6 +172,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             singleSourceAggregator = KMockSingleSourceAggregator.getInstance(
                 logger = logger,
+                rootPackage = options.rootPackage,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = KMockGenerics,

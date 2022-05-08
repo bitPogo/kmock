@@ -145,6 +145,7 @@ interface ProcessorContract {
     interface AggregatorFactory<T : Aggregator> {
         fun getInstance(
             logger: KSPLogger,
+            rootPackage: String,
             sourceSetValidator: SourceSetValidator,
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,
@@ -432,6 +433,7 @@ interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
+        const val INTERMEDIATE_INTERFACES_FILE_NAME = "KMockMultiInterfaceArtifacts"
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName

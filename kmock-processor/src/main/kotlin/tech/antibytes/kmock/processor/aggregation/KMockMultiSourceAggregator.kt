@@ -29,6 +29,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 
 internal class KMockMultiSourceAggregator(
     private val logger: KSPLogger,
+    private val rootPackage: String,
     private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
     private val generics: GenericResolver,
@@ -56,27 +57,21 @@ internal class KMockMultiSourceAggregator(
         sourceIndicator: String,
         templateCollector: MutableMap<String, TemplateMultiSource>
     ) {
-        var packageName: String? = null
         val interfazes: MutableList<KSClassDeclaration> = mutableListOf()
         val generics: MutableList<Map<String, List<KSTypeReference>>?> = mutableListOf()
 
         interfaces.forEach { declaration ->
             val interfaze = safeCastInterface(declaration)
-            packageName = resolvePackageName(
-                currentName = packageName,
-                nameCandidate = interfaze.packageName.asString()
-            )
-
             generics.add(resolveGenerics(interfaze))
             interfazes.add(interfaze)
         }
 
-        val qualifiedName = "$packageName.$interfaceName"
+        val qualifiedName = "$rootPackage.$interfaceName"
 
         templateCollector[qualifiedName + sourceIndicator] = TemplateMultiSource(
             indicator = sourceIndicator,
             templateName = interfaceName,
-            packageName = packageName!!,
+            packageName = rootPackage,
             templates = interfazes,
             generics = generics
         )
@@ -215,6 +210,7 @@ internal class KMockMultiSourceAggregator(
     companion object : ProcessorContract.AggregatorFactory<MultiSourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
+            rootPackage: String,
             sourceSetValidator: SourceSetValidator,
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,
@@ -227,6 +223,7 @@ internal class KMockMultiSourceAggregator(
 
             return KMockMultiSourceAggregator(
                 logger = logger,
+                rootPackage = rootPackage,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,
                 generics = generics,

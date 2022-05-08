@@ -14,6 +14,10 @@ import tech.antibytes.util.test.fulfils
 class MultiInterfaceBinderSpec {
     @Test
     fun `It fulfils MultiInterfaceBinder`() {
-        KMockMultiInterfaceBinder(mockk(), mockk()) fulfils ProcessorContract.MultiInterfaceBinder::class
+        KMockMultiInterfaceBinder(
+            mockk(),
+            "any",
+            mockk()
+        ) fulfils ProcessorContract.MultiInterfaceBinder::class
     }
 }

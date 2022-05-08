@@ -16,6 +16,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
+import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
@@ -44,6 +45,7 @@ class KMockSourceAggregatorFactorySpec {
         // When
         val actual = KMockSingleSourceAggregator.getInstance(
             logger = logger,
+            rootPackage = fixture.fixture(),
             sourceSetValidator = sourceSetValidator,
             annotationFilter = annotationFilter,
             generics = generics,

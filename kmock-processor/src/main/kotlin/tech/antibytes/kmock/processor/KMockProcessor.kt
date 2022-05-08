@@ -121,10 +121,12 @@ internal class KMockProcessor(
             relaxer = relaxer,
         )
 
-        interfaceGenerator.bind(
-            templateSources = multiCommonSources.extractedTemplates,
-            dependencies = multiCommonSources.dependencies
-        )
+        if (multiCommonSources.extractedTemplates.isNotEmpty()) {
+            interfaceGenerator.bind(
+                templateSources = multiCommonSources.extractedTemplates,
+                dependencies = multiCommonSources.dependencies
+            )
+        }
 
         return resolveCommonAggregated(
             singleCommonSources = singleCommonSources,

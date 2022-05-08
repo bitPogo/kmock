@@ -433,6 +433,10 @@ class KMockProcessorSpec {
             interfaceBinder.bind(multiInterfacesCommon, dependencies)
         }
 
+        verify(exactly = 1) {
+            interfaceBinder.bind(any(), any())
+        }
+
         verify(exactly = 1) { filter.filter(interfacesFiltered, interfacesCommonRound1) }
         verify(exactly = 1) {
             filter.filter(
@@ -503,7 +507,7 @@ class KMockProcessorSpec {
         val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
 
         val filter: ProcessorContract.SourceFilter = mockk()
-        val relaxer: Relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
