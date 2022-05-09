@@ -4,30 +4,25 @@ package multi
 
 import kotlin.Boolean
 import kotlin.Suppress
+import multi.template.common.CommonContractRegular
+import multi.template.common.Regular1
+import multi.template.common.nested.Regular3
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.proxy.NoopCollector
 
-private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
-    spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
-    relaxed: Boolean,
-    relaxUnitFun: Boolean,
-    freeze: Boolean,
-): Mock = when (Mock::class) {
-    multi.CommonMultiMock::class -> multi.CommonMultiMock<multi.CommonMultiMock<*>>(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
-    else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
-}
+internal expect inline fun <reified Mock> kmock(
+    verifier: KMockContract.Collector = NoopCollector,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
+    freeze: Boolean = true,
+): Mock
 
-internal actual inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector,
-    relaxed: Boolean,
-    relaxUnitFun: Boolean,
-    freeze: Boolean,
-): Mock = getMockInstance(
-    spyOn = null,
-    verifier = verifier,
-    relaxed = relaxed,
-    relaxUnitFun = relaxUnitFun,
-    freeze = freeze,
-)
+internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector = NoopCollector,
+    freeze: Boolean = true,
+    templateType0: kotlin.reflect.KClass<multi.template.common.Regular1>,
+    templateType1: kotlin.reflect.KClass<multi.template.common.CommonContractRegular.Regular2>,
+    templateType2: kotlin.reflect.KClass<multi.template.common.nested.Regular3>,
+): Mock where SpyOn : Regular1, SpyOn : CommonContractRegular.Regular2, SpyOn : Regular3

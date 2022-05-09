@@ -9,7 +9,6 @@ package tech.antibytes.kmock.processor.factory
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
@@ -99,7 +98,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun resolveBounds(
         templateMultiSource: TemplateMultiSource,
-    ): List<TypeName> = templateMultiSource.templates.map { source -> source.toClassName() }
+    ): List<TypeName> = utils.toTypeNames(templateMultiSource.templates)
 
     private fun buildSpyMockFactory(
         templateSource: TemplateMultiSource,

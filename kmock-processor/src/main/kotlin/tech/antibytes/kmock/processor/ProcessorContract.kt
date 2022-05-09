@@ -396,6 +396,8 @@ internal interface ProcessorContract {
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
 
         fun resolveModifier(): KModifier?
+
+        fun toTypeNames(types: List<KSClassDeclaration>): List<TypeName>
     }
 
     interface MockFactoryWithoutGenerics {
