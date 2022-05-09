@@ -368,7 +368,7 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryGeneratorUtil {
-        fun generateMockFactorySignature(
+        fun generateSharedMockFactorySignature(
             mockType: TypeVariableName,
             spyType: TypeVariableName,
             generics: List<TypeVariableName>,
@@ -394,6 +394,8 @@ internal interface ProcessorContract {
         ): Pair<List<TemplateSource>, List<TemplateSource>>
 
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
+
+        fun resolveModifier(): KModifier?
     }
 
     interface MockFactoryWithoutGenerics {
@@ -421,14 +423,10 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryMultiInterface {
-        fun buildSharedMockFactory(
+        fun buildSpyFactory(
             templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
-        ): FunSpec
-
-        fun buildSpyFactory(
-            templateMultiSources: List<TemplateMultiSource>
-        ): FunSpec
+        ): List<FunSpec>
     }
 
     interface MockFactoryGenerator {

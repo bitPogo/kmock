@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.processor.factory
 
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
@@ -28,19 +27,11 @@ internal class KMockFactoryWithGenerics(
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
 ) : MockFactoryWithGenerics {
-    private fun resolveModifier(): KModifier? {
-        return if (isKmp) {
-            KModifier.ACTUAL
-        } else {
-            null
-        }
-    }
-
     private fun fillMockFactory(
         type: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = resolveModifier()
+        val modifier = utils.resolveModifier()
 
         return utils.generateKmockSignature(
             type = type,
@@ -55,7 +46,7 @@ internal class KMockFactoryWithGenerics(
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = resolveModifier()
+        val modifier = utils.resolveModifier()
 
         return utils.generateKspySignature(
             mockType = mockType,
@@ -193,14 +184,14 @@ internal class KMockFactoryWithGenerics(
         }
     }
 
-    private fun fillMockFactory(
+    private fun fillSharedMockFactory(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         templateSource: TemplateSource,
         generics: List<TypeVariableName>,
         relaxer: Relaxer?
     ): FunSpec.Builder {
-        val mockFactory = utils.generateMockFactorySignature(
+        val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = mockType,
             spyType = spyType,
             generics = generics,
@@ -227,7 +218,7 @@ internal class KMockFactoryWithGenerics(
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
 
-        return fillMockFactory(
+        return fillSharedMockFactory(
             mockType = mockType,
             spyType = spyType,
             templateSource = templateSource,

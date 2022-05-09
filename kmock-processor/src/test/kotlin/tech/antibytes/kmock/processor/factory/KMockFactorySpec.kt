@@ -24,6 +24,7 @@ class KMockFactorySpec {
             mockk(),
             mockk(),
             mockk(),
+            mockk(),
         ) fulfils ProcessorContract.MockFactoryGenerator::class
     }
 }

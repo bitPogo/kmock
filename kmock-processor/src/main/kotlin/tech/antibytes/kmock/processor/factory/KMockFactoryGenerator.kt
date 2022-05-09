@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryMultiInterface
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -32,6 +33,7 @@ internal class KMockFactoryGenerator(
     private val spiesOnly: Boolean,
     private val nonGenericGenerator: MockFactoryWithoutGenerics,
     private val genericGenerator: MockFactoryWithGenerics,
+    private val multiInterfaceGenerator: MockFactoryMultiInterface,
     private val utils: MockFactoryGeneratorUtil,
     private val codeGenerator: CodeGenerator,
 ) : MockFactoryGenerator {
@@ -73,13 +75,12 @@ internal class KMockFactoryGenerator(
             )
         }
 
-        if (spyContainer.hasSpies()) {
+        if (spyContainer.hasSpies(templateMultiSources)) {
             file.addFunction(
                 nonGenericGenerator.buildSpyFactory()
             )
         }
 
-        // Shell
         genericFactories.forEach { factories ->
             file.addFunction(factories.shared)
 
@@ -90,6 +91,15 @@ internal class KMockFactoryGenerator(
             if (factories.kspy != null) {
                 file.addFunction(factories.kspy)
             }
+        }
+
+        val multiInterfaceMocks = multiInterfaceGenerator.buildSpyFactory(
+            templateMultiSources = templateMultiSources,
+            relaxer = relaxer
+        )
+
+        multiInterfaceMocks.forEach { factory ->
+            file.addFunction(factory)
         }
 
         file.build().writeTo(
