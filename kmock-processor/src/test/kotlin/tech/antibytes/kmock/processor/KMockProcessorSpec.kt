@@ -91,7 +91,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
@@ -164,7 +164,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
@@ -252,7 +252,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
@@ -304,6 +304,7 @@ class KMockProcessorSpec {
                     interfacesFiltered,
                     interfacesFiltered,
                 ).flatten(),
+                emptyList(),
                 dependencies.toMutableList().also {
                     it.addAll(dependencies)
                     it.addAll(dependencies)
@@ -389,7 +390,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
@@ -464,12 +465,11 @@ class KMockProcessorSpec {
             factoryGenerator.writeFactories(
                 listOf(
                     interfacesCommonRound1,
-                    interfacesCommonRound2,
                     interfacesFiltered,
                     interfacesFiltered,
                 ).flatten(),
+                multiInterfacesCommon,
                 dependencies.toMutableList().also {
-                    it.addAll(dependencies)
                     it.addAll(dependencies)
                     it.addAll(dependencies)
                 },
@@ -479,10 +479,9 @@ class KMockProcessorSpec {
 
         verify(exactly = 1) {
             entryPointGenerator.generateCommon(
-                listOf(interfacesCommonRound1, interfacesCommonRound2).flatten(),
+                listOf(interfacesCommonRound1).flatten(),
                 listOf(
                     interfacesCommonRound1,
-                    interfacesCommonRound2,
                     interfacesFiltered,
                     interfacesFiltered,
                 ).flatten()
@@ -532,7 +531,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
-        every { factoryGenerator.writeFactories(any(), any(), any()) } just Runs
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any()) } just Runs
 
         // When
@@ -573,6 +572,7 @@ class KMockProcessorSpec {
                 listOf(
                     interfacesFiltered.first(),
                 ),
+                emptyList(),
                 dependencies,
                 relaxer
             )

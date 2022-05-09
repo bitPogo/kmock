@@ -15,6 +15,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FA
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
@@ -94,28 +95,99 @@ internal class KMockFactoryWithoutGenerics(
         )
     }
 
-    private fun buildMockSelector(
-        mockFactory: FunSpec.Builder,
-        templateSources: List<TemplateSource>,
+    private fun determineMultiMockTemplate(
         relaxer: Relaxer?
-    ): FunSpec.Builder {
-        return buildMockSelectorFlow(mockFactory) {
-            templateSources.forEach { source ->
-                amendSource(
-                    mockFactory = this,
-                    templateSource = source,
-                    relaxer = relaxer
-                )
+    ): String {
+        return if (relaxer == null) {
+            "%LMock::class -> %LMock<%LMock<*>>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME"
+        } else {
+            "%LMock::class -> %LMock<%LMock<*>>(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME"
+        }
+    }
+
+    private fun addMultiMock(
+        mockFactory: FunSpec.Builder,
+        qualifiedName: String,
+        relaxer: Relaxer?
+    ) {
+        mockFactory.addStatement(
+            determineMultiMockTemplate(relaxer),
+            qualifiedName,
+            qualifiedName,
+            qualifiedName,
+        )
+    }
+
+    private fun amendMultiSource(
+        mockFactory: FunSpec.Builder,
+        templateSource: TemplateMultiSource,
+        relaxer: Relaxer?
+    ) {
+        val mockName = "${templateSource.packageName}.${templateSource.templateName}"
+
+        addMultiMock(
+            mockFactory = mockFactory,
+            qualifiedName = mockName,
+            relaxer = relaxer
+        )
+    }
+
+    private fun FunSpec.Builder.buildMockSelectors(
+        templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
+        relaxer: Relaxer?
+    ) {
+        buildMockSelectorFlow(this) {
+            if (templateSources.isNotEmpty()) {
+                templateSources.forEach { source ->
+                    amendSource(
+                        mockFactory = this,
+                        templateSource = source,
+                        relaxer = relaxer
+                    )
+                }
+            }
+
+            if (templateMultiSources.isNotEmpty()) {
+                templateMultiSources.forEach { source ->
+                    amendMultiSource(
+                        mockFactory = this,
+                        templateSource = source,
+                        relaxer = relaxer
+                    )
+                }
             }
         }
     }
 
-    private fun buildShallowMock(
-        mockFactory: FunSpec.Builder,
-    ): FunSpec.Builder {
-        return mockFactory.addCode(
+    private fun FunSpec.Builder.buildShallowMock() {
+        this.addCode(
             "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
         )
+    }
+
+    override fun buildSharedMockFactory(
+        templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
+        relaxer: Relaxer?
+    ): FunSpec {
+        val mockFactory = utils.generateMockFactorySignature(
+            mockType = kspyMockType,
+            spyType = kspyType,
+            generics = emptyList(),
+        )
+
+        if (templateSources.isEmpty() && templateMultiSources.isEmpty()) {
+            mockFactory.buildShallowMock()
+        } else {
+            mockFactory.buildMockSelectors(
+                templateSources = templateSources,
+                templateMultiSources = templateMultiSources,
+                relaxer = relaxer
+            )
+        }
+
+        return mockFactory.build()
     }
 
     private fun resolveModifier(): KModifier? {
@@ -152,27 +224,6 @@ internal class KMockFactoryWithoutGenerics(
     }
 
     override fun buildSpyFactory(): FunSpec = fillSpyFactory().build()
-
-    override fun buildSharedMockFactory(
-        templateSources: List<TemplateSource>,
-        relaxer: Relaxer?
-    ): FunSpec {
-        val mockFactory = utils.generateMockFactorySignature(
-            mockType = kspyMockType,
-            spyType = kspyType,
-            generics = emptyList(),
-        )
-
-        return if (templateSources.isEmpty()) {
-            buildShallowMock(mockFactory)
-        } else {
-            buildMockSelector(
-                mockFactory = mockFactory,
-                templateSources = templateSources,
-                relaxer = relaxer
-            )
-        }.build()
-    }
 
     private companion object {
         private val kmockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(reified = true)

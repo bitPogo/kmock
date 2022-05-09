@@ -889,9 +889,6 @@ class VerificationChainSpec {
             }
         }
 
-        println(expectedValue1)
-        println(expectedValue2)
-
         val chain = VerificationChain(references)
 
         // When

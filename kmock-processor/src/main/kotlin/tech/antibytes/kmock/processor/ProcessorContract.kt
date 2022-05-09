@@ -37,7 +37,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
-interface ProcessorContract {
+internal interface ProcessorContract {
     data class Relaxer(
         val packageName: String,
         val functionName: String
@@ -392,6 +392,7 @@ interface ProcessorContract {
 
         fun buildSharedMockFactory(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
         ): FunSpec
     }
@@ -412,6 +413,7 @@ interface ProcessorContract {
     interface MockFactoryGenerator {
         fun writeFactories(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
         )

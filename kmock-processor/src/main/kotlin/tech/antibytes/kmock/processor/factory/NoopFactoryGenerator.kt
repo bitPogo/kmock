@@ -10,11 +10,13 @@ import com.google.devtools.ksp.symbol.KSFile
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal object NoopFactoryGenerator : MockFactoryGenerator, MockFactoryEntryPointGenerator {
     override fun writeFactories(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) = Unit

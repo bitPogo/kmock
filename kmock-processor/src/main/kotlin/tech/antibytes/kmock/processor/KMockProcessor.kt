@@ -42,6 +42,7 @@ internal class KMockProcessor(
     private val relaxationAggregator: RelaxationAggregator,
     private val filter: SourceFilter,
 ) : SymbolProcessor {
+    private var isFirstRound: Boolean = true
     private var commonAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var commonMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
     private var relaxer: Relaxer? = null
@@ -212,30 +213,25 @@ internal class KMockProcessor(
         totalAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ) {
-        factoryGenerator.writeFactories(
-            totalAggregated.extractedTemplates,
-            totalAggregated.dependencies,
-            relaxer
-        )
-
-        entryPointGenerator.generateCommon(
-            templateSources = commonAggregated.extractedTemplates,
-            totalTemplates = totalAggregated.extractedTemplates
-        )
-    }
-
-    private fun finalize(
-        commonAggregated: Aggregated<TemplateSource>,
-        totalAggregated: Aggregated<TemplateSource>,
-        relaxer: Relaxer?
-    ) {
-        if (isFinalRound()) {
-            writeFactories(
-                commonAggregated = commonAggregated,
-                totalAggregated = totalAggregated,
+        if (isFirstRound) {
+            factoryGenerator.writeFactories(
+                templateSources = totalAggregated.extractedTemplates,
+                templateMultiSources = commonMultiAggregated.extractedTemplates,
+                dependencies = totalAggregated.dependencies,
                 relaxer = relaxer
             )
 
+            entryPointGenerator.generateCommon(
+                templateSources = commonAggregated.extractedTemplates,
+                totalTemplates = totalAggregated.extractedTemplates
+            )
+        }
+    }
+
+    private fun finalize() {
+        isFirstRound = false
+
+        if (isFinalRound()) {
             codeGenerator.closeFiles()
         }
     }
@@ -259,12 +255,13 @@ internal class KMockProcessor(
             relaxer = relaxer
         )
 
-        finalize(
+        writeFactories(
             commonAggregated = commonAggregated,
             totalAggregated = totalAggregated,
             relaxer = relaxer
         )
 
+        finalize()
         return totalAggregated.illFormed
     }
 

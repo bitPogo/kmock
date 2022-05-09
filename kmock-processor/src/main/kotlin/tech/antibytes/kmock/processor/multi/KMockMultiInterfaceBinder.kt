@@ -60,7 +60,6 @@ internal class KMockMultiInterfaceBinder(
             file.addType(implementation)
         }
 
-
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = true,

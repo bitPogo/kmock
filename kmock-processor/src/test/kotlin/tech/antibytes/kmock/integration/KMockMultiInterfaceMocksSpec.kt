@@ -119,23 +119,33 @@ class KMockMultiInterfaceMocksSpec {
             loadResource("/template/common/Regular2.kt")
         )
         val expectedInterface = loadResource("/expected/common/RegularInterface.kt")
+        val expectedActualFactory = loadResource("/expected/common/RegularActualFactory.kt")
 
         // When
         val compilerResultRound1 = compile(
             spyProvider,
             isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfaces" to "true"
+            ),
             sourceFiles = arrayOf(rootInterface, nestedInterface, scopedInterface)
         )
         val actualIntermediateInterfaces = resolveGenerated("KMockMultiInterfaceArtifacts.kt")
+        val actualActualMockFactory = resolveGenerated("MockFactory.kt")
 
         // Then
         compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualIntermediateInterfaces isNot null
+        actualActualMockFactory isNot null
 
         actualIntermediateInterfaces!!.absolutePath.toString().endsWith(
             "ksp/sources/kotlin/multi/KMockMultiInterfaceArtifacts.kt"
         ) mustBe true
+        actualActualMockFactory!!.absolutePath.toString().endsWith(
+            "ksp/sources/kotlin/multi/MockFactory.kt"
+        ) mustBe true
         actualIntermediateInterfaces.readText().normalizeSource() mustBe expectedInterface.normalizeSource()
+        actualActualMockFactory.readText().normalizeSource() mustBe expectedActualFactory.normalizeSource()
 
         // Round2
         // Given
