@@ -73,7 +73,8 @@ internal interface ProcessorContract {
             packageName: String,
             templateName: String
         ): Boolean
-        fun hasSpies(): Boolean
+
+        fun hasSpies(filter: List<Source> = emptyList()): Boolean
     }
 
     sealed interface Source {
@@ -419,6 +420,17 @@ internal interface ProcessorContract {
         ): List<FactoryBundle>
     }
 
+    interface MockFactoryMultiInterface {
+        fun buildSharedMockFactory(
+            templateMultiSources: List<TemplateMultiSource>,
+            relaxer: Relaxer?
+        ): FunSpec
+
+        fun buildSpyFactory(
+            templateMultiSources: List<TemplateMultiSource>
+        ): FunSpec
+    }
+
     interface MockFactoryGenerator {
         fun writeFactories(
             templateSources: List<TemplateSource>,
@@ -431,6 +443,8 @@ internal interface ProcessorContract {
     interface MockFactoryEntryPointGenerator {
         fun generateCommon(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
+            totalMultiSources: List<TemplateMultiSource>,
             totalTemplates: List<TemplateSource>,
         )
 

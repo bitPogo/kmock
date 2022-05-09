@@ -11,6 +11,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
@@ -116,30 +117,29 @@ internal class KMockFactoryEntryPointGenerator(
         }
     }
 
-    private fun generateGenericEntryPoints(
-        file: FileSpec.Builder,
-        generics: List<TemplateSource>,
-    ) {
+    private fun FileSpec.Builder.generateGenericEntryPoints(generics: List<TemplateSource>, ) {
         val genericFactories = buildGenericFactories(generics)
 
         genericFactories.forEach { factories ->
             val (mockFactory, spyFactory) = factories
 
             if (!spiesOnly) {
-                file.addFunction(mockFactory)
+                this.addFunction(mockFactory)
             }
 
             if (spyFactory != null) {
-                file.addFunction(spyFactory)
+                this.addFunction(spyFactory)
             }
         }
     }
 
     override fun generateCommon(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
+        totalMultiSources: List<TemplateMultiSource>,
         totalTemplates: List<TemplateSource>,
     ) {
-        if (isKmp && totalTemplates.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 rootPackage,
                 FACTORY_FILE_NAME
@@ -154,14 +154,11 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addFunction(buildMockFactory())
             }
 
-            if (spyContainer.hasSpies()) {
+            if (spyContainer.hasSpies(totalMultiSources)) {
                 file.addFunction(buildSpyFactory())
             }
 
-            generateGenericEntryPoints(
-                file,
-                generics
-            )
+            file.generateGenericEntryPoints(generics)
 
             codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
             file.build().writeTo(
@@ -187,10 +184,7 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
                 file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
 
-                generateGenericEntryPoints(
-                    file,
-                    generics
-                )
+                file.generateGenericEntryPoints(generics)
 
                 codeGenerator.setOneTimeSourceSet(indicator)
                 file.build().writeTo(

@@ -92,7 +92,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -165,7 +165,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -253,7 +253,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -316,6 +316,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             entryPointGenerator.generateCommon(
                 interfacesCommon,
+                emptyList(),
                 listOf(
                     interfacesCommon,
                     interfacesFiltered,
@@ -391,7 +392,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any()) } just Runs
         every { entryPointGenerator.generateShared(any()) } just Runs
 
         // When
@@ -480,6 +481,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             entryPointGenerator.generateCommon(
                 listOf(interfacesCommonRound1).flatten(),
+                multiInterfacesCommon,
                 listOf(
                     interfacesCommonRound1,
                     interfacesFiltered,
@@ -532,7 +534,7 @@ class KMockProcessorSpec {
         every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
-        every { entryPointGenerator.generateCommon(any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any()) } just Runs
 
         // When
         KMockProcessor(
@@ -579,7 +581,7 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 0) {
-            entryPointGenerator.generateCommon(interfacesCommon, interfacesFiltered)
+            entryPointGenerator.generateCommon(interfacesCommon, emptyList(), interfacesFiltered)
         }
 
         verify(exactly = 1) { codeGenerator.closeFiles() }

@@ -23,7 +23,8 @@ internal object NoopFactoryGenerator : MockFactoryGenerator, MockFactoryEntryPoi
 
     override fun generateCommon(
         templateSources: List<TemplateSource>,
-        totalTemplates: List<TemplateSource>
+        templateMultiSources: List<TemplateMultiSource>,
+        totalTemplates: List<TemplateSource>,
     ) = Unit
 
     override fun generateShared(
