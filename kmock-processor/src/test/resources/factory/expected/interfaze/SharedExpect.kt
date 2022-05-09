@@ -34,11 +34,3 @@ internal expect inline fun <reified Mock : Shared.Shared4<K, L>, K : Any, L> kmo
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared.Shared4<*, *>>,
 ): Mock where L : Any, L : Comparable<L>
-
-internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared.Shared4<K, L>, K : Any, L>
-    kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared.Shared4<*, *>>,
-): Mock where L : Any, L : Comparable<L>

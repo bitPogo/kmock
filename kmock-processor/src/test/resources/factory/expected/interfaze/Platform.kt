@@ -145,18 +145,3 @@ internal inline fun <reified Mock : Contract.Platform5<K, L>, K : Any, L> kmock(
     freeze = freeze,
     templateType = templateType,
 )
-
-internal inline fun <reified Mock : SpyOn, reified SpyOn : Contract.Platform5<K, L>, K : Any, L>
-    kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Contract.Platform5<*, *>>,
-): Mock where L : Any, L : Comparable<L> = getMockInstance(
-    spyOn = spyOn,
-    verifier = verifier,
-    relaxed = false,
-    relaxUnitFun = false,
-    freeze = freeze,
-    templateType = templateType,
-)

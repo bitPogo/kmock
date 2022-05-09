@@ -533,7 +533,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             kspArguments = mapOf(
-                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform1",
+                "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.AliasPlatform",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
                 "${KMOCK_PREFIX}alias_factory.template.interfaze.Platform1" to "AliasPlatform",
                 "${KMOCK_PREFIX}allowInterfaces" to "true",
@@ -571,6 +571,9 @@ class KMockFactoriesSpec {
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
+
+        println(actualActual!!.readText())
+        println(actualExpect!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

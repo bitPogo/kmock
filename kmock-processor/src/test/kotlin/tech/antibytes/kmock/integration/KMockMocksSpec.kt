@@ -746,7 +746,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Platform",
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.AliasPlatform",
                 "${KMOCK_PREFIX}alias_mock.template.spy.Platform" to "AliasPlatform",
             )
         )
