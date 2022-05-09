@@ -10,8 +10,11 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSType
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXATION_NAME
 
@@ -51,19 +54,29 @@ internal class AnnotationFilter(
         }
     }
 
-    override fun isApplicableAnnotation(
+    override fun isApplicableSingleSourceAnnotation(
         annotation: KSAnnotation
     ): Boolean {
         return annotation.arguments.size == 1 &&
-            annotation.arguments.first().value is List<*> &&
-            ((annotation.arguments.first().value as List<*>).size == 0 || (annotation.arguments.first().value as List<*>).random() is KSType)
+            annotation.arguments[0].value is List<*> &&
+            ((annotation.arguments[0].value as List<*>).size == 0 || (annotation.arguments[0].value as List<*>).random() is KSType)
+    }
+
+    override fun isApplicableMultiSourceAnnotation(annotation: KSAnnotation): Boolean {
+        return annotation.arguments.size == 2 &&
+            annotation.arguments[0].value is String &&
+            annotation.arguments[1].value is List<*> &&
+            ((annotation.arguments[1].value as List<*>).size == 0 || (annotation.arguments[1].value as List<*>).random() is KSType)
     }
 
     private companion object {
         val RESERVED = sortedSetOf(
             ANNOTATION_PLATFORM_NAME,
+            ANNOTATION_PLATFORM_MULTI_NAME,
             ANNOTATION_SHARED_NAME,
+            ANNOTATION_SHARED_MULTI_NAME,
             ANNOTATION_COMMON_NAME,
+            ANNOTATION_COMMON_MULTI_NAME,
             RELAXATION_NAME,
         )
     }

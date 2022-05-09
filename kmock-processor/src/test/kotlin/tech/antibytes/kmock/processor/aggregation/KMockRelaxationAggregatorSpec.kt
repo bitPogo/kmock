@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -22,13 +22,16 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.Relaxer
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
+import tech.antibytes.kmock.processor.ProcessorContract.RelaxationAggregator
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
-class KMockAggregatorRelaxerSpec {
+class KMockRelaxationAggregatorSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -39,14 +42,16 @@ class KMockAggregatorRelaxerSpec {
 
     @Test
     fun `It fulfils Aggregator`() {
-        KMockAggregator(
+        KMockRelaxationAggregator(
             mockk(),
+        ) fulfils Aggregator::class
+    }
+
+    @Test
+    fun `It fulfils RelaxationAggregator`() {
+        KMockRelaxationAggregator(
             mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ) fulfils ProcessorContract.Aggregator::class
+        ) fulfils RelaxationAggregator::class
     }
 
     @Test
@@ -61,14 +66,7 @@ class KMockAggregatorRelaxerSpec {
         } returns annotated
 
         // When
-        val relaxer = KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        val relaxer = KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         relaxer mustBe null
@@ -111,14 +109,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
@@ -164,14 +155,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
@@ -217,14 +201,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
@@ -274,14 +251,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
@@ -327,14 +297,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
@@ -380,14 +343,7 @@ class KMockAggregatorRelaxerSpec {
         every { logger.error(any()) } just Runs
 
         // When
-        val actual = KMockAggregator(
-            logger,
-            mockk(),
-            mockk(),
-            mockk(),
-            emptyMap(),
-            emptyMap(),
-        ).extractRelaxer(resolver)
+        val actual = KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 0) { logger.error(any()) }

@@ -8,22 +8,22 @@ package tech.antibytes.kmock.processor.utils
 
 import com.google.devtools.ksp.processing.KSPLogger
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.Source
 
 internal class SourceFilter(
     private val precedences: Map<String, Int>,
     private val logger: KSPLogger
 ) : ProcessorContract.SourceFilter {
-    override fun filter(
-        templateSources: List<TemplateSource>,
-        filteredBy: List<TemplateSource>
-    ): List<TemplateSource> {
+    override fun <T : Source> filter(
+        templateSources: List<T>,
+        filteredBy: List<T>
+    ): List<T> {
         val filter = filteredBy.map { source ->
-            source.template.qualifiedName!!.asString()
+            "${source.packageName}.${source.templateName}"
         }
 
         return templateSources.filter { source ->
-            !filter.contains(source.template.qualifiedName!!.asString())
+            !filter.contains("${source.packageName}.${source.templateName}")
         }
     }
 
@@ -34,14 +34,14 @@ internal class SourceFilter(
         }
     }
 
-    override fun filterSharedSources(
-        templateSources: List<TemplateSource>
-    ): List<TemplateSource> {
-        val filtered: MutableList<TemplateSource> = mutableListOf()
+    override fun <T : Source> filterSharedSources(
+        templateSources: List<T>
+    ): List<T> {
+        val filtered: MutableList<T> = mutableListOf()
         val filteredNamed: MutableList<String> = mutableListOf()
 
         templateSources.forEach { source ->
-            val qualifiedName = source.template.qualifiedName!!.asString()
+            val qualifiedName = "${source.packageName}.${source.templateName}"
             val currentFieldIdx = filteredNamed.indexOf(qualifiedName)
 
             if (currentFieldIdx == -1) {

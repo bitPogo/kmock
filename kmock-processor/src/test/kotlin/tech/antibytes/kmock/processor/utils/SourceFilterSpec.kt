@@ -8,7 +8,6 @@ package tech.antibytes.kmock.processor.utils
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -33,26 +32,48 @@ class SourceFilterSpec {
         val source0_0: KSClassDeclaration = mockk()
         val source1_1: KSClassDeclaration = mockk()
 
+        val packageName0: String = fixture.fixture()
+        val interfaceName0: String = fixture.fixture()
+
         val source1_0: KSClassDeclaration = mockk()
         val source0_1: KSClassDeclaration = mockk()
 
+        val packageName1: String = fixture.fixture()
+        val interfaceName1: String = fixture.fixture()
+
         val sources0 = listOf(
-            TemplateSource("", source0_0, null, null),
-            TemplateSource("", source0_1, null, null)
+            TemplateSource(
+                indicator = "",
+                template = source0_0,
+                templateName = packageName0,
+                packageName = interfaceName0,
+                generics = null
+            ),
+            TemplateSource(
+                indicator = "",
+                template = source0_1,
+                templateName = packageName0,
+                packageName = interfaceName1,
+                generics = null
+            )
         )
 
         val sources1 = listOf(
-            TemplateSource("", source1_0, null, null),
-            TemplateSource("", source1_1, null, null)
+            TemplateSource(
+                indicator = "",
+                template = source1_0,
+                templateName = packageName1,
+                packageName = interfaceName0,
+                generics = null
+            ),
+            TemplateSource(
+                indicator = "",
+                template = source1_1,
+                templateName = packageName0,
+                packageName = interfaceName1,
+                generics = null
+            )
         )
-
-        val sameSource: String = fixture.fixture()
-
-        every { source0_0.qualifiedName!!.asString() } returns fixture.fixture()
-        every { source0_1.qualifiedName!!.asString() } returns sameSource
-
-        every { source1_0.qualifiedName!!.asString() } returns fixture.fixture()
-        every { source1_1.qualifiedName!!.asString() } returns sameSource
 
         // When
         val actual = SourceFilter(emptyMap(), mockk()).filter(sources0, sources1)
@@ -70,12 +91,21 @@ class SourceFilterSpec {
         val source1: KSClassDeclaration = mockk()
 
         val sources = listOf(
-            TemplateSource(fixture.fixture(), source0, null, null),
-            TemplateSource(fixture.fixture(), source1, null, null)
+            TemplateSource(
+                indicator = fixture.fixture(),
+                template = source0,
+                templateName = fixture.fixture(),
+                packageName = fixture.fixture(),
+                generics = null
+            ),
+            TemplateSource(
+                indicator = fixture.fixture(),
+                template = source1,
+                templateName = fixture.fixture(),
+                packageName = fixture.fixture(),
+                generics = null
+            )
         )
-
-        every { source0.qualifiedName!!.asString() } returns fixture.fixture()
-        every { source1.qualifiedName!!.asString() } returns fixture.fixture()
 
         // When
         val actual = SourceFilter(emptyMap(), mockk()).filterSharedSources(sources)
@@ -91,18 +121,28 @@ class SourceFilterSpec {
         val source0: KSClassDeclaration = mockk()
         val source1: KSClassDeclaration = mockk()
 
+        val packageName: String = fixture.fixture()
+        val interfaceName: String = fixture.fixture()
+
         val marker0: String = fixture.fixture()
         val marker1: String = fixture.fixture()
 
         val sources = listOf(
-            TemplateSource(marker0, source0, null, null),
-            TemplateSource(marker1, source1, null, null)
+            TemplateSource(
+                indicator = marker0,
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker1,
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null
+            )
         )
-
-        val interfaceName: String = fixture.fixture()
-
-        every { source0.qualifiedName!!.asString() } returns interfaceName
-        every { source1.qualifiedName!!.asString() } returns interfaceName
 
         // When
         SourceFilter(emptyMap(), logger).filterSharedSources(sources)
@@ -123,23 +163,38 @@ class SourceFilterSpec {
         val marker1: String = fixture.fixture()
         val marker2: String = fixture.fixture()
 
-        val sources = listOf(
-            TemplateSource(marker0, source0, null, null),
-            TemplateSource(marker1, source1, null, null),
-            TemplateSource(marker2, source2, null, null),
-        )
-
+        val packageName: String = fixture.fixture()
         val interfaceName: String = fixture.fixture()
+
+        val sources = listOf(
+            TemplateSource(
+                indicator = marker0,
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker1,
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null
+            ),
+            TemplateSource(
+                indicator = marker2,
+                template = source2,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null
+            )
+        )
 
         val precedences = mapOf(
             marker0 to 1,
             marker1 to 2,
             marker2 to 0,
         )
-
-        every { source0.qualifiedName!!.asString() } returns interfaceName
-        every { source1.qualifiedName!!.asString() } returns interfaceName
-        every { source2.qualifiedName!!.asString() } returns interfaceName
 
         // When
         val actual = SourceFilter(precedences, mockk()).filterSharedSources(sources)

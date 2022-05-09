@@ -14,6 +14,8 @@ interface SomeGeneric<T>
     Platform1::class,
     Platform2::class,
     Platform3::class,
+    Contract.Platform4::class,
+    Contract.Platform5::class,
 )
 interface Platform1<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L
@@ -85,4 +87,16 @@ interface Platform2 {
 interface Platform3 {
     var template: Int
     fun abc()
+}
+
+interface Contract {
+    interface Platform4 {
+        var template: Int
+        fun abc()
+        fun <R, T> iss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
+    }
+
+    interface Platform5<K, L> where L : Any, L : Comparable<L>, K : Any {
+        fun kiss(arg0: K, arg1: L)
+    }
 }

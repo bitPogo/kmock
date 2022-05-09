@@ -18,32 +18,54 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.multiMock
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
+import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
     private val spyOn: Set<String>,
     private val useBuildInProxiesOn: Set<String>,
-    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
-    private val genericsResolver: ProcessorContract.GenericResolver,
-    private val nameCollector: ProcessorContract.ProxyNameCollector,
-    private val propertyGenerator: ProcessorContract.PropertyGenerator,
-    private val methodGenerator: ProcessorContract.MethodGenerator,
-    private val buildInGenerator: ProcessorContract.BuildInMethodGenerator
+    private val codeGenerator: KmpCodeGenerator,
+    private val genericsResolver: GenericResolver,
+    private val nameCollector: ProxyNameCollector,
+    private val parentFinder: ParentFinder,
+    private val propertyGenerator: PropertyGenerator,
+    private val methodGenerator: MethodGenerator,
+    private val buildInGenerator: BuildInMethodGenerator
 ) : ProcessorContract.MockGenerator {
     private val unusedParameter = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
     private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
 
-    private fun buildConstructor(superType: TypeName): FunSpec {
+    private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
+        return if (superTypes.size == 1) {
+            superTypes.first()
+        } else {
+            multiMock
+        }
+    }
+
+    private fun buildConstructor(superTypes: List<TypeName>): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
         val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
@@ -52,7 +74,7 @@ internal class KMockGenerator(
 
         val spy = ParameterSpec.builder(
             "spyOn",
-            superType.copy(nullable = true),
+            resolveSpyType(superTypes).copy(nullable = true),
         ).addAnnotation(unusedParameter).defaultValue("null")
         constructor.addParameter(spy.build())
 
@@ -97,8 +119,27 @@ internal class KMockGenerator(
         name: String
     ): Boolean = name != "equals" && name != "toString" && name != "hashCode"
 
+    private fun resolveSuperTypes(
+        template: KSClassDeclaration,
+        parents: List<KSClassDeclaration>,
+        typeResolver: TypeParameterResolver,
+    ): List<TypeName> {
+        return if (parents.isEmpty()) {
+            listOf(
+                genericsResolver.resolveMockClassType(template, typeResolver)
+            )
+        } else {
+            parents.map { parent ->
+                val resolver = parent.typeParameters.toTypeParameterResolver()
+
+                genericsResolver.resolveMockClassType(parent, resolver)
+            }
+        }
+    }
+
     private fun buildMock(
         mockName: String,
+        parents: List<KSClassDeclaration>,
         template: KSClassDeclaration,
         generics: Map<String, List<KSTypeReference>>?,
         relaxer: Relaxer?
@@ -108,12 +149,16 @@ internal class KMockGenerator(
         val templateName = template.qualifiedName!!.asString()
         val qualifier = constructQualifier(mockName, template)
 
-        val superType = genericsResolver.resolveMockClassType(template, typeResolver)
+        val superTypes = resolveSuperTypes(
+            template = template,
+            parents = parents,
+            typeResolver = typeResolver,
+        )
         val proxyNameCollector: MutableList<String> = mutableListOf()
 
         val enableSpy = templateName in spyOn
 
-        mock.addSuperinterface(superType)
+        mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
 
         if (generics != null) {
@@ -122,8 +167,14 @@ internal class KMockGenerator(
             )
         }
 
+        if (superTypes.size > 1) {
+            mock.typeVariables.add(
+                TypeVariableName(MULTI_MOCK, bounds = superTypes)
+            )
+        }
+
         mock.primaryConstructor(
-            buildConstructor(superType)
+            buildConstructor(superTypes)
         )
 
         mock.addProperty(
@@ -146,7 +197,7 @@ internal class KMockGenerator(
             mock.addProperty(
                 PropertySpec.builder(
                     "__spyOn",
-                    superType.copy(nullable = true),
+                    resolveSpyType(superTypes).copy(nullable = true),
                     KModifier.PRIVATE,
                 ).initializer("spyOn").build()
             )
@@ -215,15 +266,16 @@ internal class KMockGenerator(
 
     private fun writeMock(
         template: KSClassDeclaration,
-        alias: String?,
+        parents: List<KSClassDeclaration>,
+        templateName: String,
+        packageName: String,
         generics: Map<String, List<KSTypeReference>>?,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        val templateName = alias ?: template.simpleName.asString()
-        val mockName = "${templateName}Mock"
+        val mockName = "${templateName.substringAfterLast('.')}Mock"
         val file = FileSpec.builder(
-            template.packageName.asString(),
+            packageName,
             mockName
         )
 
@@ -231,6 +283,7 @@ internal class KMockGenerator(
 
         val implementation = buildMock(
             mockName = mockName,
+            parents = parents,
             template = template,
             generics = generics,
             relaxer = relaxer
@@ -254,15 +307,23 @@ internal class KMockGenerator(
 
     override fun writeCommonMocks(
         templateSources: List<TemplateSource>,
+        templateMultiSources: Aggregated<TemplateMultiSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
             codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
 
+            val parents = parentFinder.find(
+                templateSource = template,
+                templateMultiSources = templateMultiSources,
+            )
+
             writeMock(
                 template = template.template,
-                alias = template.alias,
+                parents = parents,
+                templateName = template.templateName,
+                packageName = template.packageName,
                 generics = template.generics,
                 dependencies = dependencies,
                 relaxer = relaxer
@@ -280,7 +341,9 @@ internal class KMockGenerator(
 
             writeMock(
                 template = template.template,
-                alias = template.alias,
+                parents = emptyList(),
+                templateName = template.templateName,
+                packageName = template.packageName,
                 generics = template.generics,
                 dependencies = dependencies,
                 relaxer = relaxer
@@ -294,9 +357,12 @@ internal class KMockGenerator(
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
+
             writeMock(
                 template = template.template,
-                alias = template.alias,
+                parents = emptyList(),
+                templateName = template.templateName,
+                packageName = template.packageName,
                 generics = template.generics,
                 dependencies = dependencies,
                 relaxer = relaxer

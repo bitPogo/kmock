@@ -18,6 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockFactoryWithGenerics(
     private val isKmp: Boolean,
@@ -25,17 +26,6 @@ internal class KMockFactoryWithGenerics(
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
 ) : MockFactoryWithGenerics {
-    private fun createAliasName(
-        alias: String?,
-        packageName: String
-    ): String? {
-        return if (alias != null) {
-            "$packageName.$alias"
-        } else {
-            null
-        }
-    }
-
     private fun resolveModifier(): KModifier? {
         return if (isKmp) {
             KModifier.ACTUAL
@@ -47,7 +37,6 @@ internal class KMockFactoryWithGenerics(
     private fun fillMockFactory(
         type: TypeVariableName,
         generics: List<TypeVariableName>,
-        isKmp: Boolean,
     ): FunSpec.Builder {
         val modifier = resolveModifier()
 
@@ -63,7 +52,6 @@ internal class KMockFactoryWithGenerics(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
-        isKmp: Boolean,
     ): FunSpec.Builder {
         val modifier = resolveModifier()
 
@@ -87,7 +75,6 @@ internal class KMockFactoryWithGenerics(
         return fillMockFactory(
             generics = generics,
             type = type,
-            isKmp = isKmp,
         ).build()
     }
 
@@ -105,8 +92,21 @@ internal class KMockFactoryWithGenerics(
             mockType = mockType,
             spyType = spyType,
             generics = generics,
-            isKmp = isKmp,
         ).build()
+    }
+
+    private fun buildMockSelectorFlow(
+        mockFactory: FunSpec.Builder,
+        addItems: FunSpec.Builder.() -> Unit,
+    ): FunSpec.Builder {
+        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
+
+        addItems(mockFactory)
+
+        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        mockFactory.endControlFlow()
+
+        return mockFactory
     }
 
     private fun determineMockTemplate(
@@ -129,7 +129,6 @@ internal class KMockFactoryWithGenerics(
         mockFactory: FunSpec.Builder,
         qualifiedName: String,
         interfaceName: String,
-        aliasInterfaceName: String?,
         typeInfo: String,
         relaxer: Relaxer?
     ) {
@@ -138,7 +137,7 @@ internal class KMockFactoryWithGenerics(
             mockFactory.addStatement(
                 interfaceInvocationTemplate,
                 qualifiedName,
-                aliasInterfaceName ?: interfaceName,
+                interfaceName,
                 typeInfo,
                 qualifiedName,
                 typeInfo,
@@ -147,26 +146,12 @@ internal class KMockFactoryWithGenerics(
 
         mockFactory.addStatement(
             mockInvocationTemplate,
-            aliasInterfaceName ?: interfaceName,
-            aliasInterfaceName ?: interfaceName,
+            interfaceName,
+            interfaceName,
             typeInfo,
             qualifiedName,
             typeInfo,
         )
-    }
-
-    private fun buildMockSelectorFlow(
-        mockFactory: FunSpec.Builder,
-        addItems: FunSpec.Builder.() -> Unit,
-    ): FunSpec.Builder {
-        mockFactory.beginControlFlow("return when ($KMOCK_FACTORY_TYPE_NAME::class)")
-
-        addItems(mockFactory)
-
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
-        mockFactory.endControlFlow()
-
-        return mockFactory
     }
 
     private fun amendSource(
@@ -175,15 +160,13 @@ internal class KMockFactoryWithGenerics(
         templateSource: TemplateSource,
         relaxer: Relaxer?
     ) {
-        val packageName = templateSource.template.packageName.asString()
-        val qualifiedName = templateSource.template.qualifiedName!!.asString()
-        val aliasInterfaceName = createAliasName(templateSource.alias, packageName)
-        val interfaceName = "$packageName.${templateSource.template.simpleName.asString()}"
+        val packageName = templateSource.packageName
+        val qualifiedName = ensureNotNullClassName(templateSource.template.qualifiedName?.asString())
+        val interfaceName = "$packageName.${templateSource.templateName.substringAfterLast('.')}"
 
         addMock(
             mockFactory = mockFactory,
             qualifiedName = qualifiedName,
-            aliasInterfaceName = aliasInterfaceName,
             interfaceName = interfaceName,
             typeInfo = typeInfo,
             relaxer = relaxer,

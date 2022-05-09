@@ -4,32 +4,33 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.processing.KSPLogger
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
+import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
-class KMockAggregatorFactorySpec {
+class KMockMultiSourceAggregatorFactorySpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `It fulfils AggregatorFactory`() {
-        KMockAggregator fulfils AggregatorFactory::class
+        KMockMultiSourceAggregator fulfils AggregatorFactory::class
     }
 
     @Test
-    fun `Given getInstance is called it returns a Aggregator`() {
+    fun `Given getInstance is called it returns a MultiSourceAggregator`() {
         // Given
         val logger: KSPLogger = mockk()
         val sourceSetValidator: SourceSetValidator = mockk()
@@ -42,8 +43,9 @@ class KMockAggregatorFactorySpec {
         every { annotationFilter.filterAnnotation(any()) } returns customAnnotations
 
         // When
-        val actual = KMockAggregator.getInstance(
+        val actual = KMockMultiSourceAggregator.getInstance(
             logger = logger,
+            rootPackage = fixture.fixture(),
             sourceSetValidator = sourceSetValidator,
             annotationFilter = annotationFilter,
             generics = generics,
@@ -52,7 +54,7 @@ class KMockAggregatorFactorySpec {
         )
 
         // Then
-        actual fulfils Aggregator::class
+        actual fulfils MultiSourceAggregator::class
 
         verify(exactly = 1) {
             annotationFilter.filterAnnotation(customAnnotations)

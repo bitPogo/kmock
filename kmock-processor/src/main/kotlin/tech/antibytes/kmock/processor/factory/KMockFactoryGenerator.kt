@@ -11,15 +11,16 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
-import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
@@ -32,11 +33,12 @@ internal class KMockFactoryGenerator(
     private val genericGenerator: MockFactoryWithGenerics,
     private val utils: MockFactoryGeneratorUtil,
     private val codeGenerator: CodeGenerator,
-) : ProcessorContract.MockFactoryGenerator {
+) : MockFactoryGenerator {
     private val hasSpies = spyOn.isNotEmpty() || spiesOnly
 
     private fun writeFactoryImplementation(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
@@ -61,6 +63,7 @@ internal class KMockFactoryGenerator(
         file.addFunction(
             nonGenericGenerator.buildSharedMockFactory(
                 templateSources = regular,
+                templateMultiSources = templateMultiSources,
                 relaxer = relaxer
             )
         )
@@ -99,12 +102,14 @@ internal class KMockFactoryGenerator(
 
     override fun writeFactories(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
-        if (templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             writeFactoryImplementation(
                 templateSources = templateSources,
+                templateMultiSources = templateMultiSources,
                 dependencies = dependencies,
                 relaxer = relaxer
             )

@@ -4,85 +4,53 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.kmock.processor
+package tech.antibytes.kmock.processor.aggregation
 
 import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
-import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeParameter
-import com.google.devtools.ksp.symbol.KSTypeReference
-import com.google.devtools.ksp.symbol.KSValueParameter
-import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.deriveSimpleName
+import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
-internal class KMockAggregator(
+internal class KMockSingleSourceAggregator(
     private val logger: KSPLogger,
     private val annotationFilter: AnnotationFilter,
     private val sourceSetValidator: SourceSetValidator,
-    private val generics: GenericResolver,
+    generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
     private val aliases: Map<String, String>
-) : Aggregator {
-    private fun resolveAnnotationName(
-        annotation: KSAnnotation
-    ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
-
-    private fun findKMockAnnotation(
-        annotations: Sequence<KSAnnotation>,
-        condition: (String, KSAnnotation) -> Boolean
-    ): KSAnnotation? {
-        val annotation = annotations.firstOrNull { annotation ->
-            condition(resolveAnnotationName(annotation), annotation)
-        }
-
-        return annotation
-    }
-
-    private fun resolveGenerics(template: KSDeclaration): Map<String, List<KSTypeReference>>? {
-        val typeResolver = template.typeParameters.toTypeParameterResolver()
-        return generics.extractGenerics(
-            template,
-            typeResolver,
-        )
-    }
-
+) : SingleSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
     private fun resolveInterface(
-        interfaze: KSDeclaration,
+        declaration: KSDeclaration,
         sourceIndicator: String,
         templateCollector: MutableMap<String, TemplateSource>
     ) {
-        when {
-            interfaze !is KSClassDeclaration -> logger.error("Cannot stub non interfaces.")
-            interfaze.classKind != ClassKind.INTERFACE -> logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
-            else -> {
-                val templateName = interfaze.qualifiedName!!.asString()
-                templateCollector[templateName + sourceIndicator] = TemplateSource(
-                    indicator = sourceIndicator,
-                    template = interfaze,
-                    alias = aliases[templateName],
-                    generics = resolveGenerics(interfaze)
-                )
-            }
-        }
+        val interfaze = safeCastInterface(declaration)
+        val qualifiedName = ensureNotNullClassName(interfaze.qualifiedName?.asString())
+        val packageName = interfaze.packageName.asString()
+
+        templateCollector[qualifiedName + sourceIndicator] = TemplateSource(
+            indicator = sourceIndicator,
+            templateName = aliases[qualifiedName] ?: interfaze.deriveSimpleName(packageName),
+            packageName = packageName,
+            template = interfaze,
+            generics = resolveGenerics(interfaze)
+        )
     }
 
     private fun resolveInterfaces(
@@ -90,8 +58,8 @@ internal class KMockAggregator(
         templateCollector: MutableMap<String, TemplateSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
-            interfaces.forEach { value ->
-                resolveInterface(value.declaration, sourceIndicator, templateCollector)
+            interfaces.forEach { interfaze ->
+                resolveInterface(interfaze.declaration, sourceIndicator, templateCollector)
             }
         }
     }
@@ -107,8 +75,8 @@ internal class KMockAggregator(
     @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
         annotated: Sequence<KSAnnotated>,
-        condition: (String, KSAnnotation) -> Boolean
-    ): Aggregated {
+        condition: (String, KSAnnotation) -> Boolean,
+    ): Aggregated<TemplateSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
         val typeContainer = mutableMapOf<String, MutableList<KSType>>()
         val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
@@ -147,7 +115,7 @@ internal class KMockAggregator(
 
     override fun extractCommonInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource> {
         val annotated = fetchCommonAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->
@@ -160,25 +128,19 @@ internal class KMockAggregator(
             ANNOTATION_SHARED_NAME,
             false
         )
-
-        val customShared = customAnnotations.keys.map { annotation ->
-            resolver.getSymbolsWithAnnotation(
-                annotation,
-                false
-            )
-        }.toTypedArray()
+        val customShared = fetchCustomShared(resolver)
 
         return sequenceOf(shared, *customShared).flatten()
     }
 
     private fun isSharedAnnotation(annotationName: String, annotation: KSAnnotation): Boolean {
-        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableAnnotation(annotation)) ||
+        return (annotationName in customAnnotations.keys && annotationFilter.isApplicableSingleSourceAnnotation(annotation)) ||
             (ANNOTATION_SHARED_NAME == annotationName && sourceSetValidator.isValidateSourceSet(annotation))
     }
 
     override fun extractSharedInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
         return extractInterfaces(annotated, ::isSharedAnnotation)
@@ -193,7 +155,7 @@ internal class KMockAggregator(
 
     override fun extractPlatformInterfaces(
         resolver: Resolver
-    ): Aggregated {
+    ): Aggregated<TemplateSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
         return extractInterfaces(annotated) { annotationName, _ ->
@@ -201,64 +163,21 @@ internal class KMockAggregator(
         }
     }
 
-    private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
-        return parameter.size == 1 &&
-            parameter.first().type.resolve().toString() == "String"
-    }
-
-    private fun hasValidTypeParameter(
-        typeParameter: List<KSTypeParameter>,
-        returnType: KSTypeReference?
-    ): Boolean {
-        return typeParameter.size == 1 &&
-            typeParameter.first().bounds.toList().isEmpty() &&
-            typeParameter.first().toString() == returnType.toString()
-    }
-
-    private fun validateRelaxer(symbol: KSFunctionDeclaration) {
-        val isValid = hasValidParameter(symbol.parameters) &&
-            hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
-
-        if (!isValid) {
-            logger.error("Invalid Relaxer!")
-        }
-    }
-
-    private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
-        return resolver.getSymbolsWithAnnotation(
-            ProcessorContract.RELAXATION_NAME,
-            false
-        )
-    }
-
-    override fun extractRelaxer(resolver: Resolver): Relaxer? {
-        val annotatedSymbol = fetchRelaxerAnnotated(resolver).firstOrNull()
-
-        return if (annotatedSymbol is KSFunctionDeclaration) {
-            validateRelaxer(annotatedSymbol)
-            Relaxer(
-                annotatedSymbol.packageName.asString(),
-                annotatedSymbol.simpleName.asString()
-            )
-        } else {
-            null
-        }
-    }
-
-    companion object : AggregatorFactory {
+    companion object : AggregatorFactory<SingleSourceAggregator> {
         override fun getInstance(
             logger: KSPLogger,
+            rootPackage: String,
             sourceSetValidator: SourceSetValidator,
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>,
-        ): Aggregator {
+        ): SingleSourceAggregator {
             val additionalAnnotations = annotationFilter.filterAnnotation(
                 customAnnotations
             )
 
-            return KMockAggregator(
+            return KMockSingleSourceAggregator(
                 logger = logger,
                 annotationFilter = annotationFilter,
                 sourceSetValidator = sourceSetValidator,

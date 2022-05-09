@@ -2,6 +2,7 @@
 
 package generatorTest
 
+import factory.template.interfaze.Shared
 import factory.template.interfaze.Shared1
 import kotlin.Any
 import kotlin.Boolean
@@ -24,4 +25,20 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>,
     verifier: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared1<*, *>>,
+): Mock where L : Any, L : Comparable<L>
+
+internal expect inline fun <reified Mock : Shared.Shared4<K, L>, K : Any, L> kmock(
+    verifier: KMockContract.Collector = NoopCollector,
+    relaxed: Boolean = false,
+    relaxUnitFun: Boolean = false,
+    freeze: Boolean = true,
+    templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared.Shared4<*, *>>,
+): Mock where L : Any, L : Comparable<L>
+
+internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared.Shared4<K, L>, K : Any, L>
+    kspy(
+    spyOn: SpyOn,
+    verifier: KMockContract.Collector = NoopCollector,
+    freeze: Boolean = true,
+    templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared.Shared4<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

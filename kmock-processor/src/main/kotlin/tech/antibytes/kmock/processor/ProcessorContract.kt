@@ -30,6 +30,9 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.MultiMock
+import tech.antibytes.kmock.MultiMockCommon
+import tech.antibytes.kmock.MultiMockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
@@ -64,6 +67,34 @@ internal interface ProcessorContract {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
     }
 
+    sealed interface Source {
+        val indicator: String
+        val templateName: String
+        val packageName: String
+    }
+
+    data class TemplateSource(
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
+        val template: KSClassDeclaration,
+        val generics: Map<String, List<KSTypeReference>>?
+    ) : Source
+
+    data class TemplateMultiSource(
+        override val indicator: String,
+        override val templateName: String,
+        override val packageName: String,
+        val templates: List<KSClassDeclaration>,
+        val generics: List<Map<String, List<KSTypeReference>>?>
+    ) : Source
+
+    data class Aggregated<out T : Source>(
+        val illFormed: List<KSAnnotated>,
+        val extractedTemplates: List<T>,
+        val dependencies: List<KSFile>
+    )
+
     interface SourceSetValidator {
         fun isValidateSourceSet(sourceSet: Any?): Boolean
     }
@@ -73,52 +104,55 @@ internal interface ProcessorContract {
             annotations: Map<String, String>
         ): Map<String, String>
 
-        fun isApplicableAnnotation(
+        fun isApplicableSingleSourceAnnotation(
+            annotation: KSAnnotation
+        ): Boolean
+
+        fun isApplicableMultiSourceAnnotation(
             annotation: KSAnnotation
         ): Boolean
     }
 
     interface SourceFilter {
-        fun filter(
-            templateSources: List<TemplateSource>,
-            filteredBy: List<TemplateSource>
-        ): List<TemplateSource>
+        fun <T : Source> filter(
+            templateSources: List<T>,
+            filteredBy: List<T>
+        ): List<T>
 
-        fun filterSharedSources(
-            templateSources: List<TemplateSource>
-        ): List<TemplateSource>
+        fun <T : Source> filterSharedSources(
+            templateSources: List<T>
+        ): List<T>
     }
 
-    interface AggregatorFactory {
+    interface Aggregator
+
+    interface RelaxationAggregator : Aggregator {
+        fun extractRelaxer(resolver: Resolver): Relaxer?
+    }
+
+    interface SingleSourceAggregator : Aggregator {
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+    }
+
+    interface MultiSourceAggregator : Aggregator {
+        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+    }
+
+    interface AggregatorFactory<T : Aggregator> {
         fun getInstance(
             logger: KSPLogger,
+            rootPackage: String,
             sourceSetValidator: SourceSetValidator,
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
             aliases: Map<String, String>
-        ): Aggregator
+        ): T
     }
-
-    interface Aggregator {
-        fun extractCommonInterfaces(resolver: Resolver): Aggregated
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated
-        fun extractPlatformInterfaces(resolver: Resolver): Aggregated
-        fun extractRelaxer(resolver: Resolver): Relaxer?
-    }
-
-    data class TemplateSource(
-        val indicator: String,
-        val template: KSClassDeclaration,
-        val alias: String?,
-        val generics: Map<String, List<KSTypeReference>>?
-    )
-
-    data class Aggregated(
-        val illFormed: List<KSAnnotated>,
-        val extractedTemplates: List<TemplateSource>,
-        val dependencies: List<KSFile>
-    )
 
     data class GenericDeclaration(
         val types: List<TypeName>,
@@ -303,8 +337,23 @@ internal interface ProcessorContract {
 
         fun writeCommonMocks(
             templateSources: List<TemplateSource>,
+            templateMultiSources: Aggregated<TemplateMultiSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?
+        )
+    }
+
+    fun interface ParentFinder {
+        fun find(
+            templateSource: TemplateSource,
+            templateMultiSources: Aggregated<TemplateMultiSource>,
+        ): List<KSClassDeclaration>
+    }
+
+    interface MultiInterfaceBinder {
+        fun bind(
+            templateSources: List<TemplateMultiSource>,
+            dependencies: List<KSFile>,
         )
     }
 
@@ -343,6 +392,7 @@ internal interface ProcessorContract {
 
         fun buildSharedMockFactory(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
         ): FunSpec
     }
@@ -363,6 +413,7 @@ internal interface ProcessorContract {
     interface MockFactoryGenerator {
         fun writeFactories(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             dependencies: List<KSFile>,
             relaxer: Relaxer?,
         )
@@ -384,9 +435,13 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
+        const val INTERMEDIATE_INTERFACES_FILE_NAME = "KMockMultiInterfaceArtifacts"
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
+        val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
+        val ANNOTATION_COMMON_MULTI_NAME: String = MultiMockCommon::class.java.canonicalName
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
+        val ANNOTATION_SHARED_MULTI_NAME: String = MultiMockShared::class.java.canonicalName
         val RELAXATION_NAME: String = RelaxationAnnotation::class.java.canonicalName
 
         val COLLECTOR_NAME = ClassName(
@@ -413,6 +468,9 @@ internal interface ProcessorContract {
             "UNUSED_PARAMETER",
             "UNUSED_EXPRESSION"
         ).build()
+
+        const val MULTI_MOCK = "MultiMock"
+        val multiMock = TypeVariableName(MULTI_MOCK)
 
         const val COMMON_INDICATOR = "commonTest"
 

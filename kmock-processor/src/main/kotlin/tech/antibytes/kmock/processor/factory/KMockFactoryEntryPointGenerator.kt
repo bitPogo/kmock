@@ -11,7 +11,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
-import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
@@ -19,6 +18,10 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
@@ -26,10 +29,10 @@ internal class KMockFactoryEntryPointGenerator(
     private val rootPackage: String,
     private val spiesOnly: Boolean,
     spyOn: Set<String>,
-    private val utils: ProcessorContract.MockFactoryGeneratorUtil,
-    private val genericResolver: ProcessorContract.GenericResolver,
-    private val codeGenerator: ProcessorContract.KmpCodeGenerator,
-) : ProcessorContract.MockFactoryEntryPointGenerator {
+    private val utils: MockFactoryGeneratorUtil,
+    private val genericResolver: GenericResolver,
+    private val codeGenerator: KmpCodeGenerator,
+) : MockFactoryEntryPointGenerator {
     private val hasSpies = spyOn.isNotEmpty() || spiesOnly
 
     private fun buildMockFactory(): FunSpec {

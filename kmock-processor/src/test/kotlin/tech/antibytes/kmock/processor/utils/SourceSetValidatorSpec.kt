@@ -34,12 +34,16 @@ class SourceSetValidatorSpec {
     fun `Given isValidateSourceSet with a non string it returns false`() {
         // Given
         val any: Any = fixture.fixture()
+        val logger: KSPLogger = mockk()
+
+        every { logger.warn(any()) } just Runs
 
         // When
-        val actual = SourceSetValidator(mockk(), mockk()).isValidateSourceSet(any)
+        val actual = SourceSetValidator(logger, mockk()).isValidateSourceSet(any)
 
         // Then
         actual mustBe false
+        verify(exactly = 1) { logger.warn("Unexpected annotation payload!") }
     }
 
     @Test
@@ -102,8 +106,8 @@ class SourceSetValidatorSpec {
         // Then
         actual mustBe false
 
-        verify(exactly = 0) {
-            logger.warn(any())
+        verify(exactly = 1) {
+            logger.warn("Unexpected annotation payload!")
         }
     }
 

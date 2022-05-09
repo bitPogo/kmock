@@ -20,6 +20,24 @@ import kotlin.reflect.KClass
  */
 annotation class Mock(vararg val interfaces: KClass<*>)
 
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Determines which interfaces should be stubbed/mocked as a union of them.
+ *
+ * @param name name which used for the mock.
+ * @param interfaces variable amount of interfaces.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @property name name which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
+ */
+annotation class MultiMock(
+    val name: String,
+    vararg val interfaces: KClass<*>
+)
+
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
@@ -31,6 +49,24 @@ annotation class Mock(vararg val interfaces: KClass<*>)
  * @author Matthias Geisler
  */
 annotation class MockCommon(vararg val interfaces: KClass<*>)
+
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Determines which interfaces should be stubbed/mocked as a union of them for CommonCode.
+ *
+ * @param name name which used for the mock.
+ * @param interfaces variable amount of interfaces.
+ * @property name name which will be propagated to the (KSP) processor.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
+ */
+annotation class MultiMockCommon(
+    val name: String,
+    vararg val interfaces: KClass<*>
+)
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
@@ -45,6 +81,27 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
  * @author Matthias Geisler
  */
 annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
+
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Determines which interfaces should be stubbed/mocked as a union of them for CommonCode.
+ *
+ * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest).
+ * @param name name which used for the mock.
+ * @param interfaces variable amount of interfaces.
+ * @property sourceSetName which will be propagated to the (KSP) processor.
+ * @property name name which will be propagated to the (KSP) processor.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
+ */
+annotation class MultiMockShared(
+    val sourceSetName: String,
+    val name: String,
+    vararg val interfaces: KClass<*>
+)
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)

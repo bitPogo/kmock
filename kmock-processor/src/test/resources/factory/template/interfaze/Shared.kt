@@ -13,7 +13,9 @@ interface SomeGeneric<T>
 @MockShared(
     "sharedTest",
     Shared1::class,
-    Shared2::class
+    Shared2::class,
+    Shared.Shared3::class,
+    Shared.Shared4::class,
 )
 interface Shared1<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L
@@ -79,4 +81,16 @@ interface Shared1<K, L> where L : Any, L : Comparable<L>, K : Any {
 interface Shared2 {
     var template: Int
     fun abc()
+}
+
+interface Shared {
+    interface Shared3 {
+        var template: Int
+        fun abc()
+        fun <R, T> iss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
+    }
+
+    interface Shared4<K, L> where L : Any, L : Comparable<L>, K : Any {
+        fun kiss(arg0: K, arg1: L)
+    }
 }
