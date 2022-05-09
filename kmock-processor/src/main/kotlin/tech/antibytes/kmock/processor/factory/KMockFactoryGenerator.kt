@@ -20,22 +20,21 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGenerator(
     private val logger: KSPLogger,
-    spyOn: Set<String>,
     private val rootPackage: String,
     private val isKmp: Boolean,
+    private val spyContainer: SpyContainer,
     private val spiesOnly: Boolean,
     private val nonGenericGenerator: MockFactoryWithoutGenerics,
     private val genericGenerator: MockFactoryWithGenerics,
     private val utils: MockFactoryGeneratorUtil,
     private val codeGenerator: CodeGenerator,
 ) : MockFactoryGenerator {
-    private val hasSpies = spyOn.isNotEmpty() || spiesOnly
-
     private fun writeFactoryImplementation(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
@@ -74,7 +73,7 @@ internal class KMockFactoryGenerator(
             )
         }
 
-        if (hasSpies) {
+        if (spyContainer.hasSpies()) {
             file.addFunction(
                 nonGenericGenerator.buildSpyFactory()
             )
@@ -88,7 +87,7 @@ internal class KMockFactoryGenerator(
                 file.addFunction(factories.kmock)
             }
 
-            if (hasSpies) {
+            if (factories.kspy != null) {
                 file.addFunction(factories.kspy)
             }
         }

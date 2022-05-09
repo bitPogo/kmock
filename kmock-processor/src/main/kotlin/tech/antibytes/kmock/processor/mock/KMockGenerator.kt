@@ -39,12 +39,13 @@ import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
-    private val spyOn: Set<String>,
+    private val spyContainer: SpyContainer,
     private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: KmpCodeGenerator,
     private val genericsResolver: GenericResolver,
@@ -139,6 +140,7 @@ internal class KMockGenerator(
 
     private fun buildMock(
         mockName: String,
+        enableSpy: Boolean,
         parents: List<KSClassDeclaration>,
         template: KSClassDeclaration,
         generics: Map<String, List<KSTypeReference>>?,
@@ -155,8 +157,6 @@ internal class KMockGenerator(
             typeResolver = typeResolver,
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
-
-        val enableSpy = templateName in spyOn
 
         mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
@@ -245,7 +245,7 @@ internal class KMockGenerator(
             }
         }
 
-        if (templateName in useBuildInProxiesOn) {
+        if (templateName in useBuildInProxiesOn || enableSpy) {
             val (proxies, functions) = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
@@ -279,12 +279,19 @@ internal class KMockGenerator(
             mockName
         )
 
+        val enableSpy = spyContainer.isSpyable(
+            template = template,
+            templateName = templateName,
+            packageName = packageName,
+        )
+
         nameCollector.collect(template)
 
         val implementation = buildMock(
             mockName = mockName,
             parents = parents,
             template = template,
+            enableSpy = enableSpy,
             generics = generics,
             relaxer = relaxer
         )

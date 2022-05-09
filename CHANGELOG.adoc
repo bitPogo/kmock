@@ -31,7 +31,7 @@ toc::[]
 
 * `or` ArgumentConstraint
 * `not` ArgumentConstraint
-* `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`, while adding all known mocks
+* `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`. Also `spyOn` is not needed in this configuration
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
 * `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
@@ -54,6 +54,8 @@ toc::[]
 * Expectation-methods do not bleed into the global context any longer
 * `verifyStrictOrder` is now used for total order of certain Proxies but allows partial order between different Proxies
 * Android MinSDK 23 -> 21
+* `spyOn` is now capable of picking up KMock defined Aliases
+* `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
 
 === Deprecated
 

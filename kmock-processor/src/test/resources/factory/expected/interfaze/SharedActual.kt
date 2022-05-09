@@ -125,18 +125,3 @@ internal actual inline fun <reified Mock : Shared.Shared4<K, L>, K : Any, L> kmo
     freeze = freeze,
     templateType = templateType,
 )
-
-internal actual inline fun <reified Mock : SpyOn, reified SpyOn : Shared.Shared4<K, L>, K : Any, L>
-    kspy(
-    spyOn: SpyOn,
-    verifier: KMockContract.Collector,
-    freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Shared.Shared4<*, *>>,
-): Mock where L : Any, L : Comparable<L> = getMockInstance(
-    spyOn = spyOn,
-    verifier = verifier,
-    relaxed = false,
-    relaxUnitFun = false,
-    freeze = freeze,
-    templateType = templateType,
-)

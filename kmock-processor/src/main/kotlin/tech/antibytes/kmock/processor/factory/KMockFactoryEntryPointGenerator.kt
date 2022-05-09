@@ -22,19 +22,18 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
     private val isKmp: Boolean,
     private val rootPackage: String,
+    private val spyContainer: SpyContainer,
     private val spiesOnly: Boolean,
-    spyOn: Set<String>,
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
     private val codeGenerator: KmpCodeGenerator,
 ) : MockFactoryEntryPointGenerator {
-    private val hasSpies = spyOn.isNotEmpty() || spiesOnly
-
     private fun buildMockFactory(): FunSpec {
         val type = TypeVariableName(KMOCK_FACTORY_TYPE_NAME)
 
@@ -96,13 +95,23 @@ internal class KMockFactoryEntryPointGenerator(
         ).build()
     }
 
+    private fun resolveGenericSpyFactory(
+        source: TemplateSource
+    ): FunSpec? {
+        return if (spyContainer.isSpyable(source.template, source.packageName, source.templateName)) {
+            buildSpyGenericFactory(source)
+        } else {
+            null
+        }
+    }
+
     private fun buildGenericFactories(
         templateSources: List<TemplateSource>
-    ): List<Pair<FunSpec, FunSpec>> {
+    ): List<Pair<FunSpec, FunSpec?>> {
         return templateSources.map { template ->
             Pair(
                 buildMockGenericFactory(template),
-                buildSpyGenericFactory(template)
+                resolveGenericSpyFactory(template)
             )
         }
     }
@@ -120,7 +129,7 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addFunction(mockFactory)
             }
 
-            if (hasSpies) {
+            if (spyFactory != null) {
                 file.addFunction(spyFactory)
             }
         }
@@ -145,7 +154,7 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addFunction(buildMockFactory())
             }
 
-            if (hasSpies) {
+            if (spyContainer.hasSpies()) {
                 file.addFunction(buildSpyFactory())
             }
 

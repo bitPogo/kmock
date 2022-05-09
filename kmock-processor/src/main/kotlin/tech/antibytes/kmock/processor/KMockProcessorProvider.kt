@@ -36,11 +36,13 @@ import tech.antibytes.kmock.processor.multi.KMockParentFinder
 import tech.antibytes.kmock.processor.utils.AnnotationFilter
 import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
+import tech.antibytes.kmock.processor.utils.SpyContainer
 
 class KMockProcessorProvider : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
         options: Options,
         logger: KSPLogger,
+        spyContainer: SpyContainer,
         codeGenerator: KmpCodeGenerator
     ): Pair<MockFactoryGenerator, MockFactoryEntryPointGenerator> {
         return if (options.disableFactories) {
@@ -63,11 +65,12 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     ),
                     genericGenerator = KMockFactoryWithGenerics(
                         isKmp = options.isKmp,
+                        spyContainer = spyContainer,
                         allowInterfaces = options.allowInterfaces,
                         utils = factoryUtils,
                         genericResolver = KMockGenerics,
                     ),
-                    spyOn = options.spyOn,
+                    spyContainer = spyContainer,
                     spiesOnly = options.spiesOnly,
                     utils = factoryUtils,
                     codeGenerator = codeGenerator,
@@ -76,7 +79,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                     isKmp = options.isKmp,
                     rootPackage = options.rootPackage,
                     utils = factoryUtils,
-                    spyOn = options.spyOn,
+                    spyContainer = spyContainer,
                     spiesOnly = options.spiesOnly,
                     genericResolver = KMockGenerics,
                     codeGenerator = codeGenerator,
@@ -89,6 +92,11 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val logger = environment.logger
 
         val options = KMockOptionExtractor.convertOptions(environment.options)
+
+        val spyContainer = SpyContainer(
+            spiesOnly = options.spiesOnly,
+            spyOn = options.spyOn
+        )
 
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,
@@ -135,7 +143,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
         val (factoryGenerator, entryPointGenerator) = determineFactoryGenerator(
             options = options,
             logger = logger,
-            codeGenerator = codeGenerator
+            spyContainer = spyContainer,
+            codeGenerator = codeGenerator,
         )
 
         return KMockProcessor(
@@ -149,7 +158,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             ),
             mockGenerator = KMockGenerator(
                 logger = logger,
-                spyOn = options.spyOn,
+                spyContainer = spyContainer,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
                 genericsResolver = KMockGenerics,

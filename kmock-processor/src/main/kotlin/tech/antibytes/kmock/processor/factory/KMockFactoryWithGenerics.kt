@@ -17,11 +17,13 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockFactoryWithGenerics(
     private val isKmp: Boolean,
+    private val spyContainer: SpyContainer,
     private val allowInterfaces: Boolean,
     private val utils: MockFactoryGeneratorUtil,
     private val genericResolver: GenericResolver,
@@ -234,6 +236,16 @@ internal class KMockFactoryWithGenerics(
         ).build()
     }
 
+    private fun resolveKSpyFactory(
+        source: TemplateSource
+    ): FunSpec? {
+        return if (spyContainer.isSpyable(source.template, source.packageName, source.templateName)) {
+            buildGenericSpyFactory(source)
+        } else {
+            null
+        }
+    }
+
     override fun buildGenericFactories(
         templateSources: List<TemplateSource>,
         relaxer: Relaxer?
@@ -242,7 +254,9 @@ internal class KMockFactoryWithGenerics(
 
         templateSources.forEach { source ->
             val kmock = buildGenericMockFactory(source)
-            val kspy = buildGenericSpyFactory(source)
+
+            val kspy = resolveKSpyFactory(source)
+
             val shared = buildGenericSharedMockFactory(
                 templateSource = source,
                 relaxer = relaxer

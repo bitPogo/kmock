@@ -16,7 +16,8 @@ class MockFactoryWithGenericsSpec {
     fun `It fulfils MockFactoryWithGenerics`() {
         KMockFactoryWithGenerics(
             true,
-            true,
+            mockk(),
+            false,
             mockk(),
             mockk(),
         ) fulfils ProcessorContract.MockFactoryWithGenerics::class

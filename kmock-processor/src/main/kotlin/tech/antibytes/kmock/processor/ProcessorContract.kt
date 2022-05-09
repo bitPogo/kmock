@@ -67,6 +67,15 @@ internal interface ProcessorContract {
         fun convertOptions(kspRawOptions: Map<String, String>): Options
     }
 
+    interface SpyContainer {
+        fun isSpyable(
+            template: KSClassDeclaration?,
+            packageName: String,
+            templateName: String
+        ): Boolean
+        fun hasSpies(): Boolean
+    }
+
     sealed interface Source {
         val indicator: String
         val templateName: String
@@ -399,7 +408,7 @@ internal interface ProcessorContract {
 
     data class FactoryBundle(
         val kmock: FunSpec,
-        val kspy: FunSpec,
+        val kspy: FunSpec?,
         val shared: FunSpec
     )
 
