@@ -21,7 +21,7 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
-class KMockSourceAggregatorFactorySpec {
+class KMockSingleSourceAggregatorFactorySpec {
     private val fixture = kotlinFixture()
 
     @Test

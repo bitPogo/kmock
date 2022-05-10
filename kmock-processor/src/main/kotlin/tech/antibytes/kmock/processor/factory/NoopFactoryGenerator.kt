@@ -17,18 +17,20 @@ internal object NoopFactoryGenerator : MockFactoryGenerator, MockFactoryEntryPoi
     override fun writeFactories(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
+        relaxer: Relaxer?,
         dependencies: List<KSFile>,
-        relaxer: Relaxer?
     ) = Unit
 
     override fun generateCommon(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
+        totalTemplates: List<TemplateSource>,
         totalMultiSources: List<TemplateMultiSource>,
-        totalTemplates: List<TemplateSource>
+        dependencies: List<KSFile>,
     ) = Unit
 
     override fun generateShared(
-        templateSources: List<TemplateSource>
+        templateSources: List<TemplateSource>,
+        dependencies: List<KSFile>,
     ) = Unit
 }

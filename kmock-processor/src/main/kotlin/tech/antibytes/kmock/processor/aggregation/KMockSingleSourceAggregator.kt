@@ -38,7 +38,8 @@ internal class KMockSingleSourceAggregator(
     private fun resolveInterface(
         declaration: KSDeclaration,
         sourceIndicator: String,
-        templateCollector: MutableMap<String, TemplateSource>
+        dependencies: List<KSFile>,
+        templateCollector: MutableMap<String, TemplateSource>,
     ) {
         val interfaze = safeCastInterface(declaration)
         val qualifiedName = ensureNotNullClassName(interfaze.qualifiedName?.asString())
@@ -48,18 +49,24 @@ internal class KMockSingleSourceAggregator(
             indicator = sourceIndicator,
             templateName = aliases[qualifiedName] ?: interfaze.deriveSimpleName(packageName),
             packageName = packageName,
+            dependencies = dependencies,
             template = interfaze,
             generics = resolveGenerics(interfaze)
         )
     }
 
     private fun resolveInterfaces(
-        raw: Map<String, MutableList<KSType>>,
+        raw: Map<String, Pair<List<KSFile>, MutableList<KSType>>>,
         templateCollector: MutableMap<String, TemplateSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
-            interfaces.forEach { interfaze ->
-                resolveInterface(interfaze.declaration, sourceIndicator, templateCollector)
+            interfaces.second.forEach { interfaze ->
+                resolveInterface(
+                    declaration = interfaze.declaration,
+                    sourceIndicator = sourceIndicator,
+                    dependencies = interfaces.first,
+                    templateCollector = templateCollector
+                )
             }
         }
     }
@@ -78,7 +85,7 @@ internal class KMockSingleSourceAggregator(
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
-        val typeContainer = mutableMapOf<String, MutableList<KSType>>()
+        val typeContainer = mutableMapOf<String, Pair<List<KSFile>, MutableList<KSType>>>()
         val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
@@ -89,10 +96,10 @@ internal class KMockSingleSourceAggregator(
                 illAnnotated.add(annotatedSymbol)
             } else {
                 val sourceIndicator = determineSourceCategory(annotation)
-                val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
+                val (_, interfaces) = typeContainer.getOrElse(sourceIndicator) { Pair(null, mutableListOf()) }
 
                 interfaces.addAll(annotation.arguments.last().value as List<KSType>)
-                typeContainer[sourceIndicator] = interfaces
+                typeContainer[sourceIndicator] = Pair(listOf(annotatedSymbol.containingFile!!), interfaces)
                 fileCollector.add(annotatedSymbol.containingFile!!)
             }
         }
@@ -100,9 +107,9 @@ internal class KMockSingleSourceAggregator(
         resolveInterfaces(typeContainer, templateCollector)
 
         return Aggregated(
-            illAnnotated,
-            templateCollector.values.toList(),
-            fileCollector
+            illFormed = illAnnotated,
+            extractedTemplates = templateCollector.values.toList(),
+            totalDependencies = fileCollector
         )
     }
 

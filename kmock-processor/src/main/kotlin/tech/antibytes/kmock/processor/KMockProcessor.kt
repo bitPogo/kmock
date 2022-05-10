@@ -62,9 +62,9 @@ internal class KMockProcessor(
             extractedTemplates = rootSource.extractedTemplates.toMutableList().also {
                 it.addAll(filteredTemplates)
             },
-            dependencies = rootSource.dependencies.toMutableList().also {
-                it.addAll(dependentSource.dependencies)
-            }
+            totalDependencies = rootSource.totalDependencies.toMutableSet().also {
+                it.addAll(dependentSource.totalDependencies)
+            }.toList()
         )
     }
 
@@ -125,14 +125,13 @@ internal class KMockProcessor(
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
             templateMultiSources = commonMultiAggregated,
-            dependencies = singleCommonSources.dependencies,
             relaxer = relaxer,
         )
 
         if (interfaceBinderIsApplicable(multiCommonSources.extractedTemplates)) {
             interfaceGenerator.bind(
                 templateSources = multiCommonSources.extractedTemplates,
-                dependencies = multiCommonSources.dependencies
+                dependencies = multiCommonSources.totalDependencies,
             )
         }
 
@@ -149,18 +148,18 @@ internal class KMockProcessor(
     ): Aggregated<TemplateSource> {
         val aggregated = singleSourceAggregator.extractSharedInterfaces(resolver)
         val filteredInterfaces = filter.filter(
-            filter.filterSharedSources(aggregated.extractedTemplates),
-            commonAggregated.extractedTemplates
+            templateSources = filter.filterSharedSources(aggregated.extractedTemplates),
+            filteredBy = commonAggregated.extractedTemplates
         )
 
         entryPointGenerator.generateShared(
-            filteredInterfaces,
+            templateSources = filteredInterfaces,
+            dependencies = aggregated.totalDependencies
         )
 
         mockGenerator.writeSharedMocks(
-            filteredInterfaces,
-            aggregated.dependencies,
-            relaxer
+            templateSources = filteredInterfaces,
+            relaxer = relaxer
         )
 
         return mergeSources(commonAggregated, aggregated, filteredInterfaces)
@@ -180,7 +179,6 @@ internal class KMockProcessor(
 
         mockGenerator.writePlatformMocks(
             filteredInterfaces,
-            aggregated.dependencies,
             relaxer
         )
 
@@ -201,10 +199,7 @@ internal class KMockProcessor(
 
             Pair(commonAggregated, sharedAggregated)
         } else {
-            Pair(
-                Aggregated(emptyList(), emptyList(), emptyList()),
-                Aggregated(emptyList(), emptyList(), emptyList())
-            )
+            Pair(EMPTY_AGGREGATED_SINGLE, EMPTY_AGGREGATED_SINGLE)
         }
     }
 
@@ -217,8 +212,8 @@ internal class KMockProcessor(
             factoryGenerator.writeFactories(
                 templateSources = totalAggregated.extractedTemplates,
                 templateMultiSources = commonMultiAggregated.extractedTemplates,
-                dependencies = totalAggregated.dependencies,
-                relaxer = relaxer
+                relaxer = relaxer,
+                dependencies = totalAggregated.totalDependencies,
             )
 
             entryPointGenerator.generateCommon(
@@ -226,6 +221,7 @@ internal class KMockProcessor(
                 templateMultiSources = commonMultiAggregated.extractedTemplates,
                 totalTemplates = totalAggregated.extractedTemplates,
                 totalMultiSources = commonMultiAggregated.extractedTemplates,
+                dependencies = totalAggregated.totalDependencies,
             )
         }
     }

@@ -39,7 +39,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
-class KMockSourceAggregatorPlatformSpec {
+class KMockSingleSourceAggregatorPlatformSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -387,7 +387,8 @@ class KMockSourceAggregatorPlatformSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -475,7 +476,8 @@ class KMockSourceAggregatorPlatformSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -640,7 +642,8 @@ class KMockSourceAggregatorPlatformSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = emptyMap()
+                generics = emptyMap(),
+                dependencies = listOf(file)
             )
         )
         verify(exactly = 1) {
@@ -734,7 +737,8 @@ class KMockSourceAggregatorPlatformSpec {
                 templateName = alias,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 

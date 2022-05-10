@@ -41,7 +41,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
-class KMockSourceAggregatorSharedSpec {
+class KMockSingleSourceAggregatorSharedSpec {
     private val fixture = kotlinFixture { configuration ->
         configuration.addGenerator(
             String::class,
@@ -796,7 +796,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -897,7 +898,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -1055,14 +1057,16 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             ),
             TemplateSource(
                 indicator = marker1,
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -1221,14 +1225,16 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             ),
             TemplateSource(
                 indicator = marker1,
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -1520,7 +1526,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = emptyMap()
+                generics = emptyMap(),
+                dependencies = listOf(file)
             ),
         )
         sourceFiles mustBe listOf(file)
@@ -1623,7 +1630,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
-                generics = emptyMap()
+                generics = emptyMap(),
+                dependencies = listOf(file)
             ),
         )
         sourceFiles mustBe listOf(file, file)
@@ -1735,7 +1743,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = alias,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 
@@ -1834,7 +1843,8 @@ class KMockSourceAggregatorSharedSpec {
                 templateName = alias,
                 packageName = packageName,
                 template = declaration,
-                generics = generics
+                generics = generics,
+                dependencies = listOf(file)
             )
         )
 

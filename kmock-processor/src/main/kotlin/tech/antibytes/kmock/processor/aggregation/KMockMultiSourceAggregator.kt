@@ -35,27 +35,12 @@ internal class KMockMultiSourceAggregator(
     private val generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
 ) : MultiSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
-    private fun isPackageIndicator(char: Char) = char == '.'
-
-    private fun resolvePackageName(
-        currentName: String?,
-        nameCandidate: String
-    ): String {
-        val currentDepth = currentName?.count(::isPackageIndicator) ?: Int.MAX_VALUE
-        val candidateDepth = nameCandidate.count(::isPackageIndicator)
-
-        return if (currentDepth > candidateDepth) {
-            nameCandidate
-        } else {
-            currentName!!
-        }
-    }
-
     private fun resolveInterfaces(
         interfaceName: String,
         interfaces: List<KSDeclaration>,
         sourceIndicator: String,
-        templateCollector: MutableMap<String, TemplateMultiSource>
+        dependencies: List<KSFile>,
+        templateCollector: MutableMap<String, TemplateMultiSource>,
     ) {
         val interfazes: MutableList<KSClassDeclaration> = mutableListOf()
         val generics: MutableList<Map<String, List<KSTypeReference>>?> = mutableListOf()
@@ -72,24 +57,26 @@ internal class KMockMultiSourceAggregator(
             indicator = sourceIndicator,
             templateName = interfaceName,
             packageName = rootPackage,
+            dependencies = dependencies,
             templates = interfazes,
-            generics = generics
+            generics = generics,
         )
     }
 
     private fun List<KSType>.extractDeclarations(): List<KSDeclaration> = this.map { type -> type.declaration }
 
     private fun resolveInterfaces(
-        raw: Map<String, List<Pair<String, List<KSType>>>>,
-        templateCollector: MutableMap<String, TemplateMultiSource>
+        raw: Map<String, List<Triple<String, List<KSFile>, List<KSType>>>>,
+        templateCollector: MutableMap<String, TemplateMultiSource>,
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
             interfaces.forEach { interfacesBundle ->
                 resolveInterfaces(
                     interfaceName = interfacesBundle.first,
-                    interfaces = interfacesBundle.second.extractDeclarations(),
+                    interfaces = interfacesBundle.third.extractDeclarations(),
                     sourceIndicator = sourceIndicator,
-                    templateCollector = templateCollector
+                    dependencies = interfacesBundle.second,
+                    templateCollector = templateCollector,
                 )
             }
         }
@@ -117,7 +104,7 @@ internal class KMockMultiSourceAggregator(
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateMultiSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
-        val typeContainer = mutableMapOf<String, MutableList<Pair<String, List<KSType>>>>()
+        val typeContainer = mutableMapOf<String, MutableList<Triple<String, List<KSFile>, List<KSType>>>>()
         val templateCollector: MutableMap<String, TemplateMultiSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
@@ -131,9 +118,10 @@ internal class KMockMultiSourceAggregator(
                 val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
 
                 interfaces.add(
-                    Pair(
+                    Triple(
                         determineMockName(annotation),
-                        annotation.arguments.last().value as List<KSType>
+                        listOf(annotatedSymbol.containingFile!!),
+                        annotation.arguments.last().value as List<KSType>,
                     )
                 )
                 typeContainer[sourceIndicator] = interfaces
@@ -141,12 +129,15 @@ internal class KMockMultiSourceAggregator(
             }
         }
 
-        resolveInterfaces(typeContainer, templateCollector)
+        resolveInterfaces(
+            typeContainer,
+            templateCollector
+        )
 
         return Aggregated(
-            illAnnotated,
-            templateCollector.values.toList(),
-            fileCollector
+            illFormed = illAnnotated,
+            extractedTemplates = templateCollector.values.toList(),
+            totalDependencies = fileCollector
         )
     }
 

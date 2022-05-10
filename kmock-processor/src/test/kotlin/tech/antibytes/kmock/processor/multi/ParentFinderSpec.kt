@@ -37,7 +37,8 @@ class ParentFinderSpec {
             packageName = fixture.fixture(),
             templateName = templateName,
             template = mockk(),
-            generics = emptyMap()
+            generics = emptyMap(),
+            dependencies = emptyList()
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -45,7 +46,8 @@ class ParentFinderSpec {
             packageName = fixture.fixture(),
             templateName = templateName,
             templates = mockk(),
-            generics = emptyList()
+            generics = emptyList(),
+            dependencies = emptyList()
         )
 
         val multiDependency: KSFile = mockk()
@@ -56,7 +58,7 @@ class ParentFinderSpec {
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
-                dependencies = listOf(multiDependency)
+                totalDependencies = listOf(multiDependency)
             ),
         )
 
@@ -75,7 +77,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = templateName,
             template = mockk(),
-            generics = emptyMap()
+            generics = emptyMap(),
+            dependencies = emptyList()
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -83,7 +86,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = templateName,
             templates = mockk(),
-            generics = emptyList()
+            generics = emptyList(),
+            dependencies = emptyList()
         )
 
         val multiDependency: KSFile = mockk()
@@ -94,7 +98,7 @@ class ParentFinderSpec {
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
-                dependencies = listOf(multiDependency)
+                totalDependencies = listOf(multiDependency)
             ),
         )
 
@@ -113,7 +117,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = fixture.fixture(),
             template = mockk(),
-            generics = emptyMap()
+            generics = emptyMap(),
+            dependencies = emptyList()
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -121,7 +126,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = fixture.fixture(),
             templates = mockk(),
-            generics = emptyList()
+            generics = emptyList(),
+            dependencies = emptyList()
         )
 
         val multiDependency: KSFile = mockk()
@@ -132,7 +138,7 @@ class ParentFinderSpec {
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
-                dependencies = listOf(multiDependency)
+                totalDependencies = listOf(multiDependency)
             ),
         )
 
@@ -152,7 +158,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = templateName,
             template = mockk(),
-            generics = emptyMap()
+            generics = emptyMap(),
+            dependencies = emptyList()
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -160,7 +167,8 @@ class ParentFinderSpec {
             packageName = packageName,
             templateName = templateName,
             templates = mockk(),
-            generics = emptyList()
+            generics = emptyList(),
+            dependencies = emptyList()
         )
 
         val multiDependency: KSFile = mockk()
@@ -171,7 +179,7 @@ class ParentFinderSpec {
             templateMultiSources = Aggregated(
                 illFormed = emptyList(),
                 extractedTemplates = listOf(templateMultiSource),
-                dependencies = listOf(multiDependency)
+                totalDependencies = listOf(multiDependency)
             ),
         )
 

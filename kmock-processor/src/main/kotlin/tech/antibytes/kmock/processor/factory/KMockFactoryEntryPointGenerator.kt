@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor.factory
 
+import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -174,8 +175,9 @@ internal class KMockFactoryEntryPointGenerator(
     override fun generateCommon(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        totalMultiSources: List<TemplateMultiSource>,
         totalTemplates: List<TemplateSource>,
+        totalMultiSources: List<TemplateMultiSource>,
+        dependencies: List<KSFile>,
     ) {
         if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
@@ -203,12 +205,14 @@ internal class KMockFactoryEntryPointGenerator(
             file.build().writeTo(
                 codeGenerator = codeGenerator,
                 aggregating = false,
+                originatingKSFiles = dependencies,
             )
         }
     }
 
     private fun generateShared(
         buckets: Map<String, List<TemplateSource>>,
+        dependencies: List<KSFile>,
     ) {
         buckets.forEach { (indicator, templateSources) ->
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
@@ -229,13 +233,15 @@ internal class KMockFactoryEntryPointGenerator(
                 file.build().writeTo(
                     codeGenerator = codeGenerator,
                     aggregating = false,
+                    originatingKSFiles = dependencies,
                 )
             }
         }
     }
 
     override fun generateShared(
-        templateSources: List<TemplateSource>
+        templateSources: List<TemplateSource>,
+        dependencies: List<KSFile>,
     ) {
         if (isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             val buckets: MutableMap<String, List<TemplateSource>> = mutableMapOf()
@@ -248,7 +254,10 @@ internal class KMockFactoryEntryPointGenerator(
                 buckets[indicator] = bucket
             }
 
-            generateShared(buckets)
+            generateShared(
+                buckets = buckets,
+                dependencies = dependencies
+            )
         }
     }
 }
