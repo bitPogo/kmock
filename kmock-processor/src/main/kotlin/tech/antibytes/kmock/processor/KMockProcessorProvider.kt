@@ -20,6 +20,7 @@ import tech.antibytes.kmock.processor.aggregation.KMockSingleSourceAggregator
 import tech.antibytes.kmock.processor.factory.KMockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryGeneratorUtil
+import tech.antibytes.kmock.processor.factory.KMockFactoryMultiInterfaceGenerator
 import tech.antibytes.kmock.processor.factory.KMockFactoryWithGenerics
 import tech.antibytes.kmock.processor.factory.KMockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.factory.NoopFactoryGenerator
@@ -49,6 +50,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             Pair(NoopFactoryGenerator, NoopFactoryGenerator)
         } else {
             val factoryUtils = KMockFactoryGeneratorUtil(
+                isKmp = options.isKmp,
                 freezeOnDefault = options.freezeOnDefault,
                 genericResolver = KMockGenerics,
             )
@@ -69,6 +71,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                         allowInterfaces = options.allowInterfaces,
                         utils = factoryUtils,
                         genericResolver = KMockGenerics,
+                    ),
+                    multiInterfaceGenerator = KMockFactoryMultiInterfaceGenerator(
+                        spyContainer = spyContainer,
+                        utils = factoryUtils,
                     ),
                     spyContainer = spyContainer,
                     spiesOnly = options.spiesOnly,

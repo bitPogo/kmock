@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor.factory
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
@@ -23,6 +24,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryEntryPointGenerator(
@@ -116,30 +118,66 @@ internal class KMockFactoryEntryPointGenerator(
         }
     }
 
-    private fun generateGenericEntryPoints(
-        file: FileSpec.Builder,
-        generics: List<TemplateSource>,
-    ) {
+    private fun FileSpec.Builder.generateGenericEntryPoints(generics: List<TemplateSource>,) {
         val genericFactories = buildGenericFactories(generics)
 
         genericFactories.forEach { factories ->
             val (mockFactory, spyFactory) = factories
 
             if (!spiesOnly) {
-                file.addFunction(mockFactory)
+                this.addFunction(mockFactory)
             }
 
             if (spyFactory != null) {
-                file.addFunction(spyFactory)
+                this.addFunction(spyFactory)
+            }
+        }
+    }
+
+    private fun buildMultiInterfaceSpyFactory(
+        boundaries: List<TypeName>
+    ): FunSpec {
+        val spyType = TypeVariableName(KSPY_FACTORY_TYPE_NAME, bounds = boundaries)
+        val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(bounds = listOf(spyType))
+
+        return utils.generateKspySignature(
+            spyType = spyType,
+            mockType = mockType,
+            generics = emptyList(),
+            hasDefault = true,
+            modifier = KModifier.EXPECT
+        ).build()
+    }
+
+    private fun buildMultiInterfaceSpyFactory(
+        templateSource: TemplateMultiSource
+    ): FunSpec? {
+        return if (spyContainer.isSpyable(null, templateSource.packageName, templateSource.templateName)) {
+            buildMultiInterfaceSpyFactory(utils.toTypeNames(templateSource.templates))
+        } else {
+            null
+        }
+    }
+
+    private fun FileSpec.Builder.generateMultiInterfaceEntryPoints(
+        templateSources: List<TemplateMultiSource>
+    ) {
+        templateSources.forEach { source ->
+            val factory = buildMultiInterfaceSpyFactory(source)
+
+            if (factory != null) {
+                this.addFunction(factory)
             }
         }
     }
 
     override fun generateCommon(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
+        totalMultiSources: List<TemplateMultiSource>,
         totalTemplates: List<TemplateSource>,
     ) {
-        if (isKmp && totalTemplates.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
             val file = FileSpec.builder(
                 rootPackage,
                 FACTORY_FILE_NAME
@@ -154,14 +192,12 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addFunction(buildMockFactory())
             }
 
-            if (spyContainer.hasSpies()) {
+            if (spyContainer.hasSpies(totalMultiSources)) {
                 file.addFunction(buildSpyFactory())
             }
 
-            generateGenericEntryPoints(
-                file,
-                generics
-            )
+            file.generateGenericEntryPoints(generics)
+            file.generateMultiInterfaceEntryPoints(templateMultiSources)
 
             codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
             file.build().writeTo(
@@ -187,10 +223,7 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
                 file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
 
-                generateGenericEntryPoints(
-                    file,
-                    generics
-                )
+                file.generateGenericEntryPoints(generics)
 
                 codeGenerator.setOneTimeSourceSet(indicator)
                 file.build().writeTo(

@@ -6,10 +6,13 @@
 
 package tech.antibytes.kmock.processor.factory
 
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
@@ -17,8 +20,15 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGeneratorUtil(
     freezeOnDefault: Boolean,
+    isKmp: Boolean,
     private val genericResolver: ProcessorContract.GenericResolver
 ) : ProcessorContract.MockFactoryGeneratorUtil {
+    private val modifier: KModifier? = if (isKmp) {
+        KModifier.ACTUAL
+    } else {
+        null
+    }
+
     private val spyOn = ParameterSpec.builder(
         "spyOn",
         TypeVariableName("SpyOn").copy(nullable = false)
@@ -48,25 +58,42 @@ internal class KMockFactoryGeneratorUtil(
         .defaultValue(freezeOnDefault.toString())
         .build()
 
+    private fun resolveArgumentType(identifier: TypeName): String {
+        return if (identifier is TypeVariableName) {
+            identifier
+                .bounds
+                .first()
+                .toString()
+                .substringBeforeLast('<')
+        } else {
+            identifier.toString()
+        }
+    }
+
+    private fun resolveGenericParameter(
+        generics: List<TypeVariableName>
+    ): String {
+        return if (generics.isEmpty()) {
+            ""
+        } else {
+            val genericTypes = List(generics.size) { "*" }
+
+            "<${genericTypes.joinToString(", ")}>"
+        }
+    }
+
     private fun buildGenericFactoryArgument(
-        identifier: TypeVariableName,
+        identifier: TypeName,
         generics: List<TypeVariableName>
     ): TypeVariableName {
-        val mockType = identifier
-            .bounds
-            .first()
-            .toString()
-            .substringBeforeLast('<')
+        val mockType = resolveArgumentType(identifier)
+        val parameter = resolveGenericParameter(generics)
 
-        val genericTypes = List(generics.size) { "*" }
-
-        return TypeVariableName(
-            "kotlin.reflect.KClass<$mockType<${genericTypes.joinToString(", ")}>>"
-        )
+        return TypeVariableName("kotlin.reflect.KClass<$mockType$parameter>")
     }
 
     private fun FunSpec.Builder.amendGenericValues(
-        identifier: TypeVariableName,
+        identifier: TypeName,
         generics: List<TypeVariableName>
     ): FunSpec.Builder {
         this.addTypeVariables(generics)
@@ -76,6 +103,21 @@ internal class KMockFactoryGeneratorUtil(
                 ParameterSpec.builder(
                     name = "templateType",
                     type = buildGenericFactoryArgument(identifier, generics)
+                ).build()
+            )
+        }
+
+        return this
+    }
+
+    private fun FunSpec.Builder.amendMultiBounded(
+        identifier: TypeVariableName,
+    ): FunSpec.Builder {
+        identifier.bounds.forEachIndexed { idx, boundary ->
+            this.addParameter(
+                ParameterSpec.builder(
+                    name = "templateType$idx",
+                    type = buildGenericFactoryArgument(boundary, emptyList())
                 ).build()
             )
         }
@@ -174,10 +216,14 @@ internal class KMockFactoryGeneratorUtil(
             kspy.addModifiers(modifier)
         }
 
-        return kspy.amendGenericValues(spyType, generics)
+        return if (spyType.bounds.size > 1) {
+            kspy.amendMultiBounded(spyType)
+        } else {
+            kspy.amendGenericValues(spyType, generics)
+        }
     }
 
-    override fun generateMockFactorySignature(
+    override fun generateSharedMockFactorySignature(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
@@ -214,4 +260,10 @@ internal class KMockFactoryGeneratorUtil(
             typeResolver = typeResolver
         )
     }
+
+    override fun resolveModifier(): KModifier? = modifier
+
+    override fun toTypeNames(
+        types: List<KSClassDeclaration>
+    ): List<TypeName> = types.map { source -> source.toClassName() }
 }

@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.processor.factory
 
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
@@ -171,7 +170,7 @@ internal class KMockFactoryWithoutGenerics(
         templateMultiSources: List<TemplateMultiSource>,
         relaxer: Relaxer?
     ): FunSpec {
-        val mockFactory = utils.generateMockFactorySignature(
+        val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = kspyMockType,
             spyType = kspyType,
             generics = emptyList(),
@@ -190,16 +189,8 @@ internal class KMockFactoryWithoutGenerics(
         return mockFactory.build()
     }
 
-    private fun resolveModifier(): KModifier? {
-        return if (isKmp) {
-            KModifier.ACTUAL
-        } else {
-            null
-        }
-    }
-
     private fun fillMockFactory(): FunSpec.Builder {
-        val modifier = resolveModifier()
+        val modifier = utils.resolveModifier()
 
         return utils.generateKmockSignature(
             type = kmockType,
@@ -212,7 +203,7 @@ internal class KMockFactoryWithoutGenerics(
     override fun buildKMockFactory(): FunSpec = fillMockFactory().build()
 
     private fun fillSpyFactory(): FunSpec.Builder {
-        val modifier = resolveModifier()
+        val modifier = utils.resolveModifier()
 
         return utils.generateKspySignature(
             mockType = kspyMockType,

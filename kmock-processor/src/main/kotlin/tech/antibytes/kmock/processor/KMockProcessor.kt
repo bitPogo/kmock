@@ -223,7 +223,9 @@ internal class KMockProcessor(
 
             entryPointGenerator.generateCommon(
                 templateSources = commonAggregated.extractedTemplates,
-                totalTemplates = totalAggregated.extractedTemplates
+                templateMultiSources = commonMultiAggregated.extractedTemplates,
+                totalTemplates = totalAggregated.extractedTemplates,
+                totalMultiSources = commonMultiAggregated.extractedTemplates,
             )
         }
     }

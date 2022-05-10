@@ -73,7 +73,8 @@ internal interface ProcessorContract {
             packageName: String,
             templateName: String
         ): Boolean
-        fun hasSpies(): Boolean
+
+        fun hasSpies(filter: List<Source> = emptyList()): Boolean
     }
 
     sealed interface Source {
@@ -367,7 +368,7 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryGeneratorUtil {
-        fun generateMockFactorySignature(
+        fun generateSharedMockFactorySignature(
             mockType: TypeVariableName,
             spyType: TypeVariableName,
             generics: List<TypeVariableName>,
@@ -393,6 +394,10 @@ internal interface ProcessorContract {
         ): Pair<List<TemplateSource>, List<TemplateSource>>
 
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
+
+        fun resolveModifier(): KModifier?
+
+        fun toTypeNames(types: List<KSClassDeclaration>): List<TypeName>
     }
 
     interface MockFactoryWithoutGenerics {
@@ -419,6 +424,13 @@ internal interface ProcessorContract {
         ): List<FactoryBundle>
     }
 
+    interface MockFactoryMultiInterface {
+        fun buildSpyFactory(
+            templateMultiSources: List<TemplateMultiSource>,
+            relaxer: Relaxer?
+        ): List<FunSpec>
+    }
+
     interface MockFactoryGenerator {
         fun writeFactories(
             templateSources: List<TemplateSource>,
@@ -431,6 +443,8 @@ internal interface ProcessorContract {
     interface MockFactoryEntryPointGenerator {
         fun generateCommon(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
+            totalMultiSources: List<TemplateMultiSource>,
             totalTemplates: List<TemplateSource>,
         )
 

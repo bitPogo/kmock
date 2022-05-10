@@ -572,9 +572,6 @@ class KMockFactoriesSpec {
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
 
-        println(actualActual!!.readText())
-        println(actualExpect!!.readText())
-
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualActual isNot null
