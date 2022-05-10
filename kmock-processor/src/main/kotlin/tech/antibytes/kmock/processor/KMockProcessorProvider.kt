@@ -160,7 +160,8 @@ class KMockProcessorProvider : SymbolProcessorProvider {
             interfaceGenerator = KMockMultiInterfaceBinder(
                 logger = logger,
                 rootPackage = options.rootPackage,
-                codeGenerator = codeGenerator
+                genericResolver = KMockGenerics,
+                codeGenerator = codeGenerator,
             ),
             mockGenerator = KMockGenerator(
                 logger = logger,

@@ -16,6 +16,7 @@ class MultiInterfaceBinderSpec {
     fun `It fulfils MultiInterfaceBinder`() {
         KMockMultiInterfaceBinder(
             mockk(),
+            mockk(),
             "any",
             mockk()
         ) fulfils ProcessorContract.MultiInterfaceBinder::class

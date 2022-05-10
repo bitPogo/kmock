@@ -6,13 +6,18 @@
 
 package tech.antibytes.kmock.processor
 
+import com.google.devtools.ksp.isLocal
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeAlias
+import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -22,6 +27,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
+import com.squareup.kotlinpoet.tags.TypeAliasTag
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
@@ -57,6 +63,177 @@ internal object KMockGenerics : GenericResolver {
             type,
             bounds = bounds.map { ksReference -> ksReference.resolve().toTypeName(typeResolver) }
         )
+    }
+
+    private fun KSTypeArgument.mapArgumentType(
+        typeParamResolver: TypeParameterResolver,
+        mapping: Map<String, String>,
+        typeArguments: List<KSTypeArgument>,
+    ): TypeName {
+        return this.type!!.resolve().toTypeName(
+            typeParamResolver = typeParamResolver,
+            mapping = mapping,
+            typeArguments = typeArguments,
+        )
+    }
+
+    // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
+    private fun TypeName.rawType(): ClassName {
+        return findRawType() ?: throw IllegalArgumentException("Cannot get raw type from $this")
+    }
+
+    private fun TypeName.findRawType(): ClassName? {
+        return when (this) {
+            is ClassName -> this
+            is ParameterizedTypeName -> rawType
+            is LambdaTypeName -> {
+                var count = parameters.size
+                if (receiver != null) {
+                    count++
+                }
+                val functionSimpleName = if (count >= 23) {
+                    "FunctionN"
+                } else {
+                    "Function$count"
+                }
+                ClassName("kotlin.jvm.functions", functionSimpleName)
+            }
+            else -> null
+        }
+    }
+
+    private fun ClassName.withTypeArguments(arguments: List<TypeName>): TypeName {
+        return if (arguments.isEmpty()) {
+            this
+        } else {
+            this.parameterizedBy(arguments)
+        }
+    }
+
+    private fun KSDeclaration.toClassNameInternal(): ClassName {
+        require(!isLocal()) {
+            "Local/anonymous classes are not supported!"
+        }
+        val pkgName = packageName.asString()
+        val typesString = checkNotNull(qualifiedName).asString().removePrefix("$pkgName.")
+
+        val simpleNames = typesString
+            .split(".")
+        return ClassName(pkgName, simpleNames)
+    }
+
+    private fun TypeVariableName.copy(name: String): TypeVariableName {
+        return TypeVariableName(
+            name,
+            bounds = this.bounds,
+            variance = this.variance,
+        ).copy(
+            reified = this.isReified,
+            tags = this.tags,
+            nullable = this.isNullable,
+            annotations = this.annotations,
+        )
+    }
+
+    // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L60
+    private fun KSType.toTypeName(
+        typeParamResolver: TypeParameterResolver,
+        mapping: Map<String, String>,
+        typeArguments: List<KSTypeArgument>,
+    ): TypeName {
+        require(!isError) {
+            "Error type '$this' is not resolvable in the current round of processing."
+        }
+
+        val type = when (val declaration = this.declaration) {
+            is KSTypeParameter -> {
+                val parameterType = typeParamResolver[declaration.name.getShortName()]
+
+                if (parameterType.name in mapping) {
+                    parameterType.copy(mapping[parameterType.name]!!)
+                } else {
+                    parameterType
+                }
+            }
+            is KSClassDeclaration -> {
+                declaration.toClassName().withTypeArguments(
+                    arguments.map { argument ->
+                        argument.mapArgumentType(
+                            typeParamResolver = typeParamResolver,
+                            mapping = mapping,
+                            typeArguments = typeArguments,
+                        )
+                    }
+                )
+            }
+            is KSTypeAlias -> {
+                val extraResolver = if (declaration.typeParameters.isEmpty()) {
+                    typeParamResolver
+                } else {
+                    declaration.typeParameters.toTypeParameterResolver(typeParamResolver)
+                }
+
+                val mappedArgs = arguments.map { argument ->
+                    argument.mapArgumentType(
+                        typeParamResolver = typeParamResolver,
+                        mapping = mapping,
+                        typeArguments = typeArguments,
+                    )
+                }
+
+                val abbreviatedType = declaration.type.resolve()
+                    .toTypeName(extraResolver)
+                    .copy(nullable = isMarkedNullable)
+                    .rawType()
+                    .withTypeArguments(mappedArgs)
+
+                val aliasArgs = typeArguments.map { argument ->
+                    argument.mapArgumentType(
+                        typeParamResolver = typeParamResolver,
+                        mapping = mapping,
+                        typeArguments = typeArguments,
+                    )
+                }
+
+                declaration.toClassNameInternal()
+                    .withTypeArguments(aliasArgs)
+                    .copy(tags = mapOf(TypeAliasTag::class to TypeAliasTag(abbreviatedType)))
+            }
+            else -> error("Unsupported type: $declaration")
+        }
+
+        return type.copy(nullable = isMarkedNullable)
+    }
+
+    private fun mapTypes(
+        generics: Map<String, List<KSTypeReference>>,
+        suffix: Int,
+    ): Map<String, String> {
+        var counter = 0 + suffix
+        return generics.map { (typeName, _) ->
+            Pair(typeName, "T$counter").also { counter++ }
+        }.toMap()
+    }
+
+    override fun mapDeclaredGenerics(
+        generics: Map<String, List<KSTypeReference>>,
+        suffix: Int,
+        typeResolver: TypeParameterResolver
+    ): List<TypeVariableName> {
+        var counter = 0 + suffix
+        val mapping = mapTypes(generics, suffix)
+        return generics.map { (_, bounds) ->
+            TypeVariableName(
+                "T$counter",
+                bounds = bounds.map { ksReference ->
+                    ksReference.resolve().toTypeName(
+                        typeParamResolver = typeResolver,
+                        mapping = mapping,
+                        typeArguments = emptyList(),
+                    )
+                }
+            ).also { counter++ }
+        }
     }
 
     private fun isNullable(type: KSType): Boolean = type.nullability == Nullability.NULLABLE

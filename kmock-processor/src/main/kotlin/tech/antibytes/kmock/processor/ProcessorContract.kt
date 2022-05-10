@@ -195,6 +195,12 @@ internal interface ProcessorContract {
             typeResolver: TypeParameterResolver
         ): List<TypeVariableName>
 
+        fun mapDeclaredGenerics(
+            generics: Map<String, List<KSTypeReference>>,
+            suffix: Int,
+            typeResolver: TypeParameterResolver
+        ): List<TypeVariableName>
+
         fun mapProxyGenerics(
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
