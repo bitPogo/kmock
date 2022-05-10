@@ -315,7 +315,6 @@ internal class KMockGenerator(
     override fun writeCommonMocks(
         templateSources: List<TemplateSource>,
         templateMultiSources: Aggregated<TemplateMultiSource>,
-        dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
@@ -332,7 +331,7 @@ internal class KMockGenerator(
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependencies = dependencies,
+                dependencies = template.dependencies,
                 relaxer = relaxer
             )
         }
@@ -340,7 +339,6 @@ internal class KMockGenerator(
 
     override fun writeSharedMocks(
         templateSources: List<TemplateSource>,
-        dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
@@ -352,7 +350,7 @@ internal class KMockGenerator(
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependencies = dependencies,
+                dependencies = template.dependencies,
                 relaxer = relaxer
             )
         }
@@ -360,7 +358,6 @@ internal class KMockGenerator(
 
     override fun writePlatformMocks(
         templateSources: List<TemplateSource>,
-        dependencies: List<KSFile>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
@@ -371,7 +368,7 @@ internal class KMockGenerator(
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
-                dependencies = dependencies,
+                dependencies = template.dependencies,
                 relaxer = relaxer
             )
         }

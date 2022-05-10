@@ -81,12 +81,14 @@ internal interface ProcessorContract {
         val indicator: String
         val templateName: String
         val packageName: String
+        val dependencies: List<KSFile>
     }
 
     data class TemplateSource(
         override val indicator: String,
         override val templateName: String,
         override val packageName: String,
+        override val dependencies: List<KSFile>,
         val template: KSClassDeclaration,
         val generics: Map<String, List<KSTypeReference>>?
     ) : Source
@@ -95,6 +97,7 @@ internal interface ProcessorContract {
         override val indicator: String,
         override val templateName: String,
         override val packageName: String,
+        override val dependencies: List<KSFile>,
         val templates: List<KSClassDeclaration>,
         val generics: List<Map<String, List<KSTypeReference>>?>
     ) : Source
@@ -102,7 +105,7 @@ internal interface ProcessorContract {
     data class Aggregated<out T : Source>(
         val illFormed: List<KSAnnotated>,
         val extractedTemplates: List<T>,
-        val dependencies: List<KSFile>
+        val totalDependencies: List<KSFile>,
     )
 
     interface SourceSetValidator {
@@ -335,20 +338,17 @@ internal interface ProcessorContract {
     interface MockGenerator {
         fun writePlatformMocks(
             templateSources: List<TemplateSource>,
-            dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeSharedMocks(
             templateSources: List<TemplateSource>,
-            dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
 
         fun writeCommonMocks(
             templateSources: List<TemplateSource>,
             templateMultiSources: Aggregated<TemplateMultiSource>,
-            dependencies: List<KSFile>,
             relaxer: Relaxer?
         )
     }
@@ -435,8 +435,8 @@ internal interface ProcessorContract {
         fun writeFactories(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            dependencies: List<KSFile>,
             relaxer: Relaxer?,
+            dependencies: List<KSFile>,
         )
     }
 
@@ -444,12 +444,14 @@ internal interface ProcessorContract {
         fun generateCommon(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            totalMultiSources: List<TemplateMultiSource>,
             totalTemplates: List<TemplateSource>,
+            totalMultiSources: List<TemplateMultiSource>,
+            dependencies: List<KSFile>,
         )
 
         fun generateShared(
             templateSources: List<TemplateSource>,
+            dependencies: List<KSFile>,
         )
     }
 

@@ -395,7 +395,8 @@ class KMockMultiSourceAggregatorPlatformSpec {
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
-                generics = listOf(generics)
+                generics = listOf(generics),
+                dependencies = listOf(file)
             )
         )
 
@@ -486,7 +487,8 @@ class KMockMultiSourceAggregatorPlatformSpec {
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
-                generics = listOf(generics)
+                generics = listOf(generics),
+                dependencies = listOf(file)
             )
         )
 
@@ -597,7 +599,8 @@ class KMockMultiSourceAggregatorPlatformSpec {
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration1, declaration2, declaration3),
-                generics = listOf(generics, generics, generics)
+                generics = listOf(generics, generics, generics),
+                dependencies = listOf(file)
             )
         )
 
@@ -765,7 +768,8 @@ class KMockMultiSourceAggregatorPlatformSpec {
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
-                generics = listOf(emptyMap())
+                generics = listOf(emptyMap()),
+                dependencies = listOf(file)
             )
         )
         verify(exactly = 1) {

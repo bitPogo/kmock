@@ -47,14 +47,16 @@ class SourceFilterSpec {
                 template = source0_0,
                 templateName = packageName0,
                 packageName = interfaceName0,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = "",
                 template = source0_1,
                 templateName = packageName0,
                 packageName = interfaceName1,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             )
         )
 
@@ -64,14 +66,16 @@ class SourceFilterSpec {
                 template = source1_0,
                 templateName = packageName1,
                 packageName = interfaceName0,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = "",
                 template = source1_1,
                 templateName = packageName0,
                 packageName = interfaceName1,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             )
         )
 
@@ -96,14 +100,16 @@ class SourceFilterSpec {
                 template = source0,
                 templateName = fixture.fixture(),
                 packageName = fixture.fixture(),
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = fixture.fixture(),
                 template = source1,
                 templateName = fixture.fixture(),
                 packageName = fixture.fixture(),
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             )
         )
 
@@ -133,14 +139,16 @@ class SourceFilterSpec {
                 template = source0,
                 templateName = interfaceName,
                 packageName = packageName,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = marker1,
                 template = source1,
                 templateName = interfaceName,
                 packageName = packageName,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             )
         )
 
@@ -172,21 +180,24 @@ class SourceFilterSpec {
                 template = source0,
                 templateName = interfaceName,
                 packageName = packageName,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = marker1,
                 template = source1,
                 templateName = interfaceName,
                 packageName = packageName,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             ),
             TemplateSource(
                 indicator = marker2,
                 template = source2,
                 templateName = interfaceName,
                 packageName = packageName,
-                generics = null
+                generics = null,
+                dependencies = emptyList()
             )
         )
 

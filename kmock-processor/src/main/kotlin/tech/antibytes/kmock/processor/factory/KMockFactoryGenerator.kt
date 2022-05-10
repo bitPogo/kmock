@@ -40,8 +40,8 @@ internal class KMockFactoryGenerator(
     private fun writeFactoryImplementation(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
+        relaxer: Relaxer?,
         dependencies: List<KSFile>,
-        relaxer: Relaxer?
     ) {
         val file = FileSpec.builder(
             rootPackage,
@@ -112,15 +112,15 @@ internal class KMockFactoryGenerator(
     override fun writeFactories(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
+        relaxer: Relaxer?,
         dependencies: List<KSFile>,
-        relaxer: Relaxer?
     ) {
         if (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
             writeFactoryImplementation(
                 templateSources = templateSources,
                 templateMultiSources = templateMultiSources,
+                relaxer = relaxer,
                 dependencies = dependencies,
-                relaxer = relaxer
             )
         }
     }
