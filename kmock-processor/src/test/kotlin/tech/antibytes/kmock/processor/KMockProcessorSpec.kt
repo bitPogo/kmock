@@ -361,7 +361,12 @@ class KMockProcessorSpec {
         val dependenciesMultiCommon: List<KSFile> = listOf(mockk())
         val dependenciesShared: List<KSFile> = listOf(mockk())
         val dependenciesPlatform: List<KSFile> = listOf(mockk())
-        val totalDependencies = listOf(dependenciesCommon, dependenciesShared, dependenciesPlatform).flatten()
+        val totalDependencies = listOf(
+            dependenciesCommon,
+            dependenciesShared,
+            dependenciesPlatform,
+            dependenciesMultiCommon,
+        ).flatten()
 
         every {
             singleSourceAggregator.extractCommonInterfaces(any())

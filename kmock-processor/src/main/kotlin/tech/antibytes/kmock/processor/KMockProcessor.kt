@@ -10,6 +10,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
@@ -51,6 +52,10 @@ internal class KMockProcessor(
         return commonAggregated.extractedTemplates.isEmpty()
     }
 
+    private fun List<KSFile>.merge(toAdd: List<KSFile>): List<KSFile> {
+        return this.toMutableSet().also { it.addAll(toAdd) }.toList()
+    }
+
     private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
@@ -62,9 +67,7 @@ internal class KMockProcessor(
             extractedTemplates = rootSource.extractedTemplates.toMutableList().also {
                 it.addAll(filteredTemplates)
             },
-            totalDependencies = rootSource.totalDependencies.toMutableSet().also {
-                it.addAll(dependentSource.totalDependencies)
-            }.toList()
+            totalDependencies = rootSource.totalDependencies.merge(dependentSource.totalDependencies)
         )
     }
 
@@ -172,14 +175,18 @@ internal class KMockProcessor(
     ): Aggregated<TemplateSource> {
         val aggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
-            aggregated.extractedTemplates,
-            sharedAggregated.extractedTemplates
+            templateSources = aggregated.extractedTemplates,
+            filteredBy = sharedAggregated.extractedTemplates
         )
-        val totalAggregated = mergeSources(sharedAggregated, aggregated, filteredInterfaces)
+        val totalAggregated = mergeSources(
+            rootSource = sharedAggregated,
+            dependentSource = aggregated,
+            filteredTemplates = filteredInterfaces,
+        )
 
         mockGenerator.writePlatformMocks(
-            filteredInterfaces,
-            relaxer
+            templateSources = filteredInterfaces,
+            relaxer = relaxer,
         )
 
         return totalAggregated
@@ -209,11 +216,13 @@ internal class KMockProcessor(
         relaxer: Relaxer?
     ) {
         if (isFirstRound) {
+            val totalDependencies = totalAggregated.totalDependencies.merge(commonMultiAggregated.totalDependencies)
+
             factoryGenerator.writeFactories(
                 templateSources = totalAggregated.extractedTemplates,
                 templateMultiSources = commonMultiAggregated.extractedTemplates,
                 relaxer = relaxer,
-                dependencies = totalAggregated.totalDependencies,
+                dependencies = totalDependencies
             )
 
             entryPointGenerator.generateCommon(
@@ -221,7 +230,7 @@ internal class KMockProcessor(
                 templateMultiSources = commonMultiAggregated.extractedTemplates,
                 totalTemplates = totalAggregated.extractedTemplates,
                 totalMultiSources = commonMultiAggregated.extractedTemplates,
-                dependencies = totalAggregated.totalDependencies,
+                dependencies = totalDependencies,
             )
         }
     }
