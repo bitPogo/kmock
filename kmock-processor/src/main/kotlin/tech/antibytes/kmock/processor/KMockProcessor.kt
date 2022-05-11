@@ -11,7 +11,6 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFile
-import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
@@ -127,7 +126,7 @@ internal class KMockProcessor(
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
-            templateMultiSources = commonMultiAggregated,
+            templateMultiSources = multiCommonSources.extractedTemplates,
             relaxer = relaxer,
         )
 
@@ -250,7 +249,6 @@ internal class KMockProcessor(
         return relaxer
     }
 
-    @OptIn(KotlinPoetKspPreview::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = extractRelaxer(resolver)
 

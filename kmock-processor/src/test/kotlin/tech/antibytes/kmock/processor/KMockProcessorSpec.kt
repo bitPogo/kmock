@@ -278,7 +278,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommon,
-                Aggregated(emptyList(), emptyList(), emptyList()),
+                emptyList(),
                 relaxer,
             )
         }
@@ -426,7 +426,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommonRound1,
-                Aggregated(emptyList(), emptyList(), emptyList()),
+                emptyList(),
                 relaxer
             )
         }
@@ -434,7 +434,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommonRound2,
-                Aggregated(illegal, multiInterfacesCommon, dependenciesMultiCommon),
+                multiInterfacesCommon,
                 relaxer
             )
         }

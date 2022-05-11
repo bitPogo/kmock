@@ -23,7 +23,6 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
@@ -122,26 +121,27 @@ internal class KMockGenerator(
 
     private fun resolveSuperTypes(
         template: KSClassDeclaration,
-        parents: List<KSClassDeclaration>,
+        parents: TemplateMultiSource?,
         typeResolver: TypeParameterResolver,
     ): List<TypeName> {
-        return if (parents.isEmpty()) {
+        return if (parents != null) {
+            val (parameterizedParent, _) = genericsResolver.remapTypes(parents.templates, parents.generics)
+            parameterizedParent
+        } else {
             listOf(
                 genericsResolver.resolveMockClassType(template, typeResolver)
             )
-        } else {
-            parents.map { parent ->
-                val resolver = parent.typeParameters.toTypeParameterResolver()
-
-                genericsResolver.resolveMockClassType(parent, resolver)
-            }
         }
     }
+
+    private fun KSClassDeclaration.isInherited(
+        parents: TemplateMultiSource?
+    ): Boolean = parents != null || this.superTypes.firstOrNull() != null
 
     private fun buildMock(
         mockName: String,
         enableSpy: Boolean,
-        parents: List<KSClassDeclaration>,
+        parents: TemplateMultiSource?,
         template: KSClassDeclaration,
         generics: Map<String, List<KSTypeReference>>?,
         relaxer: Relaxer?
@@ -233,6 +233,7 @@ internal class KMockGenerator(
                     ksFunction = ksFunction,
                     typeResolver = typeResolver,
                     enableSpy = enableSpy,
+                    inherited = template.isInherited(parents),
                     relaxer = relaxer,
                 )
 
@@ -266,7 +267,7 @@ internal class KMockGenerator(
 
     private fun writeMock(
         template: KSClassDeclaration,
-        parents: List<KSClassDeclaration>,
+        parents: TemplateMultiSource?,
         templateName: String,
         packageName: String,
         generics: Map<String, List<KSTypeReference>>?,
@@ -314,7 +315,7 @@ internal class KMockGenerator(
 
     override fun writeCommonMocks(
         templateSources: List<TemplateSource>,
-        templateMultiSources: Aggregated<TemplateMultiSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
@@ -346,7 +347,7 @@ internal class KMockGenerator(
 
             writeMock(
                 template = template.template,
-                parents = emptyList(),
+                parents = null,
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,
@@ -364,7 +365,7 @@ internal class KMockGenerator(
 
             writeMock(
                 template = template.template,
-                parents = emptyList(),
+                parents = null,
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,

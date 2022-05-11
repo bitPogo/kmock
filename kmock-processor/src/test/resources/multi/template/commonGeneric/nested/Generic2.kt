@@ -7,6 +7,8 @@
 package multi.template.commonGeneric.nested
 
 interface Generic2<K, L> where L : Any, L : Comparable<L>, K : Any {
+    val lol: K
+
     fun <T> foo(payload: T)
     fun <T> foo(vararg payload: T)
 

@@ -299,6 +299,26 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for Generics for a Platform with a supertype is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/generic/SuperTyped.kt")
+        )
+        val expected = loadResource("/expected/generic/SuperTyped.kt")
+
+        // When
+        val compilerResult = compile(provider, source, isKmp = false)
+        val actual = resolveGenerated("SuperTypedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Generics for Shared is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(

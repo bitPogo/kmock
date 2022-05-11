@@ -158,7 +158,7 @@ internal class KmockProxyNameSelector(
             currentName = resolveGenericName(generics[currentName], typeResolver) ?: "Any"
         } while (currentName in generics)
 
-        return currentName
+        return currentName.trimEnd('?')
     }
 
     private fun String.resolveActualName(

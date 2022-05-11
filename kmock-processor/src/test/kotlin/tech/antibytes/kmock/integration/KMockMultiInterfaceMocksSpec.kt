@@ -284,8 +284,6 @@ class KMockMultiInterfaceMocksSpec {
         val actualActualMockFactory = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpectMockFactory = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
-        println(actualIntermediateInterfaces!!.readText())
-
         // Then
         compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualIntermediateInterfaces isNot null
@@ -301,12 +299,12 @@ class KMockMultiInterfaceMocksSpec {
 
         // Round2
         // Given
-        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
+        val provider = SymbolProcessorProviderSpy()
         val multiInterfaceInterface = SourceFile.kotlin(
             "KMockMultiInterfaceArtifacts.kt",
             actualIntermediateInterfaces.readText()
         )
-        val expectedMock = loadResource("/expected/common/GenericMock.kt")
+        val expectedMock = loadResource("/expected/commonGeneric/GenericMock.kt")
 
         // When
         val compilerResultRound2 = compile(
@@ -319,8 +317,6 @@ class KMockMultiInterfaceMocksSpec {
         // Then
         compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualMock isNot null
-
-        println(actualMock!!.readText())
 
         actualMock!!.absolutePath.toString().endsWith(
             "ksp/sources/kotlin/common/commonTest/kotlin/multi/CommonGenericMultiMock.kt"

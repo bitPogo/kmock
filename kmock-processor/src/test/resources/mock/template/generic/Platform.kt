@@ -19,6 +19,8 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T> foo(payload: T)
     fun <T> foo(vararg payload: T)
 
+    fun lol(vararg payload: Array<out Any>)
+
     fun <T : Int> bla(): T
     fun <T : Int> bla(payload: T)
     fun <T : Int> bla(vararg payload: T)
