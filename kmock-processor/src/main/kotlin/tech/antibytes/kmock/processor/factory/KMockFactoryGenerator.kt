@@ -103,7 +103,7 @@ internal class KMockFactoryGenerator(
                 file.addFunction(factories.shared)
             }
 
-            if (factories.kmock != null) {
+            if (factories.kmock != null && !spiesOnly) {
                 file.addFunction(factories.kmock)
             }
 

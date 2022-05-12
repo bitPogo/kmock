@@ -151,7 +151,7 @@ internal class KMockFactoryEntryPointGenerator(
         ).build()
     }
 
-    private fun buildMultiInterfaceGenericMockFactory(
+    private fun buildMultiInterfaceGenericKMockFactory(
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>
     ): FunSpec {
@@ -159,6 +159,26 @@ internal class KMockFactoryEntryPointGenerator(
 
         return utils.generateKmockSignature(
             type = mockType,
+            generics = emptyList(),
+            hasDefault = true,
+            modifier = KModifier.EXPECT
+        ).addTypeVariables(generics).build()
+    }
+
+    private fun buildMultiInterfaceGenericKSpyFactory(
+        boundaries: List<TypeName>,
+        generics: List<TypeVariableName>
+    ): FunSpec {
+        val spyType = TypeVariableName(
+            KSPY_FACTORY_TYPE_NAME,
+            bounds = boundaries,
+        )
+
+        val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
+
+        return utils.generateKspySignature(
+            mockType = mockType,
+            spyType = spyType,
             generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
@@ -173,11 +193,11 @@ internal class KMockFactoryEntryPointGenerator(
         templateSource: TemplateMultiSource,
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>
-    ): FunSpec? {
+    ): FunSpec {
         return if (templateSource.isSpyable()) {
-            null
+            buildMultiInterfaceGenericKSpyFactory(boundaries, generics)
         } else {
-            buildMultiInterfaceGenericMockFactory(boundaries, generics)
+            buildMultiInterfaceGenericKMockFactory(boundaries, generics)
         }
     }
 
