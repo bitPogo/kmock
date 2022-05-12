@@ -295,7 +295,7 @@ class KMockMultiInterfaceMocksSpec {
         ) mustBe true
         actualIntermediateInterfaces.readText().normalizeSource() mustBe expectedInterface.normalizeSource()
         actualActualMockFactory!!.readText().normalizeSource() mustBe expectedActualFactory.normalizeSource()
-        //actualExpectMockFactory!!.readText().normalizeSource() mustBe expectedExpectFactory.normalizeSource()
+        actualExpectMockFactory!!.readText().normalizeSource() mustBe expectedExpectFactory.normalizeSource()
 
         // Round2
         // Given

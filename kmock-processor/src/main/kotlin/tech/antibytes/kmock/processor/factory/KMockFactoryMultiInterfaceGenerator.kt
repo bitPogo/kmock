@@ -64,30 +64,17 @@ internal class KMockFactoryMultiInterfaceGenerator(
         )
     }
 
-    private fun resolveTypeInfo(
-        generics: List<TypeVariableName>
-    ): String {
-        return if (generics.isNotEmpty()) {
-            "<${generics.joinToString(", ")}>"
-        } else {
-            ""
-        }
-    }
-
     private fun buildMockSelector(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateMultiSource,
-        generics: List<TypeVariableName>,
         relaxer: Relaxer?
     ): FunSpec.Builder {
         val qualifiedName = "${templateSource.packageName}.${templateSource.templateName}"
-        val typeInfo = resolveTypeInfo(generics)
 
         return buildMockSelectorFlow(mockFactory, "${qualifiedName}Mock") {
             addMock(
                 mockFactory = this,
                 qualifiedName = qualifiedName,
-                typeInfo = typeInfo,
                 relaxer = relaxer
             )
         }
@@ -111,7 +98,6 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return buildMockSelector(
             mockFactory = mockFactory,
             templateSource = templateSource,
-            generics = emptyList(),
             relaxer = relaxer
         )
     }
@@ -206,7 +192,6 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return buildMockSelector(
             mockFactory = mockFactory,
             templateSource = templateSource,
-            generics = generics,
             relaxer = relaxer
         )
     }
