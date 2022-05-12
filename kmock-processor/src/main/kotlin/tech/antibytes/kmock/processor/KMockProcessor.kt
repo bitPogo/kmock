@@ -31,6 +31,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
  */
 internal class KMockProcessor(
     private val logger: KSPLogger,
+    private val isUnderCompilerTest: Boolean, // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private val isKmp: Boolean,
     private val codeGenerator: KmpCodeGenerator,
     private val interfaceGenerator: MultiInterfaceBinder,
@@ -117,6 +118,18 @@ internal class KMockProcessor(
             commonMultiAggregated.extractedTemplates.isEmpty() // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     }
 
+    // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
+    private fun resolveMultiSources(
+        aggregated: Aggregated<TemplateMultiSource>,
+        stored: Aggregated<TemplateMultiSource>,
+    ): List<TemplateMultiSource> {
+        return if (isUnderCompilerTest) {
+            aggregated.extractedTemplates
+        } else {
+            stored.extractedTemplates
+        }
+    }
+
     private fun stubCommonSources(
         resolver: Resolver,
         relaxer: Relaxer?
@@ -126,7 +139,7 @@ internal class KMockProcessor(
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
-            templateMultiSources = multiCommonSources.extractedTemplates,
+            templateMultiSources = resolveMultiSources(multiCommonSources, commonMultiAggregated),
             relaxer = relaxer,
         )
 

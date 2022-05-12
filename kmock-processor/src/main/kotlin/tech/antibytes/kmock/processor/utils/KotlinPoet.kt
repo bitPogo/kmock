@@ -264,7 +264,7 @@ private fun KSType.toSecuredTypeName(
     }
 
     var overrideNullability = false
-    
+
     val type = when (val declaration = this.declaration) {
         is KSClassDeclaration -> {
             val arguments = arguments.map { argument ->
@@ -287,8 +287,8 @@ private fun KSType.toSecuredTypeName(
             typeParameterResolver[declaration.name.getShortName()]
         }
         is KSTypeAlias -> {
-            val extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver) 
-                
+            val extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver)
+
             val mappedArgs = arguments.map { argument ->
                 argument.toSecuredTypeName(
                     inheritedVarargArg = inheritedVarargArg,

@@ -37,11 +37,11 @@ class KMockMultiInterfaceMocksSpec {
     }
 
     // Workaround for https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
-    class SymbolProcessorProviderSpy : SymbolProcessorProvider {
+    class SymbolProcessorProviderSpy(private val useTestFlag: Boolean = false) : SymbolProcessorProvider {
         lateinit var lastProcessor: SymbolProcessor
 
         override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-            val processor = KMockProcessorProvider().create(environment)
+            val processor = KMockProcessorProvider(useTestFlag).create(environment)
             lastProcessor = processor
 
             return processor
@@ -257,7 +257,7 @@ class KMockMultiInterfaceMocksSpec {
     fun `Given a annotated Source for generic Common with multiple Interface it writes a mock`() {
         // Round1
         // Given
-        val spyProvider = SymbolProcessorProviderSpy()
+        val spyProvider = SymbolProcessorProviderSpy(true)
         val rootInterface = SourceFile.kotlin(
             "Generic1.kt",
             loadResource("/template/commonGeneric/Generic1.kt")
@@ -302,7 +302,7 @@ class KMockMultiInterfaceMocksSpec {
 
         // Round2
         // Given
-        val provider = SymbolProcessorProviderSpy()
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
         val multiInterfaceInterface = SourceFile.kotlin(
             "KMockMultiInterfaceArtifacts.kt",
             actualIntermediateInterfaces.readText()
@@ -331,7 +331,7 @@ class KMockMultiInterfaceMocksSpec {
     fun `Given a annotated Source for generic Common while spied with multiple Interface it writes a mock`() {
         // Round1
         // Given
-        val spyProvider = SymbolProcessorProviderSpy()
+        val spyProvider = SymbolProcessorProviderSpy(true)
         val rootInterface = SourceFile.kotlin(
             "Generic1.kt",
             loadResource("/template/commonGeneric/Generic1.kt")
@@ -377,7 +377,7 @@ class KMockMultiInterfaceMocksSpec {
 
         // Round2
         // Given
-        val provider = SymbolProcessorProviderSpy()
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
         val multiInterfaceInterface = SourceFile.kotlin(
             "KMockMultiInterfaceArtifacts.kt",
             actualIntermediateInterfaces.readText()

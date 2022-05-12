@@ -39,7 +39,9 @@ import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
 import tech.antibytes.kmock.processor.utils.SpyContainer
 
-class KMockProcessorProvider : SymbolProcessorProvider {
+class KMockProcessorProvider(
+    private val isUnderCompilerTest: Boolean = false
+) : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
         options: Options,
         logger: KSPLogger,
@@ -157,6 +159,7 @@ class KMockProcessorProvider : SymbolProcessorProvider {
 
         return KMockProcessor(
             logger = logger,
+            isUnderCompilerTest = isUnderCompilerTest,
             isKmp = options.isKmp,
             codeGenerator = codeGenerator,
             interfaceGenerator = KMockMultiInterfaceBinder(
