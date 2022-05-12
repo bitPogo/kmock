@@ -154,7 +154,9 @@ internal class KMockFactoryEntryPointGenerator(
         templateSource: TemplateMultiSource
     ): FunSpec? {
         return if (spyContainer.isSpyable(null, templateSource.packageName, templateSource.templateName)) {
-            buildMultiInterfaceSpyFactory(utils.toTypeNames(templateSource.templates))
+            val (types, _) = genericResolver.remapTypes(templateSource.templates, templateSource.generics)
+
+            buildMultiInterfaceSpyFactory(types)
         } else {
             null
         }

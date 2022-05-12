@@ -9,9 +9,9 @@ import tech.antibytes.kmock.MockCommon
 
 @MockCommon(CommonGenericMulti::class)
 private interface CommonGenericMulti<KMockTypeParameter0 : Any, KMockTypeParameter1,
-    KMockTypeParameter3 : Any, KMockTypeParameter4, KMockTypeParameter6, KMockTypeParameter7> :
+    KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5> :
     Generic1<KMockTypeParameter0, KMockTypeParameter1>,
-    Generic2<KMockTypeParameter3, KMockTypeParameter4>,
-    GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> where
+    Generic2<KMockTypeParameter2, KMockTypeParameter3>,
+    GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> where
 KMockTypeParameter1 : Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>,
-KMockTypeParameter4 : Any, KMockTypeParameter4 : Comparable<KMockTypeParameter4>
+KMockTypeParameter3 : Any, KMockTypeParameter3 : Comparable<KMockTypeParameter3>

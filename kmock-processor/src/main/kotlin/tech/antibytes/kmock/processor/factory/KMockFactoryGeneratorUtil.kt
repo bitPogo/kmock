@@ -178,13 +178,17 @@ internal class KMockFactoryGeneratorUtil(
             .addParameter(buildRelaxedParameter(hasDefault))
             .addParameter(buildUnitRelaxedParameter(hasDefault))
             .addParameter(buildFreezeParameter(hasDefault))
-            .returns(type).addTypeVariable(type)
+            .returns(type).addTypeVariable(type.copy(reified = true))
 
         if (modifier != null) {
             kmock.addModifiers(modifier)
         }
 
-        return kmock.amendGenericValues(type, generics)
+        return if (type.bounds.size > 1) {
+            kmock.amendMultiBounded(type)
+        } else {
+            kmock.amendGenericValues(type, generics)
+        }
     }
 
     private fun buildSpyParameter(nullable: Boolean = false): ParameterSpec {
@@ -240,7 +244,11 @@ internal class KMockFactoryGeneratorUtil(
             .addParameter(buildUnitRelaxedParameter(false))
             .addParameter(buildFreezeParameter(false))
 
-        return mockFactory.amendGenericValues(spyType, generics)
+        return if (spyType.bounds.size > 1) {
+            mockFactory.amendMultiBounded(spyType)
+        } else {
+            mockFactory.amendGenericValues(spyType, generics)
+        }
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(
@@ -262,8 +270,4 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     override fun resolveModifier(): KModifier? = modifier
-
-    override fun toTypeNames(
-        types: List<KSClassDeclaration>
-    ): List<TypeName> = types.map { source -> source.toClassName() }
 }

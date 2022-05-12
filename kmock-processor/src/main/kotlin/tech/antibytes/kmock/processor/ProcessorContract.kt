@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -402,8 +403,6 @@ internal interface ProcessorContract {
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
 
         fun resolveModifier(): KModifier?
-
-        fun toTypeNames(types: List<KSClassDeclaration>): List<TypeName>
     }
 
     interface MockFactoryWithoutGenerics {
@@ -423,6 +422,12 @@ internal interface ProcessorContract {
         val shared: FunSpec
     )
 
+    data class FactoryMultiBundle(
+        val kmock: FunSpec?,
+        val kspy: FunSpec?,
+        val shared: FunSpec?
+    )
+
     interface MockFactoryWithGenerics {
         fun buildGenericFactories(
             templateSources: List<TemplateSource>,
@@ -431,10 +436,10 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryMultiInterface {
-        fun buildSpyFactory(
+        fun buildFactories(
             templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
-        ): List<FunSpec>
+        ): List<FactoryMultiBundle>
     }
 
     interface MockFactoryGenerator {

@@ -16,6 +16,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGeneri
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.multi.hasGenerics
 import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
 internal class KMockFactoryWithoutGenerics(
@@ -137,18 +138,16 @@ internal class KMockFactoryWithoutGenerics(
         relaxer: Relaxer?
     ) {
         buildMockSelectorFlow(this) {
-            if (templateSources.isNotEmpty()) {
-                templateSources.forEach { source ->
-                    amendSource(
-                        mockFactory = this,
-                        templateSource = source,
-                        relaxer = relaxer
-                    )
-                }
+            templateSources.forEach { source ->
+                amendSource(
+                    mockFactory = this,
+                    templateSource = source,
+                    relaxer = relaxer
+                )
             }
 
-            if (templateMultiSources.isNotEmpty()) {
-                templateMultiSources.forEach { source ->
+            templateMultiSources.forEach { source ->
+                if (!source.hasGenerics()) {
                     amendMultiSource(
                         mockFactory = this,
                         templateSource = source,
@@ -217,7 +216,7 @@ internal class KMockFactoryWithoutGenerics(
     override fun buildSpyFactory(): FunSpec = fillSpyFactory().build()
 
     private companion object {
-        private val kmockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(reified = true)
+        private val kmockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME)
         private val kspyType = TypeVariableName(KSPY_FACTORY_TYPE_NAME)
         private val kspyMockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(kspyType))
 

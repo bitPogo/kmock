@@ -23,7 +23,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CommonGenericMultiMock<KMockTypeParameter0 : Any, KMockTypeParameter1,
-    KMockTypeParameter3 : Any, KMockTypeParameter4, KMockTypeParameter6, KMockTypeParameter7,
+    KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5,
     MultiMock>(
     verifier: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
@@ -34,13 +34,13 @@ internal class CommonGenericMultiMock<KMockTypeParameter0 : Any, KMockTypeParame
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Generic1<KMockTypeParameter0, KMockTypeParameter1>,
-    Generic2<KMockTypeParameter3, KMockTypeParameter4>,
-    GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> where
+    Generic2<KMockTypeParameter2, KMockTypeParameter3>,
+    GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> where
 KMockTypeParameter1 : Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>,
-KMockTypeParameter4 : Any, KMockTypeParameter4 : Comparable<KMockTypeParameter4>, MultiMock :
+KMockTypeParameter3 : Any, KMockTypeParameter3 : Comparable<KMockTypeParameter3>, MultiMock :
 Generic1<KMockTypeParameter0, KMockTypeParameter1>, MultiMock :
-Generic2<KMockTypeParameter3, KMockTypeParameter4>, MultiMock :
-GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
+Generic2<KMockTypeParameter2, KMockTypeParameter3>, MultiMock :
+GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     public override var template: KMockTypeParameter1
         get() = _template.onGet()
         set(`value`) = _template.onSet(value)
@@ -49,10 +49,10 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
         ProxyFactory.createPropertyProxy("multi.CommonGenericMultiMock#_template", collector =
         verifier, freeze = freeze)
 
-    public override val lol: KMockTypeParameter3
+    public override val lol: KMockTypeParameter2
         get() = _lol.onGet()
 
-    public val _lol: KMockContract.PropertyProxy<KMockTypeParameter3> =
+    public val _lol: KMockContract.PropertyProxy<KMockTypeParameter2> =
         ProxyFactory.createPropertyProxy("multi.CommonGenericMultiMock#_lol", collector = verifier,
             freeze = freeze)
 
@@ -165,14 +165,14 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
         ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_ozzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _ozzWithKMockTypeParameter4: KMockContract.SyncFunProxy<Unit, (KMockTypeParameter4) ->
+    public val _ozzWithKMockTypeParameter3: KMockContract.SyncFunProxy<Unit, (KMockTypeParameter3) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_ozzWithKMockTypeParameter4",
+        ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_ozzWithKMockTypeParameter3",
             collector = verifier, freeze = freeze)
 
-    public val _ozzWithKMockTypeParameter4s: KMockContract.SyncFunProxy<Unit, (Array<out
-    KMockTypeParameter4>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_ozzWithKMockTypeParameter4s",
+    public val _ozzWithKMockTypeParameter3s: KMockContract.SyncFunProxy<Unit, (Array<out
+    KMockTypeParameter3>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_ozzWithKMockTypeParameter3s",
             collector = verifier, freeze = freeze)
 
     public val _brassWithVoid:
@@ -280,14 +280,14 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
         ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_xssWithAnySequenceCharSequence",
             collector = verifier, freeze = freeze)
 
-    public val _doSomething: KMockContract.SyncFunProxy<KMockTypeParameter7, (KMockTypeParameter6) ->
-    KMockTypeParameter7> =
+    public val _doSomething: KMockContract.SyncFunProxy<KMockTypeParameter5, (KMockTypeParameter4) ->
+    KMockTypeParameter5> =
         ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_doSomething", collector =
         verifier, freeze = freeze)
 
     public val _compareTo:
-        KMockContract.SyncFunProxy<Int, (multi.template.commonGeneric.GenericCommonContract.Generic3<KMockTypeParameter7,
-            KMockTypeParameter6>) -> kotlin.Int> =
+        KMockContract.SyncFunProxy<Int, (multi.template.commonGeneric.GenericCommonContract.Generic3<KMockTypeParameter5,
+            KMockTypeParameter4>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.CommonGenericMultiMock#_compareTo", collector =
         verifier, freeze = freeze)
 
@@ -381,13 +381,13 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
     @Suppress("UNCHECKED_CAST")
     public override fun <T : KMockTypeParameter1> ozz(): T = _ozzWithVoid.invoke() as T
 
-    public override fun <T : KMockTypeParameter4> ozz(payload: T): Unit =
-        _ozzWithKMockTypeParameter4.invoke(payload) {
+    public override fun <T : KMockTypeParameter3> ozz(payload: T): Unit =
+        _ozzWithKMockTypeParameter3.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T : KMockTypeParameter4> ozz(vararg payload: T): Unit =
-        _ozzWithKMockTypeParameter4s.invoke(payload) {
+    public override fun <T : KMockTypeParameter3> ozz(vararg payload: T): Unit =
+        _ozzWithKMockTypeParameter3s.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -483,11 +483,11 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun doSomething(arg: KMockTypeParameter6): KMockTypeParameter7 =
+    public override fun doSomething(arg: KMockTypeParameter4): KMockTypeParameter5 =
         _doSomething.invoke(arg)
 
     public override
-    fun compareTo(other: GenericCommonContract.Generic3<KMockTypeParameter7, KMockTypeParameter6>):
+    fun compareTo(other: GenericCommonContract.Generic3<KMockTypeParameter5, KMockTypeParameter4>):
         Int = _compareTo.invoke(other)
 
     public fun _clearMock(): Unit {
@@ -515,8 +515,8 @@ GenericCommonContract.Generic3<KMockTypeParameter6, KMockTypeParameter7> {
         _buzzWithList.clear()
         _buzzWithLists.clear()
         _ozzWithVoid.clear()
-        _ozzWithKMockTypeParameter4.clear()
-        _ozzWithKMockTypeParameter4s.clear()
+        _ozzWithKMockTypeParameter3.clear()
+        _ozzWithKMockTypeParameter3s.clear()
         _brassWithVoid.clear()
         _brassWithComparable.clear()
         _brassWithComparables.clear()

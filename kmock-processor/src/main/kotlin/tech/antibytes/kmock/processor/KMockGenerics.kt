@@ -121,7 +121,7 @@ internal object KMockGenerics : GenericResolver {
                 suffix = counter
             )
             val raw = parent.toClassName()
-            counter += generics[idx]?.size?.plus(1) ?: 0
+            counter += generics[idx]?.size ?: 0
 
             if (typeParameter.isNotEmpty()) {
                 aggregatedTypeParameter.addAll(typeParameter)

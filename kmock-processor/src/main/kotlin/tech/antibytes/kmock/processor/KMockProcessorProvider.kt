@@ -73,8 +73,10 @@ class KMockProcessorProvider : SymbolProcessorProvider {
                         genericResolver = KMockGenerics,
                     ),
                     multiInterfaceGenerator = KMockFactoryMultiInterfaceGenerator(
+                        isKmp = options.isKmp,
                         spyContainer = spyContainer,
                         utils = factoryUtils,
+                        genericResolver = KMockGenerics,
                     ),
                     spyContainer = spyContainer,
                     spiesOnly = options.spiesOnly,
