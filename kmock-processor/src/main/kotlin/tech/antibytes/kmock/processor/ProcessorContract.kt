@@ -195,6 +195,11 @@ internal interface ProcessorContract {
             typeResolver: TypeParameterResolver
         ): List<TypeVariableName>
 
+        fun remapTypes(
+            templates: List<KSClassDeclaration>,
+            generics: List<Map<String, List<KSTypeReference>>?>
+        ): Pair<List<TypeName>, List<TypeVariableName>>
+
         fun mapProxyGenerics(
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
@@ -323,6 +328,7 @@ internal interface ProcessorContract {
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,
+            inherited: Boolean,
             relaxer: Relaxer?,
         ): Pair<PropertySpec?, FunSpec>
     }
@@ -348,7 +354,7 @@ internal interface ProcessorContract {
 
         fun writeCommonMocks(
             templateSources: List<TemplateSource>,
-            templateMultiSources: Aggregated<TemplateMultiSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
         )
     }
@@ -356,8 +362,8 @@ internal interface ProcessorContract {
     fun interface ParentFinder {
         fun find(
             templateSource: TemplateSource,
-            templateMultiSources: Aggregated<TemplateMultiSource>,
-        ): List<KSClassDeclaration>
+            templateMultiSources: List<TemplateMultiSource>,
+        ): TemplateMultiSource?
     }
 
     interface MultiInterfaceBinder {
@@ -396,8 +402,6 @@ internal interface ProcessorContract {
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
 
         fun resolveModifier(): KModifier?
-
-        fun toTypeNames(types: List<KSClassDeclaration>): List<TypeName>
     }
 
     interface MockFactoryWithoutGenerics {
@@ -417,6 +421,12 @@ internal interface ProcessorContract {
         val shared: FunSpec
     )
 
+    data class FactoryMultiBundle(
+        val kmock: FunSpec?,
+        val kspy: FunSpec?,
+        val shared: FunSpec?
+    )
+
     interface MockFactoryWithGenerics {
         fun buildGenericFactories(
             templateSources: List<TemplateSource>,
@@ -425,10 +435,10 @@ internal interface ProcessorContract {
     }
 
     interface MockFactoryMultiInterface {
-        fun buildSpyFactory(
+        fun buildFactories(
             templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
-        ): List<FunSpec>
+        ): List<FactoryMultiBundle>
     }
 
     interface MockFactoryGenerator {

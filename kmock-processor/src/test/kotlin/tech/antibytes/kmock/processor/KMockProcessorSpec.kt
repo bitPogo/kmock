@@ -41,6 +41,7 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(),
             fixture.fixture(),
+            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -98,6 +99,7 @@ class KMockProcessorSpec {
         // When
         val actual = KMockProcessor(
             mockk(),
+            false,
             true,
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -171,6 +173,7 @@ class KMockProcessorSpec {
         // When
         val processor = KMockProcessor(
             mockk(),
+            false,
             true,
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -262,6 +265,7 @@ class KMockProcessorSpec {
         // When
         KMockProcessor(
             mockk(),
+            false,
             true,
             codeGenerator,
             mockk(relaxed = true),
@@ -278,7 +282,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommon,
-                Aggregated(emptyList(), emptyList(), emptyList()),
+                emptyList(),
                 relaxer,
             )
         }
@@ -408,6 +412,7 @@ class KMockProcessorSpec {
         // When
         val processor = KMockProcessor(
             mockk(),
+            false,
             true,
             codeGenerator,
             interfaceBinder,
@@ -426,7 +431,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommonRound1,
-                Aggregated(emptyList(), emptyList(), emptyList()),
+                emptyList(),
                 relaxer
             )
         }
@@ -434,7 +439,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             mockGenerator.writeCommonMocks(
                 interfacesCommonRound2,
-                Aggregated(illegal, multiInterfacesCommon, dependenciesMultiCommon),
+                multiInterfacesCommon,
                 relaxer
             )
         }
@@ -546,6 +551,7 @@ class KMockProcessorSpec {
         // When
         KMockProcessor(
             mockk(),
+            false,
             false,
             codeGenerator,
             mockk(),

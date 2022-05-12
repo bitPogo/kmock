@@ -166,7 +166,7 @@ internal class KMockFactoryWithGenerics(
         )
     }
 
-    private fun buildMockSelector(
+    private fun buildSharedMockSelector(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateSource,
         generics: List<TypeVariableName>,
@@ -197,7 +197,7 @@ internal class KMockFactoryWithGenerics(
             generics = generics,
         )
 
-        return buildMockSelector(
+        return buildSharedMockSelector(
             mockFactory = mockFactory,
             templateSource = templateSource,
             generics = generics,

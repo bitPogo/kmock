@@ -36,6 +36,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGe
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class KMockMethodGenerator(
     private val nameSelector: ProxyNameSelector,
@@ -72,15 +73,20 @@ internal class KMockMethodGenerator(
     )
 
     private fun determineArguments(
+        inherited: Boolean,
         parameters: List<KSValueParameter>,
-        parameterTypeResolver: TypeParameterResolver
+        typeParameterResolver: TypeParameterResolver
     ): Array<MethodTypeInfo> {
         return parameters.map { parameter ->
             val argumentName = parameter.name!!.asString()
 
+            parameter.type.modifiers
             MethodTypeInfo(
                 argumentName = argumentName,
-                typeName = parameter.type.toTypeName(parameterTypeResolver),
+                typeName = parameter.type.toSecuredTypeName(
+                    inheritedVarargArg = parameter.isVararg && inherited,
+                    typeParameterResolver = typeParameterResolver
+                ),
                 isVarArg = parameter.isVararg,
             )
         }.toTypedArray()
@@ -124,8 +130,8 @@ internal class KMockMethodGenerator(
         val generic = proxyGenericTypes[typeName.toString().trimEnd('?')]
 
         val actualTypeName = resolveGenericProxyType(
-            typeName,
-            generic
+            typeName = typeName,
+            generic = generic
         )
 
         return MethodReturnTypeInfo(
@@ -387,21 +393,26 @@ internal class KMockMethodGenerator(
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
         enableSpy: Boolean,
+        inherited: Boolean,
         relaxer: Relaxer?
     ): Pair<PropertySpec?, FunSpec> {
         val methodName = ksFunction.simpleName.asString()
-        val parameterTypeResolver = ksFunction
+        val typeParameterResolver = ksFunction
             .typeParameters
             .toTypeParameterResolver(typeResolver)
-        val generics = genericResolver.extractGenerics(ksFunction, parameterTypeResolver)
-        val arguments = determineArguments(ksFunction.parameters, parameterTypeResolver)
+        val generics = genericResolver.extractGenerics(ksFunction, typeParameterResolver)
+        val arguments = determineArguments(
+            inherited = inherited,
+            parameters = ksFunction.parameters,
+            typeParameterResolver = typeParameterResolver
+        )
 
         val proxyInfo = nameSelector.selectMethodName(
             qualifier = qualifier,
             methodName = methodName,
             arguments = arguments,
             generics = generics ?: emptyMap(),
-            typeResolver = parameterTypeResolver,
+            typeResolver = typeParameterResolver,
         )
         val returnType = ksFunction.returnType!!.resolve()
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
@@ -413,7 +424,7 @@ internal class KMockMethodGenerator(
             generics = generics,
             suspending = isSuspending,
             returnType = returnType,
-            typeResolver = parameterTypeResolver,
+            typeResolver = typeParameterResolver,
         )
 
         val method = buildMethod(
@@ -425,7 +436,7 @@ internal class KMockMethodGenerator(
             arguments = arguments,
             rawReturnType = returnType,
             proxyReturnType = proxySignature?.returnType,
-            typeResolver = parameterTypeResolver,
+            typeResolver = typeParameterResolver,
             relaxer = relaxer
         )
 

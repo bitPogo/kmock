@@ -25,11 +25,13 @@ import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.mapArgumentType
 
 internal object KMockGenerics : GenericResolver {
     private val any = Any::class.asTypeName()
     private val nullableAnys = listOf(any.copy(nullable = true))
     private val nonNullableAnys = listOf(any.copy(nullable = false))
+    private const val TYPE_PARAMETER = "KMockTypeParameter"
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
 
@@ -57,6 +59,78 @@ internal object KMockGenerics : GenericResolver {
             type,
             bounds = bounds.map { ksReference -> ksReference.resolve().toTypeName(typeResolver) }
         )
+    }
+
+    private fun mapTypes(
+        generics: Map<String, List<KSTypeReference>>,
+        suffix: Int,
+    ): Map<String, String> {
+        var counter = 0 + suffix
+        return generics.map { (typeName, _) ->
+            Pair(typeName, "$TYPE_PARAMETER$counter").also { counter++ }
+        }.toMap()
+    }
+
+    private fun mapDeclaredGenericsWithSuffix(
+        generics: Map<String, List<KSTypeReference>>,
+        suffix: Int,
+        typeResolver: TypeParameterResolver
+    ): List<TypeVariableName> {
+        var counter = 0 + suffix
+        val mapping = mapTypes(generics, suffix)
+        return generics.map { (_, bounds) ->
+            TypeVariableName(
+                "$TYPE_PARAMETER$counter",
+                bounds = bounds.map { ksReference ->
+                    ksReference.mapArgumentType(
+                        typeParameterResolver = typeResolver,
+                        mapping = mapping,
+                    )
+                }
+            ).also { counter++ }
+        }
+    }
+
+    private fun resolveTypeParameter(
+        typeParameter: Map<String, List<KSTypeReference>>?,
+        typeResolver: TypeParameterResolver,
+        suffix: Int,
+    ): List<TypeVariableName> {
+        return if (typeParameter == null) {
+            emptyList()
+        } else {
+            mapDeclaredGenericsWithSuffix(
+                generics = typeParameter,
+                typeResolver = typeResolver,
+                suffix = suffix,
+            )
+        }
+    }
+
+    override fun remapTypes(
+        templates: List<KSClassDeclaration>,
+        generics: List<Map<String, List<KSTypeReference>>?>
+    ): Pair<List<TypeName>, List<TypeVariableName>> {
+        var counter = 0
+        val aggregatedTypeParameter: MutableList<TypeVariableName> = mutableListOf()
+        val parameterizedParents = templates.mapIndexed { idx, parent ->
+            val typeParameter = resolveTypeParameter(
+                typeParameter = generics[idx],
+                typeResolver = parent.typeParameters.toTypeParameterResolver(),
+                suffix = counter
+            )
+            val raw = parent.toClassName()
+            counter += generics[idx]?.size ?: 0
+
+            if (typeParameter.isNotEmpty()) {
+                aggregatedTypeParameter.addAll(typeParameter)
+                raw.parameterizedBy(typeParameter)
+            } else {
+                raw
+            }
+        }
+
+        return Pair(parameterizedParents, aggregatedTypeParameter)
     }
 
     private fun isNullable(type: KSType): Boolean = type.nullability == Nullability.NULLABLE
@@ -357,7 +431,9 @@ internal object KMockGenerics : GenericResolver {
         } else {
             template.toClassName()
                 .parameterizedBy(
-                    template.typeParameters.map { type -> type.toTypeVariableName(resolver) }
+                    template.typeParameters.map { type ->
+                        type.toTypeVariableName(resolver)
+                    }
                 )
         }
     }

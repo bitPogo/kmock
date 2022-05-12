@@ -93,13 +93,23 @@ internal class KMockFactoryGenerator(
             }
         }
 
-        val multiInterfaceMocks = multiInterfaceGenerator.buildSpyFactory(
+        val multiInterfaceMocks = multiInterfaceGenerator.buildFactories(
             templateMultiSources = templateMultiSources,
             relaxer = relaxer
         )
 
-        multiInterfaceMocks.forEach { factory ->
-            file.addFunction(factory)
+        multiInterfaceMocks.forEach { factories ->
+            if (factories.shared != null) {
+                file.addFunction(factories.shared)
+            }
+
+            if (factories.kmock != null && !spiesOnly) {
+                file.addFunction(factories.kmock)
+            }
+
+            if (factories.kspy != null) {
+                file.addFunction(factories.kspy)
+            }
         }
 
         file.build().writeTo(
