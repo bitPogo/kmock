@@ -391,7 +391,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateMultiSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
@@ -483,7 +483,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateMultiSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
@@ -595,7 +595,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateMultiSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration1, declaration2, declaration3),
@@ -764,7 +764,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         sourceFiles mustBe listOf(file)
         interfaces mustBe listOf(
             TemplateMultiSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = mockName,
                 packageName = rootPackage,
                 templates = listOf(declaration),
