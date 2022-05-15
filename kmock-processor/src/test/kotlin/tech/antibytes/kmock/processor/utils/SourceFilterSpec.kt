@@ -114,7 +114,7 @@ class SourceFilterSpec {
         )
 
         // When
-        val actual = SourceFilter(emptyMap(), mockk()).filterSharedSources(sources)
+        val actual = SourceFilter(emptyMap(), mockk()).filterByPrecedence(sources)
 
         // Then
         actual mustBe sources
@@ -153,7 +153,7 @@ class SourceFilterSpec {
         )
 
         // When
-        SourceFilter(emptyMap(), logger).filterSharedSources(sources)
+        SourceFilter(emptyMap(), logger).filterByPrecedence(sources)
 
         // Then
         verify(exactly = 1) { logger.error("No SharedSource defined for $marker0.") }
@@ -208,7 +208,7 @@ class SourceFilterSpec {
         )
 
         // When
-        val actual = SourceFilter(precedences, mockk()).filterSharedSources(sources)
+        val actual = SourceFilter(precedences, mockk()).filterByPrecedence(sources)
 
         // Then
         actual mustBe listOf(sources[1])

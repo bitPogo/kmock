@@ -132,7 +132,7 @@ internal interface ProcessorContract {
             filteredBy: List<T>
         ): List<T>
 
-        fun <T : Source> filterSharedSources(
+        fun <T : Source> filterByPrecedence(
             templateSources: List<T>
         ): List<T>
     }
@@ -349,6 +349,7 @@ internal interface ProcessorContract {
 
         fun writeSharedMocks(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
         )
 
@@ -461,6 +462,7 @@ internal interface ProcessorContract {
 
         fun generateShared(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             dependencies: List<KSFile>,
         )
     }

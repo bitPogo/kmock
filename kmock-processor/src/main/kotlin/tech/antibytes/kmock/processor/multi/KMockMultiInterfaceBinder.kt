@@ -16,6 +16,8 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.MockCommon
+import tech.antibytes.kmock.MockShared
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERMEDIATE_INTERFACES_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
@@ -28,8 +30,23 @@ internal class KMockMultiInterfaceBinder(
     private val rootPackage: String,
     private val codeGenerator: KmpCodeGenerator,
 ) : MultiInterfaceBinder {
+    private fun TypeSpec.Builder.addMockAnnotation(
+        indicator: String,
+        interfaceName: String
+    ): TypeSpec.Builder {
+        val annotation = when (indicator) {
+            COMMON_INDICATOR -> AnnotationSpec.builder(MockCommon::class)
+            else -> AnnotationSpec.builder(MockShared::class).addMember("\"$indicator\"")
+        }
+
+        return this.addAnnotation(
+            annotation.addMember("$interfaceName::class").build()
+        )
+    }
+
     private fun createInterface(
         interfaceName: String,
+        indicator: String,
         templates: List<KSClassDeclaration>,
         generics: List<Map<String, List<KSTypeReference>>?>,
     ): TypeSpec {
@@ -42,8 +59,9 @@ internal class KMockMultiInterfaceBinder(
             interfaze.addTypeVariables(typeParameter)
         }
 
-        interfaze.addAnnotation(
-            AnnotationSpec.builder(MockCommon::class).addMember("$interfaceName::class").build()
+        interfaze.addMockAnnotation(
+            indicator = indicator,
+            interfaceName = interfaceName
         )
         interfaze.addModifiers(KModifier.PRIVATE)
 
@@ -62,6 +80,7 @@ internal class KMockMultiInterfaceBinder(
         templateSources.map { source ->
             val implementation = createInterface(
                 interfaceName = source.templateName,
+                indicator = source.indicator,
                 templates = source.templates,
                 generics = source.generics
             )

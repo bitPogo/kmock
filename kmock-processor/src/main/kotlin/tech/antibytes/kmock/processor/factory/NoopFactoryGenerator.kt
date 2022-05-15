@@ -31,6 +31,7 @@ internal object NoopFactoryGenerator : MockFactoryGenerator, MockFactoryEntryPoi
 
     override fun generateShared(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
     ) = Unit
 }
