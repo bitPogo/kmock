@@ -14,9 +14,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FA
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.multi.hasGenerics
 import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 

@@ -14,9 +14,9 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
-import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Source
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 
 internal class KMockFactoryGeneratorUtil(
     freezeOnDefault: Boolean,
@@ -269,7 +269,7 @@ internal class KMockFactoryGeneratorUtil(
         )
     }
 
-    private fun String?.isNullOrNotEmpty(): Boolean = this?.isNotEmpty() ?: false
+    private fun String?.isNullOrNotEmpty(): Boolean = this?.isNotEmpty() ?: true
 
     override fun <T : Source> resolveModifier(templateSource: T?): KModifier? {
         return if (templateSource?.indicator.isNullOrNotEmpty()) {
