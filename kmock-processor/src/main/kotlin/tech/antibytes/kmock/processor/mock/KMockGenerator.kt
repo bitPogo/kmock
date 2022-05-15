@@ -365,13 +365,18 @@ internal class KMockGenerator(
 
     override fun writePlatformMocks(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         relaxer: Relaxer?
     ) {
         templateSources.forEach { template ->
+            val parents = parentFinder.find(
+                templateSource = template,
+                templateMultiSources = templateMultiSources,
+            )
 
             writeMock(
                 template = template.template,
-                parents = null,
+                parents = parents,
                 templateName = template.templateName,
                 packageName = template.packageName,
                 generics = template.generics,

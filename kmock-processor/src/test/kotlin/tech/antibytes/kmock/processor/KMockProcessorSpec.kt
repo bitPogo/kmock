@@ -90,11 +90,15 @@ class KMockProcessorSpec {
             singleSourceAggregator.extractPlatformInterfaces(any())
         } returns Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
 
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returns Aggregated(emptyList(), emptyList(), emptyList())
+
         every { relaxationAggregator.extractRelaxer(any()) } returns mockk()
 
         every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { mockGenerator.writePlatformMocks(any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
@@ -144,7 +148,9 @@ class KMockProcessorSpec {
         val illegalSharedRound1: List<KSAnnotated> = listOf(mockk())
         val illegalSharedRound2: List<KSAnnotated> = listOf(mockk())
         val illegalMultiShared: List<KSAnnotated> = listOf(mockk())
-        val illegalPlatform: List<KSAnnotated> = listOf(mockk())
+        val illegalPlatformRound1: List<KSAnnotated> = listOf(mockk())
+        val illegalPlatformRound2: List<KSAnnotated> = listOf(mockk())
+        val illegalMultiPlatform: List<KSAnnotated> = listOf(mockk())
 
         every {
             singleSourceAggregator.extractCommonInterfaces(any())
@@ -176,7 +182,17 @@ class KMockProcessorSpec {
 
         every {
             singleSourceAggregator.extractPlatformInterfaces(any())
-        } returns Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
+        } returnsMany listOf(
+            Aggregated(illegalPlatformRound1, listOf(mockk()), listOf(mockk())),
+            Aggregated(illegalPlatformRound2, listOf(mockk()), listOf(mockk()))
+        )
+
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returnsMany listOf(
+            Aggregated(illegalMultiPlatform, listOf(mockk()), emptyList()),
+            Aggregated(emptyList(), emptyList(), emptyList())
+        )
 
         every { relaxationAggregator.extractRelaxer(any()) } returns mockk()
 
@@ -187,12 +203,13 @@ class KMockProcessorSpec {
             listOf(mockk()), // TemplateSource
             listOf(mockk()), // TemplateMultiSource
             listOf(mockk()), // TemplateSource
+            listOf(mockk()), // TemplateMultiSource
             emptyList(), // TemplateMultiSource
         )
 
         every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { mockGenerator.writePlatformMocks(any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
@@ -220,9 +237,10 @@ class KMockProcessorSpec {
         actualRound1 mustBe listOf(
             illegalCommonRound1.first(),
             illegalSharedRound1.first(),
-            illegalPlatform.first(),
+            illegalPlatformRound1.first(),
             illegalMultiCommon.first(),
             illegalMultiShared.first(),
+            illegalMultiPlatform.first(),
         )
         actualRound2 mustBe listOf(
             illegalCommonRound1.first(),
@@ -231,9 +249,12 @@ class KMockProcessorSpec {
             illegalSharedRound1.first(),
             illegalSharedRound2.first(),
             illegalMultiShared.first(),
-            illegalPlatform.first(),
+            illegalPlatformRound1.first(),
+            illegalPlatformRound2.first(),
+            illegalMultiPlatform.first(),
             illegalMultiCommon.first(),
             illegalMultiShared.first(),
+            illegalMultiPlatform.first(),
         )
     }
 
@@ -285,16 +306,20 @@ class KMockProcessorSpec {
             singleSourceAggregator.extractPlatformInterfaces(any())
         } returns Aggregated(illegal, interfacesPlatform, dependenciesPlatform)
 
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returns Aggregated(emptyList(), emptyList(), emptyList())
+
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
             interfacesFiltered, // Round1 TemplateSource Shared
             emptyList(), // Round1 TemplateMultiSource Shared
             interfacesFiltered, // Round1 TemplateSource Platform
+            emptyList(), // Round1 TemplateMultiSource Platform
         )
 
         every { filter.filterByPrecedence<Source>(any()) } returnsMany listOf(
             interfacesFiltered, // Round1 TemplateSource Shared
             emptyList(), // Round1 TemplateMultiSource Shared
-            interfacesFiltered, // Round1 TemplateSource Platform
         )
 
         every { relaxationAggregator.extractRelaxer(any()) } returns relaxer
@@ -303,7 +328,7 @@ class KMockProcessorSpec {
 
         every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { mockGenerator.writePlatformMocks(any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
@@ -348,7 +373,7 @@ class KMockProcessorSpec {
                 ).flatten()
             )
         }
-        verify(exactly = 1) { mockGenerator.writePlatformMocks(interfacesFiltered, relaxer) }
+        verify(exactly = 1) { mockGenerator.writePlatformMocks(interfacesFiltered, emptyList(), relaxer) }
 
         verify(exactly = 1) {
             factoryGenerator.writeFactories(
@@ -410,26 +435,35 @@ class KMockProcessorSpec {
         val interfacesCommonRound1: List<TemplateSource> = listOf(mockk())
         val interfacesCommonRound2: List<TemplateSource> = listOf(mockk())
         val multiInterfacesCommon: List<TemplateMultiSource> = listOf(mockk())
+
         val interfacesSharedRound1: List<TemplateSource> = listOf(mockk())
         val interfacesSharedRound2: List<TemplateSource> = listOf(mockk())
         val multiInterfacesShared: List<TemplateMultiSource> = listOf(mockk())
-        val interfacesPlatform: List<TemplateSource> = listOf(mockk())
+
+        val interfacesPlatformRound1: List<TemplateSource> = listOf(mockk())
+        val interfacesPlatformRound2: List<TemplateSource> = listOf(mockk())
+        val multiInterfacesPlatform: List<TemplateMultiSource> = listOf(mockk())
+
         val filteredSharedRound1: List<TemplateSource> = listOf(mockk())
         val filteredSharedRound2: List<TemplateSource> = listOf(mockk())
         val filteredSharedMulti: List<TemplateMultiSource> = listOf(mockk())
-        val filteredPlatform: List<TemplateSource> = listOf(mockk())
+        val filteredPlatformRound1: List<TemplateSource> = listOf(mockk())
+        val filteredPlatformRound2: List<TemplateSource> = listOf(mockk())
+        val filteredPlatformMulti: List<TemplateMultiSource> = listOf(mockk())
 
         val dependenciesCommon: List<KSFile> = listOf(mockk())
         val dependenciesMultiCommon: List<KSFile> = listOf(mockk())
         val dependenciesShared: List<KSFile> = listOf(mockk())
         val dependenciesMultiShared: List<KSFile> = listOf(mockk())
         val dependenciesPlatform: List<KSFile> = listOf(mockk())
+        val dependenciesMultiPlatform: List<KSFile> = listOf(mockk())
         val totalDependencies = listOf(
             dependenciesCommon,
             dependenciesShared,
             dependenciesPlatform,
             dependenciesMultiCommon,
             dependenciesMultiShared,
+            dependenciesMultiPlatform,
         ).flatten()
 
         every {
@@ -462,15 +496,27 @@ class KMockProcessorSpec {
 
         every {
             singleSourceAggregator.extractPlatformInterfaces(any())
-        } returns Aggregated(illegal, interfacesPlatform, dependenciesPlatform)
+        } returnsMany listOf(
+            Aggregated(illegal, interfacesPlatformRound1, dependenciesPlatform),
+            Aggregated(illegal, interfacesPlatformRound2, dependenciesPlatform),
+        )
+
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returnsMany listOf(
+            Aggregated(illegal, multiInterfacesPlatform, dependenciesMultiPlatform),
+            Aggregated(emptyList(), emptyList(), emptyList())
+        )
 
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
             filteredSharedRound1,
             filteredSharedMulti,
-            filteredPlatform,
+            filteredPlatformRound1,
+            filteredPlatformMulti,
             filteredSharedRound2,
             emptyList(),
-            filteredPlatform,
+            filteredPlatformRound2,
+            emptyList(),
         )
         every { filter.filterByPrecedence<Source>(any()) } returnsMany listOf(
             filteredSharedRound1,
@@ -485,7 +531,7 @@ class KMockProcessorSpec {
 
         every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { mockGenerator.writePlatformMocks(any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
@@ -531,10 +577,12 @@ class KMockProcessorSpec {
                 listOf(
                     multiInterfacesCommon,
                     filteredSharedMulti,
+                    filteredPlatformMulti,
                 ).flatten(),
                 listOf(
                     dependenciesMultiCommon,
                     dependenciesMultiShared,
+                    dependenciesMultiPlatform,
                 ).flatten(),
             )
         }
@@ -553,7 +601,7 @@ class KMockProcessorSpec {
         }
         verify(exactly = 1) {
             filter.filter(
-                interfacesPlatform,
+                interfacesPlatformRound1,
                 listOf(
                     interfacesCommonRound1,
                     filteredSharedRound1,
@@ -562,7 +610,7 @@ class KMockProcessorSpec {
         }
         verify(exactly = 1) {
             filter.filter(
-                interfacesPlatform,
+                interfacesPlatformRound2,
                 listOf(
                     interfacesCommonRound1,
                     interfacesCommonRound2,
@@ -571,7 +619,25 @@ class KMockProcessorSpec {
                 ).flatten()
             )
         }
-        verify(exactly = 6) {
+        verify(exactly = 1) {
+            filter.filter(
+                multiInterfacesPlatform,
+                listOf(
+                    multiInterfacesCommon,
+                    filteredSharedMulti,
+                ).flatten(),
+            )
+        }
+        verify(exactly = 1) {
+            filter.filter(
+                emptyList(),
+                listOf(
+                    multiInterfacesCommon,
+                    filteredSharedMulti,
+                ).flatten(),
+            )
+        }
+        verify(exactly = 8) {
             filter.filter<Source>(
                 any(),
                 any(),
@@ -599,18 +665,33 @@ class KMockProcessorSpec {
             )
         }
 
-        verify(exactly = 2) { mockGenerator.writePlatformMocks(filteredPlatform, relaxer) }
+        verify(exactly = 1) {
+            mockGenerator.writePlatformMocks(
+                filteredPlatformRound1,
+                emptyList(),
+                relaxer
+            )
+        }
+
+        verify(exactly = 1) {
+            mockGenerator.writePlatformMocks(
+                filteredPlatformRound2,
+                filteredPlatformMulti,
+                relaxer
+            )
+        }
 
         verify(exactly = 1) {
             factoryGenerator.writeFactories(
                 listOf(
                     interfacesCommonRound1,
                     filteredSharedRound1,
-                    filteredPlatform,
+                    filteredPlatformRound1,
                 ).flatten(),
                 listOf(
                     multiInterfacesCommon,
                     filteredSharedMulti,
+                    filteredPlatformMulti,
                 ).flatten(),
                 relaxer,
                 totalDependencies,
@@ -624,11 +705,12 @@ class KMockProcessorSpec {
                 totalTemplates = listOf(
                     interfacesCommonRound1,
                     filteredSharedRound1,
-                    filteredPlatform,
+                    filteredPlatformRound1,
                 ).flatten(),
                 totalMultiSources = listOf(
                     multiInterfacesCommon,
                     filteredSharedMulti,
+                    filteredPlatformMulti,
                 ).flatten(),
                 dependencies = totalDependencies,
             )
@@ -653,6 +735,7 @@ class KMockProcessorSpec {
         // Given
         val resolver: Resolver = mockk()
         val singleSourceAggregator: SingleSourceAggregator = mockk()
+        val multiSourceAggregator: MultiSourceAggregator = mockk()
         val relaxationAggregator: RelaxationAggregator = mockk()
 
         val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
@@ -674,8 +757,14 @@ class KMockProcessorSpec {
             singleSourceAggregator.extractPlatformInterfaces(any())
         } returns Aggregated(illegal, interfacesPlatform, dependencies)
 
-        every { filter.filter<Source>(any(), any()) } returns interfacesFiltered
-        every { filter.filterByPrecedence<Source>(any()) } returns interfacesFiltered
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returns Aggregated(emptyList(), emptyList(), emptyList())
+
+        every { filter.filter<Source>(any(), any()) } returnsMany listOf(
+            interfacesFiltered,
+            emptyList()
+        )
 
         every { relaxationAggregator.extractRelaxer(any()) } returns relaxer
 
@@ -683,7 +772,7 @@ class KMockProcessorSpec {
 
         every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
         every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
-        every { mockGenerator.writePlatformMocks(any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
 
         every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
         every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
@@ -695,11 +784,11 @@ class KMockProcessorSpec {
             false,
             false,
             codeGenerator,
-            mockk(),
+            mockk(relaxed = true),
             mockGenerator,
             factoryGenerator,
             entryPointGenerator,
-            mockk(),
+            multiSourceAggregator,
             singleSourceAggregator,
             relaxationAggregator,
             filter,
@@ -710,7 +799,12 @@ class KMockProcessorSpec {
 
         verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
 
-        verify(exactly = 1) { filter.filter<Source>(any(), any()) }
+        verify(exactly = 1) {
+            filter.filter<Source>(interfacesPlatform, emptyList())
+        }
+        verify(exactly = 1) {
+            filter.filter(emptyList(), emptyList())
+        }
         verify(exactly = 0) { filter.filterByPrecedence<Source>(any()) }
 
         verify(exactly = 0) { mockGenerator.writeSharedMocks(any(), any(), any()) }
@@ -721,7 +815,13 @@ class KMockProcessorSpec {
                 emptyList()
             )
         }
-        verify(exactly = 1) { mockGenerator.writePlatformMocks(interfacesFiltered, relaxer) }
+        verify(exactly = 1) {
+            mockGenerator.writePlatformMocks(
+                interfacesFiltered,
+                emptyList(),
+                relaxer
+            )
+        }
 
         verify(exactly = 1) {
             factoryGenerator.writeFactories(
@@ -731,6 +831,158 @@ class KMockProcessorSpec {
                 emptyList(),
                 relaxer,
                 dependencies,
+            )
+        }
+
+        verify(exactly = 0) {
+            entryPointGenerator.generateCommon(emptyList(), emptyList(), any(), any(), any())
+        }
+
+        verify(exactly = 0) {
+            entryPointGenerator.generateShared(emptyList(), emptyList(), any())
+        }
+
+        verify(exactly = 1) { codeGenerator.closeFiles() }
+    }
+
+    @Test
+    fun `Given process is called it delegates it delegates only Platform sources in a multi interface setup`() {
+        // Given
+        val resolver: Resolver = mockk()
+        val interfaceBinder: MultiInterfaceBinder = mockk(relaxed = true)
+        val singleSourceAggregator: SingleSourceAggregator = mockk()
+        val multiSourceAggregator: MultiSourceAggregator = mockk()
+        val relaxationAggregator: RelaxationAggregator = mockk()
+
+        val codeGenerator: ProcessorContract.KmpCodeGenerator = mockk()
+        val mockGenerator: MockGenerator = mockk()
+        val factoryGenerator: MockFactoryGenerator = mockk()
+        val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
+
+        val filter: ProcessorContract.SourceFilter = mockk()
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+
+        val illegal: List<KSAnnotated> = listOf(mockk())
+
+        val interfacesPlatformRound1: List<TemplateSource> = listOf(mockk())
+        val interfacesPlatformRound2: List<TemplateSource> = listOf(mockk())
+        val multiInterfacesPlatform: List<TemplateMultiSource> = listOf(mockk())
+
+        val filteredPlatformRound1: List<TemplateSource> = listOf(mockk())
+        val filteredPlatformRound2: List<TemplateSource> = listOf(mockk())
+        val filteredPlatformMulti: List<TemplateMultiSource> = listOf(mockk())
+
+        val dependencies: List<KSFile> = listOf(mockk())
+        val dependenciesMulti: List<KSFile> = listOf(mockk())
+
+        every {
+            singleSourceAggregator.extractPlatformInterfaces(any())
+        } returnsMany listOf(
+            Aggregated(illegal, interfacesPlatformRound1, dependencies),
+            Aggregated(illegal, interfacesPlatformRound2, dependencies),
+            Aggregated(emptyList(), emptyList(), emptyList()),
+        )
+
+        every {
+            multiSourceAggregator.extractPlatformInterfaces(any())
+        } returnsMany listOf(
+            Aggregated(illegal, multiInterfacesPlatform, dependenciesMulti),
+            Aggregated(emptyList(), emptyList(), emptyList()),
+        )
+
+        every { filter.filter<Source>(any(), any()) } returnsMany listOf(
+            filteredPlatformRound1,
+            filteredPlatformMulti,
+            filteredPlatformRound2,
+            emptyList(),
+        )
+
+        every { relaxationAggregator.extractRelaxer(any()) } returns relaxer
+
+        every { codeGenerator.closeFiles() } just Runs
+
+        every { mockGenerator.writeCommonMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writeSharedMocks(any(), any(), any()) } just Runs
+        every { mockGenerator.writePlatformMocks(any(), any(), any()) } just Runs
+
+        every { factoryGenerator.writeFactories(any(), any(), any(), any()) } just Runs
+        every { entryPointGenerator.generateCommon(any(), any(), any(), any(), any()) } just Runs
+        every { entryPointGenerator.generateShared(any(), any(), any()) } just Runs
+
+        // When
+        val processor = KMockProcessor(
+            mockk(),
+            false,
+            false,
+            codeGenerator,
+            interfaceBinder,
+            mockGenerator,
+            factoryGenerator,
+            entryPointGenerator,
+            multiSourceAggregator,
+            singleSourceAggregator,
+            relaxationAggregator,
+            filter,
+        )
+        processor.process(resolver)
+        processor.process(resolver)
+
+        // Then
+        verify(exactly = 2) { singleSourceAggregator.extractPlatformInterfaces(any()) }
+
+        verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
+
+        verify(exactly = 1) {
+            filter.filter<Source>(
+                interfacesPlatformRound1,
+                emptyList()
+            )
+        }
+        verify(exactly = 1) {
+            filter.filter<Source>(
+                interfacesPlatformRound2,
+                emptyList()
+            )
+        }
+
+        verify(exactly = 1) {
+            filter.filter<Source>(
+                multiInterfacesPlatform,
+                emptyList()
+            )
+        }
+
+        verify(exactly = 1) {
+            filter.filter(emptyList(), emptyList())
+        }
+        verify(exactly = 0) { filter.filterByPrecedence<Source>(any()) }
+
+        verify(exactly = 0) { mockGenerator.writeSharedMocks(any(), any(), any()) }
+
+        verify(exactly = 1) {
+            mockGenerator.writePlatformMocks(
+                filteredPlatformRound1,
+                emptyList(),
+                relaxer
+            )
+        }
+        verify(exactly = 1) {
+            mockGenerator.writePlatformMocks(
+                filteredPlatformRound2,
+                filteredPlatformMulti,
+                relaxer
+            )
+        }
+
+        verify(exactly = 1) {
+            factoryGenerator.writeFactories(
+                filteredPlatformRound1,
+                filteredPlatformMulti,
+                relaxer,
+                listOf(
+                    dependencies,
+                    dependenciesMulti
+                ).flatten(),
             )
         }
 
