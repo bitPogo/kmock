@@ -47,14 +47,17 @@ internal class KMockProcessor(
     private var lockInterfaceBinder: Boolean = false // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private var commonAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var sharedAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
+    private var platformAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var commonMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
     private var sharedMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
+    private var platformMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
     private var totalMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
     private var relaxer: Relaxer? = null
 
     private fun isFinalRound(): Boolean {
         return commonAggregated.extractedTemplates.isEmpty() &&
-            sharedAggregated.extractedTemplates.isEmpty()
+            sharedAggregated.extractedTemplates.isEmpty() &&
+            platformAggregated.extractedTemplates.isEmpty()
     }
 
     private fun List<KSFile>.merge(toAdd: List<KSFile>): List<KSFile> {
@@ -227,27 +230,71 @@ internal class KMockProcessor(
         )
     }
 
+    private fun resolvePlatformAggregated(
+        singlePlatformSources: Aggregated<TemplateSource>,
+        multiPlatformSources: Aggregated<TemplateMultiSource>,
+    ): Aggregated<TemplateSource> {
+        return when {
+            multiPlatformSources.extractedTemplates.isEmpty() && totalMultiAggregated.extractedTemplates.isEmpty() -> {
+                singlePlatformSources
+            }
+            multiPlatformSources.extractedTemplates.isNotEmpty() -> {
+                platformAggregated = singlePlatformSources
+                platformMultiAggregated = multiPlatformSources
+
+                singlePlatformSources
+            }
+            else -> {
+                val platformAggregated = platformAggregated
+                this.platformAggregated = EMPTY_AGGREGATED_SINGLE
+
+                mergeSources(
+                    rootSource = platformAggregated,
+                    dependentSource = singlePlatformSources,
+                    additionalIllSources = platformMultiAggregated.illFormed
+                )
+            }
+        }
+    }
+
     private fun stubPlatformSources(
         resolver: Resolver,
         commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val aggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
-        val filteredInterfaces = filter.filter(
-            templateSources = aggregated.extractedTemplates,
+        val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
+        val multiAggregated = multiSourceAggregator.extractPlatformInterfaces(resolver)
+
+        val filteredSingleInterfaces = filter.filter(
+            templateSources = singleAggregated.extractedTemplates,
             filteredBy = listOf(
                 commonAggregated.extractedTemplates,
                 sharedAggregated.extractedTemplates,
             ).flatten()
         )
 
+        val filteredMultiInterfaces = filter.filter(
+            templateSources = multiAggregated.extractedTemplates,
+            filteredBy = listOf(
+                commonMultiAggregated.extractedTemplates,
+                sharedMultiAggregated.extractedTemplates,
+            ).flatten()
+        )
+
         mockGenerator.writePlatformMocks(
-            templateSources = filteredInterfaces,
+            templateSources = filteredSingleInterfaces,
+            templateMultiSources = resolveMultiSources(
+                filteredMultiInterfaces,
+                platformMultiAggregated.extractedTemplates,
+            ),
             relaxer = relaxer,
         )
 
-        return aggregated.copy(extractedTemplates = filteredInterfaces)
+        return resolvePlatformAggregated(
+            singleAggregated.copy(extractedTemplates = filteredSingleInterfaces),
+            multiAggregated.copy(extractedTemplates = filteredMultiInterfaces),
+        )
     }
 
     private fun extractMetaSources(
@@ -338,7 +385,7 @@ internal class KMockProcessor(
         totalMultiAggregated = mergeSources(
             commonSource = commonMultiAggregated,
             sharedSource = sharedMultiAggregated,
-            platformSource = EMPTY_AGGREGATED_MULTI,
+            platformSource = platformMultiAggregated,
         )
 
         return mergeSources(

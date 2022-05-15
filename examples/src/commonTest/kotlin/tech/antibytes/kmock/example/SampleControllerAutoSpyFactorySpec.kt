@@ -50,7 +50,7 @@ import kotlin.test.assertTrue
     ExampleContract.DecoderFactory::class
 )
 @MultiMockCommon(
-    "Merged",
+    "MergedCommon",
     SampleDomainObject::class,
     ExampleContract.DecoderFactory::class
 )
@@ -211,6 +211,19 @@ class SampleControllerAutoSpyFactorySpec {
         verifier.verifyOrder {
             local._contains.hasBeenCalledWithout("abc")
         }
+    }
+
+    @Test
+    @JsName("fn4")
+    fun `Given a multi interface mock it runs`() {
+        // Given
+        val mock: MergedCommonMock<*> = kmock()
+
+        // When
+        mock._id.get = "23"
+
+        // Then
+        mock.id mustBe "23"
     }
 }
 

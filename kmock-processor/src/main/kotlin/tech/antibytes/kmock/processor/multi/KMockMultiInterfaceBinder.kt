@@ -15,6 +15,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
+import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
@@ -34,9 +35,10 @@ internal class KMockMultiInterfaceBinder(
         indicator: String,
         interfaceName: String
     ): TypeSpec.Builder {
-        val annotation = when (indicator) {
-            COMMON_INDICATOR -> AnnotationSpec.builder(MockCommon::class)
-            else -> AnnotationSpec.builder(MockShared::class).addMember("\"$indicator\"")
+        val annotation = when {
+            indicator == COMMON_INDICATOR -> AnnotationSpec.builder(MockCommon::class)
+            indicator.isNotEmpty() -> AnnotationSpec.builder(MockShared::class).addMember("\"$indicator\"")
+            else -> AnnotationSpec.builder(Mock::class)
         }
 
         return this.addAnnotation(

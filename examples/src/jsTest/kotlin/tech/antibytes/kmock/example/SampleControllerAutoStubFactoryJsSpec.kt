@@ -12,10 +12,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.MultiMock
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
+import tech.antibytes.kmock.example.contract.ExampleContractJs
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
@@ -42,6 +44,11 @@ import kotlin.test.Test
     SampleLocalRepository::class,
     SampleDomainObject::class,
     ExampleContract.DecoderFactory::class
+)
+@MultiMock(
+    "MergedPlatform",
+    SampleDomainObject::class,
+    ExampleContractJs.JsDecoder::class
 )
 class SampleControllerAutoStubFactoryJsSpec {
     private val fixture = kotlinFixture()
@@ -152,5 +159,19 @@ class SampleControllerAutoStubFactoryJsSpec {
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
             }
         }
+    }
+
+    @Test
+    @JsName("fn3")
+    fun `Given a merged Mock for platform`() {
+        // Given
+        val mock: MergedPlatformMock<*> = kmock()
+        val returnValue: Any = fixture.fixture()
+
+        // When
+        mock._createJsDecoderWithVoid.returnValue = returnValue
+
+        // Then
+        mock.createJsDecoder() mustBe returnValue
     }
 }

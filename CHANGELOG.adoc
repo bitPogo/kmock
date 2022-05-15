@@ -43,6 +43,7 @@ toc::[]
 * `assertProxy` as alternative to `verify`
 * iosSimulatorArm64 support
 * support for instrumented Android tests (aka androidAndroidTest) on KMP
+* Multi-Interface Mocks support
 
 === Changed
 

@@ -344,6 +344,7 @@ internal interface ProcessorContract {
     interface MockGenerator {
         fun writePlatformMocks(
             templateSources: List<TemplateSource>,
+            templateMultiSources: List<TemplateMultiSource>,
             relaxer: Relaxer?
         )
 
