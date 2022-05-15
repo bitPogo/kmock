@@ -28,10 +28,11 @@ internal class KMockFactoryWithGenerics(
     private val genericResolver: GenericResolver,
 ) : MockFactoryWithGenerics {
     private fun fillMockFactory(
+        templateSource: TemplateSource,
         type: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier(templateSource)
 
         return utils.generateKmockSignature(
             type = type,
@@ -42,11 +43,12 @@ internal class KMockFactoryWithGenerics(
     }
 
     private fun fillSpyFactory(
+        templateSource: TemplateSource,
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier(templateSource)
 
         return utils.generateKspySignature(
             mockType = mockType,
@@ -66,6 +68,7 @@ internal class KMockFactoryWithGenerics(
         )
 
         return fillMockFactory(
+            templateSource = templateSource,
             generics = generics,
             type = type,
         ).build()
@@ -82,6 +85,7 @@ internal class KMockFactoryWithGenerics(
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
 
         return fillSpyFactory(
+            templateSource = templateSource,
             mockType = mockType,
             spyType = spyType,
             generics = generics,
