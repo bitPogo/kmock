@@ -224,7 +224,6 @@ class SampleControllerAutoSpyFactorySpec {
 
         // Then
         mock.id mustBe "23"
-
     }
 }
 
