@@ -16,6 +16,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGeneri
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.multi.hasGenerics
 import tech.antibytes.kmock.processor.utils.ensureNotNullClassName
 
@@ -189,7 +190,7 @@ internal class KMockFactoryWithoutGenerics(
     }
 
     private fun fillMockFactory(): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier<Source>()
 
         return utils.generateKmockSignature(
             type = kmockType,
@@ -202,7 +203,7 @@ internal class KMockFactoryWithoutGenerics(
     override fun buildKMockFactory(): FunSpec = fillMockFactory().build()
 
     private fun fillSpyFactory(): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier<Source>()
 
         return utils.generateKspySignature(
             mockType = kspyMockType,

@@ -92,7 +92,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             spyType = spyType,
             generics = generics,
             hasDefault = false,
-            modifier = utils.resolveModifier()
+            modifier = utils.resolveModifier(templateSource)
         )
 
         return buildMockSelector(
@@ -131,10 +131,11 @@ internal class KMockFactoryMultiInterfaceGenerator(
     }
 
     private fun fillMockFactory(
+        templateSource: TemplateMultiSource,
         type: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier(templateSource)
 
         return utils.generateKmockSignature(
             type = type,
@@ -145,11 +146,12 @@ internal class KMockFactoryMultiInterfaceGenerator(
     }
 
     private fun fillMockFactory(
+        templateSource: TemplateMultiSource,
         mockType: TypeVariableName,
         spyType: TypeVariableName,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
-        val modifier = utils.resolveModifier()
+        val modifier = utils.resolveModifier(templateSource)
 
         return utils.generateKspySignature(
             mockType = mockType,
@@ -173,6 +175,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
     }
 
     private fun buildGenericKmockFactory(
+        templateSource: TemplateMultiSource,
         bounds: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec {
@@ -182,6 +185,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         )
 
         return fillMockFactory(
+            templateSource = templateSource,
             generics = generics,
             type = type,
         ).addCode(
@@ -191,6 +195,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
     }
 
     private fun buildGenericKSpyFactory(
+        templateSource: TemplateMultiSource,
         bounds: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec {
@@ -202,6 +207,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
 
         return fillMockFactory(
+            templateSource = templateSource,
             mockType = mockType,
             spyType = spyType,
             generics = generics,
@@ -266,6 +272,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
     ): FunSpec? {
         return if (templateSource.isSpyable()) {
             buildGenericKSpyFactory(
+                templateSource = templateSource,
                 bounds = bounds,
                 generics = generics,
             )
@@ -288,10 +295,15 @@ internal class KMockFactoryMultiInterfaceGenerator(
                 relaxer = relaxer
             ),
             kmock = buildGenericKmockFactory(
+                templateSource = templateSource,
                 bounds = bounds,
                 generics = generics,
             ),
-            kspy = resolveGenericSpyFactory(templateSource, bounds, generics),
+            kspy = resolveGenericSpyFactory(
+                templateSource = templateSource,
+                bounds = bounds,
+                generics = generics,
+            ),
         )
     }
 

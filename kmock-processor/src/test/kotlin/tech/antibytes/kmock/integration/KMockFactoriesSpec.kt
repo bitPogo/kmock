@@ -64,6 +64,7 @@ class KMockFactoriesSpec {
     private fun findGeneratedSource(filter: (File) -> Boolean): List<File> {
         return buildDir.walkBottomUp()
             .toList()
+            .onEach { println(it) }
             .filter(filter)
     }
 
@@ -911,6 +912,39 @@ class KMockFactoriesSpec {
             source
         )
         val actual = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with mixed Sources, it writes a mock factory entryPoint`() {
+        // Given
+        val common = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/mixed/Common.kt")
+        )
+        val shared = SourceFile.kotlin(
+            "Shared.kt",
+            loadResource("/template/mixed/Shared.kt")
+        )
+        val platform = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/mixed/Platform.kt")
+        )
+        val expected = loadResource("/expected/mixed/Actual.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            isKmp = true,
+            emptyMap(),
+            sourceFiles = arrayOf(common, shared, platform)
+        )
+        val actual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

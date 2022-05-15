@@ -402,7 +402,7 @@ internal interface ProcessorContract {
 
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
 
-        fun resolveModifier(): KModifier?
+        fun <T : Source> resolveModifier(templateSource: T? = null): KModifier?
     }
 
     interface MockFactoryWithoutGenerics {
