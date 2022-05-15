@@ -34,7 +34,7 @@ internal class SourceFilter(
         }
     }
 
-    override fun <T : Source> filterSharedSources(
+    override fun <T : Source> filterByPrecedence(
         templateSources: List<T>
     ): List<T> {
         val filtered: MutableList<T> = mutableListOf()

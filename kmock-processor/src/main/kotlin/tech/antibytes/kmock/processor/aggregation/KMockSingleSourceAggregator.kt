@@ -20,6 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
@@ -71,16 +72,20 @@ internal class KMockSingleSourceAggregator(
         }
     }
 
-    private fun determineSourceCategory(annotation: KSAnnotation): String {
+    private fun determineSourceCategory(
+        defaultIndicator: String,
+        annotation: KSAnnotation
+    ): String {
         return if (annotation.arguments.size == 2) {
             annotation.arguments.first().value as String
         } else {
-            customAnnotations[resolveAnnotationName(annotation)] ?: ""
+            customAnnotations[resolveAnnotationName(annotation)] ?: defaultIndicator
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
+        defaultIndicator: String,
         annotated: Sequence<KSAnnotated>,
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateSource> {
@@ -95,7 +100,7 @@ internal class KMockSingleSourceAggregator(
             if (annotation == null || annotation.arguments.isEmpty()) {
                 illAnnotated.add(annotatedSymbol)
             } else {
-                val sourceIndicator = determineSourceCategory(annotation)
+                val sourceIndicator = determineSourceCategory(defaultIndicator, annotation)
                 val (_, interfaces) = typeContainer.getOrElse(sourceIndicator) { Pair(null, mutableListOf()) }
 
                 interfaces.addAll(annotation.arguments.last().value as List<KSType>)
@@ -125,7 +130,7 @@ internal class KMockSingleSourceAggregator(
     ): Aggregated<TemplateSource> {
         val annotated = fetchCommonAnnotated(resolver)
 
-        return extractInterfaces(annotated) { annotationName, _ ->
+        return extractInterfaces(COMMON_INDICATOR, annotated) { annotationName, _ ->
             ANNOTATION_COMMON_NAME == annotationName
         }
     }
@@ -150,7 +155,7 @@ internal class KMockSingleSourceAggregator(
     ): Aggregated<TemplateSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
-        return extractInterfaces(annotated, ::isSharedAnnotation)
+        return extractInterfaces("", annotated, ::isSharedAnnotation)
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -165,7 +170,7 @@ internal class KMockSingleSourceAggregator(
     ): Aggregated<TemplateSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
-        return extractInterfaces(annotated) { annotationName, _ ->
+        return extractInterfaces("", annotated) { annotationName, _ ->
             ANNOTATION_PLATFORM_NAME == annotationName
         }
     }

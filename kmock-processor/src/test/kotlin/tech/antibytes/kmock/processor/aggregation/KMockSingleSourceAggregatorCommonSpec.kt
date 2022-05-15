@@ -383,7 +383,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
@@ -472,7 +472,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
@@ -638,7 +638,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         sourceFiles mustBe listOf(file)
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
@@ -733,7 +733,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         // Then
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "",
+                indicator = "commonTest",
                 templateName = alias,
                 packageName = packageName,
                 template = declaration,

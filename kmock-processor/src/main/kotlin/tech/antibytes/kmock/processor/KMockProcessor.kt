@@ -44,12 +44,17 @@ internal class KMockProcessor(
     private val filter: SourceFilter,
 ) : SymbolProcessor {
     private var isFirstRound: Boolean = true
+    private var lockInterfaceBinder: Boolean = false // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private var commonAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
+    private var sharedAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var commonMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
+    private var sharedMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
+    private var totalMultiAggregated: Aggregated<TemplateMultiSource> = EMPTY_AGGREGATED_MULTI
     private var relaxer: Relaxer? = null
 
     private fun isFinalRound(): Boolean {
-        return commonAggregated.extractedTemplates.isEmpty()
+        return commonAggregated.extractedTemplates.isEmpty() &&
+            sharedAggregated.extractedTemplates.isEmpty()
     }
 
     private fun List<KSFile>.merge(toAdd: List<KSFile>): List<KSFile> {
@@ -57,30 +62,40 @@ internal class KMockProcessor(
     }
 
     private fun <T : Source> mergeSources(
-        rootSource: Aggregated<T>,
-        dependentSource: Aggregated<T>,
-        filteredTemplates: List<T>,
+        commonSource: Aggregated<T>,
+        sharedSource: Aggregated<T>,
+        platformSource: Aggregated<T>,
         additionalIllSources: List<KSAnnotated> = emptyList()
     ): Aggregated<T> {
         return Aggregated(
-            illFormed = listOf(rootSource.illFormed, dependentSource.illFormed, additionalIllSources).flatten(),
-            extractedTemplates = rootSource.extractedTemplates.toMutableList().also {
-                it.addAll(filteredTemplates)
-            },
-            totalDependencies = rootSource.totalDependencies.merge(dependentSource.totalDependencies)
+            illFormed = listOf(
+                commonSource.illFormed,
+                sharedSource.illFormed,
+                platformSource.illFormed,
+                additionalIllSources
+            ).flatten(),
+            extractedTemplates = listOf(
+                commonSource.extractedTemplates,
+                sharedSource.extractedTemplates,
+                platformSource.extractedTemplates
+            ).flatten(),
+            totalDependencies = listOf(
+                commonSource.totalDependencies,
+                sharedSource.totalDependencies,
+                platformSource.totalDependencies,
+            ).flatten()
         )
     }
 
     private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
-        additionalIllSources: List<KSAnnotated>
+        additionalIllSources: List<KSAnnotated> = emptyList()
     ): Aggregated<T> {
-        return mergeSources(
-            rootSource = rootSource,
-            dependentSource = dependentSource,
-            filteredTemplates = dependentSource.extractedTemplates,
-            additionalIllSources = additionalIllSources
+        return Aggregated(
+            illFormed = listOf(rootSource.illFormed, dependentSource.illFormed, additionalIllSources).flatten(),
+            extractedTemplates = listOf(rootSource.extractedTemplates, dependentSource.extractedTemplates).flatten(),
+            totalDependencies = listOf(rootSource.totalDependencies, dependentSource.totalDependencies).flatten(),
         )
     }
 
@@ -89,7 +104,7 @@ internal class KMockProcessor(
         multiCommonSources: Aggregated<TemplateMultiSource>
     ): Aggregated<TemplateSource> {
         return when {
-            multiCommonSources.extractedTemplates.isEmpty() && commonMultiAggregated.extractedTemplates.isEmpty() -> {
+            multiCommonSources.extractedTemplates.isEmpty() && totalMultiAggregated.extractedTemplates.isEmpty() -> {
                 singleCommonSources
             }
             multiCommonSources.extractedTemplates.isNotEmpty() -> {
@@ -111,22 +126,22 @@ internal class KMockProcessor(
         }
     }
 
-    private fun interfaceBinderIsApplicable(
-        templateSources: List<TemplateMultiSource>
-    ): Boolean {
-        return templateSources.isNotEmpty() &&
-            commonMultiAggregated.extractedTemplates.isEmpty() // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
+    // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
+    private fun interfaceBinderIsApplicable(): Boolean {
+        return !(isUnderCompilerTest && lockInterfaceBinder) &&
+            totalMultiAggregated.extractedTemplates.isNotEmpty() &&
+            isFirstRound
     }
 
     // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private fun resolveMultiSources(
-        aggregated: Aggregated<TemplateMultiSource>,
-        stored: Aggregated<TemplateMultiSource>,
+        aggregated: List<TemplateMultiSource>,
+        stored: List<TemplateMultiSource>,
     ): List<TemplateMultiSource> {
         return if (isUnderCompilerTest) {
-            aggregated.extractedTemplates
+            aggregated
         } else {
-            stored.extractedTemplates
+            stored
         }
     }
 
@@ -139,16 +154,12 @@ internal class KMockProcessor(
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
-            templateMultiSources = resolveMultiSources(multiCommonSources, commonMultiAggregated),
+            templateMultiSources = resolveMultiSources(
+                multiCommonSources.extractedTemplates,
+                this.commonMultiAggregated.extractedTemplates
+            ),
             relaxer = relaxer,
         )
-
-        if (interfaceBinderIsApplicable(multiCommonSources.extractedTemplates)) {
-            interfaceGenerator.bind(
-                templateSources = multiCommonSources.extractedTemplates,
-                dependencies = multiCommonSources.totalDependencies,
-            )
-        }
 
         return resolveCommonAggregated(
             singleCommonSources = singleCommonSources,
@@ -156,44 +167,79 @@ internal class KMockProcessor(
         )
     }
 
+    private fun resolveSharedAggregated(
+        singleSharedSources: Aggregated<TemplateSource>,
+        multiSharedSources: Aggregated<TemplateMultiSource>,
+    ): Aggregated<TemplateSource> {
+        return when {
+            multiSharedSources.extractedTemplates.isEmpty() && totalMultiAggregated.extractedTemplates.isEmpty() -> {
+                singleSharedSources
+            }
+            multiSharedSources.extractedTemplates.isNotEmpty() -> {
+                sharedAggregated = singleSharedSources
+                sharedMultiAggregated = multiSharedSources
+
+                singleSharedSources
+            }
+            else -> {
+                val sharedAggregated = sharedAggregated
+                this.sharedAggregated = EMPTY_AGGREGATED_SINGLE
+
+                mergeSources(
+                    rootSource = sharedAggregated,
+                    dependentSource = singleSharedSources,
+                    additionalIllSources = sharedMultiAggregated.illFormed
+                )
+            }
+        }
+    }
+
     private fun stubSharedSources(
         resolver: Resolver,
         commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val aggregated = singleSourceAggregator.extractSharedInterfaces(resolver)
-        val filteredInterfaces = filter.filter(
-            templateSources = filter.filterSharedSources(aggregated.extractedTemplates),
+        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(resolver)
+        val multiAggregated = multiSourceAggregator.extractSharedInterfaces(resolver)
+
+        val filteredSingleInterfaces = filter.filter(
+            templateSources = filter.filterByPrecedence(singleAggregated.extractedTemplates),
             filteredBy = commonAggregated.extractedTemplates
         )
 
-        entryPointGenerator.generateShared(
-            templateSources = filteredInterfaces,
-            dependencies = aggregated.totalDependencies
+        val filteredMultiInterfaces = filter.filter(
+            templateSources = filter.filterByPrecedence(multiAggregated.extractedTemplates),
+            filteredBy = commonMultiAggregated.extractedTemplates
         )
 
         mockGenerator.writeSharedMocks(
-            templateSources = filteredInterfaces,
+            templateSources = filteredSingleInterfaces,
+            templateMultiSources = resolveMultiSources(
+                filteredMultiInterfaces,
+                sharedMultiAggregated.extractedTemplates,
+            ),
             relaxer = relaxer
         )
 
-        return mergeSources(commonAggregated, aggregated, filteredInterfaces)
+        return resolveSharedAggregated(
+            singleAggregated.copy(extractedTemplates = filteredSingleInterfaces),
+            multiAggregated.copy(extractedTemplates = filteredMultiInterfaces),
+        )
     }
 
     private fun stubPlatformSources(
         resolver: Resolver,
+        commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
         val aggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
         val filteredInterfaces = filter.filter(
             templateSources = aggregated.extractedTemplates,
-            filteredBy = sharedAggregated.extractedTemplates
-        )
-        val totalAggregated = mergeSources(
-            rootSource = sharedAggregated,
-            dependentSource = aggregated,
-            filteredTemplates = filteredInterfaces,
+            filteredBy = listOf(
+                commonAggregated.extractedTemplates,
+                sharedAggregated.extractedTemplates,
+            ).flatten()
         )
 
         mockGenerator.writePlatformMocks(
@@ -201,7 +247,7 @@ internal class KMockProcessor(
             relaxer = relaxer,
         )
 
-        return totalAggregated
+        return aggregated.copy(extractedTemplates = filteredInterfaces)
     }
 
     private fun extractMetaSources(
@@ -224,34 +270,56 @@ internal class KMockProcessor(
 
     private fun writeFactories(
         commonAggregated: Aggregated<TemplateSource>,
+        sharedAggregated: Aggregated<TemplateSource>,
         totalAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ) {
         if (isFirstRound) {
-            val totalDependencies = totalAggregated.totalDependencies.merge(commonMultiAggregated.totalDependencies)
+            val totalDependencies = totalAggregated.totalDependencies.merge(totalMultiAggregated.totalDependencies)
 
             factoryGenerator.writeFactories(
                 templateSources = totalAggregated.extractedTemplates,
-                templateMultiSources = commonMultiAggregated.extractedTemplates,
+                templateMultiSources = totalMultiAggregated.extractedTemplates,
                 relaxer = relaxer,
                 dependencies = totalDependencies
             )
 
-            entryPointGenerator.generateCommon(
-                templateSources = commonAggregated.extractedTemplates,
-                templateMultiSources = commonMultiAggregated.extractedTemplates,
-                totalTemplates = totalAggregated.extractedTemplates,
-                totalMultiSources = commonMultiAggregated.extractedTemplates,
-                dependencies = totalDependencies,
-            )
+            if (isKmp) {
+                entryPointGenerator.generateCommon(
+                    templateSources = commonAggregated.extractedTemplates,
+                    templateMultiSources = commonMultiAggregated.extractedTemplates,
+                    totalTemplates = totalAggregated.extractedTemplates,
+                    totalMultiSources = totalMultiAggregated.extractedTemplates,
+                    dependencies = totalDependencies,
+                )
+
+                entryPointGenerator.generateShared(
+                    templateSources = sharedAggregated.extractedTemplates,
+                    templateMultiSources = sharedMultiAggregated.extractedTemplates,
+                    dependencies = listOf(
+                        sharedAggregated.totalDependencies,
+                        sharedMultiAggregated.totalDependencies
+                    ).flatten()
+                )
+            }
         }
     }
 
     private fun finalize() {
         isFirstRound = false
+        lockInterfaceBinder = true // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
 
         if (isFinalRound()) {
             codeGenerator.closeFiles()
+        }
+    }
+
+    private fun writeIntermediateInterfaces() {
+        if (interfaceBinderIsApplicable()) {
+            interfaceGenerator.bind(
+                totalMultiAggregated.extractedTemplates,
+                totalMultiAggregated.totalDependencies
+            )
         }
     }
 
@@ -262,19 +330,48 @@ internal class KMockProcessor(
         return relaxer
     }
 
+    private fun extractTotal(
+        commonAggregated: Aggregated<TemplateSource>,
+        sharedAggregated: Aggregated<TemplateSource>,
+        platformAggregated: Aggregated<TemplateSource>,
+    ): Aggregated<TemplateSource> {
+        totalMultiAggregated = mergeSources(
+            commonSource = commonMultiAggregated,
+            sharedSource = sharedMultiAggregated,
+            platformSource = EMPTY_AGGREGATED_MULTI,
+        )
+
+        return mergeSources(
+            commonSource = commonAggregated,
+            sharedSource = sharedAggregated,
+            platformSource = platformAggregated,
+            additionalIllSources = totalMultiAggregated.illFormed
+        )
+    }
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = extractRelaxer(resolver)
 
         val (commonAggregated, sharedAggregated) = extractMetaSources(resolver, relaxer)
 
-        val totalAggregated = stubPlatformSources(
+        val platformAggregated = stubPlatformSources(
             resolver = resolver,
+            commonAggregated = commonAggregated,
             sharedAggregated = sharedAggregated,
             relaxer = relaxer
         )
 
+        val totalAggregated = extractTotal(
+            commonAggregated = commonAggregated,
+            sharedAggregated = sharedAggregated,
+            platformAggregated = platformAggregated,
+        )
+
+        writeIntermediateInterfaces()
+
         writeFactories(
             commonAggregated = commonAggregated,
+            sharedAggregated = sharedAggregated,
             totalAggregated = totalAggregated,
             relaxer = relaxer
         )

@@ -266,13 +266,13 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun generateShared(
-        buckets: Map<String, List<TemplateSource>>,
+        buckets: Map<String, Pair<List<TemplateSource>, List<TemplateMultiSource>>>,
         dependencies: List<KSFile>,
     ) {
-        buckets.forEach { (indicator, templateSources) ->
-            val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
+        buckets.forEach { (indicator, generics) ->
+            val (singleGenerics, multiGenerics) = generics
 
-            if (generics.isNotEmpty()) {
+            if (singleGenerics.isNotEmpty() || multiGenerics.isNotEmpty()) {
                 val file = FileSpec.builder(
                     rootPackage,
                     FACTORY_FILE_NAME
@@ -282,7 +282,8 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
                 file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
 
-                file.generateGenericEntryPoints(generics)
+                file.generateGenericEntryPoints(singleGenerics)
+                file.generateMultiInterfaceEntryPoints(multiGenerics)
 
                 codeGenerator.setOneTimeSourceSet(indicator)
                 file.build().writeTo(
@@ -294,23 +295,58 @@ internal class KMockFactoryEntryPointGenerator(
         }
     }
 
+    private fun mergeSources(
+        singleSources: Map<String, List<TemplateSource>>,
+        multiSources: Map<String, List<TemplateMultiSource>>,
+    ): Map<String, Pair<List<TemplateSource>, List<TemplateMultiSource>>> {
+        val allKeys: Set<String> = singleSources.keys.toMutableSet().also { it.addAll(multiSources.keys) }
+
+        return allKeys.associateWith { key ->
+            Pair(
+                singleSources[key] ?: emptyList(),
+                multiSources[key] ?: emptyList()
+            )
+        }
+    }
+
+    private fun needsEntryPoint(template: TemplateMultiSource): Boolean {
+        return (
+            template.hasGenerics() ||
+                spyContainer.isSpyable(null, template.packageName, template.templateName)
+            )
+    }
+
     override fun generateShared(
         templateSources: List<TemplateSource>,
+        templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
     ) {
-        if (isKmp && templateSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
-            val buckets: MutableMap<String, List<TemplateSource>> = mutableMapOf()
+        if (isKmp && (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
+            val bucketsSingle: MutableMap<String, List<TemplateSource>> = mutableMapOf()
+            val bucketsMulti: MutableMap<String, List<TemplateMultiSource>> = mutableMapOf()
 
             templateSources.forEach { template ->
-                val indicator = template.indicator
-                val bucket = buckets.getOrElse(indicator) { mutableListOf() }.toMutableList()
-                bucket.add(template)
+                if (template.generics != null) {
+                    val indicator = template.indicator
+                    val bucket = bucketsSingle.getOrElse(indicator) { mutableListOf() }.toMutableList()
+                    bucket.add(template)
 
-                buckets[indicator] = bucket
+                    bucketsSingle[indicator] = bucket
+                }
+            }
+
+            templateMultiSources.forEach { template ->
+                if (needsEntryPoint(template)) {
+                    val indicator = template.indicator
+                    val bucket = bucketsMulti.getOrElse(indicator) { mutableListOf() }.toMutableList()
+                    bucket.add(template)
+
+                    bucketsMulti[indicator] = bucket
+                }
             }
 
             generateShared(
-                buckets = buckets,
+                buckets = mergeSources(bucketsSingle, bucketsMulti),
                 dependencies = dependencies
             )
         }
