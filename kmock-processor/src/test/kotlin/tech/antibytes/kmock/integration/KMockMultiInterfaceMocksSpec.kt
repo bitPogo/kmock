@@ -1145,8 +1145,6 @@ class KMockMultiInterfaceMocksSpec {
         compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualMock isNot null
 
-        println(actualMock!!.readText())
-
         actualMock!!.absolutePath.toString().endsWith(
             "ksp/sources/kotlin/$rootPackage/PlatformGenericMultiMock.kt"
         ) mustBe true
