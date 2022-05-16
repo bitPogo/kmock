@@ -66,18 +66,18 @@ internal class CommonMock(
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithFunction1",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithAny",
+    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithTAny",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithMockTemplateCompatibilityCommon:
+    public val _fooWithTMockTemplateCompatibilityCommon:
         KMockContract.SyncFunProxy<Unit, (mock.template.compatibility.Common) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithMockTemplateCompatibilityCommon",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithTMockTemplateCompatibilityCommon",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithMockTemplateCompatibilityLPG:
+    public val _fooWithTMockTemplateCompatibilityLPG:
         KMockContract.SyncFunProxy<Unit, (mock.template.compatibility.LPG) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithMockTemplateCompatibilityLPG",
+        ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithTMockTemplateCompatibilityLPG",
             collector = verifier, freeze = freeze)
 
     public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
@@ -97,17 +97,17 @@ internal class CommonMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz) {
+    public override fun <T> foo(fuzz: T): Unit = _fooWithTAny.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public override fun <T : Common> foo(fuzz: T): Unit =
-        _fooWithMockTemplateCompatibilityCommon.invoke(fuzz) {
+        _fooWithTMockTemplateCompatibilityCommon.invoke(fuzz) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public override fun <T : LPG> foo(fuzz: T): Unit =
-        _fooWithMockTemplateCompatibilityLPG.invoke(fuzz) {
+        _fooWithTMockTemplateCompatibilityLPG.invoke(fuzz) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -122,9 +122,9 @@ internal class CommonMock(
         _fooWithStringAny.clear()
         _fooWithStringMockTemplateCompatibilityAbc.clear()
         _fooWithFunction1.clear()
-        _fooWithAny.clear()
-        _fooWithMockTemplateCompatibilityCommon.clear()
-        _fooWithMockTemplateCompatibilityLPG.clear()
+        _fooWithTAny.clear()
+        _fooWithTMockTemplateCompatibilityCommon.clear()
+        _fooWithTMockTemplateCompatibilityLPG.clear()
         _fooWithAnys.clear()
     }
 }
