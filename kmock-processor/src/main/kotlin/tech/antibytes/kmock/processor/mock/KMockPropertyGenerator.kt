@@ -18,6 +18,7 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -35,13 +36,15 @@ internal class KMockPropertyGenerator(
 
     private fun FunSpec.Builder.addGetterInvocation(
         propertyName: String,
+        returnType: MethodReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec.Builder {
         val nonIntrusive = nonIntrusiveInvocationGenerator.buildGetterNonIntrusiveInvocation(
+            propertyType = returnType,
             enableSpy = enableSpy,
             propertyName = propertyName.drop(1),
-            relaxer
+            relaxer = relaxer,
         )
 
         val statement = if (nonIntrusive.isNotEmpty()) {
@@ -55,12 +58,18 @@ internal class KMockPropertyGenerator(
 
     private fun buildGetter(
         propertyName: String,
+        returnType: MethodReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec {
         return FunSpec
             .getterBuilder()
-            .addGetterInvocation(propertyName, enableSpy, relaxer)
+            .addGetterInvocation(
+                propertyName = propertyName,
+                returnType = returnType,
+                enableSpy = enableSpy,
+                relaxer = relaxer,
+            )
             .build()
     }
 
@@ -98,6 +107,7 @@ internal class KMockPropertyGenerator(
         property: PropertySpec.Builder,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
+        returnType: MethodReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -117,6 +127,7 @@ internal class KMockPropertyGenerator(
             .getter(
                 buildGetter(
                     propertyName = proxyInfo.proxyName,
+                    returnType = returnType,
                     enableSpy = enableSpy,
                     relaxer = relaxer
                 )
@@ -145,6 +156,7 @@ internal class KMockPropertyGenerator(
         propertyScope: TypeName?,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
+        returnType: MethodReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -170,6 +182,7 @@ internal class KMockPropertyGenerator(
                 property = property,
                 proxyInfo = proxyInfo,
                 propertyType = propertyType,
+                returnType = returnType,
                 isMutable = isMutable,
                 enableSpy = enableSpy,
                 relaxer = relaxer
@@ -224,6 +237,7 @@ internal class KMockPropertyGenerator(
 
     override fun buildPropertyBundle(
         qualifier: String,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         ksProperty: KSPropertyDeclaration,
         typeResolver: TypeParameterResolver,
         enableSpy: Boolean,
@@ -237,6 +251,11 @@ internal class KMockPropertyGenerator(
             qualifier = qualifier,
             propertyName = propertyName
         )
+        val returnType = MethodReturnTypeInfo(
+            typeName = propertyType,
+            generic = null,
+            classScope = classScopeGenerics
+        )
 
         return Pair(
             buildPropertyProxy(
@@ -248,6 +267,7 @@ internal class KMockPropertyGenerator(
                 propertyScope = propertyScope,
                 proxyInfo = proxyInfo,
                 propertyType = propertyType,
+                returnType = returnType,
                 isMutable = isMutable,
                 enableSpy = enableSpy,
                 relaxer = relaxer,

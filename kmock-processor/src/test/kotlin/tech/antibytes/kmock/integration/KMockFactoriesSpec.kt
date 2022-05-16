@@ -64,7 +64,6 @@ class KMockFactoriesSpec {
     private fun findGeneratedSource(filter: (File) -> Boolean): List<File> {
         return buildDir.walkBottomUp()
             .toList()
-            .onEach { println(it) }
             .filter(filter)
     }
 

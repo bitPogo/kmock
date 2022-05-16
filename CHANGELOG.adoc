@@ -57,6 +57,7 @@ toc::[]
 * Android MinSDK 23 -> 21
 * `spyOn` is now capable of picking up KMock defined Aliases
 * `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
+* relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
 
 === Deprecated
 

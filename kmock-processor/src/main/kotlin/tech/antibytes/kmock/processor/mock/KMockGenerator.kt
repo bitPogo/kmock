@@ -157,6 +157,7 @@ internal class KMockGenerator(
             typeResolver = typeResolver,
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
+        val classScopeGenerics = genericsResolver.mapClassScopeGenerics(generics, typeResolver)
 
         mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
@@ -207,6 +208,7 @@ internal class KMockGenerator(
             if (ksProperty.isPublicOpen()) {
                 val (proxy, property) = propertyGenerator.buildPropertyBundle(
                     qualifier = qualifier,
+                    classScopeGenerics = classScopeGenerics,
                     ksProperty = ksProperty,
                     typeResolver = typeResolver,
                     enableSpy = enableSpy,
@@ -230,6 +232,7 @@ internal class KMockGenerator(
                 val (proxy, method) = methodGenerator.buildMethodBundle(
                     methodScope = scope,
                     qualifier = qualifier,
+                    classScopeGenerics = classScopeGenerics,
                     ksFunction = ksFunction,
                     typeResolver = typeResolver,
                     enableSpy = enableSpy,

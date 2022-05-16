@@ -180,6 +180,11 @@ internal interface ProcessorContract {
             resolver: TypeParameterResolver
         ): Map<String, List<KSTypeReference>>?
 
+        fun mapClassScopeGenerics(
+            generics: Map<String, List<KSTypeReference>>?,
+            resolver: TypeParameterResolver,
+        ): Map<String, List<TypeName>>?
+
         fun resolveMockClassType(
             template: KSClassDeclaration,
             resolver: TypeParameterResolver
@@ -230,7 +235,8 @@ internal interface ProcessorContract {
 
     data class MethodReturnTypeInfo(
         val typeName: TypeName,
-        val generic: GenericDeclaration?
+        val generic: GenericDeclaration?,
+        val classScope: Map<String, List<TypeName>>?
     )
 
     interface ProxyNameCollector {
@@ -258,11 +264,14 @@ internal interface ProcessorContract {
     }
 
     interface RelaxerGenerator {
-        fun buildPropertyRelaxation(relaxer: Relaxer?): String
+        fun buildPropertyRelaxation(
+            propertyType: MethodReturnTypeInfo,
+            relaxer: Relaxer?,
+        ): String
 
         fun buildMethodRelaxation(
-            relaxer: Relaxer?,
             methodReturnType: MethodReturnTypeInfo,
+            relaxer: Relaxer?,
         ): String
 
         fun buildBuildInRelaxation(
@@ -287,6 +296,7 @@ internal interface ProcessorContract {
         fun buildGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
+            propertyType: MethodReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -314,6 +324,7 @@ internal interface ProcessorContract {
     interface PropertyGenerator {
         fun buildPropertyBundle(
             qualifier: String,
+            classScopeGenerics: Map<String, List<TypeName>>?,
             ksProperty: KSPropertyDeclaration,
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,
@@ -325,6 +336,7 @@ internal interface ProcessorContract {
         fun buildMethodBundle(
             methodScope: TypeName?,
             qualifier: String,
+            classScopeGenerics: Map<String, List<TypeName>>?,
             ksFunction: KSFunctionDeclaration,
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,

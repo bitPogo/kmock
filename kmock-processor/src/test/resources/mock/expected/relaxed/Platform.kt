@@ -23,7 +23,7 @@ internal class PlatformMock(
 ) : Platform {
     public override val buzz: String
         get() = _buzz.onGet {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 
     public val _buzz: KMockContract.PropertyProxy<String> =
@@ -51,19 +51,19 @@ internal class PlatformMock(
         = verifier, freeze = freeze)
 
     public override fun foo(payload: Any): String = _foo.invoke(payload) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
     }
 
     public override fun oo(vararg payload: Any): String = _oo.invoke(payload) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
     }
 
     public override suspend fun bar(payload: Any): String = _bar.invoke(payload) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
     }
 
     public override suspend fun ar(vararg payload: Any): String = _ar.invoke(payload) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
     }
 
     public override fun buzz(): Unit = _buzzWithVoid.invoke() {

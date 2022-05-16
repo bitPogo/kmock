@@ -27,7 +27,9 @@ internal class RelaxedMock<K : Any, L>(
 
     public override var template: L
         get() = _template.onGet {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
+                type0 = kotlin.Any::class,
+                type1 = kotlin.Comparable::class,) }
             useSpyIf(__spyOn) { __spyOn!!.template }
         }
         set(`value`) = _template.onSet(value) {
@@ -40,7 +42,7 @@ internal class RelaxedMock<K : Any, L>(
 
     public override val ozz: Int
         get() = _ozz.onGet {
-            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
             useSpyIf(__spyOn) { __spyOn!!.ozz }
         }
 
@@ -78,12 +80,14 @@ internal class RelaxedMock<K : Any, L>(
     }
 
     public override fun bar(arg0: Int): Any = _bar.invoke(arg0) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         useSpyIf(__spyOn) { __spyOn!!.bar(arg0) }
     }
 
     public override suspend fun buzz(arg0: String): L = _buzz.invoke(arg0) {
-        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId) }
+        useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
+            type0 = kotlin.Any::class,
+            type1 = kotlin.Comparable::class,) }
         useSpyIf(__spyOn) { __spyOn!!.buzz(arg0) }
     }
 
