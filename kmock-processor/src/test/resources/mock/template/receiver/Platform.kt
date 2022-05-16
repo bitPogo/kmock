@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package mock.template.scoped
+package mock.template.receiver
 
 import tech.antibytes.kmock.Mock
 

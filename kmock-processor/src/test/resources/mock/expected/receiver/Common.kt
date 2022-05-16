@@ -1,4 +1,4 @@
-package mock.template.scoped
+package mock.template.`receiver`
 
 import kotlin.Any
 import kotlin.Boolean
@@ -41,15 +41,15 @@ internal class CommonMock(
         get() = _myThing.onGet()
 
     public val _myThing: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("mock.template.scoped.CommonMock#_myThing", collector =
+        ProxyFactory.createPropertyProxy("mock.template.receiver.CommonMock#_myThing", collector =
         verifier, freeze = freeze)
 
     public override val AnythingElse.SomethingInside.inside: Int
         get() = throw IllegalStateException("This action is not callable.")
 
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.scoped.CommonMock#_iDo", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.receiver.CommonMock#_iDo", collector =
+        verifier, freeze = freeze)
 
     public override fun Something.doSomething(): Int = throw IllegalStateException(
         "This action is not callable."
