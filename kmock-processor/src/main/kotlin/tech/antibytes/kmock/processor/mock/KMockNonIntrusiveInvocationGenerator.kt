@@ -38,10 +38,11 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildGetterNonIntrusiveInvocation(
         enableSpy: Boolean,
         propertyName: String,
+        propertyType: MethodReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
-            relaxerGenerator.buildPropertyRelaxation(relaxer)
+            relaxerGenerator.buildPropertyRelaxation(propertyType, relaxer)
         )
         if (enableSpy) {
             nonIntrusiveInvocation.append(

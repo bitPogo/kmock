@@ -124,6 +124,7 @@ internal class KMockMethodGenerator(
 
     private fun mapGenericProxyType(
         typeName: TypeName,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>,
     ): MethodReturnTypeInfo {
         val isNullable = typeName.isNullable
@@ -136,12 +137,14 @@ internal class KMockMethodGenerator(
 
         return MethodReturnTypeInfo(
             typeName = actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable),
-            generic = generic
+            generic = generic,
+            classScope = classScopeGenerics
         )
     }
 
     private fun determineProxyReturnType(
         returnType: KSType,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
         typeResolver: TypeParameterResolver,
     ): MethodReturnTypeInfo {
@@ -151,20 +154,27 @@ internal class KMockMethodGenerator(
             MethodReturnTypeInfo(
                 typeName = typeName,
                 generic = null,
+                classScope = classScopeGenerics
             )
         } else {
-            mapGenericProxyType(typeName, proxyGenericTypes)
+            mapGenericProxyType(
+                typeName = typeName,
+                classScopeGenerics = classScopeGenerics,
+                proxyGenericTypes = proxyGenericTypes,
+            )
         }
     }
 
     private fun resolveGenericArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         argumentTypes: Array<MethodTypeInfo>,
     ): List<MethodArgumentTypeInfo> {
         return argumentTypes.map { typeInfo ->
-            val (typeName, declaration) = mapGenericProxyType(
-                typeInfo.typeName,
-                proxyGenericTypes
+            val (typeName, declaration, _) = mapGenericProxyType(
+                typeName = typeInfo.typeName,
+                classScopeGenerics = classScopeGenerics,
+                proxyGenericTypes = proxyGenericTypes,
             )
 
             MethodArgumentTypeInfo(
@@ -176,6 +186,7 @@ internal class KMockMethodGenerator(
 
     private fun determineProxyArgumentTypes(
         proxyGenericTypes: Map<String, GenericDeclaration>?,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         argumentTypes: Array<MethodTypeInfo>,
     ): List<MethodArgumentTypeInfo> {
         return if (proxyGenericTypes == null) {
@@ -186,7 +197,11 @@ internal class KMockMethodGenerator(
                 )
             }
         } else {
-            resolveGenericArgumentTypes(proxyGenericTypes, argumentTypes)
+            resolveGenericArgumentTypes(
+                proxyGenericTypes = proxyGenericTypes,
+                classScopeGenerics = classScopeGenerics,
+                argumentTypes = argumentTypes,
+            )
         }
     }
 
@@ -235,6 +250,7 @@ internal class KMockMethodGenerator(
         proxyInfo: ProxyInfo,
         arguments: Array<MethodTypeInfo>,
         suspending: Boolean,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>?,
         returnType: KSType,
         typeResolver: TypeParameterResolver,
@@ -248,11 +264,13 @@ internal class KMockMethodGenerator(
 
             val proxyArguments = determineProxyArgumentTypes(
                 proxyGenericTypes = proxyGenericTypes,
+                classScopeGenerics = classScopeGenerics,
                 argumentTypes = arguments,
             )
 
             val proxyReturnType = determineProxyReturnType(
                 returnType = returnType,
+                classScopeGenerics = classScopeGenerics,
                 proxyGenericTypes = proxyGenericTypes,
                 typeResolver = typeResolver
             )
@@ -390,6 +408,7 @@ internal class KMockMethodGenerator(
     override fun buildMethodBundle(
         methodScope: TypeName?,
         qualifier: String,
+        classScopeGenerics: Map<String, List<TypeName>>?,
         ksFunction: KSFunctionDeclaration,
         typeResolver: TypeParameterResolver,
         enableSpy: Boolean,
@@ -421,6 +440,7 @@ internal class KMockMethodGenerator(
             methodScope = methodScope,
             proxyInfo = proxyInfo,
             arguments = arguments,
+            classScopeGenerics = classScopeGenerics,
             generics = generics,
             suspending = isSuspending,
             returnType = returnType,

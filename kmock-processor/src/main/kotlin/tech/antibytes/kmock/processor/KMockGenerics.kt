@@ -448,4 +448,17 @@ internal object KMockGenerics : GenericResolver {
 
         return TypeVariableName(name, bounds = listOf(boundary)).copy(reified = true)
     }
+
+    private fun List<KSTypeReference>.toTypeNames(
+        resolver: TypeParameterResolver
+    ): List<TypeName> = this.map { rawType -> rawType.toTypeName(resolver) }
+
+    override fun mapClassScopeGenerics(
+        generics: Map<String, List<KSTypeReference>>?,
+        resolver: TypeParameterResolver,
+    ): Map<String, List<TypeName>>? {
+        return generics?.map { (key, rawTypes) ->
+            key to rawTypes.toTypeNames(resolver)
+        }?.toMap()
+    }
 }
