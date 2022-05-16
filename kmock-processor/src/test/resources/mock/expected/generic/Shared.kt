@@ -40,22 +40,22 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_fooWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_fooWithAny", collector =
+    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_fooWithTAny", collector =
         verifier, freeze = freeze)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blaWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _blaWithInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blaWithInt", collector =
+    public val _blaWithTInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blaWithTInt", collector =
         verifier, freeze = freeze)
 
-    public val _barWithList:
+    public val _barWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithList", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithTList", collector =
         verifier, freeze = freeze)
 
     public val _barWithVoid:
@@ -64,11 +64,11 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _blubbWithList:
+    public val _blubbWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String?>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithList", collector =
-        verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithTList", collector
+        = verifier, freeze = freeze)
 
     public val _blubbWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () ->
@@ -76,10 +76,10 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _bussWithList:
+    public val _bussWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithList", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithTList", collector =
         verifier, freeze = freeze)
 
     public val _bussWithVoid:
@@ -88,10 +88,10 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _bossWithList:
+    public val _bossWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithList", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithTList", collector =
         verifier, freeze = freeze)
 
     public val _bossWithVoid:
@@ -100,10 +100,10 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _buzzWithList:
+    public val _buzzWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithList", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithTList", collector =
         verifier, freeze = freeze)
 
     public val _buzzWithVoid:
@@ -112,18 +112,18 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _ozzWithL: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ozzWithL", collector =
+    public val _ozzWithTL: KMockContract.SyncFunProxy<Unit, (L) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ozzWithTL", collector =
         verifier, freeze = freeze)
 
     public val _ozzWithVoid: KMockContract.SyncFunProxy<L, () -> L> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ozzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _brassWithComparable:
+    public val _brassWithTComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithTComparable",
             collector = verifier, freeze = freeze)
 
     public val _brassWithVoid:
@@ -132,10 +132,10 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _blissWithComparable:
+    public val _blissWithTComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithTComparable",
             collector = verifier, freeze = freeze)
 
     public val _blissWithVoid:
@@ -144,9 +144,9 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _lossWithMap: KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String,
+    public val _lossWithTMap: KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String,
         kotlin.String>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lossWithMap", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lossWithTMap", collector =
         verifier, freeze = freeze)
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
@@ -154,151 +154,152 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lossWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _uzzWithSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_uzzWithSomeGenericList",
+    public val _uzzWithTSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_uzzWithTSomeGenericList",
         collector = verifier, freeze = freeze)
 
     public val _uzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_uzzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _lzzWithSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lzzWithSomeGenericList",
+    public val _lzzWithTSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lzzWithTSomeGenericList",
         collector = verifier, freeze = freeze)
 
     public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lzzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _tzzWithSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_tzzWithSomeGenericList",
-        collector = verifier, freeze = freeze)
+    public val _tzzWithTSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_tzzWithTSomeGenericList",
+            collector = verifier, freeze = freeze)
 
     public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_tzzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _rzzWithSomeGenericMap: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rzzWithSomeGenericMap",
-            collector = verifier, freeze = freeze)
+    public val _rzzWithTSomeGenericMap: KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rzzWithTSomeGenericMap",
+        collector = verifier, freeze = freeze)
 
     public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rzzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _izzWithSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
+    public val _izzWithTSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_izzWithSomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_izzWithTSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
     public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_izzWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _ossWithAnyAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
+    public val _ossWithTAnyRAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ossWithAnyAny", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ossWithTAnyRAny", collector
+        = verifier, freeze = freeze)
+
+    public val _ossWithTAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ossWithTAny", collector =
         verifier, freeze = freeze)
 
-    public val _ossWithAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ossWithAny", collector =
-        verifier, freeze = freeze)
-
-    public val _kssWithSomeGenericComparableSomeGenericComparable:
+    public val _kssWithTSomeGenericComparableRSomeGenericComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_kssWithSomeGenericComparableSomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_kssWithTSomeGenericComparableRSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
-    public val _kssWithSomeGenericComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
+    public val _kssWithTSomeGenericComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_kssWithSomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_kssWithTSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
-    public val _issWithAnySomeGenericComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
+    public val _issWithTAnyRSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
         kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_issWithAnySomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_issWithTAnyRSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
-    public val _issWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_issWithAny", collector =
+    public val _issWithTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_issWithTAny", collector =
         verifier, freeze = freeze)
 
-    public val _pssWithSomeGeneric:
+    public val _pssWithTSomeGeneric:
         KMockContract.SyncFunProxy<mock.template.generic.SomeGeneric<kotlin.String>, (mock.template.generic.SomeGeneric<kotlin.String>) ->
         mock.template.generic.SomeGeneric<kotlin.String>> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithSomeGeneric",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithTSomeGeneric",
             collector = verifier, freeze = freeze)
 
-    public val _pssWithSomeGenericSomeGeneric:
+    public val _pssWithTSomeGenericRSomeGeneric:
         KMockContract.SyncFunProxy<Unit, (mock.template.generic.SomeGeneric<kotlin.String>,
             mock.template.generic.SomeGeneric<kotlin.String>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithSomeGenericSomeGeneric",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithTSomeGenericRSomeGeneric",
             collector = verifier, freeze = freeze)
 
-    public val _xssWithAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithAny", collector =
+    public val _xssWithTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithTAny", collector =
         verifier, freeze = freeze)
 
-    public val _xssWithAnySequenceCharSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
+    public val _xssWithTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
         kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithAnySequenceCharSequence",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithTAnyRSequenceCharSequence",
             collector = verifier, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
-    public override fun <T> foo(payload: T): Unit = _fooWithAny.invoke(payload) {
+    public override fun <T> foo(payload: T): Unit = _fooWithTAny.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
 
-    public override fun <T : Int> bla(payload: T): Unit = _blaWithInt.invoke(payload) {
+    public override fun <T : Int> bla(payload: T): Unit = _blaWithTInt.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T : List<Array<String>>> bar(payload: T): Unit = _barWithList.invoke(payload)
-    {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override fun <T : List<Array<String>>> bar(payload: T): Unit =
+        _barWithTList.invoke(payload) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke() as T
 
     public override fun <T : List<Array<String?>>> blubb(payload: T): Unit =
-        _blubbWithList.invoke(payload) {
+        _blubbWithTList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<String?>>> blubb(): T = _blubbWithVoid.invoke() as T
 
-    public override fun <T : List<Array<Int>>?> buss(payload: T): Unit = _bussWithList.invoke(payload)
-    {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override fun <T : List<Array<Int>>?> buss(payload: T): Unit =
+        _bussWithTList.invoke(payload) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<Int>>?> buss(): T = _bussWithVoid.invoke() as T
 
-    public override fun <T : List<Array<Int>?>> boss(payload: T): Unit = _bossWithList.invoke(payload)
-    {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override fun <T : List<Array<Int>?>> boss(payload: T): Unit =
+        _bossWithTList.invoke(payload) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<Int>?>> boss(): T = _bossWithVoid.invoke() as T
 
-    public override fun <T : List<Array<Int>>> buzz(payload: T?): Unit = _buzzWithList.invoke(payload)
-    {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override fun <T : List<Array<Int>>> buzz(payload: T?): Unit =
+        _buzzWithTList.invoke(payload) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<Int>>> buzz(): T? = _buzzWithVoid.invoke() as T?
 
-    public override fun <T : L> ozz(payload: T): Unit = _ozzWithL.invoke(payload) {
+    public override fun <T : L> ozz(payload: T): Unit = _ozzWithTL.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -306,7 +307,7 @@ internal class SharedMock<K : Any, L>(
     public override fun <T : L> ozz(): T = _ozzWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>> brass(payload: T): Unit =
-        _brassWithComparable.invoke(payload) {
+        _brassWithTComparable.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -314,7 +315,7 @@ internal class SharedMock<K : Any, L>(
     public override fun <T : Comparable<List<Array<T>>>> brass(): T = _brassWithVoid.invoke() as T
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(payload: T): Unit =
-        _blissWithComparable.invoke(payload) {
+        _blissWithTComparable.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -322,7 +323,7 @@ internal class SharedMock<K : Any, L>(
     public override fun <T : Comparable<List<Array<T>>>?> bliss(): T = _blissWithVoid.invoke() as T
 
     public override fun <T : Map<String, String>> loss(payload: T): Unit =
-        _lossWithMap.invoke(payload) {
+        _lossWithTMap.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -330,7 +331,7 @@ internal class SharedMock<K : Any, L>(
     public override fun <T : Map<String, String>> loss(): T = _lossWithVoid.invoke() as T
 
     public override fun <T> uzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String> =
-        _uzzWithSomeGenericList.invoke(payload) {
+        _uzzWithTSomeGenericList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -339,7 +340,7 @@ internal class SharedMock<K : Any, L>(
         _uzzWithVoid.invoke() as T
 
     public override fun <T> lzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String>? =
-        _lzzWithSomeGenericList.invoke(payload) {
+        _lzzWithTSomeGenericList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -348,7 +349,7 @@ internal class SharedMock<K : Any, L>(
         _lzzWithVoid.invoke() as T
 
     public override fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithSomeGenericList.invoke(payload) {
+        _tzzWithTSomeGenericList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -357,7 +358,7 @@ internal class SharedMock<K : Any, L>(
         _tzzWithVoid.invoke() as T
 
     public override fun <T> rzz(payload: T): Unit where T : SomeGeneric<String>, T :
-    Map<String, String> = _rzzWithSomeGenericMap.invoke(payload) {
+    Map<String, String> = _rzzWithTSomeGenericMap.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -366,7 +367,7 @@ internal class SharedMock<K : Any, L>(
         _rzzWithVoid.invoke() as T
 
     public override fun <T> izz(payload: T): Unit where T : SomeGeneric<String>, T :
-    Comparable<List<Array<T>>> = _izzWithSomeGenericComparable.invoke(payload) {
+    Comparable<List<Array<T>>> = _izzWithTSomeGenericComparable.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -374,93 +375,93 @@ internal class SharedMock<K : Any, L>(
     public override fun <T> izz(): T where T : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
         _izzWithVoid.invoke() as T
 
-    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithAnyAny.invoke(arg0, arg1) {
+    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyRAny.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithAny.invoke(arg0) as R
+    public override fun <T : R, R> oss(arg0: T): R = _ossWithTAny.invoke(arg0) as R
 
     public override fun <T : R, R> kss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithSomeGenericComparableSomeGenericComparable.invoke(arg0,
+    Comparable<List<Array<R>>> = _kssWithTSomeGenericComparableRSomeGenericComparable.invoke(arg0,
         arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithSomeGenericComparable.invoke(arg0) as R
+    Comparable<List<Array<R>>> = _kssWithTSomeGenericComparable.invoke(arg0) as R
 
     public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
-    Comparable<List<Array<T>>> = _issWithAnySomeGenericComparable.invoke(arg0, arg1) {
+    Comparable<List<Array<T>>> = _issWithTAnyRSomeGenericComparable.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<T>>> = _issWithAny.invoke(arg0) as R
+    Comparable<List<Array<T>>> = _issWithTAny.invoke(arg0) as R
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T): R =
-        _pssWithSomeGeneric.invoke(arg0) as R
+        _pssWithTSomeGeneric.invoke(arg0) as R
 
     public override fun <R : T, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R): Unit =
-        _pssWithSomeGenericSomeGeneric.invoke(arg0, arg1) {
+        _pssWithTSomeGenericRSomeGeneric.invoke(arg0, arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence =
-        _xssWithAny.invoke(arg0) as R
+        _xssWithTAny.invoke(arg0) as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
-        = _xssWithAnySequenceCharSequence.invoke(arg0, arg1) {
+        = _xssWithTAnyRSequenceCharSequence.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
-        _fooWithAny.clear()
+        _fooWithTAny.clear()
         _blaWithVoid.clear()
-        _blaWithInt.clear()
-        _barWithList.clear()
+        _blaWithTInt.clear()
+        _barWithTList.clear()
         _barWithVoid.clear()
-        _blubbWithList.clear()
+        _blubbWithTList.clear()
         _blubbWithVoid.clear()
-        _bussWithList.clear()
+        _bussWithTList.clear()
         _bussWithVoid.clear()
-        _bossWithList.clear()
+        _bossWithTList.clear()
         _bossWithVoid.clear()
-        _buzzWithList.clear()
+        _buzzWithTList.clear()
         _buzzWithVoid.clear()
-        _ozzWithL.clear()
+        _ozzWithTL.clear()
         _ozzWithVoid.clear()
-        _brassWithComparable.clear()
+        _brassWithTComparable.clear()
         _brassWithVoid.clear()
-        _blissWithComparable.clear()
+        _blissWithTComparable.clear()
         _blissWithVoid.clear()
-        _lossWithMap.clear()
+        _lossWithTMap.clear()
         _lossWithVoid.clear()
-        _uzzWithSomeGenericList.clear()
+        _uzzWithTSomeGenericList.clear()
         _uzzWithVoid.clear()
-        _lzzWithSomeGenericList.clear()
+        _lzzWithTSomeGenericList.clear()
         _lzzWithVoid.clear()
-        _tzzWithSomeGenericList.clear()
+        _tzzWithTSomeGenericList.clear()
         _tzzWithVoid.clear()
-        _rzzWithSomeGenericMap.clear()
+        _rzzWithTSomeGenericMap.clear()
         _rzzWithVoid.clear()
-        _izzWithSomeGenericComparable.clear()
+        _izzWithTSomeGenericComparable.clear()
         _izzWithVoid.clear()
-        _ossWithAnyAny.clear()
-        _ossWithAny.clear()
-        _kssWithSomeGenericComparableSomeGenericComparable.clear()
-        _kssWithSomeGenericComparable.clear()
-        _issWithAnySomeGenericComparable.clear()
-        _issWithAny.clear()
-        _pssWithSomeGeneric.clear()
-        _pssWithSomeGenericSomeGeneric.clear()
-        _xssWithAny.clear()
-        _xssWithAnySequenceCharSequence.clear()
+        _ossWithTAnyRAny.clear()
+        _ossWithTAny.clear()
+        _kssWithTSomeGenericComparableRSomeGenericComparable.clear()
+        _kssWithTSomeGenericComparable.clear()
+        _issWithTAnyRSomeGenericComparable.clear()
+        _issWithTAny.clear()
+        _pssWithTSomeGeneric.clear()
+        _pssWithTSomeGenericRSomeGeneric.clear()
+        _xssWithTAny.clear()
+        _xssWithTAnyRSequenceCharSequence.clear()
     }
 }

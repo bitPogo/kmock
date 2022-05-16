@@ -70,18 +70,18 @@ internal class CollisionMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithFunction1",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithAny",
+    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTAny",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithCollision:
+    public val _fooWithTCollision:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Collision) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithCollision",
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTCollision",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
+    public val _fooWithTLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithLPG",
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTLPG",
             collector = verifier, freeze = freeze)
 
     public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
@@ -103,15 +103,15 @@ internal class CollisionMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithAny.invoke(fuzz) {
+    public override fun <T> foo(fuzz: T): Unit = _fooWithTAny.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T : Collision> foo(fuzz: T): Unit = _fooWithCollision.invoke(fuzz) {
+    public override fun <T : Collision> foo(fuzz: T): Unit = _fooWithTCollision.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithLPG.invoke(fuzz) {
+    public override fun <T : LPG> foo(fuzz: T): Unit = _fooWithTLPG.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -127,9 +127,9 @@ internal class CollisionMock(
         _fooWithStringAbc.clear()
         _fooWithStringScopedAbc.clear()
         _fooWithFunction1.clear()
-        _fooWithAny.clear()
-        _fooWithCollision.clear()
-        _fooWithLPG.clear()
+        _fooWithTAny.clear()
+        _fooWithTCollision.clear()
+        _fooWithTLPG.clear()
         _fooWithAnys.clear()
     }
 }

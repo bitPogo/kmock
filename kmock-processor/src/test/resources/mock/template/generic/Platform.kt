@@ -15,6 +15,7 @@ interface SomeGeneric<T>
 interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
     var template: L
 
+    fun foo(payload: Any): String
     fun <T> foo(): T
     fun <T> foo(payload: T)
     fun <T> foo(vararg payload: T)

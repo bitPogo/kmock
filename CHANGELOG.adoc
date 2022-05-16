@@ -58,6 +58,7 @@ toc::[]
 * `spyOn` is now capable of picking up KMock defined Aliases
 * `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
 * relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
+* generic methods names get prefixed by the generic type name, if overloaded to avoid name collisions
 
 === Deprecated
 
