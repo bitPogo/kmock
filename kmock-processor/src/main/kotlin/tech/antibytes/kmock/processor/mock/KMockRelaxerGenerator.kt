@@ -19,7 +19,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
 
     private fun MethodReturnTypeInfo.toParameterlessString(): String {
         val generics = StringBuilder()
-        val classScope = this.classScope?.get(this.typeName.toString().trimEnd('?'))
+        val classScope = this.resolveClassScope()
         var idx = 0
 
         if (classScope != null) {
@@ -40,7 +40,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     private fun resolveTypeParameter(
         methodReturnType: MethodReturnTypeInfo,
     ): String {
-        return if (methodReturnType.generic == null && methodReturnType.classScope == null) {
+        return if (!methodReturnType.hasGenerics()) {
             ""
         } else {
             methodReturnType.toParameterlessString()
@@ -52,9 +52,10 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         relaxer: Relaxer?
     ): String {
         val types = resolveTypeParameter(methodReturnType)
+        val cast = methodReturnType.resolveCastForRelaxer(relaxer)
 
         return if (relaxer != null) {
-            "useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId,$types) }\n"
+            "useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId,$types)$cast }\n"
         } else {
             ""
         }
@@ -64,7 +65,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         methodReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
-        return if (methodReturnType.typeName.toString() == "kotlin.Unit") {
+        return if (methodReturnType.actualTypeName.toString() == "kotlin.Unit") {
             "useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n"
         } else {
             addRelaxer(methodReturnType, relaxer)

@@ -235,6 +235,7 @@ internal interface ProcessorContract {
 
     data class MethodReturnTypeInfo(
         val typeName: TypeName,
+        val actualTypeName: TypeName,
         val generic: GenericDeclaration?,
         val classScope: Map<String, List<TypeName>>?
     )
@@ -286,7 +287,9 @@ internal interface ProcessorContract {
 
         fun buildMethodSpy(
             methodName: String,
-            arguments: Array<MethodTypeInfo>
+            parameter: List<TypeName>,
+            arguments: Array<MethodTypeInfo>,
+            methodReturnType: MethodReturnTypeInfo,
         ): String
 
         fun buildEqualsSpy(mockName: String): String
@@ -308,6 +311,7 @@ internal interface ProcessorContract {
         fun buildMethodNonIntrusiveInvocation(
             enableSpy: Boolean,
             methodName: String,
+            parameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
             methodReturnType: MethodReturnTypeInfo,
             relaxer: Relaxer?,

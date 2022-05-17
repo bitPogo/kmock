@@ -19,4 +19,5 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun bar(vararg arg0: Int): Any
     suspend fun buzz(arg0: String): L
     suspend fun buzz(vararg arg0: String): L
+    fun <T> izz(): T where T : CharSequence, T : Comparable<List<Array<T>>>
 }

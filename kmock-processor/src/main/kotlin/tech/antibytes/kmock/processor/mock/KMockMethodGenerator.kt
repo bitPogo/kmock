@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Modifier
@@ -24,6 +25,7 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
@@ -44,7 +46,7 @@ internal class KMockMethodGenerator(
     private val genericResolver: GenericResolver,
 ) : MethodGenerator {
     private val any = Any::class.asTypeName()
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+    private val unchecked = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
     private val varargs = arrayOf(KModifier.VARARG)
     private val noVarargs = arrayOf<KModifier>()
     private val asyncProxy = AsyncFunProxy::class.asClassName()
@@ -74,10 +76,10 @@ internal class KMockMethodGenerator(
 
     private fun determineArguments(
         inherited: Boolean,
-        parameters: List<KSValueParameter>,
+        arguments: List<KSValueParameter>,
         typeParameterResolver: TypeParameterResolver
     ): Array<MethodTypeInfo> {
-        return parameters.map { parameter ->
+        return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
 
             parameter.type.modifiers
@@ -90,6 +92,28 @@ internal class KMockMethodGenerator(
                 isVarArg = parameter.isVararg,
             )
         }.toTypedArray()
+    }
+
+    private fun determineTypeParameter(
+        parameter: List<KSTypeParameter>,
+        typeParameterResolver: TypeParameterResolver
+    ): List<TypeName> {
+        var distribute = false
+        val parameterTypes = parameter.map { type ->
+            val parameterType = type.toTypeVariableName(typeParameterResolver)
+
+            if (parameterType.bounds.size > 1) {
+                distribute = true
+            }
+
+            parameterType
+        }
+
+        return if (distribute) {
+            parameterTypes
+        } else {
+            emptyList()
+        }
     }
 
     private fun determineProxyType(suspending: Boolean): Triple<ClassName, String, String> {
@@ -136,7 +160,8 @@ internal class KMockMethodGenerator(
         )
 
         return MethodReturnTypeInfo(
-            typeName = actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable),
+            typeName = typeName,
+            actualTypeName = actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable),
             generic = generic,
             classScope = classScopeGenerics
         )
@@ -153,6 +178,7 @@ internal class KMockMethodGenerator(
         return if (proxyGenericTypes == null) {
             MethodReturnTypeInfo(
                 typeName = typeName,
+                actualTypeName = typeName,
                 generic = null,
                 classScope = classScopeGenerics
             )
@@ -171,14 +197,14 @@ internal class KMockMethodGenerator(
         argumentTypes: Array<MethodTypeInfo>,
     ): List<MethodArgumentTypeInfo> {
         return argumentTypes.map { typeInfo ->
-            val (typeName, declaration, _) = mapGenericProxyType(
+            val (_, actualTypeName, declaration, _) = mapGenericProxyType(
                 typeName = typeInfo.typeName,
                 classScopeGenerics = classScopeGenerics,
                 proxyGenericTypes = proxyGenericTypes,
             )
 
             MethodArgumentTypeInfo(
-                typeInfo = typeInfo.copy(typeName = typeName),
+                typeInfo = typeInfo.copy(typeName = actualTypeName),
                 generic = declaration
             )
         }
@@ -277,14 +303,14 @@ internal class KMockMethodGenerator(
 
             val sideEffect = buildSideEffectSignature(
                 proxyArguments = proxyArguments,
-                proxyReturnType = proxyReturnType.typeName,
+                proxyReturnType = proxyReturnType.actualTypeName,
                 prefix = sideEffectPrefix
             )
 
             ProxyBundle(
                 PropertySpec.builder(
                     proxyInfo.proxyName,
-                    proxyType.parameterizedBy(proxyReturnType.typeName, sideEffect)
+                    proxyType.parameterizedBy(proxyReturnType.actualTypeName, sideEffect)
                 ).let { proxySpec ->
                     buildProxyInitializer(
                         proxySpec = proxySpec,
@@ -324,21 +350,21 @@ internal class KMockMethodGenerator(
         proxyInfo: ProxyInfo,
         enableSpy: Boolean,
         arguments: Array<MethodTypeInfo>,
-        returnType: TypeName,
+        parameter: List<TypeName>,
         proxyReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
     ) {
-        val cast = if (returnType != proxyReturnType.typeName) {
-            method.addAnnotation(unused)
-            " as $returnType"
-        } else {
-            ""
+        if (proxyReturnType.needsCastAnnotation(relaxer = relaxer)) {
+            method.addAnnotation(unchecked)
         }
+
+        val cast = proxyReturnType.resolveCastOnReturn()
 
         val invocation = arguments.joinToString(", ") { argument -> argument.argumentName }
         val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
             enableSpy = enableSpy,
             methodName = proxyInfo.templateName,
+            parameter = parameter,
             arguments = arguments,
             methodReturnType = proxyReturnType,
             relaxer = relaxer
@@ -359,18 +385,17 @@ internal class KMockMethodGenerator(
 
     private fun buildMethod(
         methodScope: TypeName?,
+        returnType: TypeName,
         proxyInfo: ProxyInfo,
         generics: Map<String, List<KSTypeReference>>?,
         isSuspending: Boolean,
         enableSpy: Boolean,
         arguments: Array<MethodTypeInfo>,
-        rawReturnType: KSType,
+        parameter: List<TypeName>,
         proxyReturnType: MethodReturnTypeInfo?,
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?
     ): FunSpec {
-        val returnType = rawReturnType.toTypeName(typeResolver)
-
         val method = FunSpec
             .builder(proxyInfo.templateName)
             .addModifiers(KModifier.OVERRIDE)
@@ -396,7 +421,7 @@ internal class KMockMethodGenerator(
                 proxyInfo = proxyInfo,
                 enableSpy = enableSpy,
                 arguments = arguments,
-                returnType = returnType,
+                parameter = parameter,
                 proxyReturnType = proxyReturnType!!,
                 relaxer = relaxer
             )
@@ -416,14 +441,17 @@ internal class KMockMethodGenerator(
         relaxer: Relaxer?
     ): Pair<PropertySpec?, FunSpec> {
         val methodName = ksFunction.simpleName.asString()
-        val typeParameterResolver = ksFunction
-            .typeParameters
+        val typeParameterResolver = ksFunction.typeParameters
             .toTypeParameterResolver(typeResolver)
         val generics = genericResolver.extractGenerics(ksFunction, typeParameterResolver)
         val arguments = determineArguments(
             inherited = inherited,
-            parameters = ksFunction.parameters,
+            arguments = ksFunction.parameters,
             typeParameterResolver = typeParameterResolver
+        )
+        val parameter = determineTypeParameter(
+            parameter = ksFunction.typeParameters,
+            typeParameterResolver = typeParameterResolver,
         )
 
         val proxyInfo = nameSelector.selectMethodName(
@@ -449,12 +477,13 @@ internal class KMockMethodGenerator(
 
         val method = buildMethod(
             methodScope = methodScope,
+            returnType = returnType.toTypeName(typeParameterResolver),
             proxyInfo = proxyInfo,
             generics = generics,
             isSuspending = isSuspending,
             enableSpy = enableSpy,
+            parameter = parameter,
             arguments = arguments,
-            rawReturnType = returnType,
             proxyReturnType = proxySignature?.returnType,
             typeResolver = typeParameterResolver,
             relaxer = relaxer

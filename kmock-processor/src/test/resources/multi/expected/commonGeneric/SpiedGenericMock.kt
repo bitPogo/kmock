@@ -497,31 +497,31 @@ GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> uzz(): T where T : SomeGeneric<String>, T : List<String> = _uzz.invoke() {
-        useSpyIf(__spyOn) { __spyOn!!.uzz() }
+        useSpyIf(__spyOn) { __spyOn!!.uzz<T>() }
     } as T
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> lzz(): T where T : SomeGeneric<String>, T : List<String>? = _lzz.invoke()
     {
-        useSpyIf(__spyOn) { __spyOn!!.lzz() }
+        useSpyIf(__spyOn) { __spyOn!!.lzz<T>() }
     } as T
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>? = _tzz.invoke()
     {
-        useSpyIf(__spyOn) { __spyOn!!.tzz() }
+        useSpyIf(__spyOn) { __spyOn!!.tzz<T>() }
     } as T
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> rzz(): T where T : SomeGeneric<String>, T : Map<String, String> =
         _rzz.invoke() {
-            useSpyIf(__spyOn) { __spyOn!!.rzz() }
+            useSpyIf(__spyOn) { __spyOn!!.rzz<T>() }
         } as T
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> izz(): T where T : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
         _izz.invoke() {
-            useSpyIf(__spyOn) { __spyOn!!.izz() }
+            useSpyIf(__spyOn) { __spyOn!!.izz<T>() }
         } as T
 
     @Suppress("UNCHECKED_CAST")
@@ -543,13 +543,13 @@ GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<R>>> = _kss.invoke(arg0) {
-        useSpyIf(__spyOn) { __spyOn!!.kss(arg0) }
+        useSpyIf(__spyOn) { __spyOn!!.kss<T, R>(arg0) }
     } as R
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _iss.invoke(arg0) {
-        useSpyIf(__spyOn) { __spyOn!!.iss(arg0) }
+        useSpyIf(__spyOn) { __spyOn!!.iss<R, T>(arg0) }
     } as R
 
     @Suppress("UNCHECKED_CAST")
@@ -560,13 +560,13 @@ GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence =
         _xssWithTAny.invoke(arg0) {
-            useSpyIf(__spyOn) { __spyOn!!.xss(arg0) }
+            useSpyIf(__spyOn) { __spyOn!!.xss<R, T>(arg0) }
         } as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
         = _xssWithTAnyRSequenceCharSequence.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        useSpyIf(__spyOn) { __spyOn!!.xss(arg0, arg1) }
+        useSpyIf(__spyOn) { __spyOn!!.xss<R, T>(arg0, arg1) }
     }
 
     public override fun doSomething(arg: KMockTypeParameter4): KMockTypeParameter5 =
