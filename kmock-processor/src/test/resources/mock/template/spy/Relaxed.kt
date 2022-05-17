@@ -22,4 +22,5 @@ interface Relaxed<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T> foo(payload: T)
     fun bar(arg0: Int): Any
     suspend fun buzz(arg0: String): L
+    fun <T> izz(): T where T : CharSequence, T : Comparable<List<Array<T>>>
 }

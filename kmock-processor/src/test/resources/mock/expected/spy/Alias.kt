@@ -1,12 +1,15 @@
 package mock.template.spy
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
+import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
+import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -70,6 +73,10 @@ internal class AliasPlatformMock<K : Any, L>(
     L> = ProxyFactory.createAsyncFunProxy("mock.template.spy.AliasPlatformMock#_buzzWithStrings",
         collector = verifier, freeze = freeze)
 
+    public val _izz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_izz", collector =
+        verifier, freeze = freeze)
+
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.AliasPlatformMock#_toString", collector =
         verifier, freeze = freeze, ignorableForVerification = true)
@@ -108,6 +115,12 @@ internal class AliasPlatformMock<K : Any, L>(
         useSpyIf(__spyOn) { __spyOn!!.buzz(*arg0) }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    public override fun <T> izz(): T where T : CharSequence, T : Comparable<List<Array<T>>> =
+        _izz.invoke() {
+            useSpyIf(__spyOn) { __spyOn!!.izz<T>() }
+        } as T
+
     public override fun toString(): String = _toString.invoke() {
         useRelaxerIf(true) { super.toString() }
         useSpyIf(__spyOn) { __spyOn!!.toString() }
@@ -137,6 +150,7 @@ internal class AliasPlatformMock<K : Any, L>(
         _barWithInts.clear()
         _buzzWithString.clear()
         _buzzWithStrings.clear()
+        _izz.clear()
         _toString.clear()
         _equals.clear()
         _hashCode.clear()

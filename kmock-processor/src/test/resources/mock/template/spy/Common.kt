@@ -19,4 +19,5 @@ interface Common<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun ar(vararg arg0: Int): Any
     suspend fun buzz(arg0: String): L
     suspend fun uzz(vararg arg0: String): L
+    fun <T> izz(): T where T : CharSequence, T : Comparable<List<Array<T>>>
 }

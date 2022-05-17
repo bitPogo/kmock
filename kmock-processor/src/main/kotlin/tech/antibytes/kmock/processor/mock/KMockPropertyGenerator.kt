@@ -253,6 +253,7 @@ internal class KMockPropertyGenerator(
         )
         val returnType = MethodReturnTypeInfo(
             typeName = propertyType,
+            actualTypeName = propertyType,
             generic = null,
             classScope = classScopeGenerics
         )

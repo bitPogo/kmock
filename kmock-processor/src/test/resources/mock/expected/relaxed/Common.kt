@@ -26,7 +26,7 @@ internal class CommonMock<K : Any, L>(
         get() = _template.onGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,
-                type1 = kotlin.Comparable::class,) }
+                type1 = kotlin.Comparable::class,) as L }
         }
         set(`value`) = _template.onSet(value)
 
@@ -86,13 +86,14 @@ internal class CommonMock<K : Any, L>(
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() {
         useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
-            type0 = kotlin.Any::class,) }
+            type0 = kotlin.Any::class,) as T }
     } as T
 
+    @Suppress("UNCHECKED_CAST")
     public override fun foo(payload: String): L = _fooWithString.invoke(payload) {
         useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
             type0 = kotlin.Any::class,
-            type1 = kotlin.Comparable::class,) }
+            type1 = kotlin.Comparable::class,) as L }
     }
 
     public override fun <T : Any> fooBar(payload: T): Unit = _fooBarWithTAny.invoke(payload) {
@@ -102,7 +103,7 @@ internal class CommonMock<K : Any, L>(
     @Suppress("UNCHECKED_CAST")
     public override fun <T : K?> fooBar(): T = _fooBarWithVoid.invoke() {
         useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
-            type0 = kotlin.Any::class,) }
+            type0 = kotlin.Any::class,) as T }
     } as T
 
     public override fun oo(vararg payload: Any): String = _oo.invoke(payload) {

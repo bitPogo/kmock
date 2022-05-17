@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock.processor.mock
 
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
@@ -18,6 +20,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     private val spyGenerator: SpyGenerator
 ) : NonIntrusiveInvocationGenerator {
     private val noArguments: Array<MethodTypeInfo> = arrayOf()
+    private val illegal = MethodReturnTypeInfo(TypeVariableName(""), TypeVariableName(""), null, null)
 
     private fun buildInvocation(hook: (StringBuilder) -> Unit): String {
         val nonIntrusiveInvocation = StringBuilder(4)
@@ -65,6 +68,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildMethodNonIntrusiveInvocation(
         enableSpy: Boolean,
         methodName: String,
+        parameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
         methodReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
@@ -80,7 +84,9 @@ internal class KMockNonIntrusiveInvocationGenerator(
             nonIntrusiveInvocation.append(
                 spyGenerator.buildMethodSpy(
                     methodName = methodName,
-                    arguments = arguments
+                    arguments = arguments,
+                    parameter = parameter,
+                    methodReturnType = methodReturnType
                 )
             )
         }
@@ -92,7 +98,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
 
     private fun buildBuildInSpy(
         methodName: String
-    ): String = spyGenerator.buildMethodSpy(methodName, noArguments)
+    ): String = spyGenerator.buildMethodSpy(methodName, emptyList(), noArguments, illegal)
 
     private fun buildEqualsRelaxer(
         argument: MethodTypeInfo?

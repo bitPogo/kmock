@@ -1,12 +1,15 @@
 package mock.template.spy
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
+import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
+import kotlin.collections.List
 import mock.template.spy.relaxed
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -29,7 +32,7 @@ internal class RelaxedMock<K : Any, L>(
         get() = _template.onGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,
-                type1 = kotlin.Comparable::class,) }
+                type1 = kotlin.Comparable::class,) as L }
             useSpyIf(__spyOn) { __spyOn!!.template }
         }
         set(`value`) = _template.onSet(value) {
@@ -62,6 +65,10 @@ internal class RelaxedMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", collector = verifier,
             freeze = freeze)
 
+    public val _izz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_izz", collector = verifier,
+            freeze = freeze)
+
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_toString", collector =
         verifier, freeze = freeze, ignorableForVerification = true)
@@ -84,12 +91,22 @@ internal class RelaxedMock<K : Any, L>(
         useSpyIf(__spyOn) { __spyOn!!.bar(arg0) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     public override suspend fun buzz(arg0: String): L = _buzz.invoke(arg0) {
         useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
             type0 = kotlin.Any::class,
-            type1 = kotlin.Comparable::class,) }
+            type1 = kotlin.Comparable::class,) as L }
         useSpyIf(__spyOn) { __spyOn!!.buzz(arg0) }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    public override fun <T> izz(): T where T : CharSequence, T : Comparable<List<Array<T>>> =
+        _izz.invoke() {
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
+                type0 = kotlin.CharSequence::class,
+                type1 = kotlin.Comparable::class,) as T }
+            useSpyIf(__spyOn) { __spyOn!!.izz<T>() }
+        } as T
 
     public override fun toString(): String = _toString.invoke() {
         useRelaxerIf(true) { super.toString() }
@@ -117,6 +134,7 @@ internal class RelaxedMock<K : Any, L>(
         _foo.clear()
         _bar.clear()
         _buzz.clear()
+        _izz.clear()
         _toString.clear()
         _equals.clear()
         _hashCode.clear()
