@@ -76,22 +76,6 @@ private fun resolveReceiver(
     }
 }
 
-internal fun KSPropertyDeclaration.determineScope(): TypeName? {
-    return if (this.extensionReceiver == null) {
-        null
-    } else {
-        val extension = this.extensionReceiver!!.resolve()
-        val arguments = extension.innerArguments
-        val resolver = this.typeParameters.toTypeParameterResolver()
-
-        return resolveReceiver(
-            declaration = extension.declaration,
-            arguments = arguments,
-            parentResolver = resolver
-        )
-    }
-}
-
 internal fun KSFunctionDeclaration.determineScope(): TypeName? {
     return if (this.extensionReceiver == null) {
         null
