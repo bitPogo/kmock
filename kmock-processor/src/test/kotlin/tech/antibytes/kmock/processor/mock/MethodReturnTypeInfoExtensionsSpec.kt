@@ -157,6 +157,85 @@ class MethodReturnTypeInfoExtensionsSpec {
     }
 
     @Test
+    fun `Given needsCastForReceiverProperty returns false if it has no generics`() {
+        // Given
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = null,
+            classScope = null
+        )
+
+        // When
+        val actual = typeInfo.needsCastForReceiverProperty()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given needsCastForReceiverProperty returns false if it has generics and at less then 2 types`() {
+        // Given
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns listOf(mockk())
+        every { generics.castReturnType } returns false
+
+        // When
+        val actual = typeInfo.needsCastForReceiverProperty()
+
+        // Then
+        actual mustBe false
+    }
+
+    @Test
+    fun `Given needsCastForReceiverProperty returns false if it has generics and at least 2 types`() {
+        // Given
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns listOf(mockk(), mockk())
+
+        // When
+        val actual = typeInfo.needsCastForReceiverProperty()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given needsCastForReceiverProperty returns true if the cast flag is true`() {
+        // Given
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns emptyList()
+        every { generics.castReturnType } returns true
+
+        // When
+        val actual = typeInfo.needsCastForReceiverProperty()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
     fun `Given hasGenerics returns false if neither a class scope nor a generic were given`() {
         // Given
         val typeInfo = MethodReturnTypeInfo(
@@ -314,5 +393,86 @@ class MethodReturnTypeInfoExtensionsSpec {
 
         // Then
         actual mustBe " as $actualTypeNameStr"
+    }
+
+    @Test
+    fun `Given resolveCastForReceiverProperty returns an empty String if it has no generics`() {
+        // Given
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = null,
+            classScope = null
+        )
+
+        // When
+        val actual = typeInfo.resolveCastForReceiverProperty()
+
+        // Then
+        actual mustBe ""
+    }
+
+    @Test
+    fun `Given resolveCastForReceiverProperty returns an empty string if it has generics and at less then 2 types`() {
+        // Given
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = mockk(),
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns listOf(mockk())
+        every { generics.castReturnType } returns false
+
+        // When
+        val actual = typeInfo.resolveCastForReceiverProperty()
+
+        // Then
+        actual mustBe ""
+    }
+
+    @Test
+    fun `Given resolveCastForReceiverProperty returns a String if it has generics and at least 2 types`() {
+        // Given
+        val typeName: TypeName = mockk()
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = typeName,
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns listOf(mockk(), mockk())
+
+        // When
+        val actual = typeInfo.resolveCastForReceiverProperty()
+
+        // Then
+        actual mustBe " as $typeName"
+    }
+
+    @Test
+    fun `Given resolveCastForReceiverProperty returns a string if the cast flag is true`() {
+        // Given
+        val type: TypeName = mockk()
+        val generics: GenericDeclaration = mockk()
+        val typeInfo = MethodReturnTypeInfo(
+            typeName = type,
+            actualTypeName = mockk(),
+            generic = generics,
+            classScope = null
+        )
+
+        every { generics.types } returns emptyList()
+        every { generics.castReturnType } returns true
+
+        // When
+        val actual = typeInfo.resolveCastForReceiverProperty()
+
+        // Then
+        actual mustBe " as $type"
     }
 }

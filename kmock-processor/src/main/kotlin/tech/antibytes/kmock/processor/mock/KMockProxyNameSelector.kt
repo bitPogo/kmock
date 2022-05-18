@@ -17,7 +17,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
 
-internal class KmockProxyNameSelector(
+internal class KMockProxyNameSelector(
     enableNewOverloadingNames: Boolean,
     private val customMethodNames: Map<String, String>,
     private val useTypePrefixFor: Map<String, String>,
@@ -33,20 +33,28 @@ internal class KmockProxyNameSelector(
     private val prefixResolver: Function1<String, String> = if (enableNewOverloadingNames) {
         { typeName -> typeName.resolvePrefixedTypeName(useTypePrefixFor) }
     } else {
-        { typeName ->
-            typeName
-                .removePrefixes(uselessPrefixes)
-                .packageNameToVariableName()
-        }
+        { typeName -> typeName.removePrefixes(uselessPrefixes).packageNameToVariableName() }
     }
 
     private fun collectPropertyNames(
         template: KSClassDeclaration,
-        nameCollector: MutableList<String>
+        nameCollector: MutableList<String>,
+        overloadedMethods: MutableSet<String>,
     ) {
         template.getAllProperties().forEach { ksProperty ->
             val name = ksProperty.simpleName.asString()
-            nameCollector.add(name)
+            val casedName = name.titleCase()
+            when {
+                ksProperty.isReceiverMethod() && "_get$casedName" !in nameCollector -> {
+                    nameCollector.add("_get$casedName")
+                    nameCollector.add("_set$casedName")
+                }
+                ksProperty.isReceiverMethod() && "_get$casedName" in nameCollector -> {
+                    overloadedMethods.add("_get$casedName")
+                    overloadedMethods.add("_set$casedName")
+                }
+                else -> nameCollector.add(name)
+            }
         }
     }
 
@@ -72,12 +80,13 @@ internal class KmockProxyNameSelector(
 
         collectPropertyNames(
             template = template,
-            nameCollector = nameCollector
+            nameCollector = nameCollector,
+            overloadedMethods = overloadedMethods,
         )
         collectMethodNames(
             template = template,
             nameCollector = nameCollector,
-            overloadedMethods = overloadedMethods
+            overloadedMethods = overloadedMethods,
         )
 
         overloadedProxies = overloadedMethods.toSortedSet()
@@ -96,9 +105,7 @@ internal class KmockProxyNameSelector(
 
     private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
         val className = this.substringAfterLast('.').titleCase()
-        val prefix = prefixMapping
-            .getOrDefault(this, "")
-            .titleCase()
+        val prefix = prefixMapping.getOrDefault(this, "").titleCase()
 
         return "$prefix$className"
     }
@@ -139,10 +146,7 @@ internal class KmockProxyNameSelector(
             null
         } else {
             boundaries.joinToString("") { typeName ->
-                typeName
-                    .toTypeName(typeResolver)
-                    .toString()
-                    .trimTypeName()
+                typeName.toTypeName(typeResolver).toString().trimTypeName()
             }
         }
     }
@@ -283,16 +287,22 @@ internal class KmockProxyNameSelector(
         )
     }
 
-    override fun selectMethodName(
+    private fun selectMethodName(
+        prefix: String,
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
         arguments: Array<MethodTypeInfo>
     ): ProxyInfo {
+        val casedName = if (prefix.isNotEmpty()) {
+            methodName.titleCase()
+        } else {
+            methodName
+        }
 
         val proxyName = selectMethodProxyName(
-            proxyMethodNameCandidate = "_$methodName",
+            proxyMethodNameCandidate = "_$prefix$casedName",
             arguments = arguments,
             generics = generics,
             typeResolver = typeResolver,
@@ -301,14 +311,59 @@ internal class KmockProxyNameSelector(
         val proxyIdCandidate = "$qualifier#$proxyName"
         val customName = customMethodNames[proxyIdCandidate]
 
-        return createMethodProxyInfo(
+        return ProxyInfo(
             proxyId = resolveMethodProxyId(
                 proxyIdCandidate = proxyIdCandidate,
                 qualifier = qualifier,
                 customMethodName = customName,
             ),
             proxyName = customName ?: proxyName,
-            methodName = methodName,
+            templateName = methodName,
         )
     }
+
+    override fun selectMethodName(
+        qualifier: String,
+        methodName: String,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver,
+        arguments: Array<MethodTypeInfo>
+    ): ProxyInfo = selectMethodName(
+        prefix = "",
+        qualifier = qualifier,
+        methodName = methodName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arguments
+    )
+
+    override fun selectReceiverGetterName(
+        qualifier: String,
+        propertyName: String,
+        receiver: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): ProxyInfo = selectMethodName(
+        prefix = "get",
+        qualifier = qualifier,
+        methodName = propertyName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arrayOf(receiver)
+    )
+
+    override fun selectReceiverSetterName(
+        qualifier: String,
+        propertyName: String,
+        receiver: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): ProxyInfo = selectMethodName(
+        prefix = "set",
+        qualifier = qualifier,
+        methodName = propertyName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arrayOf(receiver)
+    )
 }

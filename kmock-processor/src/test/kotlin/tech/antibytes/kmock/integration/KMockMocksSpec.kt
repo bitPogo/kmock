@@ -945,13 +945,13 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform which contains scoped Extensions is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/scoped/Platform.kt")
+            loadResource("/template/receiver/Platform.kt")
         )
-        val expected = loadResource("/expected/scoped/Platform.kt")
+        val expected = loadResource("/expected/receiver/Platform.kt")
 
         // When
         val compilerResult = compile(
@@ -969,13 +969,13 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Shared which contains scoped Extensions is processed, it writes a mock`() {
+    fun `Given a annotated Source for Shared which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/scoped/Shared.kt")
+            loadResource("/template/receiver/Shared.kt")
         )
-        val expected = loadResource("/expected/scoped/Shared.kt")
+        val expected = loadResource("/expected/receiver/Shared.kt")
 
         // When
         val compilerResult = compile(
@@ -993,13 +993,61 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Common which contains scoped Extensions is processed, it writes a mock`() {
+    fun `Given a annotated Source for Common which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/scoped/Common.kt")
+            loadResource("/template/receiver/Common.kt")
         )
-        val expected = loadResource("/expected/scoped/Common.kt")
+        val expected = loadResource("/expected/receiver/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Platform.kt",
+            loadResource("/template/propertyreceiver/Platform.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/Platform.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for Common which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/propertyreceiver/Common.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/Common.kt")
 
         // When
         val compilerResult = compile(

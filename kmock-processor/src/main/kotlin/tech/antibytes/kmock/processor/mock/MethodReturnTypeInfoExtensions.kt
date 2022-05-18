@@ -21,6 +21,10 @@ private fun MethodReturnTypeInfo.needsCastForRelaxer(relaxer: Relaxer?): Boolean
         ((this.generic != null && this.generic.types.isNotEmpty()) || this.resolveClassScope() != null)
 }
 
+internal fun MethodReturnTypeInfo.needsCastForReceiverProperty(): Boolean {
+    return (this.generic != null && (this.generic.types.size > 1 || this.generic.castReturnType))
+}
+
 internal fun MethodReturnTypeInfo.needsCastAnnotation(
     relaxer: Relaxer?,
 ): Boolean = this.needsCastOnReturn() || this.needsCastForRelaxer(relaxer)
@@ -38,5 +42,7 @@ internal fun MethodReturnTypeInfo.resolveCastOnReturn(): String = resolveCast(th
 internal fun MethodReturnTypeInfo.resolveCastForRelaxer(
     relaxer: Relaxer?
 ): String = resolveCast(this.needsCastForRelaxer(relaxer))
+
+internal fun MethodReturnTypeInfo.resolveCastForReceiverProperty(): String = resolveCast(needsCastForReceiverProperty())
 
 internal fun MethodReturnTypeInfo.hasGenerics(): Boolean = this.generic != null || this.classScope != null

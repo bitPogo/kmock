@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package mock.template.scoped
+package mock.template.receiver
 
 import tech.antibytes.kmock.Mock
 
@@ -18,13 +18,6 @@ interface AnythingElse {
 
 @Mock(Platform::class)
 interface Platform {
-    var Something.thing: Int
-    val SomethingElse<Any>.things: List<Any>
-    var Platform.extension: Int
-    val <T> T.nothing: Unit where T : Something, T : Comparable<T>
-    val myThing: String
-    val AnythingElse.SomethingInside.inside: Int
-
     fun Something.equals(): Int
     fun Something.doSomething(): Int
     fun SomethingElse<Any>.doSomethingElse(): List<Any>

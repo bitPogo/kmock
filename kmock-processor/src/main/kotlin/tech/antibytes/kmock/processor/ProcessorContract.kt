@@ -262,6 +262,22 @@ internal interface ProcessorContract {
             typeResolver: TypeParameterResolver,
             arguments: Array<MethodTypeInfo>
         ): ProxyInfo
+
+        fun selectReceiverGetterName(
+            qualifier: String,
+            propertyName: String,
+            receiver: MethodTypeInfo,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver
+        ): ProxyInfo
+
+        fun selectReceiverSetterName(
+            qualifier: String,
+            propertyName: String,
+            receiver: MethodTypeInfo,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver
+        ): ProxyInfo
     }
 
     interface RelaxerGenerator {
@@ -333,7 +349,7 @@ internal interface ProcessorContract {
             typeResolver: TypeParameterResolver,
             enableSpy: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec?, PropertySpec>
+        ): Pair<PropertySpec, PropertySpec>
     }
 
     interface MethodGenerator {
@@ -355,6 +371,17 @@ internal interface ProcessorContract {
             qualifier: String,
             enableSpy: Boolean,
         ): Pair<List<PropertySpec>, List<FunSpec>>
+    }
+
+    interface ReceiverGenerator {
+        fun buildPropertyBundle(
+            qualifier: String,
+            classScopeGenerics: Map<String, List<TypeName>>?,
+            ksProperty: KSPropertyDeclaration,
+            typeResolver: TypeParameterResolver,
+            enableSpy: Boolean,
+            relaxer: Relaxer?,
+        ): Triple<PropertySpec, PropertySpec?, PropertySpec>
     }
 
     interface MockGenerator {

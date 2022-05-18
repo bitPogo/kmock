@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
 
-class KmockProxyNameSelectorSpec {
+class KMockProxyNameSelectorSpec {
     @Test
     fun `It fulfils ProxyNameCollector`() {
-        KmockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameCollector::class
+        KMockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameCollector::class
     }
 
     @Test
     fun `It fulfils ProxyNameSelector`() {
-        KmockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameSelector::class
+        KMockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameSelector::class
     }
 }

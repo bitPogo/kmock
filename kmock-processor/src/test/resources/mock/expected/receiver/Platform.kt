@@ -1,10 +1,9 @@
-package mock.template.scoped
+package mock.template.`receiver`
 
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Int
-import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
@@ -23,32 +22,8 @@ internal class PlatformMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Platform {
-    public override var Something.thing: Int
-        get() = throw IllegalStateException("This action is not callable.")
-        set(`value`) = throw IllegalStateException("This action is not callable.")
-
-    public override val SomethingElse<Any>.things: List<Any>
-        get() = throw IllegalStateException("This action is not callable.")
-
-    public override var Platform.extension: Int
-        get() = throw IllegalStateException("This action is not callable.")
-        set(`value`) = throw IllegalStateException("This action is not callable.")
-
-    public override val <T> T.nothing: Unit where T : Something, T : Comparable<T>
-        get() = throw IllegalStateException("This action is not callable.")
-
-    public override val myThing: String
-        get() = _myThing.onGet()
-
-    public val _myThing: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("mock.template.scoped.PlatformMock#_myThing", collector =
-        verifier, freeze = freeze)
-
-    public override val AnythingElse.SomethingInside.inside: Int
-        get() = throw IllegalStateException("This action is not callable.")
-
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.scoped.PlatformMock#_iDo", collector =
+        ProxyFactory.createSyncFunProxy("mock.template.receiver.PlatformMock#_iDo", collector =
         verifier, freeze = freeze)
 
     public override fun Something.equals(): Int = throw IllegalStateException(
@@ -86,7 +61,6 @@ internal class PlatformMock(
     }
 
     public fun _clearMock(): Unit {
-        _myThing.clear()
         _iDo.clear()
     }
 }
