@@ -13,7 +13,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -29,11 +28,6 @@ internal class KMockPropertyGenerator(
     private val nameSelector: ProxyNameSelector,
     private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator,
 ) : PropertyGenerator {
-    private val proxy = PropertyProxy::class.asClassName()
-    private val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze)"
-    private val scopedBody = "throw IllegalStateException(\"This action is not callable.\")"
-    private val scopedGetter = FunSpec.getterBuilder().addStatement(scopedBody)
-
     private fun FunSpec.Builder.addGetterInvocation(
         propertyName: String,
         returnType: MethodReturnTypeInfo,
@@ -134,26 +128,7 @@ internal class KMockPropertyGenerator(
             )
     }
 
-    private fun buildShallowPropertyBody(
-        property: PropertySpec.Builder,
-        propertyType: TypeName,
-        isMutable: Boolean,
-    ) {
-        if (isMutable) {
-            property.mutable(true)
-            property.setter(
-                FunSpec.setterBuilder()
-                    .addStatement(scopedBody)
-                    .addParameter("value", propertyType)
-                    .build()
-            )
-        }
-
-        property.getter(scopedGetter.build())
-    }
-
     private fun buildProperty(
-        propertyScope: TypeName?,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
         returnType: MethodReturnTypeInfo,
@@ -165,29 +140,18 @@ internal class KMockPropertyGenerator(
             proxyInfo.templateName,
             propertyType,
             KModifier.OVERRIDE
-        ).receiver(propertyScope)
+        )
 
-        if (propertyScope is TypeVariableName) {
-            property.addTypeVariable(propertyScope)
-        }
 
-        if (propertyScope != null) {
-            buildShallowPropertyBody(
-                property = property,
-                propertyType = propertyType,
-                isMutable = isMutable
-            )
-        } else {
-            buildPropertyBody(
-                property = property,
-                proxyInfo = proxyInfo,
-                propertyType = propertyType,
-                returnType = returnType,
-                isMutable = isMutable,
-                enableSpy = enableSpy,
-                relaxer = relaxer
-            )
-        }
+        buildPropertyBody(
+            property = property,
+            proxyInfo = proxyInfo,
+            propertyType = propertyType,
+            returnType = returnType,
+            isMutable = isMutable,
+            enableSpy = enableSpy,
+            relaxer = relaxer
+        )
 
         return property.build()
     }
@@ -216,23 +180,18 @@ internal class KMockPropertyGenerator(
     }
 
     private fun buildPropertyProxy(
-        propertyScope: TypeName?,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-    ): PropertySpec? {
-        return if (propertyScope == null) {
-            val property = PropertySpec.builder(
-                proxyInfo.proxyName,
-                proxy.parameterizedBy(propertyType),
-            )
+    ): PropertySpec {
+        val property = PropertySpec.builder(
+            proxyInfo.proxyName,
+            proxy.parameterizedBy(propertyType),
+        )
 
-            return determinePropertyInitializer(
-                propertyProxy = property,
-                proxyInfo = proxyInfo,
-            ).build()
-        } else {
-            null
-        }
+        return determinePropertyInitializer(
+            propertyProxy = property,
+            proxyInfo = proxyInfo,
+        ).build()
     }
 
     override fun buildPropertyBundle(
@@ -242,8 +201,7 @@ internal class KMockPropertyGenerator(
         typeResolver: TypeParameterResolver,
         enableSpy: Boolean,
         relaxer: Relaxer?
-    ): Pair<PropertySpec?, PropertySpec> {
-        val propertyScope = ksProperty.determineScope()
+    ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(typeResolver)
         val isMutable = ksProperty.isMutable
@@ -260,12 +218,10 @@ internal class KMockPropertyGenerator(
 
         return Pair(
             buildPropertyProxy(
-                propertyScope = propertyScope,
                 proxyInfo = proxyInfo,
                 propertyType = propertyType,
             ),
             buildProperty(
-                propertyScope = propertyScope,
                 proxyInfo = proxyInfo,
                 propertyType = propertyType,
                 returnType = returnType,
@@ -274,5 +230,10 @@ internal class KMockPropertyGenerator(
                 relaxer = relaxer,
             ),
         )
+    }
+
+    private companion object {
+        private val proxy = PropertyProxy::class.asClassName()
+        private const val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze)"
     }
 }

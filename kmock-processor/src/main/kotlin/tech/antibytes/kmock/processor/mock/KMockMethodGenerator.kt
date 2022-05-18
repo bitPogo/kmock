@@ -45,30 +45,6 @@ internal class KMockMethodGenerator(
     private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator,
     private val genericResolver: GenericResolver,
 ) : MethodGenerator {
-    private val any = Any::class.asTypeName()
-    private val unchecked = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
-    private val varargs = arrayOf(KModifier.VARARG)
-    private val noVarargs = arrayOf<KModifier>()
-    private val asyncProxy = AsyncFunProxy::class.asClassName()
-    private val syncProxy = SyncFunProxy::class.asClassName()
-    private val scopedBody = "throw IllegalStateException(\n\"This action is not callable.\"\n)"
-
-    @OptIn(ExperimentalUnsignedTypes::class)
-    private val specialArrays: Map<TypeName, TypeName> = mapOf(
-        Int::class.asTypeName() to IntArray::class.asTypeName(),
-        Byte::class.asTypeName() to ByteArray::class.asTypeName(),
-        Short::class.asTypeName() to ShortArray::class.asTypeName(),
-        Long::class.asTypeName() to LongArray::class.asTypeName(),
-        Float::class.asTypeName() to FloatArray::class.asTypeName(),
-        Double::class.asTypeName() to DoubleArray::class.asTypeName(),
-        Char::class.asTypeName() to CharArray::class.asTypeName(),
-        Boolean::class.asTypeName() to BooleanArray::class.asTypeName(),
-        UByte::class.asTypeName() to UByteArray::class.asTypeName(),
-        UShort::class.asTypeName() to UShortArray::class.asTypeName(),
-        UInt::class.asTypeName() to UIntArray::class.asTypeName(),
-        ULong::class.asTypeName() to ULongArray::class.asTypeName(),
-    )
-
     private data class ProxyBundle(
         val proxy: PropertySpec,
         val returnType: MethodReturnTypeInfo
@@ -490,5 +466,31 @@ internal class KMockMethodGenerator(
         )
 
         return Pair(proxySignature?.proxy, method)
+    }
+
+    private companion object {
+        private val any = Any::class.asTypeName()
+        private val unchecked = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+        private val varargs = arrayOf(KModifier.VARARG)
+        private val noVarargs = arrayOf<KModifier>()
+        private val asyncProxy = AsyncFunProxy::class.asClassName()
+        private val syncProxy = SyncFunProxy::class.asClassName()
+        private val scopedBody = "throw IllegalStateException(\n\"This action is not callable.\"\n)"
+
+        @OptIn(ExperimentalUnsignedTypes::class)
+        private val specialArrays: Map<TypeName, TypeName> = mapOf(
+            Int::class.asTypeName() to IntArray::class.asTypeName(),
+            Byte::class.asTypeName() to ByteArray::class.asTypeName(),
+            Short::class.asTypeName() to ShortArray::class.asTypeName(),
+            Long::class.asTypeName() to LongArray::class.asTypeName(),
+            Float::class.asTypeName() to FloatArray::class.asTypeName(),
+            Double::class.asTypeName() to DoubleArray::class.asTypeName(),
+            Char::class.asTypeName() to CharArray::class.asTypeName(),
+            Boolean::class.asTypeName() to BooleanArray::class.asTypeName(),
+            UByte::class.asTypeName() to UByteArray::class.asTypeName(),
+            UShort::class.asTypeName() to UShortArray::class.asTypeName(),
+            UInt::class.asTypeName() to UIntArray::class.asTypeName(),
+            ULong::class.asTypeName() to ULongArray::class.asTypeName(),
+        )
     }
 }

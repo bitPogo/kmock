@@ -33,20 +33,23 @@ internal class KmockProxyNameSelector(
     private val prefixResolver: Function1<String, String> = if (enableNewOverloadingNames) {
         { typeName -> typeName.resolvePrefixedTypeName(useTypePrefixFor) }
     } else {
-        { typeName ->
-            typeName
-                .removePrefixes(uselessPrefixes)
-                .packageNameToVariableName()
-        }
+        { typeName -> typeName.removePrefixes(uselessPrefixes).packageNameToVariableName() }
     }
 
     private fun collectPropertyNames(
         template: KSClassDeclaration,
-        nameCollector: MutableList<String>
+        nameCollector: MutableList<String>,
+        overloadedMethods: MutableSet<String>,
     ) {
         template.getAllProperties().forEach { ksProperty ->
             val name = ksProperty.simpleName.asString()
-            nameCollector.add(name)
+            when {
+                ksProperty.isReceiverMethod() && "_get${name.titleCase()}" !in nameCollector -> {
+                    nameCollector.add("_get${name.titleCase()}")
+                }
+                "_get${name.titleCase()}" in nameCollector -> overloadedMethods.add("_get${name.titleCase()}")
+                else -> nameCollector.add(name)
+            }
         }
     }
 
@@ -72,12 +75,13 @@ internal class KmockProxyNameSelector(
 
         collectPropertyNames(
             template = template,
-            nameCollector = nameCollector
+            nameCollector = nameCollector,
+            overloadedMethods = overloadedMethods,
         )
         collectMethodNames(
             template = template,
             nameCollector = nameCollector,
-            overloadedMethods = overloadedMethods
+            overloadedMethods = overloadedMethods,
         )
 
         overloadedProxies = overloadedMethods.toSortedSet()
@@ -96,9 +100,7 @@ internal class KmockProxyNameSelector(
 
     private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
         val className = this.substringAfterLast('.').titleCase()
-        val prefix = prefixMapping
-            .getOrDefault(this, "")
-            .titleCase()
+        val prefix = prefixMapping.getOrDefault(this, "").titleCase()
 
         return "$prefix$className"
     }
@@ -139,10 +141,7 @@ internal class KmockProxyNameSelector(
             null
         } else {
             boundaries.joinToString("") { typeName ->
-                typeName
-                    .toTypeName(typeResolver)
-                    .toString()
-                    .trimTypeName()
+                typeName.toTypeName(typeResolver).toString().trimTypeName()
             }
         }
     }
@@ -309,6 +308,34 @@ internal class KmockProxyNameSelector(
             ),
             proxyName = customName ?: proxyName,
             methodName = methodName,
+        )
+    }
+
+    override fun selectReceiverGetterName(
+        qualifier: String,
+        propertyName: String,
+        receiver: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>,
+        receiverTypeResolver: TypeParameterResolver
+    ): ProxyInfo {
+        val proxyName = selectMethodProxyName(
+            proxyMethodNameCandidate = "_get${propertyName.titleCase()}",
+            arguments = arrayOf(receiver),
+            generics = generics,
+            typeResolver = receiverTypeResolver,
+        )
+
+        val proxyIdCandidate = "$qualifier#$proxyName"
+        val customName = customMethodNames[proxyIdCandidate]
+
+        return ProxyInfo(
+            proxyId = resolveMethodProxyId(
+                proxyIdCandidate = proxyIdCandidate,
+                qualifier = qualifier,
+                customMethodName = customName,
+            ),
+            proxyName = customName ?: proxyName,
+            templateName = propertyName,
         )
     }
 }

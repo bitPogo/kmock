@@ -29,6 +29,7 @@ import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockNonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
+import tech.antibytes.kmock.processor.mock.KMockReceiverGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
 import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
@@ -150,6 +151,11 @@ class KMockProcessorProvider(
             genericResolver = KMockGenerics,
         )
 
+        val receiverGenerator = KMockReceiverGenerator(
+            nameSelector = nameSelector,
+            genericResolver = KMockGenerics,
+        )
+
         val (factoryGenerator, entryPointGenerator) = determineFactoryGenerator(
             options = options,
             logger = logger,
@@ -179,6 +185,7 @@ class KMockProcessorProvider(
                 propertyGenerator = propertyGenerator,
                 methodGenerator = methodGenerator,
                 buildInGenerator = buildInGenerator,
+                receiverGenerator = receiverGenerator,
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,
