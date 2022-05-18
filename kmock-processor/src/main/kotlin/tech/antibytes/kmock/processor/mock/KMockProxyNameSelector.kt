@@ -14,6 +14,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
+import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
 
@@ -43,15 +44,14 @@ internal class KMockProxyNameSelector(
     ) {
         template.getAllProperties().forEach { ksProperty ->
             val name = ksProperty.simpleName.asString()
-            val casedName = name.titleCase()
             when {
-                ksProperty.isReceiverMethod() && "_get$casedName" !in nameCollector -> {
-                    nameCollector.add("_get$casedName")
-                    nameCollector.add("_set$casedName")
+                ksProperty.isReceiverMethod() && "_$name$RECEIVER_GETTER" !in nameCollector -> {
+                    nameCollector.add("_$name$RECEIVER_GETTER")
+                    nameCollector.add("_$name$RECEIVER_SETTER")
                 }
-                ksProperty.isReceiverMethod() && "_get$casedName" in nameCollector -> {
-                    overloadedMethods.add("_get$casedName")
-                    overloadedMethods.add("_set$casedName")
+                ksProperty.isReceiverMethod() && "_$name$RECEIVER_GETTER" in nameCollector -> {
+                    overloadedMethods.add("_$name$RECEIVER_GETTER")
+                    overloadedMethods.add("_$name$RECEIVER_SETTER")
                 }
                 else -> nameCollector.add(name)
             }
@@ -66,10 +66,15 @@ internal class KMockProxyNameSelector(
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
 
-            if (name in nameCollector || "_$name" in nameCollector) {
-                overloadedMethods.add("_$name")
-            } else {
-                nameCollector.add(name)
+            when {
+                ksFunction.isReceiverMethod() && "_$name$RECEIVER_METHOD" !in nameCollector -> {
+                    nameCollector.add("_$name$RECEIVER_METHOD")
+                }
+                ksFunction.isReceiverMethod() && "_$name$RECEIVER_METHOD" in nameCollector -> {
+                    overloadedMethods.add("_$name$RECEIVER_METHOD")
+                }
+                (name in nameCollector || "_$name" in nameCollector) -> overloadedMethods.add("_$name")
+                else -> nameCollector.add(name)
             }
         }
     }
@@ -288,21 +293,15 @@ internal class KMockProxyNameSelector(
     }
 
     private fun selectMethodName(
-        prefix: String,
+        suffix: String,
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
         arguments: Array<MethodTypeInfo>
     ): ProxyInfo {
-        val casedName = if (prefix.isNotEmpty()) {
-            methodName.titleCase()
-        } else {
-            methodName
-        }
-
         val proxyName = selectMethodProxyName(
-            proxyMethodNameCandidate = "_$prefix$casedName",
+            proxyMethodNameCandidate = "_$methodName$suffix",
             arguments = arguments,
             generics = generics,
             typeResolver = typeResolver,
@@ -326,10 +325,10 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
+        arguments: Array<MethodTypeInfo>,
         typeResolver: TypeParameterResolver,
-        arguments: Array<MethodTypeInfo>
     ): ProxyInfo = selectMethodName(
-        prefix = "",
+        suffix = "",
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
@@ -344,7 +343,7 @@ internal class KMockProxyNameSelector(
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
-        prefix = "get",
+        suffix = RECEIVER_GETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
@@ -359,11 +358,32 @@ internal class KMockProxyNameSelector(
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
-        prefix = "set",
+        suffix = RECEIVER_SETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
         typeResolver = typeResolver,
         arguments = arrayOf(receiver)
     )
+
+    override fun selectReceiverMethodName(
+        qualifier: String,
+        methodName: String,
+        generics: Map<String, List<KSTypeReference>>,
+        arguments: Array<MethodTypeInfo>,
+        typeResolver: TypeParameterResolver,
+    ): ProxyInfo = selectMethodName(
+        suffix = RECEIVER_METHOD,
+        qualifier = qualifier,
+        methodName = methodName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arguments
+    )
+
+    private companion object {
+        const val RECEIVER_GETTER = "Getter"
+        const val RECEIVER_SETTER = "Setter"
+        const val RECEIVER_METHOD = "Receiver"
+    }
 }

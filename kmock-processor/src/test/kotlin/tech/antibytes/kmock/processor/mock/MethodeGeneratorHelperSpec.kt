@@ -11,14 +11,9 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
 
-class KMockMethodGeneratorSpec {
+class MethodeGeneratorHelperSpec {
     @Test
-    fun `It fulfils MethodGenerator`() {
-        KMockMethodGenerator(
-            mockk(),
-            mockk(),
-            mockk(),
-            mockk(),
-        ) fulfils ProcessorContract.MethodGenerator::class
+    fun `It fulfils MethodeGeneratorHelper`() {
+        MethodeGeneratorHelper(mockk()) fulfils ProcessorContract.MethodeGeneratorHelper::class
     }
 }

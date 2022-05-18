@@ -16,7 +16,10 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -240,6 +243,11 @@ internal interface ProcessorContract {
         val classScope: Map<String, List<TypeName>>?
     )
 
+    data class ProxyBundle(
+        val proxy: PropertySpec,
+        val returnType: MethodReturnTypeInfo
+    )
+
     interface ProxyNameCollector {
         fun collect(template: KSClassDeclaration)
     }
@@ -259,8 +267,8 @@ internal interface ProcessorContract {
             qualifier: String,
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
+            arguments: Array<MethodTypeInfo>,
             typeResolver: TypeParameterResolver,
-            arguments: Array<MethodTypeInfo>
         ): ProxyInfo
 
         fun selectReceiverGetterName(
@@ -268,7 +276,7 @@ internal interface ProcessorContract {
             propertyName: String,
             receiver: MethodTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver
+            typeResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverSetterName(
@@ -277,6 +285,14 @@ internal interface ProcessorContract {
             receiver: MethodTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
+        ): ProxyInfo
+
+        fun selectReceiverMethodName(
+            qualifier: String,
+            methodName: String,
+            generics: Map<String, List<KSTypeReference>>,
+            arguments: Array<MethodTypeInfo>,
+            typeResolver: TypeParameterResolver,
         ): ProxyInfo
     }
 
@@ -341,6 +357,29 @@ internal interface ProcessorContract {
         ): String
     }
 
+    interface MethodeGeneratorHelper {
+        fun determineArguments(
+            inherited: Boolean,
+            arguments: List<KSValueParameter>,
+            typeParameterResolver: TypeParameterResolver
+        ): Array<MethodTypeInfo>
+
+        fun resolveTypeParameter(
+            parameter: List<KSTypeParameter>,
+            typeParameterResolver: TypeParameterResolver
+        ): List<TypeName>
+
+        fun buildProxy(
+            proxyInfo: ProxyInfo,
+            arguments: Array<MethodTypeInfo>,
+            suspending: Boolean,
+            classScopeGenerics: Map<String, List<TypeName>>?,
+            generics: Map<String, List<KSTypeReference>>?,
+            returnType: KSType,
+            typeResolver: TypeParameterResolver,
+        ): ProxyBundle
+    }
+
     interface PropertyGenerator {
         fun buildPropertyBundle(
             qualifier: String,
@@ -354,7 +393,6 @@ internal interface ProcessorContract {
 
     interface MethodGenerator {
         fun buildMethodBundle(
-            methodScope: TypeName?,
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksFunction: KSFunctionDeclaration,
@@ -362,7 +400,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec?, FunSpec>
+        ): Pair<PropertySpec, FunSpec>
     }
 
     interface BuildInMethodGenerator {
@@ -382,6 +420,16 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             relaxer: Relaxer?,
         ): Triple<PropertySpec, PropertySpec?, PropertySpec>
+
+        fun buildMethodBundle(
+            qualifier: String,
+            classScopeGenerics: Map<String, List<TypeName>>?,
+            ksFunction: KSFunctionDeclaration,
+            typeResolver: TypeParameterResolver,
+            enableSpy: Boolean,
+            inherited: Boolean,
+            relaxer: Relaxer?,
+        ): Pair<PropertySpec, FunSpec>
     }
 
     interface MockGenerator {
@@ -549,6 +597,8 @@ internal interface ProcessorContract {
             "UNUSED_PARAMETER",
             "UNUSED_EXPRESSION"
         ).build()
+
+        val UNCHECKED = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
 
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)

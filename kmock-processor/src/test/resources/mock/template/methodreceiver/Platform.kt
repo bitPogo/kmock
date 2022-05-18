@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-package mock.template.receiver
+package mock.template.methodreceiver
 
 import tech.antibytes.kmock.Mock
 
@@ -17,13 +17,18 @@ interface AnythingElse {
 }
 
 @Mock(Platform::class)
-interface Platform {
+interface Platform<L> {
     fun Something.equals(): Int
     fun Something.doSomething(): Int
     fun SomethingElse<Any>.doSomethingElse(): List<Any>
-    fun Platform.mutabor(): Int
+    fun Platform<*>.mutabor(): Int
     fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
+    fun <T> T.doNothing(): Unit where T : Any
     fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T : Comparable<T>
     fun AnythingElse.SomethingInside.doInside(): Int
+
     fun iDo()
+    fun mutabor(x: Platform<*>)
+    fun doNothingElse(a: Any): Any
+    fun doSomethingElse(x: SomethingElse<Any>)
 }

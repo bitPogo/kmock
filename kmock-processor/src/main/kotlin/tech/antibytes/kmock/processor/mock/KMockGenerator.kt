@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor.mock
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.AnnotationSpec
@@ -43,6 +44,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.utils.isInherited
+import tech.antibytes.kmock.processor.utils.isPublicOpen
+import tech.antibytes.kmock.processor.utils.isReceiverMethod
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
@@ -118,9 +122,7 @@ internal class KMockGenerator(
         template: KSClassDeclaration,
     ): String = "${template.packageName.asString()}.$mockName"
 
-    private fun isNotBuildInMethod(
-        name: String
-    ): Boolean = name != "equals" && name != "toString" && name != "hashCode"
+    private fun String.isNotBuildInMethod(): Boolean = this != "equals" && this != "toString" && this != "hashCode"
 
     private fun resolveSuperTypes(
         template: KSClassDeclaration,
@@ -179,6 +181,38 @@ internal class KMockGenerator(
                 this.addProperty(proxySetter)
                 proxyNameCollector.add(proxySetter.name)
             }
+        }
+    }
+
+    private fun resolveMethodBundle(
+        ksFunction: KSFunctionDeclaration,
+        qualifier: String,
+        inherited: Boolean,
+        enableSpy: Boolean,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        typeResolver: TypeParameterResolver,
+        relaxer: Relaxer?,
+    ): Pair<PropertySpec, FunSpec> {
+        return if (ksFunction.isReceiverMethod()) {
+            receiverGenerator.buildMethodBundle(
+                qualifier = qualifier,
+                classScopeGenerics = classScopeGenerics,
+                ksFunction = ksFunction,
+                typeResolver = typeResolver,
+                enableSpy = enableSpy,
+                inherited = inherited,
+                relaxer = relaxer,
+            )
+        } else {
+            methodGenerator.buildMethodBundle(
+                qualifier = qualifier,
+                classScopeGenerics = classScopeGenerics,
+                ksFunction = ksFunction,
+                typeResolver = typeResolver,
+                enableSpy = enableSpy,
+                inherited = inherited,
+                relaxer = relaxer,
+            )
         }
     }
 
@@ -264,26 +298,22 @@ internal class KMockGenerator(
 
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
-            val scope = ksFunction.determineScope()
 
-            if (ksFunction.isPublicOpen() && (isNotBuildInMethod(name) || scope != null)) {
-                val (proxy, method) = methodGenerator.buildMethodBundle(
-                    methodScope = scope,
-                    qualifier = qualifier,
-                    classScopeGenerics = classScopeGenerics,
+            if (ksFunction.isPublicOpen() && (name.isNotBuildInMethod() || ksFunction.isReceiverMethod())) {
+                val (proxy, method) = resolveMethodBundle(
                     ksFunction = ksFunction,
-                    typeResolver = typeResolver,
+                    qualifier = qualifier,
                     enableSpy = enableSpy,
                     inherited = template.isInherited(parents),
+                    classScopeGenerics = classScopeGenerics,
+                    typeResolver = typeResolver,
                     relaxer = relaxer,
                 )
 
                 mock.addFunction(method)
 
-                if (proxy != null) {
-                    proxyNameCollector.add(proxy.name)
-                    mock.addProperty(proxy)
-                }
+                proxyNameCollector.add(proxy.name)
+                mock.addProperty(proxy)
             }
         }
 
