@@ -31,13 +31,13 @@ internal class CommonMock<L>(
 
     public val _getThing:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#thing", collector =
-        verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getThing",
+            collector = verifier, freeze = freeze)
 
     public val _setThing:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#thing", collector =
-        verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_setThing",
+            collector = verifier, freeze = freeze)
 
     public override val SomethingElse<Any>.things: List<Any>
         get() = _getThings.invoke(this@things)
@@ -45,8 +45,8 @@ internal class CommonMock<L>(
     public val _getThings:
         KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#things", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getThings",
+            collector = verifier, freeze = freeze)
 
     public override var Common<*>.extension: Int
         get() = _getExtension.invoke(this@extension)
@@ -56,12 +56,12 @@ internal class CommonMock<L>(
 
     public val _getExtension:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Common<*>) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#extension",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getExtension",
             collector = verifier, freeze = freeze)
 
     public val _setExtension:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Common<*>) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#extension",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_setExtension",
             collector = verifier, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
@@ -73,13 +73,13 @@ internal class CommonMock<L>(
 
     public val _getNothingWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#nothing", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getNothingWithTSomethingComparable",
+            collector = verifier, freeze = freeze)
 
     public val _setNothingWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#nothing", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_setNothingWithTSomethingComparable",
+            collector = verifier, freeze = freeze)
 
     public override var <T : L> T.nothing: L
         get() = _getNothingWithTL.invoke(this@nothing)
@@ -88,12 +88,12 @@ internal class CommonMock<L>(
         }
 
     public val _getNothingWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#nothing", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getNothingWithTL",
+            collector = verifier, freeze = freeze)
 
     public val _setNothingWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#nothing", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_setNothingWithTL",
+            collector = verifier, freeze = freeze)
 
     public override var L.otherThing: String
         get() = _getOtherThingWithLAny.invoke(this@otherThing)
@@ -103,11 +103,11 @@ internal class CommonMock<L>(
 
     public val _getOtherThingWithLAny: KMockContract.SyncFunProxy<String, (kotlin.Any?) ->
     kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#otherThing",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getOtherThingWithLAny",
             collector = verifier, freeze = freeze)
 
     public val _setOtherThing: KMockContract.SyncFunProxy<String, (kotlin.Any?) -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#otherThing",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_setOtherThing",
             collector = verifier, freeze = freeze)
 
     public override val myThing: String
@@ -123,11 +123,11 @@ internal class CommonMock<L>(
     public val _getInside:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
         kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#inside", collector
-        = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getInside",
+            collector = verifier, freeze = freeze)
 
     public val _getOtherThingWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#getOtherThing",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getOtherThingWithVoid",
             collector = verifier, freeze = freeze)
 
     public override fun getOtherThing(): Unit = _getOtherThingWithVoid.invoke() {

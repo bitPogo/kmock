@@ -8,7 +8,6 @@ package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -24,15 +23,15 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
+import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockReceiverGenerator(
     private val nameSelector: ProxyNameSelector,

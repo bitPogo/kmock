@@ -4,7 +4,6 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Int
-import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
@@ -23,30 +22,6 @@ internal class CommonMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Common {
-    public override var Something.thing: Int
-        get() = throw IllegalStateException("This action is not callable.")
-        set(`value`) = throw IllegalStateException("This action is not callable.")
-
-    public override val SomethingElse<Any>.things: List<Any>
-        get() = throw IllegalStateException("This action is not callable.")
-
-    public override var Common.extension: Int
-        get() = throw IllegalStateException("This action is not callable.")
-        set(`value`) = throw IllegalStateException("This action is not callable.")
-
-    public override val <T> T.nothing: Unit where T : Something, T : Comparable<T>
-        get() = throw IllegalStateException("This action is not callable.")
-
-    public override val myThing: String
-        get() = _myThing.onGet()
-
-    public val _myThing: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("mock.template.receiver.CommonMock#_myThing", collector =
-        verifier, freeze = freeze)
-
-    public override val AnythingElse.SomethingInside.inside: Int
-        get() = throw IllegalStateException("This action is not callable.")
-
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.receiver.CommonMock#_iDo", collector =
         verifier, freeze = freeze)
@@ -86,7 +61,6 @@ internal class CommonMock(
     }
 
     public fun _clearMock(): Unit {
-        _myThing.clear()
         _iDo.clear()
     }
 }

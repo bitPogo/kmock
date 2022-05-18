@@ -18,13 +18,6 @@ interface AnythingElse {
 
 @MockCommon(Common::class)
 interface Common {
-    var Something.thing: Int
-    val SomethingElse<Any>.things: List<Any>
-    var Common.extension: Int
-    val <T> T.nothing: Unit where T : Something, T : Comparable<T>
-    val myThing: String
-    val AnythingElse.SomethingInside.inside: Int
-
     fun Something.doSomething(): Int
     fun SomethingElse<Any>.doSomethingElse(): List<Any>
     fun Common.mutabor(): Int

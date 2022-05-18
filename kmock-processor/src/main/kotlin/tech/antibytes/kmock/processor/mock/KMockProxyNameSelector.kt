@@ -45,11 +45,11 @@ internal class KMockProxyNameSelector(
             val name = ksProperty.simpleName.asString()
             val casedName = name.titleCase()
             when {
-                ksProperty.isReceiverMethod() && ("_get$casedName" !in nameCollector || "_set$casedName" !in nameCollector) -> {
+                ksProperty.isReceiverMethod() && "_get$casedName" !in nameCollector -> {
                     nameCollector.add("_get$casedName")
                     nameCollector.add("_set$casedName")
                 }
-                "_get$casedName" in nameCollector || "_set$casedName" in nameCollector -> {
+                ksProperty.isReceiverMethod() && "_get$casedName" in nameCollector -> {
                     overloadedMethods.add("_get$casedName")
                     overloadedMethods.add("_set$casedName")
                 }
@@ -295,20 +295,20 @@ internal class KMockProxyNameSelector(
         typeResolver: TypeParameterResolver,
         arguments: Array<MethodTypeInfo>
     ): ProxyInfo {
-        val proxyMethodNameCandidate = if (prefix.isNotEmpty()) {
+        val casedName = if (prefix.isNotEmpty()) {
             methodName.titleCase()
         } else {
             methodName
         }
 
         val proxyName = selectMethodProxyName(
-            proxyMethodNameCandidate = "_$prefix$proxyMethodNameCandidate",
+            proxyMethodNameCandidate = "_$prefix$casedName",
             arguments = arguments,
             generics = generics,
             typeResolver = typeResolver,
         )
 
-        val proxyIdCandidate = "$qualifier#$methodName"
+        val proxyIdCandidate = "$qualifier#$proxyName"
         val customName = customMethodNames[proxyIdCandidate]
 
         return ProxyInfo(

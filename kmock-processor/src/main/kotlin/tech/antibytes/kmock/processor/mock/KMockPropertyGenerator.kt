@@ -142,7 +142,6 @@ internal class KMockPropertyGenerator(
             KModifier.OVERRIDE
         )
 
-
         buildPropertyBody(
             property = property,
             proxyInfo = proxyInfo,

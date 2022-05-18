@@ -17,4 +17,3 @@ class KMockReceiverGeneratorSpec {
         KMockReceiverGenerator(mockk(), mockk()) fulfils ProcessorContract.ReceiverGenerator::class
     }
 }
-
