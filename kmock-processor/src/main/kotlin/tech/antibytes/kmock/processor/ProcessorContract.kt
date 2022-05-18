@@ -278,6 +278,14 @@ internal interface ProcessorContract {
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
         ): ProxyInfo
+
+        fun selectReceiverMethodName(
+            qualifier: String,
+            methodName: String,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver,
+            arguments: Array<MethodTypeInfo>
+        ): ProxyInfo
     }
 
     interface RelaxerGenerator {

@@ -363,14 +363,14 @@ internal class KMockReceiverGenerator(
             receiverTypeResolver = receiverTypeResolver,
             typeResolver = typeResolver,
         )
-        val generics = ksProperty.resolveReceiverBoundaries(typeResolver)
+        val generics = genericResolver.extractGenerics(ksProperty, receiverTypeResolver) ?: emptyMap()
         val isMutable = ksProperty.isMutable
 
         val getterProxyInfo = nameSelector.selectReceiverGetterName(
             qualifier = qualifier,
             propertyName = propertyName,
             receiver = receiverInfo,
-            generics = generics ?: emptyMap(),
+            generics = generics,
             typeResolver = receiverTypeResolver,
         )
 
@@ -379,7 +379,7 @@ internal class KMockReceiverGenerator(
             arguments = arrayOf(receiverInfo),
             suspending = false,
             classScopeGenerics = classScopeGenerics,
-            generics = generics ?: emptyMap(),
+            generics = generics,
             returnType = propertyType,
             typeResolver = receiverTypeResolver,
         )
@@ -400,7 +400,7 @@ internal class KMockReceiverGenerator(
             setterProxy = setterProxyInfo,
             receiver = receiverInfo.typeName,
             returnType = getterReturnType,
-            typeParameter = mapPropertyTypeParameter(ksProperty, receiverTypeResolver)
+            typeParameter = genericResolver.mapDeclaredGenerics(generics, receiverTypeResolver)
         )
 
         return Triple(getter, setter, property,)

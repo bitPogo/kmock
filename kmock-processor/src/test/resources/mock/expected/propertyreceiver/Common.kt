@@ -101,11 +101,11 @@ internal class CommonMock<L>(
             _otherThingSetter.invoke(this@otherThing, value)
         }
 
-    public val _otherThingGetter: KMockContract.SyncFunProxy<String, (kotlin.Any?) -> kotlin.String> =
+    public val _otherThingGetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_otherThingGetter",
             collector = verifier, freeze = freeze)
 
-    public val _otherThingSetter: KMockContract.SyncFunProxy<String, (kotlin.Any?) -> kotlin.String> =
+    public val _otherThingSetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_otherThingSetter",
             collector = verifier, freeze = freeze)
 

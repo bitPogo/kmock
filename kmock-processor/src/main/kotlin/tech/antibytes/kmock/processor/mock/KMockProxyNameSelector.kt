@@ -360,6 +360,16 @@ internal class KMockProxyNameSelector(
         arguments = arrayOf(receiver)
     )
 
+    override fun selectReceiverMethodName(
+        qualifier: String,
+        methodName: String,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver,
+        arguments: Array<MethodTypeInfo>
+    ): ProxyInfo {
+        TODO("Not yet implemented")
+    }
+
     private companion object {
         const val RECEIVER_GETTER = "Getter"
         const val RECEIVER_SETTER = "Setter"
