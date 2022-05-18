@@ -1041,6 +1041,30 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for Common which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Common.kt",
+            loadResource("/template/propertyreceiver/Common.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/Common.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = true,
+        )
+        val actual = resolveGenerated("CommonMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for a Platform is processed, it allows renaming its method names, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
