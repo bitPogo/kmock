@@ -14,6 +14,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
+import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
 
@@ -65,10 +66,15 @@ internal class KMockProxyNameSelector(
         template.getAllFunctions().forEach { ksFunction ->
             val name = ksFunction.simpleName.asString()
 
-            if (name in nameCollector || "_$name" in nameCollector) {
-                overloadedMethods.add("_$name")
-            } else {
-                nameCollector.add(name)
+            when {
+                ksFunction.isReceiverMethod() && "_$name$RECEIVER_METHOD" !in nameCollector -> {
+                    nameCollector.add("_$name$RECEIVER_METHOD")
+                }
+                ksFunction.isReceiverMethod() && "_$name$RECEIVER_METHOD" in nameCollector -> {
+                    overloadedMethods.add("_$name$RECEIVER_METHOD")
+                }
+                (name in nameCollector || "_$name" in nameCollector) -> overloadedMethods.add("_$name")
+                else -> nameCollector.add(name)
             }
         }
     }
@@ -319,8 +325,8 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
+        arguments: Array<MethodTypeInfo>,
         typeResolver: TypeParameterResolver,
-        arguments: Array<MethodTypeInfo>
     ): ProxyInfo = selectMethodName(
         suffix = "",
         qualifier = qualifier,
@@ -364,14 +370,20 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
+        arguments: Array<MethodTypeInfo>,
         typeResolver: TypeParameterResolver,
-        arguments: Array<MethodTypeInfo>
-    ): ProxyInfo {
-        TODO("Not yet implemented")
-    }
+    ): ProxyInfo = selectMethodName(
+        suffix = RECEIVER_METHOD,
+        qualifier = qualifier,
+        methodName = methodName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arguments
+    )
 
     private companion object {
         const val RECEIVER_GETTER = "Getter"
         const val RECEIVER_SETTER = "Setter"
+        const val RECEIVER_METHOD = "Receiver"
     }
 }

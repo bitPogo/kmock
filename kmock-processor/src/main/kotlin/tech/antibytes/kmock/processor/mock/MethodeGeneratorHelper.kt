@@ -22,13 +22,13 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class MethodeGeneratorHelper(
@@ -54,7 +54,7 @@ internal class MethodeGeneratorHelper(
         }.toTypedArray()
     }
 
-    override fun determineTypeParameter(
+    override fun resolveTypeParameter(
         parameter: List<KSTypeParameter>,
         typeParameterResolver: TypeParameterResolver
     ): List<TypeName> {

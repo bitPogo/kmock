@@ -6,24 +6,28 @@
 
 package tech.antibytes.kmock.processor.mock
 
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
-import com.squareup.kotlinpoet.AnnotationSpec
+import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MethodeGeneratorHelper
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.MethodeGeneratorHelper
+import tech.antibytes.kmock.processor.utils.resolveReceiver
+import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
 
 internal class KMockReceiverGenerator(
     private val utils: MethodeGeneratorHelper,
@@ -31,6 +35,22 @@ internal class KMockReceiverGenerator(
     private val genericResolver: GenericResolver,
 ) : ReceiverGenerator {
     private fun KSPropertyDeclaration.determineReceiver(
+        receiverTypeResolver: TypeParameterResolver,
+        typeResolver: TypeParameterResolver,
+    ): MethodTypeInfo {
+        val receiver = this.resolveReceiver(
+            typeResolver = typeResolver,
+            receiverTypeResolver = receiverTypeResolver,
+        )
+
+        return MethodTypeInfo(
+            argumentName = "receiver",
+            typeName = receiver,
+            isVarArg = false,
+        )
+    }
+
+    private fun KSFunctionDeclaration.determineReceiver(
         receiverTypeResolver: TypeParameterResolver,
         typeResolver: TypeParameterResolver,
     ): MethodTypeInfo {
@@ -64,14 +84,19 @@ internal class KMockReceiverGenerator(
         }
 
         if (returnType.needsCastForReceiverProperty()) {
-            property.addAnnotation(unchecked)
+            property.addAnnotation(UNCHECKED)
         }
 
         val cast = returnType.resolveCastForReceiverProperty()
 
         property.getter(
             FunSpec.getterBuilder()
-                .addCode("return ${getterProxy.proxyName}.invoke(this@${getterProxy.templateName})$cast")
+                .addCode(
+                    "return %L.invoke(this@%L)%L",
+                    getterProxy.proxyName,
+                    getterProxy.templateName,
+                    cast,
+                )
                 .build()
         )
 
@@ -80,7 +105,11 @@ internal class KMockReceiverGenerator(
             property.setter(
                 FunSpec.setterBuilder()
                     .addParameter("value", returnType.typeName)
-                    .addStatement("${setterProxy.proxyName}.invoke(this@${setterProxy.templateName}, value)")
+                    .addStatement(
+                        "%L.invoke(this@%L, value)",
+                        setterProxy.proxyName,
+                        setterProxy.templateName,
+                    )
                     .build()
             )
         }
@@ -181,8 +210,136 @@ internal class KMockReceiverGenerator(
         return Triple(getter, setter, property,)
     }
 
+    private fun buildMethodBody(
+        method: FunSpec.Builder,
+        proxyInfo: ProxyInfo,
+        enableSpy: Boolean,
+        arguments: Array<MethodTypeInfo>,
+        returnType: MethodReturnTypeInfo,
+        relaxer: Relaxer?
+    ) {
+        if (returnType.needsCastAnnotation(relaxer = relaxer)) {
+            method.addAnnotation(UNCHECKED)
+        }
+
+        val cast = returnType.resolveCastOnReturn()
+
+        val invocation = arguments.joinToString(", ") { argument -> argument.argumentName }
+
+        method.addCode(
+            "return %L.invoke(this@%L,%L)%L",
+            proxyInfo.proxyName,
+            proxyInfo.templateName,
+            invocation,
+            cast
+        )
+    }
+
+    private fun buildMethod(
+        proxyInfo: ProxyInfo,
+        generics: Map<String, List<KSTypeReference>>?,
+        isSuspending: Boolean,
+        enableSpy: Boolean,
+        receiverInfo: MethodTypeInfo,
+        arguments: Array<MethodTypeInfo>,
+        parameter: List<TypeName>,
+        returnType: MethodReturnTypeInfo,
+        typeResolver: TypeParameterResolver,
+        relaxer: Relaxer?
+    ): FunSpec {
+        val method = FunSpec
+            .builder(proxyInfo.templateName)
+            .addModifiers(KModifier.OVERRIDE)
+            .addArguments(arguments)
+            .returns(returnType.typeName)
+            .receiver(receiverInfo.typeName)
+
+        if (generics != null) {
+            method.typeVariables.addAll(
+                genericResolver.mapDeclaredGenerics(generics, typeResolver)
+            )
+        }
+
+        if (isSuspending) {
+            method.addModifiers(KModifier.SUSPEND)
+        }
+
+        buildMethodBody(
+            method = method,
+            proxyInfo = proxyInfo,
+            enableSpy = enableSpy,
+            arguments = arguments,
+            returnType = returnType,
+            relaxer = relaxer
+        )
+
+        return method.build()
+    }
+
+    override fun buildMethodBundle(
+        qualifier: String,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        ksFunction: KSFunctionDeclaration,
+        typeResolver: TypeParameterResolver,
+        enableSpy: Boolean,
+        inherited: Boolean,
+        relaxer: Relaxer?
+    ): Pair<PropertySpec, FunSpec> {
+        val methodName = ksFunction.simpleName.asString()
+        val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(typeResolver)
+        val receiverInfo = ksFunction.determineReceiver(
+            receiverTypeResolver = receiverTypeResolver,
+            typeResolver = typeResolver,
+        )
+        val generics = genericResolver.extractGenerics(ksFunction, receiverTypeResolver)
+        val arguments = utils.determineArguments(
+            inherited = inherited,
+            arguments = ksFunction.parameters,
+            typeParameterResolver = receiverTypeResolver
+        )
+        val argumentsWithReceiver = arguments.toMutableList().also { it.add(0, receiverInfo) }.toTypedArray()
+        val parameter = utils.resolveTypeParameter(
+            parameter = ksFunction.typeParameters,
+            typeParameterResolver = receiverTypeResolver,
+        )
+
+        val proxyInfo = nameSelector.selectReceiverMethodName(
+            qualifier = qualifier,
+            methodName = methodName,
+            arguments = argumentsWithReceiver,
+            generics = generics ?: emptyMap(),
+            typeResolver = receiverTypeResolver,
+        )
+        val returnType = ksFunction.returnType!!.resolve()
+        val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
+
+        val proxySignature = utils.buildProxy(
+            proxyInfo = proxyInfo,
+            arguments = argumentsWithReceiver,
+            classScopeGenerics = classScopeGenerics,
+            generics = generics,
+            suspending = isSuspending,
+            returnType = returnType,
+            typeResolver = receiverTypeResolver,
+        )
+
+        val method = buildMethod(
+            proxyInfo = proxyInfo,
+            receiverInfo = receiverInfo,
+            generics = generics,
+            isSuspending = isSuspending,
+            enableSpy = enableSpy,
+            parameter = parameter,
+            arguments = arguments,
+            returnType = proxySignature.returnType,
+            typeResolver = receiverTypeResolver,
+            relaxer = relaxer
+        )
+
+        return Pair(proxySignature.proxy, method)
+    }
+
     private companion object {
-        private val unchecked = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
         private val emptySetter = Pair(null, null)
     }
 }

@@ -6,9 +6,6 @@
 
 package mock.template.methodreceiver
 
-import mock.template.receiver.AnythingElse
-import mock.template.receiver.Something
-import mock.template.receiver.SomethingElse
 import tech.antibytes.kmock.Mock
 
 interface Something
@@ -26,6 +23,7 @@ interface Platform<L> {
     fun SomethingElse<Any>.doSomethingElse(): List<Any>
     fun Platform<*>.mutabor(): Int
     fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
+    fun <T> T.doNothing(): Unit where T : Any
     fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T : Comparable<T>
     fun AnythingElse.SomethingInside.doInside(): Int
 
