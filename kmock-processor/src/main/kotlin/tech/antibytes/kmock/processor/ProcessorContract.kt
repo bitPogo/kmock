@@ -16,7 +16,10 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -240,6 +243,11 @@ internal interface ProcessorContract {
         val classScope: Map<String, List<TypeName>>?
     )
 
+    data class ProxyBundle(
+        val proxy: PropertySpec,
+        val returnType: MethodReturnTypeInfo
+    )
+
     interface ProxyNameCollector {
         fun collect(template: KSClassDeclaration)
     }
@@ -347,6 +355,29 @@ internal interface ProcessorContract {
             methodName: String,
             argument: MethodTypeInfo?
         ): String
+    }
+
+    interface MethodeGeneratorHelper {
+        fun determineArguments(
+            inherited: Boolean,
+            arguments: List<KSValueParameter>,
+            typeParameterResolver: TypeParameterResolver
+        ): Array<MethodTypeInfo>
+
+        fun determineTypeParameter(
+            parameter: List<KSTypeParameter>,
+            typeParameterResolver: TypeParameterResolver
+        ): List<TypeName>
+
+        fun buildProxy(
+            proxyInfo: ProxyInfo,
+            arguments: Array<MethodTypeInfo>,
+            suspending: Boolean,
+            classScopeGenerics: Map<String, List<TypeName>>?,
+            generics: Map<String, List<KSTypeReference>>?,
+            returnType: KSType,
+            typeResolver: TypeParameterResolver,
+        ): ProxyBundle
     }
 
     interface PropertyGenerator {

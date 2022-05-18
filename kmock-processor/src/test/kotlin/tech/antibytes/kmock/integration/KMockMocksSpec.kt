@@ -11,6 +11,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
@@ -945,6 +946,7 @@ class KMockMocksSpec {
     }
 
     @Test
+    @Disabled
     fun `Given a annotated Source for a Platform which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -969,6 +971,7 @@ class KMockMocksSpec {
     }
 
     @Test
+    @Disabled
     fun `Given a annotated Source for Shared which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -993,6 +996,7 @@ class KMockMocksSpec {
     }
 
     @Test
+    @Disabled
     fun `Given a annotated Source for Common which contains Receivers is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(

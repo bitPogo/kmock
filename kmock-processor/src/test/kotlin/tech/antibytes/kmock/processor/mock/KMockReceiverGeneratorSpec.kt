@@ -14,6 +14,6 @@ import tech.antibytes.util.test.fulfils
 class KMockReceiverGeneratorSpec {
     @Test
     fun `It fulfils ReceiverGenerator`() {
-        KMockReceiverGenerator(mockk(), mockk()) fulfils ProcessorContract.ReceiverGenerator::class
+        KMockReceiverGenerator(mockk(), mockk(), mockk()) fulfils ProcessorContract.ReceiverGenerator::class
     }
 }
