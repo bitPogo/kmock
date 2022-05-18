@@ -32,7 +32,7 @@ import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
 import tech.antibytes.kmock.processor.mock.KMockReceiverGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
 import tech.antibytes.kmock.processor.mock.KMockSpyGenerator
-import tech.antibytes.kmock.processor.mock.KmockProxyNameSelector
+import tech.antibytes.kmock.processor.mock.KMockProxyNameSelector
 import tech.antibytes.kmock.processor.multi.KMockMultiInterfaceBinder
 import tech.antibytes.kmock.processor.multi.KMockParentFinder
 import tech.antibytes.kmock.processor.utils.AnnotationFilter
@@ -125,7 +125,7 @@ class KMockProcessorProvider(
         )
 
         val relaxerGenerator = KMockRelaxerGenerator()
-        val nameSelector = KmockProxyNameSelector(
+        val nameSelector = KMockProxyNameSelector(
             enableNewOverloadingNames = options.enableNewOverloadingNames,
             customMethodNames = options.customMethodNames,
             useTypePrefixFor = options.useTypePrefixFor,
