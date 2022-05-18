@@ -268,7 +268,15 @@ internal interface ProcessorContract {
             propertyName: String,
             receiver: MethodTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
-            receiverTypeResolver: TypeParameterResolver
+            typeResolver: TypeParameterResolver
+        ): ProxyInfo
+
+        fun selectReceiverSetterName(
+            qualifier: String,
+            propertyName: String,
+            receiver: MethodTypeInfo,
+            generics: Map<String, List<KSTypeReference>>,
+            typeResolver: TypeParameterResolver
         ): ProxyInfo
     }
 

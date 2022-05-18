@@ -23,13 +23,21 @@ internal class PlatformMock<L>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Platform<L> {
-    public override val Something.thing: Int
+    public override var Something.thing: Int
         get() = _getThing.invoke(this@thing)
+        set(`value`) {
+            _setThing.invoke(this@thing, value)
+        }
 
     public val _getThing:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getThing",
-            collector = verifier, freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#thing", collector
+        = verifier, freeze = freeze)
+
+    public val _setThing:
+        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#thing", collector
+        = verifier, freeze = freeze)
 
     public override val SomethingElse<Any>.things: List<Any>
         get() = _getThings.invoke(this@things)
@@ -37,39 +45,69 @@ internal class PlatformMock<L>(
     public val _getThings:
         KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getThings",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#things",
             collector = verifier, freeze = freeze)
 
-    public override val Platform<*>.extension: Int
+    public override var Platform<*>.extension: Int
         get() = _getExtension.invoke(this@extension)
+        set(`value`) {
+            _setExtension.invoke(this@extension, value)
+        }
 
     public val _getExtension:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Platform<*>) -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getExtension",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#extension",
+            collector = verifier, freeze = freeze)
+
+    public val _setExtension:
+        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Platform<*>) -> kotlin.Int> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#extension",
             collector = verifier, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
-    public override val <T> T.nothing: T where T : Something, T : Comparable<T>
+    public override var <T> T.nothing: T where T : Something, T : Comparable<T>
         get() = _getNothingWithTSomethingComparable.invoke(this@nothing) as T
+        set(`value`) {
+            _setNothingWithTSomethingComparable.invoke(this@nothing, value)
+        }
 
     public val _getNothingWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getNothingWithTSomethingComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#nothing",
             collector = verifier, freeze = freeze)
 
-    public override val <T : L> T.nothing: L
+    public val _setNothingWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#nothing",
+            collector = verifier, freeze = freeze)
+
+    public override var <T : L> T.nothing: L
         get() = _getNothingWithTL.invoke(this@nothing)
+        set(`value`) {
+            _setNothingWithTL.invoke(this@nothing, value)
+        }
 
     public val _getNothingWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getNothingWithTL",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#nothing",
             collector = verifier, freeze = freeze)
 
-    public override val <L> L.otherThing: String
+    public val _setNothingWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#nothing",
+            collector = verifier, freeze = freeze)
+
+    public override var L.otherThing: String
         get() = _getOtherThingWithLAny.invoke(this@otherThing)
+        set(`value`) {
+            _setOtherThing.invoke(this@otherThing, value)
+        }
 
     public val _getOtherThingWithLAny: KMockContract.SyncFunProxy<String, (kotlin.Any?) ->
     kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getOtherThingWithLAny",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#otherThing",
+            collector = verifier, freeze = freeze)
+
+    public val _setOtherThing: KMockContract.SyncFunProxy<String, (kotlin.Any?) -> kotlin.String> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#otherThing",
             collector = verifier, freeze = freeze)
 
     public override val myThing: String
@@ -85,11 +123,11 @@ internal class PlatformMock<L>(
     public val _getInside:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
         kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getInside",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#inside",
             collector = verifier, freeze = freeze)
 
     public val _getOtherThingWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_getOtherThingWithVoid",
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#getOtherThing",
             collector = verifier, freeze = freeze)
 
     public override fun getOtherThing(): Unit = _getOtherThingWithVoid.invoke() {
@@ -98,11 +136,16 @@ internal class PlatformMock<L>(
 
     public fun _clearMock(): Unit {
         _getThing.clear()
+        _setThing.clear()
         _getThings.clear()
         _getExtension.clear()
+        _setExtension.clear()
         _getNothingWithTSomethingComparable.clear()
+        _setNothingWithTSomethingComparable.clear()
         _getNothingWithTL.clear()
+        _setNothingWithTL.clear()
         _getOtherThingWithLAny.clear()
+        _setOtherThing.clear()
         _myThing.clear()
         _getInside.clear()
         _getOtherThingWithVoid.clear()

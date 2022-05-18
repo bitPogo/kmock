@@ -43,11 +43,16 @@ internal class KmockProxyNameSelector(
     ) {
         template.getAllProperties().forEach { ksProperty ->
             val name = ksProperty.simpleName.asString()
+            val casedName = name.titleCase()
             when {
-                ksProperty.isReceiverMethod() && "_get${name.titleCase()}" !in nameCollector -> {
-                    nameCollector.add("_get${name.titleCase()}")
+                ksProperty.isReceiverMethod() && ("_get$casedName" !in nameCollector || "_set$casedName" !in nameCollector) -> {
+                    nameCollector.add("_get$casedName")
+                    nameCollector.add("_set$casedName")
                 }
-                "_get${name.titleCase()}" in nameCollector -> overloadedMethods.add("_get${name.titleCase()}")
+                "_get$casedName" in nameCollector || "_set$casedName" in nameCollector -> {
+                    overloadedMethods.add("_get$casedName")
+                    overloadedMethods.add("_set$casedName")
+                }
                 else -> nameCollector.add(name)
             }
         }
@@ -282,50 +287,28 @@ internal class KmockProxyNameSelector(
         )
     }
 
-    override fun selectMethodName(
+    private fun selectMethodName(
+        prefix: String,
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
         arguments: Array<MethodTypeInfo>
     ): ProxyInfo {
+        val proxyMethodNameCandidate = if (prefix.isNotEmpty()) {
+            methodName.titleCase()
+        } else {
+            methodName
+        }
 
         val proxyName = selectMethodProxyName(
-            proxyMethodNameCandidate = "_$methodName",
+            proxyMethodNameCandidate = "_$prefix$proxyMethodNameCandidate",
             arguments = arguments,
             generics = generics,
             typeResolver = typeResolver,
         )
 
-        val proxyIdCandidate = "$qualifier#$proxyName"
-        val customName = customMethodNames[proxyIdCandidate]
-
-        return createMethodProxyInfo(
-            proxyId = resolveMethodProxyId(
-                proxyIdCandidate = proxyIdCandidate,
-                qualifier = qualifier,
-                customMethodName = customName,
-            ),
-            proxyName = customName ?: proxyName,
-            methodName = methodName,
-        )
-    }
-
-    override fun selectReceiverGetterName(
-        qualifier: String,
-        propertyName: String,
-        receiver: MethodTypeInfo,
-        generics: Map<String, List<KSTypeReference>>,
-        receiverTypeResolver: TypeParameterResolver
-    ): ProxyInfo {
-        val proxyName = selectMethodProxyName(
-            proxyMethodNameCandidate = "_get${propertyName.titleCase()}",
-            arguments = arrayOf(receiver),
-            generics = generics,
-            typeResolver = receiverTypeResolver,
-        )
-
-        val proxyIdCandidate = "$qualifier#$proxyName"
+        val proxyIdCandidate = "$qualifier#$methodName"
         val customName = customMethodNames[proxyIdCandidate]
 
         return ProxyInfo(
@@ -335,7 +318,52 @@ internal class KmockProxyNameSelector(
                 customMethodName = customName,
             ),
             proxyName = customName ?: proxyName,
-            templateName = propertyName,
+            templateName = methodName,
         )
     }
+
+    override fun selectMethodName(
+        qualifier: String,
+        methodName: String,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver,
+        arguments: Array<MethodTypeInfo>
+    ): ProxyInfo = selectMethodName(
+        prefix = "",
+        qualifier = qualifier,
+        methodName = methodName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arguments
+    )
+
+    override fun selectReceiverGetterName(
+        qualifier: String,
+        propertyName: String,
+        receiver: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): ProxyInfo = selectMethodName(
+        prefix = "get",
+        qualifier = qualifier,
+        methodName = propertyName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arrayOf(receiver)
+    )
+
+    override fun selectReceiverSetterName(
+        qualifier: String,
+        propertyName: String,
+        receiver: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): ProxyInfo = selectMethodName(
+        prefix = "set",
+        qualifier = qualifier,
+        methodName = propertyName,
+        generics = generics,
+        typeResolver = typeResolver,
+        arguments = arrayOf(receiver)
+    )
 }

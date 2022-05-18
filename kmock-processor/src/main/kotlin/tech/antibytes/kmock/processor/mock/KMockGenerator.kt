@@ -161,7 +161,7 @@ internal class KMockGenerator(
             proxyNameCollector.add(proxy.name)
             this.addProperty(proxy)
         } else {
-            val (proxyGetter, _, property) = receiverGenerator.buildPropertyBundle(
+            val (proxyGetter, proxySetter, property) = receiverGenerator.buildPropertyBundle(
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksProperty = ksProperty,
@@ -174,6 +174,11 @@ internal class KMockGenerator(
 
             this.addProperty(proxyGetter)
             proxyNameCollector.add(proxyGetter.name)
+
+            if (proxySetter != null) {
+                this.addProperty(proxySetter)
+                proxyNameCollector.add(proxySetter.name)
+            }
         }
     }
 

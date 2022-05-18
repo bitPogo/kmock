@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -21,6 +22,7 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -262,19 +264,20 @@ internal class KMockReceiverGenerator(
     }
 
     private fun buildPropertyReceiver(
-        proxy: ProxyInfo,
+        getterProxy: ProxyInfo,
+        setterProxy: ProxyInfo?,
         receiver: TypeName,
         returnType: MethodReturnTypeInfo,
-        generics: List<TypeVariableName>,
+        typeParameter: List<TypeVariableName>,
     ): PropertySpec {
         val property = PropertySpec.builder(
-            proxy.templateName,
+            getterProxy.templateName,
             returnType.typeName,
             KModifier.OVERRIDE
         ).receiver(receiver)
 
-        if (generics.isNotEmpty()) {
-            property.addTypeVariables(generics)
+        if (typeParameter.isNotEmpty()) {
+            property.addTypeVariables(typeParameter)
         }
 
         if (returnType.needsCastForReceiverProperty()) {
@@ -285,11 +288,65 @@ internal class KMockReceiverGenerator(
 
         property.getter(
             FunSpec.getterBuilder()
-                .addCode("return ${proxy.proxyName}.invoke(this@${proxy.templateName})$cast")
+                .addCode("return ${getterProxy.proxyName}.invoke(this@${getterProxy.templateName})$cast")
                 .build()
         )
 
+        if (setterProxy != null) {
+            property.mutable(true)
+            property.setter(
+                FunSpec.setterBuilder()
+                    .addParameter("value", returnType.typeName)
+                    .addStatement("${setterProxy.proxyName}.invoke(this@${setterProxy.templateName}, value)")
+                    .build()
+            )
+        }
+
         return property.build()
+    }
+
+    private fun resolveSetterProxy(
+        qualifier: String,
+        propertyType: KSType,
+        propertyName: String,
+        isMutable: Boolean,
+        receiverInfo: MethodTypeInfo,
+        generics: Map<String, List<KSTypeReference>>?,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        receiverTypeResolver: TypeParameterResolver,
+    ): Pair<ProxyInfo?, PropertySpec?> {
+        return if (isMutable) {
+            val setterProxyInfo = nameSelector.selectReceiverSetterName(
+                qualifier = qualifier,
+                propertyName = propertyName,
+                receiver = receiverInfo,
+                generics = generics ?: emptyMap(),
+                typeResolver = receiverTypeResolver,
+            )
+
+            val (setterProxy, _) = buildProxy(
+                proxyInfo = setterProxyInfo,
+                arguments = arrayOf(receiverInfo),
+                suspending = false,
+                classScopeGenerics = classScopeGenerics,
+                generics = generics ?: emptyMap(),
+                returnType = propertyType,
+                typeResolver = receiverTypeResolver,
+            )
+
+            return Pair(setterProxyInfo, setterProxy)
+        } else {
+            emptySetter
+        }
+    }
+
+    private fun mapPropertyTypeParameter(
+        ksProperty: KSPropertyDeclaration,
+        typeResolver: TypeParameterResolver,
+    ): List<TypeVariableName> {
+        return ksProperty.typeParameters.map { ksTypeParameter ->
+            ksTypeParameter.toTypeVariableName(typeResolver)
+        }
     }
 
     override fun buildPropertyBundle(
@@ -308,17 +365,18 @@ internal class KMockReceiverGenerator(
             typeResolver = typeResolver,
         )
         val generics = ksProperty.resolveReceiverBoundaries(typeResolver)
+        val isMutable = ksProperty.isMutable
 
-        val proxyInfo = nameSelector.selectReceiverGetterName(
+        val getterProxyInfo = nameSelector.selectReceiverGetterName(
             qualifier = qualifier,
             propertyName = propertyName,
             receiver = receiverInfo,
             generics = generics ?: emptyMap(),
-            receiverTypeResolver = receiverTypeResolver,
+            typeResolver = receiverTypeResolver,
         )
 
-        val (getter, returnType) = buildProxy(
-            proxyInfo = proxyInfo,
+        val (getter, getterReturnType) = buildProxy(
+            proxyInfo = getterProxyInfo,
             arguments = arrayOf(receiverInfo),
             suspending = false,
             classScopeGenerics = classScopeGenerics,
@@ -327,18 +385,26 @@ internal class KMockReceiverGenerator(
             typeResolver = receiverTypeResolver,
         )
 
-        val property = buildPropertyReceiver(
-            proxy = proxyInfo,
-            receiver = receiverInfo.typeName,
-            returnType = returnType,
-            generics = genericResolver.mapDeclaredGenerics(generics ?: emptyMap(), receiverTypeResolver)
+        val (setterProxyInfo, setter) = resolveSetterProxy(
+            qualifier = qualifier,
+            propertyType = propertyType,
+            propertyName = propertyName,
+            isMutable = isMutable,
+            receiverInfo = receiverInfo,
+            generics = generics,
+            classScopeGenerics = classScopeGenerics,
+            receiverTypeResolver = receiverTypeResolver,
         )
 
-        return Triple(
-            getter,
-            null,
-            property,
+        val property = buildPropertyReceiver(
+            getterProxy = getterProxyInfo,
+            setterProxy = setterProxyInfo,
+            receiver = receiverInfo.typeName,
+            returnType = getterReturnType,
+            typeParameter = mapPropertyTypeParameter(ksProperty, receiverTypeResolver)
         )
+
+        return Triple(getter, setter, property,)
     }
 
     private companion object {
@@ -346,6 +412,7 @@ internal class KMockReceiverGenerator(
         private val asyncProxy = KMockContract.AsyncFunProxy::class.asClassName()
         private val syncProxy = KMockContract.SyncFunProxy::class.asClassName()
         private val unchecked = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
+        private val emptySetter = Pair(null, null)
 
         @OptIn(ExperimentalUnsignedTypes::class)
         private val specialArrays: Map<TypeName, TypeName> = mapOf(
