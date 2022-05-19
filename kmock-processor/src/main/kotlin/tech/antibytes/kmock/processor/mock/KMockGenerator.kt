@@ -61,9 +61,6 @@ internal class KMockGenerator(
     private val buildInGenerator: BuildInMethodGenerator,
     private val receiverGenerator: ReceiverGenerator
 ) : ProcessorContract.MockGenerator {
-    private val unusedParameter = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
-    private val unused = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
-
     private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
         return if (superTypes.size == 1) {
             superTypes.first()
@@ -82,7 +79,7 @@ internal class KMockGenerator(
         val spy = ParameterSpec.builder(
             "spyOn",
             resolveSpyType(superTypes).copy(nullable = true),
-        ).addAnnotation(unusedParameter).defaultValue("null")
+        ).addAnnotation(UNUSED_PARAMETER).defaultValue("null")
         constructor.addParameter(spy.build())
 
         val freeze = ParameterSpec.builder("freeze", Boolean::class)
@@ -92,13 +89,13 @@ internal class KMockGenerator(
         val relaxUnit = ParameterSpec.builder(
             "relaxUnitFun",
             Boolean::class,
-        ).addAnnotation(unused).defaultValue("false")
+        ).addAnnotation(UNUSED).defaultValue("false")
         constructor.addParameter(relaxUnit.build())
 
         val relaxed = ParameterSpec.builder(
             "relaxed",
             Boolean::class
-        ).addAnnotation(unused).defaultValue("false")
+        ).addAnnotation(UNUSED).defaultValue("false")
         constructor.addParameter(relaxed.build())
 
         return constructor.build()
@@ -455,5 +452,10 @@ internal class KMockGenerator(
                 relaxer = relaxer
             )
         }
+    }
+
+    private companion object {
+        private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
+        private val UNUSED = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
     }
 }

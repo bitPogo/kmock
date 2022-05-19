@@ -969,6 +969,30 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform while relaxed which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Relaxed.kt",
+            loadResource("/template/propertyreceiver/Relaxed.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/Relaxed.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Common which contains Receivers for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -989,7 +1013,10 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/propertyreceiver/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test
@@ -1008,6 +1035,30 @@ class KMockMocksSpec {
             isKmp = false,
         )
         val actual = resolveGenerated("PlatformMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform while relaxed which contains Receivers for methods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Relaxed.kt",
+            loadResource("/template/methodreceiver/Relaxed.kt")
+        )
+        val expected = loadResource("/expected/methodreceiver/Relaxed.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("RelaxedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -1037,7 +1088,10 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
 
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+        actual!!.absolutePath.toString().endsWith(
+            "common/commonTest/kotlin/mock/template/methodreceiver/CommonMock.kt"
+        ) mustBe true
+        actual.readText().normalizeSource() mustBe expected.normalizeSource()
     }
 
     @Test

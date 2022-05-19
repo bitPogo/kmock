@@ -158,6 +158,7 @@ class KMockProcessorProvider(
         val receiverGenerator = KMockReceiverGenerator(
             utils = methodeGeneratorHelper,
             nameSelector = nameSelector,
+            nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
             genericResolver = KMockGenerics,
         )
 
