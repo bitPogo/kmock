@@ -380,14 +380,28 @@ object KMockContract {
      */
     interface ProxySideEffectBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
         /**
+         * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
+         * on invocation.
+         * @throws NullPointerException on get if no value was set.
+         */
+        var sideEffect: SideEffect
+
+        /**
          * SideEffectChainBuilder to chain multiple SideEffects.
          */
         val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
 
         /**
+         * Alias method for sideEffect
+         * @param SideEffect which is chained into the sideEffects propert.
+         */
+        fun run(action: SideEffect)
+
+        /**
          * Convenient method for multiple SideEffects, which uses under the sideEffects property.
          * This chains SideEffects together according to their given order.
-         * @return ProxySideEffectBuilder
+         * @param SideEffect which is chained into the sideEffects propert.
+         * @return ProxySideEffectBuilder.
          */
         fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
     }
@@ -425,13 +439,6 @@ object KMockContract {
          * @throws NullPointerException on get if no value was set.
          */
         var throws: Throwable
-
-        /**
-         * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
-         * on invocation.
-         * @throws NullPointerException on get if no value was set.
-         */
-        var sideEffect: SideEffect
     }
 
     /**

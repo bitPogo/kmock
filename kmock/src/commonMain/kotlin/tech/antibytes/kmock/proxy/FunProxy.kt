@@ -193,6 +193,10 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             state.sideEffect = value
         }
 
+    override fun run(action: SideEffect) {
+        state.sideEffect = action
+    }
+
     override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = state.sideEffects
 
     override fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect> {

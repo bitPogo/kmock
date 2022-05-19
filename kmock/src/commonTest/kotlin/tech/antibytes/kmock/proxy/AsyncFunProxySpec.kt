@@ -392,6 +392,22 @@ class AsyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn12a")
+    fun `Given run is called SideEffect it overrides SideEffect`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(fixture.fixture())
+        val sideEffect0: suspend (String, Int) -> Any = { _, _ -> fixture.fixture() }
+        val sideEffect1: suspend (String, Int) -> Any = { _, _ -> fixture.fixture() }
+
+        // When
+        proxy.sideEffect = sideEffect0
+        proxy.run(sideEffect1)
+
+        // Then
+        proxy.sideEffect sameAs sideEffect1
+    }
+
+    @Test
     @JsName("fn13")
     fun `Given invoke is called it calls the given SideEffects and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given

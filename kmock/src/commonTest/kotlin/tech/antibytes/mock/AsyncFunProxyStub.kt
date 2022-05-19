@@ -221,4 +221,8 @@ class AsyncFunProxyStub(
     override fun runs(action: suspend () -> Any): KMockContract.ProxySideEffectBuilder<Any, suspend () -> Any> {
         TODO("Not yet implemented")
     }
+
+    override fun run(action: suspend () -> Any) {
+        TODO("Not yet implemented")
+    }
 }

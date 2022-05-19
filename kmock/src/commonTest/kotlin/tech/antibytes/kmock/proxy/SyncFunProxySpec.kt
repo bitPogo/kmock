@@ -405,6 +405,22 @@ class SyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn12a")
+    fun `Given run is called SideEffect it overrides SideEffect`() {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
+        val sideEffect0: (String, Int) -> Any = { _, _ -> fixture.fixture() }
+        val sideEffect1: (String, Int) -> Any = { _, _ -> fixture.fixture() }
+
+        // When
+        proxy.sideEffect = sideEffect0
+        proxy.run(sideEffect1)
+
+        // Then
+        proxy.sideEffect sameAs sideEffect1
+    }
+
+    @Test
     @JsName("fn13")
     fun `Given invoke is called it calls the given SideEffectChain and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
