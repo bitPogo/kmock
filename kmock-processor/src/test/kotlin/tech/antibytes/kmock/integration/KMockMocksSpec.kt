@@ -1044,6 +1044,30 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform while relaxed which contains Receivers for methods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Relaxed.kt",
+            loadResource("/template/methodreceiver/Relaxed.kt")
+        )
+        val expected = loadResource("/expected/methodreceiver/Relaxed.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Common which contains Receivers for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(

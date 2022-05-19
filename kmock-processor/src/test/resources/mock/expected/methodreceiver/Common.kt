@@ -101,13 +101,19 @@ internal class CommonMock<L>(
     }
 
     public override fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
-        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,)
+        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     public override fun <T : Any> T.doNothing(): Unit =
-        _doNothingReceiverWithTAny.invoke(this@doNothing,)
+        _doNothingReceiverWithTAny.invoke(this@doNothing,) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     public override fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T :
-    Comparable<T> = _doNothingElseReceiver.invoke(this@doNothingElse,a)
+    Comparable<T> = _doNothingElseReceiver.invoke(this@doNothingElse,a) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
     public override fun doNothingElse(a: Any): Any = _doNothingElse.invoke(a)
 

@@ -7,6 +7,7 @@
 package mock.template.methodreceiver
 
 import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.Relaxer
 
 interface Something
 
@@ -16,20 +17,25 @@ interface AnythingElse {
     interface SomethingInside
 }
 
-@Mock(Platform::class)
-interface Platform<L> {
+@Relaxer
+internal inline fun <reified T> relaxed(id: String): T {
+    return id as T
+}
+
+@Mock(Relaxed::class)
+interface Relaxed<L> {
     fun Something.equals(): Int
     fun Something.doSomething(): Int
     fun SomethingElse<Any>.doSomethingElse(): List<Any>
-    fun Platform<*>.mutabor(): Int
+    fun Relaxed<*>.mutabor(): Int
     fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
-    fun <T> T.doNothing(): Unit where T : Any
+    fun <T> T.doNothing(): T where T : Any
     fun <T> T.doSomethingElse(): L
     fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T : Comparable<T>
     fun AnythingElse.SomethingInside.doInside(): Int
 
     fun iDo()
-    fun mutabor(x: Platform<*>)
+    fun mutabor(x: Relaxed<*>)
     fun doNothingElse(a: Any): Any
     fun doSomethingElse(x: SomethingElse<Any>)
 }
