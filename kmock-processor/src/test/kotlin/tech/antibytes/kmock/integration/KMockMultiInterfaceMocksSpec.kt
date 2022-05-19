@@ -1218,4 +1218,64 @@ class KMockMultiInterfaceMocksSpec {
         actualActualMockFactory!!.readText().normalizeSource() mustBe expectedActualFactory.normalizeSource()
         actualExpectedMockFactory!!.readText().normalizeSource() mustBe expectedExpectedFactory.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for a Platform with receivers while spied with multiple Interface it writes a mock`() {
+        // Round1
+        // Given
+        val spyProvider = SymbolProcessorProviderSpy()
+        val rootInterface = SourceFile.kotlin(
+            "Properties.kt",
+            loadResource("/template/receiver/Properties.kt")
+        )
+        val methodInterface = SourceFile.kotlin(
+            "Methods.kt",
+            loadResource("/template/receiver/Methods.kt")
+        )
+
+        // When
+        val compilerResultRound1 = compile(
+            spyProvider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
+                "${KMOCK_PREFIX}spyOn_0" to "multi.ReceiverMulti",
+            ),
+            sourceFiles = arrayOf(
+                rootInterface,
+                methodInterface,
+            )
+        )
+        val actualIntermediateInterfaces = resolveGenerated("KMockMultiInterfaceArtifacts.kt")
+
+        // Then
+        compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualIntermediateInterfaces isNot null
+
+        // Round2
+        // Given
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
+        val multiInterfaceInterface = SourceFile.kotlin(
+            "KMockMultiInterfaceArtifacts.kt",
+            actualIntermediateInterfaces!!.readText()
+        )
+        val expectedMock = loadResource("/expected/receiver/SpiedReceiverMock.kt")
+
+        // When
+        val compilerResultRound2 = compile(
+            provider,
+            isKmp = true,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "multi.ReceiverMulti",
+            ),
+            sourceFiles = arrayOf(multiInterfaceInterface, rootInterface, methodInterface)
+        )
+        val actualMock = resolveGenerated("ReceiverMultiMock.kt")
+
+        // Then
+        compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualMock isNot null
+
+        actualMock!!.readText().normalizeSource() mustBe expectedMock.normalizeSource()
+    }
 }

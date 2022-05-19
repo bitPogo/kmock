@@ -68,7 +68,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildMethodNonIntrusiveInvocation(
         enableSpy: Boolean,
         methodName: String,
-        parameter: List<TypeName>,
+        typeParameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
         methodReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
@@ -85,7 +85,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
                 spyGenerator.buildMethodSpy(
                     methodName = methodName,
                     arguments = arguments,
-                    parameter = parameter,
+                    parameter = typeParameter,
                     methodReturnType = methodReturnType
                 )
             )
@@ -155,6 +155,64 @@ internal class KMockNonIntrusiveInvocationGenerator(
                 nonIntrusiveInvocation = nonIntrusiveInvocation,
                 enableSpy = enableSpy,
                 methodName = methodName
+            )
+        }
+    }
+
+    override fun buildReceiverGetterNonIntrusiveInvocation(
+        enableSpy: Boolean,
+        propertyName: String,
+        propertyType: MethodReturnTypeInfo,
+        relaxer: Relaxer?
+    ): String = buildInvocation { nonIntrusiveInvocation ->
+        nonIntrusiveInvocation.append(
+            relaxerGenerator.buildMethodRelaxation(
+                methodReturnType = propertyType,
+                relaxer = relaxer
+            )
+        )
+
+        if (enableSpy) {
+            nonIntrusiveInvocation.append(
+                spyGenerator.buildReceiverGetterSpy(propertyName, propertyType)
+            )
+        }
+    }
+
+    override fun buildReceiverSetterNonIntrusiveInvocation(
+        enableSpy: Boolean,
+        propertyName: String,
+    ): String = buildInvocation { nonIntrusiveInvocation ->
+        if (enableSpy) {
+            nonIntrusiveInvocation.append(
+                spyGenerator.buildReceiverSetterSpy(propertyName)
+            )
+        }
+    }
+
+    override fun buildReceiverMethodNonIntrusiveInvocation(
+        enableSpy: Boolean,
+        methodName: String,
+        typeParameter: List<TypeName>,
+        arguments: Array<MethodTypeInfo>,
+        methodReturnType: MethodReturnTypeInfo,
+        relaxer: Relaxer?
+    ): String = buildInvocation { nonIntrusiveInvocation ->
+        nonIntrusiveInvocation.append(
+            relaxerGenerator.buildMethodRelaxation(
+                methodReturnType = methodReturnType,
+                relaxer = relaxer
+            )
+        )
+
+        if (enableSpy) {
+            nonIntrusiveInvocation.append(
+                spyGenerator.buildReceiverMethodSpy(
+                    methodName = methodName,
+                    arguments = arguments,
+                    parameter = typeParameter,
+                    methodReturnType = methodReturnType
+                )
             )
         }
     }

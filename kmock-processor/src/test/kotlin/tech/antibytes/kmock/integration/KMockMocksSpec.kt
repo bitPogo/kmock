@@ -993,6 +993,57 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform while inherited which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Inherited.kt",
+            loadResource("/template/propertyreceiver/SuperType.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/SuperType.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("InheritedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform while spied which contains Receivers for properties is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Spied.kt",
+            loadResource("/template/propertyreceiver/Spied.kt")
+        )
+        val expected = loadResource("/expected/propertyreceiver/Spied.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.propertyreceiver.Spied",
+            )
+        )
+        val actual = resolveGenerated("SpiedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Common which contains Receivers for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -1059,6 +1110,57 @@ class KMockMocksSpec {
             isKmp = false,
         )
         val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform while inherited which contains Receivers for methods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Inherited.kt",
+            loadResource("/template/methodreceiver/SuperType.kt")
+        )
+        val expected = loadResource("/expected/methodreceiver/SuperType.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("InheritedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform while spied which contains Receivers for methods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Spied.kt",
+            loadResource("/template/methodreceiver/Spied.kt")
+        )
+        val expected = loadResource("/expected/methodreceiver/Spied.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.methodreceiver.Spied",
+            )
+        )
+        val actual = resolveGenerated("SpiedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

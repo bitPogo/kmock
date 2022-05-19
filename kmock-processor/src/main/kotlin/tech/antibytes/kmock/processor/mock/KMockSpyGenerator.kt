@@ -7,22 +7,41 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal object KMockSpyGenerator : SpyGenerator {
-    private fun buildSpy(
-        invocation: String,
-    ): String = "useSpyIf(__spyOn) { $invocation }\n"
+    private fun buildSpy(invocation: String): String = "useSpyIf($SPY_PROPERTY) { $invocation }\n"
 
     override fun buildGetterSpy(
         propertyName: String
-    ): String = buildSpy("__spyOn!!.$propertyName")
+    ): String = buildSpy("$SPY_PROPERTY!!.$propertyName")
 
     override fun buildSetterSpy(
         propertyName: String
-    ): String = buildSpy("__spyOn!!.$propertyName = value")
+    ): String = buildSpy("$SPY_PROPERTY!!.$propertyName = value")
+
+    override fun buildReceiverGetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String {
+        val invocation = """
+            |   $SPY_CONTEXT {
+            |       this@$propertyName.$propertyName
+            |   } as ${propertyType.typeName}
+        """.trimMargin()
+        return buildSpy(invocation)
+    }
+
+    override fun buildReceiverSetterSpy(propertyName: String): String {
+        val invocation = """
+            |   $SPY_CONTEXT {
+            |       this@$propertyName.$propertyName = value
+            |       Unit
+            |   }
+        """.trimMargin()
+        return buildSpy(invocation)
+    }
 
     private fun determineSpyInvocationArgument(
         methodInfo: MethodTypeInfo
@@ -54,13 +73,33 @@ internal object KMockSpyGenerator : SpyGenerator {
         )
         val typesParameter = resolveTypes(parameter)
 
-        return buildSpy("__spyOn!!.$methodName$typesParameter($invocationArguments)")
+        return buildSpy("$SPY_PROPERTY!!.$methodName$typesParameter($invocationArguments)")
+    }
+
+    override fun buildReceiverMethodSpy(
+        methodName: String,
+        parameter: List<TypeName>,
+        arguments: Array<MethodTypeInfo>,
+        methodReturnType: MethodReturnTypeInfo
+    ): String {
+        val invocationArguments = arguments.joinToString(
+            separator = ", ",
+            transform = ::determineSpyInvocationArgument
+        )
+        val typesParameter = resolveTypes(parameter)
+        val invocation = """
+            |   $SPY_CONTEXT {
+            |       this@$methodName.$methodName$typesParameter($invocationArguments)
+            |   } as ${methodReturnType.typeName}
+        """.trimMargin()
+
+        return buildSpy(invocation)
     }
 
     override fun buildEqualsSpy(mockName: String): String {
         return """
             |useSpyOnEqualsIf(
-            |   spyTarget = __spyOn,
+            |   spyTarget = $SPY_PROPERTY,
             |   other = other,
             |   spyOn = { super.equals(other) },
             |   mockKlass = $mockName::class

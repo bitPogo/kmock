@@ -44,6 +44,7 @@ toc::[]
 * iosSimulatorArm64 support
 * support for instrumented Android tests (aka androidAndroidTest) on KMP
 * Multi-Interface Mocks support
+* interface receiver members are full supported
 
 === Changed
 
@@ -74,7 +75,6 @@ toc::[]
 === Fixed
 
 * Method names with nullable or multi-bounded types defined as generic parameter
-* Scoped extension are now correctly resolved
 * Annotation was not picked up when more then one Annotation was used
 * Factories for Common were not created when no Template was specified
 

@@ -32,6 +32,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.multiMock
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
@@ -137,6 +138,7 @@ internal class KMockGenerator(
     }
 
     private fun TypeSpec.Builder.addPropertyBundle(
+        spyType: TypeName,
         proxyNameCollector: MutableList<String>,
         ksProperty: KSPropertyDeclaration,
         qualifier: String,
@@ -161,6 +163,7 @@ internal class KMockGenerator(
             this.addProperty(proxy)
         } else {
             val (proxyGetter, proxySetter, property) = receiverGenerator.buildPropertyBundle(
+                spyType = spyType,
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksProperty = ksProperty,
@@ -182,6 +185,7 @@ internal class KMockGenerator(
     }
 
     private fun resolveMethodBundle(
+        spyType: TypeName,
         ksFunction: KSFunctionDeclaration,
         qualifier: String,
         inherited: Boolean,
@@ -192,6 +196,7 @@ internal class KMockGenerator(
     ): Pair<PropertySpec, FunSpec> {
         return if (ksFunction.isReceiverMethod()) {
             receiverGenerator.buildMethodBundle(
+                spyType = spyType,
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksFunction = ksFunction,
@@ -233,6 +238,8 @@ internal class KMockGenerator(
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
         val classScopeGenerics = genericsResolver.mapClassScopeGenerics(generics, typeResolver)
+        val spyType = resolveSpyType(superTypes)
+        var hasReceivers = false
 
         mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
@@ -272,7 +279,7 @@ internal class KMockGenerator(
         if (enableSpy) {
             mock.addProperty(
                 PropertySpec.builder(
-                    "__spyOn",
+                    SPY_PROPERTY,
                     resolveSpyType(superTypes).copy(nullable = true),
                     KModifier.PRIVATE,
                 ).initializer("spyOn").build()
@@ -281,7 +288,9 @@ internal class KMockGenerator(
 
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isPublicOpen()) {
+                hasReceivers = ksProperty.isReceiverMethod()
                 mock.addPropertyBundle(
+                    spyType = spyType,
                     proxyNameCollector = proxyNameCollector,
                     ksProperty = ksProperty,
                     qualifier = qualifier,
@@ -297,7 +306,9 @@ internal class KMockGenerator(
             val name = ksFunction.simpleName.asString()
 
             if (ksFunction.isPublicOpen() && (name.isNotBuildInMethod() || ksFunction.isReceiverMethod())) {
+                hasReceivers = hasReceivers || ksFunction.isReceiverMethod()
                 val (proxy, method) = resolveMethodBundle(
+                    spyType = spyType,
                     ksFunction = ksFunction,
                     qualifier = qualifier,
                     enableSpy = enableSpy,
@@ -326,6 +337,15 @@ internal class KMockGenerator(
                 proxyNameCollector.add(proxy.name)
                 mock.addProperty(proxy)
             }
+        }
+
+        if (hasReceivers && enableSpy) {
+            mock.addFunction(
+                receiverGenerator.buildReceiverSpyContext(
+                    spyType = spyType,
+                    typeResolver = typeResolver,
+                )
+            )
         }
 
         mock.addFunction(buildClear(proxyNameCollector))
