@@ -11,16 +11,16 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
-internal class SharedMock(
+internal class SharedMock<T>(
     verifier: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
-    spyOn: Shared? = null,
+    spyOn: Shared<T>? = null,
     freeze: Boolean = true,
     @Suppress("unused")
     private val relaxUnitFun: Boolean = false,
     @Suppress("unused")
     private val relaxed: Boolean = false,
-) : Shared {
+) : Shared<T> {
     public override val buzz: String
         get() = _buzz.onGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
@@ -28,6 +28,16 @@ internal class SharedMock(
 
     public val _buzz: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_buzz", collector =
+        verifier, freeze = freeze)
+
+    public override val uzz: T
+        get() = _uzz.onGet {
+            useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
+                type0 = kotlin.Any::class,) as T }
+        }
+
+    public val _uzz: KMockContract.PropertyProxy<T> =
+        ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_uzz", collector =
         verifier, freeze = freeze)
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
@@ -56,6 +66,7 @@ internal class SharedMock(
 
     public fun _clearMock(): Unit {
         _buzz.clear()
+        _uzz.clear()
         _foo.clear()
         _bar.clear()
         _buzzWithVoid.clear()

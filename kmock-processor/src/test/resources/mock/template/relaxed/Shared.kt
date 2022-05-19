@@ -18,8 +18,9 @@ internal inline fun <reified T> relaxed(id: String): T {
     "sharedTest",
     Shared::class
 )
-interface Shared {
+interface Shared<T> {
     val buzz: String
+    val uzz: T
 
     fun foo(payload: Any): String
     suspend fun bar(payload: Any): String

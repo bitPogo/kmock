@@ -62,7 +62,7 @@ internal class KMockMethodGenerator(
             proxyInfo.proxyName,
             invocation,
             nonIntrusiveInvocation,
-            cast
+            cast,
         )
     }
 
