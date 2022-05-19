@@ -17,6 +17,8 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
@@ -71,6 +73,7 @@ internal class KMockReceiverGenerator(
     private fun buildPropertyReceiver(
         getterProxy: ProxyInfo,
         setterProxy: ProxyInfo?,
+        enableSpy: Boolean,
         receiver: MethodTypeInfo,
         returnType: MethodReturnTypeInfo,
         typeParameter: List<TypeVariableName>,
@@ -86,18 +89,16 @@ internal class KMockReceiverGenerator(
             property.addTypeVariables(typeParameter)
         }
 
-        if (returnType.needsCastForReceiverProperty()) {
+        if (returnType.needsCastForReceiverProperty() || enableSpy) {
             property.addAnnotation(UNCHECKED)
         }
 
         val cast = returnType.resolveCastForReceiverProperty()
 
-        val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
-            enableSpy = false,
-            methodName = getterProxy.templateName,
-            parameter = typeParameter,
-            arguments = arrayOf(receiver),
-            methodReturnType = returnType,
+        val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildReceiverGetterNonIntrusiveInvocation(
+            enableSpy = enableSpy,
+            propertyName = getterProxy.templateName,
+            propertyType = returnType,
             relaxer = relaxer
         )
 
@@ -166,6 +167,7 @@ internal class KMockReceiverGenerator(
     }
 
     override fun buildPropertyBundle(
+        spyType: TypeName,
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksProperty: KSPropertyDeclaration,
@@ -215,6 +217,7 @@ internal class KMockReceiverGenerator(
         val property = buildPropertyReceiver(
             getterProxy = getterProxyInfo,
             setterProxy = setterProxyInfo,
+            enableSpy = enableSpy,
             receiver = receiverInfo,
             returnType = getterReturnType,
             typeParameter = genericResolver.mapDeclaredGenerics(generics, receiverTypeResolver),
@@ -243,7 +246,7 @@ internal class KMockReceiverGenerator(
         val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
             enableSpy = false,
             methodName = proxyInfo.templateName,
-            parameter = typeParameter,
+            typeParameter = typeParameter,
             arguments = arguments,
             methodReturnType = returnType,
             relaxer = relaxer
@@ -302,6 +305,7 @@ internal class KMockReceiverGenerator(
     }
 
     override fun buildMethodBundle(
+        spyType: TypeName,
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksFunction: KSFunctionDeclaration,
@@ -362,6 +366,16 @@ internal class KMockReceiverGenerator(
         )
 
         return Pair(proxySignature.proxy, method)
+    }
+
+    override fun buildReceiverSpyContext(spyType: TypeName, typeResolver: TypeParameterResolver): FunSpec {
+        return FunSpec.builder(SPY_CONTEXT)
+            .addParameter(
+                "action",
+                TypeVariableName("$spyType.() -> Any?").copy(nullable = false),
+            )
+            .addCode("return action($SPY_PROPERTY!!)")
+            .build()
     }
 
     private companion object {

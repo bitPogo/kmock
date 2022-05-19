@@ -51,7 +51,7 @@ internal class KMockMethodGenerator(
         val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
             enableSpy = enableSpy,
             methodName = proxyInfo.templateName,
-            parameter = parameter,
+            typeParameter = parameter,
             arguments = arguments,
             methodReturnType = proxyReturnType,
             relaxer = relaxer

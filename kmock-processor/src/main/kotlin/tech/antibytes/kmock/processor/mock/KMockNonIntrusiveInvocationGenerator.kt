@@ -68,7 +68,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildMethodNonIntrusiveInvocation(
         enableSpy: Boolean,
         methodName: String,
-        parameter: List<TypeName>,
+        typeParameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
         methodReturnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
@@ -85,7 +85,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
                 spyGenerator.buildMethodSpy(
                     methodName = methodName,
                     arguments = arguments,
-                    parameter = parameter,
+                    parameter = typeParameter,
                     methodReturnType = methodReturnType
                 )
             )
@@ -156,6 +156,24 @@ internal class KMockNonIntrusiveInvocationGenerator(
                 enableSpy = enableSpy,
                 methodName = methodName
             )
+        }
+    }
+
+    override fun buildReceiverGetterNonIntrusiveInvocation(
+        enableSpy: Boolean,
+        propertyName: String,
+        propertyType: MethodReturnTypeInfo,
+        relaxer: Relaxer?
+    ): String = buildInvocation { nonIntrusiveInvocation ->
+        nonIntrusiveInvocation.append(
+            relaxerGenerator.buildMethodRelaxation(
+                methodReturnType = propertyType,
+                relaxer = relaxer
+            )
+        )
+
+        if (enableSpy) {
+            nonIntrusiveInvocation.append(spyGenerator.buildReceiverGetterSpy(propertyName, propertyType))
         }
     }
 }

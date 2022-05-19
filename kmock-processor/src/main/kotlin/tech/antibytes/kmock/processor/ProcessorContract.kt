@@ -317,6 +317,9 @@ internal interface ProcessorContract {
         fun buildGetterSpy(propertyName: String): String
         fun buildSetterSpy(propertyName: String): String
 
+        fun buildReceiverGetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String
+        fun buildReceiverSetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String
+
         fun buildMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
@@ -343,7 +346,7 @@ internal interface ProcessorContract {
         fun buildMethodNonIntrusiveInvocation(
             enableSpy: Boolean,
             methodName: String,
-            parameter: List<TypeName>,
+            typeParameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
             methodReturnType: MethodReturnTypeInfo,
             relaxer: Relaxer?,
@@ -354,6 +357,13 @@ internal interface ProcessorContract {
             mockName: String,
             methodName: String,
             argument: MethodTypeInfo?
+        ): String
+
+        fun buildReceiverGetterNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            propertyName: String,
+            propertyType: MethodReturnTypeInfo,
+            relaxer: Relaxer?
         ): String
     }
 
@@ -413,6 +423,7 @@ internal interface ProcessorContract {
 
     interface ReceiverGenerator {
         fun buildPropertyBundle(
+            spyType: TypeName,
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksProperty: KSPropertyDeclaration,
@@ -422,6 +433,7 @@ internal interface ProcessorContract {
         ): Triple<PropertySpec, PropertySpec?, PropertySpec>
 
         fun buildMethodBundle(
+            spyType: TypeName,
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksFunction: KSFunctionDeclaration,
@@ -430,6 +442,11 @@ internal interface ProcessorContract {
             inherited: Boolean,
             relaxer: Relaxer?,
         ): Pair<PropertySpec, FunSpec>
+
+        fun buildReceiverSpyContext(
+            spyType: TypeName,
+            typeResolver: TypeParameterResolver,
+        ): FunSpec
     }
 
     interface MockGenerator {
@@ -602,6 +619,9 @@ internal interface ProcessorContract {
 
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)
+
+        const val SPY_CONTEXT = "spyContext"
+        const val SPY_PROPERTY = "__spyOn"
 
         const val COMMON_INDICATOR = "commonTest"
 
