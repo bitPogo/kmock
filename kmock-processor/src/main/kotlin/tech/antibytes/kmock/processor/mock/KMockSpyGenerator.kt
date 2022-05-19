@@ -33,8 +33,14 @@ internal object KMockSpyGenerator : SpyGenerator {
         return buildSpy(invocation)
     }
 
-    override fun buildReceiverSetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String {
-        TODO("Not yet implemented")
+    override fun buildReceiverSetterSpy(propertyName: String): String {
+        val invocation = """
+            |   $SPY_CONTEXT {
+            |       this@$propertyName.$propertyName = value
+            |       Unit
+            |   }
+        """.trimMargin()
+        return buildSpy(invocation)
     }
 
     private fun determineSpyInvocationArgument(

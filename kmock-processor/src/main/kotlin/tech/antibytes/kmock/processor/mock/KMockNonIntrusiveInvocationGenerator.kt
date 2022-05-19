@@ -173,7 +173,20 @@ internal class KMockNonIntrusiveInvocationGenerator(
         )
 
         if (enableSpy) {
-            nonIntrusiveInvocation.append(spyGenerator.buildReceiverGetterSpy(propertyName, propertyType))
+            nonIntrusiveInvocation.append(
+                spyGenerator.buildReceiverGetterSpy(propertyName, propertyType)
+            )
+        }
+    }
+
+    override fun buildReceiverSetterNonIntrusiveInvocation(
+        enableSpy: Boolean,
+        propertyName: String,
+    ): String = buildInvocation { nonIntrusiveInvocation ->
+        if (enableSpy) {
+            nonIntrusiveInvocation.append(
+                spyGenerator.buildReceiverSetterSpy(propertyName)
+            )
         }
     }
 }

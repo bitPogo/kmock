@@ -6,7 +6,6 @@
 
 package tech.antibytes.kmock.processor.mock
 
-import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
@@ -18,7 +17,6 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
@@ -31,9 +29,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
-internal class MethodeGeneratorHelper(
+internal class MethodGeneratorHelper(
     private val genericResolver: GenericResolver,
-) : ProcessorContract.MethodeGeneratorHelper {
+) : ProcessorContract.MethodGeneratorHelper {
     override fun determineArguments(
         inherited: Boolean,
         arguments: List<KSValueParameter>,
@@ -128,23 +126,20 @@ internal class MethodeGeneratorHelper(
     }
 
     private fun determineProxyReturnType(
-        returnType: KSType,
+        returnType: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
-        typeResolver: TypeParameterResolver,
     ): MethodReturnTypeInfo {
-        val typeName = returnType.toTypeName(typeResolver)
-
         return if (proxyGenericTypes == null) {
             MethodReturnTypeInfo(
-                typeName = typeName,
-                actualTypeName = typeName,
+                typeName = returnType,
+                actualTypeName = returnType,
                 generic = null,
                 classScope = classScopeGenerics
             )
         } else {
             mapGenericProxyType(
-                typeName = typeName,
+                typeName = returnType,
                 classScopeGenerics = classScopeGenerics,
                 proxyGenericTypes = proxyGenericTypes,
             )
@@ -237,7 +232,7 @@ internal class MethodeGeneratorHelper(
         suspending: Boolean,
         classScopeGenerics: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>?,
-        returnType: KSType,
+        returnType: TypeName,
         typeResolver: TypeParameterResolver,
     ): ProxyBundle {
         val (proxyType, proxyFactoryMethod, sideEffectPrefix) = determineProxyType(suspending)
@@ -256,7 +251,6 @@ internal class MethodeGeneratorHelper(
             returnType = returnType,
             classScopeGenerics = classScopeGenerics,
             proxyGenericTypes = proxyGenericTypes,
-            typeResolver = typeResolver
         )
 
         val sideEffect = buildSideEffectSignature(

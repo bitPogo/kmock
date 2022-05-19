@@ -33,7 +33,12 @@ internal class SpiedMock<L>(
             } as kotlin.Int }
         }
         set(`value`) {
-            _thingSetter.invoke(this@thing, value)
+            _thingSetter.invoke(this@thing, value) {
+                useSpyIf(__spyOn) {    spyContext {
+                    this@thing.thing = value
+                    Unit
+                } }
+            }
         }
 
     public val _thingGetter:
@@ -42,7 +47,7 @@ internal class SpiedMock<L>(
             collector = verifier, freeze = freeze)
 
     public val _thingSetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
+        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_thingSetter",
             collector = verifier, freeze = freeze)
 
@@ -68,7 +73,12 @@ internal class SpiedMock<L>(
             } as kotlin.Int }
         }
         set(`value`) {
-            _extensionSetter.invoke(this@extension, value)
+            _extensionSetter.invoke(this@extension, value) {
+                useSpyIf(__spyOn) {    spyContext {
+                    this@extension.extension = value
+                    Unit
+                } }
+            }
         }
 
     public val _extensionGetter:
@@ -77,7 +87,7 @@ internal class SpiedMock<L>(
             collector = verifier, freeze = freeze)
 
     public val _extensionSetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Spied<*>) -> kotlin.Int> =
+        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Spied<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_extensionSetter",
             collector = verifier, freeze = freeze)
 
@@ -89,7 +99,12 @@ internal class SpiedMock<L>(
             } as T }
         } as T
         set(`value`) {
-            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value)
+            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value) {
+                useSpyIf(__spyOn) {    spyContext {
+                    this@nothing.nothing = value
+                    Unit
+                } }
+            }
         }
 
     public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
@@ -97,8 +112,8 @@ internal class SpiedMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTSomethingComparable",
             collector = verifier, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
-    kotlin.Any> =
+    public val _nothingSetterWithTSomethingComparable:
+        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTSomethingComparable",
             collector = verifier, freeze = freeze)
 
@@ -110,14 +125,19 @@ internal class SpiedMock<L>(
             } as L }
         }
         set(`value`) {
-            _nothingSetterWithTL.invoke(this@nothing, value)
+            _nothingSetterWithTL.invoke(this@nothing, value) {
+                useSpyIf(__spyOn) {    spyContext {
+                    this@nothing.nothing = value
+                    Unit
+                } }
+            }
         }
 
     public val _nothingGetterWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTL",
             collector = verifier, freeze = freeze)
 
-    public val _nothingSetterWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
+    public val _nothingSetterWithTL: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTL",
             collector = verifier, freeze = freeze)
 
@@ -129,14 +149,19 @@ internal class SpiedMock<L>(
             } as kotlin.String }
         }
         set(`value`) {
-            _otherThingSetter.invoke(this@otherThing, value)
+            _otherThingSetter.invoke(this@otherThing, value) {
+                useSpyIf(__spyOn) {    spyContext {
+                    this@otherThing.otherThing = value
+                    Unit
+                } }
+            }
         }
 
     public val _otherThingGetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_otherThingGetter",
             collector = verifier, freeze = freeze)
 
-    public val _otherThingSetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
+    public val _otherThingSetter: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_otherThingSetter",
             collector = verifier, freeze = freeze)
 

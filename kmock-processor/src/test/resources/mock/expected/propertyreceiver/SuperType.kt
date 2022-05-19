@@ -35,7 +35,7 @@ internal class InheritedMock<R>(
             collector = verifier, freeze = freeze)
 
     public val _thingSetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
+        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_thingSetter",
             collector = verifier, freeze = freeze)
 
@@ -60,7 +60,7 @@ internal class InheritedMock<R>(
             collector = verifier, freeze = freeze)
 
     public val _extensionSetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Platform<*>) -> kotlin.Int> =
+        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Platform<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_extensionSetter",
             collector = verifier, freeze = freeze)
 
@@ -76,8 +76,8 @@ internal class InheritedMock<R>(
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingGetterWithTSomethingComparable",
             collector = verifier, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
-    kotlin.Any> =
+    public val _nothingSetterWithTSomethingComparable:
+        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingSetterWithTSomethingComparable",
             collector = verifier, freeze = freeze)
 
@@ -91,7 +91,7 @@ internal class InheritedMock<R>(
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingGetterWithTR",
             collector = verifier, freeze = freeze)
 
-    public val _nothingSetterWithTR: KMockContract.SyncFunProxy<R, (R) -> R> =
+    public val _nothingSetterWithTR: KMockContract.SyncFunProxy<Unit, (R) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingSetterWithTR",
             collector = verifier, freeze = freeze)
 
@@ -105,7 +105,7 @@ internal class InheritedMock<R>(
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_otherThingGetter",
             collector = verifier, freeze = freeze)
 
-    public val _otherThingSetter: KMockContract.SyncFunProxy<String, (R) -> kotlin.String> =
+    public val _otherThingSetter: KMockContract.SyncFunProxy<Unit, (R) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_otherThingSetter",
             collector = verifier, freeze = freeze)
 

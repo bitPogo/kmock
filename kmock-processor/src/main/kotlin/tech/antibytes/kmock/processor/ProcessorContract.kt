@@ -318,7 +318,7 @@ internal interface ProcessorContract {
         fun buildSetterSpy(propertyName: String): String
 
         fun buildReceiverGetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String
-        fun buildReceiverSetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String
+        fun buildReceiverSetterSpy(propertyName: String): String
 
         fun buildMethodSpy(
             methodName: String,
@@ -365,9 +365,14 @@ internal interface ProcessorContract {
             propertyType: MethodReturnTypeInfo,
             relaxer: Relaxer?
         ): String
+
+        fun buildReceiverSetterNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            propertyName: String,
+        ): String
     }
 
-    interface MethodeGeneratorHelper {
+    interface MethodGeneratorHelper {
         fun determineArguments(
             inherited: Boolean,
             arguments: List<KSValueParameter>,
@@ -385,7 +390,7 @@ internal interface ProcessorContract {
             suspending: Boolean,
             classScopeGenerics: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>?,
-            returnType: KSType,
+            returnType: TypeName,
             typeResolver: TypeParameterResolver,
         ): ProxyBundle
     }
