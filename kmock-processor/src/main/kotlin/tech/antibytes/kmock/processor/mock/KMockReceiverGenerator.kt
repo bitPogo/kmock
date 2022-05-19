@@ -8,7 +8,6 @@ package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.symbol.KSPropertySetter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FunSpec
@@ -152,7 +151,6 @@ internal class KMockReceiverGenerator(
 
     private fun resolveSetterProxy(
         qualifier: String,
-        propertyType: KSPropertySetter?,
         propertyName: String,
         isMutable: Boolean,
         receiverInfo: MethodTypeInfo,
@@ -224,7 +222,6 @@ internal class KMockReceiverGenerator(
 
         val (setterProxyInfo, setter) = resolveSetterProxy(
             qualifier = qualifier,
-            propertyType = ksProperty.setter,
             propertyName = propertyName,
             isMutable = isMutable,
             receiverInfo = receiverInfo,
@@ -255,15 +252,15 @@ internal class KMockReceiverGenerator(
         returnType: MethodReturnTypeInfo,
         relaxer: Relaxer?
     ) {
-        if (returnType.needsCastAnnotation(relaxer = relaxer)) {
+        if (returnType.needsCastAnnotation(relaxer = relaxer) || enableSpy) {
             method.addAnnotation(UNCHECKED)
         }
 
         val cast = returnType.resolveCastOnReturn()
 
         val invocation = arguments.joinToString(", ") { argument -> argument.argumentName }
-        val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
-            enableSpy = false,
+        val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildReceiverMethodNonIntrusiveInvocation(
+            enableSpy = enableSpy,
             methodName = proxyInfo.templateName,
             typeParameter = typeParameter,
             arguments = arguments,

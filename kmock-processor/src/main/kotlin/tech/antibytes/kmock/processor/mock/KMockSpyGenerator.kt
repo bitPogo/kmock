@@ -76,6 +76,26 @@ internal object KMockSpyGenerator : SpyGenerator {
         return buildSpy("$SPY_PROPERTY!!.$methodName$typesParameter($invocationArguments)")
     }
 
+    override fun buildReceiverMethodSpy(
+        methodName: String,
+        parameter: List<TypeName>,
+        arguments: Array<MethodTypeInfo>,
+        methodReturnType: MethodReturnTypeInfo
+    ): String {
+        val invocationArguments = arguments.joinToString(
+            separator = ", ",
+            transform = ::determineSpyInvocationArgument
+        )
+        val typesParameter = resolveTypes(parameter)
+        val invocation = """
+            |   $SPY_CONTEXT {
+            |       this@$methodName.$methodName$typesParameter($invocationArguments)
+            |   } as ${methodReturnType.typeName}
+        """.trimMargin()
+
+        return buildSpy(invocation)
+    }
+
     override fun buildEqualsSpy(mockName: String): String {
         return """
             |useSpyOnEqualsIf(

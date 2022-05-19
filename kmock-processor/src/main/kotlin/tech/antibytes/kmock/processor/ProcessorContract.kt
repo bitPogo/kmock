@@ -327,6 +327,13 @@ internal interface ProcessorContract {
             methodReturnType: MethodReturnTypeInfo,
         ): String
 
+        fun buildReceiverMethodSpy(
+            methodName: String,
+            parameter: List<TypeName>,
+            arguments: Array<MethodTypeInfo>,
+            methodReturnType: MethodReturnTypeInfo,
+        ): String
+
         fun buildEqualsSpy(mockName: String): String
     }
 
@@ -369,6 +376,15 @@ internal interface ProcessorContract {
         fun buildReceiverSetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
+        ): String
+
+        fun buildReceiverMethodNonIntrusiveInvocation(
+            enableSpy: Boolean,
+            methodName: String,
+            typeParameter: List<TypeName>,
+            arguments: Array<MethodTypeInfo>,
+            methodReturnType: MethodReturnTypeInfo,
+            relaxer: Relaxer?,
         ): String
     }
 

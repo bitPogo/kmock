@@ -1143,6 +1143,33 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform while spied which contains Receivers for methods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Spied.kt",
+            loadResource("/template/methodreceiver/Spied.kt")
+        )
+        val expected = loadResource("/expected/methodreceiver/Spied.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}spyOn_0" to "mock.template.methodreceiver.Spied",
+            )
+        )
+        val actual = resolveGenerated("SpiedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Common which contains Receivers for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
