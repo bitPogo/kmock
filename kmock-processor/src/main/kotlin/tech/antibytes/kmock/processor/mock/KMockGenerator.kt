@@ -286,8 +286,6 @@ internal class KMockGenerator(
             )
         }
 
-
-
         template.getAllProperties().forEach { ksProperty ->
             if (ksProperty.isPublicOpen()) {
                 hasReceivers = ksProperty.isReceiverMethod()
