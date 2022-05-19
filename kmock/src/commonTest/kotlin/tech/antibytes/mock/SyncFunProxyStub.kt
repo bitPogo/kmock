@@ -215,4 +215,8 @@ class SyncFunProxyStub(
     override fun clear() {
         TODO("Not yet implemented")
     }
+
+    override fun runs(action: () -> Any): KMockContract.ProxySideEffectBuilder<Any, () -> Any> {
+        TODO("Not yet implemented")
+    }
 }

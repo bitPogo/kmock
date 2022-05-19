@@ -45,6 +45,7 @@ toc::[]
 * support for instrumented Android tests (aka androidAndroidTest) on KMP
 * Multi-Interface Mocks support
 * interface receiver members are full supported
+* `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
 
 === Changed
 

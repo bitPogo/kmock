@@ -15,6 +15,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.FunProxyInvocationType
 import tech.antibytes.kmock.KMockContract.FunProxyState
+import tech.antibytes.kmock.KMockContract.ProxySideEffectBuilder
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
 import kotlin.math.max
@@ -193,6 +194,12 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         }
 
     override val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect> = state.sideEffects
+
+    override fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect> {
+        state.sideEffects.add(action)
+
+        return this
+    }
 
     override val calls: Int
         get() = state.calls

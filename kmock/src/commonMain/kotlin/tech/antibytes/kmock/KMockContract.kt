@@ -8,6 +8,7 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.error.MockError.MissingCall
 import tech.antibytes.kmock.error.MockError.MissingStub
+import tech.antibytes.kmock.proxy.FunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.verification.constraints.any
 import tech.antibytes.kmock.verification.constraints.eq
@@ -372,12 +373,34 @@ object KMockContract {
     }
 
     /**
+     * Mitigator of the strict assignment policy for multiple SideEffects
+     * @param ReturnValue the return value type of the hosting Proxy.
+     * @param SideEffect the function signature of the hosting Proxy.
+     * @author Matthias Geisler
+     */
+    interface ProxySideEffectBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
+        /**
+         * SideEffectChainBuilder to chain multiple SideEffects.
+         */
+        val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
+
+        /**
+         * Convenient method for multiple SideEffects, which uses under the sideEffects property.
+         * This chains SideEffects together according to their given order.
+         * @return ProxySideEffectBuilder
+         */
+        fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
+    }
+
+    /**
      * Shared Properties of synchronous and asynchronous functions Proxies.
      * @param ReturnValue the return value of the Function.
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
-    interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : Proxy<ReturnValue, Array<out Any?>> {
+    interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> :
+        Proxy<ReturnValue, Array<out Any?>>,
+        ProxySideEffectBuilder<ReturnValue, SideEffect> {
         /**
          * Marks the proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
          */
@@ -409,11 +432,6 @@ object KMockContract {
          * @throws NullPointerException on get if no value was set.
          */
         var sideEffect: SideEffect
-
-        /**
-         * SideEffectChainBuilder to chain multiple SideEffects.
-         */
-        val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**

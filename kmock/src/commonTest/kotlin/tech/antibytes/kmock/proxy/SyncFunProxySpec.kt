@@ -441,6 +441,60 @@ class SyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn13a")
+    fun `Given invoke is called it calls the given runs and delegates values threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.runs { givenArg0, givenArg1 ->
+                actualArgument0.set(givenArg0)
+                actualArgument1.set(givenArg1)
+
+                expected0
+            }.runs { givenArg0, givenArg1 ->
+                actualArgument2.set(givenArg0)
+                actualArgument3.set(givenArg1)
+
+                expected1
+            }
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1)
+
+            // Then
+            actual mustBe expected0
+            actualArgument0.get() mustBe argument0
+            actualArgument1.get() mustBe argument1
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            // When
+            val actual = proxy.invoke(argument0, argument1)
+
+            // Then
+            actual mustBe expected1
+            actualArgument2.get() mustBe argument0
+            actualArgument3.get() mustBe argument1
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn14")
     fun `Given invoke is called it uses ReturnValue over Throws`(): AsyncTestReturnValue {
         // Given
@@ -531,6 +585,32 @@ class SyncFunProxySpec {
 
             // Then
             actual mustBe expected
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn17a")
+    fun `Given invoke is called it uses SideEffects which are delegated via runs`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.runs { expected0 }
+            proxy.sideEffects.add { expected1 }
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual0 = proxy.invoke()
+            val actual1 = proxy.invoke()
+
+            // Then
+            actual0 mustBe expected0
+            actual1 mustBe expected1
         }
 
         return resolveMultiBlockCalls()
@@ -700,6 +780,7 @@ class SyncFunProxySpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChained)
+        proxy.runs(sideEffectChained)
 
         // When
         proxy.invoke()

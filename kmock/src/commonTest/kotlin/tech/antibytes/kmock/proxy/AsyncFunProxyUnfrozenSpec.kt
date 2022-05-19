@@ -356,6 +356,48 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn13a")
+    fun `Given invoke is called it calls the given runs and delegates values`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(fixture.fixture(), freeze = false)
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+
+        // When
+        proxy.runs { givenArg0, givenArg1 ->
+            actualArgument0.set(givenArg0)
+            actualArgument1.set(givenArg1)
+
+            expected0
+        }
+
+        proxy.runs { givenArg0, givenArg1 ->
+            actualArgument2.set(givenArg0)
+            actualArgument3.set(givenArg1)
+
+            expected1
+        }
+
+        // When
+        val actual0 = proxy.invoke(argument0, argument1)
+        val actual1 = proxy.invoke(argument0, argument1)
+
+        // Then
+        actual0 mustBe expected0
+        actual1 mustBe expected1
+        actualArgument0.get() mustBe argument0
+        actualArgument1.get() mustBe argument1
+    }
+
+    @Test
     @JsName("fn14")
     fun `Given invoke is called it uses ReturnValue over Throws`() = runBlockingTest {
         // Given
@@ -425,6 +467,26 @@ class AsyncFunProxyUnfrozenSpec {
 
         // Then
         actual mustBe expected
+    }
+
+    @Test
+    @JsName("fn17a")
+    fun `Given invoke is called it uses SideEffects which are delegated via runs`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        // When
+        proxy.runs { expected0 }
+        proxy.sideEffects.add { expected1 }
+
+        val actual0 = proxy.invoke()
+        val actual1 = proxy.invoke()
+
+        // Then
+        actual0 mustBe expected0
+        actual1 mustBe expected1
     }
 
     @Test
@@ -561,6 +623,7 @@ class AsyncFunProxyUnfrozenSpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
+        proxy.runs(sideEffectChain)
 
         proxy.invoke()
 
