@@ -357,6 +357,22 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn12a")
+    fun `Given run is called SideEffect it overrides SideEffect`() {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture())
+        val sideEffect0: (String, Int) -> Any = { _, _ -> fixture.fixture() }
+        val sideEffect1: (String, Int) -> Any = { _, _ -> fixture.fixture() }
+
+        // When
+        proxy.sideEffect = sideEffect0
+        proxy.run(sideEffect1)
+
+        // Then
+        proxy.sideEffect sameAs sideEffect1
+    }
+
+    @Test
     @JsName("fn13")
     fun `Given invoke is called it calls the given SideEffects and delegates values threadsafe`() {
         // Given
@@ -383,6 +399,48 @@ class SyncFunProxyUnfrozenSpec {
         actual mustBe expected
         actualArgument0 mustBe argument0
         actualArgument1 mustBe argument1
+    }
+
+    @Test
+    @JsName("fn13a")
+    fun `Given invoke is called it calls the given runs and delegates values`() {
+        // Given
+        val proxy = SyncFunProxy<Any, (String, Int) -> Any>(fixture.fixture(), freeze = false)
+        val argument0: String = fixture.fixture()
+        val argument1: Int = fixture.fixture()
+
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        val actualArgument0 = AtomicReference<String?>(null)
+        val actualArgument1 = AtomicReference<Int?>(null)
+        val actualArgument2 = AtomicReference<String?>(null)
+        val actualArgument3 = AtomicReference<Int?>(null)
+
+        // When
+        proxy.runs { givenArg0, givenArg1 ->
+            actualArgument0.set(givenArg0)
+            actualArgument1.set(givenArg1)
+
+            expected0
+        }
+
+        proxy.runs { givenArg0, givenArg1 ->
+            actualArgument2.set(givenArg0)
+            actualArgument3.set(givenArg1)
+
+            expected1
+        }
+
+        // When
+        val actual0 = proxy.invoke(argument0, argument1)
+        val actual1 = proxy.invoke(argument0, argument1)
+
+        // Then
+        actual0 mustBe expected0
+        actual1 mustBe expected1
+        actualArgument0.get() mustBe argument0
+        actualArgument1.get() mustBe argument1
     }
 
     @Test
@@ -467,6 +525,26 @@ class SyncFunProxyUnfrozenSpec {
 
         // Then
         actual mustBe expected
+    }
+
+    @Test
+    @JsName("fn17a")
+    fun `Given invoke is called it uses SideEffects which are delegated via runs`() {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val expected0: Any = fixture.fixture()
+        val expected1: Any = fixture.fixture()
+
+        // When
+        proxy.runs { expected0 }
+        proxy.sideEffects.add { expected1 }
+
+        val actual0 = proxy.invoke()
+        val actual1 = proxy.invoke()
+
+        // Then
+        actual0 mustBe expected0
+        actual1 mustBe expected1
     }
 
     @Test
@@ -608,6 +686,7 @@ class SyncFunProxyUnfrozenSpec {
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
         proxy.sideEffects.add(sideEffectChain)
+        proxy.runs(sideEffectChain)
 
         // When
         proxy.invoke()
