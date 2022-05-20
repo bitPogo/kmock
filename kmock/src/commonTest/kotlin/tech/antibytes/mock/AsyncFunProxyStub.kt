@@ -225,4 +225,8 @@ class AsyncFunProxyStub(
     override fun run(action: suspend () -> Any) {
         TODO("Not yet implemented")
     }
+
+    override var throwsMany: List<Throwable>
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

@@ -48,6 +48,7 @@ internal class SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
 
         return when (invocationType) {
             FunProxyInvocationType.THROWS -> throw throws
+            FunProxyInvocationType.THROWS_MANY -> throw retrieveFromThrowables()
             FunProxyInvocationType.RETURN_VALUE -> returnValue
             FunProxyInvocationType.RETURN_VALUES -> retrieveFromValues()
             FunProxyInvocationType.SIDE_EFFECT -> method()

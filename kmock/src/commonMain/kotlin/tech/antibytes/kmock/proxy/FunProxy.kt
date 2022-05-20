@@ -49,6 +49,8 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
 
         override var throws: Throwable? by _throws
+        override val throwsMany: MutableList<Throwable> = sharedMutableListOf()
+
         override var returnValue: ReturnValue? by _returnValue
         override val returnValues: MutableList<ReturnValue> = sharedMutableListOf()
 
@@ -86,8 +88,11 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
         private var _calls = 0
 
         override var throws: Throwable? = null
+        override val throwsMany: MutableList<Throwable> = mutableListOf()
+
         override var returnValue: ReturnValue? = null
         override val returnValues: MutableList<ReturnValue> = mutableListOf()
+
         override var sideEffect: SideEffect? = null
         override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(false) {
             setProvider(FunProxyInvocationType.SIDE_EFFECT_CHAIN)
@@ -132,6 +137,14 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     internal val invocationType
         get() = state.invocationType
 
+    private fun <T> setListValue(values: List<T>, setter: List<T>.() -> Unit) {
+        if (values.isEmpty()) {
+            throw MockError.MissingStub("Empty Lists are not valid as value provider.")
+        } else {
+            setter(values)
+        }
+    }
+
     private fun setFunProxyInvocationType(invocationType: FunProxyInvocationType) {
         val activeInvocationType = max(
             invocationType.value,
@@ -156,6 +169,20 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
             state.throws = value
         }
 
+    private fun _setThrowables(values: List<Throwable>) {
+        state.throwsMany.clear()
+        state.throwsMany.addAll(values)
+    }
+
+    override var throwsMany: List<Throwable>
+        get() = state.throwsMany.toList()
+        set(values) {
+            setListValue(values) {
+                setFunProxyInvocationType(FunProxyInvocationType.THROWS_MANY)
+                _setThrowables(values)
+            }
+        }
+
     override var returnValue: ReturnValue
         @Suppress("UNCHECKED_CAST")
         get() = state.returnValue as ReturnValue
@@ -172,9 +199,7 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     override var returnValues: List<ReturnValue>
         get() = state.returnValues.toList()
         set(values) {
-            if (values.isEmpty()) {
-                throw MockError.MissingStub("Empty Lists are not valid as value provider.")
-            } else {
+            setListValue(values) {
                 setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUES)
                 _setReturnValues(values)
             }
@@ -208,15 +233,16 @@ abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> interna
     override val calls: Int
         get() = state.calls
 
-    protected fun retrieveFromValues(): ReturnValue {
-        val returnValues = state.returnValues
-
-        return if (returnValues.size == 1) {
-            returnValues.first()
+    private fun <T> resolveListValue(list: MutableList<T>): T {
+        return if (list.size == 1) {
+            list.first()
         } else {
-            returnValues.removeAt(0)
+            list.removeAt(0)
         }
     }
+
+    protected fun retrieveFromThrowables(): Throwable = resolveListValue(state.throwsMany)
+    protected fun retrieveFromValues(): ReturnValue = resolveListValue(state.returnValues)
 
     protected fun fail(): ReturnValue {
         throw MockError.MissingStub("Missing stub value for $id")

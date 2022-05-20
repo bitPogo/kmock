@@ -223,4 +223,8 @@ class SyncFunProxyStub(
     override fun run(action: () -> Any) {
         TODO("Not yet implemented")
     }
+
+    override var throwsMany: List<Throwable>
+        get() = TODO("Not yet implemented")
+        set(value) {}
 }

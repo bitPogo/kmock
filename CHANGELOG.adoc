@@ -48,6 +48,7 @@ toc::[]
 * Interface receiver members are full supported
 * `run` for FunProxies to mitigate the strict assignment policy in terms of a single SideEffect
 * `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
+* `throwsMany` for FunProxies to align the the FunProxy API
 
 === Changed
 
