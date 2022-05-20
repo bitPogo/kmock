@@ -32,6 +32,7 @@ toc::[]
 * `or` ArgumentConstraint
 * `not` ArgumentConstraint
 * `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`. Also `spyOn` is not needed in this configuration
+* `spyAll` in the Gradle extension, in order to tell the processor to create for al given interfaces also a spy entryPoint
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
 * `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
@@ -42,9 +43,9 @@ toc::[]
 * `assertOrder` in order to make the names more consistent and preserves the old behaviour of `verifyStrictOrder`
 * `assertProxy` as alternative to `verify`
 * iosSimulatorArm64 support
-* support for instrumented Android tests (aka androidAndroidTest) on KMP
+* Support for instrumented Android tests (aka androidAndroidTest) on KMP
 * Multi-Interface Mocks support
-* interface receiver members are full supported
+* Interface receiver members are full supported
 * `run` for FunProxies to mitigate the strict assignment policy in terms of a single SideEffect
 * `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
 
@@ -60,8 +61,8 @@ toc::[]
 * Android MinSDK 23 -> 21
 * `spyOn` is now capable of picking up KMock defined Aliases
 * `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
-* relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
-* generic methods names get prefixed by the generic type name, if overloaded to avoid name collisions
+* Relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
+* Generic methods names get prefixed by the generic type name, if overloaded to avoid name collisions
 
 === Deprecated
 
@@ -72,7 +73,7 @@ toc::[]
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
 * `allowInterfacesOnKmock`, use allowInterfaces instead
 * `allowInterfacesOnKspy`, use allowInterfaces instead
-* old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
+* Old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
 
 === Fixed
 
