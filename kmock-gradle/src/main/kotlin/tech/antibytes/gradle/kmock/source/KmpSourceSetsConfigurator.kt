@@ -112,7 +112,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         dependencies.forEach { (sourceSet, ancestors) ->
             ancestors.forEachIndexed { idx, ancestor ->
-                ksp.arg("$DEPENDENCIES${sourceSet}#${idx}", ancestor)
+                ksp.arg("$DEPENDENCIES$sourceSet#$idx", ancestor)
             }
         }
     }

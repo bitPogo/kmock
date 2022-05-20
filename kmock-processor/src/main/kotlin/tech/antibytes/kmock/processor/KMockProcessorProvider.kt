@@ -216,8 +216,8 @@ class KMockProcessorProvider(
             ),
             relaxationAggregator = KMockRelaxationAggregator(logger),
             filter = SourceFilter(
-                emptyMap(),
-                logger
+                dependencies = options.dependencies,
+                logger = logger
             )
         )
     }

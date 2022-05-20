@@ -136,7 +136,7 @@ internal interface ProcessorContract {
             filteredBy: List<T>
         ): List<T>
 
-        fun <T : Source> filterByPrecedence(
+        fun <T : Source> filterByDependencies(
             templateSources: List<T>
         ): List<T>
     }

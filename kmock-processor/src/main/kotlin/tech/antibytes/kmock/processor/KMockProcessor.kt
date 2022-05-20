@@ -206,12 +206,12 @@ internal class KMockProcessor(
         val multiAggregated = multiSourceAggregator.extractSharedInterfaces(resolver)
 
         val filteredSingleInterfaces = filter.filter(
-            templateSources = filter.filterByPrecedence(singleAggregated.extractedTemplates),
+            templateSources = filter.filterByDependencies(singleAggregated.extractedTemplates),
             filteredBy = commonAggregated.extractedTemplates
         )
 
         val filteredMultiInterfaces = filter.filter(
-            templateSources = filter.filterByPrecedence(multiAggregated.extractedTemplates),
+            templateSources = filter.filterByDependencies(multiAggregated.extractedTemplates),
             filteredBy = commonMultiAggregated.extractedTemplates
         )
 
