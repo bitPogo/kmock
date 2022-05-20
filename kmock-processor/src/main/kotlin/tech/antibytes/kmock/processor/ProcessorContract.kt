@@ -37,6 +37,7 @@ import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.MultiMockShared
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
+import java.util.SortedSet
 import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
 internal interface ProcessorContract {
@@ -56,7 +57,7 @@ internal interface ProcessorContract {
         val disableFactories: Boolean,
         val rootPackage: String,
         val knownSharedSourceSets: Set<String>,
-        val precedences: Map<String, Int>,
+        val dependencies: Map<String, SortedSet<String>>,
         val aliases: Map<String, String>,
         val useBuildInProxiesOn: Set<String>,
         val spyOn: Set<String>,
@@ -653,7 +654,7 @@ internal interface ProcessorContract {
         const val FREEZE = "${KMOCK_PREFIX}freeze"
         const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
-        const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
+        const val DEPENDENCIES = "${KMOCK_PREFIX}dependencies_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"

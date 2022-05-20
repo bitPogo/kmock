@@ -215,7 +215,10 @@ class KMockProcessorProvider(
                 aliases = options.aliases,
             ),
             relaxationAggregator = KMockRelaxationAggregator(logger),
-            filter = SourceFilter(options.precedences, logger)
+            filter = SourceFilter(
+                emptyMap(),
+                logger
+            )
         )
     }
 }

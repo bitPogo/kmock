@@ -15,7 +15,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ALL
@@ -25,8 +25,22 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
 import tech.antibytes.kmock.processor.ProcessorContract.OptionExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
+import java.util.SortedSet
 
 internal object KMockOptionExtractor : OptionExtractor {
+    private fun extractDependencies(
+        key: String,
+        value: String,
+        dependencies: MutableMap<String, MutableSet<String>>
+    ) {
+        val mappedKey = key.substringAfter(DEPENDENCIES).substringBeforeLast('#')
+        val ancestors = dependencies.getOrElse(mappedKey) { mutableSetOf() }
+
+        ancestors.add(value)
+
+        dependencies[mappedKey] = ancestors
+    }
+
     private fun extractMappedValue(
         prefix: String,
         key: String,
@@ -38,8 +52,14 @@ internal object KMockOptionExtractor : OptionExtractor {
     }
 
     private fun extractSourceSets(
-        precedences: MutableMap<String, Int>
-    ): Set<String> = precedences.keys.filterNot { sourceSet -> sourceSet == "commonTest" }.toSet()
+        dependencies: MutableMap<String, MutableSet<String>>
+    ): Set<String> = dependencies.keys.filterNot { sourceSet -> sourceSet == "commonTest" }.toSet()
+
+    private fun MutableMap<String, MutableSet<String>>.sealDependencies(): Map<String, SortedSet<String>> {
+        return this.map { (sourceSet, ancestors) ->
+            sourceSet to ancestors.toSortedSet()
+        }.toMap()
+    }
 
     override fun convertOptions(
         kspRawOptions: Map<String, String>
@@ -47,7 +67,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         var kspDir: String? = null
         var rootPackage: String? = null
         var isKmp: Boolean? = null
-        val precedences: MutableMap<String, Int> = mutableMapOf()
+        val dependencies: MutableMap<String, MutableSet<String>> = mutableMapOf()
         val aliases: MutableMap<String, String> = mutableMapOf()
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
@@ -72,9 +92,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
                 key == SPY_ALL -> spyAll = value.toBoolean()
                 key == DISABLE_FACTORIES -> disableFactories = value.toBoolean()
-                key.startsWith(PRECEDENCE) -> extractMappedValue(PRECEDENCE, key, value) { sourceSet, precedence ->
-                    precedences[sourceSet] = precedence.toInt()
-                }
+                key.startsWith(DEPENDENCIES) -> extractDependencies(key, value, dependencies)
                 key.startsWith(ALIASES) -> extractMappedValue(ALIASES, key, value) { qualifiedName, alias ->
                     aliases[qualifiedName] = alias
                 }
@@ -118,8 +136,8 @@ internal object KMockOptionExtractor : OptionExtractor {
             allowInterfaces = allowInterfaces,
             spiesOnly = spiesOnly,
             disableFactories = disableFactories,
-            knownSharedSourceSets = extractSourceSets(precedences),
-            precedences = precedences,
+            knownSharedSourceSets = extractSourceSets(dependencies),
+            dependencies = dependencies.sealDependencies(),
             aliases = aliases,
             useBuildInProxiesOn = useBuildInProxiesOn,
             spyOn = spyOn,

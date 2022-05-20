@@ -20,7 +20,7 @@ import tech.antibytes.kmock.processor.KMockProcessorProvider
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
@@ -69,8 +69,8 @@ class KMockMultiInterfaceMocksSpec {
         }.also {
             it["${KMOCK_PREFIX}oldNamePrefix_0"] = "kotlin.collections"
             it["${KMOCK_PREFIX}oldNamePrefix_1"] = "kotlin"
-            it["${PRECEDENCE}sharedTest"] = "0"
-            it["${PRECEDENCE}otherTest"] = "1"
+            it["${DEPENDENCIES}sharedTest"] = "0"
+            it["${DEPENDENCIES}otherTest"] = "1"
         }
 
         return KotlinCompilation().apply {
