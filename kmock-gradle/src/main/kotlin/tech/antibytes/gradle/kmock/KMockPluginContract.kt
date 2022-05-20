@@ -120,6 +120,13 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface DependencyGraph {
+        fun resolveAncestors(
+            platformSources: Map<String, Set<String>>,
+            metaSources: Map<String, Set<String>>,
+        ): Map<String, Set<String>>
+    }
+
     companion object {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
