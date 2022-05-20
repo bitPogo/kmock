@@ -72,14 +72,22 @@ internal class KMockSingleSourceAggregator(
         }
     }
 
+    private fun String?.ensureTestSourceSet(): String? {
+        return when {
+            this == null -> null
+            !this.endsWith("Test") -> "${this}Test"
+            else -> this
+        }
+    }
+
     private fun determineSourceCategory(
         defaultIndicator: String,
         annotation: KSAnnotation
     ): String {
         return if (annotation.arguments.size == 2) {
-            annotation.arguments.first().value as String
+            (annotation.arguments.first().value as String).ensureTestSourceSet()!!
         } else {
-            customAnnotations[resolveAnnotationName(annotation)] ?: defaultIndicator
+            customAnnotations[resolveAnnotationName(annotation)].ensureTestSourceSet() ?: defaultIndicator
         }
     }
 
