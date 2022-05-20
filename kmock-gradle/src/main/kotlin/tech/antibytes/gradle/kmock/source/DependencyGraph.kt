@@ -13,11 +13,11 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
 
     private fun expand(
         dependencyGraph: Map<String, Node>,
-        metaSources: Map<String, Set<String>>
+        metaDependencies: Map<String, Set<String>>
     ): Map<String, Node> {
         val traversed: MutableMap<String, Node> = dependencyGraph.toMutableMap()
 
-        metaSources.forEach { (sourceSet, children) ->
+        metaDependencies.forEach { (sourceSet, children) ->
             val currentNode = traversed[sourceSet]!!
 
             val childNodes = children.map { child ->
@@ -54,10 +54,10 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
     }
 
     override fun resolveAncestors(
-        platformSources: Map<String, Set<String>>,
-        metaSources: Map<String, Set<String>>
+        sourceDependencies: Map<String, Set<String>>,
+        metaDependencies: Map<String, Set<String>>
     ): Map<String, Set<String>> {
-        val allSources: Map<String, Node> = listOf(platformSources.keys, metaSources.keys)
+        val allSources: Map<String, Node> = listOf(sourceDependencies.keys, metaDependencies.keys)
             .flatten()
             .associateWith { sourceSet ->
                 Node(
@@ -67,6 +67,6 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
                 )
             }.toMutableMap()
 
-        return expand(allSources, metaSources).extractAncestors()
+        return expand(allSources, metaDependencies).extractAncestors()
     }
 }
