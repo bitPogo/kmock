@@ -137,4 +137,31 @@ class SourceSetValidatorSpec {
             logger.warn(any())
         }
     }
+
+    @Test
+    fun `Given isValidateSourceSet with a KSAnnotation which is a valid source while referencing only the platform it returns true`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val annotation: KSAnnotation = mockk()
+        val value: KSValueArgument = mockk()
+        val validSourceSet: String = fixture.fixture()
+        val knownSourceSets: Set<String> = setOf("${validSourceSet}Test")
+
+        every { logger.warn(any()) } just Runs
+        every { annotation.arguments } returns listOf(value)
+        every { value.value } returns validSourceSet
+
+        // When
+        val actual = SourceSetValidator(
+            logger,
+            knownSourceSets
+        ).isValidateSourceSet(annotation)
+
+        // Then
+        actual mustBe true
+
+        verify(exactly = 0) {
+            logger.warn(any())
+        }
+    }
 }

@@ -23,12 +23,13 @@ internal class SourceSetValidator(
     }
 
     override fun isValidateSourceSet(sourceSet: Any?): Boolean {
-        return when (extractSourceSet(sourceSet)) {
-            !is String -> {
+        val extractedSourceSet = extractSourceSet(sourceSet)
+        return when {
+            extractedSourceSet !is String -> {
                 logger.warn("Unexpected annotation payload!")
                 false
             }
-            !in knownSharedSourceSets -> {
+            extractedSourceSet !in knownSharedSourceSets && "${extractedSourceSet}Test" !in knownSharedSourceSets -> {
                 logger.warn("$sourceSet is not a applicable sourceSet!")
                 false
             }
