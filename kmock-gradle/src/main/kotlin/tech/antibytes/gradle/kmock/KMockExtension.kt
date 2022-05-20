@@ -19,6 +19,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ALL
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TYPE_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES
@@ -55,6 +56,7 @@ abstract class KMockExtension(
     private var _allowInterfaces = false
 
     private var _spyOn: Set<String> = emptySet()
+    private var _spyAll = false
     private var _spiesOnly = false
 
     private var _disableFactories = false
@@ -188,6 +190,13 @@ abstract class KMockExtension(
         set(value) {
             propagateValue(SPIES_ONLY, value.toString())
             _spiesOnly = value
+        }
+
+    override var spyAll: Boolean
+        get() = _spyAll
+        set(value) {
+            propagateValue(SPY_ALL, value.toString())
+            _spyAll = value
         }
 
     override var disableFactories: Boolean
