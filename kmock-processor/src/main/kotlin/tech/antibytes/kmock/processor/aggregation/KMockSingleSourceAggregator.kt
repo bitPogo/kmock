@@ -72,14 +72,6 @@ internal class KMockSingleSourceAggregator(
         }
     }
 
-    private fun String?.ensureTestSourceSet(): String? {
-        return when {
-            this == null -> null
-            !this.endsWith("Test") -> "${this}Test"
-            else -> this
-        }
-    }
-
     private fun determineSourceCategory(
         defaultIndicator: String,
         annotation: KSAnnotation

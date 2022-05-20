@@ -12,7 +12,7 @@ import tech.antibytes.kmock.MultiMockShared
 interface SomeGeneric<T>
 
 @MultiMockShared(
-    "sharedTest",
+    "shared",
     "SharedGenericMulti",
     Generic1::class,
     Generic2::class,
