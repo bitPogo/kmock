@@ -18,6 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.OVERLOAD_NAME_
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PRECEDENCE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ALL
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ON
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PREFIXES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIXES
@@ -53,6 +54,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         var freezeOnDefault = true
         var allowInterfaces = false
         var spiesOnly = false
+        var spyAll = false
         var disableFactories = false
         var enableNewOverloadingNames = true
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
@@ -68,6 +70,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key == FREEZE -> freezeOnDefault = value.toBoolean()
                 key == INTERFACES -> allowInterfaces = value.toBoolean()
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
+                key == SPY_ALL -> spyAll = value.toBoolean()
                 key == DISABLE_FACTORIES -> disableFactories = value.toBoolean()
                 key.startsWith(PRECEDENCE) -> extractMappedValue(PRECEDENCE, key, value) { sourceSet, precedence ->
                     precedences[sourceSet] = precedence.toInt()
@@ -120,6 +123,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             aliases = aliases,
             useBuildInProxiesOn = useBuildInProxiesOn,
             spyOn = spyOn,
+            spyAll = spyAll,
             enableNewOverloadingNames = enableNewOverloadingNames,
             useTypePrefixFor = useTypePrefixFor,
             customMethodNames = customMethodNames,

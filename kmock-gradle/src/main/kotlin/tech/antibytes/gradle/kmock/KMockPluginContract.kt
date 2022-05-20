@@ -74,8 +74,17 @@ internal interface KMockPluginContract {
         /**
          * Switch which will KMock tell generate only `kspy` instead of `kmock`.
          * `kspy` will automatically reference all generated spies an additional invocation of `spyOn` is not needed.
+         *
+         * Default is false
          */
         var spiesOnly: Boolean
+
+        /**
+         * Enables spies for all given Interfaces.
+         *
+         * Default is false
+         */
+        var spyAll: Boolean
 
         /**
          * Enable factory functions to reference Mocks by their interfaces.
@@ -123,6 +132,7 @@ internal interface KMockPluginContract {
         const val ALIASES = "${KMOCK_PREFIX}alias_"
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
+        const val SPY_ALL = "${KMOCK_PREFIX}spyAll"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
         const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"

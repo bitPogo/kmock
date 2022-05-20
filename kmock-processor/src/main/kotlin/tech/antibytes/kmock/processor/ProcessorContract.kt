@@ -52,6 +52,7 @@ internal interface ProcessorContract {
         val freezeOnDefault: Boolean,
         val allowInterfaces: Boolean,
         val spiesOnly: Boolean,
+        val spyAll: Boolean,
         val disableFactories: Boolean,
         val rootPackage: String,
         val knownSharedSourceSets: Set<String>,
@@ -657,6 +658,7 @@ internal interface ProcessorContract {
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
+        const val SPY_ALL = "${KMOCK_PREFIX}spyAll"
         const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
         const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"

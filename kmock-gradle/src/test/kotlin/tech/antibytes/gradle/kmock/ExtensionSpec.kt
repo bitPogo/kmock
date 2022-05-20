@@ -552,6 +552,35 @@ class ExtensionSpec {
     }
 
     @Test
+    fun `Its spyAll is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.spyAll mustBe false
+    }
+
+    @Test
+    fun `It propagates spyAll changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.spyAll = expected
+
+        extension.spyAll mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_spyAll", expected.toString()) }
+    }
+
+    @Test
     fun `Its disableFactories is false by default`() {
         val project: Project = mockk(relaxed = true)
         val kspExtension: KspExtension = mockk()

@@ -325,7 +325,7 @@ internal class KMockGenerator(
             }
         }
 
-        if (templateName in useBuildInProxiesOn || enableSpy) {
+        if (enableSpy || templateName in useBuildInProxiesOn) {
             val (proxies, functions) = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,

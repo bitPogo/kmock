@@ -106,8 +106,9 @@ class KMockProcessorProvider(
         val options = KMockOptionExtractor.convertOptions(environment.options)
 
         val spyContainer = SpyContainer(
+            spyOn = options.spyOn,
+            spyAll = options.spyAll,
             spiesOnly = options.spiesOnly,
-            spyOn = options.spyOn
         )
 
         val codeGenerator = KMockCodeGenerator(
