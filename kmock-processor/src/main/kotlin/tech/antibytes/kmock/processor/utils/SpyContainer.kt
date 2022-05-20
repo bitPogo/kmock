@@ -11,17 +11,19 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Source
 
 internal class SpyContainer(
-    private val spiesOnly: Boolean,
     private val spyOn: Set<String>,
+    private val spiesOnly: Boolean,
+    private val spyAll: Boolean
 ) : ProcessorContract.SpyContainer {
     override fun isSpyable(
         template: KSClassDeclaration?,
         packageName: String,
         templateName: String
     ): Boolean {
-        return template?.qualifiedName?.asString() in spyOn ||
-            "$packageName.$templateName" in spyOn ||
-            spiesOnly
+        return spiesOnly ||
+            spyAll ||
+            template?.qualifiedName?.asString() in spyOn ||
+            "$packageName.$templateName" in spyOn
     }
 
     private fun List<Source>.deriveQualifiedNames(): List<String> {
@@ -33,5 +35,5 @@ internal class SpyContainer(
         return this.filter { qualifiedName -> qualifiedName !in filter }
     }
 
-    override fun hasSpies(filter: List<Source>): Boolean = spyOn.filterSpies(filter).isNotEmpty() || spiesOnly
+    override fun hasSpies(filter: List<Source>): Boolean = spiesOnly || spyAll || spyOn.filterSpies(filter).isNotEmpty()
 }

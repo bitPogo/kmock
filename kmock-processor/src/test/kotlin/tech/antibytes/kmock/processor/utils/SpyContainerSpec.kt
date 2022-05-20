@@ -23,18 +23,19 @@ class SpyContainerSpec {
 
     @Test
     fun `It fulfils SpyContainer`() {
-        SpyContainer(fixture.fixture(), emptySet()) fulfils ProcessorContract.SpyContainer::class
+        SpyContainer(emptySet(), fixture.fixture(), fixture.fixture()) fulfils ProcessorContract.SpyContainer::class
     }
 
     @Test
-    fun `Given isSable is called it return false if nulled template nor the derivative TemplateName is not part of the enabled spies`() {
+    fun `Given isSpyable is called it return false if nulled template nor the derivative TemplateName is not part of the enabled spies`() {
         // Given
         val enabledSpies = fixture.listFixture<String>(size = 3).toSet()
 
         // When
         val actual = SpyContainer(
+            enabledSpies,
             false,
-            enabledSpies
+            false,
         ).isSpyable(
             template = null,
             packageName = fixture.fixture(),
@@ -46,14 +47,15 @@ class SpyContainerSpec {
     }
 
     @Test
-    fun `Given isSable is called it return false if template nor the derivative TemplateName is not part of the enabled spies`() {
+    fun `Given isSpyable is called it return false if template nor the derivative TemplateName is not part of the enabled spies`() {
         // Given
         val enabledSpies = fixture.listFixture<String>(size = 3).toSet()
 
         // When
         val actual = SpyContainer(
+            enabledSpies,
             false,
-            enabledSpies
+            false,
         ).isSpyable(
             template = mockk(relaxed = true),
             packageName = fixture.fixture(),
@@ -74,8 +76,9 @@ class SpyContainerSpec {
 
         // When
         val actual = SpyContainer(
+            enabledSpies.toSet(),
             false,
-            enabledSpies.toSet()
+            false,
         ).isSpyable(
             template = template,
             packageName = fixture.fixture(),
@@ -98,8 +101,9 @@ class SpyContainerSpec {
 
         // When
         val actual = SpyContainer(
+            enabledSpies.toSet(),
             false,
-            enabledSpies.toSet()
+            false,
         ).isSpyable(
             template = mockk(relaxed = true),
             packageName = packageName,
@@ -117,8 +121,29 @@ class SpyContainerSpec {
 
         // When
         val actual = SpyContainer(
+            enabledSpies,
             true,
-            enabledSpies
+            false,
+        ).isSpyable(
+            template = mockk(relaxed = true),
+            packageName = fixture.fixture(),
+            templateName = fixture.fixture(),
+        )
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given isSable is called it return true if template nor the derivative TemplateName is not part of the enabled spies, but spyAll is true`() {
+        // Given
+        val enabledSpies = fixture.listFixture<String>(size = 3).toSet()
+
+        // When
+        val actual = SpyContainer(
+            enabledSpies,
+            false,
+            true,
         ).isSpyable(
             template = mockk(relaxed = true),
             packageName = fixture.fixture(),
@@ -132,16 +157,25 @@ class SpyContainerSpec {
     @Test
     fun `Given hasSpies is called it return false if Spies are not enabled`() {
         // When
-        val actual = SpyContainer(false, emptySet()).hasSpies()
+        val actual = SpyContainer(emptySet(), false, false).hasSpies()
 
         // Then
         actual mustBe false
     }
 
     @Test
-    fun `Given hasSpies is called it return true if Spies are not enabled but spies only is true`() {
+    fun `Given hasSpies is called it return true if Spies are not enabled but spiesOnly is true`() {
         // When
-        val actual = SpyContainer(true, emptySet()).hasSpies()
+        val actual = SpyContainer(emptySet(), true, false).hasSpies()
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given hasSpies is called it return true if Spies are not enabled but spiesAll is true`() {
+        // When
+        val actual = SpyContainer(emptySet(), false, true).hasSpies()
 
         // Then
         actual mustBe true
@@ -153,19 +187,19 @@ class SpyContainerSpec {
         val enabledSpies = fixture.listFixture<String>(size = 3).toSet()
 
         // When
-        val actual = SpyContainer(true, enabledSpies).hasSpies()
+        val actual = SpyContainer(enabledSpies, true, true).hasSpies()
 
         // Then
         actual mustBe true
     }
 
     @Test
-    fun `Given hasSpies is called it return true if Spies are enabled but spies only is false`() {
+    fun `Given hasSpies is called it return true if Spies are enabled but spiesOnly and spyAll is false`() {
         // Given
         val enabledSpies = fixture.listFixture<String>(size = 3).toSet()
 
         // When
-        val actual = SpyContainer(false, enabledSpies).hasSpies()
+        val actual = SpyContainer(enabledSpies, false, false).hasSpies()
 
         // Then
         actual mustBe true
@@ -190,7 +224,7 @@ class SpyContainerSpec {
             "$packaqe.${templateNames[idx]}"
         }
         // When
-        val actual = SpyContainer(false, enabledSpies.toSet()).hasSpies(filter)
+        val actual = SpyContainer(enabledSpies.toSet(), false, false).hasSpies(filter)
 
         // Then
         actual mustBe false
@@ -215,7 +249,32 @@ class SpyContainerSpec {
             "$packaqe.${templateNames[idx]}"
         }
         // When
-        val actual = SpyContainer(true, enabledSpies.toSet()).hasSpies(filter)
+        val actual = SpyContainer(enabledSpies.toSet(), true, false).hasSpies(filter)
+
+        // Then
+        actual mustBe true
+    }
+
+    @Test
+    fun `Given hasSpies is called with a filter it return true if all found Spies are filtered out but spyAll is active`() {
+        // Given
+        val packages = fixture.listFixture<String>(size = 3)
+        val templateNames = fixture.listFixture<String>(size = 3)
+        val filter: List<Source> = listOf(mockk(), mockk(), mockk())
+
+        every { filter[0].packageName } returns packages[0]
+        every { filter[1].packageName } returns packages[1]
+        every { filter[2].packageName } returns packages[2]
+
+        every { filter[0].templateName } returns templateNames[0]
+        every { filter[1].templateName } returns templateNames[1]
+        every { filter[2].templateName } returns templateNames[2]
+
+        val enabledSpies = packages.mapIndexed { idx, packaqe ->
+            "$packaqe.${templateNames[idx]}"
+        }
+        // When
+        val actual = SpyContainer(enabledSpies.toSet(), false, true).hasSpies(filter)
 
         // Then
         actual mustBe true
@@ -238,7 +297,7 @@ class SpyContainerSpec {
             "$packaqe.${templateNames[idx]}"
         }
         // When
-        val actual = SpyContainer(true, enabledSpies.toSet()).hasSpies(filter)
+        val actual = SpyContainer(enabledSpies.toSet(), false, false).hasSpies(filter)
 
         // Then
         actual mustBe true
