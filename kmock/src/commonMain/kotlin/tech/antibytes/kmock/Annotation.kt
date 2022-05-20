@@ -74,7 +74,7 @@ annotation class MultiMockCommon(
 /**
  * Determines which interfaces should be stubbed/mocked for a shared source.
  *
- * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest).
+ * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest or native).
  * @param interfaces variable amount of interfaces.
  * @property sourceSetName which will be propagated to the (KSP) processor.
  * @property interfaces which will be propagated to the (KSP) processor.
@@ -89,7 +89,7 @@ annotation class MockShared(val sourceSetName: String, vararg val interfaces: KC
 /**
  * Determines which interfaces should be stubbed/mocked as a union of them for CommonCode.
  *
- * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest).
+ * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest or native).
  * @param name name which used for the mock.
  * @param interfaces variable amount of interfaces.
  * @property sourceSetName which will be propagated to the (KSP) processor.

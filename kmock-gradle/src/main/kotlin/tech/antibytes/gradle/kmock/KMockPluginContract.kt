@@ -111,7 +111,7 @@ internal interface KMockPluginContract {
          * Allows to use custom annotation for meta sources with the exception of commonTest
          *
          * The key must be the original full qualified name of the Annotation.
-         * The value is the source set it is referring to.
+         * The value is the source set it is referring to (nativeTest or native).
          */
         var customAnnotationsForMeta: Map<String, String>
     }
