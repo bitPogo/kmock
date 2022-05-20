@@ -139,6 +139,25 @@ class AnnotationFilterSpec {
     }
 
     @Test
+    fun `Given filterAnnotation is called with map which contains valid SourcesSets while referencing the platform it returns a map with them`() {
+        // Given
+        val annotations: Map<String, String> = fixture.mapFixture(size = 3)
+        val logger: KSPLogger = mockk(relaxUnitFun = true)
+
+        // When
+        val actual = AnnotationFilter(
+            logger,
+            annotations.values.map { value -> "${value}Test" }.toSet()
+        ).filterAnnotation(annotations)
+
+        // Then
+        actual mustBe annotations
+        verify(exactly = 0) {
+            logger.warn(any())
+        }
+    }
+
+    @Test
     fun `Given isApplicableSingleSourceAnnotation is called with a KSAnnotation it returns false if it takes less then 1 argument`() {
         // Given
         val annotations: Map<String, String> = fixture.mapFixture(size = 3)

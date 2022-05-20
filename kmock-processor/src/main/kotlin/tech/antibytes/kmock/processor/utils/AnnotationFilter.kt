@@ -27,7 +27,7 @@ internal class AnnotationFilter(
         sourceSet: String
     ): Boolean {
         return when {
-            sourceSet !in knownSharedSourceSets -> {
+            sourceSet !in knownSharedSourceSets && "${sourceSet}Test" !in knownSharedSourceSets -> {
                 logger.warn(
                     "$annotation is not applicable since is SourceSet ($sourceSet) is not a know shared source."
                 )

@@ -64,6 +64,8 @@ toc::[]
 * `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
 * Relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
 * Generic methods names get prefixed by the generic type name, if overloaded to avoid name collisions
+* Meta/Shared Source Annotation are now supporting platform references (e.g. instead of metaTest you can write meta)
+* Custom Source Annotation are now supporting platform references (e.g. instead of sharedTest you can write shared)
 
 === Deprecated
 

@@ -77,9 +77,9 @@ internal class KMockSingleSourceAggregator(
         annotation: KSAnnotation
     ): String {
         return if (annotation.arguments.size == 2) {
-            annotation.arguments.first().value as String
+            (annotation.arguments.first().value as String).ensureTestSourceSet()!!
         } else {
-            customAnnotations[resolveAnnotationName(annotation)] ?: defaultIndicator
+            customAnnotations[resolveAnnotationName(annotation)].ensureTestSourceSet() ?: defaultIndicator
         }
     }
 

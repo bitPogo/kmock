@@ -57,6 +57,14 @@ internal abstract class BaseSourceAggregator(
         }.toTypedArray()
     }
 
+    protected fun String?.ensureTestSourceSet(): String? {
+        return when {
+            this == null -> null
+            !this.endsWith("Test") -> "${this}Test"
+            else -> this
+        }
+    }
+
     protected fun safeCastInterface(interfaze: KSDeclaration): KSClassDeclaration {
         return when {
             interfaze !is KSClassDeclaration -> {
