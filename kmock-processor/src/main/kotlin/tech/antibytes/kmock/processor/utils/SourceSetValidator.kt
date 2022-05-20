@@ -30,7 +30,7 @@ internal class SourceSetValidator(
                 false
             }
             extractedSourceSet !in knownSharedSourceSets && "${extractedSourceSet}Test" !in knownSharedSourceSets -> {
-                logger.warn("$sourceSet is not a applicable sourceSet!")
+                logger.warn("$extractedSourceSet is not a applicable sourceSet!")
                 false
             }
             else -> true

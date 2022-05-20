@@ -11,7 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PRECEDENCE
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DEPENDENCIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.config.MainConfig
 import java.util.Locale
@@ -104,73 +104,17 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         }
     }
 
-    private fun setPrecedence(
-        sourceSetName: String,
-        precedences: MutableMap<String, Int>
-    ) {
-        if (sourceSetName in precedences) {
-            precedences[sourceSetName] = precedences[sourceSetName]!! - 1
-        } else {
-            precedences[sourceSetName] = 0
-        }
-    }
-
-    private fun propagatePrecedences(
+    private fun propagateDependencies(
         project: Project,
-        precedences: Map<String, Int>
+        dependencies: Map<String, Set<String>>
     ) {
         val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
 
-        precedences.forEach { (sourceSet, precedence) ->
-            ksp.arg("$PRECEDENCE$sourceSet", precedence.toString())
-        }
-    }
-
-    private fun extractPrecedences(
-        platformDependencies: Map<String, Set<String>>,
-        metaDependencies: Map<String, Set<String>>,
-    ): Map<String, Int> {
-        val precedences: MutableMap<String, Int> = mutableMapOf()
-
-        metaDependencies.keys.forEach { key ->
-            val dependencies = metaDependencies[key]!!.toMutableSet()
-            var idx = 0
-
-            while (idx < dependencies.size) {
-                val sourceSet = dependencies.elementAt(idx)
-
-                val inMeta = sourceSet in metaDependencies
-                val inPlatform = sourceSet in platformDependencies
-
-                when {
-                    inMeta && inPlatform -> {
-                        dependencies.addAll(metaDependencies[sourceSet]!!)
-                        dependencies.addAll(platformDependencies[sourceSet]!!)
-
-                        dependencies.remove(sourceSet)
-
-                        setPrecedence(sourceSet, precedences)
-                    }
-                    inMeta -> {
-                        dependencies.addAll(metaDependencies[sourceSet]!!)
-
-                        dependencies.remove(sourceSet)
-
-                        setPrecedence(sourceSet, precedences)
-                    }
-                    inPlatform -> {
-                        dependencies.addAll(platformDependencies[sourceSet]!!)
-
-                        dependencies.remove(sourceSet)
-
-                        setPrecedence(sourceSet, precedences)
-                    }
-                    else -> idx++
-                }
+        dependencies.forEach { (sourceSet, ancestors) ->
+            ancestors.forEachIndexed { idx, ancestor ->
+                ksp.arg("$DEPENDENCIES$sourceSet#$idx", ancestor)
             }
         }
-
-        return precedences
     }
 
     private fun isAllowedSourceSet(sourceSetName: String): Boolean {
@@ -207,10 +151,13 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
         }
 
-        val precedences = extractPrecedences(sourceDependencies, metaDependencies)
+        val ancestors = DependencyGraph.resolveAncestors(
+            sourceDependencies = sourceDependencies,
+            metaDependencies = metaDependencies,
+        )
 
         if (kspCollector.isNotEmpty()) {
-            propagatePrecedences(project, precedences)
+            propagateDependencies(project, ancestors)
         }
     }
 }

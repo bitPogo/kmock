@@ -120,6 +120,13 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface DependencyGraph {
+        fun resolveAncestors(
+            sourceDependencies: Map<String, Set<String>>,
+            metaDependencies: Map<String, Set<String>>,
+        ): Map<String, Set<String>>
+    }
+
     companion object {
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
@@ -128,7 +135,7 @@ internal interface KMockPluginContract {
         const val FREEZE = "${KMOCK_PREFIX}freeze"
         const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
-        const val PRECEDENCE = "${KMOCK_PREFIX}precedence_"
+        const val DEPENDENCIES = "${KMOCK_PREFIX}dependencies_"
         const val ALIASES = "${KMOCK_PREFIX}alias_"
         const val USE_BUILD_IN = "${KMOCK_PREFIX}buildIn_"
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"

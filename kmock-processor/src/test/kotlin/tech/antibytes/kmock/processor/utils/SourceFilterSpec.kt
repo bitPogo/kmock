@@ -89,39 +89,7 @@ class SourceFilterSpec {
     }
 
     @Test
-    fun `Given filterSharedSources is called with aggregated SharedSource it returns them if they are already unique`() {
-        // Given
-        val source0: KSClassDeclaration = mockk()
-        val source1: KSClassDeclaration = mockk()
-
-        val sources = listOf(
-            TemplateSource(
-                indicator = fixture.fixture(),
-                template = source0,
-                templateName = fixture.fixture(),
-                packageName = fixture.fixture(),
-                generics = null,
-                dependencies = emptyList()
-            ),
-            TemplateSource(
-                indicator = fixture.fixture(),
-                template = source1,
-                templateName = fixture.fixture(),
-                packageName = fixture.fixture(),
-                generics = null,
-                dependencies = emptyList()
-            )
-        )
-
-        // When
-        val actual = SourceFilter(emptyMap(), mockk()).filterByPrecedence(sources)
-
-        // Then
-        actual mustBe sources
-    }
-
-    @Test
-    fun `Given filterSharedSources is called with aggregated SharedSource it emits an error if the SharedSource was not declared and they are not unique`() {
+    fun `Given filterByDependencies is called with aggregated SharedSource it emits an error if the SharedSource was not declared and they are not unique`() {
         // Given
         val logger: KSPLogger = mockk(relaxUnitFun = true)
         val source0: KSClassDeclaration = mockk()
@@ -153,7 +121,7 @@ class SourceFilterSpec {
         )
 
         // When
-        SourceFilter(emptyMap(), logger).filterByPrecedence(sources)
+        SourceFilter(mapOf("any" to sortedSetOf()), logger).filterByDependencies(sources)
 
         // Then
         verify(exactly = 1) { logger.error("No SharedSource defined for $marker0.") }
@@ -161,22 +129,17 @@ class SourceFilterSpec {
     }
 
     @Test
-    fun `Given filterSharedSources is called with aggregated SharedSource it uses the source with the highest precedence`() {
+    fun `Given filterByDependencies is called with aggregated SharedSource it filters not independent sources`() {
         // Given
         val source0: KSClassDeclaration = mockk()
         val source1: KSClassDeclaration = mockk()
-        val source2: KSClassDeclaration = mockk()
-
-        val marker0: String = fixture.fixture()
-        val marker1: String = fixture.fixture()
-        val marker2: String = fixture.fixture()
 
         val packageName: String = fixture.fixture()
         val interfaceName: String = fixture.fixture()
 
         val sources = listOf(
             TemplateSource(
-                indicator = marker0,
+                indicator = "iosTest",
                 template = source0,
                 templateName = interfaceName,
                 packageName = packageName,
@@ -184,7 +147,97 @@ class SourceFilterSpec {
                 dependencies = emptyList()
             ),
             TemplateSource(
-                indicator = marker1,
+                indicator = "otherTest",
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+        )
+
+        val dependencies = mapOf(
+            "commonTest" to sortedSetOf(),
+            "metaTest" to sortedSetOf("commonTest"),
+            "concurrentTest" to sortedSetOf("commonTest", "metaTest"),
+            "nativeTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "otherTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+            "iosTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+        )
+
+        // When
+        val actual = SourceFilter(dependencies, mockk()).filterByDependencies(sources)
+
+        // Then
+        actual mustBe listOf(sources[0], sources[1])
+    }
+
+    @Test
+    fun `Given filterByDependencies is called with aggregated SharedSource it filters up to a shared parent`() {
+        // Given
+        val source0: KSClassDeclaration = mockk()
+        val source1: KSClassDeclaration = mockk()
+        val source2: KSClassDeclaration = mockk()
+
+        val packageName: String = fixture.fixture()
+        val interfaceName: String = fixture.fixture()
+
+        val sources = listOf(
+            TemplateSource(
+                indicator = "iosTest",
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "otherTest",
+                template = source2,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "concurrentTest",
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+        )
+
+        val dependencies = mapOf(
+            "commonTest" to sortedSetOf(),
+            "metaTest" to sortedSetOf("commonTest"),
+            "concurrentTest" to sortedSetOf("commonTest", "metaTest"),
+            "nativeTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "otherTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+            "iosTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+        )
+
+        // When
+        val actual = SourceFilter(dependencies, mockk()).filterByDependencies(sources)
+
+        // Then
+        actual mustBe listOf(sources[2])
+    }
+
+    @Test
+    fun `Given filterByDependencies is called with aggregated SharedSource it ignores sources which are children of a already added one`() {
+        // Given
+        val source0: KSClassDeclaration = mockk()
+        val source1: KSClassDeclaration = mockk()
+        val source2: KSClassDeclaration = mockk()
+
+        val packageName: String = fixture.fixture()
+        val interfaceName: String = fixture.fixture()
+
+        val sources = listOf(
+            TemplateSource(
+                indicator = "concurrentTest",
                 template = source1,
                 templateName = interfaceName,
                 packageName = packageName,
@@ -192,25 +245,180 @@ class SourceFilterSpec {
                 dependencies = emptyList()
             ),
             TemplateSource(
-                indicator = marker2,
+                indicator = "iosTest",
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "otherTest",
                 template = source2,
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
                 dependencies = emptyList()
-            )
+            ),
         )
 
-        val precedences = mapOf(
-            marker0 to 1,
-            marker1 to 2,
-            marker2 to 0,
+        val dependencies = mapOf(
+            "commonTest" to sortedSetOf(),
+            "metaTest" to sortedSetOf("commonTest"),
+            "concurrentTest" to sortedSetOf("commonTest", "metaTest"),
+            "nativeTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "otherTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+            "iosTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
         )
 
         // When
-        val actual = SourceFilter(precedences, mockk()).filterByPrecedence(sources)
+        val actual = SourceFilter(dependencies, mockk()).filterByDependencies(sources)
 
         // Then
-        actual mustBe listOf(sources[1])
+        actual mustBe listOf(sources[0])
+    }
+
+    @Test
+    fun `Given filterByDependencies is called with aggregated SharedSource it ignores sources which are children of while leaving independent one alone`() {
+        // Given
+        val source0: KSClassDeclaration = mockk()
+        val source1: KSClassDeclaration = mockk()
+        val source2: KSClassDeclaration = mockk()
+        val source3: KSClassDeclaration = mockk()
+
+        val packageName: String = fixture.fixture()
+        val interfaceName: String = fixture.fixture()
+
+        val sources = listOf(
+            TemplateSource(
+                indicator = "darwinTest",
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "iosTest",
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "otherTest",
+                template = source2,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "linuxTest",
+                template = source3,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+        )
+
+        val dependencies = mapOf(
+            "commonTest" to sortedSetOf(),
+            "metaTest" to sortedSetOf("commonTest"),
+            "concurrentTest" to sortedSetOf("commonTest", "metaTest"),
+            "linuxTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest", "otherTest"),
+            "otherTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "darwinTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "iosTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest", "darwinTest"),
+        )
+
+        // When
+        val actual = SourceFilter(dependencies, mockk()).filterByDependencies(sources)
+
+        // Then
+        actual mustBe listOf(sources[0], sources[2])
+    }
+
+    @Test
+    fun `Given filterByDependencies is called with aggregated SharedSource it filters up to a shared transitive parent`() {
+        // Given
+        val source0: KSClassDeclaration = mockk()
+        val source1: KSClassDeclaration = mockk()
+        val source2: KSClassDeclaration = mockk()
+        val source3: KSClassDeclaration = mockk()
+        val source4: KSClassDeclaration = mockk()
+        val source5: KSClassDeclaration = mockk()
+
+        val packageName: String = fixture.fixture()
+        val interfaceName: String = fixture.fixture()
+
+        val sources = listOf(
+            TemplateSource(
+                indicator = "iosTest",
+                template = source0,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "darwinTest",
+                template = source1,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "concurrentTest",
+                template = source2,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "nativeTest",
+                template = source3,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "otherTest",
+                template = source4,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+            TemplateSource(
+                indicator = "metaTest",
+                template = source5,
+                templateName = interfaceName,
+                packageName = packageName,
+                generics = null,
+                dependencies = emptyList()
+            ),
+        )
+
+        val dependencies = mapOf(
+            "commonTest" to sortedSetOf(),
+            "metaTest" to sortedSetOf("commonTest"),
+            "concurrentTest" to sortedSetOf("commonTest", "metaTest"),
+            "nativeTest" to sortedSetOf("commonTest", "concurrentTest", "metaTest"),
+            "otherTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+            "darwinTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
+            "iosTest" to sortedSetOf("nativeTest", "commonTest", "concurrentTest", "metaTest", "darwinTest"),
+        )
+
+        // When
+        val actual = SourceFilter(dependencies, mockk()).filterByDependencies(sources)
+
+        // Then
+        actual mustBe listOf(sources[5])
     }
 }

@@ -197,7 +197,7 @@ class KMockProcessorSpec {
         every { relaxationAggregator.extractRelaxer(any()) } returns mockk()
 
         // TemplateSource & TemplateMultiSource
-        every { filter.filterByPrecedence<TemplateMultiSource>(any()) } returns mockk()
+        every { filter.filterByDependencies<TemplateMultiSource>(any()) } returns mockk()
 
         every { filter.filter<TemplateMultiSource>(any(), any()) } returnsMany listOf(
             listOf(mockk()), // TemplateSource
@@ -317,7 +317,7 @@ class KMockProcessorSpec {
             emptyList(), // Round1 TemplateMultiSource Platform
         )
 
-        every { filter.filterByPrecedence<Source>(any()) } returnsMany listOf(
+        every { filter.filterByDependencies<Source>(any()) } returnsMany listOf(
             interfacesFiltered, // Round1 TemplateSource Shared
             emptyList(), // Round1 TemplateMultiSource Shared
         )
@@ -360,7 +360,7 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 1) { filter.filter(interfacesFiltered, interfacesCommon) }
-        verify(exactly = 1) { filter.filterByPrecedence(interfacesShared) }
+        verify(exactly = 1) { filter.filterByDependencies(interfacesShared) }
 
         verify(exactly = 1) { mockGenerator.writeSharedMocks(interfacesFiltered, emptyList(), relaxer) }
 
@@ -518,7 +518,7 @@ class KMockProcessorSpec {
             filteredPlatformRound2,
             emptyList(),
         )
-        every { filter.filterByPrecedence<Source>(any()) } returnsMany listOf(
+        every { filter.filterByDependencies<Source>(any()) } returnsMany listOf(
             filteredSharedRound1,
             filteredSharedMulti,
             filteredSharedRound2,
@@ -644,11 +644,11 @@ class KMockProcessorSpec {
             )
         }
 
-        verify(exactly = 1) { filter.filterByPrecedence(interfacesSharedRound1) }
-        verify(exactly = 1) { filter.filterByPrecedence(interfacesSharedRound2) }
-        verify(exactly = 1) { filter.filterByPrecedence(multiInterfacesShared) }
-        verify(exactly = 1) { filter.filterByPrecedence(emptyList()) }
-        verify(exactly = 4) { filter.filterByPrecedence<Source>(any()) }
+        verify(exactly = 1) { filter.filterByDependencies(interfacesSharedRound1) }
+        verify(exactly = 1) { filter.filterByDependencies(interfacesSharedRound2) }
+        verify(exactly = 1) { filter.filterByDependencies(multiInterfacesShared) }
+        verify(exactly = 1) { filter.filterByDependencies(emptyList()) }
+        verify(exactly = 4) { filter.filterByDependencies<Source>(any()) }
 
         verify(exactly = 1) {
             mockGenerator.writeSharedMocks(
@@ -805,7 +805,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             filter.filter(emptyList(), emptyList())
         }
-        verify(exactly = 0) { filter.filterByPrecedence<Source>(any()) }
+        verify(exactly = 0) { filter.filterByDependencies<Source>(any()) }
 
         verify(exactly = 0) { mockGenerator.writeSharedMocks(any(), any(), any()) }
 
@@ -955,7 +955,7 @@ class KMockProcessorSpec {
         verify(exactly = 1) {
             filter.filter(emptyList(), emptyList())
         }
-        verify(exactly = 0) { filter.filterByPrecedence<Source>(any()) }
+        verify(exactly = 0) { filter.filterByDependencies<Source>(any()) }
 
         verify(exactly = 0) { mockGenerator.writeSharedMocks(any(), any(), any()) }
 

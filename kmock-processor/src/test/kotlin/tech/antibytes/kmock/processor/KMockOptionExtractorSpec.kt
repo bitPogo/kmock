@@ -45,7 +45,7 @@ class KMockOptionExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a empty map if no precedence was delegated`() {
+    fun `Given convertOptions it returns a empty map if no dependencies was delegated`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -61,11 +61,11 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.precedences mustBe emptyMap()
+        actual.dependencies mustBe emptyMap()
     }
 
     @Test
-    fun `Given convertOptions it returns a map of declared precedence`() {
+    fun `Given convertOptions it returns a map of declared dependencies`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -77,21 +77,36 @@ class KMockOptionExtractorSpec {
             "kmock_isKmp" to isKmp.toString()
         )
 
-        val expected: Map<String, Int> = fixture.mapFixture(size = 3)
+        val keys: List<String> = fixture.listFixture(size = 3)
+        val ancestors0: List<String> = fixture.listFixture(size = 3)
+        val ancestors1: List<String> = fixture.listFixture(size = 3)
+        val ancestors2: List<String> = fixture.listFixture(size = 3)
 
-        expected.forEach { (key, value) ->
-            delegateKSP["kmock_precedence_$key"] = value.toString()
-        }
+        delegateKSP["kmock_dependencies_${keys[0]}#0"] = ancestors0[0]
+        delegateKSP["kmock_dependencies_${keys[0]}#1"] = ancestors0[1]
+        delegateKSP["kmock_dependencies_${keys[0]}#2"] = ancestors0[2]
+
+        delegateKSP["kmock_dependencies_${keys[1]}#0"] = ancestors1[0]
+        delegateKSP["kmock_dependencies_${keys[1]}#1"] = ancestors1[1]
+        delegateKSP["kmock_dependencies_${keys[1]}#2"] = ancestors1[2]
+
+        delegateKSP["kmock_dependencies_${keys[2]}#0"] = ancestors2[0]
+        delegateKSP["kmock_dependencies_${keys[2]}#1"] = ancestors2[1]
+        delegateKSP["kmock_dependencies_${keys[2]}#2"] = ancestors2[2]
 
         // When
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.precedences mustBe expected
+        actual.dependencies mustBe mapOf(
+            keys[0] to ancestors0.toSortedSet(),
+            keys[1] to ancestors1.toSortedSet(),
+            keys[2] to ancestors2.toSortedSet()
+        )
     }
 
     @Test
-    fun `Given convertOptions it returns a empty set of sourceSets if no precedences were given to derive them from`() {
+    fun `Given convertOptions it returns a empty set of sourceSets if no dependencies were given to derive them from`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -111,7 +126,7 @@ class KMockOptionExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a set of derived sourceSets, which are extracted from precedences`() {
+    fun `Given convertOptions it returns a set of derived sourceSets, which are extracted from dependenciess`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -123,17 +138,28 @@ class KMockOptionExtractorSpec {
             "kmock_isKmp" to isKmp.toString()
         )
 
-        val expected: Map<String, Int> = fixture.mapFixture(size = 3)
+        val keys: List<String> = fixture.listFixture(size = 3)
+        val ancestors0: List<String> = fixture.listFixture(size = 3)
+        val ancestors1: List<String> = fixture.listFixture(size = 3)
+        val ancestors2: List<String> = fixture.listFixture(size = 3)
 
-        expected.forEach { (key, value) ->
-            delegateKSP["kmock_precedence_$key"] = value.toString()
-        }
+        delegateKSP["kmock_dependencies_${keys[0]}#0"] = ancestors0[0]
+        delegateKSP["kmock_dependencies_${keys[0]}#1"] = ancestors0[1]
+        delegateKSP["kmock_dependencies_${keys[0]}#2"] = ancestors0[2]
+
+        delegateKSP["kmock_dependencies_${keys[1]}#0"] = ancestors1[0]
+        delegateKSP["kmock_dependencies_${keys[1]}#1"] = ancestors1[1]
+        delegateKSP["kmock_dependencies_${keys[1]}#2"] = ancestors1[2]
+
+        delegateKSP["kmock_dependencies_${keys[2]}#0"] = ancestors2[0]
+        delegateKSP["kmock_dependencies_${keys[2]}#1"] = ancestors2[1]
+        delegateKSP["kmock_dependencies_${keys[2]}#2"] = ancestors2[2]
 
         // When
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSharedSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe keys.toSet()
     }
 
     @Test
@@ -149,19 +175,30 @@ class KMockOptionExtractorSpec {
             "kmock_isKmp" to isKmp.toString()
         )
 
-        val expected: Map<String, Int> = fixture.mapFixture(size = 3)
+        val keys: List<String> = fixture.listFixture(size = 3)
+        val ancestors0: List<String> = fixture.listFixture(size = 3)
+        val ancestors1: List<String> = fixture.listFixture(size = 3)
+        val ancestors2: List<String> = fixture.listFixture(size = 3)
 
-        expected.forEach { (key, value) ->
-            delegateKSP["kmock_precedence_$key"] = value.toString()
-        }
+        delegateKSP["kmock_dependencies_${keys[0]}#0"] = ancestors0[0]
+        delegateKSP["kmock_dependencies_${keys[0]}#1"] = ancestors0[1]
+        delegateKSP["kmock_dependencies_${keys[0]}#2"] = ancestors0[2]
 
-        delegateKSP["kmock_precedence_commonTest"] = "23"
+        delegateKSP["kmock_dependencies_${keys[1]}#0"] = ancestors1[0]
+        delegateKSP["kmock_dependencies_${keys[1]}#1"] = ancestors1[1]
+        delegateKSP["kmock_dependencies_${keys[1]}#2"] = ancestors1[2]
+
+        delegateKSP["kmock_dependencies_${keys[2]}#0"] = ancestors2[0]
+        delegateKSP["kmock_dependencies_${keys[2]}#1"] = ancestors2[1]
+        delegateKSP["kmock_dependencies_${keys[2]}#2"] = ancestors2[2]
+
+        delegateKSP["kmock_dependencies_commonTest#0"] = "23"
 
         // When
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.knownSharedSourceSets mustBe expected.keys
+        actual.knownSharedSourceSets mustBe keys.toSet()
     }
 
     @Test
@@ -181,11 +218,11 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.precedences mustBe emptyMap()
+        actual.aliases mustBe emptyMap()
     }
 
     @Test
-    fun `Given convertOptions it returns a map of aliases precedence`() {
+    fun `Given convertOptions it returns a map of aliases dependencies`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()

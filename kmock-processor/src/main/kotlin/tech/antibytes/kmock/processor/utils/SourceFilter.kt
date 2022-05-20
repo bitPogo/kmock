@@ -9,9 +9,10 @@ package tech.antibytes.kmock.processor.utils
 import com.google.devtools.ksp.processing.KSPLogger
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Source
+import java.util.SortedSet
 
 internal class SourceFilter(
-    private val precedences: Map<String, Int>,
+    private val dependencies: Map<String, SortedSet<String>>,
     private val logger: KSPLogger
 ) : ProcessorContract.SourceFilter {
     override fun <T : Source> filter(
@@ -27,36 +28,90 @@ internal class SourceFilter(
         }
     }
 
-    private fun resolvePrecedence(indicator: String): Int {
-        return precedences.getOrElse(indicator) {
-            logger.error("No SharedSource defined for $indicator.")
-            -1
+    private fun String.guardedSource(action: () -> Unit) {
+        if (this !in dependencies) {
+            logger.error("No SharedSource defined for $this.")
+        } else {
+            action()
         }
     }
 
-    override fun <T : Source> filterByPrecedence(
-        templateSources: List<T>
-    ): List<T> {
-        val filtered: MutableList<T> = mutableListOf()
-        val filteredNamed: MutableList<String> = mutableListOf()
+    private fun <T : Source> updatesCandidates(
+        newSource: T,
+        overrides: List<Int>,
+        indicators: List<String>,
+        filtered: List<T>,
+    ): Pair<List<String>, List<T>> {
+        val updatedIndicators = indicators.toMutableList()
+        val updatedSources = filtered.toMutableList()
+        var removed = 0
 
-        templateSources.forEach { source ->
-            val qualifiedName = "${source.packageName}.${source.templateName}"
-            val currentFieldIdx = filteredNamed.indexOf(qualifiedName)
+        overrides.forEach { toRemove ->
+            updatedIndicators.removeAt(toRemove - removed)
+            updatedSources.removeAt(toRemove - removed)
+            removed += 1
+        }
 
-            if (currentFieldIdx == -1) {
-                filtered.add(source)
-                filteredNamed.add(qualifiedName)
-            } else {
-                val currentSourceMarker = resolvePrecedence(source.indicator)
-                val addedSourceMarker = resolvePrecedence(filtered[currentFieldIdx].indicator)
+        updatedIndicators.add(newSource.indicator)
+        updatedSources.add(newSource)
 
-                if (currentSourceMarker > addedSourceMarker) {
-                    filtered[currentFieldIdx] = source
+        return Pair(updatedIndicators, updatedSources)
+    }
+
+    private fun <T : Source> filterCandidates(
+        currentSource: T,
+        indicators: List<String>,
+        filtered: List<T>,
+    ): Pair<List<String>, List<T>> {
+        val overrideIndices: MutableList<Int> = mutableListOf()
+        val parents = dependencies[currentSource.indicator]!!
+        var add = true
+
+        indicators.forEachIndexed { idx, sourceSet ->
+            when {
+                currentSource.indicator in dependencies[sourceSet]!! -> {
+                    overrideIndices.add(idx)
+                    add = false
+                }
+                sourceSet in parents -> {
+                    add = false
                 }
             }
         }
 
-        return filtered
+        return if (overrideIndices.isEmpty() && !add) {
+            Pair(indicators, filtered)
+        } else {
+            updatesCandidates(
+                newSource = currentSource,
+                overrides = overrideIndices.sorted(),
+                indicators = indicators,
+                filtered = filtered
+            )
+        }
+    }
+
+    override fun <T : Source> filterByDependencies(templateSources: List<T>): List<T> {
+        val filteredSourceSet: MutableMap<String, List<String>> = mutableMapOf()
+        val filtered: MutableMap<String, List<T>> = mutableMapOf()
+
+        templateSources.forEach { source ->
+            source.indicator.guardedSource {
+                val qualifiedName = "${source.packageName}.${source.templateName}"
+                val filteredIndicators = filteredSourceSet.getOrElse(qualifiedName) { emptyList() }
+                val filteredSources = filtered.getOrElse(qualifiedName) { emptyList() }
+
+                val (updatedIndicators, updatedFiltered) = filterCandidates(
+                    currentSource = source,
+                    indicators = filteredIndicators,
+                    filtered = filteredSources
+                )
+
+                filteredSourceSet[qualifiedName] = updatedIndicators
+                filtered[qualifiedName] = updatedFiltered
+            }
+        }
+
+        return filtered.map { (_, source) -> source }.flatten()
     }
 }
