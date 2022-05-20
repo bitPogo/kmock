@@ -331,11 +331,12 @@ object KMockContract {
         NO_GIVEN_VALUE(0),
         RELAXED(1),
         THROWS(2),
-        RETURN_VALUE(3),
-        RETURN_VALUES(4),
-        SIDE_EFFECT(5),
-        SIDE_EFFECT_CHAIN(6),
-        SPY(7),
+        THROWS_MANY(3),
+        RETURN_VALUE(4),
+        RETURN_VALUES(5),
+        SIDE_EFFECT(6),
+        SIDE_EFFECT_CHAIN(7),
+        SPY(8),
     }
 
     /**
@@ -350,6 +351,11 @@ object KMockContract {
          * Holds a given Throwable.
          */
         var throws: Throwable?
+
+        /**
+         * Holds a given Throwables.
+         */
+        val throwsMany: MutableList<Throwable>
 
         /**
          * Holds a given ReturnValue.
@@ -427,9 +433,8 @@ object KMockContract {
         var returnValue: ReturnValue
 
         /**
-         * Setter/Getter in order to set/get a List of ReturnValues of the function. If the given List has
+         * Setter/Getter in order to set/get a List of ReturnValues of the Proxy. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
-         * @throws NullPointerException on get if no value was set.
          * @throws MissingStub if the given List is empty.
          */
         var returnValues: List<ReturnValue>
@@ -439,6 +444,13 @@ object KMockContract {
          * @throws NullPointerException on get if no value was set.
          */
         var throws: Throwable
+
+        /**
+         * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy. If the given List has
+         * a smaller size than the actual invocation the last value of the list is used for any further invocation.
+         * @throws MissingStub if the given List is empty.
+         */
+        var throwsMany: List<Throwable>
     }
 
     /**

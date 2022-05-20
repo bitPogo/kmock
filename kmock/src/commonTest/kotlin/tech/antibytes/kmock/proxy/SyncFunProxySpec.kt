@@ -54,13 +54,13 @@ class SyncFunProxySpec {
 
     @Test
     @JsName("fn0_b")
-    fun `It is not ignorable for verfication by default`() {
+    fun `It is not ignorable for verification by default`() {
         SyncFunProxy<Unit, () -> Unit>(fixture.fixture()).ignorableForVerification mustBe false
     }
 
     @Test
     @JsName("fn0_c")
-    fun `It is can be ignored for verfication if told to`() {
+    fun `It is can be ignored for verification if told to`() {
         SyncFunProxy<Unit, () -> Unit>(
             fixture.fixture(),
             ignorableForVerification = true
@@ -95,6 +95,38 @@ class SyncFunProxySpec {
 
     @Test
     @JsName("fn2a")
+    fun `Given throwMany is set with an emptyList it fails`() {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+
+        // Then
+        val error = assertFailsWith<MockError.MissingStub> {
+            proxy.throwsMany = emptyList()
+        }
+
+        error.message mustBe "Empty Lists are not valid as value provider."
+    }
+
+    @Test
+    @JsName("fn2b")
+    fun `Given throwMany is set it is threadsafe retrievable`() {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throwsMany = errors
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.throwsMany mustBe errors
+        }
+    }
+
+    @Test
+    @JsName("fn2c")
     fun `Given a returnValue is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
@@ -293,6 +325,32 @@ class SyncFunProxySpec {
 
             // Then
             actual mustBe error
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn8a")
+    fun `Given invoke is called it throws the given Throwables threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throwsMany = errors
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            errors.forEach { error ->
+                val actual = assertFailsWith<RuntimeException> {
+                    proxy.invoke()
+                }
+
+                // Then
+                actual mustBe error
+            }
         }
 
         return resolveMultiBlockCalls()
@@ -512,16 +570,42 @@ class SyncFunProxySpec {
 
     @Test
     @JsName("fn14")
-    fun `Given invoke is called it uses ReturnValue over Throws`(): AsyncTestReturnValue {
+    fun `Given invoke is called it uses ThrowMany over Throws`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val error = RuntimeException(fixture.fixture<String>())
+        val errors = listOf(RuntimeException(fixture.fixture<String>()), RuntimeException(fixture.fixture<String>()))
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throws = error
+            proxy.throwsMany = errors
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = assertFailsWith<RuntimeException> {
+                proxy.invoke()
+            }
+
+            // Then
+            actual mustBe errors.first()
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn14a")
+    fun `Given invoke is called it uses ReturnValue over ThrowsMany`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
         val value: Any = fixture.fixture()
-        val error = RuntimeException(fixture.fixture<String>())
+        val error = listOf(RuntimeException(fixture.fixture<String>()))
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.returnValue = value
-            proxy.throws = error
+            proxy.throwsMany = error
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
@@ -782,6 +866,7 @@ class SyncFunProxySpec {
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
 
         val error = Throwable()
+        val errors = listOf(RuntimeException(fixture.fixture<String>()), RuntimeException(fixture.fixture<String>()))
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: () -> Any = {
@@ -792,6 +877,7 @@ class SyncFunProxySpec {
         }
 
         proxy.throws = error
+        proxy.throwsMany = errors
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect

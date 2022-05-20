@@ -84,6 +84,38 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn2a")
+    fun `Given throwMany is set with an emptyList it fails`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+
+        // Then
+        val error = assertFailsWith<MockError.MissingStub> {
+            proxy.throwsMany = emptyList()
+        }
+
+        error.message mustBe "Empty Lists are not valid as value provider."
+    }
+
+    @Test
+    @JsName("fn2b")
+    fun `Given throwMany is set it is threadsafe retrievable`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throwsMany = errors
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.throwsMany mustBe errors
+        }
+    }
+
+    @Test
+    @JsName("fn2c")
     fun `Given a returnValue is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -138,7 +170,7 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn5")
-    fun `Given a returnValues is set it is threadsafe retrievable`(): AsyncTestReturnValue {
+    fun `Given returnValues is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture()
@@ -280,6 +312,32 @@ class AsyncFunProxySpec {
 
             // Then
             actual mustBe error
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn8a")
+    fun `Given invoke is called it throws the given Throwables threadsafe`(): AsyncTestReturnValue {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throwsMany = errors
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            errors.forEach { error ->
+                val actual = assertFailsWith<RuntimeException> {
+                    proxy.invoke()
+                }
+
+                // Then
+                actual mustBe error
+            }
         }
 
         return resolveMultiBlockCalls()
@@ -499,16 +557,42 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn14")
-    fun `Given invoke is called it uses ReturnValue over Throws`(): AsyncTestReturnValue {
+    fun `Given invoke is called it uses ThrowMany over Throws`(): AsyncTestReturnValue {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val error = RuntimeException(fixture.fixture<String>())
+        val errors = listOf(RuntimeException(fixture.fixture<String>()), RuntimeException(fixture.fixture<String>()))
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.throws = error
+            proxy.throwsMany = errors
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = assertFailsWith<RuntimeException> {
+                proxy.invoke()
+            }
+
+            // Then
+            actual mustBe errors.first()
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn14a")
+    fun `Given invoke is called it uses ReturnValue over ThrowMany`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
         val value: Any = fixture.fixture()
-        val error = RuntimeException(fixture.fixture<String>())
+        val errors = listOf(RuntimeException(fixture.fixture<String>()), RuntimeException(fixture.fixture<String>()))
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.returnValue = value
-            proxy.throws = error
+            proxy.throwsMany = errors
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
@@ -523,30 +607,6 @@ class AsyncFunProxySpec {
 
     @Test
     @JsName("fn15")
-    fun `Given invoke is called it uses SideEffect over ReturnValues`(): AsyncTestReturnValue {
-        // Given
-        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
-        val expected: Any = fixture.fixture()
-        val values: List<Any> = fixture.listFixture(size = 2)
-
-        // When
-        runBlockingTestInContext(testScope1.coroutineContext) {
-            proxy.sideEffect = { expected }
-            proxy.returnValues = values
-        }
-
-        runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.invoke()
-
-            // Then
-            actual mustBe expected
-        }
-
-        return resolveMultiBlockCalls()
-    }
-
-    @Test
-    @JsName("fn16")
     fun `Given invoke is called it uses ReturnValues over ReturnValue`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
@@ -564,6 +624,30 @@ class AsyncFunProxySpec {
 
             // Then
             actual mustBe values.first()
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn16")
+    fun `Given invoke is called it uses SideEffect over ReturnValues`(): AsyncTestReturnValue {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
+        val expected: Any = fixture.fixture()
+        val values: List<Any> = fixture.listFixture(size = 2)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.sideEffect = { expected }
+            proxy.returnValues = values
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            val actual = proxy.invoke()
+
+            // Then
+            actual mustBe expected
         }
 
         return resolveMultiBlockCalls()
@@ -771,6 +855,7 @@ class AsyncFunProxySpec {
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture())
 
         val error = Throwable()
+        val errors = listOf(Throwable(), Throwable())
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture()
         val sideEffect: suspend () -> Any = {
@@ -781,6 +866,7 @@ class AsyncFunProxySpec {
         }
 
         proxy.throws = error
+        proxy.throwsMany = errors
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
