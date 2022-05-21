@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.proxy
 
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.ReflectionExpansionContract.TypeKClass
 import tech.antibytes.kmock.ReflectionExpansionContract.GenericKClass
 import tech.antibytes.kmock.ReflectionExpansionContract.GenericVarargKClass
@@ -13,6 +14,7 @@ import tech.antibytes.kmock.ReflectionExpansionContract.VarargKClass
 import tech.antibytes.util.test.fulfils
 import kotlin.test.Test
 
+@OptIn(KMockExperimental::class)
 class TypeBuildersSpec {
     @Test
     fun `typeOf returns a TypeKClass`() {

@@ -697,4 +697,33 @@ class ExtensionSpec {
 
         error.message mustBe "$illegal is not applicable!"
     }
+
+    @Test
+    fun `Its allowExperimentalProxyAccess is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.allowExperimentalProxyAccess mustBe false
+    }
+
+    @Test
+    fun `It propagates allowExperimentalProxyAccess changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.allowExperimentalProxyAccess = expected
+
+        extension.allowExperimentalProxyAccess mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_alternativeAccess", expected.toString()) }
+    }
 }

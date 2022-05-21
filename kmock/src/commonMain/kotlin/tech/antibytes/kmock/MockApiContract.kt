@@ -8,6 +8,7 @@ package tech.antibytes.kmock
 
 import kotlin.reflect.KClass
 
+@KMockExperimental
 interface ReflectionExpansionContract {
     interface TypeKClass<T> where T : Any {
         val type: KClass<T>
@@ -26,18 +27,22 @@ interface ReflectionExpansionContract {
     }
 }
 
+@OptIn(KMockExperimental::class)
 @PublishedApi internal data class TypeKClass<T>(
     override val type: KClass<T>
 ) : ReflectionExpansionContract.TypeKClass<T> where T : Any
 
+@OptIn(KMockExperimental::class)
 @PublishedApi internal data class GenericKClass<T>(
     override val type: KClass<T>
 ) : ReflectionExpansionContract.GenericKClass<T> where T : Any
 
+@OptIn(KMockExperimental::class)
 @PublishedApi internal data class VarargKClass<T>(
     override val type: KClass<T>
 ) : ReflectionExpansionContract.VarargKClass<T> where T : Any
 
+@OptIn(KMockExperimental::class)
 @PublishedApi internal data class GenericVarargKClass<T>(
     override val type: KClass<T>
 ) : ReflectionExpansionContract.GenericVarargKClass<T> where T : Any
