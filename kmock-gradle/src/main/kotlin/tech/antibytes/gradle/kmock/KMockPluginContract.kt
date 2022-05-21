@@ -153,6 +153,6 @@ internal interface KMockPluginContract {
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
-        const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeAccess"
+        const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
     }
 }

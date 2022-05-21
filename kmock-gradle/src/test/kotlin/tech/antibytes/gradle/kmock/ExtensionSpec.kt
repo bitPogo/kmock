@@ -724,6 +724,6 @@ class ExtensionSpec {
         extension.allowExperimentalProxyAccess = expected
 
         extension.allowExperimentalProxyAccess mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_alternativeAccess", expected.toString()) }
+        verify(exactly = 1) { kspExtension.arg("kmock_alternativeProxyAccess", expected.toString()) }
     }
 }

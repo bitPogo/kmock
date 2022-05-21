@@ -65,6 +65,7 @@ internal interface ProcessorContract {
         val useTypePrefixFor: Map<String, String>,
         val customMethodNames: Map<String, String>,
         val uselessPrefixes: Set<String>,
+        val allowExperimentalProxyAccess: Boolean
     )
 
     fun interface OptionExtractor {
@@ -665,5 +666,6 @@ internal interface ProcessorContract {
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
+        const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
     }
 }

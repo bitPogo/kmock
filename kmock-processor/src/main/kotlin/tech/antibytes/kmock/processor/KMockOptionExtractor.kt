@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.processor
 
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALTERNATIVE_PROXY_ACCESS
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
@@ -77,6 +78,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         var spyAll = false
         var disableFactories = false
         var enableNewOverloadingNames = true
+        var allowExperimentalProxyAccess = false
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
         val customMethodNames: MutableMap<String, String> = mutableMapOf()
@@ -92,6 +94,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
                 key == SPY_ALL -> spyAll = value.toBoolean()
                 key == DISABLE_FACTORIES -> disableFactories = value.toBoolean()
+                key == ALTERNATIVE_PROXY_ACCESS -> allowExperimentalProxyAccess = value.toBoolean()
                 key.startsWith(DEPENDENCIES) -> extractDependencies(key, value, dependencies)
                 key.startsWith(ALIASES) -> extractMappedValue(ALIASES, key, value) { qualifiedName, alias ->
                     aliases[qualifiedName] = alias
@@ -146,6 +149,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             useTypePrefixFor = useTypePrefixFor,
             customMethodNames = customMethodNames,
             uselessPrefixes = uselessPrefixes,
+            allowExperimentalProxyAccess = allowExperimentalProxyAccess,
         )
     }
 }

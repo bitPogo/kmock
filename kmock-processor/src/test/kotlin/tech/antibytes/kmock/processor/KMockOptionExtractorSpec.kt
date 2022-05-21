@@ -740,4 +740,46 @@ class KMockOptionExtractorSpec {
         // Then
         actual.customAnnotations mustBe expected
     }
+
+    @Test
+    fun `Given convertOptions it returns false for allowExperimentalProxyAccess if no value was propagated`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.allowExperimentalProxyAccess mustBe false
+    }
+
+    @Test
+    fun `Given convertOptions it returns the propagated value for allowExperimentalProxyAccess`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+        val expected = false
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString(),
+            "kmock_alternativeProxyAccess" to expected.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.allowExperimentalProxyAccess mustBe expected
+    }
 }
