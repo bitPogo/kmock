@@ -70,8 +70,8 @@ internal class PropertyMock<L, T>(
 
     private val referenceStore: Map<String, KMockContract.Proxy<*, *>> = mapOf(
         "foo|property" to _foo,
-        "uzz|property" to _uzz,
         "bar|property" to _bar,
+        "uzz|property" to _uzz,
         "izz|property" to _izz,
         "tuz|property" to _tuz,
         "buzz|property" to _buzz,
@@ -88,6 +88,6 @@ internal class PropertyMock<L, T>(
 
     @Suppress("UNCHECKED_CAST")
     public fun <Property> propertyProxyOf(reference: KProperty<Property>):
-        KMockContract.PropertyProxy<Property> = referenceStore["${reference.name}|property"] as
+        KMockContract.PropertyProxy<Property> = referenceStore["""${reference.name}|property"""] as
         tech.antibytes.kmock.KMockContract.PropertyProxy<Property>
 }

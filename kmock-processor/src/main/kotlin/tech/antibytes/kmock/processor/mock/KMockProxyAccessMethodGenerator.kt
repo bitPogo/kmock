@@ -41,10 +41,18 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             val proxySignature: TypeName,
             val sideEffect: String,
         ) : Member()
+
+        data class AsyncFunProxy(
+            val methodName: String,
+            val proxyName: String,
+            val proxySignature: TypeName,
+            val sideEffect: String,
+        ) : Member()
     }
 
     private val properties: MutableList<Member.Property> = mutableListOf()
     private val syncFun: MutableMap<String, MutableList<Member.SyncFunProxy>> = mutableMapOf()
+    private val asyncFun: MutableMap<String, MutableList<Member.AsyncFunProxy>> = mutableMapOf()
 
     private fun guardedCollect(action: () -> Unit) {
         if (enabled) {
@@ -92,6 +100,28 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         syncFun[sideEffect] = registry
     }
 
+    private fun collectAsyncMethod(
+        methodName: String,
+        proxyName: String,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<TypeName>,
+        proxySignature: TypeName
+    ) {
+        val sideEffect = proxySignature.toString().trimToSideEffect()
+        val registry = asyncFun.getOrElse(sideEffect) { mutableListOf() }
+        registry.add(
+            Member.AsyncFunProxy(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                sideEffect = sideEffect,
+            )
+        )
+
+        asyncFun[sideEffect] = registry
+    }
+
     override fun collectMethod(
         methodName: String,
         isSuspending: Boolean,
@@ -102,7 +132,14 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         proxySignature: TypeName,
     ) = guardedCollect {
         if (isSuspending) {
-
+            collectAsyncMethod(
+                methodName = methodName,
+                proxyName = proxyName,
+                classScopeGenerics = classScopeGenerics,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                proxySignature = proxySignature
+            )
         } else {
             collectSyncMethod(
                 methodName = methodName,
@@ -124,6 +161,10 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 val sideEffect = member.sideEffect.replace(" ", "·")
                 "\n\"${member.methodName}|$sideEffect\" to ${member.proxyName},"
             }
+            is Member.AsyncFunProxy -> {
+                val sideEffect = member.sideEffect.replace(" ", "·")
+                "\n\"${member.methodName}|$sideEffect\" to ${member.proxyName},"
+            }
         }
     }
 
@@ -137,6 +178,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         syncFun.values.forEach { sycFuns ->
             sycFuns.forEach { sycFun ->
                 entries.append(determineEntry(sycFun))
+            }
+        }
+
+        asyncFun.values.forEach { asyncFuns ->
+            asyncFuns.forEach { asyncFun ->
+                entries.append(determineEntry(asyncFun))
             }
         }
 
@@ -179,6 +226,25 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .build()
     }
 
+    private fun createNonOverloadedFunProxyAccess(
+        proxyAccessMethod: String,
+        signature: TypeName,
+        sideEffect: String,
+        id: Int
+    ): FunSpec {
+        return FunSpec.builder(proxyAccessMethod)
+            .returns(signature)
+            .addParameter("reference", TypeVariableName(sideEffect))
+            .addStatement(
+                REFERENCE_STORE_ACCESS,
+                "\${(reference as $kFunction).name}|${sideEffect}",
+                signature
+            )
+            .addAnnotation(UNCHECKED)
+            .addAnnotation(createJvmName(proxyAccessMethod, id))
+            .build()
+    }
+
     private fun TypeName.syncFunProxyToFunProxy(): TypeName {
         val type = this.toString().replace("Sync", "")
         return TypeVariableName(
@@ -190,19 +256,31 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         syncAccess: Member.SyncFunProxy,
         id: Int,
     ): FunSpec {
-        val agnosticSignature = syncAccess.proxySignature.syncFunProxyToFunProxy()
+        return createNonOverloadedFunProxyAccess(
+            proxyAccessMethod = "syncFunProxyOf",
+            signature = syncAccess.proxySignature.syncFunProxyToFunProxy(),
+            sideEffect = syncAccess.sideEffect,
+            id = id,
+        )
+    }
 
-        return FunSpec.builder("syncFunProxyOf")
-            .returns(agnosticSignature)
-            .addParameter("reference", TypeVariableName(syncAccess.sideEffect))
-            .addStatement(
-                REFERENCE_STORE_ACCESS,
-                "\${(reference as $kFunction).name}|${syncAccess.sideEffect}",
-                agnosticSignature
-            )
-            .addAnnotation(UNCHECKED)
-            .addAnnotation(createJvmName("syncFunProxyOf", id))
-            .build()
+    private fun TypeName.asyncFunProxyToFunProxy(): TypeName {
+        val type = this.toString().replace("Async", "")
+        return TypeVariableName(
+            name = type
+        ).copy(nullable = false)
+    }
+
+    private fun createAsyncAccessMethod(
+        asyncAccess: Member.AsyncFunProxy,
+        id: Int,
+    ): FunSpec {
+        return createNonOverloadedFunProxyAccess(
+            proxyAccessMethod = "asyncFunProxyOf",
+            signature = asyncAccess.proxySignature.asyncFunProxyToFunProxy(),
+            sideEffect = asyncAccess.sideEffect,
+            id = id,
+        )
     }
 
     override fun createAccessMethods(): List<FunSpec> {
@@ -215,6 +293,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         syncFun.values.forEachIndexed { idx, proxyGroup ->
             accessMethods.add(
                 createSyncAccessMethod(proxyGroup.first(), idx)
+            )
+        }
+
+        asyncFun.values.forEachIndexed { idx, proxyGroup ->
+            accessMethods.add(
+                createAsyncAccessMethod(proxyGroup.first(), idx)
             )
         }
 
