@@ -9,6 +9,7 @@ package tech.antibytes.kmock.verification
 import tech.antibytes.kmock.KMockContract.Reference
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.AsserterStub
+import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
@@ -18,18 +19,18 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
-class VerificationAndAssertionSpec {
+class VerificationAndAssertionAsyncSpec {
     private val fixture = kotlinFixture()
 
     @Test
     @JsName("fn0")
-    fun `Given verify is called it fails if the covered mock does not contain any call`() {
+    fun `Given asyncVerify is called it fails if the covered mock does not contain any call`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify {
+            asyncVerify {
                 Expectation(proxy, emptyList())
             }
         }
@@ -39,7 +40,7 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn1")
-    fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls`() {
+    fun `Given asyncVerify is called it fails if the covered mock does not have the minimum amount of calls`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
         val givenCalls = 1
@@ -47,7 +48,7 @@ class VerificationAndAssertionSpec {
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify(atLeast = expectedCalls) {
+            asyncVerify(atLeast = expectedCalls) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
@@ -57,7 +58,7 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
+    fun `Given asyncVerify is called it fails if the covered mock does exceeds the maximum amount of calls`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
         val givenCalls = 3
@@ -65,7 +66,7 @@ class VerificationAndAssertionSpec {
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify(atMost = expectedCalls) {
+            asyncVerify(atMost = expectedCalls) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
@@ -75,7 +76,7 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn3")
-    fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls`() {
+    fun `Given asyncVerify is called it fails if the covered mock does not have the exact minimum amount of calls`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
         val givenCalls = 1
@@ -83,7 +84,7 @@ class VerificationAndAssertionSpec {
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify(exactly = expectedCalls, atLeast = 0) {
+            asyncVerify(exactly = expectedCalls, atLeast = 0) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
@@ -93,7 +94,7 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn4")
-    fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
+    fun `Given asyncVerify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
         val givenCalls = 3
@@ -101,7 +102,7 @@ class VerificationAndAssertionSpec {
 
         // When
         val error = assertFailsWith<AssertionError> {
-            verify(exactly = expectedCalls, atMost = 0) {
+            asyncVerify(exactly = expectedCalls, atMost = 0) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
@@ -111,22 +112,22 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn5")
-    fun `Given verify is called it passes if the covered mock matches the requirements`() {
+    fun `Given asyncVerify is called it passes if the covered mock matches the requirements`() = runBlockingTest {
         // Given
         val proxy = fixture.funProxyFixture()
         val givenCalls = 3
 
         // When
-        verify(exactly = givenCalls) {
+        asyncVerify(exactly = givenCalls) {
             Expectation(proxy, fixture.listFixture(size = givenCalls))
         }
     }
 
     @Test
     @JsName("fn6")
-    fun `Given assertProxy is called it uses a UnchainedAssertion`() {
+    fun `Given asyncAssertProxy is called it uses a UnchainedAssertion`() = runBlockingTest {
         // When
-        assertProxy {
+        asyncAssertProxy {
             // Then
             this fulfils UnchainedAssertion::class
         }
@@ -134,12 +135,12 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn7")
-    fun `Given assertOrder is called it uses a AssertionChain`() {
+    fun `Given asyncAssertOrder is called it uses a AssertionChain`() = runBlockingTest {
         // Given
         val verifier = AsserterStub(emptyList())
 
         // When
-        verifier.assertOrder {
+        verifier.asyncAssertOrder {
             // Then
             this fulfils AssertionChain::class
         }
@@ -147,7 +148,7 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn8")
-    fun `Given assertOrder is called it ensures all references had been evaluated`() {
+    fun `Given asyncAssertOrder is called it ensures all references had been evaluated`() = runBlockingTest {
         // Given
         val id: String = fixture.fixture()
         val verifier = AsserterStub(
@@ -158,7 +159,7 @@ class VerificationAndAssertionSpec {
 
         val actual = assertFailsWith<AssertionError> {
             // When
-            verifier.assertOrder {}
+            verifier.asyncAssertOrder {}
         }
 
         actual.message mustBe "The given verification chain covers 1 items, but only 0 were expected ($id were referenced)."
@@ -166,12 +167,12 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn9")
-    fun `Given verifyStrictOrder is called it uses a StrictVerificationChain`() {
+    fun `Given asyncVerifyStrictOrder is called it uses a StrictVerificationChain`() = runBlockingTest {
         // Given
         val verifier = AsserterStub(emptyList())
 
         // When
-        verifier.verifyStrictOrder {
+        verifier.asyncVerifyStrictOrder {
             // Then
             this fulfils StrictVerificationChain::class
         }
@@ -179,12 +180,12 @@ class VerificationAndAssertionSpec {
 
     @Test
     @JsName("fn10")
-    fun `Given verifyOrder is called it uses a VerificationChain`() {
+    fun `Given asyncVerifyOrder is called it uses a VerificationChain`() = runBlockingTest {
         // Given
         val verifier = AsserterStub(emptyList())
 
         // When
-        verifier.verifyOrder {
+        verifier.asyncVerifyOrder {
             // Then
             this fulfils VerificationChain::class
         }

@@ -72,6 +72,34 @@ fun verify(
 }
 
 /**
+ * Verifies the last produced VerificationHandle in a Coroutine Context.
+ * @param exactly optional parameter which indicates the exact amount of calls.
+ * This parameter overrides atLeast and atMost.
+ * @param atLeast optional parameter which indicates the minimum amount of calls.
+ * @param atMost optional parameter which indicates the maximum amount of calls.
+ * @param action producer of a VerificationHandle.
+ * @throws AssertionError if given criteria are not met.
+ * @see KMockContract.VerificationContext
+ * @author Matthias Geisler
+ */
+suspend fun asyncVerify(
+    exactly: Int? = null,
+    atLeast: Int = 1,
+    atMost: Int? = null,
+    action: suspend KMockContract.VerificationContext.() -> Expectation
+) {
+    val handle = action(VerificationContext)
+    val minimum = exactly ?: atLeast
+    val maximum = exactly ?: atMost
+
+    handle mustBeAtLeast minimum
+
+    if (maximum != null) {
+        handle mustBeAtMost maximum
+    }
+}
+
+/**
  * Asserts Expectations of proxies. Each Expectation relates to a specific Proxy and they must be in order.
  * Also multiple Proxies are allowed but no relation between them is covered (use assertOrder in this case).
  * @param action Expectation Methods.
@@ -81,9 +109,28 @@ fun verify(
  */
 fun assertProxy(action: AssertionContext.() -> Unit) = action(UnchainedAssertion())
 
+/**
+ * Asserts Expectations of proxies in Coroutine Context. Each Expectation relates to a specific Proxy and they must be in order.
+ * Also multiple Proxies are allowed but no relation between them is covered (use assertOrder in this case).
+ * @param action Expectation Methods.
+ * @throws AssertionError if given criteria are not met.
+ * @see AssertionContext
+ * @author Matthias Geisler
+ */
+suspend fun asyncAssertProxy(action: suspend AssertionContext.() -> Unit) = action(UnchainedAssertion())
+
 private fun <T> runChainedAssertion(
     chain: T,
     action: ChainedAssertion.() -> Any
+) where T : ChainedAssertion, T : KMockContract.AssertionChain {
+    action(chain)
+
+    chain.ensureAllReferencesAreEvaluated()
+}
+
+private suspend fun <T> runAsyncChainedAssertion(
+    chain: T,
+    action: suspend ChainedAssertion.() -> Any
 ) where T : ChainedAssertion, T : KMockContract.AssertionChain {
     action(chain)
 
@@ -101,6 +148,18 @@ private fun <T> runChainedAssertion(
 fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runChainedAssertion(AssertionChain(references), action)
 
 /**
+ * Asserts a chain of Expectations in a coroutine Context.
+ * Each Expectation must be in strict order of the referenced Proxy invocations and all invocations must be present.
+ * @param action chain of Expectation Methods.
+ * @throws AssertionError if given criteria are not met.
+ * @see AssertionContext
+ * @author Matthias Geisler
+ */
+suspend fun Asserter.asyncAssertOrder(action: suspend ChainedAssertion.() -> Any) {
+    return runAsyncChainedAssertion(AssertionChain(references), action)
+}
+
+/**
  * Verifies a chain of Expectations. Expectation between different proxies can contain gaps.
  * Also the chain does not need to be exhaustive.
  * @param action chain of Expectation Methods.
@@ -112,6 +171,17 @@ fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
 }
 
 /**
+ * Verifies a chain of Expectations in a Coroutine Context. Expectation between different proxies can contain gaps.
+ * Also the chain does not need to be exhaustive.
+ * @param action chain of Expectation Methods.
+ * @throws AssertionError if given criteria are not met.
+ * @author Matthias Geisler
+ */
+suspend fun Asserter.asyncVerifyStrictOrder(action: suspend ChainedAssertion.() -> Any) {
+    runAsyncChainedAssertion(StrictVerificationChain(references), action)
+}
+
+/**
  * Verifies a chain of Expectations. Each Expectation must be in order but gaps are allowed.
  * Also the chain does not need to be exhaustive.
  * @param action chain of Expectation Methods.
@@ -119,4 +189,18 @@ fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) = runChainedAssertion(VerificationChain(references), action)
+fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) {
+    return runChainedAssertion(VerificationChain(references), action)
+}
+
+/**
+ * Verifies a chain of Expectations in a Coroutine Context. Each Expectation must be in order but gaps are allowed.
+ * Also the chain does not need to be exhaustive.
+ * @param action chain of Expectation Methods.
+ * @throws AssertionError if given criteria are not met.
+ * @see AssertionContext
+ * @author Matthias Geisler
+ */
+suspend fun Asserter.asyncVerifyOrder(action: suspend ChainedAssertion.() -> Any) {
+    return runAsyncChainedAssertion(VerificationChain(references), action)
+}

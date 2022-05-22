@@ -23,6 +23,9 @@ import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.assertOrder
+import tech.antibytes.kmock.verification.asyncAssertOrder
+import tech.antibytes.kmock.verification.asyncVerify
+import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
@@ -90,32 +93,30 @@ class SampleControllerAlternativeAccessSpec {
 
         // When
         val controller = SampleController(local, remote)
-        runBlockingTestWithTimeout {
+        return runBlockingTestWithTimeout {
             val actual = controller.fetchAndStore(url)
 
             // Then
             actual mustBe domainObject
+
+            asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
+            asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
+
+            verifier.asyncAssertOrder {
+                remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
+                domainObject.propertyProxyOf(domainObject::id).wasGotten()
+                domainObject.propertyProxyOf(domainObject::id).wasSet()
+                domainObject.propertyProxyOf(domainObject::id).wasGotten()
+                domainObject.propertyProxyOf(domainObject::value).wasGotten()
+                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
+            }
+
+            verifier.asyncVerifyOrder {
+                remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
+                domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
+                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
+            }
         }
-
-        verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
-        verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
-
-        verifier.assertOrder {
-            remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
-            domainObject.propertyProxyOf(domainObject::id).wasGotten()
-            domainObject.propertyProxyOf(domainObject::id).wasSet()
-            domainObject.propertyProxyOf(domainObject::id).wasGotten()
-            domainObject.propertyProxyOf(domainObject::value).wasGotten()
-            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-        }
-
-        verifier.verifyOrder {
-            remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
-            domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
-            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-        }
-
-        return resolveMultiBlockCalls()
     }
 
     @Test
