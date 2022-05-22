@@ -14,6 +14,12 @@ interface ExampleContract {
         val value: Int
     }
 
+    interface GenericSampleDomainObject<Id, Value> where Id: CharSequence, Id : Comparable<Id> {
+        var id: Id
+        val value: Value
+        fun toSampleDomainObject()
+    }
+
     interface SampleRemoteRepository {
         suspend fun fetch(url: String): SampleDomainObject
         fun find(id: String): SampleDomainObject

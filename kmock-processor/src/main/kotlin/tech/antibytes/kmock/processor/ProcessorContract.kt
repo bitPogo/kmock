@@ -472,6 +472,29 @@ internal interface ProcessorContract {
         ): FunSpec
     }
 
+    interface ProxyAccessMethodGenerator {
+        fun collectProperty(
+            propertyName: String,
+            propertyType: TypeName,
+            proxyName: String,
+            proxySignature: TypeName,
+        )
+
+        fun collectMethod(
+            methodName: String,
+            proxyName: String,
+            isSuspending: Boolean,
+            proxySignature: String,
+        )
+
+        fun createReferenceStorage(): PropertySpec
+        fun createAccessMethods(): List<FunSpec>
+    }
+
+    interface ProxyAccessMethodGeneratorFactory {
+        fun getInstance(enableGenerator: Boolean): ProxyAccessMethodGenerator
+    }
+
     interface MockGenerator {
         fun writePlatformMocks(
             templateSources: List<TemplateSource>,

@@ -16,6 +16,8 @@ class KMockGeneratorSpec {
     fun `It fulfils MockGenerator`() {
         KMockGenerator(
             mockk(),
+            false,
+            mockk(),
             mockk(),
             mockk(),
             mockk(),

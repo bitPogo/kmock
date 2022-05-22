@@ -45,12 +45,15 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.utils.isInherited
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
+    private val enableProxyAccessMethodGenerator: Boolean,
     private val spyContainer: SpyContainer,
     private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: KmpCodeGenerator,
@@ -60,7 +63,8 @@ internal class KMockGenerator(
     private val propertyGenerator: PropertyGenerator,
     private val methodGenerator: MethodGenerator,
     private val buildInGenerator: BuildInMethodGenerator,
-    private val receiverGenerator: ReceiverGenerator
+    private val receiverGenerator: ReceiverGenerator,
+    private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory
 ) : ProcessorContract.MockGenerator {
     private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
         return if (superTypes.size == 1) {
@@ -140,6 +144,7 @@ internal class KMockGenerator(
     private fun TypeSpec.Builder.addPropertyBundle(
         spyType: TypeName,
         proxyNameCollector: MutableList<String>,
+        proxyAccessMethodGenerator: ProxyAccessMethodGenerator,
         ksProperty: KSPropertyDeclaration,
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
@@ -160,6 +165,13 @@ internal class KMockGenerator(
             this.addProperty(property)
 
             proxyNameCollector.add(proxy.name)
+            proxyAccessMethodGenerator.collectProperty(
+                propertyName = property.name,
+                propertyType = property.type,
+                proxyName = proxy.name,
+                proxySignature = proxy.type
+            )
+
             this.addProperty(proxy)
         } else {
             val (proxyGetter, proxySetter, property) = receiverGenerator.buildPropertyBundle(
@@ -237,6 +249,7 @@ internal class KMockGenerator(
             typeResolver = typeResolver,
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
+        val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(enableProxyAccessMethodGenerator)
         val classScopeGenerics = genericsResolver.mapClassScopeGenerics(generics, typeResolver)
         val spyType = resolveSpyType(superTypes)
         var hasReceivers = false
@@ -292,6 +305,7 @@ internal class KMockGenerator(
                 mock.addPropertyBundle(
                     spyType = spyType,
                     proxyNameCollector = proxyNameCollector,
+                    proxyAccessMethodGenerator = proxyAccessMethodGenerator,
                     ksProperty = ksProperty,
                     qualifier = qualifier,
                     classScopeGenerics = classScopeGenerics,
@@ -349,6 +363,11 @@ internal class KMockGenerator(
         }
 
         mock.addFunction(buildClear(proxyNameCollector))
+
+        if (enableProxyAccessMethodGenerator) {
+            mock.addProperty(proxyAccessMethodGenerator.createReferenceStorage())
+            mock.addFunctions(proxyAccessMethodGenerator.createAccessMethods())
+        }
 
         return mock.build()
     }
