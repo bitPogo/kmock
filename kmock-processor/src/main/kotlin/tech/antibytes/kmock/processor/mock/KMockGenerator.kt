@@ -164,15 +164,14 @@ internal class KMockGenerator(
 
             this.addProperty(property)
 
+
+            this.addProperty(proxy)
             proxyNameCollector.add(proxy.name)
             proxyAccessMethodGenerator.collectProperty(
                 propertyName = property.name,
                 propertyType = property.type,
                 proxyName = proxy.name,
-                proxySignature = proxy.type
             )
-
-            this.addProperty(proxy)
         } else {
             val (proxyGetter, proxySetter, property) = receiverGenerator.buildPropertyBundle(
                 spyType = spyType,
@@ -196,8 +195,10 @@ internal class KMockGenerator(
         }
     }
 
-    private fun resolveMethodBundle(
+    private fun TypeSpec.Builder.addMethodBundle(
         spyType: TypeName,
+        proxyNameCollector: MutableList<String>,
+        proxyAccessMethodGenerator: ProxyAccessMethodGenerator,
         ksFunction: KSFunctionDeclaration,
         qualifier: String,
         inherited: Boolean,
@@ -205,8 +206,8 @@ internal class KMockGenerator(
         classScopeGenerics: Map<String, List<TypeName>>?,
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?,
-    ): Pair<PropertySpec, FunSpec> {
-        return if (ksFunction.isReceiverMethod()) {
+    ) {
+        val (proxy, method) = if (ksFunction.isReceiverMethod()) {
             receiverGenerator.buildMethodBundle(
                 spyType = spyType,
                 qualifier = qualifier,
@@ -228,6 +229,20 @@ internal class KMockGenerator(
                 relaxer = relaxer,
             )
         }
+
+        this.addFunction(method)
+        this.addProperty(proxy)
+
+        proxyNameCollector.add(proxy.name)
+        proxyAccessMethodGenerator.collectMethod(
+            methodName = method.name,
+            isSuspending = method.modifiers.contains(KModifier.SUSPEND),
+            classScopeGenerics = classScopeGenerics,
+            typeParameter = method.typeVariables,
+            arguments = method.parameters.map { parameterSpec -> parameterSpec.type },
+            proxyName = proxy.name,
+            proxySignature = proxy.type
+        )
     }
 
     private fun buildMock(
@@ -321,8 +336,10 @@ internal class KMockGenerator(
 
             if (ksFunction.isPublicOpen() && (name.isNotBuildInMethod() || ksFunction.isReceiverMethod())) {
                 hasReceivers = hasReceivers || ksFunction.isReceiverMethod()
-                val (proxy, method) = resolveMethodBundle(
+                mock.addMethodBundle(
                     spyType = spyType,
+                    proxyNameCollector = proxyNameCollector,
+                    proxyAccessMethodGenerator = proxyAccessMethodGenerator,
                     ksFunction = ksFunction,
                     qualifier = qualifier,
                     enableSpy = enableSpy,
@@ -331,11 +348,6 @@ internal class KMockGenerator(
                     typeResolver = typeResolver,
                     relaxer = relaxer,
                 )
-
-                mock.addFunction(method)
-
-                proxyNameCollector.add(proxy.name)
-                mock.addProperty(proxy)
             }
         }
 

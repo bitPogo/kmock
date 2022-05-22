@@ -140,3 +140,5 @@ annotation class Relaxer
     AnnotationTarget.CONSTRUCTOR
 )
 annotation class KMockExperimental
+
+expect annotation class SafeJvmName(val name: String)

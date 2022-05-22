@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -19,8 +20,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerat
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
-import tech.antibytes.kmock.processor.utils.titleCase
+import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
@@ -31,11 +33,18 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             val propertyName: String,
             val propertyType: TypeName,
             val proxyName: String,
-            val proxySignature: TypeName
+        ) : Member()
+
+        data class SyncFunProxy(
+            val methodName: String,
+            val proxyName: String,
+            val proxySignature: TypeName,
+            val sideEffect: String,
         ) : Member()
     }
 
-    private val properties: MutableMap<String, MutableList<Member.Property>> = mutableMapOf()
+    private val properties: MutableList<Member.Property> = mutableListOf()
+    private val syncFun: MutableMap<String, MutableList<Member.SyncFunProxy>> = mutableMapOf()
 
     private fun guardedCollect(action: () -> Unit) {
         if (enabled) {
@@ -47,24 +56,63 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         propertyName: String,
         propertyType: TypeName,
         proxyName: String,
-        proxySignature: TypeName
     ) = guardedCollect {
-        val key = propertyType.toString()
-        val registry = properties.getOrElse(key) { mutableListOf() }
-        registry.add(
+        properties.add(
             Member.Property(
                 propertyName = propertyName,
                 propertyType = propertyType,
                 proxyName = proxyName,
-                proxySignature = proxySignature
+            )
+        )
+    }
+
+    private fun String.trimToSideEffect(): String {
+        return this.substringAfter(',').substringBeforeLast(">").trim()
+    }
+
+    private fun collectSyncMethod(
+        methodName: String,
+        proxyName: String,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<TypeName>,
+        proxySignature: TypeName
+    ) {
+        val sideEffect = proxySignature.toString().trimToSideEffect()
+        val registry = syncFun.getOrElse(sideEffect) { mutableListOf() }
+        registry.add(
+            Member.SyncFunProxy(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                sideEffect = sideEffect,
             )
         )
 
-        properties[key] = registry
+        syncFun[sideEffect] = registry
     }
 
-    override fun collectMethod(methodName: String, proxyName: String, isSuspending: Boolean, proxySignature: String) {
-        TODO("Not yet implemented")
+    override fun collectMethod(
+        methodName: String,
+        isSuspending: Boolean,
+        classScopeGenerics: Map<String, List<TypeName>>?,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<TypeName>,
+        proxyName: String,
+        proxySignature: TypeName,
+    ) = guardedCollect {
+        if (isSuspending) {
+
+        } else {
+            collectSyncMethod(
+                methodName = methodName,
+                proxyName = proxyName,
+                classScopeGenerics = classScopeGenerics,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                proxySignature = proxySignature
+            )
+        }
     }
 
     private fun determineEntry(member: Member): String {
@@ -72,15 +120,23 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             is Member.Property -> {
                 "\n\"${member.propertyName}|property\" to ${member.proxyName},"
             }
+            is Member.SyncFunProxy -> {
+                val sideEffect = member.sideEffect.replace(" ", "·")
+                "\n\"${member.methodName}|$sideEffect\" to ${member.proxyName},"
+            }
         }
     }
 
     private fun extractReferenceStoreEntries(): String {
         val entries = StringBuilder()
 
-        properties.forEach { (_, propertyGroup) ->
-            propertyGroup.forEach { member ->
-                entries.append(determineEntry(member))
+        properties.forEach { property ->
+            entries.append(determineEntry(property))
+        }
+
+        syncFun.values.forEach { sycFuns ->
+            sycFuns.forEach { sycFun ->
+                entries.append(determineEntry(sycFun))
             }
         }
 
@@ -108,10 +164,44 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .addParameter("reference", kProperty)
             .addTypeVariable(propertyType)
             .addStatement(
-                "return $REFERENCE_STORE[\"\${reference.name}|property\"] as %L",
+                REFERENCE_STORE_ACCESS,
+                "\${reference.name}|property",
                 propertyProxy,
             )
             .addAnnotation(UNCHECKED)
+            .build()
+    }
+
+    private fun createJvmName(accessType: String, id: Int): AnnotationSpec {
+        return AnnotationSpec
+            .builder(safeJvmName)
+            .addMember("%S", "$accessType$id")
+            .build()
+    }
+
+    private fun TypeName.syncFunProxyToFunProxy(): TypeName {
+        val type = this.toString().replace("Sync", "")
+        return TypeVariableName(
+            name = type
+        ).copy(nullable = false)
+    }
+
+    private fun createSyncAccessMethod(
+        syncAccess: Member.SyncFunProxy,
+        id: Int,
+    ): FunSpec {
+        val agnosticSignature = syncAccess.proxySignature.syncFunProxyToFunProxy()
+
+        return FunSpec.builder("syncFunProxyOf")
+            .returns(agnosticSignature)
+            .addParameter("reference", TypeVariableName(syncAccess.sideEffect))
+            .addStatement(
+                REFERENCE_STORE_ACCESS,
+                "\${(reference as $kFunction).name}|${syncAccess.sideEffect}",
+                agnosticSignature
+            )
+            .addAnnotation(UNCHECKED)
+            .addAnnotation(createJvmName("syncFunProxyOf", id))
             .build()
     }
 
@@ -122,20 +212,33 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             accessMethods.add(createPropertyAccessMethod())
         }
 
+        syncFun.values.forEachIndexed { idx, proxyGroup ->
+            accessMethods.add(
+                createSyncAccessMethod(proxyGroup.first(), idx)
+            )
+        }
+
         return accessMethods
     }
 
     companion object : ProxyAccessMethodGeneratorFactory {
         private const val REFERENCE_STORE = "referenceStore"
+        private const val REFERENCE_STORE_ACCESS = "return $REFERENCE_STORE[%P] as %L"
+        private val safeJvmName = ClassName(
+            Mock::class.java.packageName,
+            "SafeJvmName"
+        )
+        private val starParameter = TypeVariableName("*")
         private val referenceStoreType = Map::class.asClassName().parameterizedBy(
             String::class.asTypeName(),
             Proxy::class.asTypeName().parameterizedBy(
-                TypeVariableName("*"),
-                TypeVariableName("*")
+                starParameter,
+                starParameter
             ),
         )
         private val propertyType = TypeVariableName("Property")
         private val kProperty = KProperty::class.asClassName().parameterizedBy(propertyType)
+        private val kFunction = KFunction::class.asClassName().parameterizedBy(starParameter)
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
         override fun getInstance(enableGenerator: Boolean): ProxyAccessMethodGenerator {

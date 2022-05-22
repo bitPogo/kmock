@@ -62,6 +62,7 @@ class SampleControllerAlternativeAccessSpec {
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
+        genericDomainObject._clearMock()
         clearBlockingTest()
     }
 
@@ -120,9 +121,9 @@ class SampleControllerAlternativeAccessSpec {
 
         domainObject.propertyProxyOf(domainObject::id).get = id
 
-        remote._find.returnValue = domainObject
-        local._contains.sideEffect = { true }
-        local._fetch.returnValue = domainObject
+        remote.syncFunProxyOf(remote::find).returnValue = domainObject
+        local.syncFunProxyOf(local::contains).sideEffect = { true }
+        local.syncFunProxyOf(local::fetch).returnValue = domainObject
 
         // When
         val controller = SampleController(local, remote)
@@ -138,25 +139,25 @@ class SampleControllerAlternativeAccessSpec {
             delay(20)
 
             // Then
-            verify(exactly = 1) { local._contains.hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
-            verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
+            verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
+            verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
 
             verifier.assertOrder {
-                local._contains.hasBeenStrictlyCalledWith(idOrg)
-                remote._find.hasBeenStrictlyCalledWith(idOrg)
+                local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
+                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local._fetch.hasBeenStrictlyCalledWith(id)
+                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
                 domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local._fetch.hasBeenStrictlyCalledWith(id)
-                remote._find.hasBeenStrictlyCalledWith(idOrg)
+                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
+                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propertyProxyOf(domainObject::id).wasSet()
             }
 
             verifier.verifyOrder {
-                local._contains.hasBeenCalledWithout("abc")
-                remote._find.hasBeenStrictlyCalledWith(idOrg)
-                remote._find.hasBeenStrictlyCalledWith(idOrg)
+                local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
+                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
             }
         }
     }

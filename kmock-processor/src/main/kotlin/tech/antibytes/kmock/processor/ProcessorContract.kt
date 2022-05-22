@@ -477,14 +477,16 @@ internal interface ProcessorContract {
             propertyName: String,
             propertyType: TypeName,
             proxyName: String,
-            proxySignature: TypeName,
         )
 
         fun collectMethod(
             methodName: String,
-            proxyName: String,
             isSuspending: Boolean,
-            proxySignature: String,
+            classScopeGenerics: Map<String, List<TypeName>>?,
+            typeParameter: List<TypeVariableName>,
+            arguments: List<TypeName>,
+            proxyName: String,
+            proxySignature: TypeName,
         )
 
         fun createReferenceStorage(): PropertySpec

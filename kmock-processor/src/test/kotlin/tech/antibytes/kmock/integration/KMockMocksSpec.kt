@@ -1439,4 +1439,31 @@ class KMockMocksSpec {
 
         actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for SyncFunctions for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Property.kt",
+            loadResource("/template/access/SyncFun.kt")
+        )
+        val expected = loadResource("/expected/access/SyncFun.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("SyncFunMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
 }
