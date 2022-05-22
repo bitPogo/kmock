@@ -14,21 +14,21 @@ import tech.antibytes.kmock.TypeKClass
 import tech.antibytes.kmock.VarargKClass
 
 @KMockExperimental
-inline fun <reified T> typeOf(): ReflectionExpansionContract.TypeKClass<T> where T: Any {
+inline fun <reified T> typeOf(): ReflectionExpansionContract.TypeKClass<T> where T : Any {
     return TypeKClass(T::class)
 }
 
 @KMockExperimental
-inline fun <reified T> genericOf(): ReflectionExpansionContract.GenericKClass<T> where T: Any {
+inline fun <reified T> genericOf(): ReflectionExpansionContract.GenericKClass<T> where T : Any {
     return GenericKClass(T::class)
 }
 
 @KMockExperimental
-inline fun <reified T> varargOf(): ReflectionExpansionContract.VarargKClass<T> where T: Any {
+inline fun <reified T> varargOf(): ReflectionExpansionContract.VarargKClass<T> where T : Any {
     return VarargKClass(T::class)
 }
 
 @KMockExperimental
-inline fun <reified T> genericVarargOf(): ReflectionExpansionContract.GenericVarargKClass<T> where T: Any {
+inline fun <reified T> genericVarargOf(): ReflectionExpansionContract.GenericVarargKClass<T> where T : Any {
     return GenericVarargKClass(T::class)
 }

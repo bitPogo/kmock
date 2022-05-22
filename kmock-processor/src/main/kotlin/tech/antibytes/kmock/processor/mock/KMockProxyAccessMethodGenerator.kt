@@ -10,49 +10,135 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
-import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
     private val enabled: Boolean
 ) : ProxyAccessMethodGenerator {
-    private sealed class Member {
-        data class Property(
-            val propertyName: String,
-            val propertyType: TypeName,
-            val proxyName: String,
-        ) : Member()
+    private sealed interface Member
 
-        data class SyncFunProxy(
-            val methodName: String,
-            val proxyName: String,
-            val proxySignature: TypeName,
-            val sideEffect: String,
-        ) : Member()
-
-        data class AsyncFunProxy(
-            val methodName: String,
-            val proxyName: String,
-            val proxySignature: TypeName,
-            val sideEffect: String,
-        ) : Member()
+    private interface Method : Member {
+        val methodName: String
+        val proxyName: String
+        val sideEffect: TypeName
+        val proxySignature: TypeName
     }
 
-    private val properties: MutableList<Member.Property> = mutableListOf()
-    private val syncFun: MutableMap<String, MutableList<Member.SyncFunProxy>> = mutableMapOf()
-    private val asyncFun: MutableMap<String, MutableList<Member.AsyncFunProxy>> = mutableMapOf()
+    private interface OverloadedMethod : Method {
+        val typeParameter: List<TypeVariableName>
+        val arguments: List<ParameterSpec>
+        val returnType: TypeName
+        val mappedParameterTypes: Map<String, TypeVariableName>
+        val unifier: String
+    }
+
+    data class Property(
+        val propertyName: String,
+        val propertyType: TypeName,
+        val proxyName: String,
+    ) : Member
+
+    data class SyncFunProxy(
+        override val methodName: String,
+        override val proxyName: String,
+        override val proxySignature: TypeName,
+        override val sideEffect: TypeName,
+    ) : Method
+
+    data class AsyncFunProxy(
+        override val methodName: String,
+        override val proxyName: String,
+        override val proxySignature: TypeName,
+        override val sideEffect: TypeName,
+    ) : Method
+
+    data class OverloadedSyncFunProxy(
+        override val methodName: String,
+        override val proxyName: String,
+        override val proxySignature: TypeName,
+        override val sideEffect: TypeName,
+        override val typeParameter: List<TypeVariableName>,
+        override val arguments: List<ParameterSpec>,
+        override val returnType: TypeName,
+        override val mappedParameterTypes: Map<String, TypeVariableName>,
+        override val unifier: String,
+    ) : OverloadedMethod
+
+    data class OverloadedAsyncFunProxy(
+        override val methodName: String,
+        override val proxyName: String,
+        override val proxySignature: TypeName,
+        override val sideEffect: TypeName,
+        override val typeParameter: List<TypeVariableName>,
+        override val arguments: List<ParameterSpec>,
+        override val returnType: TypeName,
+        override val mappedParameterTypes: Map<String, TypeVariableName>,
+        override val unifier: String,
+    ) : OverloadedMethod
+
+    private val properties: MutableList<Property> = mutableListOf()
+    private val syncFun: MutableMap<String, MutableList<SyncFunProxy>> = mutableMapOf()
+    private val overloadedSyncFun: MutableMap<String, MutableList<OverloadedSyncFunProxy>> = mutableMapOf()
+    private val asyncFun: MutableMap<String, MutableList<AsyncFunProxy>> = mutableMapOf()
+    private val overloadedAsyncFun: MutableMap<String, MutableList<OverloadedAsyncFunProxy>> = mutableMapOf()
+
+    private fun List<TypeVariableName>.mapTypeParameter(): Map<String, TypeVariableName> {
+        return this.associateBy { type -> type.name }
+    }
+
+    private fun ParameterSpec.determineArgument(): TypeName {
+        return if (this.modifiers.contains(KModifier.VARARG)) {
+            array.parameterizedBy(
+                TypeVariableName("out $type")
+            )
+        } else {
+            this.type
+        }
+    }
+
+    private fun List<TypeName>.resolveGenericMark(): String {
+        return if (this.isEmpty()) {
+            "Any?"
+        } else {
+            this.joinToString(" & ")
+        }
+    }
+
+    private fun TypeVariableName.resolveMarking(
+        mapping: Map<String, TypeVariableName>
+    ): String {
+        var currentName = name
+
+        while (currentName in mapping) {
+            currentName = mapping[currentName]!!.bounds.resolveGenericMark()
+        }
+
+        return currentName
+    }
+
+    private fun List<TypeVariableName>.resolveMarking(
+        mapping: Map<String, TypeVariableName>
+    ): String {
+        return this.joinToString { type ->
+            "[${type.resolveMarking(mapping)}]"
+        }
+    }
 
     private fun guardedCollect(action: () -> Unit) {
         if (enabled) {
@@ -66,7 +152,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         proxyName: String,
     ) = guardedCollect {
         properties.add(
-            Member.Property(
+            Property(
                 propertyName = propertyName,
                 propertyType = propertyType,
                 proxyName = proxyName,
@@ -74,95 +160,208 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         )
     }
 
-    private fun String.trimToSideEffect(): String {
-        return this.substringAfter(',').substringBeforeLast(">").trim()
-    }
-
     private fun collectSyncMethod(
         methodName: String,
         proxyName: String,
-        classScopeGenerics: Map<String, List<TypeName>>?,
-        typeParameter: List<TypeVariableName>,
-        arguments: List<TypeName>,
-        proxySignature: TypeName
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
     ) {
-        val sideEffect = proxySignature.toString().trimToSideEffect()
+        val sideEffect = proxySideEffect.toString()
         val registry = syncFun.getOrElse(sideEffect) { mutableListOf() }
         registry.add(
-            Member.SyncFunProxy(
+            SyncFunProxy(
                 methodName = methodName,
                 proxyName = proxyName,
                 proxySignature = proxySignature,
-                sideEffect = sideEffect,
+                sideEffect = proxySideEffect,
             )
         )
 
         syncFun[sideEffect] = registry
     }
 
-    private fun collectAsyncMethod(
+    private fun collectOverloadedSyncMethod(
         methodName: String,
-        proxyName: String,
-        classScopeGenerics: Map<String, List<TypeName>>?,
         typeParameter: List<TypeVariableName>,
-        arguments: List<TypeName>,
-        proxySignature: TypeName
+        arguments: List<ParameterSpec>,
+        returnType: TypeName,
+        proxyName: String,
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
     ) {
-        val sideEffect = proxySignature.toString().trimToSideEffect()
-        val registry = asyncFun.getOrElse(sideEffect) { mutableListOf() }
+        val mappedParameterTypes = typeParameter.mapTypeParameter()
+        val typeParameterMark = typeParameter.resolveMarking(mappedParameterTypes)
+        val key = "$proxySideEffect|[$typeParameterMark]"
+        val registry = overloadedSyncFun.getOrElse(key) { mutableListOf() }
         registry.add(
-            Member.AsyncFunProxy(
+            OverloadedSyncFunProxy(
                 methodName = methodName,
                 proxyName = proxyName,
                 proxySignature = proxySignature,
-                sideEffect = sideEffect,
+                sideEffect = proxySideEffect,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                returnType = returnType,
+                mappedParameterTypes = mappedParameterTypes,
+                unifier = key,
+            )
+        )
+
+        overloadedSyncFun[key] = registry
+    }
+
+    private fun collectSyncMethod(
+        methodName: String,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<ParameterSpec>,
+        returnType: TypeName,
+        proxyName: String,
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
+    ) {
+        if (methodName != proxyName.drop(1)) {
+            collectOverloadedSyncMethod(
+                methodName = methodName,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                returnType = returnType,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
+            )
+        } else {
+            collectSyncMethod(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
+            )
+        }
+    }
+
+    private fun collectOverloadedAsyncMethod(
+        methodName: String,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<ParameterSpec>,
+        returnType: TypeName,
+        proxyName: String,
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
+    ) {
+        val mappedParameterTypes = typeParameter.mapTypeParameter()
+        val typeParameterMark = typeParameter.resolveMarking(mappedParameterTypes)
+        val key = "$proxySideEffect|[$typeParameterMark]"
+        val registry = overloadedAsyncFun.getOrElse(key) { mutableListOf() }
+        registry.add(
+            OverloadedAsyncFunProxy(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                sideEffect = proxySideEffect,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                returnType = returnType,
+                mappedParameterTypes = mappedParameterTypes,
+                unifier = key,
+            )
+        )
+
+        overloadedAsyncFun[key] = registry
+    }
+
+    private fun collectAsyncMethod(
+        methodName: String,
+        proxyName: String,
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
+    ) {
+        val sideEffect = proxySideEffect.toString()
+        val registry = asyncFun.getOrElse(sideEffect) { mutableListOf() }
+        registry.add(
+            AsyncFunProxy(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                sideEffect = proxySideEffect,
             )
         )
 
         asyncFun[sideEffect] = registry
     }
 
+    private fun collectAsyncMethod(
+        methodName: String,
+        typeParameter: List<TypeVariableName>,
+        arguments: List<ParameterSpec>,
+        returnType: TypeName,
+        proxyName: String,
+        proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
+    ) {
+        if (methodName != proxyName.drop(1)) {
+            collectOverloadedAsyncMethod(
+                methodName = methodName,
+                typeParameter = typeParameter,
+                arguments = arguments,
+                returnType = returnType,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
+            )
+        } else {
+            collectAsyncMethod(
+                methodName = methodName,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
+            )
+        }
+    }
+
     override fun collectMethod(
         methodName: String,
         isSuspending: Boolean,
-        classScopeGenerics: Map<String, List<TypeName>>?,
         typeParameter: List<TypeVariableName>,
-        arguments: List<TypeName>,
+        arguments: List<ParameterSpec>,
+        returnType: TypeName?,
         proxyName: String,
         proxySignature: TypeName,
+        proxySideEffect: TypeVariableName,
     ) = guardedCollect {
         if (isSuspending) {
             collectAsyncMethod(
                 methodName = methodName,
-                proxyName = proxyName,
-                classScopeGenerics = classScopeGenerics,
                 typeParameter = typeParameter,
                 arguments = arguments,
-                proxySignature = proxySignature
+                returnType = returnType ?: unit,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
             )
         } else {
             collectSyncMethod(
                 methodName = methodName,
-                proxyName = proxyName,
-                classScopeGenerics = classScopeGenerics,
                 typeParameter = typeParameter,
                 arguments = arguments,
-                proxySignature = proxySignature
+                returnType = returnType ?: unit,
+                proxyName = proxyName,
+                proxySignature = proxySignature,
+                proxySideEffect = proxySideEffect,
             )
         }
     }
 
     private fun determineEntry(member: Member): String {
         return when (member) {
-            is Member.Property -> {
+            is Property -> {
                 "\n\"${member.propertyName}|property\" to ${member.proxyName},"
             }
-            is Member.SyncFunProxy -> {
-                val sideEffect = member.sideEffect.replace(" ", "·")
-                "\n\"${member.methodName}|$sideEffect\" to ${member.proxyName},"
+            is OverloadedMethod -> {
+                val unifier = member.unifier.replace(" ", "·")
+                "\n\"${member.methodName}|$unifier\" to ${member.proxyName},"
             }
-            is Member.AsyncFunProxy -> {
-                val sideEffect = member.sideEffect.replace(" ", "·")
+            is Method -> {
+                val sideEffect = member.sideEffect.toString().replace(" ", "·")
                 "\n\"${member.methodName}|$sideEffect\" to ${member.proxyName},"
             }
         }
@@ -181,7 +380,19 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             }
         }
 
+        overloadedSyncFun.values.forEach { sycFuns ->
+            sycFuns.forEach { sycFun ->
+                entries.append(determineEntry(sycFun))
+            }
+        }
+
         asyncFun.values.forEach { asyncFuns ->
+            asyncFuns.forEach { asyncFun ->
+                entries.append(determineEntry(asyncFun))
+            }
+        }
+
+        overloadedAsyncFun.values.forEach { asyncFuns ->
             asyncFuns.forEach { asyncFun ->
                 entries.append(determineEntry(asyncFun))
             }
@@ -228,17 +439,135 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
     private fun createNonOverloadedFunProxyAccess(
         proxyAccessMethod: String,
-        signature: TypeName,
-        sideEffect: String,
+        method: Method,
+        proxySignature: TypeName,
         id: Int
     ): FunSpec {
         return FunSpec.builder(proxyAccessMethod)
-            .returns(signature)
-            .addParameter("reference", TypeVariableName(sideEffect))
+            .returns(proxySignature)
+            .addParameter("reference", method.sideEffect)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
-                "\${(reference as $kFunction).name}|${sideEffect}",
-                signature
+                "\${(reference as $kFunction).name}|${method.sideEffect}",
+                proxySignature
+            )
+            .addAnnotation(UNCHECKED)
+            .addAnnotation(createJvmName(proxyAccessMethod, id))
+            .build()
+    }
+
+    private fun OverloadedMethod.createSideEffect(): TypeVariableName {
+        val sideEffect = StringBuilder(6)
+        sideEffect.append("(")
+
+        arguments.forEach { parameter ->
+            sideEffect.append(parameter.determineArgument())
+            sideEffect.append(", ")
+        }
+
+        sideEffect.append(") -> ")
+        sideEffect.append(returnType)
+
+        return TypeVariableName(sideEffect.toString())
+    }
+
+    private fun List<TypeName>.resolveType(): Pair<TypeName, Boolean> {
+        val isNullable: Boolean
+        val type = when (this.size) {
+            0 -> {
+                isNullable = true
+                nullableAny
+            }
+            1 -> {
+                val type = this.first()
+                isNullable = type.isNullable
+
+                type
+            }
+            else -> {
+                isNullable = this.any { type -> type.isNullable }
+                multibounded
+            }
+        }
+
+        return Pair(type, isNullable)
+    }
+
+    private fun TypeVariableName.resolveType(
+        mapping: Map<String, TypeVariableName>
+    ): Pair<TypeName, Boolean> {
+        var currentName = name
+        var currentType: TypeName = this
+        var isNullable = false
+
+        while (currentName in mapping) {
+            val (type, nullability) = mapping[currentName]!!.bounds.resolveType()
+
+            isNullable = nullability
+            currentType = type
+            currentName = type.toString()
+        }
+
+        return if (currentType != multibounded) {
+            Pair(currentType, isNullable)
+        } else {
+            Pair(this, isNullable)
+        }
+    }
+
+    private fun Pair<TypeName, Boolean>.ensureNonNullableTransitiveParameter(): TypeName {
+        return if (second) {
+            any
+        } else {
+            first
+        }
+    }
+
+    private fun ParameterSpec.determineNonNullableArgument(
+        mapping: Map<String, TypeVariableName>
+    ): TypeName {
+        return when {
+            this.modifiers.contains(KModifier.VARARG) -> {
+                array.parameterizedBy(
+                    TypeVariableName("out $type")
+                )
+            }
+            type is TypeVariableName -> {
+                (type as TypeVariableName).resolveType(mapping).ensureNonNullableTransitiveParameter()
+            }
+            else -> type
+        }.copy(nullable = false)
+    }
+
+    private fun OverloadedMethod.createIndicators(): List<ParameterSpec> {
+        return arguments.mapIndexed { idx, parameter ->
+            ParameterSpec.builder(
+                "type$idx",
+                kClass.parameterizedBy(
+                    parameter.determineNonNullableArgument(mappedParameterTypes)
+                )
+            ).build()
+        }
+    }
+
+    private fun createOverloadedFunProxyAccess(
+        proxyAccessMethod: String,
+        method: OverloadedMethod,
+        proxySignature: TypeName,
+        id: Int
+    ): FunSpec {
+        val sideEffect = method.createSideEffect()
+        val indicators = method.createIndicators()
+
+        return FunSpec.builder(proxyAccessMethod)
+            .returns(proxySignature)
+            .addTypeVariables(method.typeParameter)
+            .addParameter("reference", sideEffect)
+            .addParameters(indicators)
+            .addStatement(
+                REFERENCE_STORE_ACCESS,
+                "\${(reference as $kFunction).name}|${method.unifier}",
+                proxySignature
             )
             .addAnnotation(UNCHECKED)
             .addAnnotation(createJvmName(proxyAccessMethod, id))
@@ -253,13 +582,25 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     }
 
     private fun createSyncAccessMethod(
-        syncAccess: Member.SyncFunProxy,
+        syncMethod: SyncFunProxy,
         id: Int,
     ): FunSpec {
         return createNonOverloadedFunProxyAccess(
             proxyAccessMethod = "syncFunProxyOf",
-            signature = syncAccess.proxySignature.syncFunProxyToFunProxy(),
-            sideEffect = syncAccess.sideEffect,
+            method = syncMethod,
+            proxySignature = syncMethod.proxySignature.syncFunProxyToFunProxy(),
+            id = id,
+        )
+    }
+
+    private fun createOverloadedSyncAccessMethod(
+        syncMethod: OverloadedSyncFunProxy,
+        id: Int,
+    ): FunSpec {
+        return createOverloadedFunProxyAccess(
+            proxyAccessMethod = "syncFunProxyOf",
+            method = syncMethod,
+            proxySignature = syncMethod.proxySignature.syncFunProxyToFunProxy(),
             id = id,
         )
     }
@@ -272,13 +613,25 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     }
 
     private fun createAsyncAccessMethod(
-        asyncAccess: Member.AsyncFunProxy,
+        asyncMethod: AsyncFunProxy,
         id: Int,
     ): FunSpec {
         return createNonOverloadedFunProxyAccess(
             proxyAccessMethod = "asyncFunProxyOf",
-            signature = asyncAccess.proxySignature.asyncFunProxyToFunProxy(),
-            sideEffect = asyncAccess.sideEffect,
+            method = asyncMethod,
+            proxySignature = asyncMethod.proxySignature.asyncFunProxyToFunProxy(),
+            id = id,
+        )
+    }
+
+    private fun createOverloadedAsyncAccessMethod(
+        asyncMethod: OverloadedAsyncFunProxy,
+        id: Int,
+    ): FunSpec {
+        return createOverloadedFunProxyAccess(
+            proxyAccessMethod = "asyncFunProxyOf",
+            method = asyncMethod,
+            proxySignature = asyncMethod.proxySignature.asyncFunProxyToFunProxy(),
             id = id,
         )
     }
@@ -296,9 +649,21 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             )
         }
 
+        overloadedSyncFun.values.forEachIndexed { idx, proxyGroup ->
+            accessMethods.add(
+                createOverloadedSyncAccessMethod(proxyGroup.first(), idx)
+            )
+        }
+
         asyncFun.values.forEachIndexed { idx, proxyGroup ->
             accessMethods.add(
                 createAsyncAccessMethod(proxyGroup.first(), idx)
+            )
+        }
+
+        overloadedAsyncFun.values.forEachIndexed { idx, proxyGroup ->
+            accessMethods.add(
+                createOverloadedAsyncAccessMethod(proxyGroup.first(), idx)
             )
         }
 
@@ -323,6 +688,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         private val propertyType = TypeVariableName("Property")
         private val kProperty = KProperty::class.asClassName().parameterizedBy(propertyType)
         private val kFunction = KFunction::class.asClassName().parameterizedBy(starParameter)
+        private val kClass = KClass::class.asClassName()
+        private val array = Array::class.asClassName()
+        private val any = Any::class.asClassName()
+        private val nullableAny = any.copy(nullable = true)
+        private val multibounded = TypeVariableName("multiboundedKmock")
+
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
         override fun getInstance(enableGenerator: Boolean): ProxyAccessMethodGenerator {

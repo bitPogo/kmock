@@ -14,7 +14,7 @@ interface ExampleContract {
         val value: Int
     }
 
-    interface GenericSampleDomainObject<Id, Value> where Id: CharSequence, Id : Comparable<Id> {
+    interface GenericSampleDomainObject<Id, Value> where Id : CharSequence, Id : Comparable<Id> {
         var id: Id
         val value: Value
         fun toSampleDomainObject()

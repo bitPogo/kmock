@@ -39,14 +39,14 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
-import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.utils.isInherited
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
@@ -164,7 +164,6 @@ internal class KMockGenerator(
 
             this.addProperty(property)
 
-
             this.addProperty(proxy)
             proxyNameCollector.add(proxy.name)
             proxyAccessMethodGenerator.collectProperty(
@@ -207,7 +206,7 @@ internal class KMockGenerator(
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?,
     ) {
-        val (proxy, method) = if (ksFunction.isReceiverMethod()) {
+        val (proxy, method, sideEffect) = if (ksFunction.isReceiverMethod()) {
             receiverGenerator.buildMethodBundle(
                 spyType = spyType,
                 qualifier = qualifier,
@@ -237,11 +236,12 @@ internal class KMockGenerator(
         proxyAccessMethodGenerator.collectMethod(
             methodName = method.name,
             isSuspending = method.modifiers.contains(KModifier.SUSPEND),
-            classScopeGenerics = classScopeGenerics,
             typeParameter = method.typeVariables,
-            arguments = method.parameters.map { parameterSpec -> parameterSpec.type },
+            arguments = method.parameters,
+            returnType = method.returnType,
             proxyName = proxy.name,
-            proxySignature = proxy.type
+            proxySignature = proxy.type,
+            proxySideEffect = sideEffect,
         )
     }
 

@@ -7,9 +7,9 @@
 package tech.antibytes.kmock.processor.mock
 
 import org.junit.jupiter.api.Test
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
+import tech.antibytes.util.test.fulfils
 
 class ProxyAccessMethodGeneratorSpec {
     @Test

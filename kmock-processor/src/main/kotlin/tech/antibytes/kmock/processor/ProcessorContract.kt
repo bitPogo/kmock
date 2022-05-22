@@ -23,6 +23,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -247,7 +248,8 @@ internal interface ProcessorContract {
 
     data class ProxyBundle(
         val proxy: PropertySpec,
-        val returnType: MethodReturnTypeInfo
+        val returnType: MethodReturnTypeInfo,
+        val sideEffect: TypeVariableName,
     )
 
     interface ProxyNameCollector {
@@ -433,7 +435,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, FunSpec>
+        ): Triple<PropertySpec, FunSpec, TypeVariableName>
     }
 
     interface BuildInMethodGenerator {
@@ -464,7 +466,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, FunSpec>
+        ): Triple<PropertySpec, FunSpec, TypeVariableName>
 
         fun buildReceiverSpyContext(
             spyType: TypeName,
@@ -482,11 +484,12 @@ internal interface ProcessorContract {
         fun collectMethod(
             methodName: String,
             isSuspending: Boolean,
-            classScopeGenerics: Map<String, List<TypeName>>?,
             typeParameter: List<TypeVariableName>,
-            arguments: List<TypeName>,
+            arguments: List<ParameterSpec>,
+            returnType: TypeName?,
             proxyName: String,
             proxySignature: TypeName,
+            proxySideEffect: TypeVariableName,
         )
 
         fun createReferenceStorage(): PropertySpec
@@ -667,6 +670,7 @@ internal interface ProcessorContract {
 
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)
+        val unit = TypeVariableName("Unit").copy(nullable = false)
 
         const val SPY_CONTEXT = "spyContext"
         const val SPY_PROPERTY = "__spyOn"

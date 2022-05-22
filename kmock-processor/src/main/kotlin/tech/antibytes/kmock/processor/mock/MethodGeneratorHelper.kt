@@ -206,7 +206,7 @@ internal class MethodGeneratorHelper(
         proxyArguments: List<MethodArgumentTypeInfo>,
         proxyReturnType: TypeName,
         prefix: String
-    ): TypeName {
+    ): TypeVariableName {
         val argumentTypeName = mapProxyArgumentTypeNames(proxyArguments)
 
         return TypeVariableName(
@@ -260,7 +260,7 @@ internal class MethodGeneratorHelper(
         )
 
         return ProxyBundle(
-            PropertySpec.builder(
+            proxy = PropertySpec.builder(
                 proxyInfo.proxyName,
                 proxyType.parameterizedBy(proxyReturnType.actualTypeName, sideEffect)
             ).let { proxySpec ->
@@ -270,7 +270,8 @@ internal class MethodGeneratorHelper(
                     proxyFactoryMethod = proxyFactoryMethod,
                 )
             }.build(),
-            proxyReturnType
+            returnType = proxyReturnType,
+            sideEffect = sideEffect,
         )
     }
 

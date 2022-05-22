@@ -18,11 +18,11 @@ interface ReflectionExpansionContract {
         val type: KClass<T>
     }
 
-    interface VarargKClass<T> where T: Any {
+    interface VarargKClass<T> where T : Any {
         val type: KClass<T>
     }
 
-    interface GenericVarargKClass<T> where T: Any {
+    interface GenericVarargKClass<T> where T : Any {
         val type: KClass<T>
     }
 }
@@ -46,4 +46,3 @@ interface ReflectionExpansionContract {
 @PublishedApi internal data class GenericVarargKClass<T>(
     override val type: KClass<T>
 ) : ReflectionExpansionContract.GenericVarargKClass<T> where T : Any
-

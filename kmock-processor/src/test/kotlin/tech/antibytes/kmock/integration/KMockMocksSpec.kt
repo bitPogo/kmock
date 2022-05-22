@@ -1162,6 +1162,7 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("SpiedMock.kt")
+        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -1336,6 +1337,7 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("CommonMock.kt")
+        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -1486,6 +1488,33 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("AsyncFunMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with overload for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Overloaded.kt",
+            loadResource("/template/access/Overloaded.kt")
+        )
+        val expected = loadResource("/expected/access/Overloaded.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("OverloadedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

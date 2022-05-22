@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
@@ -31,8 +30,6 @@ import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
-import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
-import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.fixture.fixture
@@ -40,7 +37,6 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
