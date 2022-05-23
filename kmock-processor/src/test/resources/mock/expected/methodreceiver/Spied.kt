@@ -41,8 +41,8 @@ internal class SpiedMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_doSomethingElseReceiverWithSomethingElse",
             collector = verifier, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_doSomethingElseReceiverWithTAny",
+    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_doSomethingElseReceiverWithZTAny",
             collector = verifier, freeze = freeze)
 
     public val _doSomethingElse:
@@ -127,7 +127,7 @@ internal class SpiedMock<L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> T.doSomethingElse(): L =
-        _doSomethingElseReceiverWithTAny.invoke(this@doSomethingElse,) {
+        _doSomethingElseReceiverWithZTAny.invoke(this@doSomethingElse,) {
             useSpyIf(__spyOn) {    spyContext {
                 this@doSomethingElse.doSomethingElse()
             } as L }
@@ -221,7 +221,7 @@ internal class SpiedMock<L>(
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()
-        _doSomethingElseReceiverWithTAny.clear()
+        _doSomethingElseReceiverWithZTAny.clear()
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()

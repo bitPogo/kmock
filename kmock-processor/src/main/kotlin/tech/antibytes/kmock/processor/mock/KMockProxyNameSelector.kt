@@ -143,16 +143,30 @@ internal class KMockProxyNameSelector(
         )
     }
 
+    private fun determineNullablePrefix(isNullable: Boolean): String {
+        return if (isNullable) {
+            "Z"
+        } else {
+            ""
+        }
+    }
+
     private fun resolveGenericName(
         boundaries: List<KSTypeReference>?,
         typeResolver: TypeParameterResolver
-    ): String? {
+    ): Pair<String, Boolean>? {
+        var isNullable = true
         return if (boundaries.isNullOrEmpty()) {
             null
         } else {
-            boundaries.joinToString("") { typeName ->
-                typeName.toTypeName(typeResolver).toString().trimTypeName()
+            val boundaryNames = boundaries.joinToString("") { typeName ->
+                val type = typeName.toTypeName(typeResolver)
+                isNullable = isNullable && type.isNullable
+
+                type.toString().trimTypeName()
             }
+
+            Pair(boundaryNames, isNullable)
         }
     }
 
@@ -162,12 +176,19 @@ internal class KMockProxyNameSelector(
         typeResolver: TypeParameterResolver
     ): String {
         var currentName = name
+        var isNullable = true
 
         do {
-            currentName = resolveGenericName(generics[currentName], typeResolver) ?: "Any"
+            val (boundaryName, nullable) = resolveGenericName(generics[currentName], typeResolver)
+                ?: nullableAnyGeneric
+
+            isNullable = isNullable && nullable
+            currentName = boundaryName
         } while (currentName in generics)
 
-        return "$name${currentName.trimEnd('?')}"
+        val zero = determineNullablePrefix(isNullable)
+
+        return "$zero$name${currentName.trimEnd('?')}"
     }
 
     private fun String.resolveActualName(
@@ -385,5 +406,6 @@ internal class KMockProxyNameSelector(
         const val RECEIVER_GETTER = "Getter"
         const val RECEIVER_SETTER = "Setter"
         const val RECEIVER_METHOD = "Receiver"
+        private val nullableAnyGeneric = Pair("Any", true)
     }
 }

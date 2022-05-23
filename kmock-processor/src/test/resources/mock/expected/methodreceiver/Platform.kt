@@ -38,8 +38,8 @@ internal class PlatformMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElseReceiverWithSomethingElse",
             collector = verifier, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElseReceiverWithTAny",
+    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElseReceiverWithZTAny",
             collector = verifier, freeze = freeze)
 
     public val _doSomethingElse:
@@ -95,7 +95,7 @@ internal class PlatformMock<L>(
         _doSomethingElseReceiverWithSomethingElse.invoke(this@doSomethingElse,)
 
     public override fun <T> T.doSomethingElse(): L =
-        _doSomethingElseReceiverWithTAny.invoke(this@doSomethingElse,)
+        _doSomethingElseReceiverWithZTAny.invoke(this@doSomethingElse,)
 
     public override fun doSomethingElse(x: SomethingElse<Any>): Unit = _doSomethingElse.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
@@ -135,7 +135,7 @@ internal class PlatformMock<L>(
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()
-        _doSomethingElseReceiverWithTAny.clear()
+        _doSomethingElseReceiverWithZTAny.clear()
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()

@@ -23,6 +23,9 @@ interface Shared<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <T : Int> bla(): T
     fun <T : Int> bla(payload: T)
+    fun <T : Int?> bla(payload: T)
+    fun <T> bla(payload: T) where T : CharSequence, T : Comparable<T>?
+    fun <T : K, K> bla(arg0: T, arg1: K) where K : CharSequence, K : Comparable<K>?
 
     fun <T : List<Array<String>>> bar(payload: T)
     fun <T : List<Array<String>>> bar(): T

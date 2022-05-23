@@ -48,13 +48,14 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createPropertyProxy("mock.template.spy.PlatformMock#_ozz", collector = verifier,
             freeze = freeze)
 
-    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithTAny", collector =
+    public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithZTAny", collector =
         verifier, freeze = freeze)
 
-    public val _fooWithTAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) ->
-    kotlin.Unit> = ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithTAnys",
-        collector = verifier, freeze = freeze)
+    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) ->
+    kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithZTAnys", collector =
+        verifier, freeze = freeze)
 
     public val _barWithInt: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_barWithInt", collector =
@@ -88,12 +89,12 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_hashCode", collector =
         verifier, freeze = freeze, ignorableForVerification = true)
 
-    public override fun <T> foo(payload: T): Unit = _fooWithTAny.invoke(payload) {
+    public override fun <T> foo(payload: T): Unit = _fooWithZTAny.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.foo(payload) }
     }
 
-    public override fun <T> foo(vararg payload: T): Unit = _fooWithTAnys.invoke(payload) {
+    public override fun <T> foo(vararg payload: T): Unit = _fooWithZTAnys.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.foo(*payload) }
     }
@@ -143,8 +144,8 @@ internal class PlatformMock<K : Any, L>(
     public fun _clearMock(): Unit {
         _template.clear()
         _ozz.clear()
-        _fooWithTAny.clear()
-        _fooWithTAnys.clear()
+        _fooWithZTAny.clear()
+        _fooWithZTAnys.clear()
         _barWithInt.clear()
         _barWithInts.clear()
         _buzzWithString.clear()

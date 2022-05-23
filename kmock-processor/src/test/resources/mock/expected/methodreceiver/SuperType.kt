@@ -38,8 +38,8 @@ internal class InheritedMock<P>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_doSomethingElseReceiverWithSomethingElse",
             collector = verifier, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithTAny: KMockContract.SyncFunProxy<P, (kotlin.Any?) -> P> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_doSomethingElseReceiverWithTAny",
+    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<P, (kotlin.Any?) -> P> =
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_doSomethingElseReceiverWithZTAny",
             collector = verifier, freeze = freeze)
 
     public val _doSomethingElse:
@@ -95,7 +95,7 @@ internal class InheritedMock<P>(
         _doSomethingElseReceiverWithSomethingElse.invoke(this@doSomethingElse,)
 
     public override fun <T> T.doSomethingElse(): P =
-        _doSomethingElseReceiverWithTAny.invoke(this@doSomethingElse,)
+        _doSomethingElseReceiverWithZTAny.invoke(this@doSomethingElse,)
 
     public override fun doSomethingElse(x: SomethingElse<Any>): Unit = _doSomethingElse.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
@@ -135,7 +135,7 @@ internal class InheritedMock<P>(
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()
-        _doSomethingElseReceiverWithTAny.clear()
+        _doSomethingElseReceiverWithZTAny.clear()
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()

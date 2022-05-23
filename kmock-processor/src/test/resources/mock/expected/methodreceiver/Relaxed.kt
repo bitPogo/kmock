@@ -39,8 +39,8 @@ internal class RelaxedMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_doSomethingElseReceiverWithSomethingElse",
             collector = verifier, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_doSomethingElseReceiverWithTAny",
+    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_doSomethingElseReceiverWithZTAny",
             collector = verifier, freeze = freeze)
 
     public val _doSomethingElse:
@@ -104,7 +104,7 @@ internal class RelaxedMock<L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> T.doSomethingElse(): L =
-        _doSomethingElseReceiverWithTAny.invoke(this@doSomethingElse,) {
+        _doSomethingElseReceiverWithZTAny.invoke(this@doSomethingElse,) {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,) as L }
         }
@@ -155,7 +155,7 @@ internal class RelaxedMock<L>(
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()
-        _doSomethingElseReceiverWithTAny.clear()
+        _doSomethingElseReceiverWithZTAny.clear()
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()
