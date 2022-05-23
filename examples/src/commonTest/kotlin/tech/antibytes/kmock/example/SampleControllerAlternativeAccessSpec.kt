@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
@@ -22,6 +23,7 @@ import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleUselessObjectMock
+import tech.antibytes.kmock.hint
 import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.assertOrder
 import tech.antibytes.kmock.verification.asyncAssertOrder
@@ -51,6 +53,7 @@ import kotlin.test.Test
     DecoderFactory::class,
     SampleUselessObject::class,
 )
+@OptIn(KMockExperimental::class)
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val verifier = Asserter()
@@ -208,16 +211,27 @@ class SampleControllerAlternativeAccessSpec {
     @IgnoreJs
     fun `Given a mocked SampleUselessThing it does strange things`() {
         // Given
-        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomething, Any::class).returnValue = 23
-        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomething, String::class).returnValue = 42
-        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomethingElse, Any::class).returnValue = 107
-        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomethingElse, String::class).returnValue = 31
+        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomething, hint<Any>()).returnValue = 23
+        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomething, hint<String>()).returnValue = 42
+
+        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomethingElse, hint<Any>()).returnValue = 107
+        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomethingElse, hint<String>()).returnValue = 31
+
+        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomething, hint<Any, String>()).returnValue = "works!"
+        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomething, hint<Any, Int>()).returnValue = "It"
+
+        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomethingElse, hint<Any, String>()).returnValue = "works!"
+        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomethingElse, hint<Any, Int>()).returnValue = "It"
 
         // When & Then
         uselessObjectObject.doSomething(null) mustBe 23
         uselessObjectObject.doSomething("null") mustBe 42
+        uselessObjectObject.doSomething(Any(), 21) mustBe "It"
+        uselessObjectObject.doSomething(Any(), "argggg") mustBe "works!"
 
         uselessObjectObject.doSomethingElse("null") mustBe 31
         uselessObjectObject.doSomethingElse(null) mustBe 107
+        uselessObjectObject.doSomethingElse(Any(), 21) mustBe "It"
+        uselessObjectObject.doSomethingElse(Any(), "argggg") mustBe "works!"
     }
 }

@@ -17,6 +17,19 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
+import tech.antibytes.kmock.Hint0
+import tech.antibytes.kmock.Hint1
+import tech.antibytes.kmock.Hint10
+import tech.antibytes.kmock.Hint11
+import tech.antibytes.kmock.Hint12
+import tech.antibytes.kmock.Hint2
+import tech.antibytes.kmock.Hint3
+import tech.antibytes.kmock.Hint4
+import tech.antibytes.kmock.Hint5
+import tech.antibytes.kmock.Hint6
+import tech.antibytes.kmock.Hint7
+import tech.antibytes.kmock.Hint8
+import tech.antibytes.kmock.Hint9
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
@@ -25,7 +38,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.multibounded
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
@@ -464,6 +476,10 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
     private fun OverloadedMethod.createSideEffect(): TypeVariableName {
         val sideEffect = StringBuilder(6)
+        if (this is OverloadedAsyncFunProxy) {
+            sideEffect.append("suspend ")
+        }
+
         sideEffect.append("(")
 
         arguments.forEach { parameter ->
@@ -551,15 +567,25 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         }.copy(nullable = false)
     }
 
-    private fun OverloadedMethod.createIndicators(): List<ParameterSpec> {
-        return arguments.mapIndexed { idx, parameter ->
-            ParameterSpec.builder(
-                "type$idx",
-                kClass.parameterizedBy(
-                    parameter.determineNonNullableArgument(nullableClassGenerics, mappedParameterTypes)
-                )
-            ).build()
+    private fun ClassName.hintWith(types: List<TypeName>): TypeName {
+        return if (types.isEmpty()) {
+            this
+        } else {
+            this.parameterizedBy(types)
         }
+    }
+
+    private fun List<TypeName>.toHint(): TypeName = hints["Hint${this.size}"]!!.hintWith(this)
+
+    private fun OverloadedMethod.createIndicators(): ParameterSpec {
+        val hints = arguments.map { parameter ->
+            parameter.determineNonNullableArgument(nullableClassGenerics, mappedParameterTypes)
+        }
+
+        return ParameterSpec.builder(
+            "hint",
+            hints.toHint()
+        ).build()
     }
 
     private fun createOverloadedFunProxyAccess(
@@ -575,7 +601,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .returns(proxySignature)
             .addTypeVariables(method.typeParameter)
             .addParameter("reference", sideEffect)
-            .addParameters(indicators)
+            .addParameter(indicators)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
                 "\${(reference as $kFunction).name}|${method.unifier}",
@@ -712,10 +738,25 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         private val propertyType = TypeVariableName("Property")
         private val kProperty = KProperty::class.asClassName().parameterizedBy(propertyType)
         private val kFunction = KFunction::class.asClassName().parameterizedBy(starParameter)
-        private val kClass = KClass::class.asClassName()
         private val array = Array::class.asClassName()
         private val any = Any::class.asClassName()
         private val nullableAny = any.copy(nullable = true)
+
+        private val hints = mapOf(
+            "Hint0" to Hint0::class.asClassName(),
+            "Hint1" to Hint1::class.asClassName(),
+            "Hint2" to Hint2::class.asClassName(),
+            "Hint3" to Hint3::class.asClassName(),
+            "Hint4" to Hint4::class.asClassName(),
+            "Hint5" to Hint5::class.asClassName(),
+            "Hint6" to Hint6::class.asClassName(),
+            "Hint7" to Hint7::class.asClassName(),
+            "Hint8" to Hint8::class.asClassName(),
+            "Hint9" to Hint9::class.asClassName(),
+            "Hint10" to Hint10::class.asClassName(),
+            "Hint11" to Hint11::class.asClassName(),
+            "Hint12" to Hint12::class.asClassName(),
+        )
 
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 

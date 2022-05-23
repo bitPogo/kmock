@@ -334,7 +334,7 @@ internal class KMockGenerator(
         var hasReceivers = false
         val nullableClassGenerics = genericsResolver
             .mapDeclaredGenerics(generics ?: emptyMap(), typeResolver)
-            .collectNullableClassGenerics().also { println(it) }
+            .collectNullableClassGenerics()
         val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(
             enableGenerator = enableProxyAccessMethodGenerator,
             nullableClassGenerics = nullableClassGenerics,
