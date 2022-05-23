@@ -21,6 +21,7 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
@@ -428,6 +429,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 propertyProxy,
             )
             .addAnnotation(UNCHECKED)
+            .addAnnotation(experimental)
             .build()
     }
 
@@ -453,6 +455,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 proxySignature
             )
             .addAnnotation(UNCHECKED)
+            .addAnnotation(experimental)
             .addAnnotation(createJvmName(proxyAccessMethod, id))
             .build()
     }
@@ -577,7 +580,8 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 "\${(reference as $kFunction).name}|${method.unifier}",
                 proxySignature
             )
-            .addAnnotation(UNCHECKED)
+            .addAnnotation(unusedAndUnchecked)
+            .addAnnotation(experimental)
             .addAnnotation(createJvmName(proxyAccessMethod, id))
             .build()
     }
@@ -685,6 +689,16 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             Mock::class.java.packageName,
             "SafeJvmName"
         )
+        private val experimental = ClassName(
+            Mock::class.java.packageName,
+            "KMockExperimental"
+        )
+        private val unusedAndUnchecked = AnnotationSpec.builder(Suppress::class).addMember(
+            "%S, %S, %S",
+            "UNUSED_PARAMETER",
+            "UNUSED_EXPRESSION",
+            "UNCHECKED_CAST",
+        ).build()
         private val starParameter = TypeVariableName("*")
         private val referenceStoreType = Map::class.asClassName().parameterizedBy(
             String::class.asTypeName(),

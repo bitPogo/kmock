@@ -9,6 +9,7 @@ import kotlin.Unit
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.SafeJvmName
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -68,6 +69,7 @@ internal class BuildInMock(
     }
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("syncFunProxyOf0")
     public fun syncFunProxyOf(reference: (kotlin.Int, kotlin.Any) -> kotlin.Any):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Int, kotlin.Any) ->
@@ -77,6 +79,7 @@ internal class BuildInMock(
         kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("syncFunProxyOf1")
     public fun syncFunProxyOf(reference: () -> kotlin.String):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, () -> kotlin.String> =
@@ -84,6 +87,7 @@ internal class BuildInMock(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, () -> kotlin.String>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("syncFunProxyOf2")
     public fun syncFunProxyOf(reference: (kotlin.Any?) -> kotlin.Boolean):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Boolean, (kotlin.Any?) -> kotlin.Boolean> =
@@ -92,6 +96,7 @@ internal class BuildInMock(
         kotlin.Boolean>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("syncFunProxyOf3")
     public fun syncFunProxyOf(reference: () -> kotlin.Int):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int> =

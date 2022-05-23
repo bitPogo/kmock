@@ -11,6 +11,7 @@ import kotlin.Unit
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.SafeJvmName
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -132,6 +133,7 @@ internal class AsyncFunMock<L, T>(
     }
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf0")
     public fun asyncFunProxyOf(reference: suspend (kotlin.Int, kotlin.Any) -> kotlin.Any):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Int, kotlin.Any) ->
@@ -141,6 +143,7 @@ internal class AsyncFunMock<L, T>(
         kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf1")
     public fun asyncFunProxyOf(reference: suspend (kotlin.IntArray) -> kotlin.Any):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.IntArray) ->
@@ -150,6 +153,7 @@ internal class AsyncFunMock<L, T>(
         kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf2")
     public fun asyncFunProxyOf(reference: suspend (Array<out kotlin.Any>) -> kotlin.Any):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (Array<out kotlin.Any>) ->
@@ -159,6 +163,7 @@ internal class AsyncFunMock<L, T>(
         kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf3")
     public fun asyncFunProxyOf(reference: suspend () -> kotlin.Unit):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend () -> kotlin.Unit> =
@@ -166,6 +171,7 @@ internal class AsyncFunMock<L, T>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend () -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf4")
     public fun asyncFunProxyOf(reference: suspend () -> kotlin.Int):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int> =
@@ -173,6 +179,7 @@ internal class AsyncFunMock<L, T>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf5")
     public fun asyncFunProxyOf(reference: suspend () -> L):
         tech.antibytes.kmock.KMockContract.FunProxy<L, suspend () -> L> =
@@ -180,6 +187,7 @@ internal class AsyncFunMock<L, T>(
             tech.antibytes.kmock.KMockContract.FunProxy<L, suspend () -> L>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf6")
     public fun asyncFunProxyOf(reference: suspend () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<T, suspend () -> T> =
@@ -187,6 +195,7 @@ internal class AsyncFunMock<L, T>(
             tech.antibytes.kmock.KMockContract.FunProxy<T, suspend () -> T>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf7")
     public fun asyncFunProxyOf(reference: suspend (kotlin.Any?) -> kotlin.Any?):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) -> kotlin.Any?>
@@ -196,6 +205,7 @@ internal class AsyncFunMock<L, T>(
         kotlin.Any?>
 
     @Suppress("UNCHECKED_CAST")
+    @KMockExperimental
     @SafeJvmName("asyncFunProxyOf8")
     public fun asyncFunProxyOf(reference: suspend (kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,
         kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) -> kotlin.Unit):
