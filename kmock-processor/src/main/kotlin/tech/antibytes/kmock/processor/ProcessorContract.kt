@@ -67,6 +67,7 @@ internal interface ProcessorContract {
         val customMethodNames: Map<String, String>,
         val uselessPrefixes: Set<String>,
         val allowExperimentalProxyAccess: Boolean,
+        val enableFineGrainedNames: Boolean,
     )
 
     fun interface OptionExtractor {

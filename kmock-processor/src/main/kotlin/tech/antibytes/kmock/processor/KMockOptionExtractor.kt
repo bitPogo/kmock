@@ -12,6 +12,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_ANNOTAT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DISABLE_FACTORIES
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FINE_GRAINED_PROXY_NAMES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
@@ -79,6 +80,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         var disableFactories = false
         var enableNewOverloadingNames = true
         var allowExperimentalProxyAccess = false
+        var enableFineGrainedNames = false
         val uselessPrefixes: MutableSet<String> = mutableSetOf()
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
         val customMethodNames: MutableMap<String, String> = mutableMapOf()
@@ -95,6 +97,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key == SPY_ALL -> spyAll = value.toBoolean()
                 key == DISABLE_FACTORIES -> disableFactories = value.toBoolean()
                 key == ALTERNATIVE_PROXY_ACCESS -> allowExperimentalProxyAccess = value.toBoolean()
+                key == FINE_GRAINED_PROXY_NAMES -> enableFineGrainedNames = value.toBoolean()
                 key.startsWith(DEPENDENCIES) -> extractDependencies(key, value, dependencies)
                 key.startsWith(ALIASES) -> extractMappedValue(ALIASES, key, value) { qualifiedName, alias ->
                     aliases[qualifiedName] = alias
@@ -150,6 +153,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             customMethodNames = customMethodNames,
             uselessPrefixes = uselessPrefixes,
             allowExperimentalProxyAccess = allowExperimentalProxyAccess,
+            enableFineGrainedNames = enableFineGrainedNames,
         )
     }
 }
