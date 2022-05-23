@@ -21,7 +21,6 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
@@ -426,6 +425,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .addStatement(
                 REFERENCE_STORE_ACCESS,
                 "\${reference.name}|property",
+                "Unknown property \${reference.name}!",
                 propertyProxy,
             )
             .addAnnotation(UNCHECKED)
@@ -452,6 +452,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .addStatement(
                 REFERENCE_STORE_ACCESS,
                 "\${(reference as $kFunction).name}|${method.sideEffect}",
+                "Unknown method \${reference.name} with signature ${method.sideEffect}!",
                 proxySignature
             )
             .addAnnotation(UNCHECKED)
@@ -578,6 +579,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .addStatement(
                 REFERENCE_STORE_ACCESS,
                 "\${(reference as $kFunction).name}|${method.unifier}",
+                "Unknown method \${reference.name} with signature ${method.sideEffect}!",
                 proxySignature
             )
             .addAnnotation(unusedAndUnchecked)
@@ -684,7 +686,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
     companion object : ProxyAccessMethodGeneratorFactory {
         private const val REFERENCE_STORE = "referenceStore"
-        private const val REFERENCE_STORE_ACCESS = "return $REFERENCE_STORE[%P] as %L"
+        private const val REFERENCE_STORE_ACCESS = "return ($REFERENCE_STORE[%P] ?: throw IllegalStateException(%P)) as %L"
         private val safeJvmName = ClassName(
             Mock::class.java.packageName,
             "SafeJvmName"

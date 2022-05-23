@@ -90,6 +90,7 @@ internal class PropertyMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     public fun <Property> propertyProxyOf(reference: KProperty<Property>):
-        KMockContract.PropertyProxy<Property> = referenceStore["""${reference.name}|property"""] as
+        KMockContract.PropertyProxy<Property> = (referenceStore["""${reference.name}|property"""] ?:
+    throw IllegalStateException("""Unknown property ${reference.name}!""")) as
         tech.antibytes.kmock.KMockContract.PropertyProxy<Property>
 }

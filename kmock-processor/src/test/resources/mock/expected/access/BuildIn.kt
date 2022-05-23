@@ -74,7 +74,9 @@ internal class BuildInMock(
     public fun syncFunProxyOf(reference: (kotlin.Int, kotlin.Any) -> kotlin.Any):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Int, kotlin.Any) ->
         kotlin.Any> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Any) -> kotlin.Any"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Any) -> kotlin.Any"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Any) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Int, kotlin.Any) ->
         kotlin.Any>
 
@@ -83,7 +85,9 @@ internal class BuildInMock(
     @SafeJvmName("syncFunProxyOf1")
     public fun syncFunProxyOf(reference: () -> kotlin.String):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, () -> kotlin.String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.String"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.String"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.String!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, () -> kotlin.String>
 
     @Suppress("UNCHECKED_CAST")
@@ -91,7 +95,9 @@ internal class BuildInMock(
     @SafeJvmName("syncFunProxyOf2")
     public fun syncFunProxyOf(reference: (kotlin.Any?) -> kotlin.Boolean):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Boolean"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Boolean"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?) -> kotlin.Boolean!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Boolean, (kotlin.Any?) ->
         kotlin.Boolean>
 
@@ -100,6 +106,8 @@ internal class BuildInMock(
     @SafeJvmName("syncFunProxyOf3")
     public fun syncFunProxyOf(reference: () -> kotlin.Int):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Int"""] as
-            tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int>
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Int"""] ?:
+        throw
+        IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Int!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int>
 }

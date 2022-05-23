@@ -899,7 +899,8 @@ internal class OverloadedMock<K : Any, L, U>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     public fun <Property> propertyProxyOf(reference: KProperty<Property>):
-        KMockContract.PropertyProxy<Property> = referenceStore["""${reference.name}|property"""] as
+        KMockContract.PropertyProxy<Property> = (referenceStore["""${reference.name}|property"""] ?:
+    throw IllegalStateException("""Unknown property ${reference.name}!""")) as
         tech.antibytes.kmock.KMockContract.PropertyProxy<Property>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -907,7 +908,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf0")
     public fun syncFunProxyOf(reference: () -> kotlin.Unit):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, () -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, () -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -915,7 +918,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf1")
     public fun syncFunProxyOf(reference: (kotlin.Any, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -923,7 +928,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf2")
     public fun syncFunProxyOf(reference: (kotlin.Int, ) -> kotlin.Unit, type0: KClass<Int>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int) -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -931,7 +938,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf3")
     public fun syncFunProxyOf(reference: (U, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (U) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(U) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(U) -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (U) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (U) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -939,7 +948,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf4")
     public fun <T : Int> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Int>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -947,7 +958,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf5")
     public fun <T : Int?> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int?) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int?) -> kotlin.Unit|[[kotlin.Int?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int?) -> kotlin.Unit|[[kotlin.Int?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int?) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -955,7 +968,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf6")
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -963,7 +978,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf7")
     public fun syncFunProxyOf(reference: (kotlin.Any, ) -> kotlin.String, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, (kotlin.Any) -> kotlin.String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.String|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.String|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.String!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, (kotlin.Any) -> kotlin.String>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -971,7 +988,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf8")
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, () -> kotlin.Any?> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any?|[[kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any?|[[kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Any?!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, () -> kotlin.Any?>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -980,7 +999,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any?>) ->
         kotlin.Unit>
 
@@ -991,7 +1012,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out kotlin.Array<out kotlin.Any>>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Array<out
         kotlin.Any>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Array<out kotlin.Any>>) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Array<out kotlin.Any>>) -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Array<out kotlin.Any>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Array<out
         kotlin.Any>>) -> kotlin.Unit>
 
@@ -1001,7 +1024,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Comparable<List<Array<T>>>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>,
                 () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>,
                     () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>
@@ -1013,7 +1038,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type0: KClass<Comparable<List<Array<T>>>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit>
 
@@ -1024,7 +1051,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit>
 
@@ -1034,7 +1063,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<String>>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.String>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.String>>|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.String>>|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.List<kotlin.Array<kotlin.String>>!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>,
                     () -> kotlin.collections.List<kotlin.Array<kotlin.String>>>
@@ -1045,7 +1076,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<String>>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<String>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit>
 
@@ -1056,7 +1089,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit>
 
@@ -1071,7 +1106,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type3: KClass<Int>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.String, kotlin.CharArray,
         kotlin.Boolean, kotlin.Int) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.String, kotlin.CharArray, kotlin.Boolean, kotlin.Int) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.String, kotlin.CharArray, kotlin.Boolean, kotlin.Int) -> kotlin.Unit|[]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.String, kotlin.CharArray, kotlin.Boolean, kotlin.Int) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.String, kotlin.CharArray,
             kotlin.Boolean, kotlin.Int) -> kotlin.Unit>
 
@@ -1081,7 +1118,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<String?>>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.String?>>|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.String?>>|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>,
                     () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>>
@@ -1092,7 +1131,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<String?>>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<String?>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit>
 
@@ -1103,7 +1144,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String?>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit>
 
@@ -1113,7 +1156,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>>?> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
@@ -1124,7 +1169,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>>?> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Any>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit>
 
@@ -1135,7 +1182,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit>
 
@@ -1145,7 +1194,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>?>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>,
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>>
@@ -1156,7 +1207,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>?>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<Int>?>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit>
 
@@ -1167,7 +1220,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>?>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit>
 
@@ -1177,7 +1232,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>>> syncFunProxyOf(reference: () -> T?):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
@@ -1188,7 +1245,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : List<Array<Int>>> syncFunProxyOf(reference: (T?, ) -> kotlin.Unit,
         type0: KClass<List<Array<Int>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit>
 
@@ -1199,7 +1258,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T?>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.Int>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit>
 
@@ -1208,15 +1269,18 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("syncFunProxyOf30")
     public fun <T : L> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> L|[[L]]"""] as
-            tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L>
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> L|[[L]]"""] ?:
+        throw IllegalStateException("""Unknown method ${reference.name} with signature () -> L!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf31")
     public fun <T : L> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<L>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (L) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(L) -> kotlin.Unit|[[L]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(L) -> kotlin.Unit|[[L]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (L) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (L) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1225,7 +1289,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : L> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out L>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out L>) -> kotlin.Unit|[[L]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out L>) -> kotlin.Unit|[[L]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out L>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out L>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1234,7 +1300,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Comparable<List<Array<T>>>?> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?,
                 () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?,
                     () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>
@@ -1245,7 +1313,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Comparable<List<Array<T>>>?> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Any>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit>
 
@@ -1256,7 +1326,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit>
 
@@ -1266,7 +1338,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Map<String, String>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.Map<kotlin.String,
             kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.collections.Map<kotlin.String, kotlin.String>!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.Map<kotlin.String,
             kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>>
 
@@ -1276,7 +1350,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Map<String, String>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Map<String, String>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit>
 
@@ -1287,7 +1363,9 @@ internal class OverloadedMock<K : Any, L, U>(
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
         kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit>
 
@@ -1297,7 +1375,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : List<String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1306,7 +1386,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : List<String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1315,7 +1397,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : List<String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any>) ->
         kotlin.Unit>
 
@@ -1325,7 +1409,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1334,7 +1420,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1343,7 +1431,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any>) ->
         kotlin.Unit>
 
@@ -1353,7 +1443,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : Map<String, String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1362,7 +1454,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : Map<String, String> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1372,7 +1466,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : Map<String, String>
         =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any>) ->
         kotlin.Unit>
 
@@ -1382,7 +1478,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1391,7 +1489,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1401,7 +1501,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T :
     Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any>) ->
         kotlin.Unit>
 
@@ -1411,7 +1513,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : R, R> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any) -> kotlin.Any> where R :
                                                                                                   SomeGeneric<String>, R : Comparable<List<Array<R>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any) -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1423,7 +1527,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type1: KClass<R>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any, kotlin.Any) ->
     kotlin.Unit> where R : SomeGeneric<String>, R : Comparable<List<Array<R>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any, kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any, kotlin.Any) ->
         kotlin.Unit>
 
@@ -1435,7 +1541,9 @@ internal class OverloadedMock<K : Any, L, U>(
         tech.antibytes.kmock.KMockContract.FunProxy<mock.template.access.SomeGeneric<kotlin.String>,
                 (mock.template.access.SomeGeneric<kotlin.String>) ->
         mock.template.access.SomeGeneric<kotlin.String>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.access.SomeGeneric<kotlin.String>) -> mock.template.access.SomeGeneric<kotlin.String>|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.access.SomeGeneric<kotlin.String>) -> mock.template.access.SomeGeneric<kotlin.String>|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (mock.template.access.SomeGeneric<kotlin.String>) -> mock.template.access.SomeGeneric<kotlin.String>!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<mock.template.access.SomeGeneric<kotlin.String>,
                     (mock.template.access.SomeGeneric<kotlin.String>) ->
@@ -1451,7 +1559,9 @@ internal class OverloadedMock<K : Any, L, U>(
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (mock.template.access.SomeGeneric<kotlin.String>,
         mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.access.SomeGeneric<kotlin.String>, mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.access.SomeGeneric<kotlin.String>, mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (mock.template.access.SomeGeneric<kotlin.String>, mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
                 (mock.template.access.SomeGeneric<kotlin.String>,
             mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit>
@@ -1462,7 +1572,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <R, T> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any> where R :
                                                                                                    Sequence<Char>, R : CharSequence =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Any|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Any|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1474,7 +1586,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type1: KClass<R>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any) ->
     kotlin.Unit> where R : Sequence<Char>, R : CharSequence =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?, kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any) ->
         kotlin.Unit>
 
@@ -1483,7 +1597,9 @@ internal class OverloadedMock<K : Any, L, U>(
     @SafeJvmName("asyncFunProxyOf0")
     public fun <T : Int> asyncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Int|[[kotlin.Int]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Int|[[kotlin.Int]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> kotlin.Int!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1492,7 +1608,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Int> asyncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Int>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Int) -> kotlin.Unit>
         =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Int) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Int) ->
         kotlin.Unit>
 
@@ -1502,7 +1620,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : Int> asyncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend
         (kotlin.IntArray) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.IntArray) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.IntArray) ->
         kotlin.Unit>
 
@@ -1512,7 +1632,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> asyncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend () -> kotlin.Any?> where T :
                                                                                                   SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> kotlin.Any?!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend () -> kotlin.Any?>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -1521,7 +1643,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> asyncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?) -> kotlin.Unit>
         where T : SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?) ->
         kotlin.Unit>
 
@@ -1531,7 +1655,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T> asyncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend
         (Array<out kotlin.Any?>) -> kotlin.Unit> where T : SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (Array<out kotlin.Any?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (Array<out
         kotlin.Any?>) -> kotlin.Unit>
 
@@ -1541,7 +1667,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <T : R, R> asyncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) -> kotlin.Any?>
         =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?) -> kotlin.Any?!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) ->
         kotlin.Any?>
 
@@ -1554,7 +1682,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type1: KClass<Any>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, kotlin.Any?) ->
     kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?, kotlin.Any?) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?,
             kotlin.Any?) -> kotlin.Unit>
 
@@ -1567,7 +1697,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type1: KClass<Array<out T>>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, Array<out
     kotlin.Any?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, Array<out
         kotlin.Any?>) -> kotlin.Unit>
 
@@ -1577,7 +1709,9 @@ internal class OverloadedMock<K : Any, L, U>(
     public fun <R, T> asyncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Any?) -> kotlin.Any>
         where R : SomeGeneric<String>, R : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Any?) ->
         kotlin.Any>
 
@@ -1590,7 +1724,9 @@ internal class OverloadedMock<K : Any, L, U>(
         type1: KClass<R>,
     ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, kotlin.Any) ->
     kotlin.Unit> where R : SomeGeneric<String>, R : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?, kotlin.Any) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?,
             kotlin.Any) -> kotlin.Unit>
 }

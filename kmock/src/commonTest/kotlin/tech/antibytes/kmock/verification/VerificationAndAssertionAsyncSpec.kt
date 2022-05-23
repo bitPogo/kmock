@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract.Reference
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.AsserterStub
 import tech.antibytes.util.test.coroutine.runBlockingTest
@@ -19,6 +20,7 @@ import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
+@OptIn(KMockExperimental::class)
 class VerificationAndAssertionAsyncSpec {
     private val fixture = kotlinFixture()
 
