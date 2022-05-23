@@ -260,40 +260,48 @@ internal class KMockGenerator(
                 type
             }
             else -> {
-                isNullable = this.any { type -> type.isNullable }
-                any
+                isNullable = this.all { type -> type.isNullable }
+
+                nullableAny
             }
         }
 
         return Pair(type, isNullable)
     }
 
-    private fun TypeVariableName.isNullable(
+    private fun TypeVariableName.resolveNullableType(
         mapping: Map<String, TypeVariableName>
-    ): Boolean {
+    ): Pair<Boolean, TypeName> {
         var currentName = this.name
         var isNullable = false
+        var currentType: TypeName = this
 
         while (currentName in mapping) {
             val (type, nullability) = mapping[currentName]!!.bounds.resolveType()
 
-            isNullable = nullability
+            currentType = type
             currentName = type.toString()
+            isNullable = nullability
         }
 
-        return isNullable
+        return Pair(
+            isNullable,
+            currentType.copy(nullable = false)
+        )
     }
 
-    private fun List<TypeVariableName>.collectNullableClassGenerics(): List<String> {
+    private fun List<TypeVariableName>.collectNullableClassGenerics(): Map<String, TypeName> {
         return if (this.isEmpty() || !enableProxyAccessMethodGenerator) {
-            emptyList()
+            emptyMap()
         } else {
-            val nullables: MutableList<String> = mutableListOf()
+            val nullables: MutableMap<String, TypeName> = mutableMapOf()
             val mapping = this.associateBy { type -> type.name }
 
             this.forEach { type ->
-                if (type.isNullable(mapping)) {
-                    nullables.add(type.name)
+                val (nullability, resolvedType) = type.resolveNullableType(mapping)
+
+                if (nullability) {
+                    nullables[type.name] = resolvedType
                 }
             }
 
@@ -326,7 +334,7 @@ internal class KMockGenerator(
         var hasReceivers = false
         val nullableClassGenerics = genericsResolver
             .mapDeclaredGenerics(generics ?: emptyMap(), typeResolver)
-            .collectNullableClassGenerics()
+            .collectNullableClassGenerics().also { println(it) }
         val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(
             enableGenerator = enableProxyAccessMethodGenerator,
             nullableClassGenerics = nullableClassGenerics,

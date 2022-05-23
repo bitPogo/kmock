@@ -13,6 +13,8 @@ import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import tech.antibytes.kmock.Hint1
+import tech.antibytes.kmock.hint
 import tech.antibytes.kmock.processor.KMockProcessorProvider
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_PREFIX
@@ -1513,6 +1515,7 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("OverloadedMock.kt")
+        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

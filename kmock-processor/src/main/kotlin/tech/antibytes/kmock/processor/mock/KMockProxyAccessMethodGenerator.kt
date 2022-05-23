@@ -21,6 +21,7 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.multibounded
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
@@ -30,7 +31,7 @@ import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
     private val enabled: Boolean,
-    private val nullableClassGenerics: List<String>
+    private val nullableClassGenerics: Map<String, TypeName>,
 ) : ProxyAccessMethodGenerator {
     private sealed interface Member
 
@@ -490,7 +491,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 type
             }
             else -> {
-                isNullable = this.any { type -> type.isNullable }
+                isNullable = this.all { type -> type.isNullable }
                 multibounded
             }
         }
@@ -513,39 +514,38 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             currentName = type.toString()
         }
 
-        return if (currentType != multibounded) {
-            Pair(currentType, isNullable)
-        } else {
-            Pair(this, isNullable)
-        }
+        return Pair(currentType, isNullable)
     }
 
     private fun Pair<TypeName, Boolean>.ensureNonNullableTransitiveParameter(
-        nullableClassGenerics: List<String>
+        originalType: TypeName,
+        nullableClassGenerics: Map<String, TypeName>
     ): TypeName {
-        return if (second || first.toString() in nullableClassGenerics) {
-            any
-        } else {
-            first
-        }
+        return when {
+            multibounded == first && second -> any
+            first.toString() in nullableClassGenerics -> nullableClassGenerics[first.toString()]!!
+            second -> first
+            else -> originalType
+        }.copy(nullable = false)
     }
 
     private fun ParameterSpec.determineNonNullableArgument(
-        nullableClassGenerics: List<String>,
+        nullableClassGenerics: Map<String, TypeName>,
         mapping: Map<String, TypeVariableName>
     ): TypeName {
-        val typeName = type.toString()
         return when {
             this.modifiers.contains(KModifier.VARARG) -> {
                 array.parameterizedBy(
                     TypeVariableName("out $type")
                 )
             }
-            typeName in nullableClassGenerics && typeName !in mapping -> any
             type is TypeVariableName -> {
                 (type as TypeVariableName)
                     .resolveType(mapping)
-                    .ensureNonNullableTransitiveParameter(nullableClassGenerics)
+                    .ensureNonNullableTransitiveParameter(
+                        type,
+                        nullableClassGenerics
+                    )
             }
             else -> type
         }.copy(nullable = false)
@@ -716,13 +716,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         private val array = Array::class.asClassName()
         private val any = Any::class.asClassName()
         private val nullableAny = any.copy(nullable = true)
-        private val multibounded = TypeVariableName("multiboundedKmock")
 
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
         override fun getInstance(
             enableGenerator: Boolean,
-            nullableClassGenerics: List<String>,
+            nullableClassGenerics: Map<String, TypeName>,
         ): ProxyAccessMethodGenerator = KMockProxyAccessMethodGenerator(enableGenerator, nullableClassGenerics)
     }
 }
