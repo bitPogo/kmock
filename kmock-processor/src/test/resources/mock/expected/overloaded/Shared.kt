@@ -65,8 +65,8 @@ internal class SharedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithFunction1",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTAny", collector
+    public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithZTAny", collector
         = verifier, freeze = freeze)
 
     public val _fooWithTShared: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Shared) ->
@@ -91,7 +91,7 @@ internal class SharedMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithTAny.invoke(fuzz) {
+    public override fun <T> foo(fuzz: T): Unit = _fooWithZTAny.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -112,7 +112,7 @@ internal class SharedMock(
         _fooWithStringAny.clear()
         _fooWithStringAbc.clear()
         _fooWithFunction1.clear()
-        _fooWithTAny.clear()
+        _fooWithZTAny.clear()
         _fooWithTShared.clear()
         _fooWithTLPG.clear()
     }

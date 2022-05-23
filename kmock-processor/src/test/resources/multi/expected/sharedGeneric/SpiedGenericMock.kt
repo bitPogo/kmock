@@ -68,12 +68,12 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithTAny", collector =
+    public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithZTAny", collector =
         verifier, freeze = freeze)
 
-    public val _fooWithTAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) ->
-    kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithTAnys",
+    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) ->
+    kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithZTAnys",
         collector = verifier, freeze = freeze)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
@@ -126,14 +126,14 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _bussWithTList:
+    public val _bussWithZTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
-        kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithTList",
+        kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithZTList",
         collector = verifier, freeze = freeze)
 
-    public val _bussWithTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _bussWithZTLists: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithTLists", collector =
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithZTLists", collector =
         verifier, freeze = freeze)
 
     public val _bossWithVoid:
@@ -206,15 +206,15 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithVoid", collector =
         verifier, freeze = freeze)
 
-    public val _blissWithTComparable:
+    public val _blissWithZTComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
         kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithTComparable",
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparable",
             collector = verifier, freeze = freeze)
 
-    public val _blissWithTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _blissWithZTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithTComparables",
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparables",
             collector = verifier, freeze = freeze)
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
@@ -256,14 +256,14 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithTAny", collector =
         verifier, freeze = freeze)
 
-    public val _ossWithTAnyRAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
+    public val _ossWithTAnyZRAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithTAnyRAny", collector =
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithTAnyZRAny", collector =
         verifier, freeze = freeze)
 
-    public val _ossWithRAnyTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, Array<out
+    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, Array<out
     kotlin.Any?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithRAnyTAnys", collector =
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithZRAnyTAnys", collector =
         verifier, freeze = freeze)
 
     public val _kss: KMockContract.SyncFunProxy<Any, (kotlin.Any) -> kotlin.Any> =
@@ -280,13 +280,13 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_pss", collector = verifier,
             freeze = freeze)
 
-    public val _xssWithTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithTAny", collector =
+    public val _xssWithZTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithZTAny", collector =
         verifier, freeze = freeze)
 
-    public val _xssWithTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
+    public val _xssWithZTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
         kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithTAnyRSequenceCharSequence",
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithZTAnyRSequenceCharSequence",
             collector = verifier, freeze = freeze)
 
     public val _doSomething: KMockContract.SyncFunProxy<KMockTypeParameter5, (KMockTypeParameter4) ->
@@ -317,12 +317,12 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         useSpyIf(__spyOn) { __spyOn!!.foo() }
     } as T
 
-    public override fun <T> foo(payload: T): Unit = _fooWithTAny.invoke(payload) {
+    public override fun <T> foo(payload: T): Unit = _fooWithZTAny.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.foo(payload) }
     }
 
-    public override fun <T> foo(vararg payload: T): Unit = _fooWithTAnys.invoke(payload) {
+    public override fun <T> foo(vararg payload: T): Unit = _fooWithZTAnys.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.foo(*payload) }
     }
@@ -382,13 +382,13 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     } as T
 
     public override fun <T : List<Array<Int>>?> buss(payload: T): Unit =
-        _bussWithTList.invoke(payload) {
+        _bussWithZTList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) { __spyOn!!.buss(payload) }
         }
 
     public override fun <T : List<Array<Int>>?> buss(vararg payload: T): Unit =
-        _bussWithTLists.invoke(payload) {
+        _bussWithZTLists.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) { __spyOn!!.buss(*payload) }
         }
@@ -467,13 +467,13 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     } as T
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(payload: T): Unit =
-        _blissWithTComparable.invoke(payload) {
+        _blissWithZTComparable.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) { __spyOn!!.bliss(payload) }
         }
 
     public override fun <T : Comparable<List<Array<T>>>?> bliss(vararg payload: T): Unit =
-        _blissWithTComparables.invoke(payload) {
+        _blissWithZTComparables.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) { __spyOn!!.bliss(*payload) }
         }
@@ -529,16 +529,17 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         useSpyIf(__spyOn) { __spyOn!!.oss(arg0) }
     } as R
 
-    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyRAny.invoke(arg0, arg1) {
+    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyZRAny.invoke(arg0, arg1)
+    {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.oss(arg0, arg1) }
     }
 
-    public override fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit = _ossWithRAnyTAnys.invoke(arg0,
-        arg1) {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        useSpyIf(__spyOn) { __spyOn!!.oss(arg0, *arg1) }
-    }
+    public override fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit =
+        _ossWithZRAnyTAnys.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+            useSpyIf(__spyOn) { __spyOn!!.oss(arg0, *arg1) }
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
@@ -559,12 +560,12 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence =
-        _xssWithTAny.invoke(arg0) {
+        _xssWithZTAny.invoke(arg0) {
             useSpyIf(__spyOn) { __spyOn!!.xss<R, T>(arg0) }
         } as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
-        = _xssWithTAnyRSequenceCharSequence.invoke(arg0, arg1) {
+        = _xssWithZTAnyRSequenceCharSequence.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.xss<R, T>(arg0, arg1) }
     }
@@ -604,8 +605,8 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         _template.clear()
         _lol.clear()
         _fooWithVoid.clear()
-        _fooWithTAny.clear()
-        _fooWithTAnys.clear()
+        _fooWithZTAny.clear()
+        _fooWithZTAnys.clear()
         _blaWithVoid.clear()
         _blaWithTInt.clear()
         _blaWithTInts.clear()
@@ -616,8 +617,8 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         _blubbWithTList.clear()
         _blubbWithTLists.clear()
         _bussWithVoid.clear()
-        _bussWithTList.clear()
-        _bussWithTLists.clear()
+        _bussWithZTList.clear()
+        _bussWithZTLists.clear()
         _bossWithVoid.clear()
         _bossWithTList.clear()
         _bossWithTLists.clear()
@@ -631,8 +632,8 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         _brassWithTComparable.clear()
         _brassWithTComparables.clear()
         _blissWithVoid.clear()
-        _blissWithTComparable.clear()
-        _blissWithTComparables.clear()
+        _blissWithZTComparable.clear()
+        _blissWithZTComparables.clear()
         _lossWithVoid.clear()
         _lossWithTMap.clear()
         _lossWithTMaps.clear()
@@ -642,13 +643,13 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         _rzz.clear()
         _izz.clear()
         _ossWithTAny.clear()
-        _ossWithTAnyRAny.clear()
-        _ossWithRAnyTAnys.clear()
+        _ossWithTAnyZRAny.clear()
+        _ossWithZRAnyTAnys.clear()
         _kss.clear()
         _iss.clear()
         _pss.clear()
-        _xssWithTAny.clear()
-        _xssWithTAnyRSequenceCharSequence.clear()
+        _xssWithZTAny.clear()
+        _xssWithZTAnyRSequenceCharSequence.clear()
         _doSomething.clear()
         _compareTo.clear()
         _toString.clear()

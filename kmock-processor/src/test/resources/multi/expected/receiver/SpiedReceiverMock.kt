@@ -214,9 +214,9 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElseReceiverWithSomethingElse",
             collector = verifier, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithTAny:
+    public val _doSomethingElseReceiverWithZTAny:
         KMockContract.SyncFunProxy<KMockTypeParameter1, (kotlin.Any?) -> KMockTypeParameter1> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElseReceiverWithTAny",
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElseReceiverWithZTAny",
             collector = verifier, freeze = freeze)
 
     public val _doSomethingElse:
@@ -303,7 +303,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> T.doSomethingElse(): KMockTypeParameter1 =
-        _doSomethingElseReceiverWithTAny.invoke(this@doSomethingElse,) {
+        _doSomethingElseReceiverWithZTAny.invoke(this@doSomethingElse,) {
             useSpyIf(__spyOn) {    spyContext {
                 this@doSomethingElse.doSomethingElse()
             } as KMockTypeParameter1 }
@@ -410,7 +410,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()
-        _doSomethingElseReceiverWithTAny.clear()
+        _doSomethingElseReceiverWithZTAny.clear()
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()

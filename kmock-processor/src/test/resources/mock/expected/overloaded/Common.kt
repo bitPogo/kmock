@@ -65,8 +65,8 @@ internal class CommonMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithFunction1",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithTAny", collector
+    public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.CommonMock#_fooWithZTAny", collector
         = verifier, freeze = freeze)
 
     public val _fooWithTCommon: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Common) ->
@@ -95,7 +95,7 @@ internal class CommonMock(
 
     public override fun foo(fuzz: Function1<Any, Unit>): Any = _fooWithFunction1.invoke(fuzz)
 
-    public override fun <T> foo(fuzz: T): Unit = _fooWithTAny.invoke(fuzz) {
+    public override fun <T> foo(fuzz: T): Unit = _fooWithZTAny.invoke(fuzz) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -118,7 +118,7 @@ internal class CommonMock(
         _fooWithStringAny.clear()
         _fooWithStringAbc.clear()
         _fooWithFunction1.clear()
-        _fooWithTAny.clear()
+        _fooWithZTAny.clear()
         _fooWithTCommon.clear()
         _fooWithTLPG.clear()
         _fooWithAnys.clear()
