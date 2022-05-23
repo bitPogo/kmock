@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -39,6 +40,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ParentFinder
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -51,6 +54,7 @@ import tech.antibytes.kmock.processor.utils.isReceiverMethod
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
+    private val enableProxyAccessMethodGenerator: Boolean,
     private val spyContainer: SpyContainer,
     private val useBuildInProxiesOn: Set<String>,
     private val codeGenerator: KmpCodeGenerator,
@@ -60,7 +64,8 @@ internal class KMockGenerator(
     private val propertyGenerator: PropertyGenerator,
     private val methodGenerator: MethodGenerator,
     private val buildInGenerator: BuildInMethodGenerator,
-    private val receiverGenerator: ReceiverGenerator
+    private val receiverGenerator: ReceiverGenerator,
+    private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory
 ) : ProcessorContract.MockGenerator {
     private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
         return if (superTypes.size == 1) {
@@ -140,6 +145,7 @@ internal class KMockGenerator(
     private fun TypeSpec.Builder.addPropertyBundle(
         spyType: TypeName,
         proxyNameCollector: MutableList<String>,
+        proxyAccessMethodGenerator: ProxyAccessMethodGenerator,
         ksProperty: KSPropertyDeclaration,
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
@@ -159,8 +165,13 @@ internal class KMockGenerator(
 
             this.addProperty(property)
 
-            proxyNameCollector.add(proxy.name)
             this.addProperty(proxy)
+            proxyNameCollector.add(proxy.name)
+            proxyAccessMethodGenerator.collectProperty(
+                propertyName = property.name,
+                propertyType = property.type,
+                proxyName = proxy.name,
+            )
         } else {
             val (proxyGetter, proxySetter, property) = receiverGenerator.buildPropertyBundle(
                 spyType = spyType,
@@ -184,8 +195,10 @@ internal class KMockGenerator(
         }
     }
 
-    private fun resolveMethodBundle(
+    private fun TypeSpec.Builder.addMethodBundle(
         spyType: TypeName,
+        proxyNameCollector: MutableList<String>,
+        proxyAccessMethodGenerator: ProxyAccessMethodGenerator,
         ksFunction: KSFunctionDeclaration,
         qualifier: String,
         inherited: Boolean,
@@ -193,8 +206,8 @@ internal class KMockGenerator(
         classScopeGenerics: Map<String, List<TypeName>>?,
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?,
-    ): Pair<PropertySpec, FunSpec> {
-        return if (ksFunction.isReceiverMethod()) {
+    ) {
+        val (proxy, method, sideEffect) = if (ksFunction.isReceiverMethod()) {
             receiverGenerator.buildMethodBundle(
                 spyType = spyType,
                 qualifier = qualifier,
@@ -215,6 +228,76 @@ internal class KMockGenerator(
                 inherited = inherited,
                 relaxer = relaxer,
             )
+        }
+
+        this.addFunction(method)
+        this.addProperty(proxy)
+
+        proxyNameCollector.add(proxy.name)
+        proxyAccessMethodGenerator.collectMethod(
+            methodName = method.name,
+            isSuspending = method.modifiers.contains(KModifier.SUSPEND),
+            typeParameter = method.typeVariables,
+            arguments = method.parameters,
+            returnType = method.returnType,
+            proxyName = proxy.name,
+            proxySignature = proxy.type,
+            proxySideEffect = sideEffect,
+        )
+    }
+
+    private fun List<TypeName>.resolveType(): Pair<TypeName, Boolean> {
+        val isNullable: Boolean
+        val type = when (this.size) {
+            0 -> {
+                isNullable = true
+                nullableAny
+            }
+            1 -> {
+                val type = this.first()
+                isNullable = type.isNullable
+
+                type
+            }
+            else -> {
+                isNullable = this.any { type -> type.isNullable }
+                any
+            }
+        }
+
+        return Pair(type, isNullable)
+    }
+
+    private fun TypeVariableName.isNullable(
+        mapping: Map<String, TypeVariableName>
+    ): Boolean {
+        var currentName = this.name
+        var isNullable = false
+
+        while (currentName in mapping) {
+            val (type, nullability) = mapping[currentName]!!.bounds.resolveType()
+
+            isNullable = nullability
+            currentName = type.toString()
+        }
+
+        return isNullable
+    }
+
+    private fun List<TypeVariableName>.collectNullableClassGenerics(): List<String> {
+        return if (this.isEmpty() || !enableProxyAccessMethodGenerator) {
+            emptyList()
+        } else {
+            val nullables: MutableList<String> = mutableListOf()
+            val mapping = this.associateBy { type -> type.name }
+
+            this.forEach { type ->
+                if (type.isNullable(mapping)) {
+                    nullables.add(type.name)
+                }
+            }
+
+            nullables
         }
     }
 
@@ -237,9 +320,17 @@ internal class KMockGenerator(
             typeResolver = typeResolver,
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
+
         val classScopeGenerics = genericsResolver.mapClassScopeGenerics(generics, typeResolver)
         val spyType = resolveSpyType(superTypes)
         var hasReceivers = false
+        val nullableClassGenerics = genericsResolver
+            .mapDeclaredGenerics(generics ?: emptyMap(), typeResolver)
+            .collectNullableClassGenerics()
+        val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(
+            enableGenerator = enableProxyAccessMethodGenerator,
+            nullableClassGenerics = nullableClassGenerics,
+        )
 
         mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
@@ -292,6 +383,7 @@ internal class KMockGenerator(
                 mock.addPropertyBundle(
                     spyType = spyType,
                     proxyNameCollector = proxyNameCollector,
+                    proxyAccessMethodGenerator = proxyAccessMethodGenerator,
                     ksProperty = ksProperty,
                     qualifier = qualifier,
                     classScopeGenerics = classScopeGenerics,
@@ -307,8 +399,10 @@ internal class KMockGenerator(
 
             if (ksFunction.isPublicOpen() && (name.isNotBuildInMethod() || ksFunction.isReceiverMethod())) {
                 hasReceivers = hasReceivers || ksFunction.isReceiverMethod()
-                val (proxy, method) = resolveMethodBundle(
+                mock.addMethodBundle(
                     spyType = spyType,
+                    proxyNameCollector = proxyNameCollector,
+                    proxyAccessMethodGenerator = proxyAccessMethodGenerator,
                     ksFunction = ksFunction,
                     qualifier = qualifier,
                     enableSpy = enableSpy,
@@ -317,25 +411,31 @@ internal class KMockGenerator(
                     typeResolver = typeResolver,
                     relaxer = relaxer,
                 )
-
-                mock.addFunction(method)
-
-                proxyNameCollector.add(proxy.name)
-                mock.addProperty(proxy)
             }
         }
 
         if (enableSpy || templateName in useBuildInProxiesOn) {
-            val (proxies, functions) = buildInGenerator.buildMethodBundles(
+            val bundle = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
                 enableSpy = enableSpy
             )
 
-            mock.addFunctions(functions)
-            proxies.forEach { proxy ->
-                proxyNameCollector.add(proxy.name)
+            bundle.forEach { (proxy, method, sideEffect) ->
+                mock.addFunction(method)
                 mock.addProperty(proxy)
+
+                proxyNameCollector.add(proxy.name)
+                proxyAccessMethodGenerator.collectMethod(
+                    methodName = method.name,
+                    isSuspending = method.modifiers.contains(KModifier.SUSPEND),
+                    typeParameter = method.typeVariables,
+                    arguments = method.parameters,
+                    returnType = method.returnType,
+                    proxyName = proxy.name,
+                    proxySignature = proxy.type,
+                    proxySideEffect = sideEffect,
+                )
             }
         }
 
@@ -349,6 +449,11 @@ internal class KMockGenerator(
         }
 
         mock.addFunction(buildClear(proxyNameCollector))
+
+        if (enableProxyAccessMethodGenerator) {
+            mock.addProperty(proxyAccessMethodGenerator.createReferenceStorage())
+            mock.addFunctions(proxyAccessMethodGenerator.createAccessMethods())
+        }
 
         return mock.build()
     }
@@ -477,5 +582,7 @@ internal class KMockGenerator(
     private companion object {
         private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         private val UNUSED = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
+        private val any = Any::class.asClassName()
+        private val nullableAny = any.copy(nullable = true)
     }
 }

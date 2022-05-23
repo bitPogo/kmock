@@ -176,36 +176,36 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
             collector = verifier, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithVoid", collector =
         verifier, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithTComparable",
             collector = verifier, freeze = freeze)
 
     public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>>) -> kotlin.Unit> =
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithTComparables",
             collector = verifier, freeze = freeze)
 
     public val _blissWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithVoid", collector =
         verifier, freeze = freeze)
 
     public val _blissWithZTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparable",
             collector = verifier, freeze = freeze)
 
     public val _blissWithZTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?>) -> kotlin.Unit> =
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparables",
             collector = verifier, freeze = freeze)
 

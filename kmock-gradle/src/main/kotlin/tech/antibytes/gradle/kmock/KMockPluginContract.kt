@@ -114,6 +114,13 @@ internal interface KMockPluginContract {
          * The value is the source set it is referring to (nativeTest or native).
          */
         var customAnnotationsForMeta: Map<String, String>
+
+        /**
+         * Feature Flag to de-/activate the alternative proxy access
+         *
+         * Default is false
+         */
+        var allowExperimentalProxyAccess: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -146,5 +153,6 @@ internal interface KMockPluginContract {
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
+        const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
     }
 }

@@ -390,7 +390,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun spyContext(action: MultiMock.() -> Any?) = action(__spyOn!!)
+    public fun spyContext(action: MultiMock.() -> kotlin.Any?) = action(__spyOn!!)
 
     public fun _clearMock(): Unit {
         _thingGetter.clear()

@@ -229,7 +229,7 @@ internal class SpiedMock<L>(
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun spyContext(action: mock.template.propertyreceiver.Spied<L>.() -> Any?) =
+    public fun spyContext(action: mock.template.propertyreceiver.Spied<L>.() -> kotlin.Any?) =
         action(__spyOn!!)
 
     public fun _clearMock(): Unit {

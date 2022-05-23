@@ -1412,4 +1412,140 @@ class KMockMocksSpec {
         actualShared.readText().normalizeSource() mustBe expectedShared.normalizeSource()
         actualCommon.readText().normalizeSource() mustBe expectedCommon.normalizeSource()
     }
+
+    @Test
+    fun `Given a annotated Source for Properties for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Property.kt",
+            loadResource("/template/access/Property.kt")
+        )
+        val expected = loadResource("/expected/access/Property.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("PropertyMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for SyncFunctions for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "SyncFun.kt",
+            loadResource("/template/access/SyncFun.kt")
+        )
+        val expected = loadResource("/expected/access/SyncFun.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("SyncFunMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for AsyncFunctions for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "AsyncFun.kt",
+            loadResource("/template/access/AsyncFun.kt")
+        )
+        val expected = loadResource("/expected/access/AsyncFun.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("AsyncFunMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with overload for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Overloaded.kt",
+            loadResource("/template/access/Overloaded.kt")
+        )
+        val expected = loadResource("/expected/access/Overloaded.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("OverloadedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with BuildIns for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "BuildIn.kt",
+            loadResource("/template/access/BuildIn.kt")
+        )
+        val expected = loadResource("/expected/access/BuildIn.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.access.BuildIn",
+            )
+        )
+        val actual = resolveGenerated("BuildInMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
 }

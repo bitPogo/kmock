@@ -23,6 +23,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -65,6 +66,7 @@ internal interface ProcessorContract {
         val useTypePrefixFor: Map<String, String>,
         val customMethodNames: Map<String, String>,
         val uselessPrefixes: Set<String>,
+        val allowExperimentalProxyAccess: Boolean
     )
 
     fun interface OptionExtractor {
@@ -246,7 +248,8 @@ internal interface ProcessorContract {
 
     data class ProxyBundle(
         val proxy: PropertySpec,
-        val returnType: MethodReturnTypeInfo
+        val returnType: MethodReturnTypeInfo,
+        val sideEffect: TypeVariableName,
     )
 
     interface ProxyNameCollector {
@@ -432,7 +435,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, FunSpec>
+        ): Triple<PropertySpec, FunSpec, TypeVariableName>
     }
 
     interface BuildInMethodGenerator {
@@ -440,7 +443,7 @@ internal interface ProcessorContract {
             mockName: String,
             qualifier: String,
             enableSpy: Boolean,
-        ): Pair<List<PropertySpec>, List<FunSpec>>
+        ): List<Triple<PropertySpec, FunSpec, TypeVariableName>>
     }
 
     interface ReceiverGenerator {
@@ -463,12 +466,41 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Pair<PropertySpec, FunSpec>
+        ): Triple<PropertySpec, FunSpec, TypeVariableName>
 
         fun buildReceiverSpyContext(
             spyType: TypeName,
             typeResolver: TypeParameterResolver,
         ): FunSpec
+    }
+
+    interface ProxyAccessMethodGenerator {
+        fun collectProperty(
+            propertyName: String,
+            propertyType: TypeName,
+            proxyName: String,
+        )
+
+        fun collectMethod(
+            methodName: String,
+            isSuspending: Boolean,
+            typeParameter: List<TypeVariableName>,
+            arguments: List<ParameterSpec>,
+            returnType: TypeName?,
+            proxyName: String,
+            proxySignature: TypeName,
+            proxySideEffect: TypeVariableName,
+        )
+
+        fun createReferenceStorage(): PropertySpec
+        fun createAccessMethods(): List<FunSpec>
+    }
+
+    interface ProxyAccessMethodGeneratorFactory {
+        fun getInstance(
+            enableGenerator: Boolean,
+            nullableClassGenerics: List<String>,
+        ): ProxyAccessMethodGenerator
     }
 
     interface MockGenerator {
@@ -641,6 +673,7 @@ internal interface ProcessorContract {
 
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)
+        val unit = TypeVariableName("Unit").copy(nullable = false)
 
         const val SPY_CONTEXT = "spyContext"
         const val SPY_PROPERTY = "__spyOn"
@@ -665,5 +698,6 @@ internal interface ProcessorContract {
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
+        const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
     }
 }

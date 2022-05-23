@@ -9,6 +9,7 @@ package tech.antibytes.gradle.kmock
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALTERNATIVE_PROXY_ACCESS
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DISABLE_FACTORIES
@@ -62,6 +63,8 @@ abstract class KMockExtension(
     private var _disableFactories = false
 
     private var _customSharedAnnotations: Map<String, String> = emptyMap()
+
+    private var _alternativeAccess = false
 
     private fun propagateValue(
         id: String,
@@ -215,5 +218,12 @@ abstract class KMockExtension(
             )
 
             _customSharedAnnotations = value
+        }
+
+    override var allowExperimentalProxyAccess: Boolean
+        get() = _alternativeAccess
+        set(value) {
+            propagateValue(ALTERNATIVE_PROXY_ACCESS, value.toString())
+            _alternativeAccess = value
         }
 }

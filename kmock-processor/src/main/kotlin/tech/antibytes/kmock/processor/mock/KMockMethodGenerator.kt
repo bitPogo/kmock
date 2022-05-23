@@ -13,6 +13,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
@@ -84,14 +85,14 @@ internal class KMockMethodGenerator(
             .addArguments(arguments)
             .returns(returnType.typeName)
 
+        if (isSuspending) {
+            method.addModifiers(KModifier.SUSPEND)
+        }
+
         if (generics != null) {
             method.typeVariables.addAll(
                 this.genericResolver.mapDeclaredGenerics(generics, typeResolver)
             )
-        }
-
-        if (isSuspending) {
-            method.addModifiers(KModifier.SUSPEND)
         }
 
         buildMethodBody(
@@ -115,7 +116,7 @@ internal class KMockMethodGenerator(
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
-    ): Pair<PropertySpec, FunSpec> {
+    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
         val methodName = ksFunction.simpleName.asString()
         val typeParameterResolver = ksFunction.typeParameters
             .toTypeParameterResolver(typeResolver)
@@ -162,6 +163,6 @@ internal class KMockMethodGenerator(
             relaxer = relaxer
         )
 
-        return Pair(proxySignature.proxy, method)
+        return Triple(proxySignature.proxy, method, proxySignature.sideEffect)
     }
 }

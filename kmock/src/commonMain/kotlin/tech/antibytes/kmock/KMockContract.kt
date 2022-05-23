@@ -8,7 +8,6 @@ package tech.antibytes.kmock
 
 import tech.antibytes.kmock.error.MockError.MissingCall
 import tech.antibytes.kmock.error.MockError.MissingStub
-import tech.antibytes.kmock.proxy.FunProxy
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.verification.constraints.any
 import tech.antibytes.kmock.verification.constraints.eq

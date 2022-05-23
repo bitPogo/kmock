@@ -135,26 +135,26 @@ internal class SharedMock<K : Any, L>(
         verifier, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithTComparable",
             collector = verifier, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithVoid", collector =
         verifier, freeze = freeze)
 
     public val _blissWithZTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?) ->
+        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithZTComparable",
             collector = verifier, freeze = freeze)
 
     public val _blissWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?, () ->
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<Any?>>>?> =
+        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithVoid", collector =
         verifier, freeze = freeze)
 

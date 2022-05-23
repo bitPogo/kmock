@@ -15,11 +15,13 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGeneratorHelper
 import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
@@ -240,7 +242,7 @@ internal class KMockReceiverGenerator(
             relaxer = relaxer
         )
 
-        return Triple(getter, setter, property,)
+        return Triple(getter, setter, property)
     }
 
     private fun buildMethodBody(
@@ -329,7 +331,7 @@ internal class KMockReceiverGenerator(
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
-    ): Pair<PropertySpec, FunSpec> {
+    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
         val methodName = ksFunction.simpleName.asString()
         val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(typeResolver)
         val receiverInfo = ksFunction.determineReceiver(
@@ -381,14 +383,14 @@ internal class KMockReceiverGenerator(
             relaxer = relaxer
         )
 
-        return Pair(proxySignature.proxy, method)
+        return Triple(proxySignature.proxy, method, proxySignature.sideEffect)
     }
 
     override fun buildReceiverSpyContext(spyType: TypeName, typeResolver: TypeParameterResolver): FunSpec {
         return FunSpec.builder(SPY_CONTEXT)
             .addParameter(
                 "action",
-                TypeVariableName("$spyType.() -> Any?").copy(nullable = false),
+                TypeVariableName("$spyType.() -> $nullableAny").copy(nullable = false),
             )
             .addCode("return action($SPY_PROPERTY!!)")
             .build()
@@ -396,6 +398,6 @@ internal class KMockReceiverGenerator(
 
     private companion object {
         private val emptySetter = Pair(null, null)
-        private val unit = TypeVariableName("Unit").copy(nullable = false)
+        private val nullableAny = Any::class.asTypeName().copy(nullable = true)
     }
 }

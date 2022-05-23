@@ -29,6 +29,7 @@ import tech.antibytes.kmock.processor.mock.KMockGenerator
 import tech.antibytes.kmock.processor.mock.KMockMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockNonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.mock.KMockPropertyGenerator
+import tech.antibytes.kmock.processor.mock.KMockProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.mock.KMockProxyNameSelector
 import tech.antibytes.kmock.processor.mock.KMockReceiverGenerator
 import tech.antibytes.kmock.processor.mock.KMockRelaxerGenerator
@@ -183,6 +184,7 @@ class KMockProcessorProvider(
             ),
             mockGenerator = KMockGenerator(
                 logger = logger,
+                enableProxyAccessMethodGenerator = options.allowExperimentalProxyAccess,
                 spyContainer = spyContainer,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
                 codeGenerator = codeGenerator,
@@ -193,6 +195,7 @@ class KMockProcessorProvider(
                 methodGenerator = methodGenerator,
                 buildInGenerator = buildInGenerator,
                 receiverGenerator = receiverGenerator,
+                proxyAccessMethodGeneratorFactory = KMockProxyAccessMethodGenerator
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,

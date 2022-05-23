@@ -37,6 +37,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.native.concurrent.ThreadLocal
+import kotlin.reflect.KClass
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
@@ -46,12 +47,23 @@ object Fixture {
 }
 
 @Relaxer
+@Suppress("UNUSED_PARAMETER")
 internal inline fun <reified T> relax(id: String): T {
     if (Fixture.fixture == null) {
         Fixture.fixture = kotlinFixture()
     }
 
     return Fixture.fixture!!.fixture()
+}
+
+@Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
+internal fun <T> relax(id: String, type0: KClass<CharSequence>, type1: KClass<Comparable<*>>): T {
+    return Fixture.fixture!!.fixture<String>() as T
+}
+
+@Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER")
+internal fun <T> relax(id: String, type0: KClass<Any>): T {
+    return Fixture.fixture!!.fixture<Int>() as T
 }
 
 @MockCommon(

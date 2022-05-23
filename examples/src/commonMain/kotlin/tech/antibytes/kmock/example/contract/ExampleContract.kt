@@ -14,6 +14,12 @@ interface ExampleContract {
         val value: Int
     }
 
+    interface GenericSampleDomainObject<Id, Value> where Id : CharSequence, Id : Comparable<Id> {
+        var id: Id
+        val value: Value
+        fun toSampleDomainObject()
+    }
+
     interface SampleRemoteRepository {
         suspend fun fetch(url: String): SampleDomainObject
         fun find(id: String): SampleDomainObject
@@ -34,5 +40,19 @@ interface ExampleContract {
 
     interface DecoderFactory {
         fun createDecoder(): PlatformDecoder?
+    }
+
+    interface SampleUselessObject {
+        fun doSomething(): Int
+
+        fun <T> doSomething(arg: T): Int
+
+        fun <T> doSomething(arg: T): Int where T : Comparable<T>, T : CharSequence
+
+        fun doSomethingElse(): Int
+
+        fun <T> doSomethingElse(arg: T): Int
+
+        fun <T> doSomethingElse(arg: T): Int where T : Comparable<T>, T : CharSequence
     }
 }
