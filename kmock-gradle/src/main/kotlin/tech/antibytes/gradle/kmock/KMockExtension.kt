@@ -13,6 +13,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALTERNATIVE_PRO
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_ANNOTATION
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.CUSTOM_METHOD_NAME
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DISABLE_FACTORIES
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FINE_GRAINED_PROXY_NAMES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
@@ -65,6 +66,8 @@ abstract class KMockExtension(
     private var _customSharedAnnotations: Map<String, String> = emptyMap()
 
     private var _alternativeAccess = false
+
+    private var _enableFineGrainedNames = false
 
     private fun propagateValue(
         id: String,
@@ -225,5 +228,12 @@ abstract class KMockExtension(
         set(value) {
             propagateValue(ALTERNATIVE_PROXY_ACCESS, value.toString())
             _alternativeAccess = value
+        }
+
+    override var enableFineGrainedNames: Boolean
+        get() = _enableFineGrainedNames
+        set(value) {
+            propagateValue(FINE_GRAINED_PROXY_NAMES, value.toString())
+            _enableFineGrainedNames = value
         }
 }

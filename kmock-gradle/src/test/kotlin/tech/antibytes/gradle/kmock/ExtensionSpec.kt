@@ -726,4 +726,33 @@ class ExtensionSpec {
         extension.allowExperimentalProxyAccess mustBe expected
         verify(exactly = 1) { kspExtension.arg("kmock_alternativeProxyAccess", expected.toString()) }
     }
+
+    @Test
+    fun `Its enableFineGrainedNames is false by default`() {
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.enableFineGrainedNames mustBe false
+    }
+
+    @Test
+    fun `It propagates enableFineGrainedNames changes to Ksp`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val kspExtension: KspExtension = mockk(relaxed = true)
+        val expected: Boolean = fixture.fixture()
+
+        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.enableFineGrainedNames = expected
+
+        extension.enableFineGrainedNames mustBe expected
+        verify(exactly = 1) { kspExtension.arg("kmock_enableFineGrainedProxyNames", expected.toString()) }
+    }
 }

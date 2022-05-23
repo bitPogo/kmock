@@ -108,7 +108,7 @@ internal interface KMockPluginContract {
         var disableFactories: Boolean
 
         /**
-         * Allows to use custom annotation for meta sources with the exception of commonTest
+         * Allows to use custom annotation for meta sources with the exception of commonTest.
          *
          * The key must be the original full qualified name of the Annotation.
          * The value is the source set it is referring to (nativeTest or native).
@@ -116,11 +116,18 @@ internal interface KMockPluginContract {
         var customAnnotationsForMeta: Map<String, String>
 
         /**
-         * Feature Flag to de-/activate the alternative proxy access
+         * Feature Flag to de-/activate the alternative proxy access.
          *
          * Default is false
          */
         var allowExperimentalProxyAccess: Boolean
+
+        /**
+         * Feature Flag to enable/disable fine grained proxy names.
+         *
+         * Default is false
+         */
+        var enableFineGrainedNames: Boolean
     }
 
     interface SourceSetConfigurator {
@@ -154,5 +161,6 @@ internal interface KMockPluginContract {
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
         const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
+        const val FINE_GRAINED_PROXY_NAMES = "${KMOCK_PREFIX}enableFineGrainedProxyNames"
     }
 }
