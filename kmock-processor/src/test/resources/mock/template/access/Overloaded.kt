@@ -33,9 +33,9 @@ interface Overloaded<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T> brass(payload: T) where T : Comparable<List<Array<T>>>
     fun <T> brass(vararg payload: T) where T : Comparable<List<Array<T>>>
 
-    fun <T : Int> bla(): T
-    fun <T : Int> bla(payload: T)
-    fun <T : Int> bla(vararg payload: T)
+    suspend fun <T : Int> bla(): T
+    suspend fun <T : Int> bla(payload: T)
+    suspend fun <T : Int> bla(vararg payload: T)
 
     fun <T : List<Array<String>>> bar(): T
     fun <T : List<Array<String>>> bar(payload: T)
@@ -78,9 +78,9 @@ interface Overloaded<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T> lzz(payload: T) where T : SomeGeneric<String>, T : List<String>?
     fun <T> lzz(vararg payload: T) where T : SomeGeneric<String>, T : List<String>?
 
-    fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>?
-    fun <T> tzz(payload: T) where T : SomeGeneric<String>?, T : List<String>?
-    fun <T> tzz(vararg payload: T) where T : SomeGeneric<String>?, T : List<String>?
+    suspend fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>?
+    suspend fun <T> tzz(payload: T) where T : SomeGeneric<String>?, T : List<String>?
+    suspend fun <T> tzz(vararg payload: T) where T : SomeGeneric<String>?, T : List<String>?
 
     fun <T> rzz(): T where T : SomeGeneric<String>, T : Map<String, String>
     fun <T> rzz(payload: T) where T : SomeGeneric<String>, T : Map<String, String>
@@ -90,15 +90,15 @@ interface Overloaded<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T> izz(payload: T) where T : SomeGeneric<String>, T : Comparable<List<Array<T>>>
     fun <T> izz(vararg payload: T) where T : SomeGeneric<String>, T : Comparable<List<Array<T>>>
 
-    fun <T : R, R> oss(arg0: T): R
-    fun <T : R, R> oss(arg0: T, arg1: R)
-    fun <T : R, R> oss(arg0: R, vararg arg1: T)
+    suspend fun <T : R, R> oss(arg0: T): R
+    suspend fun <T : R, R> oss(arg0: T, arg1: R)
+    suspend fun <T : R, R> oss(arg0: R, vararg arg1: T)
 
     fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R : Comparable<List<Array<R>>>
     fun <T : R, R> kss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<R>>>
 
-    fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
-    fun <R, T> iss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
+    suspend fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
+    suspend fun <R, T> iss(arg0: T, arg1: R) where R : SomeGeneric<String>, R : Comparable<List<Array<T>>>
 
     fun <R, T : X, X : SomeGeneric<String>> pss(arg0: T): R where R : T
     fun <R, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R) where R : T

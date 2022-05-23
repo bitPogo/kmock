@@ -16,10 +16,12 @@ import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
+import tech.antibytes.kmock.example.contract.ExampleContract.SampleUselessObject
 import tech.antibytes.kmock.example.contract.GenericSampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleDomainObjectMock
 import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
+import tech.antibytes.kmock.example.contract.SampleUselessObjectMock
 import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.assertOrder
 import tech.antibytes.kmock.verification.asyncAssertOrder
@@ -27,6 +29,7 @@ import tech.antibytes.kmock.verification.asyncVerify
 import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
+import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
@@ -45,7 +48,8 @@ import kotlin.test.Test
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     GenericSampleDomainObject::class,
-    DecoderFactory::class
+    DecoderFactory::class,
+    SampleUselessObject::class,
 )
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
@@ -57,6 +61,10 @@ class SampleControllerAlternativeAccessSpec {
         verifier,
         relaxed = true,
         templateType = GenericSampleDomainObject::class
+    )
+    private val uselessObjectObject: SampleUselessObjectMock = kmock(
+        verifier,
+        relaxed = true,
     )
 
     @BeforeTest
@@ -193,5 +201,23 @@ class SampleControllerAlternativeAccessSpec {
 
         // Then
         actual mustBe id
+    }
+
+    @Test
+    @JsName("fnx5")
+    @IgnoreJs
+    fun `Given a mocked SampleUselessThing it does strange things`() {
+        // Given
+        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomething, Any::class).returnValue = 23
+        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomething, String::class).returnValue = 42
+        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomethingElse, Any::class).returnValue = 107
+        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomethingElse, String::class).returnValue = 31
+
+        // When & Then
+        uselessObjectObject.doSomething(null) mustBe 23
+        uselessObjectObject.doSomething("null") mustBe 42
+
+        uselessObjectObject.doSomethingElse("null") mustBe 31
+        uselessObjectObject.doSomethingElse(null) mustBe 107
     }
 }

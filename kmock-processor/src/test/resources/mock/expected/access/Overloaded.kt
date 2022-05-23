@@ -103,17 +103,18 @@ internal class OverloadedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_brassWithTComparables",
             collector = verifier, freeze = freeze)
 
-    public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_blaWithVoid", collector
+    public val _blaWithVoid: KMockContract.AsyncFunProxy<Int, suspend () -> kotlin.Int> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_blaWithVoid", collector
         = verifier, freeze = freeze)
 
-    public val _blaWithTInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_blaWithTInt", collector
+    public val _blaWithTInt: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Int) -> kotlin.Unit> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_blaWithTInt", collector
         = verifier, freeze = freeze)
 
-    public val _blaWithTInts: KMockContract.SyncFunProxy<Unit, (kotlin.IntArray) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_blaWithTInts", collector
-        = verifier, freeze = freeze)
+    public val _blaWithTInts: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.IntArray) ->
+    kotlin.Unit> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_blaWithTInts",
+            collector = verifier, freeze = freeze)
 
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
@@ -277,18 +278,18 @@ internal class OverloadedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_lzzWithTSomeGenericLists",
             collector = verifier, freeze = freeze)
 
-    public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_tzzWithVoid", collector
+    public val _tzzWithVoid: KMockContract.AsyncFunProxy<Any?, suspend () -> kotlin.Any?> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_tzzWithVoid", collector
         = verifier, freeze = freeze)
 
-    public val _tzzWithZTSomeGenericList: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) ->
+    public val _tzzWithZTSomeGenericList: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Any?) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_tzzWithZTSomeGenericList",
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_tzzWithZTSomeGenericList",
             collector = verifier, freeze = freeze)
 
-    public val _tzzWithZTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _tzzWithZTSomeGenericLists: KMockContract.AsyncFunProxy<Unit, suspend (Array<out
     kotlin.Any?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_tzzWithZTSomeGenericLists",
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_tzzWithZTSomeGenericLists",
             collector = verifier, freeze = freeze)
 
     public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
@@ -319,18 +320,18 @@ internal class OverloadedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_izzWithTSomeGenericComparables",
             collector = verifier, freeze = freeze)
 
-    public val _ossWithTAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_ossWithTAny", collector
+    public val _ossWithTAny: KMockContract.AsyncFunProxy<Any?, suspend (kotlin.Any?) -> kotlin.Any?> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_ossWithTAny", collector
         = verifier, freeze = freeze)
 
-    public val _ossWithTAnyZRAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
-    kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_ossWithTAnyZRAny",
+    public val _ossWithTAnyZRAny: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Any?,
+        kotlin.Any?) -> kotlin.Unit> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_ossWithTAnyZRAny",
             collector = verifier, freeze = freeze)
 
-    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, Array<out
+    public val _ossWithZRAnyTAnys: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Any?, Array<out
     kotlin.Any?>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_ossWithZRAnyTAnys",
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_ossWithZRAnyTAnys",
             collector = verifier, freeze = freeze)
 
     public val _kssWithTSomeGenericComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
@@ -343,13 +344,13 @@ internal class OverloadedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_kssWithTSomeGenericComparableRSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
-    public val _issWithZTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_issWithZTAny", collector
-        = verifier, freeze = freeze)
+    public val _issWithZTAny: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Any?) -> kotlin.Any> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_issWithZTAny",
+            collector = verifier, freeze = freeze)
 
-    public val _issWithZTAnyRSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
-        kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_issWithZTAnyRSomeGenericComparable",
+    public val _issWithZTAnyRSomeGenericComparable: KMockContract.AsyncFunProxy<Unit, suspend
+        (kotlin.Any?, kotlin.Any) -> kotlin.Unit> =
+        ProxyFactory.createAsyncFunProxy("mock.template.access.OverloadedMock#_issWithZTAnyRSomeGenericComparable",
             collector = verifier, freeze = freeze)
 
     public val _pssWithTSomeGeneric:
@@ -380,7 +381,6 @@ internal class OverloadedMock<K : Any, L>(
         "trr|(kotlin.Int) -> kotlin.Unit|[]" to _trrWithInt,
         "lol|(kotlin.Int) -> kotlin.Unit|[]" to _lolWithInt,
         "krr|(kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]" to _krrWithTInt,
-        "bla|(kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]" to _blaWithTInt,
         "krr|(kotlin.Int?) -> kotlin.Unit|[[kotlin.Int?]]" to _krrWithZTInt,
         "foo|(kotlin.Any) -> kotlin.String|[]" to _fooWithAny,
         "foo|() -> kotlin.Any?|[[kotlin.Any?]]" to _fooWithVoid,
@@ -393,8 +393,6 @@ internal class OverloadedMock<K : Any, L>(
             to _brassWithTComparable,
         "brass|(Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
             to _brassWithTComparables,
-        "bla|() -> kotlin.Int|[[kotlin.Int]]" to _blaWithVoid,
-        "bla|(kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]" to _blaWithTInts,
         "bar|() -> kotlin.collections.List<kotlin.Array<kotlin.String>>|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"
             to _barWithVoid,
         "bar|(kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"
@@ -454,12 +452,6 @@ internal class OverloadedMock<K : Any, L>(
             to _lzzWithTSomeGenericList,
         "lzz|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.List<kotlin.String>?]]"
             to _lzzWithTSomeGenericLists,
-        "tzz|() -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
-            to _tzzWithVoid,
-        "tzz|(kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
-            to _tzzWithZTSomeGenericList,
-        "tzz|(Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
-            to _tzzWithZTSomeGenericLists,
         "rzz|() -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"
             to _rzzWithVoid,
         "rzz|(kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.collections.Map<kotlin.String, kotlin.String>]]"
@@ -472,19 +464,10 @@ internal class OverloadedMock<K : Any, L>(
             to _izzWithTSomeGenericComparable,
         "izz|(Array<out kotlin.Any>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
             to _izzWithTSomeGenericComparables,
-        "oss|(kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]" to _ossWithTAny,
-        "oss|(kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]" to
-            _ossWithTAnyZRAny,
-        "oss|(kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]" to
-            _ossWithZRAnyTAnys,
         "kss|(kotlin.Any) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"
             to _kssWithTSomeGenericComparable,
         "kss|(kotlin.Any, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>], [mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<R>>>]]"
             to _kssWithTSomeGenericComparableRSomeGenericComparable,
-        "iss|(kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"
-            to _issWithZTAny,
-        "iss|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"
-            to _issWithZTAnyRSomeGenericComparable,
         "pss|(mock.template.access.SomeGeneric<kotlin.String>) -> mock.template.access.SomeGeneric<kotlin.String>|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"
             to _pssWithTSomeGeneric,
         "pss|(mock.template.access.SomeGeneric<kotlin.String>, mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>], [mock.template.access.SomeGeneric<kotlin.String>]]"
@@ -493,6 +476,24 @@ internal class OverloadedMock<K : Any, L>(
             to _xssWithZTAny,
         "xss|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"
             to _xssWithZTAnyRSequenceCharSequence,
+        "bla|suspend () -> kotlin.Int|[[kotlin.Int]]" to _blaWithVoid,
+        "bla|suspend (kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]" to _blaWithTInt,
+        "bla|suspend (kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]" to _blaWithTInts,
+        "tzz|suspend () -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
+            to _tzzWithVoid,
+        "tzz|suspend (kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
+            to _tzzWithZTSomeGenericList,
+        "tzz|suspend (Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"
+            to _tzzWithZTSomeGenericLists,
+        "oss|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]" to _ossWithTAny,
+        "oss|suspend (kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]" to
+            _ossWithTAnyZRAny,
+        "oss|suspend (kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"
+            to _ossWithZRAnyTAnys,
+        "iss|suspend (kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"
+            to _issWithZTAny,
+        "iss|suspend (kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"
+            to _issWithZTAnyRSomeGenericComparable,
     )
 
     public override fun trr(): Unit = _trrWithVoid.invoke() {
@@ -550,13 +551,14 @@ internal class OverloadedMock<K : Any, L>(
         }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
+    public override suspend fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
 
-    public override fun <T : Int> bla(payload: T): Unit = _blaWithTInt.invoke(payload) {
+    public override suspend fun <T : Int> bla(payload: T): Unit = _blaWithTInt.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T : Int> bla(vararg payload: T): Unit = _blaWithTInts.invoke(payload) {
+    public override suspend fun <T : Int> bla(vararg payload: T): Unit = _blaWithTInts.invoke(payload)
+    {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -700,15 +702,15 @@ internal class OverloadedMock<K : Any, L>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>? =
+    public override suspend fun <T> tzz(): T where T : SomeGeneric<String>?, T : List<String>? =
         _tzzWithVoid.invoke() as T
 
-    public override fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithZTSomeGenericList.invoke(payload) {
-            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-        }
+    public override suspend fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T :
+    List<String>? = _tzzWithZTSomeGenericList.invoke(payload) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
 
-    public override fun <T> tzz(vararg payload: T): Unit where T : SomeGeneric<String>?, T :
+    public override suspend fun <T> tzz(vararg payload: T): Unit where T : SomeGeneric<String>?, T :
     List<String>? = _tzzWithZTSomeGenericLists.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
@@ -742,14 +744,14 @@ internal class OverloadedMock<K : Any, L>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithTAny.invoke(arg0) as R
+    public override suspend fun <T : R, R> oss(arg0: T): R = _ossWithTAny.invoke(arg0) as R
 
-    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyZRAny.invoke(arg0, arg1)
-    {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override suspend fun <T : R, R> oss(arg0: T, arg1: R): Unit =
+        _ossWithTAnyZRAny.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
-    public override fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit =
+    public override suspend fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit =
         _ossWithZRAnyTAnys.invoke(arg0, arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -765,10 +767,10 @@ internal class OverloadedMock<K : Any, L>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
+    public override suspend fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _issWithZTAny.invoke(arg0) as R
 
-    public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
+    public override suspend fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _issWithZTAnyRSomeGenericComparable.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
@@ -975,21 +977,6 @@ internal class OverloadedMock<K : Any, L>(
 
     @Suppress("UNCHECKED_CAST")
     @SafeJvmName("syncFunProxyOf13")
-    public fun <T : Int> syncFunProxyOf(reference: () -> T):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Int|[[kotlin.Int]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf14")
-    public fun <T : Int> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
-        type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
-            (kotlin.IntArray) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.IntArray) -> kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf15")
     public fun <T : List<Array<String>>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.String>>> =
@@ -999,7 +986,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.collections.List<kotlin.Array<kotlin.String>>>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf16")
+    @SafeJvmName("syncFunProxyOf14")
     public fun <T : List<Array<String>>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<String>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit> =
@@ -1008,7 +995,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf17")
+    @SafeJvmName("syncFunProxyOf15")
     public fun <T : List<Array<String>>> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1018,7 +1005,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf18")
+    @SafeJvmName("syncFunProxyOf16")
     public fun syncFunProxyOf(
         reference: (kotlin.String, kotlin.CharArray, kotlin.Boolean, kotlin.Int, ) -> kotlin.Unit,
         type0: KClass<String>,
@@ -1032,7 +1019,7 @@ internal class OverloadedMock<K : Any, L>(
             kotlin.Boolean, kotlin.Int) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf19")
+    @SafeJvmName("syncFunProxyOf17")
     public fun <T : List<Array<String?>>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>> =
@@ -1042,7 +1029,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf20")
+    @SafeJvmName("syncFunProxyOf18")
     public fun <T : List<Array<String?>>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<String?>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit> =
@@ -1051,7 +1038,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf21")
+    @SafeJvmName("syncFunProxyOf19")
     public fun <T : List<Array<String?>>> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1061,7 +1048,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf22")
+    @SafeJvmName("syncFunProxyOf20")
     public fun <T : List<Array<Int>>?> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
@@ -1071,7 +1058,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf23")
+    @SafeJvmName("syncFunProxyOf21")
     public fun <T : List<Array<Int>>?> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Any>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit> =
@@ -1080,7 +1067,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf24")
+    @SafeJvmName("syncFunProxyOf22")
     public fun <T : List<Array<Int>>?> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1090,7 +1077,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf25")
+    @SafeJvmName("syncFunProxyOf23")
     public fun <T : List<Array<Int>?>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>> =
@@ -1100,7 +1087,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf26")
+    @SafeJvmName("syncFunProxyOf24")
     public fun <T : List<Array<Int>?>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<List<Array<Int>?>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit> =
@@ -1109,7 +1096,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf27")
+    @SafeJvmName("syncFunProxyOf25")
     public fun <T : List<Array<Int>?>> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1119,7 +1106,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf28")
+    @SafeJvmName("syncFunProxyOf26")
     public fun <T : List<Array<Int>>> syncFunProxyOf(reference: () -> T?):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?,
                 () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
@@ -1129,7 +1116,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf29")
+    @SafeJvmName("syncFunProxyOf27")
     public fun <T : List<Array<Int>>> syncFunProxyOf(reference: (T?, ) -> kotlin.Unit,
         type0: KClass<List<Array<Int>>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit> =
@@ -1138,7 +1125,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf30")
+    @SafeJvmName("syncFunProxyOf28")
     public fun <T : List<Array<Int>>> syncFunProxyOf(reference: (kotlin.Array<out T?>, ) ->
     kotlin.Unit, type0: KClass<Array<out T?>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1148,21 +1135,21 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf31")
+    @SafeJvmName("syncFunProxyOf29")
     public fun <T : L> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L> =
         referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> L|[[L]]"""] as
             tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf32")
+    @SafeJvmName("syncFunProxyOf30")
     public fun <T : L> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<L>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (L) -> kotlin.Unit> =
         referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(L) -> kotlin.Unit|[[L]]"""]
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (L) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf33")
+    @SafeJvmName("syncFunProxyOf31")
     public fun <T : L> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out L>) -> kotlin.Unit> =
@@ -1170,7 +1157,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out L>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf34")
+    @SafeJvmName("syncFunProxyOf32")
     public fun <T : Comparable<List<Array<T>>>?> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?,
                 () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
@@ -1180,7 +1167,7 @@ internal class OverloadedMock<K : Any, L>(
                     () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf35")
+    @SafeJvmName("syncFunProxyOf33")
     public fun <T : Comparable<List<Array<T>>>?> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Any>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit> =
@@ -1189,7 +1176,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf36")
+    @SafeJvmName("syncFunProxyOf34")
     public fun <T : Comparable<List<Array<T>>>?> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1199,7 +1186,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf37")
+    @SafeJvmName("syncFunProxyOf35")
     public fun <T : Map<String, String>> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.Map<kotlin.String,
             kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
@@ -1208,7 +1195,7 @@ internal class OverloadedMock<K : Any, L>(
             kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf38")
+    @SafeJvmName("syncFunProxyOf36")
     public fun <T : Map<String, String>> syncFunProxyOf(reference: (T, ) -> kotlin.Unit,
         type0: KClass<Map<String, String>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit> =
@@ -1217,7 +1204,7 @@ internal class OverloadedMock<K : Any, L>(
                 (kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf39")
+    @SafeJvmName("syncFunProxyOf37")
     public fun <T : Map<String, String>> syncFunProxyOf(reference: (kotlin.Array<out T>, ) ->
     kotlin.Unit, type0: KClass<Array<out T>>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out
@@ -1227,7 +1214,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf40")
+    @SafeJvmName("syncFunProxyOf38")
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : List<String> =
@@ -1235,7 +1222,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf41")
+    @SafeJvmName("syncFunProxyOf39")
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : List<String> =
@@ -1243,7 +1230,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf42")
+    @SafeJvmName("syncFunProxyOf40")
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : List<String> =
@@ -1252,7 +1239,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf43")
+    @SafeJvmName("syncFunProxyOf41")
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : List<String>? =
@@ -1260,7 +1247,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf44")
+    @SafeJvmName("syncFunProxyOf42")
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : List<String>? =
@@ -1268,7 +1255,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf45")
+    @SafeJvmName("syncFunProxyOf43")
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : List<String>? =
@@ -1277,32 +1264,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf46")
-    public fun <T> syncFunProxyOf(reference: () -> T):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, () -> kotlin.Any?> where T :
-                                                                                          SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, () -> kotlin.Any?>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf47")
-    public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?) -> kotlin.Unit> where T
-                                                                                                     : SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?) -> kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf48")
-    public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
-        type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
-            (Array<out kotlin.Any?>) -> kotlin.Unit> where T : SomeGeneric<String>?, T : List<String>? =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (Array<out kotlin.Any?>) ->
-        kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf49")
+    @SafeJvmName("syncFunProxyOf44")
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : Map<String, String> =
@@ -1310,7 +1272,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf50")
+    @SafeJvmName("syncFunProxyOf45")
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : Map<String, String> =
@@ -1318,7 +1280,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf51")
+    @SafeJvmName("syncFunProxyOf46")
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T : Map<String, String>
@@ -1328,7 +1290,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf52")
+    @SafeJvmName("syncFunProxyOf47")
     public fun <T> syncFunProxyOf(reference: () -> T):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any> where T :
                                                                                         SomeGeneric<String>, T : Comparable<List<Array<T>>> =
@@ -1336,7 +1298,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf53")
+    @SafeJvmName("syncFunProxyOf48")
     public fun <T> syncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit> where T
                                                                                                     : SomeGeneric<String>, T : Comparable<List<Array<T>>> =
@@ -1344,7 +1306,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf54")
+    @SafeJvmName("syncFunProxyOf49")
     public fun <T> syncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
         type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
             (Array<out kotlin.Any>) -> kotlin.Unit> where T : SomeGeneric<String>, T :
@@ -1354,38 +1316,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf55")
-    public fun <T : R, R> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, (kotlin.Any?) -> kotlin.Any?> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, (kotlin.Any?) -> kotlin.Any?>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf56")
-    public fun <T : R, R> syncFunProxyOf(
-        reference: (T, R, ) -> kotlin.Unit,
-        type0: KClass<Any>,
-        type1: KClass<Any>,
-    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any?) ->
-    kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any?) ->
-        kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf57")
-    public fun <T : R, R> syncFunProxyOf(
-        reference: (R, kotlin.Array<out T>, ) -> kotlin.Unit,
-        type0: KClass<Any>,
-        type1: KClass<Array<out T>>,
-    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, Array<out
-    kotlin.Any?>) -> kotlin.Unit> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, Array<out
-        kotlin.Any?>) -> kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf58")
+    @SafeJvmName("syncFunProxyOf50")
     public fun <T : R, R> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<T>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any) -> kotlin.Any> where R :
                                                                                                   SomeGeneric<String>, R : Comparable<List<Array<R>>> =
@@ -1393,7 +1324,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any) -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf59")
+    @SafeJvmName("syncFunProxyOf51")
     public fun <T : R, R> syncFunProxyOf(
         reference: (T, R, ) -> kotlin.Unit,
         type0: KClass<T>,
@@ -1405,27 +1336,7 @@ internal class OverloadedMock<K : Any, L>(
         kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf60")
-    public fun <R, T> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any> where R :
-                                                                                                   SomeGeneric<String>, R : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf61")
-    public fun <R, T> syncFunProxyOf(
-        reference: (T, R, ) -> kotlin.Unit,
-        type0: KClass<Any>,
-        type1: KClass<R>,
-    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any) ->
-    kotlin.Unit> where R : SomeGeneric<String>, R : Comparable<List<Array<T>>> =
-        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any) ->
-        kotlin.Unit>
-
-    @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf62")
+    @SafeJvmName("syncFunProxyOf52")
     public fun <R : T, T : X, X : SomeGeneric<String>> syncFunProxyOf(reference: (T, ) -> R,
         type0: KClass<SomeGeneric<String>>):
         tech.antibytes.kmock.KMockContract.FunProxy<mock.template.access.SomeGeneric<kotlin.String>,
@@ -1438,7 +1349,7 @@ internal class OverloadedMock<K : Any, L>(
             mock.template.access.SomeGeneric<kotlin.String>>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf63")
+    @SafeJvmName("syncFunProxyOf53")
     public fun <R : T, T : X, X : SomeGeneric<String>> syncFunProxyOf(
         reference: (T, R, ) -> kotlin.Unit,
         type0: KClass<SomeGeneric<String>>,
@@ -1452,7 +1363,7 @@ internal class OverloadedMock<K : Any, L>(
             mock.template.access.SomeGeneric<kotlin.String>) -> kotlin.Unit>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf64")
+    @SafeJvmName("syncFunProxyOf54")
     public fun <R, T> syncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
         tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any> where R :
                                                                                                    Sequence<Char>, R : CharSequence =
@@ -1460,7 +1371,7 @@ internal class OverloadedMock<K : Any, L>(
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Any?) -> kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")
-    @SafeJvmName("syncFunProxyOf65")
+    @SafeJvmName("syncFunProxyOf55")
     public fun <R, T> syncFunProxyOf(
         reference: (T, R, ) -> kotlin.Unit,
         type0: KClass<Any>,
@@ -1470,4 +1381,109 @@ internal class OverloadedMock<K : Any, L>(
         referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[kotlin.sequences.Sequence<kotlin.Char> & kotlin.CharSequence], [kotlin.Any?]]"""]
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Any?, kotlin.Any) ->
         kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf0")
+    public fun <T : Int> asyncFunProxyOf(reference: () -> T):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Int|[[kotlin.Int]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf1")
+    public fun <T : Int> asyncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Int>):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Int) -> kotlin.Unit>
+        =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Int) -> kotlin.Unit|[[kotlin.Int]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Int) ->
+        kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf2")
+    public fun <T : Int> asyncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
+        type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend
+        (kotlin.IntArray) -> kotlin.Unit> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.IntArray) -> kotlin.Unit|[[kotlin.Int]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.IntArray) ->
+        kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf3")
+    public fun <T> asyncFunProxyOf(reference: () -> T):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend () -> kotlin.Any?> where T :
+                                                                                                  SomeGeneric<String>?, T : List<String>? =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Any?|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend () -> kotlin.Any?>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf4")
+    public fun <T> asyncFunProxyOf(reference: (T, ) -> kotlin.Unit, type0: KClass<Any>):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?) -> kotlin.Unit>
+        where T : SomeGeneric<String>?, T : List<String>? =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?) ->
+        kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf5")
+    public fun <T> asyncFunProxyOf(reference: (kotlin.Array<out T>, ) -> kotlin.Unit,
+        type0: KClass<Array<out T>>): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend
+        (Array<out kotlin.Any?>) -> kotlin.Unit> where T : SomeGeneric<String>?, T : List<String>? =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (Array<out kotlin.Any?>) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String>? & kotlin.collections.List<kotlin.String>?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (Array<out
+        kotlin.Any?>) -> kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf6")
+    public fun <T : R, R> asyncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) -> kotlin.Any?>
+        =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?], [kotlin.Any?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) ->
+        kotlin.Any?>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf7")
+    public fun <T : R, R> asyncFunProxyOf(
+        reference: (T, R, ) -> kotlin.Unit,
+        type0: KClass<Any>,
+        type1: KClass<Any>,
+    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, kotlin.Any?) ->
+    kotlin.Unit> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any?) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?,
+            kotlin.Any?) -> kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf8")
+    public fun <T : R, R> asyncFunProxyOf(
+        reference: (R, kotlin.Array<out T>, ) -> kotlin.Unit,
+        type0: KClass<Any>,
+        type1: KClass<Array<out T>>,
+    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, Array<out
+    kotlin.Any?>) -> kotlin.Unit> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?], [kotlin.Any?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, Array<out
+        kotlin.Any?>) -> kotlin.Unit>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf9")
+    public fun <R, T> asyncFunProxyOf(reference: (T, ) -> R, type0: KClass<Any>):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Any?) -> kotlin.Any>
+        where R : SomeGeneric<String>, R : Comparable<List<Array<T>>> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Any?) ->
+        kotlin.Any>
+
+    @Suppress("UNCHECKED_CAST")
+    @SafeJvmName("asyncFunProxyOf10")
+    public fun <R, T> asyncFunProxyOf(
+        reference: (T, R, ) -> kotlin.Unit,
+        type0: KClass<Any>,
+        type1: KClass<R>,
+    ): tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?, kotlin.Any) ->
+    kotlin.Unit> where R : SomeGeneric<String>, R : Comparable<List<Array<T>>> =
+        referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?, kotlin.Any) -> kotlin.Unit|[[mock.template.access.SomeGeneric<kotlin.String> & kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>], [kotlin.Any?]]"""]
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (kotlin.Any?,
+            kotlin.Any) -> kotlin.Unit>
 }
