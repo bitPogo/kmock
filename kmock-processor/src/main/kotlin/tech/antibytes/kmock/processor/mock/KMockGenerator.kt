@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -245,6 +246,61 @@ internal class KMockGenerator(
         )
     }
 
+    private fun List<TypeName>.resolveType(): Pair<TypeName, Boolean> {
+        val isNullable: Boolean
+        val type = when (this.size) {
+            0 -> {
+                isNullable = true
+                nullableAny
+            }
+            1 -> {
+                val type = this.first()
+                isNullable = type.isNullable
+
+                type
+            }
+            else -> {
+                isNullable = this.any { type -> type.isNullable }
+                any
+            }
+        }
+
+        return Pair(type, isNullable)
+    }
+
+    private fun TypeVariableName.isNullable(
+        mapping: Map<String, TypeVariableName>
+    ): Boolean {
+        var currentName = this.name
+        var isNullable = false
+
+        while (currentName in mapping) {
+            val (type, nullability) = mapping[currentName]!!.bounds.resolveType()
+
+            isNullable = nullability
+            currentName = type.toString()
+        }
+
+        return isNullable
+    }
+
+    private fun List<TypeVariableName>.collectNullableClassGenerics(): List<String> {
+        return if (this.isEmpty() || !enableProxyAccessMethodGenerator) {
+            emptyList()
+        } else {
+            val nullables: MutableList<String> = mutableListOf()
+            val mapping = this.associateBy { type -> type.name }
+
+            this.forEach { type ->
+                if (type.isNullable(mapping)) {
+                    nullables.add(type.name)
+                }
+            }
+
+            nullables
+        }
+    }
+
     private fun buildMock(
         mockName: String,
         enableSpy: Boolean,
@@ -264,10 +320,17 @@ internal class KMockGenerator(
             typeResolver = typeResolver,
         )
         val proxyNameCollector: MutableList<String> = mutableListOf()
-        val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(enableProxyAccessMethodGenerator)
+
         val classScopeGenerics = genericsResolver.mapClassScopeGenerics(generics, typeResolver)
         val spyType = resolveSpyType(superTypes)
         var hasReceivers = false
+        val nullableClassGenerics = genericsResolver
+            .mapDeclaredGenerics(generics ?: emptyMap(), typeResolver)
+            .collectNullableClassGenerics()
+        val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(
+            enableGenerator = enableProxyAccessMethodGenerator,
+            nullableClassGenerics = nullableClassGenerics,
+        )
 
         mock.addSuperinterfaces(superTypes)
         mock.addModifiers(KModifier.INTERNAL)
@@ -508,5 +571,7 @@ internal class KMockGenerator(
     private companion object {
         private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         private val UNUSED = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
+        private val any = Any::class.asClassName()
+        private val nullableAny = any.copy(nullable = true)
     }
 }

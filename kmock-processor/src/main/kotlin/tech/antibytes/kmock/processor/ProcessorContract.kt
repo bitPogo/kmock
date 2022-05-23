@@ -497,7 +497,10 @@ internal interface ProcessorContract {
     }
 
     interface ProxyAccessMethodGeneratorFactory {
-        fun getInstance(enableGenerator: Boolean): ProxyAccessMethodGenerator
+        fun getInstance(
+            enableGenerator: Boolean,
+            nullableClassGenerics: List<String>,
+        ): ProxyAccessMethodGenerator
     }
 
     interface MockGenerator {

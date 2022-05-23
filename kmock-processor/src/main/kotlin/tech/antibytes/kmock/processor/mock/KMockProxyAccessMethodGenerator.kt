@@ -29,7 +29,8 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
-    private val enabled: Boolean
+    private val enabled: Boolean,
+    private val nullableClassGenerics: List<String>
 ) : ProxyAccessMethodGenerator {
     private sealed interface Member
 
@@ -515,8 +516,10 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         }
     }
 
-    private fun Pair<TypeName, Boolean>.ensureNonNullableTransitiveParameter(): TypeName {
-        return if (second) {
+    private fun Pair<TypeName, Boolean>.ensureNonNullableTransitiveParameter(
+        nullableClassGenerics: List<String>
+    ): TypeName {
+        return if (second || first.toString() in nullableClassGenerics) {
             any
         } else {
             first
@@ -524,16 +527,21 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     }
 
     private fun ParameterSpec.determineNonNullableArgument(
+        nullableClassGenerics: List<String>,
         mapping: Map<String, TypeVariableName>
     ): TypeName {
+        val typeName = type.toString()
         return when {
             this.modifiers.contains(KModifier.VARARG) -> {
                 array.parameterizedBy(
                     TypeVariableName("out $type")
                 )
             }
+            typeName in nullableClassGenerics && typeName !in mapping -> any
             type is TypeVariableName -> {
-                (type as TypeVariableName).resolveType(mapping).ensureNonNullableTransitiveParameter()
+                (type as TypeVariableName)
+                    .resolveType(mapping)
+                    .ensureNonNullableTransitiveParameter(nullableClassGenerics)
             }
             else -> type
         }.copy(nullable = false)
@@ -544,7 +552,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             ParameterSpec.builder(
                 "type$idx",
                 kClass.parameterizedBy(
-                    parameter.determineNonNullableArgument(mappedParameterTypes)
+                    parameter.determineNonNullableArgument(nullableClassGenerics, mappedParameterTypes)
                 )
             ).build()
         }
@@ -696,8 +704,9 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
-        override fun getInstance(enableGenerator: Boolean): ProxyAccessMethodGenerator {
-            return KMockProxyAccessMethodGenerator(enableGenerator)
-        }
+        override fun getInstance(
+            enableGenerator: Boolean,
+            nullableClassGenerics: List<String>,
+        ): ProxyAccessMethodGenerator = KMockProxyAccessMethodGenerator(enableGenerator, nullableClassGenerics)
     }
 }

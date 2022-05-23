@@ -1513,6 +1513,7 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("OverloadedMock.kt")
+        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor.mock
 
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
@@ -19,6 +20,6 @@ class ProxyAccessMethodGeneratorSpec {
 
     @Test
     fun `Given getInstance is called with a Boolean it creates a ProxyAccessMethodGenerator`() {
-        KMockProxyAccessMethodGenerator.getInstance(false) fulfils ProxyAccessMethodGenerator::class
+        KMockProxyAccessMethodGenerator.getInstance(false, mockk()) fulfils ProxyAccessMethodGenerator::class
     }
 }

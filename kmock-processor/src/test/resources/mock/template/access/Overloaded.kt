@@ -11,15 +11,19 @@ import tech.antibytes.kmock.Mock
 interface SomeGeneric<T>
 
 @Mock(Overloaded::class)
-interface Overloaded<K, L> where L : Any, L : Comparable<L>, K : Any {
+interface Overloaded<K, L, U> where L : Any, L : Comparable<L>, K : Any {
     var template: L
 
     fun trr()
     fun trr(arg: Any)
     fun trr(arg: Int)
 
+    fun urr()
+    fun urr(arg: U)
+
     fun <T : Int> krr(arg: T)
     fun <T : Int?> krr(arg: T)
+    fun <T : Any?> krr(arg: T)
 
     fun foo(payload: Any): String
     fun <T : Any?> foo(): T
