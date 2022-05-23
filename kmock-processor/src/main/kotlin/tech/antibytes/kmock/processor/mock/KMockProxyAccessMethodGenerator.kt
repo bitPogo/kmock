@@ -17,20 +17,33 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
+import tech.antibytes.kmock.Hint0
+import tech.antibytes.kmock.Hint1
+import tech.antibytes.kmock.Hint10
+import tech.antibytes.kmock.Hint11
+import tech.antibytes.kmock.Hint12
+import tech.antibytes.kmock.Hint2
+import tech.antibytes.kmock.Hint3
+import tech.antibytes.kmock.Hint4
+import tech.antibytes.kmock.Hint5
+import tech.antibytes.kmock.Hint6
+import tech.antibytes.kmock.Hint7
+import tech.antibytes.kmock.Hint8
+import tech.antibytes.kmock.Hint9
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.multibounded
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
     private val enabled: Boolean,
-    private val nullableClassGenerics: List<String>
+    private val nullableClassGenerics: Map<String, TypeName>,
 ) : ProxyAccessMethodGenerator {
     private sealed interface Member
 
@@ -463,6 +476,10 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
     private fun OverloadedMethod.createSideEffect(): TypeVariableName {
         val sideEffect = StringBuilder(6)
+        if (this is OverloadedAsyncFunProxy) {
+            sideEffect.append("suspend ")
+        }
+
         sideEffect.append("(")
 
         arguments.forEach { parameter ->
@@ -490,7 +507,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 type
             }
             else -> {
-                isNullable = this.any { type -> type.isNullable }
+                isNullable = this.all { type -> type.isNullable }
                 multibounded
             }
         }
@@ -513,53 +530,62 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             currentName = type.toString()
         }
 
-        return if (currentType != multibounded) {
-            Pair(currentType, isNullable)
-        } else {
-            Pair(this, isNullable)
-        }
+        return Pair(currentType, isNullable)
     }
 
     private fun Pair<TypeName, Boolean>.ensureNonNullableTransitiveParameter(
-        nullableClassGenerics: List<String>
+        originalType: TypeName,
+        nullableClassGenerics: Map<String, TypeName>
     ): TypeName {
-        return if (second || first.toString() in nullableClassGenerics) {
-            any
-        } else {
-            first
-        }
+        return when {
+            multibounded == first && second -> any
+            first.toString() in nullableClassGenerics -> nullableClassGenerics[first.toString()]!!
+            second -> first
+            else -> originalType
+        }.copy(nullable = false)
     }
 
     private fun ParameterSpec.determineNonNullableArgument(
-        nullableClassGenerics: List<String>,
+        nullableClassGenerics: Map<String, TypeName>,
         mapping: Map<String, TypeVariableName>
     ): TypeName {
-        val typeName = type.toString()
         return when {
             this.modifiers.contains(KModifier.VARARG) -> {
                 array.parameterizedBy(
                     TypeVariableName("out $type")
                 )
             }
-            typeName in nullableClassGenerics && typeName !in mapping -> any
             type is TypeVariableName -> {
                 (type as TypeVariableName)
                     .resolveType(mapping)
-                    .ensureNonNullableTransitiveParameter(nullableClassGenerics)
+                    .ensureNonNullableTransitiveParameter(
+                        type,
+                        nullableClassGenerics
+                    )
             }
             else -> type
         }.copy(nullable = false)
     }
 
-    private fun OverloadedMethod.createIndicators(): List<ParameterSpec> {
-        return arguments.mapIndexed { idx, parameter ->
-            ParameterSpec.builder(
-                "type$idx",
-                kClass.parameterizedBy(
-                    parameter.determineNonNullableArgument(nullableClassGenerics, mappedParameterTypes)
-                )
-            ).build()
+    private fun ClassName.hintWith(types: List<TypeName>): TypeName {
+        return if (types.isEmpty()) {
+            this
+        } else {
+            this.parameterizedBy(types)
         }
+    }
+
+    private fun List<TypeName>.toHint(): TypeName = hints["Hint${this.size}"]!!.hintWith(this)
+
+    private fun OverloadedMethod.createIndicators(): ParameterSpec {
+        val hints = arguments.map { parameter ->
+            parameter.determineNonNullableArgument(nullableClassGenerics, mappedParameterTypes)
+        }
+
+        return ParameterSpec.builder(
+            "hint",
+            hints.toHint()
+        ).build()
     }
 
     private fun createOverloadedFunProxyAccess(
@@ -575,7 +601,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             .returns(proxySignature)
             .addTypeVariables(method.typeParameter)
             .addParameter("reference", sideEffect)
-            .addParameters(indicators)
+            .addParameter(indicators)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
                 "\${(reference as $kFunction).name}|${method.unifier}",
@@ -712,17 +738,31 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         private val propertyType = TypeVariableName("Property")
         private val kProperty = KProperty::class.asClassName().parameterizedBy(propertyType)
         private val kFunction = KFunction::class.asClassName().parameterizedBy(starParameter)
-        private val kClass = KClass::class.asClassName()
         private val array = Array::class.asClassName()
         private val any = Any::class.asClassName()
         private val nullableAny = any.copy(nullable = true)
-        private val multibounded = TypeVariableName("multiboundedKmock")
+
+        private val hints = mapOf(
+            "Hint0" to Hint0::class.asClassName(),
+            "Hint1" to Hint1::class.asClassName(),
+            "Hint2" to Hint2::class.asClassName(),
+            "Hint3" to Hint3::class.asClassName(),
+            "Hint4" to Hint4::class.asClassName(),
+            "Hint5" to Hint5::class.asClassName(),
+            "Hint6" to Hint6::class.asClassName(),
+            "Hint7" to Hint7::class.asClassName(),
+            "Hint8" to Hint8::class.asClassName(),
+            "Hint9" to Hint9::class.asClassName(),
+            "Hint10" to Hint10::class.asClassName(),
+            "Hint11" to Hint11::class.asClassName(),
+            "Hint12" to Hint12::class.asClassName(),
+        )
 
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
         override fun getInstance(
             enableGenerator: Boolean,
-            nullableClassGenerics: List<String>,
+            nullableClassGenerics: Map<String, TypeName>,
         ): ProxyAccessMethodGenerator = KMockProxyAccessMethodGenerator(enableGenerator, nullableClassGenerics)
     }
 }

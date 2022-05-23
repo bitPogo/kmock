@@ -499,7 +499,7 @@ internal interface ProcessorContract {
     interface ProxyAccessMethodGeneratorFactory {
         fun getInstance(
             enableGenerator: Boolean,
-            nullableClassGenerics: List<String>,
+            nullableClassGenerics: Map<String, TypeName>,
         ): ProxyAccessMethodGenerator
     }
 
@@ -674,6 +674,7 @@ internal interface ProcessorContract {
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)
         val unit = TypeVariableName("Unit").copy(nullable = false)
+        val multibounded = TypeVariableName("multiboundedKmock")
 
         const val SPY_CONTEXT = "spyContext"
         const val SPY_PROPERTY = "__spyOn"

@@ -49,10 +49,18 @@ interface ExampleContract {
 
         fun <T> doSomething(arg: T): Int where T : Comparable<T>, T : CharSequence
 
+        fun <T> doSomething(arg0: T, arg1: String): String
+
+        fun <T> doSomething(arg0: T, arg1: Int): String
+
         fun doSomethingElse(): Int
 
         fun <T> doSomethingElse(arg: T): Int
 
         fun <T> doSomethingElse(arg: T): Int where T : Comparable<T>, T : CharSequence
+
+        fun <T> doSomethingElse(arg0: T, arg1: String): String
+
+        fun <T> doSomethingElse(arg0: T, arg1: Int): String
     }
 }

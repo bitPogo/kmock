@@ -11,7 +11,7 @@ import tech.antibytes.kmock.Mock
 interface SomeGeneric<T>
 
 @Mock(Overloaded::class)
-interface Overloaded<K, L, U> where L : Any, L : Comparable<L>, K : Any {
+interface Overloaded<K, L, U : Int?, W> where L : Any, L : Comparable<L>, K : Any {
     var template: L
 
     fun trr()
@@ -20,6 +20,8 @@ interface Overloaded<K, L, U> where L : Any, L : Comparable<L>, K : Any {
 
     fun urr()
     fun urr(arg: U)
+    fun urr(arg: W)
+    fun <U: CharSequence?> urr(arg: U)
 
     fun <T : Int> krr(arg: T)
     fun <T : Int?> krr(arg: T)
@@ -108,5 +110,5 @@ interface Overloaded<K, L, U> where L : Any, L : Comparable<L>, K : Any {
     fun <R, T : X, X : SomeGeneric<String>> pss(arg0: T, arg1: R) where R : T
 
     fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence
-    fun <R, T> xss(arg0: T, arg1: R) where R : Sequence<Char>, R : CharSequence
+    fun <R, T> xss(arg0: T, arg1: R) where R : Sequence<Char>?, R : CharSequence
 }
