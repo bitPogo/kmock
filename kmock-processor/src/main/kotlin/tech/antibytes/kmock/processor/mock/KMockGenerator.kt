@@ -415,16 +415,27 @@ internal class KMockGenerator(
         }
 
         if (enableSpy || templateName in useBuildInProxiesOn) {
-            val (proxies, functions) = buildInGenerator.buildMethodBundles(
+            val bundle = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
                 enableSpy = enableSpy
             )
 
-            mock.addFunctions(functions)
-            proxies.forEach { proxy ->
-                proxyNameCollector.add(proxy.name)
+            bundle.forEach { (proxy, method, sideEffect) ->
+                mock.addFunction(method)
                 mock.addProperty(proxy)
+
+                proxyNameCollector.add(proxy.name)
+                proxyAccessMethodGenerator.collectMethod(
+                    methodName = method.name,
+                    isSuspending = method.modifiers.contains(KModifier.SUSPEND),
+                    typeParameter = method.typeVariables,
+                    arguments = method.parameters,
+                    returnType = method.returnType,
+                    proxyName = proxy.name,
+                    proxySignature = proxy.type,
+                    proxySideEffect = sideEffect,
+                )
             }
         }
 

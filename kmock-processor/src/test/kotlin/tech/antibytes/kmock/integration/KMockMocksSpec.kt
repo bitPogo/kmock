@@ -1513,7 +1513,34 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("OverloadedMock.kt")
-        println(actual!!.readText())
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source with BuildIns for a Platform is processed while alternative Access is enabled, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "BuildIn.kt",
+            loadResource("/template/access/BuildIn.kt")
+        )
+        val expected = loadResource("/expected/access/BuildIn.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true",
+                "${KMOCK_PREFIX}buildIn_0" to "mock.template.access.BuildIn",
+            )
+        )
+        val actual = resolveGenerated("BuildInMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

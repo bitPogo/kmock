@@ -10,10 +10,8 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
@@ -25,18 +23,9 @@ internal class KMockBuildInMethodGenerator(
     private val nameSelector: ProxyNameSelector,
     private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator
 ) : BuildInMethodGenerator {
-    private val buildIns = mapOf(
-        "toString" to String::class,
-        "equals" to Boolean::class,
-        "hashCode" to Int::class
-    )
-
-    private val any = Any::class.asTypeName().copy(nullable = true)
-    private val proxy = SyncFunProxy::class.asClassName()
-
     private fun resolveArgument(methodName: String): MethodTypeInfo? {
         return if (methodName == "equals") {
-            MethodTypeInfo("other", any, false)
+            equalsPayload
         } else {
             null
         }
@@ -52,25 +41,11 @@ internal class KMockBuildInMethodGenerator(
         )
     }
 
-    private fun buildSideEffectSignature(
-        proxyArgumentType: TypeName?,
-        proxyReturnType: TypeName,
-    ): TypeName {
-        return TypeVariableName(
-            "(${proxyArgumentType?.toString() ?: ""}) -> $proxyReturnType"
-        )
-    }
-
     private fun buildProxy(
         proxyInfo: ProxyInfo,
-        proxyArgument: MethodTypeInfo?,
     ): PropertySpec {
-        val proxyReturnType = buildIns[proxyInfo.templateName]!!.asTypeName()
-
-        val sideEffect = buildSideEffectSignature(
-            proxyArgument?.typeName,
-            proxyReturnType,
-        )
+        val proxyReturnType = buildIns[proxyInfo.templateName]!!
+        val sideEffect = sideEffects[proxyInfo.templateName]!!
 
         return PropertySpec.builder(
             proxyInfo.proxyName,
@@ -117,7 +92,7 @@ internal class KMockBuildInMethodGenerator(
         qualifier: String,
         methodName: String,
         enableSpy: Boolean,
-    ): Pair<PropertySpec, FunSpec> {
+    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
         val proxyInfo = nameSelector.selectBuildInMethodName(
             qualifier = qualifier,
             methodName = methodName,
@@ -126,7 +101,6 @@ internal class KMockBuildInMethodGenerator(
 
         val proxy = buildProxy(
             proxyInfo = proxyInfo,
-            proxyArgument = argument,
         )
 
         val method = buildMethod(
@@ -136,29 +110,38 @@ internal class KMockBuildInMethodGenerator(
             enableSpy = enableSpy
         )
 
-        return Pair(proxy, method)
+        return Triple(proxy, method, sideEffects[proxyInfo.templateName]!!)
     }
 
     override fun buildMethodBundles(
         mockName: String,
         qualifier: String,
         enableSpy: Boolean,
-    ): Pair<List<PropertySpec>, List<FunSpec>> {
-        val proxies: MutableList<PropertySpec> = mutableListOf()
-        val methods: MutableList<FunSpec> = mutableListOf()
-
-        buildIns.keys.forEach { methodName ->
-            val (proxy, method) = buildBuildInMethodBundle(
+    ): List<Triple<PropertySpec, FunSpec, TypeVariableName>> {
+        return buildIns.keys.map { methodName ->
+            buildBuildInMethodBundle(
                 mockName = mockName,
                 qualifier = qualifier,
                 methodName = methodName,
                 enableSpy = enableSpy,
             )
-
-            proxies.add(proxy)
-            methods.add(method)
         }
+    }
 
-        return Pair(proxies, methods)
+    private companion object {
+        private val any = Any::class.asClassName().copy(nullable = true)
+        private val proxy = SyncFunProxy::class.asClassName()
+        private val equalsPayload = MethodTypeInfo("other", any, false)
+
+        private val buildIns = mapOf(
+            "toString" to String::class.asClassName(),
+            "equals" to Boolean::class.asClassName(),
+            "hashCode" to Int::class.asClassName(),
+        )
+        private val sideEffects = mapOf(
+            "toString" to TypeVariableName("() -> ${String::class.asClassName()}"),
+            "equals" to TypeVariableName("($any) -> ${Boolean::class.asClassName()}"),
+            "hashCode" to TypeVariableName("() -> ${Int::class.asClassName()}"),
+        )
     }
 }

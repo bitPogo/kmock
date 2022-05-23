@@ -443,7 +443,7 @@ internal interface ProcessorContract {
             mockName: String,
             qualifier: String,
             enableSpy: Boolean,
-        ): Pair<List<PropertySpec>, List<FunSpec>>
+        ): List<Triple<PropertySpec, FunSpec, TypeVariableName>>
     }
 
     interface ReceiverGenerator {
