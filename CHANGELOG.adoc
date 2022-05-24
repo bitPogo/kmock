@@ -88,6 +88,8 @@ toc::[]
 * Parallel declared shared source were eaten up by each other
 * Multibounded Generics caused invalid Proxy name if overloaded and aa leading boundary was nullable
 * Nested Generic Types were not resolved for Proxies
+* Multibounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
+
 
 === Security
 
