@@ -24,6 +24,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -258,8 +259,12 @@ private fun KSClassDeclaration.isMisalignedVararg(
 ): Boolean {
     val resolved = rootTypeArguments.firstOrNull()?.type?.resolve()?.declaration?.simpleName?.getShortName()
     val derived = arguments.firstOrNull()?.toString()
+    val declaration = this.simpleName.getShortName().trimEnd('?')
 
-    return this.simpleName.getShortName() == "Array" && inheritedVarargArg && derived != resolved
+    return inheritedVarargArg && (
+        (declaration.endsWith("Array") && derived != resolved) ||
+            ("kotlin.$declaration" in specialArrays)
+        )
 }
 
 private val nullableAny = Any::class.asClassName().copy(nullable = true)
@@ -268,13 +273,21 @@ private fun TypeName.transferProperties(source: TypeName): TypeName {
     return this.copy(nullable = this.isNullable || source.isNullable, annotations = source.annotations)
 }
 
-private fun MutableList<TypeName>.resolveProxyVararg(): TypeName {
-    val typeName = this.first()
+private fun MutableList<TypeName>.resolveVararg(parent: KSClassDeclaration): TypeName {
+    val typeName = this.firstOrNull()
+
     return when {
+        typeName == null -> specialArrays["kotlin.${parent.simpleName.getShortName().trimEnd('?')}"]!!
         (typeName is WildcardTypeName && typeName.outTypes.first() is TypeVariableName) -> {
-            typeName.toTypeVariableName()
+            typeName.outTypes.first()
         }
         typeName == STAR -> nullableAny
+        (typeName is WildcardTypeName && typeName.outTypes.first() is ParameterizedTypeName) -> {
+            typeName.outTypes.first()
+        }
+        (typeName is WildcardTypeName && typeName.outTypes.first() is ClassName) -> {
+            typeName.outTypes.first()
+        }
         else -> typeName
     }
 }
@@ -310,9 +323,9 @@ private fun KSType.toSecuredTypeName(
             }
 
             if (declaration.isMisalignedVararg(inheritedVarargArg, methodArguments, rootTypeArguments)) {
-                (methodArguments.first() as WildcardTypeName).toTypeVariableName().also { resolved ->
+                methodArguments.resolveVararg(declaration).also { resolved ->
                     overrideNullability = resolved.isNullable
-                } to proxyArguments.resolveProxyVararg()
+                } to proxyArguments.resolveVararg(declaration)
             } else {
                 declaration.toClassName().withTypeArguments(methodArguments) to
                     declaration.toClassName().withTypeArguments(proxyArguments)
@@ -414,3 +427,19 @@ internal fun KSTypeReference.toSecuredTypeName(
         rootTypeArguments = typeElements,
     )
 }
+
+@OptIn(ExperimentalUnsignedTypes::class)
+private val specialArrays: Map<String, TypeName> = mapOf(
+    IntArray::class.asTypeName().toString() to Int::class.asTypeName(),
+    ByteArray::class.asTypeName().toString() to Byte::class.asTypeName(),
+    ShortArray::class.asTypeName().toString() to Short::class.asTypeName(),
+    LongArray::class.asTypeName().toString() to Long::class.asTypeName(),
+    FloatArray::class.asTypeName().toString() to Float::class.asTypeName(),
+    DoubleArray::class.asTypeName().toString() to Double::class.asTypeName(),
+    CharArray::class.asTypeName().toString() to Char::class.asTypeName(),
+    BooleanArray::class.asTypeName().toString() to Boolean::class.asTypeName(),
+    UByteArray::class.asTypeName().toString() to UByte::class.asTypeName(),
+    UShortArray::class.asTypeName().toString() to UShort::class.asTypeName(),
+    UIntArray::class.asTypeName().toString() to UInt::class.asTypeName(),
+    ULongArray::class.asTypeName().toString() to ULong::class.asTypeName(),
+)

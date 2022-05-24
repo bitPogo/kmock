@@ -150,7 +150,7 @@ internal object KMockGenerics : GenericResolver {
         typeName: TypeName,
         resolved: Map<String, GenericDeclaration>,
     ): GenericDeclaration? {
-        val typeNameStr = typeName.toString()
+        val typeNameStr = typeName.toString().trimEnd('?')
         val type = resolved[typeNameStr]
 
         return if (type == null && typeNameStr in visited) {
@@ -174,7 +174,7 @@ internal object KMockGenerics : GenericResolver {
     ): GenericDeclaration? {
         val typeName = type.toTypeName(typeResolver)
 
-        return if (typeName.toString() in allGenerics) {
+        return if (typeName.toString().trimEnd('?') in allGenerics) {
             resolveKnownType(
                 visited,
                 rootNullability,

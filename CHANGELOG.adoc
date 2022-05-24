@@ -49,6 +49,7 @@ toc::[]
 * `run` for FunProxies to mitigate the strict assignment policy in terms of a single SideEffect
 * `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
 * `throwsMany` for FunProxies to align the the FunProxy API
+* `enableFineGrainedNames` in order to allow fine grained typing (Experimental/not this will feature helps you only in a non JVM context)
 
 === Changed
 
@@ -86,8 +87,9 @@ toc::[]
 * Annotation was not picked up when more then one Annotation was used
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other
-* Multibounded Generics caused invalid Proxy name if overloaded and aa leading boundary was nullable
 * Nested Generic Types were not resolved for Proxies
+* Multibounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
+
 
 === Security
 

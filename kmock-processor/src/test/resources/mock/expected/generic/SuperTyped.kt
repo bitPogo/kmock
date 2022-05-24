@@ -3,6 +3,7 @@ package mock.template.generic
 import kotlin.Any
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.CharArray
 import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
@@ -29,7 +30,7 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAnys",
             collector = verifier, freeze = freeze)
 
-    public val _pptWithTCharSequenceComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    public val _pptWithTCharSequenceComparables: KMockContract.SyncFunProxy<Unit, (Array<out
     kotlin.Any>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceComparables",
             collector = verifier, freeze = freeze)
@@ -80,6 +81,31 @@ internal class SuperTypedMock<K : Any, L>(
     public val _narv: KMockContract.SyncFunProxy<Unit, (Array<out L>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narv", collector =
         verifier, freeze = freeze)
+
+    public val _ooWithIntAnys: KMockContract.SyncFunProxy<Any, (kotlin.Int, Array<out kotlin.Any>) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithIntAnys",
+            collector = verifier, freeze = freeze)
+
+    public val _ooWithAnyInts: KMockContract.SyncFunProxy<Any, (kotlin.Any?, kotlin.IntArray) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyInts",
+            collector = verifier, freeze = freeze)
+
+    public val _ooWithAnyZTAnys: KMockContract.SyncFunProxy<Any, (kotlin.Any, Array<out
+    kotlin.Any?>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyZTAnys",
+            collector = verifier, freeze = freeze)
+
+    public val _ooWithAnyRRRs: KMockContract.SyncFunProxy<Any, (kotlin.Any, Array<out
+    mock.template.generic.RRR<kotlin.Any?>>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyRRRs",
+            collector = verifier, freeze = freeze)
+
+    public val _ooWithAnyCharArray: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.CharArray) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyCharArray",
+            collector = verifier, freeze = freeze)
 
     public override fun <T> ppt(vararg x: T): Unit = _pptWithZTAnys.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
@@ -134,6 +160,16 @@ internal class SuperTypedMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun oo(fuzz: Int, vararg ozz: Any): Any = _ooWithIntAnys.invoke(fuzz, ozz)
+
+    public override fun oo(fuzz: Any?, vararg ozz: Int): Any = _ooWithAnyInts.invoke(fuzz, ozz)
+
+    public override fun <T> oo(fuzz: Any, vararg ozz: T): Any = _ooWithAnyZTAnys.invoke(fuzz, ozz)
+
+    public override fun <T> oo(fuzz: Any, vararg ozz: RRR<T>): Any = _ooWithAnyRRRs.invoke(fuzz, ozz)
+
+    public override fun <T> oo(fuzz: Any, ozz: CharArray): Any = _ooWithAnyCharArray.invoke(fuzz, ozz)
+
     public fun _clearMock(): Unit {
         _pptWithZTAnys.clear()
         _pptWithTCharSequenceComparables.clear()
@@ -147,5 +183,10 @@ internal class SuperTypedMock<K : Any, L>(
         _lolWithTAny.clear()
         _buzz.clear()
         _narv.clear()
+        _ooWithIntAnys.clear()
+        _ooWithAnyInts.clear()
+        _ooWithAnyZTAnys.clear()
+        _ooWithAnyRRRs.clear()
+        _ooWithAnyCharArray.clear()
     }
 }

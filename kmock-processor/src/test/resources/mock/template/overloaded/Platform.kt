@@ -13,7 +13,7 @@ interface Platform {
     val foo: Any
     var hashCode: Int
     fun foo(fuzz: Int, ozz: Any): Any
-    fun foo(fuzz: Any, ozz: Int): Any
+    fun foo(fuzz: Any?, ozz: Int): Any
     fun foo(fuzz: Any, ozz: String): Any
     fun foo(fuzz: String, ozz: Any): Any
     fun foo(fuzz: String, ozz: Abc): Any
@@ -21,7 +21,7 @@ interface Platform {
     fun <T> foo(fuzz: T)
     fun <T : Platform> foo(fuzz: T)
     fun <T : LPG> foo(fuzz: T)
-    fun <T>foo(fuzz: T): Any where T : CharSequence?, T : Comparable<T>
+    fun <T> foo(fuzz: T?): Any where T : CharSequence?, T : Comparable<T>
     fun foo(vararg fuzz: Any): Any
 }
 

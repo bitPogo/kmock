@@ -130,6 +130,7 @@ class KMockProcessorProvider(
         val relaxerGenerator = KMockRelaxerGenerator()
         val nameSelector = KMockProxyNameSelector(
             enableNewOverloadingNames = options.enableNewOverloadingNames,
+            enableFineGrainedNames = options.enableFineGrainedNames,
             customMethodNames = options.customMethodNames,
             useTypePrefixFor = options.useTypePrefixFor,
             uselessPrefixes = options.uselessPrefixes,
