@@ -8,7 +8,7 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -20,7 +20,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     private val spyGenerator: SpyGenerator
 ) : NonIntrusiveInvocationGenerator {
     private val noArguments: Array<MethodTypeInfo> = arrayOf()
-    private val illegal = MethodReturnTypeInfo(TypeVariableName(""), TypeVariableName(""), null, null)
+    private val illegal = ReturnTypeInfo(TypeVariableName(""), TypeVariableName(""), null, null)
 
     private fun buildInvocation(hook: (StringBuilder) -> Unit): String {
         val nonIntrusiveInvocation = StringBuilder(4)
@@ -41,7 +41,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildGetterNonIntrusiveInvocation(
         enableSpy: Boolean,
         propertyName: String,
-        propertyType: MethodReturnTypeInfo,
+        propertyType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -70,7 +70,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
         methodName: String,
         typeParameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -162,7 +162,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildReceiverGetterNonIntrusiveInvocation(
         enableSpy: Boolean,
         propertyName: String,
-        propertyType: MethodReturnTypeInfo,
+        propertyType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -195,7 +195,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
         methodName: String,
         typeParameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(

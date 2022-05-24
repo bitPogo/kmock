@@ -29,7 +29,7 @@ import tech.antibytes.kmock.processor.utils.mapArgumentType
 
 internal object KMockGenerics : GenericResolver {
     private val any = Any::class.asTypeName()
-    private val nullableAny = Any::class.asTypeName().copy(nullable = true)
+    private val nullableAny = any.copy(nullable = true)
     private val nullableAnys = listOf(any.copy(nullable = true))
     private val nonNullableAnys = listOf(any.copy(nullable = false))
     private const val TYPE_PARAMETER = "KMockTypeParameter"

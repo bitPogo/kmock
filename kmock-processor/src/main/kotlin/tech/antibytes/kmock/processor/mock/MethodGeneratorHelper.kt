@@ -14,6 +14,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -22,8 +23,7 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.MethodArgumentTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -34,19 +34,21 @@ internal class MethodGeneratorHelper(
 ) : ProcessorContract.MethodGeneratorHelper {
     override fun determineArguments(
         inherited: Boolean,
+        generics: Map<String, GenericDeclaration>?,
         arguments: List<KSValueParameter>,
-        typeParameterResolver: TypeParameterResolver
+        typeParameterResolver: TypeParameterResolver,
     ): Array<MethodTypeInfo> {
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
-
-            parameter.type.modifiers
+            val (methodType, proxyType) = parameter.type.toSecuredTypeName(
+                inheritedVarargArg = parameter.isVararg && inherited,
+                generics = generics ?: emptyMap(),
+                typeParameterResolver = typeParameterResolver
+            )
             MethodTypeInfo(
                 argumentName = argumentName,
-                typeName = parameter.type.toSecuredTypeName(
-                    inheritedVarargArg = parameter.isVararg && inherited,
-                    typeParameterResolver = typeParameterResolver
-                ),
+                methodTypeName = methodType,
+                proxyTypeName = proxyType,
                 isVarArg = parameter.isVararg,
             )
         }.toTypedArray()
@@ -82,7 +84,7 @@ internal class MethodGeneratorHelper(
         }
     }
 
-    private fun resolveProxyGenerics(
+    override fun resolveProxyGenerics(
         generics: Map<String, List<KSTypeReference>>?,
         typeResolver: TypeParameterResolver
     ): Map<String, GenericDeclaration>? {
@@ -93,121 +95,75 @@ internal class MethodGeneratorHelper(
         }
     }
 
-    private fun resolveGenericProxyType(
-        typeName: TypeName,
-        generic: GenericDeclaration?
-    ): TypeName {
-        return when {
-            generic == null -> typeName
-            generic.types.size > 1 -> any.copy(nullable = generic.nullable)
-            else -> generic.types.first()
-        }
-    }
-
     private fun mapGenericProxyType(
-        typeName: TypeName,
+        methodTypeName: TypeName,
+        proxyTypeName: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>,
-    ): MethodReturnTypeInfo {
-        val isNullable = typeName.isNullable
-        val generic = proxyGenericTypes[typeName.toString().trimEnd('?')]
+    ): ReturnTypeInfo {
+        val generic = proxyGenericTypes[methodTypeName.toString().trimEnd('?')]
 
-        val actualTypeName = resolveGenericProxyType(
-            typeName = typeName,
-            generic = generic
-        )
-
-        return MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = actualTypeName.copy(nullable = actualTypeName.isNullable || isNullable),
+        return ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = proxyTypeName,
             generic = generic,
             classScope = classScopeGenerics
         )
     }
 
     private fun determineProxyReturnType(
-        returnType: TypeName,
+        methodReturnType: TypeName,
+        proxyReturnType: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
-    ): MethodReturnTypeInfo {
+    ): ReturnTypeInfo {
         return if (proxyGenericTypes == null) {
-            MethodReturnTypeInfo(
-                typeName = returnType,
-                actualTypeName = returnType,
+            ReturnTypeInfo(
+                methodTypeName = methodReturnType,
+                proxyTypeName = proxyReturnType,
                 generic = null,
                 classScope = classScopeGenerics
             )
         } else {
             mapGenericProxyType(
-                typeName = returnType,
+                methodTypeName = methodReturnType,
+                proxyTypeName = proxyReturnType,
                 classScopeGenerics = classScopeGenerics,
                 proxyGenericTypes = proxyGenericTypes,
             )
         }
     }
 
-    private fun resolveGenericArgumentTypes(
-        proxyGenericTypes: Map<String, GenericDeclaration>,
-        classScopeGenerics: Map<String, List<TypeName>>?,
-        argumentTypes: Array<MethodTypeInfo>,
-    ): List<MethodArgumentTypeInfo> {
-        return argumentTypes.map { typeInfo ->
-            val (_, actualTypeName, declaration, _) = mapGenericProxyType(
-                typeName = typeInfo.typeName,
-                classScopeGenerics = classScopeGenerics,
-                proxyGenericTypes = proxyGenericTypes,
-            )
-
-            MethodArgumentTypeInfo(
-                typeInfo = typeInfo.copy(typeName = actualTypeName),
-                generic = declaration
-            )
-        }
-    }
-
-    private fun determineProxyArgumentTypes(
-        proxyGenericTypes: Map<String, GenericDeclaration>?,
-        classScopeGenerics: Map<String, List<TypeName>>?,
-        argumentTypes: Array<MethodTypeInfo>,
-    ): List<MethodArgumentTypeInfo> {
-        return if (proxyGenericTypes == null) {
-            argumentTypes.map { typeInfo ->
-                MethodArgumentTypeInfo(
-                    typeInfo = typeInfo,
-                    generic = null,
-                )
-            }
+    private fun MethodTypeInfo.resolveVarargArray(): TypeName {
+        val name = this.proxyTypeName.toString()
+        println(name)
+        return if (name.startsWith("out") || name == "*") {
+            array.parameterizedBy(this.proxyTypeName)
         } else {
-            resolveGenericArgumentTypes(
-                proxyGenericTypes = proxyGenericTypes,
-                classScopeGenerics = classScopeGenerics,
-                argumentTypes = argumentTypes,
-            )
+            TypeVariableName("Array<out ${this.proxyTypeName}>")
         }
     }
 
     private fun mapProxyArgumentTypeNames(
-        proxyArguments: List<MethodArgumentTypeInfo>
+        arguments: Array<MethodTypeInfo>,
     ): List<TypeName> {
-        return proxyArguments.map { argument ->
-            if (!argument.typeInfo.isVarArg) {
-                argument.typeInfo.typeName
+        return arguments.map { argument ->
+            if (!argument.isVarArg) {
+                argument.proxyTypeName
             } else {
-                specialArrays.getOrElse(argument.typeInfo.typeName) {
-                    TypeVariableName(
-                        "Array<out ${argument.typeInfo.typeName}>"
-                    )
+                specialArrays.getOrElse(argument.proxyTypeName) {
+                    argument.resolveVarargArray()
                 }
             }
         }
     }
 
     private fun buildSideEffectSignature(
-        proxyArguments: List<MethodArgumentTypeInfo>,
+        arguments: Array<MethodTypeInfo>,
         proxyReturnType: TypeName,
         prefix: String
     ): TypeVariableName {
-        val argumentTypeName = mapProxyArgumentTypeNames(proxyArguments)
+        val argumentTypeName = mapProxyArgumentTypeNames(arguments)
 
         return TypeVariableName(
             "$prefix(${argumentTypeName.joinToString(", ")}) -> $proxyReturnType"
@@ -231,38 +187,30 @@ internal class MethodGeneratorHelper(
         arguments: Array<MethodTypeInfo>,
         suspending: Boolean,
         classScopeGenerics: Map<String, List<TypeName>>?,
-        generics: Map<String, List<KSTypeReference>>?,
-        returnType: TypeName,
+        generics: Map<String, GenericDeclaration>?,
+        methodReturnType: TypeName,
+        proxyReturnType: TypeName,
         typeResolver: TypeParameterResolver,
     ): ProxyBundle {
         val (proxyType, proxyFactoryMethod, sideEffectPrefix) = determineProxyType(suspending)
-        val proxyGenericTypes = resolveProxyGenerics(
-            generics = generics,
-            typeResolver = typeResolver
-        )
 
-        val proxyArguments = determineProxyArgumentTypes(
-            proxyGenericTypes = proxyGenericTypes,
+        val returnTypeInfo = determineProxyReturnType(
+            proxyReturnType = proxyReturnType,
+            methodReturnType = methodReturnType,
             classScopeGenerics = classScopeGenerics,
-            argumentTypes = arguments,
-        )
-
-        val proxyReturnType = determineProxyReturnType(
-            returnType = returnType,
-            classScopeGenerics = classScopeGenerics,
-            proxyGenericTypes = proxyGenericTypes,
+            proxyGenericTypes = generics,
         )
 
         val sideEffect = buildSideEffectSignature(
-            proxyArguments = proxyArguments,
-            proxyReturnType = proxyReturnType.actualTypeName,
+            arguments = arguments,
+            proxyReturnType = proxyReturnType,
             prefix = sideEffectPrefix
         )
 
         return ProxyBundle(
             proxy = PropertySpec.builder(
                 proxyInfo.proxyName,
-                proxyType.parameterizedBy(proxyReturnType.actualTypeName, sideEffect)
+                proxyType.parameterizedBy(proxyReturnType, sideEffect)
             ).let { proxySpec ->
                 buildProxyInitializer(
                     proxySpec = proxySpec,
@@ -270,13 +218,13 @@ internal class MethodGeneratorHelper(
                     proxyFactoryMethod = proxyFactoryMethod,
                 )
             }.build(),
-            returnType = proxyReturnType,
+            returnType = returnTypeInfo,
             sideEffect = sideEffect,
         )
     }
 
     private companion object {
-        private val any = Any::class.asTypeName()
+        private val array = Array::class.asClassName()
         private val asyncProxy = KMockContract.AsyncFunProxy::class.asClassName()
         private val syncProxy = KMockContract.SyncFunProxy::class.asClassName()
 

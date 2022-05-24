@@ -11,20 +11,20 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.mustBe
 
-class MethodReturnTypeInfoExtensionsSpec {
+class ReturnTypeInfoExtensionsSpec {
     private val fixture = kotlinFixture()
 
     @Test
     fun `Given resolveClassScope is called it returns null if no class scope was delegated`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = null
         )
@@ -39,9 +39,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveClassScope is called it returns null if no matching types were found`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = mapOf(
                 "any" to mockk()
@@ -58,21 +58,21 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveClassScope is called it returns the resolved types`() {
         // Given
-        val actualTypeName: TypeName = mockk()
-        val actualTypeNameStr = "${fixture.fixture<String>()}?"
+        val proxyTypeName: TypeName = mockk()
+        val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            actualTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = actualTypeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = proxyTypeName,
             generic = null,
             classScope = classScope
         )
 
-        every { actualTypeName.toString() } returns actualTypeNameStr
+        every { proxyTypeName.toString() } returns proxyTypeNameStr
 
         // When
         val actual = typeInfo.resolveClassScope()
@@ -82,20 +82,20 @@ class MethodReturnTypeInfoExtensionsSpec {
     }
 
     @Test
-    fun `Given needsCastAnnotation returns true if the typeName and actualTypeName differ`() {
+    fun `Given needsCastAnnotation returns true if the methodTypeName and proxyTypeName differ`() {
         // Given
-        val actualTypeName: TypeName = mockk()
-        val typeName: TypeName = mockk()
+        val proxyTypeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = actualTypeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = proxyTypeName,
             generic = null,
             classScope = null
         )
 
-        every { actualTypeName.toString() } returns fixture.fixture()
-        every { typeName.toString() } returns fixture.fixture()
+        every { proxyTypeName.toString() } returns fixture.fixture()
+        every { methodTypeName.toString() } returns fixture.fixture()
 
         // When
         val actual = typeInfo.needsCastAnnotation(null)
@@ -108,11 +108,11 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given needsCastAnnotation returns true if the relaxer is not null and it has generics types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = typeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = methodTypeName,
             generic = generics,
             classScope = null
         )
@@ -131,21 +131,21 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given needsCastAnnotation returns true if the relaxer is not null and it has a resolve ClassScope`() {
         // Given
-        val actualTypeName: TypeName = mockk()
-        val actualTypeNameStr = "${fixture.fixture<String>()}?"
+        val proxyTypeName: TypeName = mockk()
+        val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            actualTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = actualTypeName,
-            actualTypeName = actualTypeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = proxyTypeName,
+            proxyTypeName = proxyTypeName,
             generic = null,
             classScope = classScope
         )
 
-        every { actualTypeName.toString() } returns actualTypeNameStr
+        every { proxyTypeName.toString() } returns proxyTypeNameStr
 
         // When
         val actual = typeInfo.needsCastAnnotation(
@@ -159,9 +159,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given needsCastForReceiverProperty returns false if it has no generics`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = null
         )
@@ -177,9 +177,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns false if it has generics and at less then 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )
@@ -198,9 +198,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns false if it has generics and at least 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )
@@ -218,9 +218,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns true if the cast flag is true`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )
@@ -238,9 +238,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns false if neither a class scope nor a generic were given`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = null
         )
@@ -255,9 +255,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns true if a class scope was given`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = mockk()
         )
@@ -272,9 +272,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns true if a generics was given`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = mockk(),
             classScope = null
         )
@@ -287,14 +287,14 @@ class MethodReturnTypeInfoExtensionsSpec {
     }
 
     @Test
-    fun `Given resolveCastOnReturn returns a string if the typeName and actualTypeName differ`() {
+    fun `Given resolveCastOnReturn returns a string if the methodTypeName and proxyTypeName differ`() {
         // Given
-        val actualTypeName: TypeName = mockk()
-        val typeName: TypeName = mockk()
+        val proxyTypeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = actualTypeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = proxyTypeName,
             generic = null,
             classScope = null
         )
@@ -303,17 +303,17 @@ class MethodReturnTypeInfoExtensionsSpec {
         val actual = typeInfo.resolveCastOnReturn()
 
         // Then
-        actual mustBe " as $typeName"
+        actual mustBe " as $methodTypeName"
     }
 
     @Test
     fun `Given resolveCastForRelaxer returns an empty string if the relaxer is null`() {
         // Given
-        val typeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = typeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = methodTypeName,
             generic = null,
             classScope = null
         )
@@ -329,11 +329,11 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given resolveCastForRelaxer returns an empty string if the relaxer is not null but it has no generics types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = typeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = methodTypeName,
             generic = null,
             classScope = null
         )
@@ -351,11 +351,11 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given resolveCastForRelaxer returns a string if the relaxer is not null and it has generics types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = typeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = methodTypeName,
             generic = generics,
             classScope = null
         )
@@ -366,41 +366,41 @@ class MethodReturnTypeInfoExtensionsSpec {
         val actual = typeInfo.resolveCastForRelaxer(mockk())
 
         // Then
-        actual mustBe " as $typeName"
+        actual mustBe " as $methodTypeName"
     }
 
     @Test
     fun `Given resolveCastForRelaxer returns a string if the relaxer is not null and it has a resolve ClassScope`() {
         // Given
-        val actualTypeName: TypeName = mockk()
-        val actualTypeNameStr = "${fixture.fixture<String>()}?"
+        val proxyTypeName: TypeName = mockk()
+        val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            actualTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = actualTypeName,
-            actualTypeName = actualTypeName,
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = proxyTypeName,
+            proxyTypeName = proxyTypeName,
             generic = null,
             classScope = classScope
         )
 
-        every { actualTypeName.toString() } returns actualTypeNameStr
+        every { proxyTypeName.toString() } returns proxyTypeNameStr
 
         // When
         val actual = typeInfo.resolveCastForRelaxer(mockk())
 
         // Then
-        actual mustBe " as $actualTypeNameStr"
+        actual mustBe " as $proxyTypeNameStr"
     }
 
     @Test
     fun `Given resolveCastForReceiverProperty returns an empty String if it has no generics`() {
         // Given
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = null,
             classScope = null
         )
@@ -416,9 +416,9 @@ class MethodReturnTypeInfoExtensionsSpec {
     fun `Given resolveCastForReceiverProperty returns an empty string if it has generics and at less then 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = mockk(),
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = mockk(),
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )
@@ -436,11 +436,11 @@ class MethodReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveCastForReceiverProperty returns a String if it has generics and at least 2 types`() {
         // Given
-        val typeName: TypeName = mockk()
+        val methodTypeName: TypeName = mockk()
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = typeName,
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = methodTypeName,
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )
@@ -451,7 +451,7 @@ class MethodReturnTypeInfoExtensionsSpec {
         val actual = typeInfo.resolveCastForReceiverProperty()
 
         // Then
-        actual mustBe " as $typeName"
+        actual mustBe " as $methodTypeName"
     }
 
     @Test
@@ -459,9 +459,9 @@ class MethodReturnTypeInfoExtensionsSpec {
         // Given
         val type: TypeName = mockk()
         val generics: GenericDeclaration = mockk()
-        val typeInfo = MethodReturnTypeInfo(
-            typeName = type,
-            actualTypeName = mockk(),
+        val typeInfo = ReturnTypeInfo(
+            methodTypeName = type,
+            proxyTypeName = mockk(),
             generic = generics,
             classScope = null
         )

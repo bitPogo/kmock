@@ -15,18 +15,18 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGeneratorHelper
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class KMockMethodGenerator(
     private val utils: MethodGeneratorHelper,
@@ -40,14 +40,14 @@ internal class KMockMethodGenerator(
         enableSpy: Boolean,
         arguments: Array<MethodTypeInfo>,
         parameter: List<TypeName>,
-        proxyReturnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         relaxer: Relaxer?
     ) {
-        if (proxyReturnType.needsCastAnnotation(relaxer = relaxer)) {
+        if (returnType.needsCastAnnotation(relaxer = relaxer)) {
             method.addAnnotation(UNCHECKED)
         }
 
-        val cast = proxyReturnType.resolveCastOnReturn()
+        val cast = returnType.resolveCastOnReturn()
 
         val invocation = arguments.joinToString(", ") { argument -> argument.argumentName }
         val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildMethodNonIntrusiveInvocation(
@@ -55,7 +55,7 @@ internal class KMockMethodGenerator(
             methodName = proxyInfo.templateName,
             typeParameter = parameter,
             arguments = arguments,
-            methodReturnType = proxyReturnType,
+            methodReturnType = returnType,
             relaxer = relaxer
         )
 
@@ -75,7 +75,7 @@ internal class KMockMethodGenerator(
         enableSpy: Boolean,
         arguments: Array<MethodTypeInfo>,
         parameter: List<TypeName>,
-        returnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?
     ): FunSpec {
@@ -83,7 +83,7 @@ internal class KMockMethodGenerator(
             .builder(proxyInfo.templateName)
             .addModifiers(KModifier.OVERRIDE)
             .addArguments(arguments)
-            .returns(returnType.typeName)
+            .returns(returnType.methodTypeName)
 
         if (isSuspending) {
             method.addModifiers(KModifier.SUSPEND)
@@ -101,7 +101,7 @@ internal class KMockMethodGenerator(
             enableSpy = enableSpy,
             arguments = arguments,
             parameter = parameter,
-            proxyReturnType = returnType,
+            returnType = returnType,
             relaxer = relaxer
         )
 
@@ -121,9 +121,14 @@ internal class KMockMethodGenerator(
         val typeParameterResolver = ksFunction.typeParameters
             .toTypeParameterResolver(typeResolver)
         val generics = genericResolver.extractGenerics(ksFunction, typeParameterResolver)
+        val proxyGenerics = utils.resolveProxyGenerics(
+            generics = generics,
+            typeResolver = typeParameterResolver,
+        )
         val arguments = utils.determineArguments(
             inherited = inherited,
             arguments = ksFunction.parameters,
+            generics = proxyGenerics,
             typeParameterResolver = typeParameterResolver
         )
         val parameter = utils.resolveTypeParameter(
@@ -138,16 +143,21 @@ internal class KMockMethodGenerator(
             generics = generics ?: emptyMap(),
             typeResolver = typeParameterResolver,
         )
-        val returnType = ksFunction.returnType!!.resolve().toTypeName(typeParameterResolver)
+        val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toSecuredTypeName(
+            inheritedVarargArg = false,
+            generics = proxyGenerics ?: emptyMap(),
+            typeParameterResolver = typeParameterResolver
+        )
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
 
         val proxySignature = utils.buildProxy(
             proxyInfo = proxyInfo,
             arguments = arguments,
             classScopeGenerics = classScopeGenerics,
-            generics = generics,
+            generics = proxyGenerics,
             suspending = isSuspending,
-            returnType = returnType,
+            methodReturnType = methodReturnType,
+            proxyReturnType = proxyReturnType,
             typeResolver = typeParameterResolver,
         )
 

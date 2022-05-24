@@ -29,7 +29,7 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAnys",
             collector = verifier, freeze = freeze)
 
-    public val _pptWithTCharSequenceComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _pptWithTCharSequenceComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.Any>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceComparables",
             collector = verifier, freeze = freeze)

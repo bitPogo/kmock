@@ -259,6 +259,11 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithZTAnyRSequenceCharSequence",
             collector = verifier, freeze = freeze)
 
+    public val _rrr: KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>,
+        kotlin.sequences.Sequence<kotlin.collections.List<kotlin.Any?>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rrr", collector = verifier,
+            freeze = freeze)
+
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
@@ -448,6 +453,11 @@ internal class SharedMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <R : Sequence<T>, T : List<R>> rrr(arg0: T, arg1: R): Unit = _rrr.invoke(arg0,
+        arg1) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -495,5 +505,6 @@ internal class SharedMock<K : Any, L>(
         _pssWithTSomeGenericRSomeGeneric.clear()
         _xssWithZTAny.clear()
         _xssWithZTAnyRSequenceCharSequence.clear()
+        _rrr.clear()
     }
 }

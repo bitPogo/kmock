@@ -25,7 +25,7 @@ internal fun FunSpec.Builder.addArguments(
 
         this.addParameter(
             argument.argumentName,
-            argument.typeName,
+            argument.methodTypeName,
             *vararged
         )
     }
