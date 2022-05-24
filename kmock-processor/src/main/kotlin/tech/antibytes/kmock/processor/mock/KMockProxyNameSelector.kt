@@ -20,6 +20,7 @@ import java.util.SortedSet
 
 internal class KMockProxyNameSelector(
     enableNewOverloadingNames: Boolean,
+    enableFineGrainedNames: Boolean,
     private val customMethodNames: Map<String, String>,
     private val useTypePrefixFor: Map<String, String>,
     private val uselessPrefixes: Set<String>,
@@ -36,6 +37,25 @@ internal class KMockProxyNameSelector(
     } else {
         { typeName -> typeName.removePrefixes(uselessPrefixes).packageNameToVariableName() }
     }
+
+    private val suffixResolver: Function3<Array<MethodTypeInfo>, Map<String, List<KSTypeReference>>, TypeParameterResolver, List<String>> =
+        if (enableFineGrainedNames) {
+            { arguments, generics, typeResolver: TypeParameterResolver ->
+                resolveLongProxySuffixFromArguments(
+                    arguments = arguments,
+                    generics = generics,
+                    typeResolver = typeResolver,
+                )
+            }
+        } else {
+            { arguments, generics, typeResolver: TypeParameterResolver ->
+                resolveProxySuffixFromArguments(
+                    arguments = arguments,
+                    generics = generics,
+                    typeResolver = typeResolver,
+                )
+            }
+        }
 
     private fun collectPropertyNames(
         template: KSClassDeclaration,
@@ -108,6 +128,16 @@ internal class KMockProxyNameSelector(
         )
     }
 
+    private fun String.trimNullable(): String = this.trimEnd('?')
+
+    private fun String.prefixNullable(): String {
+        return when {
+            this == "?" -> this
+            this.endsWith('?') -> "$NULLABLE_INDICATOR$this".dropLast(1)
+            else -> this
+        }
+    }
+
     private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
         val className = this.substringAfterLast('.').titleCase()
         val prefix = prefixMapping.getOrDefault(this, "").titleCase()
@@ -145,7 +175,7 @@ internal class KMockProxyNameSelector(
 
     private fun determineNullablePrefix(isNullable: Boolean): String {
         return if (isNullable) {
-            "Z"
+            NULLABLE_INDICATOR
         } else {
             ""
         }
@@ -163,7 +193,7 @@ internal class KMockProxyNameSelector(
                 val type = typeName.toTypeName(typeResolver)
                 isNullable = isNullable && type.isNullable
 
-                type.toString().trimTypeName().trimEnd('?')
+                type.toString().trimTypeName().trimNullable()
             }
 
             Pair(boundaryNames, isNullable)
@@ -188,7 +218,7 @@ internal class KMockProxyNameSelector(
 
         val zero = determineNullablePrefix(isNullable)
 
-        return "$zero$name${currentName.trimEnd('?')}"
+        return "$zero$name${currentName.trimNullable()}"
     }
 
     private fun String.resolveActualName(
@@ -218,10 +248,74 @@ internal class KMockProxyNameSelector(
         return arguments.map { (_, suffix, _, usePlural) ->
             suffix
                 .toString()
-                .trimEnd('?')
+                .trimNullable()
                 .resolveActualName(generics, typeResolver)
                 .trimTypeName()
                 .amendPlural(usePlural)
+        }
+    }
+
+    private fun String.transformGenerics(
+        generics: Map<String, String>
+    ): String {
+        return this.split('<', '>', ',')
+            .filterNot { part -> part.isBlank() }
+            .joinToString("_") { part ->
+                val resolved = generics.getOrElse(part.trim().trimNullable()) { part }
+                prefixResolver(resolved).prefixNullable()
+            }
+            .prefixNullable()
+            .trimEnd('_')
+    }
+
+    private fun List<KSTypeReference>?.resolveBoundaries(
+        typeResolver: TypeParameterResolver
+    ): String {
+        return if (this.isNullOrEmpty()) {
+            NULLABLE_ANY_LONG_NAME
+        } else {
+            this.joinToString("") { typeName ->
+                val type = typeName.toTypeName(typeResolver)
+                type.toString().transformGenerics(emptyMap()).trimNullable()
+            }
+        }
+    }
+
+    private fun Map<String, List<KSTypeReference>>.determineGenericName(
+        name: String,
+        typeResolver: TypeParameterResolver
+    ): String {
+        val resolved = this[name].resolveBoundaries(typeResolver)
+
+        return "$name${resolved.prefixNullable()}"
+    }
+
+    private fun Map<String, List<KSTypeReference>>.resolve(typeResolver: TypeParameterResolver): Map<String, String> {
+        return this.keys.associateWith { key ->
+            this.determineGenericName(key, typeResolver)
+        }
+    }
+
+    private fun String.addArrayPrefix(addPrefix: Boolean): String {
+        return if (addPrefix) {
+            "Array_$this"
+        } else {
+            this
+        }
+    }
+
+    private fun resolveLongProxySuffixFromArguments(
+        arguments: Array<MethodTypeInfo>,
+        generics: Map<String, List<KSTypeReference>>,
+        typeResolver: TypeParameterResolver
+    ): List<String> {
+        val resolved = generics.resolve(typeResolver)
+        return arguments.map { (_, suffix, _, addPrefix) ->
+            suffix
+                .toString()
+                .transformGenerics(resolved)
+                .prefixNullable()
+                .addArrayPrefix(addPrefix)
         }
     }
 
@@ -232,11 +326,7 @@ internal class KMockProxyNameSelector(
         typeResolver: TypeParameterResolver
     ): String {
         val titleCasedSuffixes = if (arguments.isNotEmpty()) {
-            this.resolveProxySuffixFromArguments(
-                arguments = arguments,
-                generics = generics,
-                typeResolver = typeResolver
-            )
+            this.suffixResolver(arguments, generics, typeResolver)
         } else {
             listOf("Void")
         }
@@ -406,6 +496,8 @@ internal class KMockProxyNameSelector(
         const val RECEIVER_GETTER = "Getter"
         const val RECEIVER_SETTER = "Setter"
         const val RECEIVER_METHOD = "Receiver"
+        const val NULLABLE_INDICATOR = "Z"
+        const val NULLABLE_ANY_LONG_NAME = "ZAny"
         private val nullableAnyGeneric = Pair("Any", true)
     }
 }

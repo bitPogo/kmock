@@ -27,4 +27,12 @@ interface Parent<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T, K> lol(x: T) where T : K
 
     fun narv(vararg x: L)
+
+    fun oo(fuzz: Int, vararg ozz: Any): Any
+    fun oo(fuzz: Any?, vararg ozz: Int): Any
+    fun <T> oo(fuzz: Any, vararg ozz: T): Any
+    fun <T> oo(fuzz: Any, vararg ozz: RRR<T>): Any
+    fun <T> oo(fuzz: Any, ozz: CharArray): Any
 }
+
+class RRR<L>

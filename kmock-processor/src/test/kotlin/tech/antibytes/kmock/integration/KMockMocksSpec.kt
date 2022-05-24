@@ -441,7 +441,11 @@ class KMockMocksSpec {
         val expected = loadResource("/expected/overloaded/Platform.kt")
 
         // When
-        val compilerResult = compile(provider, source, isKmp = false)
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
         val actual = resolveGenerated("PlatformMock.kt")
 
         // Then
@@ -470,6 +474,33 @@ class KMockMocksSpec {
             )
         )
         val actual = resolveGenerated("CollisionMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated overloaded Source with extended Names for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Refined.kt",
+            loadResource("/template/overloaded/Refined.kt")
+        )
+        val expected = loadResource("/expected/overloaded/Refined.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_enableFineGrainedProxyNames" to "true"
+            )
+        )
+        val actual = resolveGenerated("RefinedMock.kt")
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
@@ -539,7 +570,7 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "${KMOCK_PREFIX}alias_mock.template.alias.Platform" to "AliasPlatform",
+                "kmock_alias_mock.template.alias.Platform" to "AliasPlatform",
             )
         )
         val actual = resolveGenerated("AliasPlatformMock.kt")

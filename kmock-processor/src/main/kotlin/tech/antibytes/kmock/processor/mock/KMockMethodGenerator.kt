@@ -118,6 +118,7 @@ internal class KMockMethodGenerator(
         relaxer: Relaxer?
     ): Triple<PropertySpec, FunSpec, TypeVariableName> {
         val methodName = ksFunction.simpleName.asString()
+
         val typeParameterResolver = ksFunction.typeParameters
             .toTypeParameterResolver(typeResolver)
         val generics = genericResolver.extractGenerics(ksFunction, typeParameterResolver)
@@ -143,6 +144,7 @@ internal class KMockMethodGenerator(
             generics = generics ?: emptyMap(),
             typeResolver = typeParameterResolver,
         )
+
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toSecuredTypeName(
             inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),

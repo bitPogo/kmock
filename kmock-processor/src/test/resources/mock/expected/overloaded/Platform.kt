@@ -43,9 +43,10 @@ internal class PlatformMock(
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithIntAny",
         collector = verifier, freeze = freeze)
 
-    public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
-        = ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithAnyInt",
-        collector = verifier, freeze = freeze)
+    public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any?, kotlin.Int) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithAnyInt",
+            collector = verifier, freeze = freeze)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> =
@@ -81,7 +82,7 @@ internal class PlatformMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithTLPG",
             collector = verifier, freeze = freeze)
 
-    public val _fooWithTCharSequenceComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
+    public val _fooWithTCharSequenceComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any?) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithTCharSequenceComparable",
             collector = verifier, freeze = freeze)
@@ -92,7 +93,7 @@ internal class PlatformMock(
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
-    public override fun foo(fuzz: Any, ozz: Int): Any = _fooWithAnyInt.invoke(fuzz, ozz)
+    public override fun foo(fuzz: Any?, ozz: Int): Any = _fooWithAnyInt.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Any, ozz: String): Any = _fooWithAnyString.invoke(fuzz, ozz)
 
@@ -114,7 +115,7 @@ internal class PlatformMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T> foo(fuzz: T): Any where T : CharSequence?, T : Comparable<T> =
+    public override fun <T> foo(fuzz: T?): Any where T : CharSequence?, T : Comparable<T> =
         _fooWithTCharSequenceComparable.invoke(fuzz)
 
     public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)

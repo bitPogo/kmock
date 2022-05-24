@@ -14,11 +14,11 @@ import tech.antibytes.util.test.fulfils
 class KMockProxyNameSelectorSpec {
     @Test
     fun `It fulfils ProxyNameCollector`() {
-        KMockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameCollector::class
+        KMockProxyNameSelector(false, false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameCollector::class
     }
 
     @Test
     fun `It fulfils ProxyNameSelector`() {
-        KMockProxyNameSelector(false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameSelector::class
+        KMockProxyNameSelector(false, false, mockk(), mockk(), mockk()) fulfils ProcessorContract.ProxyNameSelector::class
     }
 }
