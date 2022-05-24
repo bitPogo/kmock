@@ -8,9 +8,8 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
-
-private val nullableAny = Any::class.asTypeName().copy(nullable = true)
 
 internal fun GenericDeclaration.resolveGeneric(): TypeName {
     return if (this.types.size > 1) {

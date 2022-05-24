@@ -18,7 +18,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class RefinedMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Refined? = null,
     freeze: Boolean = true,
@@ -32,7 +32,7 @@ internal class RefinedMock(
 
     public val _foo: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.RefinedMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var hashCode: Int
         get() = _hashCode.onGet()
@@ -40,128 +40,128 @@ internal class RefinedMock(
 
     public val _hashCode: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.RefinedMock#_hashCode", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithIntAny",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithZAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any?, kotlin.Int) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithZAnyInt",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithAnyString",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithStringAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithZStringAbc: KMockContract.SyncFunProxy<Any, (kotlin.String?,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithZStringAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithFunction1_Any_Unit:
         KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any, kotlin.Unit>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithFunction1_Any_Unit",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTZAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTZAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTRefined:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Refined) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTRefined",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTLPG", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
-    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) ->
+    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithArray_Any",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithComparable_Array_Map_String_TZAny:
         KMockContract.SyncFunProxy<Any, (kotlin.Comparable<kotlin.Array<kotlin.collections.Map<kotlin.String,
             kotlin.Any?>>>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithComparable_Array_Map_String_TZAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithComparable_Array_Map_TZAny_Any:
         KMockContract.SyncFunProxy<Any, (kotlin.Comparable<kotlin.Array<kotlin.collections.Map<kotlin.Any?,
             kotlin.Any>>>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithComparable_Array_Map_TZAny_Any",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithComparable_Array_Map_String_Any:
         KMockContract.SyncFunProxy<Any, (kotlin.Comparable<kotlin.Array<kotlin.collections.Map<kotlin.String,
             kotlin.Any>>>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithComparable_Array_Map_String_Any",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTZCharSequenceComparable_TAbc: KMockContract.SyncFunProxy<Any, (kotlin.Any?,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTZCharSequenceComparable_TAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTCharSequenceZComparable_TAbc: KMockContract.SyncFunProxy<Any, (kotlin.Any,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTCharSequenceZComparable_TAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTZCharSequenceZComparable_TAbc: KMockContract.SyncFunProxy<Any, (kotlin.Any?,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTZCharSequenceZComparable_TAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTCharSequenceComparable_TAbc: KMockContract.SyncFunProxy<Any, (kotlin.Any?,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTCharSequenceComparable_TAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithAlias: KMockContract.SyncFunProxy<Any, (mock.template.overloaded.alias) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithAlias",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithRList_T:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithRList_T",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithRList_ZT:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithRList_ZT",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _ooWithIntArray_Any: KMockContract.SyncFunProxy<Any, (kotlin.Int, Array<out
+    public val _ooWithIntArray_Any: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Array<out
     kotlin.Any>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithIntArray_Any",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _ooWithZAnyArray_Int: KMockContract.SyncFunProxy<Any, (kotlin.Any?, kotlin.IntArray) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithZAnyArray_Int",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_TZAny: KMockContract.SyncFunProxy<Any, (kotlin.Any, Array<out
+    public val _ooWithAnyArray_TZAny: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
     kotlin.Any?>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_TZAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_RRR_TZAny: KMockContract.SyncFunProxy<Any, (kotlin.Any, Array<out
-    mock.template.overloaded.RRR<kotlin.Any?>>) -> kotlin.Any> =
+    public val _ooWithAnyArray_RRR_TZAny: KMockContract.SyncFunProxy<Any, (kotlin.Any,
+        kotlin.Array<out mock.template.overloaded.RRR<kotlin.Any?>>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_RRR_TZAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 

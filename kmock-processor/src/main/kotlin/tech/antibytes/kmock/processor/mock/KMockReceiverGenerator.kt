@@ -15,12 +15,13 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
@@ -97,9 +98,9 @@ internal class KMockReceiverGenerator(
             this.mutable(true)
             this.setter(
                 FunSpec.setterBuilder()
-                    .addParameter("value", propertyType.methodTypeName)
+                    .addParameter(VALUE, propertyType.methodTypeName)
                     .addStatement(
-                        "%L.invoke(this@%L, value)%L",
+                        "%L.invoke(this@%L, $VALUE)%L",
                         setterProxy.proxyName,
                         setterProxy.templateName,
                         nonIntrusiveInvocation,
@@ -441,6 +442,5 @@ internal class KMockReceiverGenerator(
 
     private companion object {
         private val emptySetter = Pair(null, null)
-        private val nullableAny = Any::class.asTypeName().copy(nullable = true)
     }
 }

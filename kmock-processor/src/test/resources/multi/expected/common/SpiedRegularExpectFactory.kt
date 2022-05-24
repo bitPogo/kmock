@@ -12,7 +12,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
@@ -20,7 +20,7 @@ internal expect inline fun <reified Mock> kmock(
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType0: kotlin.reflect.KClass<multi.template.common.Regular1>,
     templateType1: kotlin.reflect.KClass<multi.template.common.CommonContractRegular.Regular2>,

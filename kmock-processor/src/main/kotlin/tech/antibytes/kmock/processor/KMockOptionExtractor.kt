@@ -13,7 +13,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_METHOD_
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DEPENDENCIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.DISABLE_FACTORIES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FINE_GRAINED_PROXY_NAMES
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_OPTION
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
@@ -91,7 +91,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key == KSP_DIR -> kspDir = value
                 key == ROOT_PACKAGE -> rootPackage = value
                 key == KMP_FLAG -> isKmp = value.toBoolean()
-                key == FREEZE -> freezeOnDefault = value.toBoolean()
+                key == FREEZE_OPTION -> freezeOnDefault = value.toBoolean()
                 key == INTERFACES -> allowInterfaces = value.toBoolean()
                 key == SPIES_ONLY -> spiesOnly = value.toBoolean()
                 key == SPY_ALL -> spyAll = value.toBoolean()

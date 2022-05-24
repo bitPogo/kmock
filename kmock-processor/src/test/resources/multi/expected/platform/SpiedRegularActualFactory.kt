@@ -24,7 +24,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
 }
 
 internal inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,

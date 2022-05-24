@@ -14,6 +14,12 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_SYNC_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.EQUALS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.IGNORE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -24,7 +30,7 @@ internal class KMockBuildInMethodGenerator(
     private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator
 ) : BuildInMethodGenerator {
     private fun resolveArgument(methodName: String): MemberArgumentTypeInfo? {
-        return if (methodName == "equals") {
+        return if (methodName == EQUALS) {
             equalsPayload
         } else {
             null
@@ -36,7 +42,7 @@ internal class KMockBuildInMethodGenerator(
         proxyInfo: ProxyInfo,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "ProxyFactory.createSyncFunProxy(%S, collector = verifier, freeze = freeze, ignorableForVerification = true)",
+            "$PROXY_FACTORY.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)",
             proxyInfo.proxyId
         )
     }

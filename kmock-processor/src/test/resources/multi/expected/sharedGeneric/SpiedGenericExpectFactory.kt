@@ -17,7 +17,7 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParame
     KMockTypeParameter1, KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4,
     KMockTypeParameter5> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType0: kotlin.reflect.KClass<multi.template.sharedGeneric.Generic1<KMockTypeParameter0,
         KMockTypeParameter1>>,

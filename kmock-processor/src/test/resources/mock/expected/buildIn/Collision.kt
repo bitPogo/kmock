@@ -12,7 +12,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CollisionMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Collision? = null,
     freeze: Boolean = true,
@@ -26,21 +26,21 @@ internal class CollisionMock(
 
     public val _foo: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.buildIn.CollisionMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val bar: Int
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.buildIn.CollisionMock#_bar", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val hashCode: String
         get() = _hashCode.onGet()
 
     public val _hashCode: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.buildIn.CollisionMock#_hashCode", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var buzz: Any
         get() = _buzz.onGet()
@@ -48,19 +48,19 @@ internal class CollisionMock(
 
     public val _buzz: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.buildIn.CollisionMock#_buzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.CollisionMock#_toString", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.CollisionMock#_equals", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _hashCodeWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.CollisionMock#_hashCodeWithVoid",
-            collector = verifier, freeze = freeze, ignorableForVerification = true)
+            collector = collector, freeze = freeze, ignorableForVerification = true)
 
     public override fun toString(): String = _toString.invoke() {
         useRelaxerIf(true) { super.toString() }

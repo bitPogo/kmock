@@ -16,7 +16,7 @@ import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.mustBe
 
-class ReturnTypeInfoExtensionsSpec {
+class MemberReturnTypeInfoExtensionsSpec {
     private val fixture = kotlinFixture()
 
     @Test

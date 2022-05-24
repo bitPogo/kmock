@@ -15,7 +15,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CommonMultiMock<MultiMock>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: MultiMock? = null,
     freeze: Boolean = true,
@@ -33,7 +33,7 @@ CommonContractRegular.Regular2, MultiMock : Regular3 {
         }
 
     public val _something: KMockContract.PropertyProxy<Int> =
-        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_something", collector = verifier,
+        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_something", collector = collector,
             freeze = freeze)
 
     public override val anything: Any
@@ -42,7 +42,7 @@ CommonContractRegular.Regular2, MultiMock : Regular3 {
         }
 
     public val _anything: KMockContract.PropertyProxy<Any> =
-        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_anything", collector = verifier,
+        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_anything", collector = collector,
             freeze = freeze)
 
     public override val somethingElse: String
@@ -51,31 +51,31 @@ CommonContractRegular.Regular2, MultiMock : Regular3 {
         }
 
     public val _somethingElse: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_somethingElse", collector = verifier,
+        ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_somethingElse", collector = collector,
             freeze = freeze)
 
     public val _doSomething: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_doSomething", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_doSomething", collector = collector,
             freeze = freeze)
 
     public val _doAnything: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_doAnything", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_doAnything", collector = collector,
             freeze = freeze)
 
     public val _doSomethingElse: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_doSomethingElse", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_toString", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_toString", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_equals", collector = verifier, freeze
+        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_equals", collector = collector, freeze
         = freeze, ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_hashCode", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.CommonMultiMock#_hashCode", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
     public override fun doSomething(): Int = _doSomething.invoke() {

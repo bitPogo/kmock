@@ -25,7 +25,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
 
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
 ): Mock = getMockInstance(
     spyOn = spyOn,
@@ -64,7 +64,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : 
     KMockTypeParameter1, KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4,
     KMockTypeParameter5> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType0: kotlin.reflect.KClass<multi.template.platformGeneric.Generic1<KMockTypeParameter0,
         KMockTypeParameter1>>,

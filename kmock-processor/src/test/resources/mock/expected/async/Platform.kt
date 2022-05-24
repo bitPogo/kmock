@@ -11,7 +11,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class PlatformMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
@@ -22,19 +22,19 @@ internal class PlatformMock(
 ) : Platform {
     public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_foo", collector =
-    verifier, freeze = freeze)
+    collector, freeze = freeze)
 
     public val _bar: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_bar", collector =
-    verifier, freeze = freeze)
+    collector, freeze = freeze)
 
     public val _ozz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.IntArray) -> kotlin.Any> =
         ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_ozz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
-    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (Array<out kotlin.Any>) -> kotlin.Any> =
-        ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_izz", collector =
-        verifier, freeze = freeze)
+    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) ->
+    kotlin.Any> = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_izz",
+        collector = collector, freeze = freeze)
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

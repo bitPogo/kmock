@@ -18,7 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_N
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
@@ -243,7 +243,7 @@ internal class KMockFactoryEntryPointGenerator(
 
             file.addAnnotation(UNUSED)
             file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-            file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
+            file.addImport(NOOP_COLLECTOR_CLASS.packageName, NOOP_COLLECTOR_CLASS.simpleName)
 
             if (!spiesOnly) {
                 file.addFunction(buildMockFactory())
@@ -280,7 +280,7 @@ internal class KMockFactoryEntryPointGenerator(
                 file.addAnnotation(UNUSED)
 
                 file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-                file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
+                file.addImport(NOOP_COLLECTOR_CLASS.packageName, NOOP_COLLECTOR_CLASS.simpleName)
 
                 file.generateGenericEntryPoints(singleGenerics)
                 file.generateMultiInterfaceEntryPoints(multiGenerics)

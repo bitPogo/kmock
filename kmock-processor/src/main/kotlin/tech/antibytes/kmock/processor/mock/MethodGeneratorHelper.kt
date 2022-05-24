@@ -20,6 +20,12 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_ASYNC_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_SYNC_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
@@ -77,9 +83,9 @@ internal class MethodGeneratorHelper(
 
     private fun determineProxyType(suspending: Boolean): Triple<ClassName, String, String> {
         return if (suspending) {
-            Triple(asyncProxy, "createAsyncFunProxy", "suspend ")
+            Triple(asyncProxy, CREATE_ASYNC_PROXY, "suspend ")
         } else {
-            Triple(syncProxy, "createSyncFunProxy", "")
+            Triple(syncProxy, CREATE_SYNC_PROXY, "")
         }
     }
 
@@ -141,7 +147,7 @@ internal class MethodGeneratorHelper(
                 argument.proxyTypeName
             } else {
                 specialArrays.getOrElse(argument.proxyTypeName.toString()) {
-                    TypeVariableName("Array<out ${argument.proxyTypeName}>")
+                    TypeVariableName("$array<out ${argument.proxyTypeName}>")
                 }
             }
         }
@@ -165,7 +171,7 @@ internal class MethodGeneratorHelper(
         proxyFactoryMethod: String,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "ProxyFactory.%L(%S, collector = verifier, freeze = freeze)",
+            "$PROXY_FACTORY.%L(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)",
             proxyFactoryMethod,
             proxyInfo.proxyId,
         )

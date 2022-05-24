@@ -17,7 +17,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class RelaxedMock<K : Any, L>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Relaxed<K, L>? = null,
     freeze: Boolean = true,
@@ -41,7 +41,7 @@ internal class RelaxedMock<K : Any, L>(
 
     public val _template: KMockContract.PropertyProxy<L> =
         ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_template", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val ozz: Int
         get() = _ozz.onGet {
@@ -50,36 +50,36 @@ internal class RelaxedMock<K : Any, L>(
         }
 
     public val _ozz: KMockContract.PropertyProxy<Int> =
-        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", collector = verifier,
+        ProxyFactory.createPropertyProxy("mock.template.spy.RelaxedMock#_ozz", collector = collector,
             freeze = freeze)
 
     public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_foo", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_foo", collector = collector,
             freeze = freeze)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_bar", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_bar", collector = collector,
             freeze = freeze)
 
     public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
-        ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", collector = verifier,
+        ProxyFactory.createAsyncFunProxy("mock.template.spy.RelaxedMock#_buzz", collector = collector,
             freeze = freeze)
 
     public val _izz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_izz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_izz", collector = collector,
             freeze = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_toString", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_equals", collector = verifier,
-            freeze = freeze, ignorableForVerification = true)
+        ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_equals", collector =
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.RelaxedMock#_hashCode", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public override fun <T> foo(payload: T): Unit = _foo.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)

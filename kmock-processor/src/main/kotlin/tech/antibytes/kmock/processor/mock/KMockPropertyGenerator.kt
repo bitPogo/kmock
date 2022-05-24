@@ -17,6 +17,11 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_PROPERTY_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -77,9 +82,9 @@ internal class KMockPropertyGenerator(
         )
 
         val statement = if (nonIntrusive.isNotEmpty()) {
-            "return $propertyName.onSet(value)$nonIntrusive"
+            "return $propertyName.onSet($VALUE)$nonIntrusive"
         } else {
-            "return $propertyName.onSet(value)"
+            "return $propertyName.onSet($VALUE)"
         }
 
         return this.addStatement(statement)
@@ -92,7 +97,7 @@ internal class KMockPropertyGenerator(
     ): FunSpec {
         return FunSpec
             .setterBuilder()
-            .addParameter("value", propertyType)
+            .addParameter(VALUE, propertyType)
             .addSetterInvocation(propertyName, enableSpy)
             .build()
     }
@@ -233,6 +238,6 @@ internal class KMockPropertyGenerator(
 
     private companion object {
         private val proxy = PropertyProxy::class.asClassName()
-        private const val template = "ProxyFactory.createPropertyProxy(%S, collector = verifier, freeze = freeze)"
+        private val template = "$PROXY_FACTORY.$CREATE_PROPERTY_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"
     }
 }

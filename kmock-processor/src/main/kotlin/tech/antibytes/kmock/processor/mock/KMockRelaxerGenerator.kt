@@ -7,6 +7,8 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
@@ -55,7 +57,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         val cast = methodReturnType.resolveCastForRelaxer(relaxer)
 
         return if (relaxer != null) {
-            "useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId,$types)$cast }\n"
+            "useRelaxerIf($RELAXER_ARGUMENT) { proxyId -> ${relaxer.functionName}(proxyId,$types)$cast }\n"
         } else {
             ""
         }
@@ -66,7 +68,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         relaxer: Relaxer?
     ): String {
         return if (methodReturnType.proxyTypeName.toString() == "kotlin.Unit") {
-            "useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n"
+            "useUnitFunRelaxerIf($UNIT_RELAXER_ARGUMENT || $RELAXER_ARGUMENT)\n"
         } else {
             addRelaxer(methodReturnType, relaxer)
         }

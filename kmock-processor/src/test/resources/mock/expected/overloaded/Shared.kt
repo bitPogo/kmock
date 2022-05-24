@@ -13,7 +13,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class SharedMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
@@ -27,7 +27,7 @@ internal class SharedMock(
 
     public val _foo: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.SharedMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var hashCode: Int
         get() = _hashCode.onGet()
@@ -35,49 +35,49 @@ internal class SharedMock(
 
     public val _hashCode: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.SharedMock#_hashCode", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithIntAny",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithAnyInt",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithAnyString",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithStringAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithStringAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithFunction1",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithZTAny", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
     public val _fooWithTShared: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Shared) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTShared",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTLPG", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 

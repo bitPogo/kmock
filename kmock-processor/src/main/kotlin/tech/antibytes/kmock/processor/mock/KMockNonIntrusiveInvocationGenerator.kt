@@ -8,6 +8,7 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.EQUALS
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -102,7 +103,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
 
     private fun buildEqualsRelaxer(
         argument: MemberArgumentTypeInfo?
-    ): String = relaxerGenerator.buildBuildInRelaxation("equals", argument)
+    ): String = relaxerGenerator.buildBuildInRelaxation(EQUALS, argument)
 
     private fun buildBuildInRelaxer(
         methodName: String
@@ -143,7 +144,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
         methodName: String,
         argument: MemberArgumentTypeInfo?
     ): String = buildInvocation { nonIntrusiveInvocation ->
-        if (methodName == "equals") {
+        if (methodName == EQUALS) {
             buildNonIntrusiveEquals(
                 nonIntrusiveInvocation = nonIntrusiveInvocation,
                 enableSpy = enableSpy,
