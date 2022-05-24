@@ -45,7 +45,8 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     "$buildDir/generated/ksp/android/androidReleaseAndroidTest"
                 )
             }
-            platformName == "androidAndroid" -> { /* Do nothing*/ }
+            platformName == "androidAndroid" -> { /* Do nothing*/
+            }
             else -> {
                 sourceSet.kotlin.srcDir(
                     "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
@@ -125,6 +126,24 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
     }
 
+    // TODO: Native Workaround for MultiMocks
+    private fun addPurgeTask(project: Project) {
+        val kspTasks = project.tasks.matching { task -> task.name.startsWith("ksp") }
+
+        kspTasks.configureEach {
+            doLast {
+                project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
+                    .walkBottomUp()
+                    .toList()
+                    .forEach { file ->
+                        if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
+                            file.delete()
+                        }
+                    }
+            }
+        }
+    }
+
     override fun configure(project: Project) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
@@ -158,6 +177,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         if (kspCollector.isNotEmpty()) {
             propagateDependencies(project, ancestors)
+            addPurgeTask(project)
         }
     }
 }

@@ -19,7 +19,6 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PURGE_FILES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ALL

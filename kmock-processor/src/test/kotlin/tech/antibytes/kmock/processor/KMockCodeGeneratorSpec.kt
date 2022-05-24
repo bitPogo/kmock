@@ -35,12 +35,12 @@ class KMockCodeGeneratorSpec {
 
     @Test
     fun `It fulfils CodeGenerator`() {
-        KMockCodeGenerator(fixture.fixture(), mockk(), mockk()) fulfils CodeGenerator::class
+        KMockCodeGenerator(fixture.fixture(), mockk()) fulfils CodeGenerator::class
     }
 
     @Test
     fun `It fulfils KmpCodeGenerator`() {
-        KMockCodeGenerator(fixture.fixture(), mockk(), mockk()) fulfils ProcessorContract.KmpCodeGenerator::class
+        KMockCodeGenerator(fixture.fixture(), mockk()) fulfils ProcessorContract.KmpCodeGenerator::class
     }
 
     @Test
@@ -57,7 +57,6 @@ class KMockCodeGeneratorSpec {
         // When
         KMockCodeGenerator(
             kspDir = ksp,
-            purgeFiles = emptySet(),
             kspGenerator = kspGenerator,
         ).createNewFile(
             dependencies = dependencies,
@@ -91,7 +90,6 @@ class KMockCodeGeneratorSpec {
         // When
         val generator = KMockCodeGenerator(
             kspDir = ksp,
-            purgeFiles = emptySet(),
             kspGenerator = kspGenerator,
         )
         generator.setOneTimeSourceSet("commonTest")
@@ -134,7 +132,6 @@ class KMockCodeGeneratorSpec {
         // When
         val generator = KMockCodeGenerator(
             kspDir = ksp,
-            purgeFiles = emptySet(),
             kspGenerator = kspGenerator,
         )
         generator.setOneTimeSourceSet("commonTest")
@@ -167,61 +164,9 @@ class KMockCodeGeneratorSpec {
     }
 
     @Test
-    fun `Given createNewFile is called it files writes a File to a given SourceSet if told in the given KSP Dir, while removing a existing version of it if it part of the purgeFiles`() {
-        // Given
-        val ksp = kspDir.absolutePath
-        val packageName: String = fixture.fixture(named("alpha"))
-        val fileName: String = fixture.fixture(named("alpha"))
-        val extensionName: String = fixture.fixture(named("alpha"))
-        val kspGenerator: CodeGenerator = mockk(relaxed = true)
-
-        val dependencies: Dependencies = mockk()
-
-        // When
-        val generator = KMockCodeGenerator(
-            kspDir = ksp,
-            purgeFiles = setOf(
-                "$ksp/common/commonTest/kotlin/$packageName/$fileName.kt"
-            ),
-            kspGenerator = kspGenerator,
-        )
-        generator.setOneTimeSourceSet("commonTest")
-        generator.createNewFile(
-            dependencies = dependencies,
-            packageName = packageName,
-            fileName = fileName,
-            extensionName = extensionName,
-        )
-
-        generator.setOneTimeSourceSet("commonTest")
-        generator.createNewFile(
-            dependencies = dependencies,
-            packageName = packageName,
-            fileName = fileName,
-            extensionName = extensionName,
-        )
-
-        val actual = kspDir.walkBottomUp().toList().any { file ->
-            file.absolutePath.endsWith("common/commonTest/kotlin/$packageName/$fileName.kt")
-        }
-
-        // Then
-        verify(exactly = 0) {
-            kspGenerator.createNewFile(
-                dependencies,
-                packageName,
-                fileName,
-                extensionName
-            )
-        }
-
-        actual mustBe true
-    }
-
-    @Test
     fun `associate is not implemented`() {
         assertFailsWith<NotImplementedError> {
-            KMockCodeGenerator(fixture.fixture(), mockk(), mockk()).associate(
+            KMockCodeGenerator(fixture.fixture(), mockk()).associate(
                 listOf(),
                 fixture.fixture(),
                 fixture.fixture()
@@ -232,7 +177,7 @@ class KMockCodeGeneratorSpec {
     @Test
     fun `associateWithClasses is not implemented`() {
         assertFailsWith<NotImplementedError> {
-            KMockCodeGenerator(fixture.fixture(), mockk(), mockk()).associateWithClasses(
+            KMockCodeGenerator(fixture.fixture(), mockk()).associateWithClasses(
                 listOf(),
                 fixture.fixture(),
                 fixture.fixture()

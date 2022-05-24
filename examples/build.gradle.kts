@@ -221,17 +221,21 @@ dependencies {
     add("kspIosSimulatorArm64Test", project(":kmock-processor"))
 }
 
-val kspTasks = tasks.matching { task -> task.name.startsWith("kspTest") }
+val kspTasks = tasks.matching { task -> task.name.startsWith("ksp") }
 
 kspTasks.configureEach {
     doLast {
-        File("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp").walkBottomUp().toList().forEach { file ->
-            if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
-                file.delete()
+        project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
+            .walkBottomUp()
+            .toList()
+            .forEach { file ->
+                if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
+                    file.delete()
+                }
             }
-        }
     }
 }
+
 
 android {
     defaultConfig {

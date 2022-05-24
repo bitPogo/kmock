@@ -7,7 +7,6 @@
 package tech.antibytes.gradle.kmock
 
 import org.gradle.api.Project
-import java.io.File
 
 internal interface KMockPluginContract {
     interface Extension {
