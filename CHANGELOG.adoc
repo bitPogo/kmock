@@ -69,6 +69,7 @@ toc::[]
 * Meta/Shared Source Annotation are now supporting platform references (e.g. instead of metaTest you can write meta)
 * Custom Source Annotation are now supporting platform references (e.g. instead of sharedTest you can write shared)
 * Proxy-Access-Methods and their corresponding verification/assertion counter parts
+* `verifer` argument is now called `collector`
 
 === Deprecated
 
