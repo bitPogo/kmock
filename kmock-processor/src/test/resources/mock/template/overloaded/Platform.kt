@@ -21,6 +21,7 @@ interface Platform {
     fun <T> foo(fuzz: T)
     fun <T : Platform> foo(fuzz: T)
     fun <T : LPG> foo(fuzz: T)
+    fun <T>foo(fuzz: T): Any where T : CharSequence?, T : Comparable<T>
     fun foo(vararg fuzz: Any): Any
 }
 

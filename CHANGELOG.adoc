@@ -63,8 +63,8 @@ toc::[]
 * `spyOn` is now capable of picking up KMock defined Aliases
 * `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
 * Relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
-* Generic methods names get prefixed by the generic type name, if overloaded to avoid name collisions
-* Generic methods names get prefixed by the generic type name and a nullable, if overloaded and nullable to avoid name collisions
+* Generic methods names get prefixed by the generic type name, if it is overloaded to avoid name collisions
+* Generic methods names get prefixed by an indicator, if it is overloaded and nullable to avoid name collisions
 * Meta/Shared Source Annotation are now supporting platform references (e.g. instead of metaTest you can write meta)
 * Custom Source Annotation are now supporting platform references (e.g. instead of sharedTest you can write shared)
 * Proxy-Access-Methods and their corresponding verification/assertion counter parts
@@ -86,6 +86,7 @@ toc::[]
 * Annotation was not picked up when more then one Annotation was used
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other
+* Multibounded Generics caused invalid Proxy name if overloaded and aa leading boundary was nullable
 
 === Security
 

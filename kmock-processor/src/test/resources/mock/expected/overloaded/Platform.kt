@@ -2,6 +2,8 @@ package mock.template.overloaded
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.CharSequence
+import kotlin.Comparable
 import kotlin.Function1
 import kotlin.Int
 import kotlin.String
@@ -79,6 +81,11 @@ internal class PlatformMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithTLPG",
             collector = verifier, freeze = freeze)
 
+    public val _fooWithTCharSequenceComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithTCharSequenceComparable",
+            collector = verifier, freeze = freeze)
+
     public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.PlatformMock#_fooWithAnys",
             collector = verifier, freeze = freeze)
@@ -107,6 +114,9 @@ internal class PlatformMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <T> foo(fuzz: T): Any where T : CharSequence?, T : Comparable<T> =
+        _fooWithTCharSequenceComparable.invoke(fuzz)
+
     public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)
 
     public fun _clearMock(): Unit {
@@ -121,6 +131,7 @@ internal class PlatformMock(
         _fooWithZTAny.clear()
         _fooWithTPlatform.clear()
         _fooWithTLPG.clear()
+        _fooWithTCharSequenceComparable.clear()
         _fooWithAnys.clear()
     }
 }

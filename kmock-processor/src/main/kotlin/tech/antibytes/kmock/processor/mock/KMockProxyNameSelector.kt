@@ -163,7 +163,7 @@ internal class KMockProxyNameSelector(
                 val type = typeName.toTypeName(typeResolver)
                 isNullable = isNullable && type.isNullable
 
-                type.toString().trimTypeName()
+                type.toString().trimTypeName().trimEnd('?')
             }
 
             Pair(boundaryNames, isNullable)
