@@ -87,6 +87,7 @@ toc::[]
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other
 * Multibounded Generics caused invalid Proxy name if overloaded and aa leading boundary was nullable
+* Nested Generic Types were not resolved for Proxies
 
 === Security
 
