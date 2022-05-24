@@ -176,7 +176,6 @@ internal interface ProcessorContract {
     data class GenericDeclaration(
         val types: List<TypeName>,
         val recursive: Boolean,
-        val nullable: Boolean,
         val castReturnType: Boolean = false
     )
 
