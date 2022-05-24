@@ -14,9 +14,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-// based on: https://github.com/google/ksp/blob/main/compiler-plugin/src/main/kotlin/com/google/devtools/ksp/processing/impl/CodeGeneratorImpl.kt
+// based on: https://github.com/google/ksp/blob/5571ddb08eada2d685a42ae0667942ac203866e5/common-util/src/main/kotlin/com/google/devtools/ksp/processing/impl/CodeGeneratorImpl.kt#L1
 internal class KMockCodeGenerator(
     private val kspDir: String,
+    private val purgeFiles: Set<String>,
     private val kspGenerator: CodeGenerator,
 ) : ProcessorContract.KmpCodeGenerator {
     private val files = mutableMapOf<String, File>()
@@ -55,9 +56,7 @@ internal class KMockCodeGenerator(
         return "$kspDir$separator$sourceDirs$separator$packageDirs$separator$fileName$fileExtension"
     }
 
-    private fun guardFilePath(
-        file: File
-    ) {
+    private fun guardFilePath(file: File) {
         val parent = file.parentFile
 
         if (!parent.exists() && !parent.mkdirs()) {
@@ -78,8 +77,19 @@ internal class KMockCodeGenerator(
         }
     }
 
+    private fun purgeExistingFile(absolutePath: String): Boolean {
+        return if (absolutePath in purgeFiles && absolutePath in files) {
+            outputStreams[absolutePath]!!.close()
+            files[absolutePath]!!.delete()
+        } else {
+            false
+        }
+    }
+
     private fun guardAgainstRewriteFile(absolutePath: String) {
-        if (absolutePath in files) {
+        val purged = purgeExistingFile(absolutePath)
+
+        if (absolutePath in files && !purged) {
             throw FileAlreadyExistsException(File(absolutePath))
         }
     }

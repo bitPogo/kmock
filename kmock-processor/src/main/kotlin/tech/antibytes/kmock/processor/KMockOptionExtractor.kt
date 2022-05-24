@@ -28,7 +28,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
 import tech.antibytes.kmock.processor.ProcessorContract.OptionExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
-import java.io.File
 import java.util.SortedSet
 
 internal object KMockOptionExtractor : OptionExtractor {

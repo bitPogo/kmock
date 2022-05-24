@@ -114,6 +114,7 @@ class KMockProcessorProvider(
 
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,
+            purgeFiles = options.purgeFiles,
             kspGenerator = environment.codeGenerator
         )
 

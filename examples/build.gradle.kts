@@ -31,6 +31,10 @@ ksp {
     arg("kmock_kspDir", "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
     arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
     arg("kmock_alternativeProxyAccess", "true")
+    arg(
+        "kmock_purgeFiles_0",
+        "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/common/commonTest/kotlin/tech/antibytes/kmock/example/MergedCommonMock.kt"
+    )
 }
 
 kotlin {
@@ -219,6 +223,18 @@ dependencies {
     add("kspLinuxX64Test", project(":kmock-processor"))
     add("kspIosX64Test", project(":kmock-processor"))
     add("kspIosSimulatorArm64Test", project(":kmock-processor"))
+}
+
+val kspTasks = tasks.matching { task -> task.name.startsWith("kspTest") }
+
+kspTasks.configureEach {
+    doLast {
+        File("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp").walkBottomUp().toList().forEach { file ->
+            if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
+                file.delete()
+            }
+        }
+    }
 }
 
 android {
