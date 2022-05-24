@@ -130,11 +130,6 @@ internal interface KMockPluginContract {
          */
         @KMockGradleExperimental
         var enableFineGrainedNames: Boolean
-
-        /**
-         * File Container which should be purged before create those Files in a SharedSource context.
-         */
-        var purgeFiles: Set<File>
     }
 
     interface SourceSetConfigurator {
@@ -169,6 +164,5 @@ internal interface KMockPluginContract {
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
         const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
         const val FINE_GRAINED_PROXY_NAMES = "${KMOCK_PREFIX}enableFineGrainedProxyNames"
-        const val PURGE_FILES = "${KMOCK_PREFIX}purgeFiles_"
     }
 }

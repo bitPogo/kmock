@@ -245,15 +245,4 @@ abstract class KMockExtension(
             propagateValue(FINE_GRAINED_PROXY_NAMES, value.toString())
             _enableFineGrainedNames = value
         }
-
-    override var purgeFiles: Set<File>
-        get() = _purgeFiles
-        set(value) {
-            propagateIterable(
-                prefix = PURGE_FILES,
-                values = value
-            ) { file -> file.absolutePath }
-
-            _purgeFiles = value
-        }
 }

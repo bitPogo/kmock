@@ -757,42 +757,4 @@ class ExtensionSpec {
         extension.enableFineGrainedNames mustBe expected
         verify(exactly = 1) { kspExtension.arg("kmock_enableFineGrainedProxyNames", expected.toString()) }
     }
-
-    @Test
-    fun `Its default purgeFiles is a empty set`() {
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
-
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-
-        val extension = createExtension<KMockExtension>(project)
-
-        extension.purgeFiles mustBe emptySet()
-    }
-
-    @Test
-    fun `It propagates purgeFiles changes to Ksp`() {
-        // Given
-        val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: List<String> = fixture.listFixture(size = 3)
-        val files = listOf<File>(
-            mockk(),
-            mockk(),
-            mockk()
-        )
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
-        every { files[0].absolutePath } returns expected[0]
-        every { files[1].absolutePath } returns expected[1]
-        every { files[2].absolutePath } returns expected[2]
-
-        // When
-        val extension = createExtension<KMockExtension>(project)
-        extension.purgeFiles = files.toSet()
-
-        extension.purgeFiles mustBe files.toSet()
-        verify(exactly = 1) { kspExtension.arg("kmock_purgeFiles_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_purgeFiles_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_purgeFiles_2", expected[2]) }
-    }
 }

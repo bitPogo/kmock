@@ -824,30 +824,4 @@ class KMockOptionExtractorSpec {
         // Then
         actual.enableFineGrainedNames mustBe expected
     }
-
-    @Test
-    fun `Given convertOptions it returns a set of target names what to purge`() {
-        // Given
-        val rootPackage: String = fixture.fixture()
-        val isKmp: Boolean = fixture.fixture()
-        val kspDir: String = fixture.fixture()
-
-        val delegateKSP = mutableMapOf(
-            "kmock_kspDir" to kspDir,
-            "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
-        )
-
-        val expected = fixture.listFixture<String>(size = 3).toSet()
-
-        expected.forEachIndexed { idx, value ->
-            delegateKSP["kmock_purgeFiles_$idx"] = value
-        }
-
-        // When
-        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
-
-        // Then
-        actual.purgeFiles mustBe expected
-    }
 }

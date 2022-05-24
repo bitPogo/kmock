@@ -17,7 +17,6 @@ import java.io.OutputStream
 // based on: https://github.com/google/ksp/blob/5571ddb08eada2d685a42ae0667942ac203866e5/common-util/src/main/kotlin/com/google/devtools/ksp/processing/impl/CodeGeneratorImpl.kt#L1
 internal class KMockCodeGenerator(
     private val kspDir: String,
-    private val purgeFiles: Set<String>,
     private val kspGenerator: CodeGenerator,
 ) : ProcessorContract.KmpCodeGenerator {
     private val files = mutableMapOf<String, File>()
@@ -77,19 +76,8 @@ internal class KMockCodeGenerator(
         }
     }
 
-    private fun purgeExistingFile(absolutePath: String): Boolean {
-        return if (absolutePath in purgeFiles && absolutePath in files) {
-            outputStreams[absolutePath]!!.close()
-            files[absolutePath]!!.delete()
-        } else {
-            false
-        }
-    }
-
     private fun guardAgainstRewriteFile(absolutePath: String) {
-        val purged = purgeExistingFile(absolutePath)
-
-        if (absolutePath in files && !purged) {
+        if (absolutePath in files) {
             throw FileAlreadyExistsException(File(absolutePath))
         }
     }
