@@ -24,6 +24,7 @@ interface Platform<L> {
     var <T> T.nothing: T where T : Something, T : Comparable<T>
     var L.otherThing: String
     var <T : L> T.nothing: L
+    var <T : L> T.othing: L?
     val myThing: String
     val AnythingElse.SomethingInside.inside: Int
 

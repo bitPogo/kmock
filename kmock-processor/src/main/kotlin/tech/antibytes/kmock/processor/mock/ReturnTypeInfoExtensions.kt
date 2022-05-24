@@ -7,8 +7,8 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 
 internal fun ReturnTypeInfo.resolveClassScope(): List<TypeName>? {
     return this.classScope?.get(this.proxyTypeName.toString().trimEnd('?'))

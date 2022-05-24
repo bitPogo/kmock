@@ -14,7 +14,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -23,10 +22,10 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class MethodGeneratorHelper(
@@ -136,7 +135,6 @@ internal class MethodGeneratorHelper(
 
     private fun MethodTypeInfo.resolveVarargArray(): TypeName {
         val name = this.proxyTypeName.toString()
-        println(name)
         return if (name.startsWith("out") || name == "*") {
             array.parameterizedBy(this.proxyTypeName)
         } else {
@@ -151,7 +149,7 @@ internal class MethodGeneratorHelper(
             if (!argument.isVarArg) {
                 argument.proxyTypeName
             } else {
-                specialArrays.getOrElse(argument.proxyTypeName) {
+                specialArrays.getOrElse(argument.proxyTypeName.toString().substringAfter("out ")) {
                     argument.resolveVarargArray()
                 }
             }
@@ -229,19 +227,19 @@ internal class MethodGeneratorHelper(
         private val syncProxy = KMockContract.SyncFunProxy::class.asClassName()
 
         @OptIn(ExperimentalUnsignedTypes::class)
-        private val specialArrays: Map<TypeName, TypeName> = mapOf(
-            Int::class.asTypeName() to IntArray::class.asTypeName(),
-            Byte::class.asTypeName() to ByteArray::class.asTypeName(),
-            Short::class.asTypeName() to ShortArray::class.asTypeName(),
-            Long::class.asTypeName() to LongArray::class.asTypeName(),
-            Float::class.asTypeName() to FloatArray::class.asTypeName(),
-            Double::class.asTypeName() to DoubleArray::class.asTypeName(),
-            Char::class.asTypeName() to CharArray::class.asTypeName(),
-            Boolean::class.asTypeName() to BooleanArray::class.asTypeName(),
-            UByte::class.asTypeName() to UByteArray::class.asTypeName(),
-            UShort::class.asTypeName() to UShortArray::class.asTypeName(),
-            UInt::class.asTypeName() to UIntArray::class.asTypeName(),
-            ULong::class.asTypeName() to ULongArray::class.asTypeName(),
+        private val specialArrays: Map<String, TypeName> = mapOf(
+            Int::class.asTypeName().toString() to IntArray::class.asTypeName(),
+            Byte::class.asTypeName().toString() to ByteArray::class.asTypeName(),
+            Short::class.asTypeName().toString() to ShortArray::class.asTypeName(),
+            Long::class.asTypeName().toString() to LongArray::class.asTypeName(),
+            Float::class.asTypeName().toString() to FloatArray::class.asTypeName(),
+            Double::class.asTypeName().toString() to DoubleArray::class.asTypeName(),
+            Char::class.asTypeName().toString() to CharArray::class.asTypeName(),
+            Boolean::class.asTypeName().toString() to BooleanArray::class.asTypeName(),
+            UByte::class.asTypeName().toString() to UByteArray::class.asTypeName(),
+            UShort::class.asTypeName().toString() to UShortArray::class.asTypeName(),
+            UInt::class.asTypeName().toString() to UIntArray::class.asTypeName(),
+            ULong::class.asTypeName().toString() to ULongArray::class.asTypeName(),
         )
     }
 }

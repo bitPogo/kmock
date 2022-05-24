@@ -30,6 +30,7 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.mock.resolveGeneric
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
 private fun TypeName.rawType(): ClassName {
@@ -267,21 +268,10 @@ private fun TypeName.transferProperties(source: TypeName): TypeName {
     return this.copy(nullable = this.isNullable || source.isNullable, annotations = source.annotations)
 }
 
-private fun resolveGeneric(
-    declaration: GenericDeclaration,
-    source: TypeName
-): TypeName {
-    return if (declaration.types.size > 1) {
-        nullableAny.copy(nullable = declaration.nullable)
-    } else {
-        declaration.types.first()
-    }.transferProperties(source)
-}
-
 private fun MutableList<TypeName>.resolveProxyVararg(): TypeName {
     val typeName = this.first()
     return when {
-        (typeName is WildcardTypeName && typeName.outTypes.first() is TypeVariableName) ->{
+        (typeName is WildcardTypeName && typeName.outTypes.first() is TypeVariableName) -> {
             typeName.toTypeVariableName()
         }
         typeName == STAR -> nullableAny
@@ -333,7 +323,7 @@ private fun KSType.toSecuredTypeName(
             val methodType = typeParameterResolver[name]
 
             methodType to if (name in generics) {
-                resolveGeneric(generics[name]!!, methodType)
+                generics[name]!!.resolveGeneric().transferProperties(methodType)
             } else {
                 methodType
             }
@@ -387,8 +377,8 @@ private fun KSType.toSecuredTypeName(
         else -> error("Unsupported type: $declaration")
     }
 
-    return (methodType.copy(nullable = (isMarkedNullable || overrideNullability)) to
-        proxyType.copy(nullable = (proxyType.isNullable || isMarkedNullable || overrideNullability))).also { println(it) }
+    return methodType.copy(nullable = (isMarkedNullable || overrideNullability)) to
+        proxyType.copy(nullable = (proxyType.isNullable || isMarkedNullable || overrideNullability))
 }
 
 private fun KSTypeReference.toSecuredTypeName(
