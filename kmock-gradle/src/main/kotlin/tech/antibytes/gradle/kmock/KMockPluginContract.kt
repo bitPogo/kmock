@@ -127,6 +127,7 @@ internal interface KMockPluginContract {
          *
          * Default is false
          */
+        @KMockGradleExperimental
         var enableFineGrainedNames: Boolean
     }
 

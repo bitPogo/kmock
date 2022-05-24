@@ -8,6 +8,7 @@ import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
 
 plugins {
@@ -46,6 +47,12 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType<KotlinTaskCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
 }
 
 tasks.test {
