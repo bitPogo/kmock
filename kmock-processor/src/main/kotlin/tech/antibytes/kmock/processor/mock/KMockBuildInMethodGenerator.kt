@@ -70,7 +70,7 @@ internal class KMockBuildInMethodGenerator(
             .returns(buildIns[proxyInfo.templateName]!!)
 
         if (argument != null) {
-            method.addParameter(argument.argumentName, argument.typeName)
+            method.addParameter(argument.argumentName, argument.methodTypeName)
         }
 
         val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildBuildInNonIntrusiveInvocation(
@@ -131,7 +131,7 @@ internal class KMockBuildInMethodGenerator(
     private companion object {
         private val any = Any::class.asClassName().copy(nullable = true)
         private val proxy = SyncFunProxy::class.asClassName()
-        private val equalsPayload = MethodTypeInfo("other", any, false)
+        private val equalsPayload = MethodTypeInfo("other", any, any, false)
 
         private val buildIns = mapOf(
             "toString" to String::class.asClassName(),

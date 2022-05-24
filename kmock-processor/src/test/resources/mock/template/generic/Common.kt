@@ -22,6 +22,9 @@ interface Common<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <T : Int> bla(payload: T)
     fun <T : Int> bla(vararg payload: T)
 
+    fun <T> lol(fuzz: Array<T>): Any
+    fun <T> lol(fuzz: T): Array<T>
+
     fun <T : List<Array<String>>> bar(): T
     fun <T : List<Array<String>>> bar(payload: T)
     fun <T : List<Array<String>>> bar(vararg payload: T)
@@ -93,4 +96,7 @@ interface Common<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence
     fun <R, T> xss(arg0: T, arg1: R) where R : Sequence<Char>, R : CharSequence
+
+    fun <R, T> rrr(arg0: T, arg1: R) where R : Sequence<T>, T : List<R>
+    fun <R, T> rrr(arg0: R, arg1: T) where R : Sequence<T>, T : List<R>
 }

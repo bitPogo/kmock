@@ -9,8 +9,8 @@ package tech.antibytes.kmock.processor.mock
 import com.squareup.kotlinpoet.TypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal object KMockSpyGenerator : SpyGenerator {
@@ -24,11 +24,11 @@ internal object KMockSpyGenerator : SpyGenerator {
         propertyName: String
     ): String = buildSpy("$SPY_PROPERTY!!.$propertyName = value")
 
-    override fun buildReceiverGetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String {
+    override fun buildReceiverGetterSpy(propertyName: String, propertyType: ReturnTypeInfo): String {
         val invocation = """
             |   $SPY_CONTEXT {
             |       this@$propertyName.$propertyName
-            |   } as ${propertyType.typeName}
+            |   } as ${propertyType.methodTypeName}
         """.trimMargin()
         return buildSpy(invocation)
     }
@@ -65,7 +65,7 @@ internal object KMockSpyGenerator : SpyGenerator {
         methodName: String,
         parameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",
@@ -80,7 +80,7 @@ internal object KMockSpyGenerator : SpyGenerator {
         methodName: String,
         parameter: List<TypeName>,
         arguments: Array<MethodTypeInfo>,
-        methodReturnType: MethodReturnTypeInfo
+        methodReturnType: ReturnTypeInfo
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",
@@ -90,7 +90,7 @@ internal object KMockSpyGenerator : SpyGenerator {
         val invocation = """
             |   $SPY_CONTEXT {
             |       this@$methodName.$methodName$typesParameter($invocationArguments)
-            |   } as ${methodReturnType.typeName}
+            |   } as ${methodReturnType.methodTypeName}
         """.trimMargin()
 
         return buildSpy(invocation)

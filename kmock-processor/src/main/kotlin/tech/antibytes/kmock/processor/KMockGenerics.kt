@@ -29,7 +29,7 @@ import tech.antibytes.kmock.processor.utils.mapArgumentType
 
 internal object KMockGenerics : GenericResolver {
     private val any = Any::class.asTypeName()
-    private val nullableAny = Any::class.asTypeName().copy(nullable = true)
+    private val nullableAny = any.copy(nullable = true)
     private val nullableAnys = listOf(any.copy(nullable = true))
     private val nonNullableAnys = listOf(any.copy(nullable = false))
     private const val TYPE_PARAMETER = "KMockTypeParameter"
@@ -145,7 +145,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun resolveKnownType(
-        root: String,
+        visited: Set<String>,
         rootNullability: Boolean,
         typeName: TypeName,
         resolved: Map<String, GenericDeclaration>,
@@ -153,7 +153,7 @@ internal object KMockGenerics : GenericResolver {
         val typeNameStr = typeName.toString()
         val type = resolved[typeNameStr]
 
-        return if (type == null && root == typeNameStr) {
+        return if (type == null && typeNameStr in visited) {
             GenericDeclaration(
                 types = anys(rootNullability),
                 nullable = rootNullability,
@@ -165,7 +165,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun resolveTypeName(
-        root: String,
+        visited: Set<String>,
         rootNullability: Boolean,
         type: KSType,
         resolved: Map<String, GenericDeclaration>,
@@ -176,7 +176,7 @@ internal object KMockGenerics : GenericResolver {
 
         return if (typeName.toString() in allGenerics) {
             resolveKnownType(
-                root,
+                visited,
                 rootNullability,
                 typeName,
                 resolved
@@ -247,7 +247,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun resolveGeneric(
-        root: String,
+        visited: Set<String>,
         rootNullability: Boolean,
         type: KSType,
         resolved: Map<String, GenericDeclaration>,
@@ -256,7 +256,7 @@ internal object KMockGenerics : GenericResolver {
     ): GenericDeclaration? {
         return if (type.arguments.isEmpty()) {
             resolveTypeName(
-                root = root,
+                visited = visited,
                 rootNullability = rootNullability,
                 type = type,
                 resolved = resolved,
@@ -265,7 +265,7 @@ internal object KMockGenerics : GenericResolver {
             )
         } else {
             val nestedGeneric = determineType(
-                root = root,
+                visited = visited,
                 rootNullability = rootNullability,
                 types = type.arguments.map { ksTypeArgument -> ksTypeArgument.type!! },
                 resolved = resolved,
@@ -312,7 +312,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun resolveMultiType(
-        root: String,
+        visited: Set<String>,
         nullable: Boolean,
         types: List<KSType>,
         resolved: Map<String, GenericDeclaration>,
@@ -326,7 +326,7 @@ internal object KMockGenerics : GenericResolver {
 
         types.map { type ->
             val nested = resolveGeneric(
-                root = root,
+                visited = visited,
                 rootNullability = nullable,
                 type = type,
                 resolved = resolved,
@@ -354,7 +354,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun determineType(
-        root: String,
+        visited: Set<String>,
         types: List<KSTypeReference>,
         resolved: Map<String, GenericDeclaration>,
         allGenerics: Set<String>,
@@ -369,7 +369,7 @@ internal object KMockGenerics : GenericResolver {
                 val nullable = rootNullability ?: determineRootNullability(listOf(type))
 
                 resolveGeneric(
-                    root = root,
+                    visited = visited,
                     rootNullability = nullable,
                     type = type,
                     resolved = resolved,
@@ -383,7 +383,7 @@ internal object KMockGenerics : GenericResolver {
                 val nullable = rootNullability ?: determineRootNullability(ksTypes)
 
                 resolveMultiType(
-                    root = root,
+                    visited = visited,
                     nullable = nullable,
                     types = ksTypes,
                     resolved = resolved,
@@ -401,12 +401,15 @@ internal object KMockGenerics : GenericResolver {
         val raw = generics.toMutableMap()
         val resolved: MutableMap<String, GenericDeclaration> = mutableMapOf()
         val allGenerics = raw.keys
+        val visited: MutableSet<String> = mutableSetOf()
 
         while (resolved.keys != allGenerics) {
             raw.forEach { (root, declaration) ->
                 if (root !in resolved) {
+                    visited.add(root)
+
                     val type = determineType(
-                        root = root,
+                        visited = visited,
                         types = declaration,
                         resolved = resolved,
                         allGenerics = allGenerics,
@@ -418,6 +421,8 @@ internal object KMockGenerics : GenericResolver {
                     }
                 }
             }
+
+            visited.clear()
         }
 
         return resolved

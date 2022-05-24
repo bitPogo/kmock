@@ -215,7 +215,7 @@ internal class KMockProxyNameSelector(
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): List<String> {
-        return arguments.map { (_, suffix, usePlural) ->
+        return arguments.map { (_, suffix, _, usePlural) ->
             suffix
                 .toString()
                 .trimEnd('?')

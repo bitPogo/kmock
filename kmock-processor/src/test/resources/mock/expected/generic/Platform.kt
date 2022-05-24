@@ -53,9 +53,15 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_fooWithZTAnys", collector
         = verifier, freeze = freeze)
 
-    public val _lol: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Array<out kotlin.Any>>) ->
-    kotlin.Unit> = ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lol",
-        collector = verifier, freeze = freeze)
+    public val _lolWithArrays: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Array<out
+    kotlin.Any>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithArrays", collector
+        = verifier, freeze = freeze)
+
+    public val _lolWithArray: KMockContract.SyncFunProxy<Any, (kotlin.Array<kotlin.Any?>) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithArray", collector
+        = verifier, freeze = freeze)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blaWithVoid", collector =
@@ -352,9 +358,11 @@ internal class PlatformMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun lol(vararg payload: Array<out Any>): Unit = _lol.invoke(payload) {
+    public override fun lol(vararg payload: Array<out Any>): Unit = _lolWithArrays.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
+
+    public override fun <T> lol(fuzz: Array<T>): Any = _lolWithArray.invoke(fuzz)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
@@ -608,7 +616,8 @@ internal class PlatformMock<K : Any, L>(
         _fooWithVoid.clear()
         _fooWithZTAny.clear()
         _fooWithZTAnys.clear()
-        _lol.clear()
+        _lolWithArrays.clear()
+        _lolWithArray.clear()
         _blaWithVoid.clear()
         _blaWithTInt.clear()
         _blaWithTInts.clear()

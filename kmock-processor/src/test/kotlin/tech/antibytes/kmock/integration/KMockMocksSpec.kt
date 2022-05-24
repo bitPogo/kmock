@@ -303,7 +303,7 @@ class KMockMocksSpec {
     fun `Given a annotated Source for Generics for a Platform with a supertype is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
-            "Platform.kt",
+            "SuperTyped.kt",
             loadResource("/template/generic/SuperTyped.kt")
         )
         val expected = loadResource("/expected/generic/SuperTyped.kt")

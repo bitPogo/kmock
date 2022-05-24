@@ -17,12 +17,12 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 
 internal class KMockPropertyGenerator(
     private val nameSelector: ProxyNameSelector,
@@ -30,7 +30,7 @@ internal class KMockPropertyGenerator(
 ) : PropertyGenerator {
     private fun FunSpec.Builder.addGetterInvocation(
         propertyName: String,
-        returnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec.Builder {
@@ -52,7 +52,7 @@ internal class KMockPropertyGenerator(
 
     private fun buildGetter(
         propertyName: String,
-        returnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec {
@@ -101,7 +101,7 @@ internal class KMockPropertyGenerator(
         property: PropertySpec.Builder,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-        returnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -131,7 +131,7 @@ internal class KMockPropertyGenerator(
     private fun buildProperty(
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-        returnType: MethodReturnTypeInfo,
+        returnType: ReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -208,9 +208,9 @@ internal class KMockPropertyGenerator(
             qualifier = qualifier,
             propertyName = propertyName
         )
-        val returnType = MethodReturnTypeInfo(
-            typeName = propertyType,
-            actualTypeName = propertyType,
+        val returnType = ReturnTypeInfo(
+            methodTypeName = propertyType,
+            proxyTypeName = propertyType,
             generic = null,
             classScope = classScopeGenerics
         )

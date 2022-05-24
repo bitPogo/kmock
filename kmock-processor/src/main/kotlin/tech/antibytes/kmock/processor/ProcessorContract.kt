@@ -66,7 +66,7 @@ internal interface ProcessorContract {
         val useTypePrefixFor: Map<String, String>,
         val customMethodNames: Map<String, String>,
         val uselessPrefixes: Set<String>,
-        val allowExperimentalProxyAccess: Boolean
+        val allowExperimentalProxyAccess: Boolean,
     )
 
     fun interface OptionExtractor {
@@ -230,25 +230,21 @@ internal interface ProcessorContract {
 
     data class MethodTypeInfo(
         val argumentName: String,
-        val typeName: TypeName,
+        val methodTypeName: TypeName,
+        val proxyTypeName: TypeName,
         val isVarArg: Boolean
     )
 
-    data class MethodArgumentTypeInfo(
-        val typeInfo: MethodTypeInfo,
-        val generic: GenericDeclaration?
-    )
-
-    data class MethodReturnTypeInfo(
-        val typeName: TypeName,
-        val actualTypeName: TypeName,
+    data class ReturnTypeInfo(
+        val methodTypeName: TypeName,
+        val proxyTypeName: TypeName,
         val generic: GenericDeclaration?,
         val classScope: Map<String, List<TypeName>>?
     )
 
     data class ProxyBundle(
         val proxy: PropertySpec,
-        val returnType: MethodReturnTypeInfo,
+        val returnType: ReturnTypeInfo,
         val sideEffect: TypeVariableName,
     )
 
@@ -302,12 +298,12 @@ internal interface ProcessorContract {
 
     interface RelaxerGenerator {
         fun buildPropertyRelaxation(
-            propertyType: MethodReturnTypeInfo,
+            propertyType: ReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
         fun buildMethodRelaxation(
-            methodReturnType: MethodReturnTypeInfo,
+            methodReturnType: ReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
@@ -321,21 +317,21 @@ internal interface ProcessorContract {
         fun buildGetterSpy(propertyName: String): String
         fun buildSetterSpy(propertyName: String): String
 
-        fun buildReceiverGetterSpy(propertyName: String, propertyType: MethodReturnTypeInfo): String
+        fun buildReceiverGetterSpy(propertyName: String, propertyType: ReturnTypeInfo): String
         fun buildReceiverSetterSpy(propertyName: String): String
 
         fun buildMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
-            methodReturnType: MethodReturnTypeInfo,
+            methodReturnType: ReturnTypeInfo,
         ): String
 
         fun buildReceiverMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
-            methodReturnType: MethodReturnTypeInfo,
+            methodReturnType: ReturnTypeInfo,
         ): String
 
         fun buildEqualsSpy(mockName: String): String
@@ -345,7 +341,7 @@ internal interface ProcessorContract {
         fun buildGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: MethodReturnTypeInfo,
+            propertyType: ReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -359,7 +355,7 @@ internal interface ProcessorContract {
             methodName: String,
             typeParameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
-            methodReturnType: MethodReturnTypeInfo,
+            methodReturnType: ReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
@@ -373,7 +369,7 @@ internal interface ProcessorContract {
         fun buildReceiverGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: MethodReturnTypeInfo,
+            propertyType: ReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -387,7 +383,7 @@ internal interface ProcessorContract {
             methodName: String,
             typeParameter: List<TypeName>,
             arguments: Array<MethodTypeInfo>,
-            methodReturnType: MethodReturnTypeInfo,
+            methodReturnType: ReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
     }
@@ -395,6 +391,7 @@ internal interface ProcessorContract {
     interface MethodGeneratorHelper {
         fun determineArguments(
             inherited: Boolean,
+            generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
             typeParameterResolver: TypeParameterResolver
         ): Array<MethodTypeInfo>
@@ -404,13 +401,19 @@ internal interface ProcessorContract {
             typeParameterResolver: TypeParameterResolver
         ): List<TypeName>
 
+        fun resolveProxyGenerics(
+            generics: Map<String, List<KSTypeReference>>?,
+            typeResolver: TypeParameterResolver
+        ): Map<String, GenericDeclaration>?
+
         fun buildProxy(
             proxyInfo: ProxyInfo,
             arguments: Array<MethodTypeInfo>,
             suspending: Boolean,
             classScopeGenerics: Map<String, List<TypeName>>?,
-            generics: Map<String, List<KSTypeReference>>?,
-            returnType: TypeName,
+            generics: Map<String, GenericDeclaration>?,
+            methodReturnType: TypeName,
+            proxyReturnType: TypeName,
             typeResolver: TypeParameterResolver,
         ): ProxyBundle
     }
@@ -700,5 +703,6 @@ internal interface ProcessorContract {
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
         const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
+        const val FINE_GRAINED_PROXY_NAMES = "${KMOCK_PREFIX}enableFineGrainedProxyNames"
     }
 }

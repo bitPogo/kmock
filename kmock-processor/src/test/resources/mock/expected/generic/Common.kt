@@ -56,6 +56,16 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_blaWithTInts", collector =
         verifier, freeze = freeze)
 
+    public val _lolWithArray: KMockContract.SyncFunProxy<Any, (kotlin.Array<kotlin.Any?>) ->
+    kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_lolWithArray", collector =
+        verifier, freeze = freeze)
+
+    public val _lolWithZTAny: KMockContract.SyncFunProxy<Array<Any?>, (kotlin.Any?) ->
+    kotlin.Array<kotlin.Any?>> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_lolWithZTAny", collector =
+        verifier, freeze = freeze)
+
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String>>> =
@@ -323,6 +333,18 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_xssWithZTAnyRSequenceCharSequence",
             collector = verifier, freeze = freeze)
 
+    public val _rrrWithTListRSequence:
+        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>,
+            kotlin.sequences.Sequence<kotlin.collections.List<kotlin.Any?>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_rrrWithTListRSequence",
+            collector = verifier, freeze = freeze)
+
+    public val _rrrWithRSequenceTList:
+        KMockContract.SyncFunProxy<Unit, (kotlin.sequences.Sequence<kotlin.collections.List<kotlin.Any?>>,
+            kotlin.collections.List<kotlin.Any?>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.CommonMock#_rrrWithRSequenceTList",
+            collector = verifier, freeze = freeze)
+
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
@@ -340,6 +362,11 @@ internal class CommonMock<K : Any, L>(
     public override fun <T : Int> bla(vararg payload: T): Unit = _blaWithTInts.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
+
+    public override fun <T> lol(fuzz: Array<T>): Any = _lolWithArray.invoke(fuzz)
+
+    @Suppress("UNCHECKED_CAST")
+    public override fun <T> lol(fuzz: T): Array<T> = _lolWithZTAny.invoke(fuzz) as kotlin.Array<T>
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : List<Array<String>>> bar(): T = _barWithVoid.invoke() as T
@@ -576,6 +603,16 @@ internal class CommonMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <R : Sequence<T>, T : List<R>> rrr(arg0: T, arg1: R): Unit =
+        _rrrWithTListRSequence.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
+    public override fun <R : Sequence<T>, T : List<R>> rrr(arg0: R, arg1: T): Unit =
+        _rrrWithRSequenceTList.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -583,6 +620,8 @@ internal class CommonMock<K : Any, L>(
         _blaWithVoid.clear()
         _blaWithTInt.clear()
         _blaWithTInts.clear()
+        _lolWithArray.clear()
+        _lolWithZTAny.clear()
         _barWithVoid.clear()
         _barWithTList.clear()
         _barWithTLists.clear()
@@ -636,5 +675,7 @@ internal class CommonMock<K : Any, L>(
         _pssWithTSomeGenericRSomeGeneric.clear()
         _xssWithZTAny.clear()
         _xssWithZTAnyRSequenceCharSequence.clear()
+        _rrrWithTListRSequence.clear()
+        _rrrWithRSequenceTList.clear()
     }
 }

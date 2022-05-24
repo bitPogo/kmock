@@ -109,6 +109,20 @@ internal class PlatformMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_otherThingSetter",
             collector = verifier, freeze = freeze)
 
+    public override var <T : L> T.othing: L?
+        get() = _othingGetter.invoke(this@othing)
+        set(`value`) {
+            _othingSetter.invoke(this@othing, value)
+        }
+
+    public val _othingGetter: KMockContract.SyncFunProxy<L?, (L) -> L?> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_othingGetter",
+            collector = verifier, freeze = freeze)
+
+    public val _othingSetter: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.PlatformMock#_othingSetter",
+            collector = verifier, freeze = freeze)
+
     public override val myThing: String
         get() = _myThing.onGet()
 
@@ -145,6 +159,8 @@ internal class PlatformMock<L>(
         _nothingSetterWithTL.clear()
         _otherThingGetter.clear()
         _otherThingSetter.clear()
+        _othingGetter.clear()
+        _othingSetter.clear()
         _myThing.clear()
         _insideGetter.clear()
         _getOtherThing.clear()

@@ -7,17 +7,17 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
-import tech.antibytes.kmock.processor.ProcessorContract.MethodReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 
 internal class KMockRelaxerGenerator : RelaxerGenerator {
     private fun TypeName.toParameterlessString(): String {
         return this.toString().trimEnd('?').substringBefore('<')
     }
 
-    private fun MethodReturnTypeInfo.toParameterlessString(): String {
+    private fun ReturnTypeInfo.toParameterlessString(): String {
         val generics = StringBuilder()
         val classScope = this.resolveClassScope()
         var idx = 0
@@ -38,7 +38,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     private fun resolveTypeParameter(
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
     ): String {
         return if (!methodReturnType.hasGenerics()) {
             ""
@@ -48,7 +48,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     private fun addRelaxer(
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
         val types = resolveTypeParameter(methodReturnType)
@@ -62,10 +62,10 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     private fun addFunRelaxer(
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
-        return if (methodReturnType.actualTypeName.toString() == "kotlin.Unit") {
+        return if (methodReturnType.proxyTypeName.toString() == "kotlin.Unit") {
             "useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n"
         } else {
             addRelaxer(methodReturnType, relaxer)
@@ -73,12 +73,12 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     override fun buildPropertyRelaxation(
-        propertyType: MethodReturnTypeInfo,
+        propertyType: ReturnTypeInfo,
         relaxer: Relaxer?,
     ): String = addRelaxer(propertyType, relaxer)
 
     override fun buildMethodRelaxation(
-        methodReturnType: MethodReturnTypeInfo,
+        methodReturnType: ReturnTypeInfo,
         relaxer: Relaxer?,
     ): String = addFunRelaxer(
         methodReturnType = methodReturnType,
