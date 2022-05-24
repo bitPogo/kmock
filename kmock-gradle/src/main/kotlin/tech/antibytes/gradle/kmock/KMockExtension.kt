@@ -18,15 +18,12 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ALL
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TYPE_PREFIXES
-import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USE_BUILD_IN
-import java.io.File
 
 abstract class KMockExtension(
     project: Project
@@ -44,15 +41,8 @@ abstract class KMockExtension(
     private var _aliasNameMapping: Map<String, String> = emptyMap()
     private var _useBuildInProxiesOn: Set<String> = emptySet()
 
-    private var _enableNewOverloadingNames = true
     private var _typePrefixMapping: Map<String, String> = emptyMap()
     private var _customMethodNames: Map<String, String> = emptyMap()
-
-    // Deprecated
-    private var _uselessPrefixes: Set<String> = setOf(
-        "kotlin.collections",
-        "kotlin",
-    )
 
     private var _freeze = true
 
@@ -69,8 +59,6 @@ abstract class KMockExtension(
     private var _alternativeAccess = false
 
     private var _enableFineGrainedNames = false
-
-    private var _purgeFiles: Set<File> = emptySet()
 
     private fun propagateValue(
         id: String,
@@ -131,24 +119,6 @@ abstract class KMockExtension(
             )
 
             _useBuildInProxiesOn = value
-        }
-
-    override var uselessPrefixes: Set<String>
-        get() = _uselessPrefixes
-        set(value) {
-            propagateIterable(
-                prefix = USELESS_PREFIXES,
-                values = value
-            )
-
-            _uselessPrefixes = value
-        }
-
-    override var enableNewOverloadingNames: Boolean
-        get() = _enableNewOverloadingNames
-        set(value) {
-            propagateValue(OVERLOAD_NAME_FEATURE_FLAG, value.toString())
-            _enableNewOverloadingNames = value
         }
 
     override var useTypePrefixFor: Map<String, String>
@@ -230,6 +200,7 @@ abstract class KMockExtension(
             _customSharedAnnotations = value
         }
 
+    @KMockGradleExperimental
     override var allowExperimentalProxyAccess: Boolean
         get() = _alternativeAccess
         set(value) {

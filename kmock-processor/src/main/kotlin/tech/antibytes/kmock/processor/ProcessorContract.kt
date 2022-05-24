@@ -64,10 +64,8 @@ internal interface ProcessorContract {
         val aliases: Map<String, String>,
         val useBuildInProxiesOn: Set<String>,
         val spyOn: Set<String>,
-        val enableNewOverloadingNames: Boolean,
         val useTypePrefixFor: Map<String, String>,
         val customMethodNames: Map<String, String>,
-        val uselessPrefixes: Set<String>,
         val allowExperimentalProxyAccess: Boolean,
         val enableFineGrainedNames: Boolean,
     )
@@ -713,8 +711,6 @@ internal interface ProcessorContract {
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
         const val SPY_ALL = "${KMOCK_PREFIX}spyAll"
-        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
-        const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"

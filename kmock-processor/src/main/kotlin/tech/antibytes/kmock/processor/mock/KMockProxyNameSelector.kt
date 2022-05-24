@@ -19,11 +19,9 @@ import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
 
 internal class KMockProxyNameSelector(
-    enableNewOverloadingNames: Boolean,
     enableFineGrainedNames: Boolean,
     private val customMethodNames: Map<String, String>,
     private val useTypePrefixFor: Map<String, String>,
-    private val uselessPrefixes: Set<String>,
 ) : ProxyNameSelector, ProxyNameCollector {
     private var overloadedProxies: SortedSet<String> = sortedSetOf()
     private val buildIns = mapOf(
@@ -31,12 +29,6 @@ internal class KMockProxyNameSelector(
         "_equals" to "_equalsWithAny",
         "_hashCode" to "_hashCodeWithVoid"
     )
-
-    private val prefixResolver: Function1<String, String> = if (enableNewOverloadingNames) {
-        { typeName -> typeName.resolvePrefixedTypeName(useTypePrefixFor) }
-    } else {
-        { typeName -> typeName.removePrefixes(uselessPrefixes).packageNameToVariableName() }
-    }
 
     private val suffixResolver: Function3<Array<MemberArgumentTypeInfo>, Map<String, List<KSTypeReference>>, TypeParameterResolver, List<String>> =
         if (enableFineGrainedNames) {
@@ -138,39 +130,16 @@ internal class KMockProxyNameSelector(
         }
     }
 
-    private fun String.resolvePrefixedTypeName(prefixMapping: Map<String, String>): String {
+    private fun String.resolvePrefixedTypeName(): String {
         val className = this.substringAfterLast('.').titleCase()
-        val prefix = prefixMapping.getOrDefault(this, "").titleCase()
+        val prefix = useTypePrefixFor.getOrDefault(this, "").titleCase()
 
         return "$prefix$className"
     }
 
-    // Deprecated
-    private fun String.removePrefixes(prefixes: Iterable<String>): String {
-        var cleaned = this
-
-        prefixes.forEach { prefix ->
-            cleaned = removePrefix(prefix)
-        }
-
-        return cleaned
-    }
-
-    // Deprecated
-    private fun String.packageNameToVariableName(): String {
-        val partialNames = split('.')
-
-        return if (partialNames.size == 1) {
-            this
-        } else {
-            partialNames.joinToString("") { partialName -> partialName.titleCase() }
-        }
-    }
-
     private fun String.trimTypeName(): String {
-        return prefixResolver(
-            this.substringBefore('<') // Generics
-        )
+        return this.substringBefore('<') // Generics
+            .resolvePrefixedTypeName()
     }
 
     private fun determineNullablePrefix(isNullable: Boolean): String {
@@ -262,7 +231,8 @@ internal class KMockProxyNameSelector(
             .filterNot { part -> part.isBlank() }
             .joinToString("_") { part ->
                 val resolved = generics.getOrElse(part.trim().trimNullable()) { part }
-                prefixResolver(resolved).prefixNullable()
+
+                resolved.resolvePrefixedTypeName().prefixNullable()
             }
             .prefixNullable()
             .trimEnd('_')
