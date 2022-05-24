@@ -26,6 +26,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TYPE_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USELESS_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USE_BUILD_IN
+import java.io.File
 
 abstract class KMockExtension(
     project: Project
@@ -69,6 +70,8 @@ abstract class KMockExtension(
 
     private var _enableFineGrainedNames = false
 
+    private var _purgeFiles: Set<File> = emptySet()
+
     private fun propagateValue(
         id: String,
         value: String
@@ -109,9 +112,13 @@ abstract class KMockExtension(
             _aliasNameMapping = value
         }
 
-    private fun propagateIterable(prefix: String, values: Iterable<String>) {
+    private fun <T> propagateIterable(
+        prefix: String,
+        values: Iterable<T>,
+        action: (T) -> String = { it.toString() },
+    ) {
         values.forEachIndexed { idx, type ->
-            ksp.arg("$prefix$idx", type)
+            ksp.arg("$prefix$idx", action(type))
         }
     }
 
@@ -230,6 +237,7 @@ abstract class KMockExtension(
             _alternativeAccess = value
         }
 
+    @KMockGradleExperimental
     override var enableFineGrainedNames: Boolean
         get() = _enableFineGrainedNames
         set(value) {

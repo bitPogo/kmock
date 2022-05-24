@@ -23,6 +23,7 @@ import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
+@OptIn(KMockGradleExperimental::class)
 class ExtensionSpec {
     private val fixture = kotlinFixture {
         it.addGenerator(

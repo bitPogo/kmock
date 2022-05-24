@@ -14,7 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-// based on: https://github.com/google/ksp/blob/main/compiler-plugin/src/main/kotlin/com/google/devtools/ksp/processing/impl/CodeGeneratorImpl.kt
+// based on: https://github.com/google/ksp/blob/5571ddb08eada2d685a42ae0667942ac203866e5/common-util/src/main/kotlin/com/google/devtools/ksp/processing/impl/CodeGeneratorImpl.kt#L1
 internal class KMockCodeGenerator(
     private val kspDir: String,
     private val kspGenerator: CodeGenerator,
@@ -55,9 +55,7 @@ internal class KMockCodeGenerator(
         return "$kspDir$separator$sourceDirs$separator$packageDirs$separator$fileName$fileExtension"
     }
 
-    private fun guardFilePath(
-        file: File
-    ) {
+    private fun guardFilePath(file: File) {
         val parent = file.parentFile
 
         if (!parent.exists() && !parent.mkdirs()) {
@@ -78,9 +76,9 @@ internal class KMockCodeGenerator(
         }
     }
 
-    private fun guardAgainstRewriteFile(relativeFilePath: String) {
-        if (relativeFilePath in files) {
-            throw FileAlreadyExistsException(File(relativeFilePath))
+    private fun guardAgainstRewriteFile(absolutePath: String) {
+        if (absolutePath in files) {
+            throw FileAlreadyExistsException(File(absolutePath))
         }
     }
 

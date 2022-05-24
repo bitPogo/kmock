@@ -91,20 +91,6 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
     )
 }
 
-internal fun WildcardTypeName.toTypeVariableName(): TypeVariableName {
-    val type = this.outTypes.first() as TypeVariableName
-
-    return TypeVariableName(
-        type.name,
-        bounds = type.bounds,
-    ).copy(
-        reified = type.isReified,
-        tags = type.tags,
-        annotations = type.annotations,
-        nullable = type.isNullable
-    )
-}
-
 private fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
     typeParameterResolver: TypeParameterResolver
