@@ -18,6 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.OVERLOAD_NAME_FEATURE_FLAG
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PURGE_FILES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ALL
@@ -27,6 +28,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.USELESS_PREFIX
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
 import tech.antibytes.kmock.processor.ProcessorContract.OptionExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
+import java.io.File
 import java.util.SortedSet
 
 internal object KMockOptionExtractor : OptionExtractor {
@@ -85,6 +87,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
         val customMethodNames: MutableMap<String, String> = mutableMapOf()
         val customAnnotations: MutableMap<String, String> = mutableMapOf()
+        val purgeFiles: MutableSet<String> = mutableSetOf()
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -130,6 +133,9 @@ internal object KMockOptionExtractor : OptionExtractor {
                     useBuildInProxiesOn.add(value)
                     spyOn.add(value)
                 }
+                key.startsWith(PURGE_FILES) -> {
+                    purgeFiles.add(value)
+                }
             }
         }
 
@@ -154,6 +160,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             uselessPrefixes = uselessPrefixes,
             allowExperimentalProxyAccess = allowExperimentalProxyAccess,
             enableFineGrainedNames = enableFineGrainedNames,
+            purgeFiles = purgeFiles,
         )
     }
 }

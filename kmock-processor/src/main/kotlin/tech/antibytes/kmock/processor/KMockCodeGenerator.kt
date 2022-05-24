@@ -78,9 +78,9 @@ internal class KMockCodeGenerator(
         }
     }
 
-    private fun guardAgainstRewriteFile(relativeFilePath: String) {
-        if (relativeFilePath in files) {
-            throw FileAlreadyExistsException(File(relativeFilePath))
+    private fun guardAgainstRewriteFile(absolutePath: String) {
+        if (absolutePath in files) {
+            throw FileAlreadyExistsException(File(absolutePath))
         }
     }
 
