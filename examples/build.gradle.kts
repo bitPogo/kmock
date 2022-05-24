@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -236,6 +237,12 @@ kspTasks.configureEach {
     }
 }
 
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
+}
 
 android {
     defaultConfig {

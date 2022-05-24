@@ -8,9 +8,17 @@ package tech.antibytes.kmock.processor.factory
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARGUMENTS_WITHOUT_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARGUMENTS_WITH_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNKNOWN_INTERFACE
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryWithoutGenerics
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
@@ -33,7 +41,7 @@ internal class KMockFactoryWithoutGenerics(
 
         addItems(mockFactory)
 
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        mockFactory.addStatement("else -> $UNKNOWN_INTERFACE")
         mockFactory.endControlFlow()
 
         return mockFactory
@@ -44,13 +52,13 @@ internal class KMockFactoryWithoutGenerics(
     ): Pair<String, String> {
         return if (relaxer == null) {
             Pair(
-                "%L::class -> %LMock(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L?) as $KMOCK_FACTORY_TYPE_NAME",
-                "%LMock::class -> %LMock(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%L::class -> %LMock($ARGUMENTS_WITHOUT_RELAXER as %L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock($ARGUMENTS_WITHOUT_RELAXER as %L?) as $KMOCK_FACTORY_TYPE_NAME",
             )
         } else {
             Pair(
-                "%L::class -> %LMock(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L?) as $KMOCK_FACTORY_TYPE_NAME",
-                "%LMock::class -> %LMock(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%L::class -> %LMock($ARGUMENTS_WITH_RELAXER as %L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock($ARGUMENTS_WITH_RELAXER as %L?) as $KMOCK_FACTORY_TYPE_NAME",
             )
         }
     }
@@ -100,9 +108,9 @@ internal class KMockFactoryWithoutGenerics(
         relaxer: Relaxer?
     ): String {
         return if (relaxer == null) {
-            "%LMock::class -> %LMock<%LMock<*>>(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME"
+            "%LMock::class -> %LMock<%LMock<*>>($ARGUMENTS_WITHOUT_RELAXER_AND_SPY) as $KMOCK_FACTORY_TYPE_NAME"
         } else {
-            "%LMock::class -> %LMock<%LMock<*>>(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze) as $KMOCK_FACTORY_TYPE_NAME"
+            "%LMock::class -> %LMock<%LMock<*>>($ARGUMENTS_WITHOUT_SPY) as $KMOCK_FACTORY_TYPE_NAME"
         }
     }
 
@@ -160,9 +168,7 @@ internal class KMockFactoryWithoutGenerics(
     }
 
     private fun FunSpec.Builder.buildShallowMock() {
-        this.addCode(
-            "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
-        )
+        this.addCode(UNKNOWN_INTERFACE)
     }
 
     override fun buildSharedMockFactory(
@@ -220,24 +226,26 @@ internal class KMockFactoryWithoutGenerics(
         private val kmockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME)
         private val kspyType = TypeVariableName(KSPY_FACTORY_TYPE_NAME)
         private val kspyMockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(kspyType))
+        private const val ARGUMENTS_WITHOUT_RELAXER_AND_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"
+        private const val ARGUMENTS_WITHOUT_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"
 
         private val factoryInvocation = """
                 |return $SHARED_MOCK_FACTORY(
-                |   spyOn = null,
-                |   verifier = verifier,
-                |   relaxed = relaxed,
-                |   relaxUnitFun = relaxUnitFun,
-                |   freeze = freeze,
+                |   $SPY_ARGUMENT = null,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = $RELAXER_ARGUMENT,
+                |   $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
                 |)
         """.trimMargin()
 
         private val spyFactoryInvocation = """
                 |return $SHARED_MOCK_FACTORY(
-                |   spyOn = spyOn,
-                |   verifier = verifier,
-                |   relaxed = false,
-                |   relaxUnitFun = false,
-                |   freeze = freeze,
+                |   $SPY_ARGUMENT = $SPY_ARGUMENT,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = false,
+                |   $UNIT_RELAXER_ARGUMENT = false,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
                 |)
         """.trimMargin()
     }

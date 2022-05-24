@@ -48,15 +48,15 @@ import tech.antibytes.util.test.mustBe
 @Disabled
 class AndroidSampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()
-    private val verifier = Asserter()
-    private val local = SampleLocalRepositoryMock(verifier)
-    private val remote = SampleRemoteRepositoryMock(verifier)
-    private val domainObject = SampleDomainObjectMock(verifier)
+    private val collector = Asserter()
+    private val local = SampleLocalRepositoryMock(collector)
+    private val remote = SampleRemoteRepositoryMock(collector)
+    private val domainObject = SampleDomainObjectMock(collector)
     private val androidThing = AndroidThingMock()
 
     @BeforeEach
     fun setUp() {
-        verifier.clear()
+        collector.clear()
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
@@ -92,7 +92,7 @@ class AndroidSampleControllerAutoStubSpec {
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenStrictlyCalledWith(id[1], number) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
                 domainObject._id.wasGotten()
                 domainObject._id.wasSet()
@@ -101,7 +101,7 @@ class AndroidSampleControllerAutoStubSpec {
                 local._store.hasBeenCalledWith(id[1])
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 remote._fetch.hasBeenCalledWith(url)
                 domainObject._id.wasSetTo("42")
                 local._store.hasBeenCalledWith(id[1])
@@ -140,7 +140,7 @@ class AndroidSampleControllerAutoStubSpec {
             verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
             verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
@@ -151,7 +151,7 @@ class AndroidSampleControllerAutoStubSpec {
                 domainObject._id.wasSet()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 local._contains.hasBeenCalledWithout("abc")
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)

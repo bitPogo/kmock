@@ -74,14 +74,14 @@ internal fun <T> relax(id: String, type0: KClass<Any>): T {
 )
 class SampleControllerAutoStubRelaxedSpec {
     private val fixture = kotlinFixture()
-    private val verifier = Asserter()
-    private val local = SampleLocalRepositoryMock(verifier, relaxed = true)
-    private val remote = SampleRemoteRepositoryMock(verifier, relaxed = true)
-    private val domainObject = SampleDomainObjectMock(verifier, relaxed = true)
+    private val collector = Asserter()
+    private val local = SampleLocalRepositoryMock(collector, relaxed = true)
+    private val remote = SampleRemoteRepositoryMock(collector, relaxed = true)
+    private val domainObject = SampleDomainObjectMock(collector, relaxed = true)
 
     @BeforeTest
     fun setUp() {
-        verifier.clear()
+        collector.clear()
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
@@ -118,7 +118,7 @@ class SampleControllerAutoStubRelaxedSpec {
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
                 domainObject._id.wasGotten()
                 domainObject._id.wasSet()
@@ -128,7 +128,7 @@ class SampleControllerAutoStubRelaxedSpec {
                 remote._doSomething.hasBeenCalled()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 remote._fetch.hasBeenCalledWith(url)
                 domainObject._id.wasSetTo("42")
                 local._store.hasBeenCalledWith(id[1])
@@ -166,7 +166,7 @@ class SampleControllerAutoStubRelaxedSpec {
             verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
             verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
@@ -177,7 +177,7 @@ class SampleControllerAutoStubRelaxedSpec {
                 domainObject._id.wasSet()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 local._contains.hasBeenCalledWithout("abc")
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)

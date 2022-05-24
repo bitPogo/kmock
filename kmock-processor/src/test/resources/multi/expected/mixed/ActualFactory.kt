@@ -14,24 +14,24 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
 ): Mock = when (Mock::class) {
-    multi.CommonMultiMock::class -> multi.CommonMultiMock<multi.CommonMultiMock<*>>(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
+    multi.CommonMultiMock::class -> multi.CommonMultiMock<multi.CommonMultiMock<*>>(collector =
+    collector, relaxUnitFun = relaxUnitFun, freeze = freeze) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal actual inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
 ): Mock = getMockInstance(
     spyOn = null,
-    verifier = verifier,
+    collector = collector,
     relaxed = relaxed,
     relaxUnitFun = relaxUnitFun,
     freeze = freeze,
@@ -41,7 +41,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : A
     KMockTypeParameter1, KMockTypeParameter2, KMockTypeParameter3, KMockTypeParameter4 : Any,
     KMockTypeParameter5> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -57,13 +57,13 @@ GenericPlatformContract.Generic3<KMockTypeParameter2, KMockTypeParameter3>, SpyO
               KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter5 : Any,
               KMockTypeParameter5 : Comparable<KMockTypeParameter5> = if (Mock::class ==
     multi.PlatformMultiMock::class) {
-    multi.PlatformMultiMock(verifier = verifier, freeze = freeze, spyOn = spyOn as SpyOn?) as Mock
+    multi.PlatformMultiMock(collector = collector, freeze = freeze, spyOn = spyOn as SpyOn?) as Mock
 } else {
     throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")}
 
 internal inline fun <reified Mock, KMockTypeParameter0 : Any, KMockTypeParameter1,
     KMockTypeParameter2, KMockTypeParameter3, KMockTypeParameter4 : Any, KMockTypeParameter5> kmock(
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -79,7 +79,7 @@ GenericPlatformContract.Generic3<KMockTypeParameter2, KMockTypeParameter3>, Mock
               KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter5 : Any,
               KMockTypeParameter5 : Comparable<KMockTypeParameter5> = getMockInstance(
     spyOn = null,
-    verifier = verifier,
+    collector = collector,
     relaxed = relaxed,
     relaxUnitFun = relaxUnitFun,
     freeze = freeze,

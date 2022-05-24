@@ -641,6 +641,8 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
+        const val KMOCK_FACTORY = "kmock"
+        const val KSPY_FACTORY = "kspy"
         const val INTERMEDIATE_INTERFACES_FILE_NAME = "KMockMultiInterfaceArtifacts"
 
         val PROXY_FACTORY = ProxyFactory::class.simpleName
@@ -653,6 +655,11 @@ internal interface ProcessorContract {
         const val RELAXER_ARGUMENT = "relaxed"
         const val UNIT_RELAXER_ARGUMENT = "relaxUnitFun"
         const val IGNORE_ARGUMENT = "ignorableForVerification"
+
+        const val TEMPLATE_TYPE_ARGUMENT = "templateType"
+        const val ARGUMENTS_WITH_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
+        const val ARGUMENTS_WITHOUT_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
+        const val UNKNOWN_INTERFACE = "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
 
         const val VALUE = "value"
         const val EQUALS = "equals"

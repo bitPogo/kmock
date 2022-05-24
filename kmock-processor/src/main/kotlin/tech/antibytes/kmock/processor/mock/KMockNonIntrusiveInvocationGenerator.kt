@@ -10,10 +10,10 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.EQUALS
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockNonIntrusiveInvocationGenerator(

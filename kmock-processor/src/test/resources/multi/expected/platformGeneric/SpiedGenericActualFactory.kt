@@ -15,7 +15,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -29,7 +29,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     freeze: Boolean = true,
 ): Mock = getMockInstance(
     spyOn = spyOn,
-    verifier = verifier,
+    collector = collector,
     relaxed = false,
     relaxUnitFun = false,
     freeze = freeze,
@@ -39,7 +39,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : A
     KMockTypeParameter1, KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4,
     KMockTypeParameter5> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -55,7 +55,7 @@ Generic2<KMockTypeParameter2, KMockTypeParameter3>, SpyOn :
               : Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter3 : Any,
               KMockTypeParameter3 : Comparable<KMockTypeParameter3> = if (Mock::class ==
     multi.PlatformGenericMultiMock::class) {
-    multi.PlatformGenericMultiMock(verifier = verifier, freeze = freeze, spyOn = spyOn as SpyOn?) as
+    multi.PlatformGenericMultiMock(collector = collector, freeze = freeze, spyOn = spyOn as SpyOn?) as
         Mock
 } else {
     throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")}
@@ -78,7 +78,7 @@ Generic2<KMockTypeParameter2, KMockTypeParameter3>, SpyOn :
               : Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter3 : Any,
               KMockTypeParameter3 : Comparable<KMockTypeParameter3> = getMockInstance(
     spyOn = spyOn,
-    verifier = verifier,
+    collector = collector,
     relaxed = false,
     relaxUnitFun = false,
     freeze = freeze,

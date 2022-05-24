@@ -29,9 +29,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
-import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class MethodGeneratorHelper(

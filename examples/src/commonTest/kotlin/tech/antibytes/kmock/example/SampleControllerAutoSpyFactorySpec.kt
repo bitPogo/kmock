@@ -56,18 +56,18 @@ import kotlin.test.assertTrue
 )
 class SampleControllerAutoSpyFactorySpec {
     private val fixture = kotlinFixture()
-    private val verifier = Asserter()
-    private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
-    private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
+    private val collector = Asserter()
+    private val local: SampleLocalRepositoryMock = kmock(collector, relaxed = true)
+    private val remote: SampleRemoteRepositoryMock = kmock(collector, relaxed = true)
     private val domainObjectInstance = DomainObject("test", 21)
     private val domainObject: SampleDomainObjectMock = kspy(
         domainObjectInstance,
-        verifier,
+        collector,
     )
 
     @BeforeTest
     fun setUp() {
-        verifier.clear()
+        collector.clear()
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
@@ -104,7 +104,7 @@ class SampleControllerAutoSpyFactorySpec {
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith() }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
                 domainObject._id.wasGotten()
                 domainObject._id.wasSet()
@@ -113,7 +113,7 @@ class SampleControllerAutoSpyFactorySpec {
                 local._store.hasBeenCalledWith()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 remote._fetch.hasBeenCalledWith(url)
                 domainObject._id.wasSetTo("42")
                 local._store.hasBeenCalledWith()
@@ -153,7 +153,7 @@ class SampleControllerAutoSpyFactorySpec {
             verify(exactly = 2) { local._fetch.hasBeenCalledWith() }
             verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
@@ -164,7 +164,7 @@ class SampleControllerAutoSpyFactorySpec {
                 domainObject._id.wasSet()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 local._contains.hasBeenCalledWithout("abc")
             }
         }
@@ -176,13 +176,13 @@ class SampleControllerAutoSpyFactorySpec {
         // Given
         val idOrg = fixture.fixture<String>()
         val instance = DomainObject2("test", 21)
-        val verifier = NonFreezingAsserter()
-        val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
-        val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true, freeze = false)
+        val collector = NonFreezingAsserter()
+        val local: SampleLocalRepositoryMock = kmock(collector, relaxed = true, freeze = false)
+        val remote: SampleRemoteRepositoryMock = kmock(collector, relaxed = true, freeze = false)
 
         val domainObject: SampleDomainObjectMock = kspy(
             instance,
-            verifier,
+            collector,
             freeze = false
         )
 
@@ -200,7 +200,7 @@ class SampleControllerAutoSpyFactorySpec {
         verify(exactly = 1) { local._fetch.hasBeenCalledWith() }
         verify(exactly = 1) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-        verifier.assertOrder {
+        collector.assertOrder {
             local._contains.hasBeenStrictlyCalledWith(idOrg)
             remote._find.hasBeenStrictlyCalledWith(idOrg)
             domainObject._id.wasGotten()
@@ -208,7 +208,7 @@ class SampleControllerAutoSpyFactorySpec {
             domainObject._id.wasSet()
         }
 
-        verifier.verifyOrder {
+        collector.verifyOrder {
             local._contains.hasBeenCalledWithout("abc")
         }
     }

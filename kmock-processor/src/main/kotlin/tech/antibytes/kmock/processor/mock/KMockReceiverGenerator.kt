@@ -25,14 +25,14 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.MethodGeneratorHelper
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MethodGeneratorHelper
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.resolveReceiver
 import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName

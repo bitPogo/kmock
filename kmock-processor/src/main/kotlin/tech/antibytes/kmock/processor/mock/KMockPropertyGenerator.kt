@@ -22,12 +22,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_PROPERT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 
 internal class KMockPropertyGenerator(
     private val nameSelector: ProxyNameSelector,

@@ -14,7 +14,7 @@ import tech.antibytes.kmock.KMockContract.Collector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -23,13 +23,13 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
 }
 
 internal actual inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
 ): Mock = getMockInstance(
     spyOn = null,
-    verifier = verifier,
+    collector = collector,
     relaxed = relaxed,
     relaxUnitFun = relaxUnitFun,
     freeze = freeze,
@@ -39,7 +39,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : A
     KMockTypeParameter1, KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4,
     KMockTypeParameter5> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -55,14 +55,14 @@ Generic2<KMockTypeParameter2, KMockTypeParameter3>, SpyOn :
               Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter3 : Any,
               KMockTypeParameter3 : Comparable<KMockTypeParameter3> = if (Mock::class ==
     multi.CommonGenericMultiMock::class) {
-    multi.CommonGenericMultiMock(verifier = verifier, freeze = freeze, spyOn = spyOn as SpyOn?) as
+    multi.CommonGenericMultiMock(collector = collector, freeze = freeze, spyOn = spyOn as SpyOn?) as
         Mock
 } else {
     throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")}
 
 internal actual inline fun <reified Mock, KMockTypeParameter0 : Any, KMockTypeParameter1,
     KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5> kmock(
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
@@ -78,7 +78,7 @@ Generic2<KMockTypeParameter2, KMockTypeParameter3>, Mock :
               Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter3 : Any,
               KMockTypeParameter3 : Comparable<KMockTypeParameter3> = getMockInstance(
     spyOn = null,
-    verifier = verifier,
+    collector = collector,
     relaxed = relaxed,
     relaxUnitFun = relaxUnitFun,
     freeze = freeze,

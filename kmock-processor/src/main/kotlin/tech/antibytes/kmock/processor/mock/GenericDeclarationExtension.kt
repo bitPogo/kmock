@@ -7,7 +7,6 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asTypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 

@@ -43,8 +43,8 @@ SharedContractRegular.Regular2, MultiMock : Regular3 {
         get() = _somethingElse.onGet()
 
     public val _somethingElse: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("multi.SharedMultiMock#_somethingElse", collector = collector,
-            freeze = freeze)
+        ProxyFactory.createPropertyProxy("multi.SharedMultiMock#_somethingElse", collector =
+        collector, freeze = freeze)
 
     public val _doSomething: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.SharedMultiMock#_doSomething", collector = collector,

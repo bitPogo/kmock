@@ -56,23 +56,23 @@ import kotlin.test.Test
 @OptIn(KMockExperimental::class)
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
-    private val verifier = Asserter()
-    private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
-    private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
-    private val domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)
+    private val collector = Asserter()
+    private val local: SampleLocalRepositoryMock = kmock(collector, relaxed = true)
+    private val remote: SampleRemoteRepositoryMock = kmock(collector, relaxed = true)
+    private val domainObject: SampleDomainObjectMock = kmock(collector, relaxed = true)
     private val genericDomainObject: GenericSampleDomainObjectMock<String, Int> = kmock(
-        verifier,
+        collector,
         relaxed = true,
         templateType = GenericSampleDomainObject::class
     )
     private val uselessObjectObject: SampleUselessObjectMock = kmock(
-        verifier,
+        collector,
         relaxed = true,
     )
 
     @BeforeTest
     fun setUp() {
-        verifier.clear()
+        collector.clear()
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
@@ -109,7 +109,7 @@ class SampleControllerAlternativeAccessSpec {
             asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
             asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
 
-            verifier.asyncAssertOrder {
+            collector.asyncAssertOrder {
                 remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
                 domainObject.propertyProxyOf(domainObject::id).wasGotten()
                 domainObject.propertyProxyOf(domainObject::id).wasSet()
@@ -118,7 +118,7 @@ class SampleControllerAlternativeAccessSpec {
                 local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
             }
 
-            verifier.asyncVerifyOrder {
+            collector.asyncVerifyOrder {
                 remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
                 domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
                 local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
@@ -157,7 +157,7 @@ class SampleControllerAlternativeAccessSpec {
             verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
             verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
                 remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
                 domainObject.propertyProxyOf(domainObject::id).wasGotten()
@@ -168,7 +168,7 @@ class SampleControllerAlternativeAccessSpec {
                 domainObject.propertyProxyOf(domainObject::id).wasSet()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
                 remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
                 remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)

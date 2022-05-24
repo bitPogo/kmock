@@ -10,25 +10,25 @@ import tech.antibytes.kmock.proxy.NoopCollector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     spyOn: SpyOn?,
-    verifier: KMockContract.Collector,
+    collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
 ): Mock = when (Mock::class) {
-    factory.template.regular.PlatformMock::class -> factory.template.regular.PlatformMock(verifier =
-    verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
+    factory.template.regular.PlatformMock::class -> factory.template.regular.PlatformMock(collector =
+    collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
         factory.template.regular.Platform?) as Mock
     else -> throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")
 }
 
 internal inline fun <reified Mock> kmock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
 ): Mock = getMockInstance(
     spyOn = null,
-    verifier = verifier,
+    collector = collector,
     relaxed = relaxed,
     relaxUnitFun = relaxUnitFun,
     freeze = freeze,

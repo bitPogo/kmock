@@ -10,9 +10,9 @@ import com.squareup.kotlinpoet.TypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 
 internal class KMockRelaxerGenerator : RelaxerGenerator {
     private fun TypeName.toParameterlessString(): String {
