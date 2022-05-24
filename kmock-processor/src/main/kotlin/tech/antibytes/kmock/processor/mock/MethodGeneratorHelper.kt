@@ -133,15 +133,6 @@ internal class MethodGeneratorHelper(
         }
     }
 
-    private fun MethodTypeInfo.resolveVarargArray(): TypeName {
-        val name = this.proxyTypeName.toString()
-        return if (name.startsWith("out") || name == "*") {
-            array.parameterizedBy(this.proxyTypeName)
-        } else {
-            TypeVariableName("Array<out ${this.proxyTypeName}>")
-        }
-    }
-
     private fun mapProxyArgumentTypeNames(
         arguments: Array<MethodTypeInfo>,
     ): List<TypeName> {
@@ -149,8 +140,8 @@ internal class MethodGeneratorHelper(
             if (!argument.isVarArg) {
                 argument.proxyTypeName
             } else {
-                specialArrays.getOrElse(argument.proxyTypeName.toString().substringAfter("out ")) {
-                    argument.resolveVarargArray()
+                specialArrays.getOrElse(argument.proxyTypeName.toString()) {
+                    TypeVariableName("Array<out ${argument.proxyTypeName}>")
                 }
             }
         }
@@ -222,7 +213,6 @@ internal class MethodGeneratorHelper(
     }
 
     private companion object {
-        private val array = Array::class.asClassName()
         private val asyncProxy = KMockContract.AsyncFunProxy::class.asClassName()
         private val syncProxy = KMockContract.SyncFunProxy::class.asClassName()
 
