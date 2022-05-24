@@ -9,8 +9,8 @@ package tech.antibytes.kmock.processor.mock
 import com.squareup.kotlinpoet.TypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal object KMockSpyGenerator : SpyGenerator {
@@ -24,7 +24,7 @@ internal object KMockSpyGenerator : SpyGenerator {
         propertyName: String
     ): String = buildSpy("$SPY_PROPERTY!!.$propertyName = value")
 
-    override fun buildReceiverGetterSpy(propertyName: String, propertyType: ReturnTypeInfo): String {
+    override fun buildReceiverGetterSpy(propertyName: String, propertyType: MemberReturnTypeInfo): String {
         val invocation = """
             |   $SPY_CONTEXT {
             |       this@$propertyName.$propertyName
@@ -44,7 +44,7 @@ internal object KMockSpyGenerator : SpyGenerator {
     }
 
     private fun determineSpyInvocationArgument(
-        methodInfo: MethodTypeInfo
+        methodInfo: MemberArgumentTypeInfo
     ): String {
         return if (methodInfo.isVarArg) {
             "*${methodInfo.argumentName}"
@@ -64,8 +64,8 @@ internal object KMockSpyGenerator : SpyGenerator {
     override fun buildMethodSpy(
         methodName: String,
         parameter: List<TypeName>,
-        arguments: Array<MethodTypeInfo>,
-        methodReturnType: ReturnTypeInfo,
+        arguments: Array<MemberArgumentTypeInfo>,
+        methodReturnType: MemberReturnTypeInfo,
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",
@@ -79,8 +79,8 @@ internal object KMockSpyGenerator : SpyGenerator {
     override fun buildReceiverMethodSpy(
         methodName: String,
         parameter: List<TypeName>,
-        arguments: Array<MethodTypeInfo>,
-        methodReturnType: ReturnTypeInfo
+        arguments: Array<MemberArgumentTypeInfo>,
+        methodReturnType: MemberReturnTypeInfo
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",

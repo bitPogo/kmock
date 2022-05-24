@@ -22,10 +22,10 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class MethodGeneratorHelper(
@@ -36,7 +36,7 @@ internal class MethodGeneratorHelper(
         generics: Map<String, GenericDeclaration>?,
         arguments: List<KSValueParameter>,
         typeParameterResolver: TypeParameterResolver,
-    ): Array<MethodTypeInfo> {
+    ): Array<MemberArgumentTypeInfo> {
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
             val (methodType, proxyType) = parameter.type.toSecuredTypeName(
@@ -44,7 +44,7 @@ internal class MethodGeneratorHelper(
                 generics = generics ?: emptyMap(),
                 typeParameterResolver = typeParameterResolver
             )
-            MethodTypeInfo(
+            MemberArgumentTypeInfo(
                 argumentName = argumentName,
                 methodTypeName = methodType,
                 proxyTypeName = proxyType,
@@ -99,10 +99,10 @@ internal class MethodGeneratorHelper(
         proxyTypeName: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>,
-    ): ReturnTypeInfo {
+    ): MemberReturnTypeInfo {
         val generic = proxyGenericTypes[methodTypeName.toString().trimEnd('?')]
 
-        return ReturnTypeInfo(
+        return MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = generic,
@@ -115,9 +115,9 @@ internal class MethodGeneratorHelper(
         proxyReturnType: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
-    ): ReturnTypeInfo {
+    ): MemberReturnTypeInfo {
         return if (proxyGenericTypes == null) {
-            ReturnTypeInfo(
+            MemberReturnTypeInfo(
                 methodTypeName = methodReturnType,
                 proxyTypeName = proxyReturnType,
                 generic = null,
@@ -134,7 +134,7 @@ internal class MethodGeneratorHelper(
     }
 
     private fun mapProxyArgumentTypeNames(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
     ): List<TypeName> {
         return arguments.map { argument ->
             if (!argument.isVarArg) {
@@ -148,7 +148,7 @@ internal class MethodGeneratorHelper(
     }
 
     private fun buildSideEffectSignature(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         proxyReturnType: TypeName,
         prefix: String
     ): TypeVariableName {
@@ -173,7 +173,7 @@ internal class MethodGeneratorHelper(
 
     override fun buildProxy(
         proxyInfo: ProxyInfo,
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         suspending: Boolean,
         classScopeGenerics: Map<String, List<TypeName>>?,
         generics: Map<String, GenericDeclaration>?,

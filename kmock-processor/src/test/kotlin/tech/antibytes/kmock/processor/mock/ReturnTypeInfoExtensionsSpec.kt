@@ -11,7 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.mustBe
@@ -22,7 +22,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveClassScope is called it returns null if no class scope was delegated`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -39,7 +39,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveClassScope is called it returns null if no matching types were found`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -65,7 +65,7 @@ class ReturnTypeInfoExtensionsSpec {
             proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = proxyTypeName,
             generic = null,
@@ -87,7 +87,7 @@ class ReturnTypeInfoExtensionsSpec {
         val proxyTypeName: TypeName = mockk()
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
@@ -110,7 +110,7 @@ class ReturnTypeInfoExtensionsSpec {
         val generics: GenericDeclaration = mockk()
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = generics,
@@ -138,7 +138,7 @@ class ReturnTypeInfoExtensionsSpec {
             proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = proxyTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
@@ -159,7 +159,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given needsCastForReceiverProperty returns false if it has no generics`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -177,7 +177,7 @@ class ReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns false if it has generics and at less then 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
@@ -198,7 +198,7 @@ class ReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns false if it has generics and at least 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
@@ -218,7 +218,7 @@ class ReturnTypeInfoExtensionsSpec {
     fun `Given needsCastForReceiverProperty returns true if the cast flag is true`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
@@ -238,7 +238,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns false if neither a class scope nor a generic were given`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -255,7 +255,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns true if a class scope was given`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -272,7 +272,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given hasGenerics returns true if a generics was given`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = mockk(),
@@ -292,7 +292,7 @@ class ReturnTypeInfoExtensionsSpec {
         val proxyTypeName: TypeName = mockk()
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
@@ -311,7 +311,7 @@ class ReturnTypeInfoExtensionsSpec {
         // Given
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = null,
@@ -331,7 +331,7 @@ class ReturnTypeInfoExtensionsSpec {
         val generics: GenericDeclaration = mockk()
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = null,
@@ -353,7 +353,7 @@ class ReturnTypeInfoExtensionsSpec {
         val generics: GenericDeclaration = mockk()
         val methodTypeName: TypeName = mockk()
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = generics,
@@ -379,7 +379,7 @@ class ReturnTypeInfoExtensionsSpec {
             proxyTypeNameStr.dropLast(1) to types
         )
 
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = proxyTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
@@ -398,7 +398,7 @@ class ReturnTypeInfoExtensionsSpec {
     @Test
     fun `Given resolveCastForReceiverProperty returns an empty String if it has no generics`() {
         // Given
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
@@ -416,7 +416,7 @@ class ReturnTypeInfoExtensionsSpec {
     fun `Given resolveCastForReceiverProperty returns an empty string if it has generics and at less then 2 types`() {
         // Given
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
@@ -438,7 +438,7 @@ class ReturnTypeInfoExtensionsSpec {
         // Given
         val methodTypeName: TypeName = mockk()
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = mockk(),
             generic = generics,
@@ -459,7 +459,7 @@ class ReturnTypeInfoExtensionsSpec {
         // Given
         val type: TypeName = mockk()
         val generics: GenericDeclaration = mockk()
-        val typeInfo = ReturnTypeInfo(
+        val typeInfo = MemberReturnTypeInfo(
             methodTypeName = type,
             proxyTypeName = mockk(),
             generic = generics,

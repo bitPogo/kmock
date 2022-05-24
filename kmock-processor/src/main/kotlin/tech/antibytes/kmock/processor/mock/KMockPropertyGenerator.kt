@@ -22,7 +22,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 
 internal class KMockPropertyGenerator(
     private val nameSelector: ProxyNameSelector,
@@ -30,7 +30,7 @@ internal class KMockPropertyGenerator(
 ) : PropertyGenerator {
     private fun FunSpec.Builder.addGetterInvocation(
         propertyName: String,
-        returnType: ReturnTypeInfo,
+        returnType: MemberReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec.Builder {
@@ -52,7 +52,7 @@ internal class KMockPropertyGenerator(
 
     private fun buildGetter(
         propertyName: String,
-        returnType: ReturnTypeInfo,
+        returnType: MemberReturnTypeInfo,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): FunSpec {
@@ -101,7 +101,7 @@ internal class KMockPropertyGenerator(
         property: PropertySpec.Builder,
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-        returnType: ReturnTypeInfo,
+        returnType: MemberReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -131,7 +131,7 @@ internal class KMockPropertyGenerator(
     private fun buildProperty(
         proxyInfo: ProxyInfo,
         propertyType: TypeName,
-        returnType: ReturnTypeInfo,
+        returnType: MemberReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
         relaxer: Relaxer?
@@ -208,7 +208,7 @@ internal class KMockPropertyGenerator(
             qualifier = qualifier,
             propertyName = propertyName
         )
-        val returnType = ReturnTypeInfo(
+        val returnType = MemberReturnTypeInfo(
             methodTypeName = propertyType,
             proxyTypeName = propertyType,
             generic = null,

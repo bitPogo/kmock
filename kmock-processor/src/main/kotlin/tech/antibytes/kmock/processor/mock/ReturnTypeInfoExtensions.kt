@@ -8,28 +8,28 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 
-internal fun ReturnTypeInfo.resolveClassScope(): List<TypeName>? {
+internal fun MemberReturnTypeInfo.resolveClassScope(): List<TypeName>? {
     return this.classScope?.get(this.proxyTypeName.toString().trimEnd('?'))
 }
 
-private fun ReturnTypeInfo.needsCastOnReturn(): Boolean = this.methodTypeName != this.proxyTypeName
+private fun MemberReturnTypeInfo.needsCastOnReturn(): Boolean = this.methodTypeName != this.proxyTypeName
 
-private fun ReturnTypeInfo.needsCastForRelaxer(relaxer: Relaxer?): Boolean {
+private fun MemberReturnTypeInfo.needsCastForRelaxer(relaxer: Relaxer?): Boolean {
     return relaxer != null &&
         ((this.generic != null && this.generic.types.isNotEmpty()) || this.resolveClassScope() != null)
 }
 
-internal fun ReturnTypeInfo.needsCastForReceiverProperty(): Boolean {
+internal fun MemberReturnTypeInfo.needsCastForReceiverProperty(): Boolean {
     return (this.generic != null && (this.generic.types.size > 1 || this.generic.castReturnType))
 }
 
-internal fun ReturnTypeInfo.needsCastAnnotation(
+internal fun MemberReturnTypeInfo.needsCastAnnotation(
     relaxer: Relaxer?,
 ): Boolean = this.needsCastOnReturn() || this.needsCastForRelaxer(relaxer)
 
-private fun ReturnTypeInfo.resolveCast(condition: Boolean): String {
+private fun MemberReturnTypeInfo.resolveCast(condition: Boolean): String {
     return if (condition) {
         " as ${this.methodTypeName}"
     } else {
@@ -37,12 +37,12 @@ private fun ReturnTypeInfo.resolveCast(condition: Boolean): String {
     }
 }
 
-internal fun ReturnTypeInfo.resolveCastOnReturn(): String = resolveCast(this.needsCastOnReturn())
+internal fun MemberReturnTypeInfo.resolveCastOnReturn(): String = resolveCast(this.needsCastOnReturn())
 
-internal fun ReturnTypeInfo.resolveCastForRelaxer(
+internal fun MemberReturnTypeInfo.resolveCastForRelaxer(
     relaxer: Relaxer?
 ): String = resolveCast(this.needsCastForRelaxer(relaxer))
 
-internal fun ReturnTypeInfo.resolveCastForReceiverProperty(): String = resolveCast(needsCastForReceiverProperty())
+internal fun MemberReturnTypeInfo.resolveCastForReceiverProperty(): String = resolveCast(needsCastForReceiverProperty())
 
-internal fun ReturnTypeInfo.hasGenerics(): Boolean = this.generic != null || this.classScope != null
+internal fun MemberReturnTypeInfo.hasGenerics(): Boolean = this.generic != null || this.classScope != null

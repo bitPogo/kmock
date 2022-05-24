@@ -229,14 +229,14 @@ internal interface ProcessorContract {
         val proxyId: String
     )
 
-    data class MethodTypeInfo(
+    data class MemberArgumentTypeInfo(
         val argumentName: String,
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
         val isVarArg: Boolean
     )
 
-    data class ReturnTypeInfo(
+    data class MemberReturnTypeInfo(
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
         val generic: GenericDeclaration?,
@@ -245,7 +245,7 @@ internal interface ProcessorContract {
 
     data class ProxyBundle(
         val proxy: PropertySpec,
-        val returnType: ReturnTypeInfo,
+        val returnType: MemberReturnTypeInfo,
         val sideEffect: TypeVariableName,
     )
 
@@ -268,14 +268,14 @@ internal interface ProcessorContract {
             qualifier: String,
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverGetterName(
             qualifier: String,
             propertyName: String,
-            receiver: MethodTypeInfo,
+            receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
@@ -283,7 +283,7 @@ internal interface ProcessorContract {
         fun selectReceiverSetterName(
             qualifier: String,
             propertyName: String,
-            receiver: MethodTypeInfo,
+            receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
         ): ProxyInfo
@@ -292,25 +292,25 @@ internal interface ProcessorContract {
             qualifier: String,
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
     }
 
     interface RelaxerGenerator {
         fun buildPropertyRelaxation(
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
         fun buildMethodRelaxation(
-            methodReturnType: ReturnTypeInfo,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
         fun buildBuildInRelaxation(
             methodName: String,
-            argument: MethodTypeInfo?,
+            argument: MemberArgumentTypeInfo?,
         ): String
     }
 
@@ -318,21 +318,21 @@ internal interface ProcessorContract {
         fun buildGetterSpy(propertyName: String): String
         fun buildSetterSpy(propertyName: String): String
 
-        fun buildReceiverGetterSpy(propertyName: String, propertyType: ReturnTypeInfo): String
+        fun buildReceiverGetterSpy(propertyName: String, propertyType: MemberReturnTypeInfo): String
         fun buildReceiverSetterSpy(propertyName: String): String
 
         fun buildMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
         ): String
 
         fun buildReceiverMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
         ): String
 
         fun buildEqualsSpy(mockName: String): String
@@ -342,7 +342,7 @@ internal interface ProcessorContract {
         fun buildGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -355,8 +355,8 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             methodName: String,
             typeParameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
@@ -364,13 +364,13 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             mockName: String,
             methodName: String,
-            argument: MethodTypeInfo?
+            argument: MemberArgumentTypeInfo?
         ): String
 
         fun buildReceiverGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -383,8 +383,8 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             methodName: String,
             typeParameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
     }
@@ -395,7 +395,7 @@ internal interface ProcessorContract {
             generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
             typeParameterResolver: TypeParameterResolver
-        ): Array<MethodTypeInfo>
+        ): Array<MemberArgumentTypeInfo>
 
         fun resolveTypeParameter(
             parameter: List<KSTypeParameter>,
@@ -409,7 +409,7 @@ internal interface ProcessorContract {
 
         fun buildProxy(
             proxyInfo: ProxyInfo,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             suspending: Boolean,
             classScopeGenerics: Map<String, List<TypeName>>?,
             generics: Map<String, GenericDeclaration>?,

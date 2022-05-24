@@ -8,19 +8,19 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
 
 internal class KMockNonIntrusiveInvocationGenerator(
     private val relaxerGenerator: RelaxerGenerator,
     private val spyGenerator: SpyGenerator
 ) : NonIntrusiveInvocationGenerator {
-    private val noArguments: Array<MethodTypeInfo> = arrayOf()
-    private val illegal = ReturnTypeInfo(TypeVariableName(""), TypeVariableName(""), null, null)
+    private val noArguments: Array<MemberArgumentTypeInfo> = arrayOf()
+    private val illegal = MemberReturnTypeInfo(TypeVariableName(""), TypeVariableName(""), null, null)
 
     private fun buildInvocation(hook: (StringBuilder) -> Unit): String {
         val nonIntrusiveInvocation = StringBuilder(4)
@@ -41,7 +41,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildGetterNonIntrusiveInvocation(
         enableSpy: Boolean,
         propertyName: String,
-        propertyType: ReturnTypeInfo,
+        propertyType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -69,8 +69,8 @@ internal class KMockNonIntrusiveInvocationGenerator(
         enableSpy: Boolean,
         methodName: String,
         typeParameter: List<TypeName>,
-        arguments: Array<MethodTypeInfo>,
-        methodReturnType: ReturnTypeInfo,
+        arguments: Array<MemberArgumentTypeInfo>,
+        methodReturnType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -101,7 +101,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     ): String = spyGenerator.buildMethodSpy(methodName, emptyList(), noArguments, illegal)
 
     private fun buildEqualsRelaxer(
-        argument: MethodTypeInfo?
+        argument: MemberArgumentTypeInfo?
     ): String = relaxerGenerator.buildBuildInRelaxation("equals", argument)
 
     private fun buildBuildInRelaxer(
@@ -112,7 +112,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
         nonIntrusiveInvocation: StringBuilder,
         enableSpy: Boolean,
         mockName: String,
-        argument: MethodTypeInfo?
+        argument: MemberArgumentTypeInfo?
     ) {
         nonIntrusiveInvocation.append(buildEqualsRelaxer(argument))
 
@@ -141,7 +141,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
         enableSpy: Boolean,
         mockName: String,
         methodName: String,
-        argument: MethodTypeInfo?
+        argument: MemberArgumentTypeInfo?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         if (methodName == "equals") {
             buildNonIntrusiveEquals(
@@ -162,7 +162,7 @@ internal class KMockNonIntrusiveInvocationGenerator(
     override fun buildReceiverGetterNonIntrusiveInvocation(
         enableSpy: Boolean,
         propertyName: String,
-        propertyType: ReturnTypeInfo,
+        propertyType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
@@ -194,8 +194,8 @@ internal class KMockNonIntrusiveInvocationGenerator(
         enableSpy: Boolean,
         methodName: String,
         typeParameter: List<TypeName>,
-        arguments: Array<MethodTypeInfo>,
-        methodReturnType: ReturnTypeInfo,
+        arguments: Array<MemberArgumentTypeInfo>,
+        methodReturnType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String = buildInvocation { nonIntrusiveInvocation ->
         nonIntrusiveInvocation.append(
