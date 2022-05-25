@@ -16,6 +16,8 @@ plugins {
 
     id("tech.antibytes.gradle.dependency")
 
+    id("tech.antibytes.gradle.coverage")
+
     id("tech.antibytes.gradle.kmock.script.quality-spotless")
 
     id("org.owasp.dependencycheck")
@@ -23,6 +25,8 @@ plugins {
     id("tech.antibytes.gradle.publishing")
 
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
+
+    id("org.sonarqube") version "3.3"
 }
 
 antiBytesPublishing {
@@ -101,4 +105,39 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
         "**/*.xml",
         "**/*.yml",
     )
+}
+
+val sources = listOf(
+    "$projectDir/kmock/src/commonMain",
+    "$projectDir/kmock/src/jvmMain",
+    "$projectDir/kmock-gradle/src/main",
+    "$projectDir/kmock-processor/src/main"
+)
+
+val tests = listOf(
+    "$projectDir/kmock/src/commonTest",
+    "$projectDir/kmock/src/jvmTest",
+    "$projectDir/kmock-gradle/src/main",
+    "$projectDir/kmock-processor/src/main"
+)
+
+val jacocoReports = listOf(
+    "$projectDir/kmock/build/reports/jacoco/jvm/kmock.xml",
+    "$projectDir/kmock-gradle/build/reports/jacoco/jvm/kmock-gradle.xml",
+    "$projectDir/kmock-processor/build/reports/jacoco/jvm/kmock-processor.xml"
+)
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "kmock")
+        property("sonar.organization", "antibytes")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.jacoco.reportPaths", )
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.sources")
+        property("sonar.tests")
+        property("sonar.sources", sources.joinToString(","))
+        property("sonar.tests",  tests.joinToString(","))
+        property("sonar.jacoco.reportPaths", jacocoReports.joinToString(","))
+    }
 }
