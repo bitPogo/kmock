@@ -70,6 +70,7 @@
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ReceiverGenerator$( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer?, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ReceiverGenerator$( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksProperty: KSPropertyDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, relaxer: Relaxer?, )</ID>
     <ID>MagicNumber:Dangerfile.df.kts$1000</ID>
+    <ID>MagicNumber:Dangerfile.df.kts$20</ID>
     <ID>MagicNumber:Dangerfile.df.kts$2000</ID>
     <ID>MagicNumber:Dangerfile.df.kts$500</ID>
     <ID>MagicNumber:KMockCodeGenerator.kt$KMockCodeGenerator$4</ID>
@@ -186,5 +187,9 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(otherTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test") dependsOn(otherTest) }</ID>
     <ID>VariableNaming:AsserterBase.kt$AsserterBase$protected abstract val _references: MutableList&lt;Reference></ID>
+    <ID>VariableNaming:Dangerfile.df.kts$const val ERROR_ADDED_CODE = 2000</ID>
+    <ID>VariableNaming:Dangerfile.df.kts$const val LIGHT_WARN_ADDED_CODE = 500</ID>
+    <ID>VariableNaming:Dangerfile.df.kts$const val MIN_PR_BODY = 20</ID>
+    <ID>VariableNaming:Dangerfile.df.kts$const val WARN_ADDED_CODE = 1000</ID>
   </CurrentIssues>
 </SmellBaseline>

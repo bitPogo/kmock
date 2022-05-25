@@ -4,30 +4,36 @@ import systems.danger.kotlin.onGitHub
 import systems.danger.kotlin.warn
 
 danger(args) {
+    const val ERROR_ADDED_CODE = 2000
+    const val WARN_ADDED_CODE = 1000
+    const val LIGHT_WARN_ADDED_CODE = 500
+
+    const val MIN_PR_BODY = 20
+
+    val branchName = pullRequest.head.label.substringAfter(":")
+    val isFeatureBranch = "(?:feature\\/(?:add|change|remove|fix|bump|security)-[a-z0-9-.]*)"
+        .toRegex()
+        .matches(branchName)
+    val isReleaseBranch = "(?:release\\/(?:\\d{1,3}\\.\\d{1,3}(?:\\.\\d{1,3})?)(?:\\/prepare-\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})?)"
+        .toRegex()
+        .matches(branchName)
+    val isDependabotBranch = "dependabot/(.*)"
+        .toRegex()
+        .matches(branchName)
+    val isBugfixBranch = "bugfix/(.*)"
+        .toRegex()
+        .matches(branchName)
+    val isFeatureTitle = "(?:(?:\\[[A-Z]{2,8}-\\d{1,6}\\]\\s)?(?:Add|Change|Remove|Fix|Bump|Security)\\s.*)"
+        .toRegex()
+        .matches(pullRequest.title)
+    val isReleaseTitle = "(?:(?:Prepare )?Release \\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
+        .toRegex()
+        .matches(pullRequest.title)
+
     val allSourceFiles = git.modifiedFiles + git.createdFiles
     val isChangelogUpdated = allSourceFiles.contains("CHANGELOG.adoc")
 
     onGitHub {
-        val branchName = pullRequest.head.label.substringAfter(":")
-        val isFeatureBranch = "(?:feature\\/(?:add|change|remove|fix|bump|security)-[a-z0-9-.]*)"
-            .toRegex()
-            .matches(branchName)
-        val isReleaseBranch = "(?:release\\/(?:\\d{1,3}\\.\\d{1,3}(?:\\.\\d{1,3})?)(?:\\/prepare-\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})?)"
-            .toRegex()
-            .matches(branchName)
-        val isDependabotBranch = "dependabot/(.*)"
-            .toRegex()
-            .matches(branchName)
-        val isBugfixBranch = "bugfix/(.*)"
-            .toRegex()
-            .matches(branchName)
-        val isFeatureTitle = "(?:(?:\\[[A-Z]{2,8}-\\d{1,6}\\]\\s)?(?:Add|Change|Remove|Fix|Bump|Security)\\s.*)"
-            .toRegex()
-            .matches(pullRequest.title)
-        val isReleaseTitle = "(?:(?:Prepare )?Release \\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
-            .toRegex()
-            .matches(pullRequest.title)
-
         if (!isFeatureBranch && !isBugfixBranch && !isReleaseBranch && !isDependabotBranch) {
             fail(
                 "Branch name is not following our pattern:\n" +
@@ -66,6 +72,7 @@ danger(args) {
 
         when {
             pullRequest.body == null -> warn("Please include a description of your PR changes")
+            pullRequest.body < MIN_PR_BODY ->  warn("Please include a expresive description of your PR changes")
             else -> {/* do nothing*/}
         }
 
@@ -77,9 +84,11 @@ danger(args) {
         // Size
         val changes = (pullRequest.additions ?: 0) - (pullRequest.deletions ?: 0)
         when {
-            changes > 2000 -> fail("This Pull-Request is way to big, please slice it into smaller pull-requests.")
-            changes > 1000 -> warn("Too Big Pull-Request, keep changes smaller")
-            changes > 500 -> warn("Large Pull-Request, try to keep changes smaller if you can")
+            changes > ERROR_ADDED_CODE -> {
+                fail("This Pull-Request is way to big, please slice it into smaller pull-requests.")
+            }
+            changes > WARN_ADDED_CODE -> warn("Too Big Pull-Request, keep changes smaller")
+            changes > LIGHT_WARN_ADDED_CODE -> warn("Large Pull-Request, try to keep changes smaller if you can")
             else -> {/* do nothing */}
         }
     }
