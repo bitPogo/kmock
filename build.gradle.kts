@@ -16,8 +16,6 @@ plugins {
 
     id("tech.antibytes.gradle.dependency")
 
-    id("tech.antibytes.gradle.coverage")
-
     id("tech.antibytes.gradle.kmock.script.quality-spotless")
 
     id("org.owasp.dependencycheck")
@@ -34,6 +32,12 @@ antiBytesPublishing {
     repositoryConfiguration = KMockPublishingConfiguration.repositories
 }
 
+val sources = mutableListOf<String>()
+val tests = mutableListOf<String>()
+val jacocoReports = mutableListOf<String>()
+val testReports = mutableListOf<String>()
+val excludes = mutableListOf<String>()
+
 allprojects {
     repositories {
         addCustomRepositories()
@@ -43,7 +47,45 @@ allprojects {
     }
 
     ensureKotlinVersion(Version.kotlin.language)
+
+    if (name != "examples" && this != rootProject) {
+        val projectSources = file("$projectDir/src").listFiles { file ->
+            file.absolutePath.toString().toLowerCase().endsWith("main")
+        }?.map { file -> file.absolutePath } ?: emptyList()
+
+        val projectTests = file("$projectDir/src").listFiles { file ->
+            file.absolutePath.toString().toLowerCase().endsWith("test")
+        }?.map { file -> file.absolutePath } ?: emptyList()
+
+        val projectMainExclude = projectSources.filterNot { source ->
+            source.endsWith("commonMain") ||
+                source.endsWith("jvmMain") ||
+                source.endsWith("androidMain") ||
+                source.endsWith("main")
+        }.map { source -> "**/${source.substringAfterLast('/')}/**"}
+
+        val projectTestExclude = projectTests.filterNot { source ->
+            source.endsWith("commonTest") ||
+                source.endsWith("jvmTest") ||
+                source.endsWith("androidTest") ||
+                source.endsWith("test")
+        }.map { source -> "**/${source.substringAfterLast('/')}/**"}
+
+        sources.addAll(projectSources)
+        tests.addAll(projectTests)
+        excludes.addAll(projectMainExclude)
+        excludes.addAll(projectTestExclude)
+        jacocoReports.add("$buildDir/reports/jacoco/jvm/$name.xml")
+        testReports.add("$buildDir/reports/tests/jvmTest")
+
+        if (name == "kmock" && this != rootProject) {
+            jacocoReports.add("$buildDir/reports/jacoco/android/$name.xml")
+            testReports.add("$buildDir/reports/tests/androidTest")
+        }
+    }
 }
+
+evaluationDependsOnChildren()
 
 tasks.named<Wrapper>("wrapper") {
     gradleVersion = "7.4.2"
@@ -107,37 +149,18 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
     )
 }
 
-val sources = listOf(
-    "$projectDir/kmock/src/commonMain",
-    "$projectDir/kmock/src/jvmMain",
-    "$projectDir/kmock-gradle/src/main",
-    "$projectDir/kmock-processor/src/main"
-)
-
-val tests = listOf(
-    "$projectDir/kmock/src/commonTest",
-    "$projectDir/kmock/src/jvmTest",
-    "$projectDir/kmock-gradle/src/main",
-    "$projectDir/kmock-processor/src/main"
-)
-
-val jacocoReports = listOf(
-    "$projectDir/kmock/build/reports/jacoco/jvm/kmock.xml",
-    "$projectDir/kmock-gradle/build/reports/jacoco/jvm/kmock-gradle.xml",
-    "$projectDir/kmock-processor/build/reports/jacoco/jvm/kmock-processor.xml"
-)
-
 sonarqube {
     properties {
         property("sonar.projectKey", "kmock")
         property("sonar.organization", "antibytes")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.jacoco.reportPaths", )
+
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.sources")
-        property("sonar.tests")
-        property("sonar.sources", sources.joinToString(","))
-        property("sonar.tests",  tests.joinToString(","))
+        //property("sonar.sources", sources.joinToString(","))
+        //property("sonar.tests", tests.joinToString(","))
         property("sonar.jacoco.reportPaths", jacocoReports.joinToString(","))
+        property("sonar.junit.reportPaths", testReports.joinToString(","))
+        //property("sonar.exclusions", excludes.joinToString(","))
+        property("sonar.kotlin.detekt.reportPaths", "$buildDir/reports/detekt/detekt.xml")
     }
 }

@@ -21,6 +21,7 @@ plugins {
 
     id("tech.antibytes.gradle.configuration")
     id("tech.antibytes.gradle.publishing")
+    id("tech.antibytes.gradle.coverage")
 
     id("kotlinx-atomicfu")
 
