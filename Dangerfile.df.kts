@@ -4,6 +4,12 @@ import systems.danger.kotlin.onGitHub
 import systems.danger.kotlin.warn
 
 danger(args) {
+    val failCountAdditions = 2000
+    val warnCountAdditions = 1000
+    val infoCountAdditions = 500
+
+    val minPullRequestSize = 20
+
     val allSourceFiles = git.modifiedFiles + git.createdFiles
     val isChangelogUpdated = allSourceFiles.contains("CHANGELOG.adoc")
 
@@ -66,6 +72,9 @@ danger(args) {
 
         when {
             pullRequest.body == null -> warn("Please include a description of your PR changes")
+            (pullRequest.body as String).length < minPullRequestSize -> {
+                warn("Please include a expresive description of your PR changes")
+            }
             else -> {/* do nothing*/}
         }
 
@@ -77,9 +86,11 @@ danger(args) {
         // Size
         val changes = (pullRequest.additions ?: 0) - (pullRequest.deletions ?: 0)
         when {
-            changes > 2000 -> fail("This Pull-Request is way to big, please slice it into smaller pull-requests.")
-            changes > 1000 -> warn("Too Big Pull-Request, keep changes smaller")
-            changes > 500 -> warn("Large Pull-Request, try to keep changes smaller if you can")
+            changes > failCountAdditions -> {
+                fail("This Pull-Request is way to big, please slice it into smaller pull-requests.")
+            }
+            changes > warnCountAdditions -> warn("Too Big Pull-Request, keep changes smaller")
+            changes > infoCountAdditions -> warn("Large Pull-Request, try to keep changes smaller if you can")
             else -> {/* do nothing */}
         }
     }

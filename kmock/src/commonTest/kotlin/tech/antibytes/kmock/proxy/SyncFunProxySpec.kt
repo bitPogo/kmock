@@ -415,7 +415,7 @@ class SyncFunProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            for (x in 0 until 10) {
+            repeat(10) {
                 val actual = proxy.invoke()
 
                 // Then

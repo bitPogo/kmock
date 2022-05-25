@@ -9,6 +9,8 @@ import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import java.net.URL
 
 plugins {
@@ -186,8 +188,15 @@ kotlin {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+}
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
 
