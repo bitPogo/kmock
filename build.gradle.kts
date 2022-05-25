@@ -31,12 +31,8 @@ antiBytesPublishing {
     versioning = KMockPublishingConfiguration.versioning
     repositoryConfiguration = KMockPublishingConfiguration.repositories
 }
-
-val sources = mutableListOf<String>()
-val tests = mutableListOf<String>()
 val jacocoReports = mutableListOf<String>()
 val testReports = mutableListOf<String>()
-val excludes = mutableListOf<String>()
 
 allprojects {
     repositories {
@@ -49,32 +45,6 @@ allprojects {
     ensureKotlinVersion(Version.kotlin.language)
 
     if (name != "examples" && this != rootProject) {
-        val projectSources = file("$projectDir/src").listFiles { file ->
-            file.absolutePath.toString().toLowerCase().endsWith("main")
-        }?.map { file -> file.absolutePath } ?: emptyList()
-
-        val projectTests = file("$projectDir/src").listFiles { file ->
-            file.absolutePath.toString().toLowerCase().endsWith("test")
-        }?.map { file -> file.absolutePath } ?: emptyList()
-
-        val projectMainExclude = projectSources.filterNot { source ->
-            source.endsWith("commonMain") ||
-                source.endsWith("jvmMain") ||
-                source.endsWith("androidMain") ||
-                source.endsWith("main")
-        }.map { source -> "**/${source.substringAfterLast('/')}/**"}
-
-        val projectTestExclude = projectTests.filterNot { source ->
-            source.endsWith("commonTest") ||
-                source.endsWith("jvmTest") ||
-                source.endsWith("androidTest") ||
-                source.endsWith("test")
-        }.map { source -> "**/${source.substringAfterLast('/')}/**"}
-
-        sources.addAll(projectSources)
-        tests.addAll(projectTests)
-        excludes.addAll(projectMainExclude)
-        excludes.addAll(projectTestExclude)
         jacocoReports.add("$buildDir/reports/jacoco/jvm/$name.xml")
         testReports.add("$buildDir/reports/tests/jvmTest")
 
@@ -156,11 +126,8 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
 
         property("sonar.sourceEncoding", "UTF-8")
-        //property("sonar.sources", sources.joinToString(","))
-        //property("sonar.tests", tests.joinToString(","))
         property("sonar.jacoco.reportPaths", jacocoReports.joinToString(","))
         property("sonar.junit.reportPaths", testReports.joinToString(","))
-        //property("sonar.exclusions", excludes.joinToString(","))
         property("sonar.kotlin.detekt.reportPaths", "$buildDir/reports/detekt/detekt.xml")
     }
 }
