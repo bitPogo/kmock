@@ -19,6 +19,9 @@ plugins {
     id("com.gradle.plugin-publish")
 
     id("tech.antibytes.gradle.coverage")
+
+    // Pin API
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
 }
 
 group = KMockGradleConfiguration.group

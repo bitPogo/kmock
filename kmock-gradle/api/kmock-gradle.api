@@ -1,0 +1,41 @@
+public abstract class tech/antibytes/gradle/kmock/KMockExtension : tech/antibytes/gradle/kmock/KMockPluginContract$Extension {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public fun getAliasNameMapping ()Ljava/util/Map;
+	public fun getAllowExperimentalProxyAccess ()Z
+	public fun getAllowInterfaces ()Z
+	public fun getCustomAnnotationsForMeta ()Ljava/util/Map;
+	public fun getCustomMethodNames ()Ljava/util/Map;
+	public fun getDisableFactories ()Z
+	public fun getEnableFineGrainedNames ()Z
+	public fun getFreezeOnDefault ()Z
+	public fun getRootPackage ()Ljava/lang/String;
+	public fun getSpiesOnly ()Z
+	public fun getSpyAll ()Z
+	public fun getSpyOn ()Ljava/util/Set;
+	public fun getUseBuildInProxiesOn ()Ljava/util/Set;
+	public fun getUseTypePrefixFor ()Ljava/util/Map;
+	public fun setAliasNameMapping (Ljava/util/Map;)V
+	public fun setAllowExperimentalProxyAccess (Z)V
+	public fun setAllowInterfaces (Z)V
+	public fun setCustomAnnotationsForMeta (Ljava/util/Map;)V
+	public fun setCustomMethodNames (Ljava/util/Map;)V
+	public fun setDisableFactories (Z)V
+	public fun setEnableFineGrainedNames (Z)V
+	public fun setFreezeOnDefault (Z)V
+	public fun setRootPackage (Ljava/lang/String;)V
+	public fun setSpiesOnly (Z)V
+	public fun setSpyAll (Z)V
+	public fun setSpyOn (Ljava/util/Set;)V
+	public fun setUseBuildInProxiesOn (Ljava/util/Set;)V
+	public fun setUseTypePrefixFor (Ljava/util/Map;)V
+}
+
+public abstract interface annotation class tech/antibytes/gradle/kmock/KMockGradleExperimental : java/lang/annotation/Annotation {
+}
+
+public final class tech/antibytes/gradle/kmock/KMockPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
