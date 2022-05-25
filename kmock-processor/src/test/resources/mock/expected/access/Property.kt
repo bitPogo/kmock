@@ -17,7 +17,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class PropertyMock<L, T>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Property<L, T>? = null,
     freeze: Boolean = true,
@@ -31,35 +31,35 @@ internal class PropertyMock<L, T>(
 
     public val _foo: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val bar: Int
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_bar", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val uzz: String
         get() = _uzz.onGet()
 
     public val _uzz: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_uzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val izz: L
         get() = _izz.onGet()
 
     public val _izz: KMockContract.PropertyProxy<L> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_izz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val tuz: T
         get() = _tuz.onGet()
 
     public val _tuz: KMockContract.PropertyProxy<T> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_tuz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var buzz: Any
         get() = _buzz.onGet()
@@ -67,7 +67,7 @@ internal class PropertyMock<L, T>(
 
     public val _buzz: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.access.PropertyMock#_buzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     private val referenceStore: Map<String, KMockContract.Proxy<*, *>> = mapOf(
         "foo|property" to _foo,

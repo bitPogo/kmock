@@ -19,7 +19,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, MultiMock>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: MultiMock? = null,
     freeze: Boolean = true,
@@ -49,11 +49,11 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
 
     public val _thingGetter: KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.Something) ->
     kotlin.Int> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_thingGetter",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _thingSetter: KMockContract.SyncFunProxy<Unit, (multi.template.`receiver`.Something) ->
     Unit> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_thingSetter", collector =
-    verifier, freeze = freeze)
+    collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override val SomethingElse<Any>.things: List<Any>
@@ -66,8 +66,8 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
     public val _thingsGetter:
         KMockContract.SyncFunProxy<List<Any>, (multi.template.`receiver`.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_thingsGetter", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_thingsGetter", collector =
+        collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var Properties<*>.extension: Int
@@ -88,12 +88,12 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
     public val _extensionGetter:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.Properties<*>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_extensionGetter", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _extensionSetter:
         KMockContract.SyncFunProxy<Unit, (multi.template.`receiver`.Properties<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_extensionSetter", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
@@ -114,12 +114,12 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
     public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingGetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTSomethingComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingSetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var <T : KMockTypeParameter0> T.nothing: KMockTypeParameter0
@@ -141,12 +141,12 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         KMockContract.SyncFunProxy<KMockTypeParameter0, (KMockTypeParameter0) -> KMockTypeParameter0>
         =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingGetterWithTKMockTypeParameter0",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTKMockTypeParameter0:
         KMockContract.SyncFunProxy<Unit, (KMockTypeParameter0) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingSetterWithTKMockTypeParameter0",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var KMockTypeParameter0.otherThing: String
@@ -166,11 +166,11 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
 
     public val _otherThingGetter: KMockContract.SyncFunProxy<String, (KMockTypeParameter0) ->
     kotlin.String> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_otherThingGetter",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _otherThingSetter: KMockContract.SyncFunProxy<Unit, (KMockTypeParameter0) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_otherThingSetter", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val myThing: String
         get() = _myThing.onGet {
@@ -178,7 +178,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         }
 
     public val _myThing: KMockContract.PropertyProxy<String> =
-        ProxyFactory.createPropertyProxy("multi.ReceiverMultiMock#_myThing", collector = verifier,
+        ProxyFactory.createPropertyProxy("multi.ReceiverMultiMock#_myThing", collector = collector,
             freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
@@ -192,85 +192,85 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
     public val _insideGetter:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.AnythingElse.SomethingInside) ->
         kotlin.Int> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_insideGetter",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_getOtherThing", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _equalsReceiver:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.Something) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_equalsReceiver", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _doSomethingReceiver:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.Something) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingReceiver", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _doSomethingElseReceiverWithSomethingElse:
         KMockContract.SyncFunProxy<List<Any>, (multi.template.`receiver`.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElseReceiverWithSomethingElse",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _doSomethingElseReceiverWithZTAny:
         KMockContract.SyncFunProxy<KMockTypeParameter1, (kotlin.Any?) -> KMockTypeParameter1> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElseReceiverWithZTAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _doSomethingElse:
         KMockContract.SyncFunProxy<Unit, (multi.template.`receiver`.SomethingElse<kotlin.Any>) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doSomethingElse",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _mutaborReceiver:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.Methods<*>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_mutaborReceiver", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _mutabor: KMockContract.SyncFunProxy<Unit, (multi.template.`receiver`.Methods<*>) ->
     kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_mutabor", collector =
-    verifier, freeze = freeze)
+    collector, freeze = freeze)
 
     public val _doNothingReceiverWithTSomethingComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingReceiverWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _doNothingReceiverWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingReceiverWithTAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingElseReceiver", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _doNothingElse: KMockContract.SyncFunProxy<Any, (kotlin.Any) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingElse", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _doInsideReceiver:
         KMockContract.SyncFunProxy<Int, (multi.template.`receiver`.AnythingElse.SomethingInside) ->
         kotlin.Int> = ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doInsideReceiver",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_iDo", collector = verifier, freeze =
-        freeze)
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_iDo", collector = collector, freeze
+        = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_toString", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_toString", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_equals", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_equals", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_hashCode", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_hashCode", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
     public override fun getOtherThing(): Unit = _getOtherThing.invoke() {

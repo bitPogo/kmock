@@ -9,9 +9,17 @@ package tech.antibytes.kmock.processor.factory
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARGUMENTS_WITH_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.TEMPLATE_TYPE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNKNOWN_INTERFACE
 import tech.antibytes.kmock.processor.ProcessorContract.FactoryMultiBundle
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
@@ -35,9 +43,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         mockFactory.beginControlFlow("return if ($KMOCK_FACTORY_TYPE_NAME::class == $mockName::class)")
         addItems(mockFactory)
         mockFactory.nextControlFlow("else")
-        mockFactory.addCode(
-            "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
-        )
+        mockFactory.addCode(UNKNOWN_INTERFACE)
         mockFactory.endControlFlow()
 
         return mockFactory
@@ -47,9 +53,9 @@ internal class KMockFactoryMultiInterfaceGenerator(
         relaxer: Relaxer?
     ): String {
         return if (relaxer == null) {
-            "%LMock(verifier = verifier, freeze = freeze, spyOn = spyOn as $KSPY_FACTORY_TYPE_NAME?) as $KMOCK_FACTORY_TYPE_NAME"
+            "%LMock($MULTI_INTERFACE_ARGUMENTS as $KSPY_FACTORY_TYPE_NAME?) as $KMOCK_FACTORY_TYPE_NAME"
         } else {
-            "%LMock(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as $KSPY_FACTORY_TYPE_NAME?) as $KMOCK_FACTORY_TYPE_NAME"
+            "%LMock($ARGUMENTS_WITH_RELAXER as $KSPY_FACTORY_TYPE_NAME?) as $KMOCK_FACTORY_TYPE_NAME"
         }
     }
 
@@ -168,7 +174,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         val typeArgumentBuilder = StringBuilder()
 
         bounds.forEachIndexed { idx, _ ->
-            typeArgumentBuilder.append("templateType$idx = templateType$idx,\n")
+            typeArgumentBuilder.append("$TEMPLATE_TYPE_ARGUMENT$idx = $TEMPLATE_TYPE_ARGUMENT$idx,\n")
         }
 
         return typeArgumentBuilder.toString().trimEnd()
@@ -333,24 +339,25 @@ internal class KMockFactoryMultiInterfaceGenerator(
     }
 
     private companion object {
+        private const val MULTI_INTERFACE_ARGUMENTS = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
         private val factoryInvocationWithTemplate = """
-                |return ${ProcessorContract.SHARED_MOCK_FACTORY}(
-                |   spyOn = null,
-                |   verifier = verifier,
-                |   relaxed = relaxed,
-                |   relaxUnitFun = relaxUnitFun,
-                |   freeze = freeze,
+                |return $SHARED_MOCK_FACTORY(
+                |   $SPY_ARGUMENT = null,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = $RELAXER_ARGUMENT,
+                |   $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
                 |   %L
                 |)
         """.trimMargin()
 
         private val spyFactoryInvocationWithTemplate = """
-                |return ${ProcessorContract.SHARED_MOCK_FACTORY}(
-                |   spyOn = spyOn,
-                |   verifier = verifier,
-                |   relaxed = false,
-                |   relaxUnitFun = false,
-                |   freeze = freeze,
+                |return $SHARED_MOCK_FACTORY(
+                |   $SPY_ARGUMENT = $SPY_ARGUMENT,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = false,
+                |   $UNIT_RELAXER_ARGUMENT = false,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
                 |   %L
                 |)
         """.trimMargin()

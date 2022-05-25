@@ -17,7 +17,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class SyncFunMock<L, T>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: SyncFun<L, T>? = null,
     freeze: Boolean = true,
@@ -27,52 +27,52 @@ internal class SyncFunMock<L, T>(
     private val relaxed: Boolean = false,
 ) : SyncFun<L, T> where T : CharSequence, T : Comparable<T> {
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_foo", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_foo", collector =
+        collector, freeze = freeze)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_bar", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_bar", collector =
+        collector, freeze = freeze)
 
     public val _ozz: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_ozz", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_ozz", collector =
+        collector, freeze = freeze)
 
-    public val _izz: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_izz", collector = verifier,
-            freeze = freeze)
+    public val _izz: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_izz", collector =
+        collector, freeze = freeze)
 
     public val _uzz: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_uzz", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_uzz", collector =
+        collector, freeze = freeze)
 
     public val _tuz: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tuz", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tuz", collector =
+        collector, freeze = freeze)
 
     public val _uz: KMockContract.SyncFunProxy<L, () -> L> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_uz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_uz", collector = collector,
             freeze = freeze)
 
     public val _tzz: KMockContract.SyncFunProxy<T, () -> T> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tzz", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tzz", collector =
+        collector, freeze = freeze)
 
     public val _lol: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_lol", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_lol", collector =
+        collector, freeze = freeze)
 
     public val _veryLongMethodNameWithABunchOfVariables: KMockContract.SyncFunProxy<Unit, (kotlin.Int,
         kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,
         kotlin.Int, kotlin.Int) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_veryLongMethodNameWithABunchOfVariables",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     private val referenceStore: Map<String, KMockContract.Proxy<*, *>> = mapOf(
         "foo|(kotlin.Int, kotlin.Any) -> kotlin.Any" to _foo,
         "bar|(kotlin.Int, kotlin.Any) -> kotlin.Any" to _bar,
         "ozz|(kotlin.IntArray) -> kotlin.Any" to _ozz,
-        "izz|(Array<out kotlin.Any>) -> kotlin.Any" to _izz,
+        "izz|(kotlin.Array<out kotlin.Any>) -> kotlin.Any" to _izz,
         "uzz|() -> kotlin.Unit" to _uzz,
         "tuz|() -> kotlin.Int" to _tuz,
         "uz|() -> L" to _uz,
@@ -157,13 +157,13 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf2")
-    public fun syncFunProxyOf(reference: (Array<out kotlin.Any>) -> kotlin.Any):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (Array<out kotlin.Any>) -> kotlin.Any>
-        =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(Array<out kotlin.Any>) -> kotlin.Any"""]
+    public fun syncFunProxyOf(reference: (kotlin.Array<out kotlin.Any>) -> kotlin.Any):
+        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Array<out kotlin.Any>) ->
+        kotlin.Any> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.Any>) -> kotlin.Any"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (Array<out kotlin.Any>) -> kotlin.Any!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (Array<out kotlin.Any>) ->
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Any>) -> kotlin.Any!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Array<out kotlin.Any>) ->
         kotlin.Any>
 
     @Suppress("UNCHECKED_CAST")

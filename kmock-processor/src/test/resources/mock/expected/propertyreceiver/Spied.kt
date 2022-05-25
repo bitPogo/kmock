@@ -14,7 +14,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class SpiedMock<L>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Spied<L>? = null,
     freeze: Boolean = true,
@@ -44,12 +44,12 @@ internal class SpiedMock<L>(
     public val _thingGetter:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_thingGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _thingSetter:
         KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_thingSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override val SomethingElse<Any>.things: List<Any>
@@ -63,7 +63,7 @@ internal class SpiedMock<L>(
         KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_thingsGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var Spied<*>.extension: Int
@@ -84,12 +84,12 @@ internal class SpiedMock<L>(
     public val _extensionGetter:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Spied<*>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_extensionGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _extensionSetter:
         KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Spied<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_extensionSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
@@ -110,12 +110,12 @@ internal class SpiedMock<L>(
     public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTSomethingComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var <T : L> T.nothing: L
@@ -135,11 +135,11 @@ internal class SpiedMock<L>(
 
     public val _nothingGetterWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTL",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTL: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTL",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var L.otherThing: String
@@ -159,11 +159,11 @@ internal class SpiedMock<L>(
 
     public val _otherThingGetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_otherThingGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _otherThingSetter: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_otherThingSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override val myThing: String
         get() = _myThing.onGet {
@@ -172,7 +172,7 @@ internal class SpiedMock<L>(
 
     public val _myThing: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.propertyreceiver.SpiedMock#_myThing",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override val AnythingElse.SomethingInside.inside: Int
@@ -186,23 +186,23 @@ internal class SpiedMock<L>(
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
         kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_insideGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_getOtherThing",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_toString",
-            collector = verifier, freeze = freeze, ignorableForVerification = true)
+            collector = collector, freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_equals", collector
-        = verifier, freeze = freeze, ignorableForVerification = true)
+        = collector, freeze = freeze, ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_hashCode",
-            collector = verifier, freeze = freeze, ignorableForVerification = true)
+            collector = collector, freeze = freeze, ignorableForVerification = true)
 
     public override fun getOtherThing(): Unit = _getOtherThing.invoke() {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)

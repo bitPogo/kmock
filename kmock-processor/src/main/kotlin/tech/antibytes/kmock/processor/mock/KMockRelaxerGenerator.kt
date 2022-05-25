@@ -7,17 +7,19 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.RelaxerGenerator
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 
 internal class KMockRelaxerGenerator : RelaxerGenerator {
     private fun TypeName.toParameterlessString(): String {
         return this.toString().trimEnd('?').substringBefore('<')
     }
 
-    private fun ReturnTypeInfo.toParameterlessString(): String {
+    private fun MemberReturnTypeInfo.toParameterlessString(): String {
         val generics = StringBuilder()
         val classScope = this.resolveClassScope()
         var idx = 0
@@ -38,7 +40,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     private fun resolveTypeParameter(
-        methodReturnType: ReturnTypeInfo,
+        methodReturnType: MemberReturnTypeInfo,
     ): String {
         return if (!methodReturnType.hasGenerics()) {
             ""
@@ -48,37 +50,37 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
     }
 
     private fun addRelaxer(
-        methodReturnType: ReturnTypeInfo,
+        methodReturnType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
         val types = resolveTypeParameter(methodReturnType)
         val cast = methodReturnType.resolveCastForRelaxer(relaxer)
 
         return if (relaxer != null) {
-            "useRelaxerIf(relaxed) { proxyId -> ${relaxer.functionName}(proxyId,$types)$cast }\n"
+            "useRelaxerIf($RELAXER_ARGUMENT) { proxyId -> ${relaxer.functionName}(proxyId,$types)$cast }\n"
         } else {
             ""
         }
     }
 
     private fun addFunRelaxer(
-        methodReturnType: ReturnTypeInfo,
+        methodReturnType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ): String {
         return if (methodReturnType.proxyTypeName.toString() == "kotlin.Unit") {
-            "useUnitFunRelaxerIf(relaxUnitFun || relaxed)\n"
+            "useUnitFunRelaxerIf($UNIT_RELAXER_ARGUMENT || $RELAXER_ARGUMENT)\n"
         } else {
             addRelaxer(methodReturnType, relaxer)
         }
     }
 
     override fun buildPropertyRelaxation(
-        propertyType: ReturnTypeInfo,
+        propertyType: MemberReturnTypeInfo,
         relaxer: Relaxer?,
     ): String = addRelaxer(propertyType, relaxer)
 
     override fun buildMethodRelaxation(
-        methodReturnType: ReturnTypeInfo,
+        methodReturnType: MemberReturnTypeInfo,
         relaxer: Relaxer?,
     ): String = addFunRelaxer(
         methodReturnType = methodReturnType,
@@ -92,7 +94,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
 
     override fun buildBuildInRelaxation(
         methodName: String,
-        argument: MethodTypeInfo?,
+        argument: MemberArgumentTypeInfo?,
     ): String {
         val argumentName = argument?.argumentName ?: ""
         val relaxerBody = buildRelaxationInvocation(

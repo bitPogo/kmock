@@ -10,7 +10,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
@@ -38,7 +38,7 @@ internal class KMockProxyNameSelector(
         { typeName -> typeName.removePrefixes(uselessPrefixes).packageNameToVariableName() }
     }
 
-    private val suffixResolver: Function3<Array<MethodTypeInfo>, Map<String, List<KSTypeReference>>, TypeParameterResolver, List<String>> =
+    private val suffixResolver: Function3<Array<MemberArgumentTypeInfo>, Map<String, List<KSTypeReference>>, TypeParameterResolver, List<String>> =
         if (enableFineGrainedNames) {
             { arguments, generics, typeResolver: TypeParameterResolver ->
                 resolveLongProxySuffixFromArguments(
@@ -241,7 +241,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun resolveProxySuffixFromArguments(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): List<String> {
@@ -305,7 +305,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun resolveLongProxySuffixFromArguments(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): List<String> {
@@ -321,7 +321,7 @@ internal class KMockProxyNameSelector(
 
     private fun determineSuffixedMethodProxyName(
         methodName: String,
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): String {
@@ -338,7 +338,7 @@ internal class KMockProxyNameSelector(
         proxyMethodNameCandidate: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
-        arguments: Array<MethodTypeInfo>
+        arguments: Array<MemberArgumentTypeInfo>
     ): String {
         return if (proxyMethodNameCandidate in overloadedProxies) {
             determineSuffixedMethodProxyName(
@@ -409,7 +409,7 @@ internal class KMockProxyNameSelector(
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver,
-        arguments: Array<MethodTypeInfo>
+        arguments: Array<MemberArgumentTypeInfo>
     ): ProxyInfo {
         val proxyName = selectMethodProxyName(
             proxyMethodNameCandidate = "_$methodName$suffix",
@@ -436,7 +436,7 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         typeResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = "",
@@ -450,7 +450,7 @@ internal class KMockProxyNameSelector(
     override fun selectReceiverGetterName(
         qualifier: String,
         propertyName: String,
-        receiver: MethodTypeInfo,
+        receiver: MemberArgumentTypeInfo,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
@@ -465,7 +465,7 @@ internal class KMockProxyNameSelector(
     override fun selectReceiverSetterName(
         qualifier: String,
         propertyName: String,
-        receiver: MethodTypeInfo,
+        receiver: MemberArgumentTypeInfo,
         generics: Map<String, List<KSTypeReference>>,
         typeResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
@@ -481,7 +481,7 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         typeResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_METHOD,

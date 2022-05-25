@@ -13,7 +13,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>, K : Any, L> kspy(
     spyOn: SpyOn,
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
     templateType: kotlin.reflect.KClass<factory.template.spiesonly.Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

@@ -12,7 +12,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class PlatformMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
@@ -26,14 +26,14 @@ internal class PlatformMock(
 
     public val _foo: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.property.PlatformMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val bar: Int
         get() = _bar.onGet()
 
     public val _bar: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.property.PlatformMock#_bar", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var buzz: Any
         get() = _buzz.onGet()
@@ -41,7 +41,7 @@ internal class PlatformMock(
 
     public val _buzz: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.property.PlatformMock#_buzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public fun _clearMock(): Unit {
         _foo.clear()

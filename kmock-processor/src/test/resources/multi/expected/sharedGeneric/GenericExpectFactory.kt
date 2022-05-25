@@ -15,7 +15,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock, KMockTypeParameter0 : Any, KMockTypeParameter1,
     KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5> kmock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,

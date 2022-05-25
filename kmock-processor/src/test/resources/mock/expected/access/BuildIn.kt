@@ -15,7 +15,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class BuildInMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: BuildIn? = null,
     freeze: Boolean = true,
@@ -25,20 +25,20 @@ internal class BuildInMock(
     private val relaxed: Boolean = false,
 ) : BuildIn {
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_foo", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_foo", collector =
+        collector, freeze = freeze)
 
     public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_toString", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_equals", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_hashCode", collector =
-        verifier, freeze = freeze, ignorableForVerification = true)
+        collector, freeze = freeze, ignorableForVerification = true)
 
     private val referenceStore: Map<String, KMockContract.Proxy<*, *>> = mapOf(
         "foo|(kotlin.Int, kotlin.Any) -> kotlin.Any" to _foo,

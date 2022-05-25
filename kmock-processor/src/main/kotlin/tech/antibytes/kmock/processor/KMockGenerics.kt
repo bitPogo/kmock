@@ -16,22 +16,21 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.any
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.utils.mapArgumentType
 
 internal object KMockGenerics : GenericResolver {
-    private val any = Any::class.asTypeName()
-    private val nullableAny = any.copy(nullable = true)
-    private val nullableAnys = listOf(any.copy(nullable = true))
-    private val nonNullableAnys = listOf(any.copy(nullable = false))
+    private val nullableAnys = listOf(nullableAny)
+    private val nonNullableAnys = listOf(any)
     private const val TYPE_PARAMETER = "KMockTypeParameter"
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()

@@ -8,9 +8,18 @@ package tech.antibytes.kmock.processor.factory
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARGUMENTS_WITHOUT_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARGUMENTS_WITH_RELAXER
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY_TYPE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.TEMPLATE_TYPE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNKNOWN_INTERFACE
 import tech.antibytes.kmock.processor.ProcessorContract.FactoryBundle
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
@@ -100,7 +109,7 @@ internal class KMockFactoryWithGenerics(
 
         addItems(mockFactory)
 
-        mockFactory.addStatement("else -> throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")")
+        mockFactory.addStatement("else -> $UNKNOWN_INTERFACE")
         mockFactory.endControlFlow()
 
         return mockFactory
@@ -111,13 +120,13 @@ internal class KMockFactoryWithGenerics(
     ): Pair<String, String> {
         return if (relaxer == null) {
             Pair(
-                "%L::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
-                "%LMock::class -> %LMock%L(verifier = verifier, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%L::class -> %LMock%L($ARGUMENTS_WITHOUT_RELAXER as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock%L($ARGUMENTS_WITHOUT_RELAXER as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
             )
         } else {
             Pair(
-                "%L::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
-                "%LMock::class -> %LMock%L(verifier = verifier, relaxed = relaxed, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%L::class -> %LMock%L($ARGUMENTS_WITH_RELAXER as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
+                "%LMock::class -> %LMock%L($ARGUMENTS_WITH_RELAXER as %L%L?) as $KMOCK_FACTORY_TYPE_NAME",
             )
         }
     }
@@ -270,25 +279,26 @@ internal class KMockFactoryWithGenerics(
     }
 
     private companion object {
+
         private val factoryInvocationWithTemplate = """
                 |return $SHARED_MOCK_FACTORY(
-                |   spyOn = null,
-                |   verifier = verifier,
-                |   relaxed = relaxed,
-                |   relaxUnitFun = relaxUnitFun,
-                |   freeze = freeze,
-                |   templateType = templateType,
+                |   $SPY_ARGUMENT = null,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = $RELAXER_ARGUMENT,
+                |   $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
+                |   $TEMPLATE_TYPE_ARGUMENT = $TEMPLATE_TYPE_ARGUMENT,
                 |)
         """.trimMargin()
 
         private val spyFactoryInvocationWithTemplate = """
                 |return $SHARED_MOCK_FACTORY(
-                |   spyOn = spyOn,
-                |   verifier = verifier,
-                |   relaxed = false,
-                |   relaxUnitFun = false,
-                |   freeze = freeze,
-                |   templateType = templateType,
+                |   $SPY_ARGUMENT = $SPY_ARGUMENT,
+                |   $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT,
+                |   $RELAXER_ARGUMENT = false,
+                |   $UNIT_RELAXER_ARGUMENT = false,
+                |   $FREEZE_ARGUMENT = $FREEZE_ARGUMENT,
+                |   $TEMPLATE_TYPE_ARGUMENT = $TEMPLATE_TYPE_ARGUMENT,
                 |)
         """.trimMargin()
     }

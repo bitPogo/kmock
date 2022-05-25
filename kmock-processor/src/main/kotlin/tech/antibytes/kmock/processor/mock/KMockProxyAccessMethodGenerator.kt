@@ -34,7 +34,10 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.any
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.multibounded
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
@@ -433,12 +436,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     private fun createPropertyAccessMethod(): FunSpec {
         return FunSpec.builder("propertyProxyOf")
             .returns(propertyProxy)
-            .addParameter("reference", kProperty)
+            .addParameter(REFERENCE, kProperty)
             .addTypeVariable(propertyType)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
-                "\${reference.name}|property",
-                "Unknown property \${reference.name}!",
+                "\${$REFERENCE.name}|property",
+                "Unknown property \${$REFERENCE.name}!",
                 propertyProxy,
             )
             .addAnnotation(UNCHECKED)
@@ -461,11 +464,11 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     ): FunSpec {
         return FunSpec.builder(proxyAccessMethod)
             .returns(proxySignature)
-            .addParameter("reference", method.sideEffect)
+            .addParameter(REFERENCE, method.sideEffect)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
-                "\${(reference as $kFunction).name}|${method.sideEffect}",
-                "Unknown method \${reference.name} with signature ${method.sideEffect}!",
+                "\${($REFERENCE as $kFunction).name}|${method.sideEffect}",
+                "Unknown method \${$REFERENCE.name} with signature ${method.sideEffect}!",
                 proxySignature
             )
             .addAnnotation(UNCHECKED)
@@ -600,12 +603,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         return FunSpec.builder(proxyAccessMethod)
             .returns(proxySignature)
             .addTypeVariables(method.typeParameter)
-            .addParameter("reference", sideEffect)
+            .addParameter(REFERENCE, sideEffect)
             .addParameter(indicators)
             .addStatement(
                 REFERENCE_STORE_ACCESS,
-                "\${(reference as $kFunction).name}|${method.unifier}",
-                "Unknown method \${reference.name} with signature ${method.sideEffect}!",
+                "\${($REFERENCE as $kFunction).name}|${method.unifier}",
+                "Unknown method \${$REFERENCE.name} with signature ${method.sideEffect}!",
                 proxySignature
             )
             .addAnnotation(unusedAndUnchecked)
@@ -626,7 +629,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         id: Int,
     ): FunSpec {
         return createNonOverloadedFunProxyAccess(
-            proxyAccessMethod = "syncFunProxyOf",
+            proxyAccessMethod = SYNC_PROXY_OF,
             method = syncMethod,
             proxySignature = syncMethod.proxySignature.syncFunProxyToFunProxy(),
             id = id,
@@ -638,7 +641,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         id: Int,
     ): FunSpec {
         return createOverloadedFunProxyAccess(
-            proxyAccessMethod = "syncFunProxyOf",
+            proxyAccessMethod = SYNC_PROXY_OF,
             method = syncMethod,
             proxySignature = syncMethod.proxySignature.syncFunProxyToFunProxy(),
             id = id,
@@ -657,7 +660,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         id: Int,
     ): FunSpec {
         return createNonOverloadedFunProxyAccess(
-            proxyAccessMethod = "asyncFunProxyOf",
+            proxyAccessMethod = ASYNC_PROXY_OF,
             method = asyncMethod,
             proxySignature = asyncMethod.proxySignature.asyncFunProxyToFunProxy(),
             id = id,
@@ -669,7 +672,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         id: Int,
     ): FunSpec {
         return createOverloadedFunProxyAccess(
-            proxyAccessMethod = "asyncFunProxyOf",
+            proxyAccessMethod = ASYNC_PROXY_OF,
             method = asyncMethod,
             proxySignature = asyncMethod.proxySignature.asyncFunProxyToFunProxy(),
             id = id,
@@ -735,12 +738,13 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 starParameter
             ),
         )
+        private const val REFERENCE = "reference"
+        private const val SYNC_PROXY_OF = "syncFunProxyOf"
+        private const val ASYNC_PROXY_OF = "asyncFunProxyOf"
         private val propertyType = TypeVariableName("Property")
+        private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
         private val kProperty = KProperty::class.asClassName().parameterizedBy(propertyType)
         private val kFunction = KFunction::class.asClassName().parameterizedBy(starParameter)
-        private val array = Array::class.asClassName()
-        private val any = Any::class.asClassName()
-        private val nullableAny = any.copy(nullable = true)
 
         private val hints = mapOf(
             "Hint0" to Hint0::class.asClassName(),
@@ -757,8 +761,6 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             "Hint11" to Hint11::class.asClassName(),
             "Hint12" to Hint12::class.asClassName(),
         )
-
-        private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
 
         override fun getInstance(
             enableGenerator: Boolean,

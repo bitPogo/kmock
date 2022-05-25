@@ -45,14 +45,14 @@ import kotlin.test.Test
 )
 class SampleControllerAutoStubFactorySpec {
     private val fixture = kotlinFixture()
-    private val verifier = Asserter()
-    private val local: SampleLocalRepositoryMock = kmock(verifier, relaxed = true)
-    private val remote: SampleRemoteRepositoryMock = kmock(verifier, relaxed = true)
-    private val domainObject: SampleDomainObjectMock = kmock(verifier, relaxed = true)
+    private val collector = Asserter()
+    private val local: SampleLocalRepositoryMock = kmock(collector, relaxed = true)
+    private val remote: SampleRemoteRepositoryMock = kmock(collector, relaxed = true)
+    private val domainObject: SampleDomainObjectMock = kmock(collector, relaxed = true)
 
     @BeforeTest
     fun setUp() {
-        verifier.clear()
+        collector.clear()
         local._clearMock()
         remote._clearMock()
         domainObject._clearMock()
@@ -88,7 +88,7 @@ class SampleControllerAutoStubFactorySpec {
             verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
             verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)
                 domainObject._id.wasGotten()
                 domainObject._id.wasSet()
@@ -97,7 +97,7 @@ class SampleControllerAutoStubFactorySpec {
                 local._store.hasBeenCalledWith(id[1])
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 remote._fetch.hasBeenCalledWith(url)
                 domainObject._id.wasSetTo("42")
                 local._store.hasBeenCalledWith(id[1])
@@ -136,7 +136,7 @@ class SampleControllerAutoStubFactorySpec {
             verify(exactly = 2) { local._fetch.hasBeenStrictlyCalledWith(id) }
             verify(exactly = 2) { remote._find.hasBeenStrictlyCalledWith(idOrg) }
 
-            verifier.assertOrder {
+            collector.assertOrder {
                 local._contains.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 domainObject._id.wasGotten()
@@ -147,7 +147,7 @@ class SampleControllerAutoStubFactorySpec {
                 domainObject._id.wasSet()
             }
 
-            verifier.verifyOrder {
+            collector.verifyOrder {
                 local._contains.hasBeenCalledWithout("abc")
                 remote._find.hasBeenStrictlyCalledWith(idOrg)
                 remote._find.hasBeenStrictlyCalledWith(idOrg)

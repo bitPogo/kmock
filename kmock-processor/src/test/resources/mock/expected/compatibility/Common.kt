@@ -13,7 +13,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CommonMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
     freeze: Boolean = true,
@@ -27,7 +27,7 @@ internal class CommonMock(
 
     public val _foo: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.compatibility.CommonMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var hashCode: Int
         get() = _hashCode.onGet()
@@ -35,54 +35,55 @@ internal class CommonMock(
 
     public val _hashCode: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.compatibility.CommonMock#_hashCode", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithIntAny",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithAnyInt",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithAnyString",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithStringAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringMockTemplateCompatibilityAbc:
         KMockContract.SyncFunProxy<Any, (kotlin.String, mock.template.compatibility.Abc) ->
         kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithStringMockTemplateCompatibilityAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithFunction1",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithZTAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTMockTemplateCompatibilityCommon:
         KMockContract.SyncFunProxy<Unit, (mock.template.compatibility.Common) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithTMockTemplateCompatibilityCommon",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTMockTemplateCompatibilityLPG:
         KMockContract.SyncFunProxy<Unit, (mock.template.compatibility.LPG) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithTMockTemplateCompatibilityLPG",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
+    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) ->
+    kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.compatibility.CommonMock#_fooWithAnys",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 

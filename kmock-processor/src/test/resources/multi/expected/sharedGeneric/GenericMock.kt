@@ -25,7 +25,7 @@ import tech.antibytes.kmock.proxy.ProxyFactory
 internal class SharedGenericMultiMock<KMockTypeParameter0 : Any, KMockTypeParameter1,
     KMockTypeParameter2 : Any, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5,
     MultiMock>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: MultiMock? = null,
     freeze: Boolean = true,
@@ -47,250 +47,250 @@ GenericSharedContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
 
     public val _template: KMockContract.PropertyProxy<KMockTypeParameter1> =
         ProxyFactory.createPropertyProxy("multi.SharedGenericMultiMock#_template", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val lol: KMockTypeParameter2
         get() = _lol.onGet()
 
     public val _lol: KMockContract.PropertyProxy<KMockTypeParameter2> =
-        ProxyFactory.createPropertyProxy("multi.SharedGenericMultiMock#_lol", collector = verifier,
+        ProxyFactory.createPropertyProxy("multi.SharedGenericMultiMock#_lol", collector = collector,
             freeze = freeze)
 
     public val _fooWithVoid: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithZTAny", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
-    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<out kotlin.Any?>) ->
+    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) ->
     kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_fooWithZTAnys",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blaWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _blaWithTInt: KMockContract.SyncFunProxy<Unit, (kotlin.Int) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blaWithTInt", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _blaWithTInts: KMockContract.SyncFunProxy<Unit, (kotlin.IntArray) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blaWithTInts", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _barWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String>>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_barWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _barWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_barWithTList",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
-    public val _barWithTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _barWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_barWithTLists", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _blubbWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.String?>>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blubbWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _blubbWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String?>>) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blubbWithTList",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
-    public val _blubbWithTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _blubbWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blubbWithTLists", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _bussWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _bussWithZTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithZTList",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
-    public val _bussWithZTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _bussWithZTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bussWithZTLists", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _bossWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>?>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bossWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _bossWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bossWithTList",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
-    public val _bossWithTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _bossWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_bossWithTLists", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _buzzWithVoid:
         KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () ->
         kotlin.collections.List<kotlin.Array<kotlin.Int>>?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_buzzWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _buzzWithTList:
         KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) ->
         kotlin.Unit> = ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_buzzWithTList",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
-    public val _buzzWithTLists: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _buzzWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_buzzWithTLists", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _ozzWithVoid: KMockContract.SyncFunProxy<KMockTypeParameter1, () ->
     KMockTypeParameter1> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ozzWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _ozzWithTKMockTypeParameter3: KMockContract.SyncFunProxy<Unit, (KMockTypeParameter3) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ozzWithTKMockTypeParameter3",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _ozzWithTKMockTypeParameter3s: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _ozzWithTKMockTypeParameter3s: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     KMockTypeParameter3>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ozzWithTKMockTypeParameter3s",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _brassWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _brassWithTComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithTComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_brassWithTComparables",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _blissWithVoid:
         KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () ->
         kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _blissWithZTComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) ->
         kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _blissWithZTComparables: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _blissWithZTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_blissWithZTComparables",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
         kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_lossWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _lossWithTMap: KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String,
         kotlin.String>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_lossWithTMap", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
-    public val _lossWithTMaps: KMockContract.SyncFunProxy<Unit, (Array<out
+    public val _lossWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
     kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_lossWithTMaps", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _uzz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_uzz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_uzz", collector = collector,
             freeze = freeze)
 
     public val _lzz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_lzz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_lzz", collector = collector,
             freeze = freeze)
 
     public val _tzz: KMockContract.SyncFunProxy<Any?, () -> kotlin.Any?> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_tzz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_tzz", collector = collector,
             freeze = freeze)
 
     public val _rzz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_rzz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_rzz", collector = collector,
             freeze = freeze)
 
     public val _izz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_izz", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_izz", collector = collector,
             freeze = freeze)
 
     public val _ossWithTAny: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithTAny", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _ossWithTAnyZRAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Any?) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithTAnyZRAny", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
-    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, Array<out
+    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Any?, kotlin.Array<out
     kotlin.Any?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_ossWithZRAnyTAnys", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _kss: KMockContract.SyncFunProxy<Any, (kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_kss", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_kss", collector = collector,
             freeze = freeze)
 
     public val _iss: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_iss", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_iss", collector = collector,
             freeze = freeze)
 
     public val _pss:
         KMockContract.SyncFunProxy<multi.template.sharedGeneric.SomeGeneric<kotlin.String>, (multi.template.sharedGeneric.SomeGeneric<kotlin.String>) ->
         multi.template.sharedGeneric.SomeGeneric<kotlin.String>> =
-        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_pss", collector = verifier,
+        ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_pss", collector = collector,
             freeze = freeze)
 
     public val _xssWithZTAny: KMockContract.SyncFunProxy<Any, (kotlin.Any?) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithZTAny", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _xssWithZTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
         kotlin.Any) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_xssWithZTAnyRSequenceCharSequence",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _doSomething: KMockContract.SyncFunProxy<KMockTypeParameter5, (KMockTypeParameter4) ->
     KMockTypeParameter5> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_doSomething", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _compareTo:
         KMockContract.SyncFunProxy<Int, (multi.template.sharedGeneric.GenericSharedContract.Generic3<KMockTypeParameter5,
             KMockTypeParameter4>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("multi.SharedGenericMultiMock#_compareTo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T

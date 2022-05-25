@@ -11,7 +11,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class SharedMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared? = null,
     freeze: Boolean = true,
@@ -21,11 +21,11 @@ internal class SharedMock(
     private val relaxed: Boolean = false,
 ) : Shared {
     public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_foo", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_foo", collector = collector,
             freeze = freeze)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_bar", collector = verifier,
+        ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_bar", collector = collector,
             freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)

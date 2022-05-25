@@ -15,23 +15,24 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGeneratorHelper
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.resolveReceiver
 import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
@@ -46,7 +47,7 @@ internal class KMockReceiverGenerator(
         receiverTypeResolver: TypeParameterResolver,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
         typeResolver: TypeParameterResolver,
-    ): MethodTypeInfo {
+    ): MemberArgumentTypeInfo {
         val receiver = this.resolveReceiver(
             typeResolver = typeResolver,
             receiverTypeResolver = receiverTypeResolver,
@@ -54,7 +55,7 @@ internal class KMockReceiverGenerator(
         val proxyReceiver = proxyGenericTypes?.get(receiver.toString().trimEnd('?'))?.resolveGeneric()
             ?: receiver
 
-        return MethodTypeInfo(
+        return MemberArgumentTypeInfo(
             argumentName = "receiver",
             methodTypeName = receiver,
             proxyTypeName = proxyReceiver,
@@ -66,7 +67,7 @@ internal class KMockReceiverGenerator(
         receiverTypeResolver: TypeParameterResolver,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
         typeResolver: TypeParameterResolver,
-    ): MethodTypeInfo {
+    ): MemberArgumentTypeInfo {
         val receiver = this.resolveReceiver(
             typeResolver = typeResolver,
             receiverTypeResolver = receiverTypeResolver,
@@ -75,7 +76,7 @@ internal class KMockReceiverGenerator(
         val proxyReceiver = proxyGenericTypes?.get(receiver.toString().trimEnd('?'))?.resolveGeneric()
             ?: receiver
 
-        return MethodTypeInfo(
+        return MemberArgumentTypeInfo(
             argumentName = "receiver",
             methodTypeName = receiver,
             proxyTypeName = proxyReceiver,
@@ -86,7 +87,7 @@ internal class KMockReceiverGenerator(
     private fun PropertySpec.Builder.addSetter(
         enableSpy: Boolean,
         setterProxy: ProxyInfo?,
-        propertyType: ReturnTypeInfo,
+        propertyType: MemberReturnTypeInfo,
     ) {
         if (setterProxy != null) {
             val nonIntrusiveInvocation = nonIntrusiveInvocationGenerator.buildReceiverSetterNonIntrusiveInvocation(
@@ -97,9 +98,9 @@ internal class KMockReceiverGenerator(
             this.mutable(true)
             this.setter(
                 FunSpec.setterBuilder()
-                    .addParameter("value", propertyType.methodTypeName)
+                    .addParameter(VALUE, propertyType.methodTypeName)
                     .addStatement(
-                        "%L.invoke(this@%L, value)%L",
+                        "%L.invoke(this@%L, $VALUE)%L",
                         setterProxy.proxyName,
                         setterProxy.templateName,
                         nonIntrusiveInvocation,
@@ -113,8 +114,8 @@ internal class KMockReceiverGenerator(
         getterProxy: ProxyInfo,
         setterProxy: ProxyInfo?,
         enableSpy: Boolean,
-        receiver: MethodTypeInfo,
-        propertyType: ReturnTypeInfo,
+        receiver: MemberArgumentTypeInfo,
+        propertyType: MemberReturnTypeInfo,
         typeParameter: List<TypeVariableName>,
         relaxer: Relaxer?,
     ): PropertySpec {
@@ -166,7 +167,7 @@ internal class KMockReceiverGenerator(
         qualifier: String,
         propertyName: String,
         isMutable: Boolean,
-        receiverInfo: MethodTypeInfo,
+        receiverInfo: MemberArgumentTypeInfo,
         generics: Map<String, List<KSTypeReference>>,
         proxyGenerics: Map<String, GenericDeclaration>?,
         classScopeGenerics: Map<String, List<TypeName>>?,
@@ -198,7 +199,7 @@ internal class KMockReceiverGenerator(
         }
     }
 
-    private fun MethodTypeInfo.resolveProxyType(propertyType: TypeName): TypeName {
+    private fun MemberArgumentTypeInfo.resolveProxyType(propertyType: TypeName): TypeName {
         return if (propertyType == methodTypeName) {
             proxyTypeName
         } else {
@@ -281,8 +282,8 @@ internal class KMockReceiverGenerator(
         proxyInfo: ProxyInfo,
         enableSpy: Boolean,
         typeParameter: List<TypeName>,
-        arguments: Array<MethodTypeInfo>,
-        returnType: ReturnTypeInfo,
+        arguments: Array<MemberArgumentTypeInfo>,
+        returnType: MemberReturnTypeInfo,
         relaxer: Relaxer?
     ) {
         if (returnType.needsCastAnnotation(relaxer = relaxer) || enableSpy) {
@@ -316,10 +317,10 @@ internal class KMockReceiverGenerator(
         generics: Map<String, List<KSTypeReference>>?,
         isSuspending: Boolean,
         enableSpy: Boolean,
-        receiverInfo: MethodTypeInfo,
-        arguments: Array<MethodTypeInfo>,
+        receiverInfo: MemberArgumentTypeInfo,
+        arguments: Array<MemberArgumentTypeInfo>,
         typeParameter: List<TypeName>,
-        returnType: ReturnTypeInfo,
+        returnType: MemberReturnTypeInfo,
         typeResolver: TypeParameterResolver,
         relaxer: Relaxer?
     ): FunSpec {
@@ -441,6 +442,5 @@ internal class KMockReceiverGenerator(
 
     private companion object {
         private val emptySetter = Pair(null, null)
-        private val nullableAny = Any::class.asTypeName().copy(nullable = true)
     }
 }

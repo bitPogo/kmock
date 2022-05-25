@@ -13,7 +13,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CollisionMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Collision? = null,
     freeze: Boolean = true,
@@ -27,7 +27,7 @@ internal class CollisionMock(
 
     public val _foo: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.CollisionMock#_foo", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override var hashCode: Int
         get() = _hashCode.onGet()
@@ -35,58 +35,59 @@ internal class CollisionMock(
 
     public val _hashCode: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.CollisionMock#_hashCode", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
     public val _fooWithIntAny: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithIntAny",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyInt: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Int) -> kotlin.Any>
         = ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithAnyInt",
-        collector = verifier, freeze = freeze)
+        collector = collector, freeze = freeze)
 
     public val _fooWithAnyString: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.String) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithAnyString",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAny: KMockContract.SyncFunProxy<Any, (kotlin.String, kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithStringAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
         mock.template.overloaded.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithStringAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithStringScopedAbc: KMockContract.SyncFunProxy<Any, (kotlin.String,
         mock.template.overloaded.Scope.Abc) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithStringScopedAbc",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithFunction1: KMockContract.SyncFunProxy<Any, (kotlin.Function1<kotlin.Any,
         kotlin.Unit>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithFunction1",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithZTAny",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTCollision:
         KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.Collision) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTCollision",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _fooWithTLPG: KMockContract.SyncFunProxy<Unit, (mock.template.overloaded.LPG) ->
     kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTLPG",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
-    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out kotlin.Any>) -> kotlin.Any> =
+    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) ->
+    kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithAnys",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 

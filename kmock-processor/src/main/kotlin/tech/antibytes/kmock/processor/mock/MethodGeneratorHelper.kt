@@ -20,12 +20,18 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_ASYNC_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_SYNC_PROXY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
-import tech.antibytes.kmock.processor.ProcessorContract.ReturnTypeInfo
 import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class MethodGeneratorHelper(
@@ -36,7 +42,7 @@ internal class MethodGeneratorHelper(
         generics: Map<String, GenericDeclaration>?,
         arguments: List<KSValueParameter>,
         typeParameterResolver: TypeParameterResolver,
-    ): Array<MethodTypeInfo> {
+    ): Array<MemberArgumentTypeInfo> {
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
             val (methodType, proxyType) = parameter.type.toSecuredTypeName(
@@ -44,7 +50,7 @@ internal class MethodGeneratorHelper(
                 generics = generics ?: emptyMap(),
                 typeParameterResolver = typeParameterResolver
             )
-            MethodTypeInfo(
+            MemberArgumentTypeInfo(
                 argumentName = argumentName,
                 methodTypeName = methodType,
                 proxyTypeName = proxyType,
@@ -77,9 +83,9 @@ internal class MethodGeneratorHelper(
 
     private fun determineProxyType(suspending: Boolean): Triple<ClassName, String, String> {
         return if (suspending) {
-            Triple(asyncProxy, "createAsyncFunProxy", "suspend ")
+            Triple(asyncProxy, CREATE_ASYNC_PROXY, "suspend ")
         } else {
-            Triple(syncProxy, "createSyncFunProxy", "")
+            Triple(syncProxy, CREATE_SYNC_PROXY, "")
         }
     }
 
@@ -99,10 +105,10 @@ internal class MethodGeneratorHelper(
         proxyTypeName: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>,
-    ): ReturnTypeInfo {
+    ): MemberReturnTypeInfo {
         val generic = proxyGenericTypes[methodTypeName.toString().trimEnd('?')]
 
-        return ReturnTypeInfo(
+        return MemberReturnTypeInfo(
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = generic,
@@ -115,9 +121,9 @@ internal class MethodGeneratorHelper(
         proxyReturnType: TypeName,
         classScopeGenerics: Map<String, List<TypeName>>?,
         proxyGenericTypes: Map<String, GenericDeclaration>?,
-    ): ReturnTypeInfo {
+    ): MemberReturnTypeInfo {
         return if (proxyGenericTypes == null) {
-            ReturnTypeInfo(
+            MemberReturnTypeInfo(
                 methodTypeName = methodReturnType,
                 proxyTypeName = proxyReturnType,
                 generic = null,
@@ -133,31 +139,22 @@ internal class MethodGeneratorHelper(
         }
     }
 
-    private fun MethodTypeInfo.resolveVarargArray(): TypeName {
-        val name = this.proxyTypeName.toString()
-        return if (name.startsWith("out") || name == "*") {
-            array.parameterizedBy(this.proxyTypeName)
-        } else {
-            TypeVariableName("Array<out ${this.proxyTypeName}>")
-        }
-    }
-
     private fun mapProxyArgumentTypeNames(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
     ): List<TypeName> {
         return arguments.map { argument ->
             if (!argument.isVarArg) {
                 argument.proxyTypeName
             } else {
-                specialArrays.getOrElse(argument.proxyTypeName.toString().substringAfter("out ")) {
-                    argument.resolveVarargArray()
+                specialArrays.getOrElse(argument.proxyTypeName.toString()) {
+                    TypeVariableName("$array<out ${argument.proxyTypeName}>")
                 }
             }
         }
     }
 
     private fun buildSideEffectSignature(
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         proxyReturnType: TypeName,
         prefix: String
     ): TypeVariableName {
@@ -174,7 +171,7 @@ internal class MethodGeneratorHelper(
         proxyFactoryMethod: String,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "ProxyFactory.%L(%S, collector = verifier, freeze = freeze)",
+            "$PROXY_FACTORY.%L(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)",
             proxyFactoryMethod,
             proxyInfo.proxyId,
         )
@@ -182,7 +179,7 @@ internal class MethodGeneratorHelper(
 
     override fun buildProxy(
         proxyInfo: ProxyInfo,
-        arguments: Array<MethodTypeInfo>,
+        arguments: Array<MemberArgumentTypeInfo>,
         suspending: Boolean,
         classScopeGenerics: Map<String, List<TypeName>>?,
         generics: Map<String, GenericDeclaration>?,
@@ -222,7 +219,6 @@ internal class MethodGeneratorHelper(
     }
 
     private companion object {
-        private val array = Array::class.asClassName()
         private val asyncProxy = KMockContract.AsyncFunProxy::class.asClassName()
         private val syncProxy = KMockContract.SyncFunProxy::class.asClassName()
 

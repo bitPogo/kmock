@@ -10,7 +10,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class PlatformMock(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Platform? = null,
     freeze: Boolean = true,
@@ -22,7 +22,7 @@ internal class PlatformMock(
     public val _doSomething: KMockContract.SyncFunProxy<Any, (kotlin.Any,
         mock.template.typealiaz.Alias0, mock.template.typealiaz.Alias1) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomething", collector
-        = verifier, freeze = freeze)
+        = collector, freeze = freeze)
 
     public override fun doSomething(
         arg0: Any,

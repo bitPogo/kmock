@@ -27,14 +27,20 @@ import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.multiMock
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
@@ -51,6 +57,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.utils.isInherited
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
+import tech.antibytes.kmock.proxy.NoopCollector
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
@@ -78,28 +85,28 @@ internal class KMockGenerator(
     private fun buildConstructor(superTypes: List<TypeName>): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
-        val collector = ParameterSpec.builder("verifier", COLLECTOR_NAME)
-        collector.defaultValue("NoopCollector")
+        val collector = ParameterSpec.builder(COLLECTOR_ARGUMENT, COLLECTOR_NAME)
+        collector.defaultValue(noopCollector.toString())
         constructor.addParameter(collector.build())
 
         val spy = ParameterSpec.builder(
-            "spyOn",
+            SPY_ARGUMENT,
             resolveSpyType(superTypes).copy(nullable = true),
         ).addAnnotation(UNUSED_PARAMETER).defaultValue("null")
         constructor.addParameter(spy.build())
 
-        val freeze = ParameterSpec.builder("freeze", Boolean::class)
+        val freeze = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class)
         freeze.defaultValue("true")
         constructor.addParameter(freeze.build())
 
         val relaxUnit = ParameterSpec.builder(
-            "relaxUnitFun",
+            UNIT_RELAXER_ARGUMENT,
             Boolean::class,
         ).addAnnotation(UNUSED).defaultValue("false")
         constructor.addParameter(relaxUnit.build())
 
         val relaxed = ParameterSpec.builder(
-            "relaxed",
+            RELAXER_ARGUMENT,
             Boolean::class
         ).addAnnotation(UNUSED).defaultValue("false")
         constructor.addParameter(relaxed.build())
@@ -361,18 +368,18 @@ internal class KMockGenerator(
 
         mock.addProperty(
             PropertySpec.builder(
-                "relaxUnitFun",
+                UNIT_RELAXER_ARGUMENT,
                 Boolean::class,
                 KModifier.PRIVATE,
-            ).initializer("relaxUnitFun").build()
+            ).initializer(UNIT_RELAXER_ARGUMENT).build()
         )
 
         mock.addProperty(
             PropertySpec.builder(
-                "relaxed",
+                RELAXER_ARGUMENT,
                 Boolean::class,
                 KModifier.PRIVATE,
-            ).initializer("relaxed").build()
+            ).initializer(RELAXER_ARGUMENT).build()
         )
 
         if (enableSpy) {
@@ -381,7 +388,7 @@ internal class KMockGenerator(
                     SPY_PROPERTY,
                     resolveSpyType(superTypes).copy(nullable = true),
                     KModifier.PRIVATE,
-                ).initializer("spyOn").build()
+                ).initializer(SPY_ARGUMENT).build()
             )
         }
 
@@ -499,8 +506,8 @@ internal class KMockGenerator(
         )
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-        file.addImport(PROXY_FACTORY_NAME.packageName, PROXY_FACTORY_NAME.simpleName)
-        file.addImport(NOOP_COLLECTOR_NAME.packageName, NOOP_COLLECTOR_NAME.simpleName)
+        file.addImport(PROXY_FACTORY_CLASS.packageName, PROXY_FACTORY_CLASS.simpleName)
+        file.addImport(NOOP_COLLECTOR_CLASS.packageName, NOOP_COLLECTOR_CLASS.simpleName)
 
         if (relaxer != null) {
             file.addImport(relaxer.packageName, relaxer.functionName)
@@ -588,9 +595,8 @@ internal class KMockGenerator(
     }
 
     private companion object {
+        private val noopCollector = NoopCollector::class.asClassName().simpleName
         private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         private val UNUSED = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
-        private val any = Any::class.asClassName()
-        private val nullableAny = any.copy(nullable = true)
     }
 }

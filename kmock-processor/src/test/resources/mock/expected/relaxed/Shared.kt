@@ -12,7 +12,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class SharedMock<T>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Shared<T>? = null,
     freeze: Boolean = true,
@@ -28,7 +28,7 @@ internal class SharedMock<T>(
 
     public val _buzz: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_buzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override val uzz: T
         get() = _uzz.onGet {
@@ -38,19 +38,19 @@ internal class SharedMock<T>(
 
     public val _uzz: KMockContract.PropertyProxy<T> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_uzz", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
-        ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_foo", collector = verifier,
-            freeze = freeze)
+        ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_foo", collector =
+        collector, freeze = freeze)
 
     public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.SharedMock#_bar", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", collector =
-        verifier, freeze = freeze)
+        collector, freeze = freeze)
 
     public override fun foo(payload: Any): String = _foo.invoke(payload) {
         useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }

@@ -27,6 +27,8 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -229,14 +231,14 @@ internal interface ProcessorContract {
         val proxyId: String
     )
 
-    data class MethodTypeInfo(
+    data class MemberArgumentTypeInfo(
         val argumentName: String,
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
         val isVarArg: Boolean
     )
 
-    data class ReturnTypeInfo(
+    data class MemberReturnTypeInfo(
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
         val generic: GenericDeclaration?,
@@ -245,7 +247,7 @@ internal interface ProcessorContract {
 
     data class ProxyBundle(
         val proxy: PropertySpec,
-        val returnType: ReturnTypeInfo,
+        val returnType: MemberReturnTypeInfo,
         val sideEffect: TypeVariableName,
     )
 
@@ -268,14 +270,14 @@ internal interface ProcessorContract {
             qualifier: String,
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverGetterName(
             qualifier: String,
             propertyName: String,
-            receiver: MethodTypeInfo,
+            receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
@@ -283,7 +285,7 @@ internal interface ProcessorContract {
         fun selectReceiverSetterName(
             qualifier: String,
             propertyName: String,
-            receiver: MethodTypeInfo,
+            receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
             typeResolver: TypeParameterResolver
         ): ProxyInfo
@@ -292,25 +294,25 @@ internal interface ProcessorContract {
             qualifier: String,
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             typeResolver: TypeParameterResolver,
         ): ProxyInfo
     }
 
     interface RelaxerGenerator {
         fun buildPropertyRelaxation(
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
         fun buildMethodRelaxation(
-            methodReturnType: ReturnTypeInfo,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
         fun buildBuildInRelaxation(
             methodName: String,
-            argument: MethodTypeInfo?,
+            argument: MemberArgumentTypeInfo?,
         ): String
     }
 
@@ -318,21 +320,21 @@ internal interface ProcessorContract {
         fun buildGetterSpy(propertyName: String): String
         fun buildSetterSpy(propertyName: String): String
 
-        fun buildReceiverGetterSpy(propertyName: String, propertyType: ReturnTypeInfo): String
+        fun buildReceiverGetterSpy(propertyName: String, propertyType: MemberReturnTypeInfo): String
         fun buildReceiverSetterSpy(propertyName: String): String
 
         fun buildMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
         ): String
 
         fun buildReceiverMethodSpy(
             methodName: String,
             parameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
         ): String
 
         fun buildEqualsSpy(mockName: String): String
@@ -342,7 +344,7 @@ internal interface ProcessorContract {
         fun buildGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -355,8 +357,8 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             methodName: String,
             typeParameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
 
@@ -364,13 +366,13 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             mockName: String,
             methodName: String,
-            argument: MethodTypeInfo?
+            argument: MemberArgumentTypeInfo?
         ): String
 
         fun buildReceiverGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
-            propertyType: ReturnTypeInfo,
+            propertyType: MemberReturnTypeInfo,
             relaxer: Relaxer?
         ): String
 
@@ -383,8 +385,8 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             methodName: String,
             typeParameter: List<TypeName>,
-            arguments: Array<MethodTypeInfo>,
-            methodReturnType: ReturnTypeInfo,
+            arguments: Array<MemberArgumentTypeInfo>,
+            methodReturnType: MemberReturnTypeInfo,
             relaxer: Relaxer?,
         ): String
     }
@@ -395,7 +397,7 @@ internal interface ProcessorContract {
             generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
             typeParameterResolver: TypeParameterResolver
-        ): Array<MethodTypeInfo>
+        ): Array<MemberArgumentTypeInfo>
 
         fun resolveTypeParameter(
             parameter: List<KSTypeParameter>,
@@ -409,7 +411,7 @@ internal interface ProcessorContract {
 
         fun buildProxy(
             proxyInfo: ProxyInfo,
-            arguments: Array<MethodTypeInfo>,
+            arguments: Array<MemberArgumentTypeInfo>,
             suspending: Boolean,
             classScopeGenerics: Map<String, List<TypeName>>?,
             generics: Map<String, GenericDeclaration>?,
@@ -639,7 +641,31 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY_TYPE_NAME = "SpyOn"
         const val SHARED_MOCK_FACTORY = "getMockInstance"
         const val FACTORY_FILE_NAME = "MockFactory"
+        const val KMOCK_FACTORY = "kmock"
+        const val KSPY_FACTORY = "kspy"
         const val INTERMEDIATE_INTERFACES_FILE_NAME = "KMockMultiInterfaceArtifacts"
+
+        val PROXY_FACTORY = ProxyFactory::class.simpleName
+        const val CREATE_PROPERTY_PROXY = "createPropertyProxy"
+        const val CREATE_ASYNC_PROXY = "createAsyncFunProxy"
+        const val CREATE_SYNC_PROXY = "createSyncFunProxy"
+        const val COLLECTOR_ARGUMENT = "collector"
+        const val FREEZE_ARGUMENT = "freeze"
+        const val SPY_ARGUMENT = "spyOn"
+        const val RELAXER_ARGUMENT = "relaxed"
+        const val UNIT_RELAXER_ARGUMENT = "relaxUnitFun"
+        const val IGNORE_ARGUMENT = "ignorableForVerification"
+
+        const val TEMPLATE_TYPE_ARGUMENT = "templateType"
+        const val ARGUMENTS_WITH_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
+        const val ARGUMENTS_WITHOUT_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
+        const val UNKNOWN_INTERFACE = "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"
+
+        const val VALUE = "value"
+        const val EQUALS = "equals"
+        const val SPY_CONTEXT = "spyContext"
+        const val SPY_PROPERTY = "__spyOn"
+
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
@@ -652,20 +678,9 @@ internal interface ProcessorContract {
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"
         )
-        val KMOCK_CONTRACT = ClassName(
-            KMockContract::class.java.packageName,
-            KMockContract::class.java.simpleName
-        )
-
-        val NOOP_COLLECTOR_NAME = ClassName(
-            NoopCollector::class.java.packageName,
-            NoopCollector::class.java.simpleName
-        )
-
-        val PROXY_FACTORY_NAME = ClassName(
-            ProxyFactory::class.java.packageName,
-            ProxyFactory::class.java.simpleName
-        )
+        val KMOCK_CONTRACT = KMockContract::class.asClassName()
+        val NOOP_COLLECTOR_CLASS = NoopCollector::class.asClassName()
+        val PROXY_FACTORY_CLASS = ProxyFactory::class.asClassName()
 
         val UNUSED = AnnotationSpec.builder(Suppress::class).addMember(
             "%S, %S",
@@ -678,10 +693,10 @@ internal interface ProcessorContract {
         const val MULTI_MOCK = "MultiMock"
         val multiMock = TypeVariableName(MULTI_MOCK)
         val unit = TypeVariableName("Unit").copy(nullable = false)
+        val any = Any::class.asTypeName().copy(nullable = false)
+        val nullableAny = Any::class.asTypeName().copy(nullable = true)
+        val array = Array::class.asTypeName()
         val multibounded = TypeVariableName("multiboundedKmock")
-
-        const val SPY_CONTEXT = "spyContext"
-        const val SPY_PROPERTY = "__spyOn"
 
         const val COMMON_INDICATOR = "commonTest"
 
@@ -689,7 +704,7 @@ internal interface ProcessorContract {
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"
         const val DISABLE_FACTORIES = "${KMOCK_PREFIX}disable_factories"
-        const val FREEZE = "${KMOCK_PREFIX}freeze"
+        const val FREEZE_OPTION = "${KMOCK_PREFIX}freeze"
         const val INTERFACES = "${KMOCK_PREFIX}allowInterfaces"
         const val ROOT_PACKAGE = "${KMOCK_PREFIX}rootPackage"
         const val DEPENDENCIES = "${KMOCK_PREFIX}dependencies_"

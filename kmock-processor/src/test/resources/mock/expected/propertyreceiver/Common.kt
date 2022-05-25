@@ -14,7 +14,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
 internal class CommonMock<L>(
-    verifier: KMockContract.Collector = NoopCollector,
+    collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common<L>? = null,
     freeze: Boolean = true,
@@ -32,12 +32,12 @@ internal class CommonMock<L>(
     public val _thingGetter:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_thingGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _thingSetter:
         KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_thingSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override val SomethingElse<Any>.things: List<Any>
         get() = _thingsGetter.invoke(this@things)
@@ -46,7 +46,7 @@ internal class CommonMock<L>(
         KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
         kotlin.collections.List<kotlin.Any>> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_thingsGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override var Common<*>.extension: Int
         get() = _extensionGetter.invoke(this@extension)
@@ -57,12 +57,12 @@ internal class CommonMock<L>(
     public val _extensionGetter:
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Common<*>) -> kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_extensionGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _extensionSetter:
         KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Common<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_extensionSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
@@ -74,12 +74,12 @@ internal class CommonMock<L>(
     public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingGetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTSomethingComparable:
         KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingSetterWithTSomethingComparable",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override var <T : L> T.nothing: L
         get() = _nothingGetterWithTL.invoke(this@nothing)
@@ -89,11 +89,11 @@ internal class CommonMock<L>(
 
     public val _nothingGetterWithTL: KMockContract.SyncFunProxy<L, (L) -> L> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingGetterWithTL",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _nothingSetterWithTL: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingSetterWithTL",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override var L.otherThing: String
         get() = _otherThingGetter.invoke(this@otherThing)
@@ -103,18 +103,18 @@ internal class CommonMock<L>(
 
     public val _otherThingGetter: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_otherThingGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _otherThingSetter: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_otherThingSetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override val myThing: String
         get() = _myThing.onGet()
 
     public val _myThing: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.propertyreceiver.CommonMock#_myThing",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override val AnythingElse.SomethingInside.inside: Int
         get() = _insideGetter.invoke(this@inside)
@@ -123,11 +123,11 @@ internal class CommonMock<L>(
         KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
         kotlin.Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_insideGetter",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_getOtherThing",
-            collector = verifier, freeze = freeze)
+            collector = collector, freeze = freeze)
 
     public override fun getOtherThing(): Unit = _getOtherThing.invoke() {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)

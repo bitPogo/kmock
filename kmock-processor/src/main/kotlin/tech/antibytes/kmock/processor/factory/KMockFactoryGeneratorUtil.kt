@@ -11,12 +11,24 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.TEMPLATE_TYPE_ARGUMENT
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import kotlin.reflect.KClass
 
 internal class KMockFactoryGeneratorUtil(
     freezeOnDefault: Boolean,
@@ -30,31 +42,31 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     private val spyOn = ParameterSpec.builder(
-        "spyOn",
-        TypeVariableName("SpyOn").copy(nullable = false)
+        SPY_ARGUMENT,
+        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = false)
     ).build()
     private val spyOnNullable = ParameterSpec.builder(
-        "spyOn",
-        TypeVariableName("SpyOn").copy(nullable = true)
+        SPY_ARGUMENT,
+        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = true)
     ).build()
 
-    private val relaxed = ParameterSpec.builder("relaxed", Boolean::class).build()
-    private val relaxedWithDefault = ParameterSpec.builder("relaxed", Boolean::class)
+    private val relaxed = ParameterSpec.builder(RELAXER_ARGUMENT, Boolean::class).build()
+    private val relaxedWithDefault = ParameterSpec.builder(RELAXER_ARGUMENT, Boolean::class)
         .defaultValue("false")
         .build()
 
-    private val relaxedUnit = ParameterSpec.builder("relaxUnitFun", Boolean::class).build()
-    private val relaxedUnitWithDefault = ParameterSpec.builder("relaxUnitFun", Boolean::class)
+    private val relaxedUnit = ParameterSpec.builder(UNIT_RELAXER_ARGUMENT, Boolean::class).build()
+    private val relaxedUnitWithDefault = ParameterSpec.builder(UNIT_RELAXER_ARGUMENT, Boolean::class)
         .defaultValue("false")
         .build()
 
-    private val verifier = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME).build()
-    private val verifierWithDefault = ParameterSpec.builder("verifier", ProcessorContract.COLLECTOR_NAME)
-        .defaultValue("NoopCollector")
+    private val verifier = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME).build()
+    private val verifierWithDefault = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME)
+        .defaultValue(NOOP_COLLECTOR_CLASS.simpleName)
         .build()
 
-    private val freeze = ParameterSpec.builder("freeze", Boolean::class).build()
-    private val freezeWithDefault = ParameterSpec.builder("freeze", Boolean::class)
+    private val freeze = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class).build()
+    private val freezeWithDefault = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class)
         .defaultValue(freezeOnDefault.toString())
         .build()
 
@@ -89,7 +101,7 @@ internal class KMockFactoryGeneratorUtil(
         val mockType = resolveArgumentType(identifier)
         val parameter = resolveGenericParameter(generics)
 
-        return TypeVariableName("kotlin.reflect.KClass<$mockType$parameter>")
+        return TypeVariableName("$kClass<$mockType$parameter>")
     }
 
     private fun FunSpec.Builder.amendGenericValues(
@@ -101,7 +113,7 @@ internal class KMockFactoryGeneratorUtil(
         if (generics.isNotEmpty()) {
             this.addParameter(
                 ParameterSpec.builder(
-                    name = "templateType",
+                    name = TEMPLATE_TYPE_ARGUMENT,
                     type = buildGenericFactoryArgument(identifier, generics)
                 ).build()
             )
@@ -116,7 +128,7 @@ internal class KMockFactoryGeneratorUtil(
         identifier.bounds.forEachIndexed { idx, boundary ->
             this.addParameter(
                 ParameterSpec.builder(
-                    name = "templateType$idx",
+                    name = "$TEMPLATE_TYPE_ARGUMENT$idx",
                     type = buildGenericFactoryArgument(boundary, emptyList())
                 ).build()
             )
@@ -171,7 +183,7 @@ internal class KMockFactoryGeneratorUtil(
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
-        val kmock = FunSpec.builder("kmock")
+        val kmock = FunSpec.builder(KMOCK_FACTORY)
 
         kmock.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addParameter(buildVerifierParameter(hasDefault))
@@ -206,7 +218,7 @@ internal class KMockFactoryGeneratorUtil(
         hasDefault: Boolean,
         modifier: KModifier?
     ): FunSpec.Builder {
-        val kspy = FunSpec.builder("kspy")
+        val kspy = FunSpec.builder(KSPY_FACTORY)
 
         kspy.addModifiers(KModifier.INTERNAL, KModifier.INLINE)
             .addTypeVariable(mockType.copy(reified = true))
@@ -277,5 +289,9 @@ internal class KMockFactoryGeneratorUtil(
         } else {
             null
         }
+    }
+
+    companion object {
+        private val kClass = KClass::class.asClassName()
     }
 }

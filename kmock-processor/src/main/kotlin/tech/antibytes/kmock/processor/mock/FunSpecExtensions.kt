@@ -8,13 +8,13 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import tech.antibytes.kmock.processor.ProcessorContract.MethodTypeInfo
+import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 
 private val varargs = arrayOf(KModifier.VARARG)
 private val noVarargs = arrayOf<KModifier>()
 
 internal fun FunSpec.Builder.addArguments(
-    arguments: Array<MethodTypeInfo>
+    arguments: Array<MemberArgumentTypeInfo>
 ): FunSpec.Builder {
     arguments.forEach { argument ->
         val vararged = if (argument.isVarArg) {

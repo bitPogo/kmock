@@ -23,13 +23,13 @@ import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
 
@@ -252,8 +252,6 @@ private fun KSClassDeclaration.isMisalignedVararg(
             ("kotlin.$declaration" in specialArrays)
         )
 }
-
-private val nullableAny = Any::class.asClassName().copy(nullable = true)
 
 private fun TypeName.transferProperties(source: TypeName): TypeName {
     return this.copy(nullable = this.isNullable || source.isNullable, annotations = source.annotations)
