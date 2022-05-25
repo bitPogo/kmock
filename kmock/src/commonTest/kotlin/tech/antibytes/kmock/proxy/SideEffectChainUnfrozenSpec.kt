@@ -143,7 +143,7 @@ class SideEffectChainUnfrozenSpec {
             chain.next() mustBe sideEffect
         }
 
-        for (x in 0..10) {
+        repeat(10) {
             chain.next() mustBe sideEffects.last()
         }
     }

@@ -367,7 +367,7 @@ class SyncFunProxyUnfrozenSpec {
         // When
         proxy.returnValues = values.toList()
 
-        for (x in 0 until 10) {
+        repeat(10) {
             val actual = proxy.invoke()
 
             // Then
