@@ -41,6 +41,8 @@ android {
 }
 
 kotlin {
+    explicitApi()
+
     android()
 
     js(IR) {

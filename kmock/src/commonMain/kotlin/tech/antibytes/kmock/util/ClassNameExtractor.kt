@@ -8,4 +8,4 @@ package tech.antibytes.kmock.util
 
 import kotlin.reflect.KClass
 
-expect fun extractKClassName(clazz: KClass<*>): String?
+internal expect fun extractKClassName(clazz: KClass<*>): String?

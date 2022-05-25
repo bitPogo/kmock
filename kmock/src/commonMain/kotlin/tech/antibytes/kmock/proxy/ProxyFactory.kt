@@ -11,7 +11,7 @@ import tech.antibytes.kmock.KMockContract.AsyncFunProxy
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 
-object ProxyFactory : KMockContract.ProxyFactory {
+public object ProxyFactory : KMockContract.ProxyFactory {
     override fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
         id: String,
         collector: Collector,

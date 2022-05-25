@@ -17,4 +17,4 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-fun isNot(illegal: Any?): ArgumentConstraint = not(eq(illegal))
+public fun isNot(illegal: Any?): ArgumentConstraint = not(eq(illegal))

@@ -14,14 +14,14 @@ import tech.antibytes.kmock.KMockContract.Proxy
  * @see Collector
  * @author Matthias Geisler
  */
-object NoopCollector : Collector {
+public object NoopCollector : Collector {
     /**
      * Performs a noop on invocation
      * @param referredProxy the proxy it is referring to.
      * @param referredCall the invocation index of the Proxy it refers to.
      */
-    override fun addReference(
+    public override fun addReference(
         referredProxy: Proxy<*, *>,
         referredCall: Int
-    ) = Unit
+    ): Unit = Unit
 }

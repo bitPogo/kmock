@@ -8,4 +8,4 @@ package tech.antibytes.kmock.util
 
 import kotlin.reflect.KClass
 
-actual fun extractKClassName(clazz: KClass<*>): String? = clazz.qualifiedName
+internal actual fun extractKClassName(clazz: KClass<*>): String? = clazz.qualifiedName

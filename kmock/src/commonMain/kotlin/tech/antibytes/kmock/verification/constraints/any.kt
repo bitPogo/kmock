@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-class any(
+public class any(
     private val expected: KClass<*>? = null
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean {

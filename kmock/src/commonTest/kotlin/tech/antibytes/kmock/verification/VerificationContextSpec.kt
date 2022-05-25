@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.util.test.fixture.fixture
@@ -23,7 +24,7 @@ class VerificationContextSpec {
     @Test
     @JsName("fn0a")
     fun `It fulfils VerificationContext`() {
-        VerificationContext fulfils KMockContract.VerificationContext::class
+        VerificationContext fulfils VerificationContext::class
     }
 
     private fun invoke(

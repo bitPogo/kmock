@@ -14,7 +14,7 @@ import tech.antibytes.kmock.KMockContract.SyncFunProxy
 /**
  * @suppress
  */
-abstract class AsserterBase(
+public abstract class AsserterBase(
     private val coverAllInvocations: Boolean
 ) : KMockContract.Asserter, KMockContract.Collector {
     protected abstract val _references: MutableList<Reference>

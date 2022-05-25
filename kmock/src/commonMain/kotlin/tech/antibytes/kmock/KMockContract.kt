@@ -20,28 +20,28 @@ import kotlin.reflect.KClass
  * Contract Container of KMock
  * @author Matthias Geisler
  */
-object KMockContract {
+public object KMockContract {
     /**
      * Base Proxy definition
      * @param ReturnValue the return value of the Proxy.
      * @param Arguments the arguments which are delegated to the Proxy.
      * @author Matthias Geisler
      */
-    sealed interface Proxy<ReturnValue, Arguments> {
+    public sealed interface Proxy<ReturnValue, Arguments> {
         /**
          * Unique Id of the proxy derived from the Interface which it build upon.
          */
-        val id: String
+        public val id: String
 
         /**
          * Counter of the actual invocations of the proxy.
          */
-        val calls: Int
+        public val calls: Int
 
         /**
          * Indicates that the proxies uses the frozen memory model.
          */
-        val frozen: Boolean
+        public val frozen: Boolean
 
         /**
          * Resolves given arguments of an invocation.
@@ -49,12 +49,12 @@ object KMockContract {
          * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
          * @throws MissingCall if the callIndex is invalid.
          */
-        fun getArgumentsForCall(callIndex: Int): Arguments
+        public fun getArgumentsForCall(callIndex: Int): Arguments
 
         /**
          * Clears the Proxies captured arguments
          */
-        fun clear()
+        public fun clear()
     }
 
     /**
@@ -95,14 +95,14 @@ object KMockContract {
      * @param Value the value type of the hosting Proxy.
      * @author Matthias Geisler
      */
-    interface PropertySpyTargetInvocation<Value> {
+    public interface PropertySpyTargetInvocation<Value> {
         /**
          * Binds the given function to the Proxy.
          * It wipes a given relaxer and buildInRelaxer.
          * @param spyTarget the referenced object which is spied upon.
          * @param spyOn the referenced Spy method.
          */
-        fun useSpyIf(spyTarget: Any?, spyOn: Function0<Value>)
+        public fun useSpyIf(spyTarget: Any?, spyOn: Function0<Value>)
     }
 
     /**
@@ -111,13 +111,13 @@ object KMockContract {
      * @param SpyTarget the function signature of the spy target closure.
      * @author Matthias Geisler
      */
-    interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> {
+    public interface MethodSpyTargetInvocation<ReturnValue, SpyTarget : Function<ReturnValue>> {
         /**
          * Binds the given function to the Proxy.
          * @param spyTarget the referenced object which is spied upon.
          * @param spyOn the referenced Spy method.
          */
-        fun useSpyIf(spyTarget: Any?, spyOn: SpyTarget)
+        public fun useSpyIf(spyTarget: Any?, spyOn: SpyTarget)
 
         /**
          * Binds the given function, which should be equals, to the Proxy.
@@ -128,7 +128,7 @@ object KMockContract {
          * @param spyOn function which should reference the spy target equals method.
          * @param mockKlass the KClass of the hosting mock.
          */
-        fun useSpyOnEqualsIf(
+        public fun useSpyOnEqualsIf(
             spyTarget: Any?,
             other: Any?,
             spyOn: Function1<Any?, Boolean>,
@@ -158,14 +158,14 @@ object KMockContract {
      * @param Value the value type of the hosting PropertyProxy.
      * @author Matthias Geisler
      */
-    interface RelaxationConfigurator<Value> {
+    public interface RelaxationConfigurator<Value> {
         /**
          * Binds a given Relaxer function to a Proxy if the condition is true.
          * This will wipe a given relaxer.
          * @param condition which determines if the relaxer should be invoked or not.
          * @param relaxer the relaxer method.
          */
-        fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>)
+        public fun useRelaxerIf(condition: Boolean, relaxer: Function1<String, Value>)
     }
 
     /**
@@ -175,14 +175,15 @@ object KMockContract {
      * @see RelaxationConfigurator
      * @author Matthias Geisler
      */
-    interface RelaxationFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> : RelaxationConfigurator<ReturnValue> {
+    public interface RelaxationFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+        RelaxationConfigurator<ReturnValue> {
 
         /**
          * Binds the internal UnitFunRelaxer to the Proxy, if the given condition is true.
          * It wipes a given relaxer.
          * @param condition Boolean to determine if the the function is relaxed or not.
          */
-        fun useUnitFunRelaxerIf(condition: Boolean)
+        public fun useUnitFunRelaxerIf(condition: Boolean)
     }
 
     /**
@@ -191,19 +192,21 @@ object KMockContract {
      * @see RelaxationConfigurator
      * @author Matthias Geisler
      */
-    interface RelaxationPropertyConfigurator<Value> : RelaxationConfigurator<Value>
+    public interface RelaxationPropertyConfigurator<Value> : RelaxationConfigurator<Value>
 
     /**
      * Configurator for non intrusive behaviour of PropertyProxies.
      * @author Matthias Geisler
      */
-    interface NonIntrusivePropertyConfigurator<Value> : RelaxationPropertyConfigurator<Value>, PropertySpyTargetInvocation<Value>
+    public interface NonIntrusivePropertyConfigurator<Value> :
+        RelaxationPropertyConfigurator<Value>,
+        PropertySpyTargetInvocation<Value>
 
     /**
      * Configurator for non intrusive behaviour of FunProxies.
      * @author Matthias Geisler
      */
-    interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
+    public interface NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
         RelaxationFunConfigurator<ReturnValue, SideEffect>, MethodSpyTargetInvocation<ReturnValue, SideEffect>
 
     /**
@@ -216,7 +219,8 @@ object KMockContract {
      * Extractor for non intrusive behaviour of FunProxies.
      * @author Matthias Geisler
      */
-    internal interface NonIntrusiveFunTarget<ReturnValue, SideEffect : Function<ReturnValue>> : RelaxationTarget<ReturnValue>, SpyTarget<ReturnValue, SideEffect>
+    internal interface NonIntrusiveFunTarget<ReturnValue, SideEffect : Function<ReturnValue>> :
+        RelaxationTarget<ReturnValue>, SpyTarget<ReturnValue, SideEffect>
 
     /**
      * Base State definition for FunProxies and PropertyProxies of shared mutable states to separate frozen and unfrozen behaviour.
@@ -282,20 +286,20 @@ object KMockContract {
      * @param SideEffect the function signature of the hosting Proxy.
      * @author Matthias Geisler
      */
-    interface SideEffectChainBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
+    public interface SideEffectChainBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
         /**
          * Adds a SideEffect to chain.
          * @param sideEffect the given SideEffect.
          * @return SideEffectChainBuilder the current builder.
          */
-        fun add(sideEffect: SideEffect): SideEffectChainBuilder<ReturnValue, SideEffect>
+        public fun add(sideEffect: SideEffect): SideEffectChainBuilder<ReturnValue, SideEffect>
 
         /**
          * Adds a multiple SideEffects to chain.
          * @param sideEffect the given SideEffect.
          * @return SideEffectChainBuilder the current builder.
          */
-        fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChainBuilder<ReturnValue, SideEffect>
+        public fun addAll(sideEffect: Iterable<SideEffect>): SideEffectChainBuilder<ReturnValue, SideEffect>
     }
 
     /**
@@ -307,7 +311,8 @@ object KMockContract {
      * @see SideEffectChainBuilder
      * @author Matthias Geisler
      */
-    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> : SideEffectChainBuilder<ReturnValue, SideEffect> {
+    internal interface SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>> :
+        SideEffectChainBuilder<ReturnValue, SideEffect> {
         /**
          * Returns the oldest chained SideEffect. If no SideEffects in the chain it fails.
          * @return SideEffect a previous stored SideEffect.
@@ -383,24 +388,24 @@ object KMockContract {
      * @param SideEffect the function signature of the hosting Proxy.
      * @author Matthias Geisler
      */
-    interface ProxySideEffectBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
+    public interface ProxySideEffectBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
         /**
          * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        var sideEffect: SideEffect
+        public var sideEffect: SideEffect
 
         /**
          * SideEffectChainBuilder to chain multiple SideEffects.
          */
-        val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
+        public val sideEffects: SideEffectChainBuilder<ReturnValue, SideEffect>
 
         /**
          * Alias method for sideEffect
          * @param SideEffect which is chained into the sideEffects propert.
          */
-        fun run(action: SideEffect)
+        public fun run(action: SideEffect)
 
         /**
          * Convenient method for multiple SideEffects, which uses under the sideEffects property.
@@ -408,7 +413,7 @@ object KMockContract {
          * @param SideEffect which is chained into the sideEffects propert.
          * @return ProxySideEffectBuilder.
          */
-        fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
+        public fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
     }
 
     /**
@@ -417,39 +422,39 @@ object KMockContract {
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
-    interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> :
+    public interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> :
         Proxy<ReturnValue, Array<out Any?>>,
         ProxySideEffectBuilder<ReturnValue, SideEffect> {
         /**
          * Marks the proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
          */
-        val ignorableForVerification: Boolean
+        public val ignorableForVerification: Boolean
 
         /**
          * Setter/Getter in order to set/get constant ReturnValue of the function.
          * @throws NullPointerException on get if no value was set.
          */
-        var returnValue: ReturnValue
+        public var returnValue: ReturnValue
 
         /**
          * Setter/Getter in order to set/get a List of ReturnValues of the Proxy. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws MissingStub if the given List is empty.
          */
-        var returnValues: List<ReturnValue>
+        public var returnValues: List<ReturnValue>
 
         /**
          * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy.
          * @throws NullPointerException on get if no value was set.
          */
-        var throws: Throwable
+        public var throws: Throwable
 
         /**
          * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws MissingStub if the given List is empty.
          */
-        var throwsMany: List<Throwable>
+        public var throwsMany: List<Throwable>
     }
 
     /**
@@ -458,7 +463,7 @@ object KMockContract {
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
-    interface SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : FunProxy<ReturnValue, SideEffect> {
+    public interface SyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : FunProxy<ReturnValue, SideEffect> {
 
         /**
          * Invocation for functions without arguments. This is meant for internal use only.
@@ -466,7 +471,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun invoke(
+        public fun invoke(
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
 
@@ -476,7 +481,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0> invoke(
+        public fun <Arg0> invoke(
             arg0: Arg0,
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
         ): ReturnValue
@@ -487,7 +492,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0, Arg1> invoke(
+        public fun <Arg0, Arg1> invoke(
             arg0: Arg0,
             arg1: Arg1,
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, Function0<ReturnValue>>.() -> Unit = {},
@@ -499,7 +504,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2> invoke(
+        public fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -512,7 +517,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -526,7 +531,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -541,7 +546,7 @@ object KMockContract {
          * @suppress
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -556,7 +561,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -572,7 +577,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -589,7 +594,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -607,7 +612,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -626,7 +631,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -646,7 +651,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -667,7 +672,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
+        public fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -691,14 +696,15 @@ object KMockContract {
      * @param SideEffect the function signature.
      * @author Matthias Geisler
      */
-    interface AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> : FunProxy<ReturnValue, SideEffect> {
+    public interface AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>> :
+        FunProxy<ReturnValue, SideEffect> {
 
         /**
          * Invocation for functions without arguments. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun invoke(
+        public suspend fun invoke(
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
 
@@ -707,7 +713,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0> invoke(
+        public suspend fun <Arg0> invoke(
             arg0: Arg0,
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
         ): ReturnValue
@@ -717,7 +723,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1> invoke(
+        public suspend fun <Arg0, Arg1> invoke(
             arg0: Arg0,
             arg1: Arg1,
             nonIntrusiveHook: NonIntrusiveFunConfigurator<ReturnValue, suspend () -> ReturnValue>.() -> Unit = {},
@@ -728,7 +734,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2> invoke(
+        public suspend fun <Arg0, Arg1, Arg2> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -740,7 +746,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -753,7 +759,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -767,7 +773,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -782,7 +788,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -798,7 +804,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -815,7 +821,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -833,7 +839,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -852,7 +858,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -872,7 +878,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -893,7 +899,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
+        public suspend fun <Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12> invoke(
             arg0: Arg0,
             arg1: Arg1,
             arg2: Arg2,
@@ -916,19 +922,21 @@ object KMockContract {
      * @param value the given Argument.
      * @author Matthias Geisler
      */
-    sealed class GetOrSet(val value: Any?) {
+    public sealed class GetOrSet(
+        public val value: Any?
+    ) {
         /**
          * Argument Container for Getter Proxies.
          * @author Matthias Geisler
          */
-        object Get : GetOrSet(null)
+        public object Get : GetOrSet(null)
 
         /**
          * Argument Container for Setter Proxies
          * @param newValue the new assigned value of the property.
          * @author Matthias Geisler
          */
-        class Set(newValue: Any?) : GetOrSet(newValue)
+        public class Set(newValue: Any?) : GetOrSet(newValue)
     }
 
     /**
@@ -977,12 +985,12 @@ object KMockContract {
      * @param Value the value type of the hosting PropertyProxy.
      * @author Matthias Geisler
      */
-    interface PropertyProxy<Value> : Proxy<Value, GetOrSet> {
+    public interface PropertyProxy<Value> : Proxy<Value, GetOrSet> {
         /**
          * Setter/Getter in order to set/get constant Value of the property.
          * @throws NullPointerException on get if no value was set.
          */
-        var get: Value
+        public var get: Value
 
         /**
          * Setter/Getter in order to set/get a List of Values of the property. If the given List has
@@ -990,28 +998,28 @@ object KMockContract {
          * @throws NullPointerException on get if no value was set.
          * @throws MissingStub if the given List is empty.
          */
-        var getMany: List<Value>
+        public var getMany: List<Value>
 
         /**
          * Setter/Getter in order to set/get custom SideEffect for the properties getter. SideEffects can be for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        var getSideEffect: Function0<Value>
+        public var getSideEffect: Function0<Value>
 
         /**
          * Setter/Getter in order to set/get custom SideEffect for the properties setter. SideEffects can be for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        var set: Function1<Value, Unit>
+        public var set: Function1<Value, Unit>
 
         /**
          * Invocation of property getter. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun onGet(
+        public fun onGet(
             nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {},
         ): Value
 
@@ -1020,7 +1028,7 @@ object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        fun onSet(
+        public fun onSet(
             value: Value,
             nonIntrusiveHook: NonIntrusivePropertyConfigurator<Unit>.() -> Unit = {},
         )
@@ -1030,7 +1038,7 @@ object KMockContract {
      * Entrypoint to instantiate a Proxy.
      * @author Matthias Geisler
      */
-    interface ProxyFactory {
+    public interface ProxyFactory {
         /**
          * Instantiates a SyncFunProxy.
          * @param ReturnValue the return value of the Proxy.
@@ -1043,7 +1051,7 @@ object KMockContract {
          * @see Collector
          * @see SyncFunProxy
          */
-        fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
+        public fun <ReturnValue, SideEffect : Function<ReturnValue>> createSyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
@@ -1062,7 +1070,7 @@ object KMockContract {
          * @see Collector
          * @see AsyncFunProxy
          */
-        fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
+        public fun <ReturnValue, SideEffect : Function<ReturnValue>> createAsyncFunProxy(
             id: String,
             collector: Collector = NoopCollector,
             ignorableForVerification: Boolean = false,
@@ -1078,7 +1086,7 @@ object KMockContract {
          * Default is null.
          * @see Collector
          */
-        fun <Value> createPropertyProxy(
+        public fun <Value> createPropertyProxy(
             id: String,
             collector: Collector = NoopCollector,
             freeze: Boolean = true,
@@ -1089,14 +1097,14 @@ object KMockContract {
      * Collector of a Proxy invocations.
      * @author Matthias Geisler
      */
-    fun interface Collector {
+    public fun interface Collector {
         /**
          * Collects a invocation of a Proxy. Intended for internal use only.
          * @param referredProxy the proxy it is referring to.
          * @param referredCall the invocation index of the Proxy it refers to.
          * @suppress
          */
-        fun addReference(referredProxy: Proxy<*, *>, referredCall: Int)
+        public fun addReference(referredProxy: Proxy<*, *>, referredCall: Int)
     }
 
     /**
@@ -1104,16 +1112,16 @@ object KMockContract {
      * Intended for internal usage only!
      * @author Matthias Geisler
      */
-    interface Expectation {
+    public interface Expectation {
         /**
          * Reference of the Proxy.
          */
-        val proxy: Proxy<*, *>
+        public val proxy: Proxy<*, *>
 
         /**
          * List with aggregated indices of invocation of the referred Proxy.
          */
-        val callIndices: List<Int>
+        public val callIndices: List<Int>
     }
 
     /**
@@ -1125,13 +1133,13 @@ object KMockContract {
      * @see isSame
      * @author Matthias Geisler
      */
-    fun interface ArgumentConstraint {
+    public fun interface ArgumentConstraint {
         /**
          * Resolves if the constraint matches the given Proxy Argument.
          * @param actual arbitrary argument provided by an Proxy.
          * @return true if the constraint is fulfiled otherwise false.
          */
-        fun matches(actual: Any?): Boolean
+        public fun matches(actual: Any?): Boolean
     }
 
     /**
@@ -1158,16 +1166,16 @@ object KMockContract {
      * Intended for internal usage only!
      * @author Matthias Geisler
      */
-    data class Reference(
+    public data class Reference(
         /**
          * The referenced Proxy.
          */
-        val proxy: Proxy<*, *>,
+        public val proxy: Proxy<*, *>,
 
         /**
          * The referenced Call.
          */
-        val callIndex: Int
+        public val callIndex: Int
     )
 
     /**
@@ -1279,76 +1287,76 @@ object KMockContract {
      * Provider for Assertion.
      * @author Matthias Geisler
      */
-    interface AssertionContext {
+    public interface AssertionContext {
         /**
          * Asserts that a FunProxy was called.
          * @throws AssertionError if the assertion fails.
          */
-        fun FunProxy<*, *>.hasBeenCalled()
+        public fun FunProxy<*, *>.hasBeenCalled()
 
         /**
          * Asserts that a FunProxy was called without any parameter.
          * @throws AssertionError if the assertion fails.
          */
-        fun FunProxy<*, *>.hasBeenCalledWithVoid()
+        public fun FunProxy<*, *>.hasBeenCalledWithVoid()
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
          * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function but can contain gaps and do not need to all arguments.
          * @throws AssertionError if the assertion fails
          */
-        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
+        public fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was called with n-parameter.
          * @param arguments or constraints which calls must match. The arguments/constraints must follow the order of the mocked/stubbed function and need to contain all arguments/constraints.
          * @throws AssertionError if the assertion fails
          */
-        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
+        public fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?)
 
         /**
          * Asserts that a FunProxy was without called n-parameter.
          * @param illegal arguments or constraints which calls is not allowed not match.
          * @throws AssertionError if the assertion fails
          */
-        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
+        public fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?)
 
         /**
          * Asserts that a PropertyProxy was invoked as a Getter.
          * @throws AssertionError if the assertion fails.
          */
-        fun PropertyProxy<*>.wasGotten()
+        public fun PropertyProxy<*>.wasGotten()
 
         /**
          * Asserts that a PropertyProxy was invoked as a Setter.
          * @throws AssertionError if the assertion fails.
          */
-        fun PropertyProxy<*>.wasSet()
+        public fun PropertyProxy<*>.wasSet()
 
         /**
          * Asserts that a PropertyProxy was invoked as a Setter with a given value.
          * @param value the expected value.
          * @throws AssertionError if the assertion fails.
          */
-        fun PropertyProxy<*>.wasSetTo(value: Any?)
+        public fun PropertyProxy<*>.wasSetTo(value: Any?)
     }
 
     /**
      * Provider for Verification.
      * @author Matthias Geisler
      */
-    interface VerificationContext {
+    public interface VerificationContext {
         /**
          * Collects all invocation of a FunProxy.
          * @return Expectation
          */
-        fun FunProxy<*, *>.hasBeenCalled(): Expectation
+        public fun FunProxy<*, *>.hasBeenCalled(): Expectation
 
         /**
          * Collects all invocation of a FunProxy which contain no Arguments.
          * @return Expectation
          */
-        fun FunProxy<*, *>.hasBeenCalledWithVoid(): Expectation
+        public fun FunProxy<*, *>.hasBeenCalledWithVoid(): Expectation
 
         /**
          * Collects all invocation of an FunProxy which matches the given Arguments.
@@ -1356,7 +1364,7 @@ object KMockContract {
          * @return Expectation
          * @see ArgumentConstraint
          */
-        fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?): Expectation
+        public fun FunProxy<*, *>.hasBeenCalledWith(vararg arguments: Any?): Expectation
 
         /**
          * Collects all invocation of an FunProxy which matches the given Arguments.
@@ -1364,7 +1372,7 @@ object KMockContract {
          * @return Expectation
          * @see ArgumentConstraint
          */
-        fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?): Expectation
+        public fun FunProxy<*, *>.hasBeenStrictlyCalledWith(vararg arguments: Any?): Expectation
 
         /**
          * Collects all invocation of an FunProxy which matches the given Arguments.
@@ -1372,17 +1380,17 @@ object KMockContract {
          * @return Expectation
          * @see ArgumentConstraint
          */
-        fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?): Expectation
+        public fun FunProxy<*, *>.hasBeenCalledWithout(vararg illegal: Any?): Expectation
 
         /**
          * Collects all invocation of an PropertyProxy Getter.
          */
-        fun PropertyProxy<*>.wasGotten(): Expectation
+        public fun PropertyProxy<*>.wasGotten(): Expectation
 
         /**
          * Collects all invocation of an PropertyProxy Setter.
          */
-        fun PropertyProxy<*>.wasSet(): Expectation
+        public fun PropertyProxy<*>.wasSet(): Expectation
 
         /**
          * Collects all invocation of an PropertyProxy Setter with the given Value.
@@ -1390,19 +1398,19 @@ object KMockContract {
          * @param value argument/constraint which calls must match.
          * @see ArgumentConstraint
          */
-        fun PropertyProxy<*>.wasSetTo(value: Any?): Expectation
+        public fun PropertyProxy<*>.wasSetTo(value: Any?): Expectation
     }
 
     /**
      * Insurance that given Proxies are covered by the AssertionChain.
      * @author Matthias Geisler
      */
-    fun interface AssertionInsurance {
+    public fun interface AssertionInsurance {
         /**
          * Ensures that given Proxies are covered by the AssertionChain.
          * @throws IllegalStateException if a given Proxy is not covered by a AssertionChain.
          */
-        fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
+        public fun ensureVerificationOf(vararg proxies: Proxy<*, *>)
     }
 
     /**
@@ -1410,7 +1418,7 @@ object KMockContract {
      * @see AssertionInsurance
      * @see AssertionContext
      */
-    interface ChainedAssertion : AssertionInsurance, AssertionContext
+    public interface ChainedAssertion : AssertionInsurance, AssertionContext
 
     /**
      * AssertionChain in order to verify over multiple Handles.
@@ -1430,21 +1438,22 @@ object KMockContract {
      * Container which holds actual references of proxy calls. The references are ordered by their invocation.
      * @author Matthias Geisler
      */
-    interface Asserter {
+    public interface Asserter {
         /**
          * Holds the actual references
          */
-        val references: List<Reference>
+        public val references: List<Reference>
 
         /**
          * Clears the Container
          */
-        fun clear()
+        public fun clear()
     }
 
     internal const val CALL_NOT_FOUND = "Expected %0 to be invoked, but no further calls were captured."
     internal const val STRICT_CALL_NOT_MATCH = "Expected %0 to be invoked, but %1 was called."
-    internal const val STRICT_MISSING_EXPECTATION = "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
+    internal const val STRICT_MISSING_EXPECTATION =
+        "The given verification chain covers %0 items, but only %1 were expected (%2 were referenced)."
 
     internal const val MISSING_INVOCATION = "Expected %0th call of %1 was not made."
     internal const val MISMATCH = "Expected <%0> got actual <%1>."

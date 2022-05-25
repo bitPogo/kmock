@@ -11,7 +11,7 @@ package tech.antibytes.kmock.error
  * @param message the given error message.
  * @author Matthias Geisler
  */
-sealed class MockError(
+public sealed class MockError(
     message: String
 ) : RuntimeException(message) {
     /**
@@ -19,12 +19,12 @@ sealed class MockError(
      * @param message the given error message.
      * @author Matthias Geisler
      */
-    class MissingStub(message: String) : MockError(message)
+    public class MissingStub(message: String) : MockError(message)
 
     /**
      * Indicates that a Proxy was not called.
      * @param message the given error message
      * @author Matthias Geisler
      */
-    class MissingCall(message: String) : MockError(message)
+    public class MissingCall(message: String) : MockError(message)
 }

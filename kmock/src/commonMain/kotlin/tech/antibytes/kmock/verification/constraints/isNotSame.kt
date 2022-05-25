@@ -17,6 +17,6 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-fun isNotSame(
+public fun isNotSame(
     illegal: Any?
 ): ArgumentConstraint = not(isSame(illegal))

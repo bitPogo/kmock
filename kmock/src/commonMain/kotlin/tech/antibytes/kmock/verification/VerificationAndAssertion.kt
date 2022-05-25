@@ -55,7 +55,7 @@ private infix fun Expectation.mustBeAtMost(value: Int) {
  * @see KMockContract.VerificationContext
  * @author Matthias Geisler
  */
-fun verify(
+public fun verify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
@@ -85,7 +85,7 @@ fun verify(
  * @author Matthias Geisler
  */
 @KMockExperimental
-suspend fun asyncVerify(
+public suspend fun asyncVerify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
@@ -110,7 +110,7 @@ suspend fun asyncVerify(
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun assertProxy(action: AssertionContext.() -> Unit) = action(UnchainedAssertion())
+public fun assertProxy(action: AssertionContext.() -> Unit): Unit = action(UnchainedAssertion())
 
 /**
  * Asserts Expectations of proxies in Coroutine Context. Each Expectation relates to a specific Proxy and they must be in order.
@@ -122,7 +122,7 @@ fun assertProxy(action: AssertionContext.() -> Unit) = action(UnchainedAssertion
  * @author Matthias Geisler
  */
 @KMockExperimental
-suspend fun asyncAssertProxy(action: suspend AssertionContext.() -> Unit) = action(UnchainedAssertion())
+public suspend fun asyncAssertProxy(action: suspend AssertionContext.() -> Unit): Unit = action(UnchainedAssertion())
 
 private fun <T> runChainedAssertion(
     chain: T,
@@ -150,7 +150,9 @@ private suspend fun <T> runAsyncChainedAssertion(
 * @see AssertionContext
 * @author Matthias Geisler
 */
-fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runChainedAssertion(AssertionChain(references), action)
+public fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) {
+    return runChainedAssertion(AssertionChain(references), action)
+}
 
 /**
  * Asserts a chain of Expectations in a coroutine Context.
@@ -162,7 +164,7 @@ fun Asserter.assertOrder(action: ChainedAssertion.() -> Any) = runChainedAsserti
  * @author Matthias Geisler
  */
 @KMockExperimental
-suspend fun Asserter.asyncAssertOrder(action: suspend ChainedAssertion.() -> Any) {
+public suspend fun Asserter.asyncAssertOrder(action: suspend ChainedAssertion.() -> Any) {
     return runAsyncChainedAssertion(AssertionChain(references), action)
 }
 
@@ -173,7 +175,7 @@ suspend fun Asserter.asyncAssertOrder(action: suspend ChainedAssertion.() -> Any
  * @throws AssertionError if given criteria are not met.
  * @author Matthias Geisler
  */
-fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
+public fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
     runChainedAssertion(StrictVerificationChain(references), action)
 }
 
@@ -186,7 +188,7 @@ fun Asserter.verifyStrictOrder(action: ChainedAssertion.() -> Any) {
  * @author Matthias Geisler
  */
 @KMockExperimental
-suspend fun Asserter.asyncVerifyStrictOrder(action: suspend ChainedAssertion.() -> Any) {
+public suspend fun Asserter.asyncVerifyStrictOrder(action: suspend ChainedAssertion.() -> Any) {
     runAsyncChainedAssertion(StrictVerificationChain(references), action)
 }
 
@@ -198,7 +200,7 @@ suspend fun Asserter.asyncVerifyStrictOrder(action: suspend ChainedAssertion.() 
  * @see AssertionContext
  * @author Matthias Geisler
  */
-fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) {
+public fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) {
     return runChainedAssertion(VerificationChain(references), action)
 }
 
@@ -212,6 +214,6 @@ fun Asserter.verifyOrder(action: ChainedAssertion.() -> Any) {
  * @author Matthias Geisler
  */
 @KMockExperimental
-suspend fun Asserter.asyncVerifyOrder(action: suspend ChainedAssertion.() -> Any) {
+public suspend fun Asserter.asyncVerifyOrder(action: suspend ChainedAssertion.() -> Any) {
     return runAsyncChainedAssertion(VerificationChain(references), action)
 }

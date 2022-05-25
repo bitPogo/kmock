@@ -19,7 +19,7 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-class or(
+public class or(
     vararg subConstraints: Any?
 ) : ArgumentConstraint {
     private val subConstraints: Array<out ArgumentConstraint> = mapSubConstraints(subConstraints)
