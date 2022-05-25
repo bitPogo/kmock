@@ -6,4 +6,4 @@
 
 package tech.antibytes.kmock
 
-actual annotation class SafeJvmName(actual val name: String) // Noop
+public actual annotation class SafeJvmName(actual val name: String) // Noop
