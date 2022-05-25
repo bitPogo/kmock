@@ -929,14 +929,14 @@ public object KMockContract {
          * Argument Container for Getter Proxies.
          * @author Matthias Geisler
          */
-        public object Get : GetOrSet(null)
+        internal object Get : GetOrSet(null)
 
         /**
          * Argument Container for Setter Proxies
          * @param newValue the new assigned value of the property.
          * @author Matthias Geisler
          */
-        public class Set(newValue: Any?) : GetOrSet(newValue)
+        internal class Set(newValue: Any?) : GetOrSet(newValue)
     }
 
     /**
