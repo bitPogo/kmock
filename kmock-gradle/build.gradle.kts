@@ -44,6 +44,14 @@ dependencies {
     testImplementation(LocalDependency.antibytes.test.gradle)
 }
 
+kotlin {
+    explicitApi()
+
+    sourceSets.main {
+        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -72,12 +80,6 @@ afterEvaluate {
     tasks.withType(KotlinCompile::class.java) {
         this.dependsOn(generateConfig)
         this.mustRunAfter(generateConfig)
-    }
-}
-
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
     }
 }
 

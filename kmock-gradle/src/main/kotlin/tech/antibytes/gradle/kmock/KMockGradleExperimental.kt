@@ -17,4 +17,4 @@ package tech.antibytes.gradle.kmock
     AnnotationTarget.FIELD,
     AnnotationTarget.CONSTRUCTOR
 )
-annotation class KMockGradleExperimental
+public annotation class KMockGradleExperimental

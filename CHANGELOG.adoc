@@ -49,7 +49,7 @@ toc::[]
 * `run` for FunProxies to mitigate the strict assignment policy in terms of a single SideEffect
 * `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
 * `throwsMany` for FunProxies to align the the FunProxy API
-* `enableFineGrainedNames` in order to allow fine grained typing (Experimental/not this will feature helps you only in a non JVM context)
+* `enableFineGrainedNames` in order to allow fine grained typing (experimental/not this will feature helps you only in a non JVM context)
 
 === Changed
 
