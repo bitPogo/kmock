@@ -51,13 +51,13 @@ jobs:
         uses: mikepenz/action-junit-report@v3
         if: failure()
         with:
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/build/test-results/**/TEST-*.xml'
 
       - name: Quality Gate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --no-daemon --stacktrace multiplatformCoverage sonarqube
+        run: ./gradlew --no-daemon --stacktrace multiplatformCoverage sonarqube --info
 
       - name: Publish to Development Repository
         run: ./gradlew publishDevelopment --no-parallel
