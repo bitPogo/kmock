@@ -31,21 +31,6 @@ internal interface KMockPluginContract {
         var useBuildInProxiesOn: Set<String>
 
         /**
-         * Selection of prefixes which are polluting names of Proxies while they referencing overloaded methods.
-         * The order must be longest to shortest.
-         */
-        @Deprecated("This will be removed with version 1.0. You can opt-in/out the new behaviour with enableNewOverloadingNames.")
-        var uselessPrefixes: Set<String>
-
-        /**
-         * Opt-in/out the new name resolver for overloaded methods.
-         *
-         * It is opt-in on default.
-         */
-        @Deprecated("This will be removed with version 1.0.")
-        var enableNewOverloadingNames: Boolean
-
-        /**
          * Allows to prefix type names in order to resolve collisions for overloaded methods.
          * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
          *
@@ -120,6 +105,7 @@ internal interface KMockPluginContract {
          *
          * Default is false
          */
+        @KMockGradleExperimental
         var allowExperimentalProxyAccess: Boolean
 
         /**
@@ -156,8 +142,6 @@ internal interface KMockPluginContract {
         const val SPY_ON = "${KMOCK_PREFIX}spyOn_"
         const val SPY_ALL = "${KMOCK_PREFIX}spyAll"
         const val SPIES_ONLY = "${KMOCK_PREFIX}spiesOnly"
-        const val OVERLOAD_NAME_FEATURE_FLAG = "${KMOCK_PREFIX}useNewOverloadedNames"
-        const val USELESS_PREFIXES = "${KMOCK_PREFIX}oldNamePrefix_"
         const val TYPE_PREFIXES = "${KMOCK_PREFIX}namePrefix_"
         const val CUSTOM_METHOD_NAME = "${KMOCK_PREFIX}customMethodName_"
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"

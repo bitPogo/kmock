@@ -35,7 +35,7 @@ toc::[]
 * `spyAll` in the Gradle extension, in order to tell the processor to create for al given interfaces also a spy entryPoint
 * `vararg` is now supported by Mocks
 * `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
-* `enableNewOverloadingNames` and `useTypePrefixFor` for overloaded names in order to ease them
+* `useTypePrefixFor` for overloaded names in order to ease them and avoid collisions
 * `customMethodNames` in order to allow complete custom names for methods
 * `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
 * `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
@@ -73,14 +73,13 @@ toc::[]
 
 === Deprecated
 
-* `uselessPrefixes` in the Gradle Extension
-
 === Removed
 
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
 * `allowInterfacesOnKmock`, use allowInterfaces instead
 * `allowInterfacesOnKspy`, use allowInterfaces instead
 * Old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
+* `uselessPrefixes` in the Gradle Extension
 
 === Fixed
 

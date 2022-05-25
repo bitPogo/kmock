@@ -1322,63 +1322,6 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated overloaded Source for a Platform is processed while keeping the old name schema, it writes a mock`() {
-        // Given
-        val source = SourceFile.kotlin(
-            "Platform.kt",
-            loadResource("/template/compatibility/Platform.kt")
-        )
-        val expected = loadResource("/expected/compatibility/Platform.kt")
-
-        // When
-        val compilerResult = compile(
-            provider,
-            source,
-            isKmp = false,
-            kspArguments = mapOf(
-                "kmock_useNewOverloadedNames" to "false"
-            )
-        )
-        val actual = resolveGenerated("PlatformMock.kt")
-
-        // Then
-        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        actual isNot null
-
-        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
-    }
-
-    @Test
-    fun `Given a annotated overloaded Source for Common, which contains also generic Parameter is processed while keeping the old name schema, it writes a mock`() {
-        // Given
-        val source = SourceFile.kotlin(
-            "Common.kt",
-            loadResource("/template/compatibility/Common.kt")
-        )
-        val expected = loadResource("/expected/compatibility/Common.kt")
-
-        // When
-        val compilerResult = compile(
-            provider,
-            source,
-            isKmp = true,
-            kspArguments = mapOf(
-                "kmock_useNewOverloadedNames" to "false"
-            )
-        )
-        val actual = resolveGenerated("CommonMock.kt")
-
-        // Then
-        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
-        actual isNot null
-
-        actual!!.absolutePath.toString().endsWith(
-            "common/commonTest/kotlin/mock/template/compatibility/CommonMock.kt"
-        ) mustBe true
-        actual.readText().normalizeSource() mustBe expected.normalizeSource()
-    }
-
-    @Test
     fun `Given a annotated Source for Shared is processed while using a custom annotation, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
