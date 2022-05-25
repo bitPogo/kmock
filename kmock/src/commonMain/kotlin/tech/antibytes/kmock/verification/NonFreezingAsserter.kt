@@ -15,7 +15,7 @@ import tech.antibytes.kmock.KMockContract.Reference
  * @see Asserter
  * @author Matthias Geisler
  */
-class NonFreezingAsserter(coverAllInvocations: Boolean = false) : AsserterBase(coverAllInvocations) {
+public class NonFreezingAsserter(coverAllInvocations: Boolean = false) : AsserterBase(coverAllInvocations) {
     override val _references: MutableList<Reference> = mutableListOf()
 }
 
@@ -23,4 +23,4 @@ class NonFreezingAsserter(coverAllInvocations: Boolean = false) : AsserterBase(c
  * Alias to NonFreezingAsserter.
  * @author Matthias Geisler
  */
-typealias NonFreezingVerifier = NonFreezingAsserter
+public typealias NonFreezingVerifier = NonFreezingAsserter

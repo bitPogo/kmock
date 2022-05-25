@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class Mock(vararg val interfaces: KClass<*>)
+public annotation class Mock(vararg val interfaces: KClass<*>)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
@@ -33,7 +33,7 @@ annotation class Mock(vararg val interfaces: KClass<*>)
  * @property name name which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class MultiMock(
+public annotation class MultiMock(
     val name: String,
     vararg val interfaces: KClass<*>
 )
@@ -48,7 +48,7 @@ annotation class MultiMock(
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class MockCommon(vararg val interfaces: KClass<*>)
+public annotation class MockCommon(vararg val interfaces: KClass<*>)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
@@ -63,7 +63,7 @@ annotation class MockCommon(vararg val interfaces: KClass<*>)
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class MultiMockCommon(
+public annotation class MultiMockCommon(
     val name: String,
     vararg val interfaces: KClass<*>
 )
@@ -80,7 +80,7 @@ annotation class MultiMockCommon(
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
+public annotation class MockShared(val sourceSetName: String, vararg val interfaces: KClass<*>)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
@@ -97,7 +97,7 @@ annotation class MockShared(val sourceSetName: String, vararg val interfaces: KC
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-annotation class MultiMockShared(
+public annotation class MultiMockShared(
     val sourceSetName: String,
     val name: String,
     vararg val interfaces: KClass<*>
@@ -125,7 +125,7 @@ annotation class MultiMockShared(
  * @see KMockContract.Relaxer
  * @author Matthias Geisler
  */
-annotation class Relaxer
+public annotation class Relaxer
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
@@ -139,4 +139,4 @@ annotation class Relaxer
     AnnotationTarget.FIELD,
     AnnotationTarget.CONSTRUCTOR
 )
-annotation class KMockExperimental
+public annotation class KMockExperimental

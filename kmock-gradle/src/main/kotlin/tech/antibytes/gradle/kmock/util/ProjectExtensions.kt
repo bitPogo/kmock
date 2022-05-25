@@ -20,10 +20,10 @@ internal fun Project.isKmp(): Boolean {
     return this.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
 }
 
-fun Project.isAndroid(): Boolean {
+internal fun Project.isAndroid(): Boolean {
     return this.plugins.hasPlugin("com.android.library") || this.plugins.hasPlugin("com.android.application")
 }
 
-fun Project.isJs(): Boolean {
+internal fun Project.isJs(): Boolean {
     return this.plugins.hasPlugin("org.jetbrains.kotlin.js")
 }

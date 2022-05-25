@@ -9,4 +9,4 @@ package tech.antibytes.kmock
 /**
  * Ensures usage of JvmName in Common.
  */
-expect annotation class SafeJvmName(val name: String)
+public expect annotation class SafeJvmName(val name: String)

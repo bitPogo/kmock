@@ -25,7 +25,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TYPE_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USE_BUILD_IN
 
-abstract class KMockExtension(
+public abstract class KMockExtension(
     project: Project
 ) : KMockPluginContract.Extension {
     private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)

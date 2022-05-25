@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.verification
 
 import tech.antibytes.kmock.KMockContract
+import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.FunProxy
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy

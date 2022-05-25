@@ -1,0 +1,698 @@
+public final class tech/antibytes/kmock/Hint0 {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/Unit;)V
+	public synthetic fun <init> (Lkotlin/Unit;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()V
+	public final fun copy (Lkotlin/Unit;)Ltech/antibytes/kmock/Hint0;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint0;Lkotlin/Unit;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint0;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlin/Unit;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint1 {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint1;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint1;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint1;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint10 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component10 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun component9 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint10;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint10;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint10;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public final fun getType8 ()Lkotlin/reflect/KClass;
+	public final fun getType9 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint11 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component10 ()Lkotlin/reflect/KClass;
+	public final fun component11 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun component9 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint11;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint11;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint11;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType10 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public final fun getType8 ()Lkotlin/reflect/KClass;
+	public final fun getType9 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint12 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component10 ()Lkotlin/reflect/KClass;
+	public final fun component11 ()Lkotlin/reflect/KClass;
+	public final fun component12 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun component9 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint12;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint12;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint12;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType10 ()Lkotlin/reflect/KClass;
+	public final fun getType11 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public final fun getType8 ()Lkotlin/reflect/KClass;
+	public final fun getType9 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint13 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component10 ()Lkotlin/reflect/KClass;
+	public final fun component11 ()Lkotlin/reflect/KClass;
+	public final fun component12 ()Lkotlin/reflect/KClass;
+	public final fun component13 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun component9 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint13;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint13;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint13;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType10 ()Lkotlin/reflect/KClass;
+	public final fun getType11 ()Lkotlin/reflect/KClass;
+	public final fun getType12 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public final fun getType8 ()Lkotlin/reflect/KClass;
+	public final fun getType9 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint2 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint2;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint2;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint2;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint3 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint3;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint3;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint3;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint4 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint4;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint4;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint4;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint5 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint5;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint5;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint5;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint6 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint6;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint6;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint6;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint7 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint7;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint7;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint7;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint8 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint8;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint8;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint8;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/Hint9 {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun component3 ()Lkotlin/reflect/KClass;
+	public final fun component4 ()Lkotlin/reflect/KClass;
+	public final fun component5 ()Lkotlin/reflect/KClass;
+	public final fun component6 ()Lkotlin/reflect/KClass;
+	public final fun component7 ()Lkotlin/reflect/KClass;
+	public final fun component8 ()Lkotlin/reflect/KClass;
+	public final fun component9 ()Lkotlin/reflect/KClass;
+	public final fun copy (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Ltech/antibytes/kmock/Hint9;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/Hint9;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;ILjava/lang/Object;)Ltech/antibytes/kmock/Hint9;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType0 ()Lkotlin/reflect/KClass;
+	public final fun getType1 ()Lkotlin/reflect/KClass;
+	public final fun getType2 ()Lkotlin/reflect/KClass;
+	public final fun getType3 ()Lkotlin/reflect/KClass;
+	public final fun getType4 ()Lkotlin/reflect/KClass;
+	public final fun getType5 ()Lkotlin/reflect/KClass;
+	public final fun getType6 ()Lkotlin/reflect/KClass;
+	public final fun getType7 ()Lkotlin/reflect/KClass;
+	public final fun getType8 ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/HintKt {
+	public static final fun hint ()Ltech/antibytes/kmock/Hint0;
+}
+
+public final class tech/antibytes/kmock/KMockContract {
+	public static final field INSTANCE Ltech/antibytes/kmock/KMockContract;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public abstract fun matches (Ljava/lang/Object;)Z
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$Asserter {
+	public abstract fun clear ()V
+	public abstract fun getReferences ()Ljava/util/List;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$AssertionContext {
+	public abstract fun hasBeenCalled (Ltech/antibytes/kmock/KMockContract$FunProxy;)V
+	public abstract fun hasBeenCalledWith (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)V
+	public abstract fun hasBeenCalledWithVoid (Ltech/antibytes/kmock/KMockContract$FunProxy;)V
+	public abstract fun hasBeenCalledWithout (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)V
+	public abstract fun hasBeenStrictlyCalledWith (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)V
+	public abstract fun wasGotten (Ltech/antibytes/kmock/KMockContract$PropertyProxy;)V
+	public abstract fun wasSet (Ltech/antibytes/kmock/KMockContract$PropertyProxy;)V
+	public abstract fun wasSetTo (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Ljava/lang/Object;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$AssertionInsurance {
+	public abstract fun ensureVerificationOf ([Ltech/antibytes/kmock/KMockContract$Proxy;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$AsyncFunProxy : tech/antibytes/kmock/KMockContract$FunProxy {
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun invoke (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class tech/antibytes/kmock/KMockContract$AsyncFunProxy$DefaultImpls {
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$ChainedAssertion : tech/antibytes/kmock/KMockContract$AssertionContext, tech/antibytes/kmock/KMockContract$AssertionInsurance {
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$Collector {
+	public abstract fun addReference (Ltech/antibytes/kmock/KMockContract$Proxy;I)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$Expectation {
+	public abstract fun getCallIndices ()Ljava/util/List;
+	public abstract fun getProxy ()Ltech/antibytes/kmock/KMockContract$Proxy;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$FunProxy : tech/antibytes/kmock/KMockContract$Proxy, tech/antibytes/kmock/KMockContract$ProxySideEffectBuilder {
+	public abstract fun getIgnorableForVerification ()Z
+	public abstract fun getReturnValue ()Ljava/lang/Object;
+	public abstract fun getReturnValues ()Ljava/util/List;
+	public abstract fun getThrows ()Ljava/lang/Throwable;
+	public abstract fun getThrowsMany ()Ljava/util/List;
+	public abstract fun setReturnValue (Ljava/lang/Object;)V
+	public abstract fun setReturnValues (Ljava/util/List;)V
+	public abstract fun setThrows (Ljava/lang/Throwable;)V
+	public abstract fun setThrowsMany (Ljava/util/List;)V
+}
+
+public abstract class tech/antibytes/kmock/KMockContract$GetOrSet {
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getValue ()Ljava/lang/Object;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$MethodSpyTargetInvocation {
+	public abstract fun useSpyIf (Ljava/lang/Object;Lkotlin/Function;)V
+	public abstract fun useSpyOnEqualsIf (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/reflect/KClass;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$NonIntrusiveFunConfigurator : tech/antibytes/kmock/KMockContract$MethodSpyTargetInvocation, tech/antibytes/kmock/KMockContract$RelaxationFunConfigurator {
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$NonIntrusivePropertyConfigurator : tech/antibytes/kmock/KMockContract$PropertySpyTargetInvocation, tech/antibytes/kmock/KMockContract$RelaxationPropertyConfigurator {
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$PropertyProxy : tech/antibytes/kmock/KMockContract$Proxy {
+	public abstract fun getGet ()Ljava/lang/Object;
+	public abstract fun getGetMany ()Ljava/util/List;
+	public abstract fun getGetSideEffect ()Lkotlin/jvm/functions/Function0;
+	public abstract fun getSet ()Lkotlin/jvm/functions/Function1;
+	public abstract fun onGet (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun onSet (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun setGet (Ljava/lang/Object;)V
+	public abstract fun setGetMany (Ljava/util/List;)V
+	public abstract fun setGetSideEffect (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun setSet (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class tech/antibytes/kmock/KMockContract$PropertyProxy$DefaultImpls {
+	public static synthetic fun onGet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun onSet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$PropertySpyTargetInvocation {
+	public abstract fun useSpyIf (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$Proxy {
+	public abstract fun clear ()V
+	public abstract fun getArgumentsForCall (I)Ljava/lang/Object;
+	public abstract fun getCalls ()I
+	public abstract fun getFrozen ()Z
+	public abstract fun getId ()Ljava/lang/String;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$ProxyFactory {
+	public abstract fun createAsyncFunProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZ)Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;
+	public abstract fun createPropertyProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;Z)Ltech/antibytes/kmock/KMockContract$PropertyProxy;
+	public abstract fun createSyncFunProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZ)Ltech/antibytes/kmock/KMockContract$SyncFunProxy;
+}
+
+public final class tech/antibytes/kmock/KMockContract$ProxyFactory$DefaultImpls {
+	public static synthetic fun createAsyncFunProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;
+	public static synthetic fun createPropertyProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$PropertyProxy;
+	public static synthetic fun createSyncFunProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$SyncFunProxy;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$ProxySideEffectBuilder {
+	public abstract fun getSideEffect ()Lkotlin/Function;
+	public abstract fun getSideEffects ()Ltech/antibytes/kmock/KMockContract$SideEffectChainBuilder;
+	public abstract fun run (Lkotlin/Function;)V
+	public abstract fun runs (Lkotlin/Function;)Ltech/antibytes/kmock/KMockContract$ProxySideEffectBuilder;
+	public abstract fun setSideEffect (Lkotlin/Function;)V
+}
+
+public final class tech/antibytes/kmock/KMockContract$Reference {
+	public fun <init> (Ltech/antibytes/kmock/KMockContract$Proxy;I)V
+	public final fun component1 ()Ltech/antibytes/kmock/KMockContract$Proxy;
+	public final fun component2 ()I
+	public final fun copy (Ltech/antibytes/kmock/KMockContract$Proxy;I)Ltech/antibytes/kmock/KMockContract$Reference;
+	public static synthetic fun copy$default (Ltech/antibytes/kmock/KMockContract$Reference;Ltech/antibytes/kmock/KMockContract$Proxy;IILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$Reference;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCallIndex ()I
+	public final fun getProxy ()Ltech/antibytes/kmock/KMockContract$Proxy;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$RelaxationConfigurator {
+	public abstract fun useRelaxerIf (ZLkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$RelaxationFunConfigurator : tech/antibytes/kmock/KMockContract$RelaxationConfigurator {
+	public abstract fun useUnitFunRelaxerIf (Z)V
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$RelaxationPropertyConfigurator : tech/antibytes/kmock/KMockContract$RelaxationConfigurator {
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$SideEffectChainBuilder {
+	public abstract fun add (Lkotlin/Function;)Ltech/antibytes/kmock/KMockContract$SideEffectChainBuilder;
+	public abstract fun addAll (Ljava/lang/Iterable;)Ltech/antibytes/kmock/KMockContract$SideEffectChainBuilder;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$SyncFunProxy : tech/antibytes/kmock/KMockContract$FunProxy {
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun invoke (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class tech/antibytes/kmock/KMockContract$SyncFunProxy$DefaultImpls {
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun invoke$default (Ltech/antibytes/kmock/KMockContract$SyncFunProxy;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$VerificationContext {
+	public abstract fun hasBeenCalled (Ltech/antibytes/kmock/KMockContract$FunProxy;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun hasBeenCalledWith (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun hasBeenCalledWithVoid (Ltech/antibytes/kmock/KMockContract$FunProxy;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun hasBeenCalledWithout (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun hasBeenStrictlyCalledWith (Ltech/antibytes/kmock/KMockContract$FunProxy;[Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun wasGotten (Ltech/antibytes/kmock/KMockContract$PropertyProxy;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun wasSet (Ltech/antibytes/kmock/KMockContract$PropertyProxy;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public abstract fun wasSetTo (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$Expectation;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/KMockExperimental : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class tech/antibytes/kmock/Mock : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MockCommon : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MockShared : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+	public abstract fun sourceSetName ()Ljava/lang/String;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMock : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMock$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ltech/antibytes/kmock/MultiMock;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMockCommon : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMockCommon$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ltech/antibytes/kmock/MultiMockCommon;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMockShared : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun sourceSetName ()Ljava/lang/String;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/MultiMockShared$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ltech/antibytes/kmock/MultiMockShared;
+}
+
+public abstract interface annotation class tech/antibytes/kmock/Relaxer : java/lang/annotation/Annotation {
+}
+
+public abstract class tech/antibytes/kmock/error/MockError : java/lang/RuntimeException {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class tech/antibytes/kmock/error/MockError$MissingCall : tech/antibytes/kmock/error/MockError {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class tech/antibytes/kmock/error/MockError$MissingStub : tech/antibytes/kmock/error/MockError {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class tech/antibytes/kmock/proxy/NoopCollector : tech/antibytes/kmock/KMockContract$Collector {
+	public static final field INSTANCE Ltech/antibytes/kmock/proxy/NoopCollector;
+	public fun addReference (Ltech/antibytes/kmock/KMockContract$Proxy;I)V
+}
+
+public final class tech/antibytes/kmock/proxy/ProxyFactory : tech/antibytes/kmock/KMockContract$ProxyFactory {
+	public static final field INSTANCE Ltech/antibytes/kmock/proxy/ProxyFactory;
+	public fun createAsyncFunProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZ)Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;
+	public fun createPropertyProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;Z)Ltech/antibytes/kmock/KMockContract$PropertyProxy;
+	public fun createSyncFunProxy (Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZ)Ltech/antibytes/kmock/KMockContract$SyncFunProxy;
+}
+
+public final class tech/antibytes/kmock/verification/Asserter : tech/antibytes/kmock/verification/AsserterBase {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun get_references ()Ljava/util/List;
+}
+
+public abstract class tech/antibytes/kmock/verification/AsserterBase : tech/antibytes/kmock/KMockContract$Asserter, tech/antibytes/kmock/KMockContract$Collector {
+	public fun <init> (Z)V
+	public fun addReference (Ltech/antibytes/kmock/KMockContract$Proxy;I)V
+	public fun clear ()V
+	public fun getReferences ()Ljava/util/List;
+	protected abstract fun get_references ()Ljava/util/List;
+}
+
+public final class tech/antibytes/kmock/verification/NonFreezingAsserter : tech/antibytes/kmock/verification/AsserterBase {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class tech/antibytes/kmock/verification/OperatorsKt {
+	public static final fun and (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public static final fun diff (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public static final fun intersection (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public static final fun or (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public static final fun union (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+	public static final fun xor (Ltech/antibytes/kmock/KMockContract$Expectation;Ltech/antibytes/kmock/KMockContract$Expectation;)Ltech/antibytes/kmock/KMockContract$Expectation;
+}
+
+public final class tech/antibytes/kmock/verification/VerificationAndAssertionKt {
+	public static final fun assertOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun assertProxy (Lkotlin/jvm/functions/Function1;)V
+	public static final fun asyncAssertOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun asyncAssertProxy (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun asyncVerify (Ljava/lang/Integer;ILjava/lang/Integer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun asyncVerify$default (Ljava/lang/Integer;ILjava/lang/Integer;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun asyncVerifyOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun asyncVerifyStrictOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun verify (Ljava/lang/Integer;ILjava/lang/Integer;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun verify$default (Ljava/lang/Integer;ILjava/lang/Integer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun verifyOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun verifyStrictOrder (Ltech/antibytes/kmock/KMockContract$Asserter;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class tech/antibytes/kmock/verification/constraints/IsNotKt {
+	public static final fun isNot (Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$ArgumentConstraint;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/IsNotSameKt {
+	public static final fun isNotSame (Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$ArgumentConstraint;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/any : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> ()V
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public synthetic fun <init> (Lkotlin/reflect/KClass;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/eq : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/isSame : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/not : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> (Ltech/antibytes/kmock/KMockContract$ArgumentConstraint;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class tech/antibytes/kmock/verification/constraints/or : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> ([Ljava/lang/Object;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+

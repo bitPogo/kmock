@@ -19,6 +19,9 @@ plugins {
     id("com.gradle.plugin-publish")
 
     id("tech.antibytes.gradle.coverage")
+
+    // Pin API
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
 }
 
 group = KMockGradleConfiguration.group
@@ -42,6 +45,14 @@ dependencies {
     testImplementation(Dependency.multiplatform.stately.isolate)
 
     testImplementation(LocalDependency.antibytes.test.gradle)
+}
+
+kotlin {
+    explicitApi()
+
+    sourceSets.main {
+        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+    }
 }
 
 java {
@@ -72,12 +83,6 @@ afterEvaluate {
     tasks.withType(KotlinCompile::class.java) {
         this.dependsOn(generateConfig)
         this.mustRunAfter(generateConfig)
-    }
-}
-
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
     }
 }
 

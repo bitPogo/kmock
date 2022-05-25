@@ -42,7 +42,7 @@ import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
 import tech.antibytes.kmock.processor.utils.SpyContainer
 
-class KMockProcessorProvider(
+public class KMockProcessorProvider(
     private val isUnderCompilerTest: Boolean = false
 ) : SymbolProcessorProvider {
     private fun determineFactoryGenerator(

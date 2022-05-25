@@ -29,7 +29,7 @@ private fun guardInvocation(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.union(
+public infix fun Expectation.union(
     other: Expectation
 ): Expectation {
     guardInvocation(this, other, "union")
@@ -49,7 +49,7 @@ infix fun Expectation.union(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.or(
+public infix fun Expectation.or(
     other: Expectation
 ): Expectation = this.union(other)
 
@@ -63,7 +63,7 @@ infix fun Expectation.or(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.intersection(
+public infix fun Expectation.intersection(
     other: Expectation
 ): Expectation {
     guardInvocation(this, other, "intersection")
@@ -84,7 +84,7 @@ infix fun Expectation.intersection(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.and(
+public infix fun Expectation.and(
     other: Expectation
 ): Expectation = this.intersection(other)
 
@@ -98,7 +98,7 @@ infix fun Expectation.and(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.diff(
+public infix fun Expectation.diff(
     other: Expectation
 ): Expectation {
     guardInvocation(this, other, "diff")
@@ -122,6 +122,6 @@ infix fun Expectation.diff(
  * @author Matthias Geisler
  */
 @KMockExperimental
-infix fun Expectation.xor(
+public infix fun Expectation.xor(
     other: Expectation
 ): Expectation = this.diff(other)

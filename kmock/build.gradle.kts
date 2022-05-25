@@ -24,6 +24,9 @@ plugins {
     id("kotlinx-atomicfu")
 
     id("org.jetbrains.dokka") version "1.6.10"
+
+    // Pin API
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
 }
 
 group = KMockConfiguration.group
@@ -41,6 +44,8 @@ android {
 }
 
 kotlin {
+    explicitApi()
+
     android()
 
     js(IR) {

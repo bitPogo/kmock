@@ -22,9 +22,7 @@ plugins {
 }
 
 antiBytesPublishing {
-    versioning = KMockPublishingConfiguration.versioning.copy(
-        useGitHashSnapshotSuffix = true
-    )
+    versioning = KMockPublishingConfiguration.versioning
     repositoryConfiguration = KMockPublishingConfiguration.repositories
 }
 

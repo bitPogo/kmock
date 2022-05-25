@@ -23,7 +23,7 @@ import kotlin.math.max
 /**
  * @suppress
  */
-abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> internal constructor(
+internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> internal constructor(
     override val id: String,
     override val ignorableForVerification: Boolean,
     collector: Collector = NoopCollector,

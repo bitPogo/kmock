@@ -6,4 +6,4 @@
 
 package tech.antibytes.kmock
 
-actual typealias SafeJvmName = JvmName
+public actual typealias SafeJvmName = JvmName

@@ -12,25 +12,25 @@ import kotlin.reflect.KClass
  * Indicator for overloaded methods which have no arguments
  * @author Matthias Geisler
  */
-data class Hint0(val type: Unit = Unit)
+public data class Hint0(val type: Unit = Unit)
 
 /**
  * IndicatorFactory for overloaded methods which have no arguments
  * @author Matthias Geisler
  */
-fun hint(): Hint0 = Hint0()
+public fun hint(): Hint0 = Hint0()
 
 /**
  * Indicator for overloaded methods which an argument
  * @author Matthias Geisler
  */
-data class Hint1<Type0 : Any>(val type: KClass<Type0>)
+public data class Hint1<Type0 : Any>(val type: KClass<Type0>)
 
 /**
  * IndicatorFactory for overloaded methods which have an argument
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any> hint(
+public inline fun <reified Type0 : Any> hint(
     type0: KClass<Type0> = Type0::class,
 ): Hint1<Type0> = Hint1(type0)
 
@@ -38,7 +38,7 @@ inline fun <reified Type0 : Any> hint(
  * Indicator for overloaded methods which have 2 arguments
  * @author Matthias Geisler
  */
-data class Hint2<Type0 : Any, Type1 : Any>(
+public data class Hint2<Type0 : Any, Type1 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
 )
@@ -47,7 +47,7 @@ data class Hint2<Type0 : Any, Type1 : Any>(
  * IndicatorFactory for overloaded methods which have 2 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class
 ): Hint2<Type0, Type1> = Hint2(type0, type1)
@@ -56,7 +56,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any> hint(
  * Indicator for overloaded methods which have 3 arguments
  * @author Matthias Geisler
  */
-data class Hint3<Type0 : Any, Type1 : Any, Type2 : Any>(
+public data class Hint3<Type0 : Any, Type1 : Any, Type2 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -66,7 +66,7 @@ data class Hint3<Type0 : Any, Type1 : Any, Type2 : Any>(
  * IndicatorFactory for overloaded methods which have 3 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -76,7 +76,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any> hint(
  * Indicator for overloaded methods which have 4 arguments
  * @author Matthias Geisler
  */
-data class Hint4<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any>(
+public data class Hint4<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -87,7 +87,7 @@ data class Hint4<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any>(
  * IndicatorFactory for overloaded methods which have 4 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -98,7 +98,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 5 arguments
  * @author Matthias Geisler
  */
-data class Hint5<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any>(
+public data class Hint5<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -110,7 +110,7 @@ data class Hint5<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any
  * IndicatorFactory for overloaded methods which have 5 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -122,7 +122,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 6 arguments
  * @author Matthias Geisler
  */
-data class Hint6<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any>(
+public data class Hint6<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -135,7 +135,7 @@ data class Hint6<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any
  * IndicatorFactory for overloaded methods which have 6 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -148,7 +148,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 7 arguments
  * @author Matthias Geisler
  */
-data class Hint7<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any>(
+public data class Hint7<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -162,7 +162,7 @@ data class Hint7<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any
  * IndicatorFactory for overloaded methods which have 7 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -176,7 +176,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 8 arguments
  * @author Matthias Geisler
  */
-data class Hint8<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any>(
+public data class Hint8<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -191,7 +191,7 @@ data class Hint8<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any
  * IndicatorFactory for overloaded methods which have 8 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -215,7 +215,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 9 arguments
  * @author Matthias Geisler
  */
-data class Hint9<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any>(
+public data class Hint9<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -231,7 +231,7 @@ data class Hint9<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any
  * IndicatorFactory for overloaded methods which have 9 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -257,7 +257,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 10 arguments
  * @author Matthias Geisler
  */
-data class Hint10<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any>(
+public data class Hint10<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -274,7 +274,7 @@ data class Hint10<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : An
  * IndicatorFactory for overloaded methods which have 10 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -302,7 +302,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 11 arguments
  * @author Matthias Geisler
  */
-data class Hint11<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any>(
+public data class Hint11<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -320,7 +320,7 @@ data class Hint11<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : An
  * IndicatorFactory for overloaded methods which have 11 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -350,7 +350,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 12 arguments
  * @author Matthias Geisler
  */
-data class Hint12<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any, Type11 : Any>(
+public data class Hint12<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any, Type11 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -369,7 +369,7 @@ data class Hint12<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : An
  * IndicatorFactory for overloaded methods which have 12 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any, reified Type11 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any, reified Type11 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
@@ -401,7 +401,7 @@ inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reifi
  * Indicator for overloaded methods which have 13 arguments
  * @author Matthias Geisler
  */
-data class Hint13<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any, Type11 : Any, Type12 : Any>(
+public data class Hint13<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : Any, Type5 : Any, Type6 : Any, Type7 : Any, Type8 : Any, Type9 : Any, Type10 : Any, Type11 : Any, Type12 : Any>(
     val type0: KClass<Type0>,
     val type1: KClass<Type1>,
     val type2: KClass<Type2>,
@@ -421,7 +421,7 @@ data class Hint13<Type0 : Any, Type1 : Any, Type2 : Any, Type3 : Any, Type4 : An
  * IndicatorFactory for overloaded methods which have 13 arguments
  * @author Matthias Geisler
  */
-inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any, reified Type11 : Any, reified Type12 : Any> hint(
+public inline fun <reified Type0 : Any, reified Type1 : Any, reified Type2 : Any, reified Type3 : Any, reified Type4 : Any, reified Type5 : Any, reified Type6 : Any, reified Type7 : Any, reified Type8 : Any, reified Type9 : Any, reified Type10 : Any, reified Type11 : Any, reified Type12 : Any> hint(
     type0: KClass<Type0> = Type0::class,
     type1: KClass<Type1> = Type1::class,
     type2: KClass<Type2> = Type2::class,
