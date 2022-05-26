@@ -853,39 +853,42 @@ class VerificationChainSpec {
         val proxy3 = fixture.propertyProxyFixture()
 
         val references = listOf(
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
+            Reference(proxy3, 0),
             Reference(proxy1, 0),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy2, fixture.fixture()),
-            Reference(proxy2, fixture.fixture()),
-            Reference(proxy2, fixture.fixture()),
+            Reference(proxy3, 1),
+            Reference(proxy2, 0),
+            Reference(proxy2, 1),
             Reference(proxy1, 1),
             Reference(proxy1, 2),
+            Reference(proxy3, 2),
             Reference(proxy1, 3),
             Reference(proxy1, 4),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy2, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
-            Reference(proxy3, fixture.fixture()),
+            Reference(proxy2, 2),
+            Reference(proxy3, 3),
+            Reference(proxy3, 4),
             Reference(proxy1, 5),
         )
 
-        val expectedValue1: Any = fixture.fixture()
-        val expectedValue2: Any = fixture.fixture()
+        val expectedProxy1Value1: Any = fixture.fixture()
+        val expectedProxy1Value2: Any = fixture.fixture()
+
+        val expectedProxy3Value: Any = fixture.fixture()
 
         proxy1.getArgumentsForCall = { idx ->
             when (idx) {
-                2 -> arrayOf(expectedValue1)
-                4 -> arrayOf(expectedValue2)
+                2 -> arrayOf(expectedProxy1Value1)
+                4 -> arrayOf(expectedProxy1Value2)
                 else -> arrayOf(fixture.fixture())
+            }
+        }
+
+        proxy2.getArgumentsForCall = { arrayOf() }
+
+        proxy3.getArgumentsForCall = { idx ->
+            when (idx) {
+                2 -> GetOrSet.Set(fixture.fixture<Any>())
+                3 -> GetOrSet.Set(expectedProxy3Value)
+                else -> GetOrSet.Get
             }
         }
 
@@ -893,8 +896,15 @@ class VerificationChainSpec {
 
         // When
         invoke(chain) {
-            proxy1.hasBeenStrictlyCalledWith(expectedValue1)
-            proxy1.hasBeenCalledWith(expectedValue2)
+            proxy3.wasGotten()
+            proxy2.hasBeenCalledWithVoid()
+            proxy1.hasBeenStrictlyCalledWith(expectedProxy1Value1)
+            proxy3.wasSet()
+            proxy1.hasBeenCalledWith(expectedProxy1Value2)
+            proxy2.hasBeenCalledWithout(fixture.fixture())
+            proxy3.wasSetTo(expectedProxy3Value)
+            proxy3.wasGotten()
+            proxy1.hasBeenCalled()
         }
     }
 }
