@@ -57,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --no-daemon --stacktrace multiplatformCoverage sonarqube --info
+        run: ./gradlew --no-daemon --stacktrace multiplatformCoverageVerification sonarqube --info
 
       - name: Publish to Development Repository
         run: ./gradlew publishDevelopment --no-parallel

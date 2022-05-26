@@ -11,6 +11,11 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import tech.antibytes.gradle.coverage.api.JvmJacocoConfiguration
+import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
+import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
+import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
+import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import java.net.URL
 
 plugins {
@@ -37,6 +42,41 @@ antiBytesPublishing {
     packageConfiguration = KMockConfiguration.publishing.packageConfiguration
     repositoryConfiguration = KMockConfiguration.publishing.repositories
     versioning = KMockConfiguration.publishing.versioning
+}
+
+antiBytesCoverage {
+    val branchCoverage = JacocoVerificationRule(
+        counter = JacocoCounter.BRANCH,
+        measurement = JacocoMeasurement.COVERED_RATIO,
+        minimum = BigDecimal(0.90)
+    )
+
+    val instructionCoverage = JacocoVerificationRule(
+        counter = JacocoCounter.INSTRUCTION,
+        measurement = JacocoMeasurement.COVERED_RATIO,
+        minimum = BigDecimal(0.95)
+    )
+
+    val jvmCoverage = JvmJacocoConfiguration.createJvmKmpConfiguration(
+        project,
+        classFilter = setOf("**/Hint*"),
+        verificationRules = setOf(
+            branchCoverage,
+            instructionCoverage
+        )
+    )
+
+    val androidCoverage = AndroidJacocoConfiguration.createAndroidLibraryKmpConfiguration(
+        project,
+        classFilter = setOf("**/Hint*"),
+        verificationRules = setOf(
+            branchCoverage,
+            instructionCoverage
+        )
+    )
+
+    configurations["jvm"] = jvmCoverage
+    configurations["android"] = androidCoverage
 }
 
 android {
