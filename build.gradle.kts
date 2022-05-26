@@ -31,8 +31,6 @@ antiBytesPublishing {
     versioning = KMockPublishingConfiguration.versioning
     repositoryConfiguration = KMockPublishingConfiguration.repositories
 }
-val jacocoReports = mutableListOf<String>()
-val testReports = mutableListOf<String>()
 
 allprojects {
     repositories {
@@ -43,16 +41,6 @@ allprojects {
     }
 
     ensureKotlinVersion(Version.kotlin.language)
-
-    if (name != "examples" && this != rootProject) {
-        jacocoReports.add("$buildDir/reports/jacoco/jvm/$name.xml")
-        testReports.add("$buildDir/reports/tests/jvmTest")
-
-        if (name == "kmock" && this != rootProject) {
-            jacocoReports.add("$buildDir/reports/jacoco/android/$name.xml")
-            testReports.add("$buildDir/reports/tests/androidTest")
-        }
-    }
 }
 
 evaluationDependsOnChildren()
@@ -126,8 +114,11 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
 
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.jacoco.reportPaths", jacocoReports.joinToString(","))
-        property("sonar.junit.reportPaths", testReports.joinToString(","))
+        property("sonar.coverage.jacoco.xmlReportPaths", "**/reports/jacoco/**/*.xml")
+        property(
+            "sonar.junit.reportPaths",
+            "**/test-results/jvmTest,**/test-results/testDebugUnitTest,"
+        )
         property("sonar.kotlin.detekt.reportPaths", "$buildDir/reports/detekt/detekt.xml")
     }
 }
