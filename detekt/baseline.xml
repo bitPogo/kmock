@@ -6,7 +6,6 @@
     <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer? ): TypeSpec</ID>
     <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String> ): Options</ID>
     <ID>ComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
-    <ID>ForbiddenComment:AllowedRecursive.kt$AllowedRecursive$// FIXME: Name is wrong on generated output -> _ossWithSequencesSequences instead of _ossWithSequencesCharSequences</ID>
     <ID>LongMethod:KMockFactoryGenerator.kt$KMockFactoryGenerator$private fun writeFactoryImplementation( templateSources: List&lt;TemplateSource>, templateMultiSources: List&lt;TemplateMultiSource>, relaxer: Relaxer?, dependencies: List&lt;KSFile>, )</ID>
     <ID>LongMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer? ): TypeSpec</ID>
     <ID>LongMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String> ): Options</ID>
@@ -112,8 +111,6 @@
     <ID>MaxLineLength:Hint.kt$Hint9$public data</ID>
     <ID>MaxLineLength:Hint.kt$public inline</ID>
     <ID>MaxLineLength:KMockBuildInMethodGenerator.kt$KMockBuildInMethodGenerator$"$PROXY_FACTORY.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)"</ID>
-    <ID>MaxLineLength:KMockFactoryEntryPointGenerator.kt$KMockFactoryEntryPointGenerator$if</ID>
-    <ID>MaxLineLength:KMockFactoryGenerator.kt$KMockFactoryGenerator$if</ID>
     <ID>MaxLineLength:KMockFactoryMultiInterfaceGenerator.kt$KMockFactoryMultiInterfaceGenerator.Companion$private const val MULTI_INTERFACE_ARGUMENTS = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:KMockFactoryWithoutGenerics.kt$KMockFactoryWithoutGenerics.Companion$private const val ARGUMENTS_WITHOUT_RELAXER_AND_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"</ID>
     <ID>MaxLineLength:KMockFactoryWithoutGenerics.kt$KMockFactoryWithoutGenerics.Companion$private const val ARGUMENTS_WITHOUT_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"</ID>

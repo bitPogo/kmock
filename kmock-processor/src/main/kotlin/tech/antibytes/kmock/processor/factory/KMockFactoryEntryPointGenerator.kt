@@ -120,7 +120,7 @@ internal class KMockFactoryEntryPointGenerator(
         }
     }
 
-    private fun FileSpec.Builder.generateGenericEntryPoints(generics: List<TemplateSource>,) {
+    private fun FileSpec.Builder.generateGenericEntryPoints(generics: List<TemplateSource>) {
         val genericFactories = buildGenericFactories(generics)
 
         genericFactories.forEach { factories ->
@@ -234,7 +234,7 @@ internal class KMockFactoryEntryPointGenerator(
         totalMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
     ) {
-        if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) {
             val file = FileSpec.builder(
                 rootPackage,
                 FACTORY_FILE_NAME
@@ -321,7 +321,7 @@ internal class KMockFactoryEntryPointGenerator(
         templateMultiSources: List<TemplateMultiSource>,
         dependencies: List<KSFile>,
     ) {
-        if (isKmp && (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty())) { // TODO: Solve multi Rounds in a better way
+        if (isKmp && (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty())) {
             val bucketsSingle: MutableMap<String, List<TemplateSource>> = mutableMapOf()
             val bucketsMulti: MutableMap<String, List<TemplateMultiSource>> = mutableMapOf()
 
