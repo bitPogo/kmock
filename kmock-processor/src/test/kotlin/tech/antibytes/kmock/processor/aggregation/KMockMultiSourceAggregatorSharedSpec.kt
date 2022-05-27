@@ -790,7 +790,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -814,7 +814,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -892,7 +892,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -916,7 +916,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -997,7 +997,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1021,7 +1021,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
 
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -1111,7 +1111,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1135,7 +1135,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
 
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -1274,7 +1274,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1306,7 +1306,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 4) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 4) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation0)
         }
@@ -1446,7 +1446,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1478,7 +1478,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 12) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 12) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 3) {
             annotationFilter.isApplicableMultiSourceAnnotation(annotation0)
         }
@@ -1591,7 +1591,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1616,9 +1616,9 @@ class KMockMultiSourceAggregatorSharedSpec {
         )
 
         verify(exactly = 1) { sourceSetValidator.isValidateSourceSet(annotation) }
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration1, any()) }
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration2, any()) }
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration3, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration1) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration2) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration3) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockShared::class.qualifiedName!!, false)
         }
@@ -1711,7 +1711,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -1736,9 +1736,9 @@ class KMockMultiSourceAggregatorSharedSpec {
         )
 
         verify(exactly = 2) { annotationFilter.isApplicableMultiSourceAnnotation(annotation) }
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration1, any()) }
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration2, any()) }
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration3, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration1) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration2) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration3) }
 
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockShared::class.qualifiedName!!, false)

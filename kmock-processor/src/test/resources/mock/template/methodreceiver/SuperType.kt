@@ -16,6 +16,8 @@ interface AnythingElse {
     interface SomethingInside
 }
 
+typealias Arg = (Any) -> Unit
+
 @Mock(Inherited::class)
 interface Inherited<P>: Platform<P>
 
@@ -24,8 +26,8 @@ interface Platform<L> {
     fun Something.doSomething(): Int
     fun SomethingElse<Any>.doSomethingElse(): List<Any>
     fun Platform<*>.mutabor(): Int
-    fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
-    fun <T> T.doNothing(): Unit where T : Any
+    suspend fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
+    suspend fun <T> T.doNothing(): Unit where T : Any
     fun <T> T.doSomethingElse(): L
     fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T : Comparable<T>
     fun AnythingElse.SomethingInside.doInside(): Int

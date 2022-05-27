@@ -376,7 +376,7 @@ class KMockMultiSourceAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -400,7 +400,7 @@ class KMockMultiSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMock::class.qualifiedName!!, false)
         }
@@ -468,7 +468,7 @@ class KMockMultiSourceAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -492,7 +492,7 @@ class KMockMultiSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMock::class.qualifiedName!!, false)
         }
@@ -580,7 +580,7 @@ class KMockMultiSourceAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockMultiSourceAggregator(
@@ -604,9 +604,9 @@ class KMockMultiSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration1, any()) }
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration2, any()) }
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration3, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration1) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration2) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration3) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMock::class.qualifiedName!!, false)
         }

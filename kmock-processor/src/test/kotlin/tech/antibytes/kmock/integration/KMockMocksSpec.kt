@@ -923,6 +923,54 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform which contains TypeAliases and is relaxed is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Relaxed.kt",
+            loadResource("/template/typealiaz/Relaxed.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Relaxed.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("RelaxedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform which contains TypeAliases and Receiver is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "Receiver.kt",
+            loadResource("/template/typealiaz/Receiver.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Receiver.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("ReceiverMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual!!.readText().normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Shared which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
@@ -977,7 +1025,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform which contains Receivers for properties is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform which contains Receiver for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
@@ -1001,7 +1049,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while relaxed which contains Receivers for properties is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while relaxed which contains Receiver for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Relaxed.kt",
@@ -1025,7 +1073,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while inherited which contains Receivers for properties is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while inherited which contains Receiver for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Inherited.kt",
@@ -1049,7 +1097,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while spied which contains Receivers for properties is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while spied which contains Receiver for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Spied.kt",
@@ -1076,7 +1124,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Common which contains Receivers for properties is processed, it writes a mock`() {
+    fun `Given a annotated Source for Common which contains Receiver for properties is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
@@ -1103,7 +1151,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform which contains Receivers for methods is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform which contains Receiver for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
@@ -1127,7 +1175,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while relaxed which contains Receivers for methods is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while relaxed which contains Receiver for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Relaxed.kt",
@@ -1151,7 +1199,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while inherited which contains Receivers for methods is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while inherited which contains Receiver for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Inherited.kt",
@@ -1175,7 +1223,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for a Platform while spied which contains Receivers for methods is processed, it writes a mock`() {
+    fun `Given a annotated Source for a Platform while spied which contains Receiver for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Spied.kt",
@@ -1202,7 +1250,7 @@ class KMockMocksSpec {
     }
 
     @Test
-    fun `Given a annotated Source for Common which contains Receivers for methods is processed, it writes a mock`() {
+    fun `Given a annotated Source for Common which contains Receiver for methods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",

@@ -24,7 +24,7 @@ interface Common<L> {
     fun Common<*>.mutabor(): Int
     fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T>
     fun <T> T.doNothing(): Unit where T : Any
-    fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T : Comparable<T>
+    fun <T, R : Any, X : Comparable<X>> T.doNothingElse(a: R, b: X): Unit where T : Something, T : Comparable<T>
     fun AnythingElse.SomethingInside.doInside(): Int
 
     fun iDo()

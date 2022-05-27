@@ -777,7 +777,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -801,7 +801,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -876,7 +876,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -900,7 +900,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -978,7 +978,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -1002,7 +1002,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
 
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -1089,7 +1089,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -1113,7 +1113,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
 
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
@@ -1248,7 +1248,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -1280,7 +1280,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 4) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 4) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation0)
         }
@@ -1416,7 +1416,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -1448,7 +1448,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 12) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 12) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 3) {
             annotationFilter.isApplicableSingleSourceAnnotation(annotation0)
         }
@@ -1934,7 +1934,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -1958,7 +1958,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
         }
@@ -2034,7 +2034,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -2058,7 +2058,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 2) {
             annotationFilter.isApplicableSingleSourceAnnotation(annotation)
         }

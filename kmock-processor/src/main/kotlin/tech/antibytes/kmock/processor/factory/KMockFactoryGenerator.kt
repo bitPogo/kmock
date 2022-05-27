@@ -125,7 +125,7 @@ internal class KMockFactoryGenerator(
         relaxer: Relaxer?,
         dependencies: List<KSFile>,
     ) {
-        if (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty()) { // TODO: Solve multi Rounds in a better way
+        if (templateSources.isNotEmpty() || templateMultiSources.isNotEmpty()) {
             writeFactoryImplementation(
                 templateSources = templateSources,
                 templateMultiSources = templateMultiSources,

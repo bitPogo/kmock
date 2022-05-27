@@ -368,7 +368,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -392,7 +392,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }
@@ -457,7 +457,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
 
         every { logger.error(any()) } just Runs
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -481,7 +481,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 2) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }
@@ -718,7 +718,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { genericResolver.extractGenerics(any(), any()) } returns generics
+        every { genericResolver.extractGenerics(any()) } returns generics
 
         // When
         val (_, interfaces, _) = KMockSingleSourceAggregator(
@@ -742,7 +742,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             )
         )
 
-        verify(exactly = 1) { genericResolver.extractGenerics(declaration, any()) }
+        verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }

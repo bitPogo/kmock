@@ -9,10 +9,11 @@ package tech.antibytes.kmock.processor
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
-import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -27,6 +28,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.utils.mapArgumentType
+import tech.antibytes.kmock.processor.utils.rawType
 
 internal object KMockGenerics : GenericResolver {
     private val nullableAnys = listOf(nullableAny)
@@ -35,19 +37,22 @@ internal object KMockGenerics : GenericResolver {
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
 
-    override fun extractGenerics(
-        template: KSDeclaration,
-        resolver: TypeParameterResolver
-    ): Map<String, List<KSTypeReference>>? {
+    private fun extractGenerics(
+        typeParameter: List<KSTypeParameter>,
+    ): Map<String, List<KSTypeReference>> {
+        val generic: MutableMap<String, List<KSTypeReference>> = mutableMapOf()
+        typeParameter.forEach { type ->
+            generic[type.name.getShortName()] = resolveBound(type)
+        }
+
+        return generic
+    }
+
+    override fun extractGenerics(template: KSDeclaration): Map<String, List<KSTypeReference>>? {
         return if (template.typeParameters.isEmpty()) {
             null
         } else {
-            val generic: MutableMap<String, List<KSTypeReference>> = mutableMapOf()
-            template.typeParameters.forEach { type ->
-                generic[type.toTypeVariableName(resolver).toString()] = resolveBound(type)
-            }
-
-            generic
+            extractGenerics(template.typeParameters)
         }
     }
 
@@ -57,7 +62,7 @@ internal object KMockGenerics : GenericResolver {
     ): List<TypeVariableName> = generics.map { (type, bounds) ->
         TypeVariableName(
             type,
-            bounds = bounds.map { ksReference -> ksReference.resolve().toTypeName(typeResolver) }
+            bounds = bounds.map { ksReference -> ksReference.toTypeName(typeResolver) }
         )
     }
 
@@ -191,7 +196,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun determineRecursiveType(
-        typeName: ClassName,
+        typeName: TypeName,
         nested: GenericDeclaration,
         nullable: Boolean
     ): List<TypeName> {
@@ -209,7 +214,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun filterRecursiveTypes(
-        typeName: ClassName,
+        typeName: TypeName,
         nested: GenericDeclaration,
         nullable: Boolean
     ): GenericDeclaration {
@@ -227,15 +232,35 @@ internal object KMockGenerics : GenericResolver {
         )
     }
 
+    private fun TypeName.stripAlias(): TypeName {
+        return if (this is ParameterizedTypeName) {
+            this.rawType()
+        } else {
+            this
+        }
+    }
+
+    private fun KSType.createTypeName(
+        typeResolver: TypeParameterResolver
+    ): TypeName {
+        val declaration = this.declaration
+        return if (declaration is KSTypeAlias) {
+            declaration.type.toTypeName(typeResolver).stripAlias()
+        } else {
+            this.toClassName()
+        }
+    }
+
     private fun mergeNestedGeneric(
         type: KSType,
-        nested: GenericDeclaration?
+        nested: GenericDeclaration?,
+        typeResolver: TypeParameterResolver
     ): GenericDeclaration? {
         return if (nested == null) {
             null
         } else {
             val isNullable = isNullable(type)
-            val typeName = type.toClassName()
+            val typeName = type.createTypeName(typeResolver)
 
             filterRecursiveTypes(
                 typeName = typeName,
@@ -274,7 +299,8 @@ internal object KMockGenerics : GenericResolver {
 
             mergeNestedGeneric(
                 type = type,
-                nested = nestedGeneric
+                nested = nestedGeneric,
+                typeResolver = typeResolver,
             )
         }
     }

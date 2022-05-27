@@ -34,7 +34,6 @@ import tech.antibytes.gradle.dependency.Version
  *     id("tech.antibytes.gradle.test.script.quality-spotless")
  * }
  */
-// TODO Integrate with dependency Plugin
 plugins {
     id("com.diffplug.spotless")
 }
