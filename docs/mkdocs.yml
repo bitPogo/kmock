@@ -1,0 +1,115 @@
+# taken from https://github.com/bitfunk/gradle-plugins/blob/main/docs/mkdocs.yml
+site_name: KMock
+site_description: A humble mocking library for Kotlin, KotlinJS and Kotlin Multiplatform using Kotlin Symbol Processing (KSP).
+site_author: Matthias Geisler
+site_url: https://bitpogo.github.io/kmock/
+
+repo_name: bitPogo/kmock
+repo_url: https://github.com/bitPogo/kmock
+edit_uri: tree/main/docs/docs/src/
+
+copyright: Copyright &copy; 2022 Matthias Geisler
+
+docs_dir: src
+
+extra_css:
+  - assets/extra.css
+
+theme:
+  name: 'material'
+  font: false
+  language: en
+  # logo: assets/images/logo.svg
+  # favicon: assets/images/logo.svg
+  custom_dir: theme
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: light dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+  social:
+    - type: 'github'
+      link: 'https://github.com/bitPogo/kmock'
+  features:
+    #- navigation.tabs
+    #- navigation.tabs.sticky
+    #- navigation.instant
+    - navigation.tracking
+    - navigation.top
+
+plugins:
+  - search
+  - redirects
+  - kroki
+  - include-markdown
+  - markdownextradata
+  - minify:
+      minify_html: true
+      htmlmin_opts:
+        remove_comments: true
+
+extra:
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+
+  version:
+    provider: mike
+
+  repo: https://github.com/bitPogo/kmock
+
+  latest: v0.1.1
+
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bitPogo/kmock
+
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+  - Changelog: changelog.md
+  - Development:
+      - Code of Conduct: development/code-of-conduct.md
+      - Contributing: development/contributing.md
+      - Releasing: development/releasing.md
+      - Badges: development/badges.md
+  - License: license.md

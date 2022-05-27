@@ -18,6 +18,7 @@ include(
     ":kmock-processor",
     ":kmock-gradle",
     ":examples",
+    ":docs",
 )
 
 buildCache {

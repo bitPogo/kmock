@@ -32,19 +32,6 @@ antiBytesPublishing {
     repositoryConfiguration = KMockPublishingConfiguration.repositories
 }
 
-allprojects {
-    repositories {
-        addCustomRepositories()
-        mavenCentral()
-        google()
-        jcenter()
-    }
-
-    ensureKotlinVersion(Version.kotlin.language)
-}
-
-evaluationDependsOnChildren()
-
 tasks.named<Wrapper>("wrapper") {
     gradleVersion = "7.4.2"
     distributionType = Wrapper.DistributionType.ALL
@@ -120,5 +107,22 @@ sonarqube {
             "**/test-results/jvmTest,**/test-results/testDebugUnitTest,"
         )
         property("sonar.kotlin.detekt.reportPaths", "$buildDir/reports/detekt/detekt.xml")
+    }
+}
+
+allprojects {
+    repositories {
+        addCustomRepositories()
+        mavenCentral()
+        google()
+        jcenter()
+    }
+
+    ensureKotlinVersion(Version.kotlin.language)
+
+    if (name == "example" || name == "docs") {
+        sonarqube {
+            isSkipProject = true
+        }
     }
 }

@@ -11,7 +11,7 @@ import tech.antibytes.gradle.publishing.api.GitRepositoryConfiguration
 import tech.antibytes.gradle.publishing.api.LicenseConfiguration
 import tech.antibytes.gradle.publishing.api.MavenRepositoryConfiguration
 import tech.antibytes.gradle.publishing.api.SourceControlConfiguration
-import tech.antibytes.gradle.publishing.api.VersioningConfiguration
+import tech.antibytes.gradle.verisoning.api.VersioningConfiguration
 
 open class KMockPublishingConfiguration {
     private val username = System.getenv("PACKAGE_REGISTRY_UPLOAD_USERNAME")?.toString() ?: ""
