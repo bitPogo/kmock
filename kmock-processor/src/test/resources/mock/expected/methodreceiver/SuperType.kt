@@ -58,14 +58,14 @@ internal class InheritedMock<P>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_mutabor",
             collector = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTSomethingComparable",
+    public val _doNothingReceiverWithTSomethingComparable: KMockContract.AsyncFunProxy<Unit, suspend
+        (kotlin.Any) -> kotlin.Unit> =
+        ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
+    public val _doNothingReceiverWithTAny: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Any) ->
     kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTAny",
+        ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTAny",
             collector = collector, freeze = freeze)
 
     public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) ->
@@ -107,12 +107,12 @@ internal class InheritedMock<P>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public override fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
+    public override suspend fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
         _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T : Any> T.doNothing(): Unit =
+    public override suspend fun <T : Any> T.doNothing(): Unit =
         _doNothingReceiverWithTAny.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }

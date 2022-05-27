@@ -182,10 +182,7 @@ internal interface ProcessorContract {
     )
 
     interface GenericResolver {
-        fun extractGenerics(
-            template: KSDeclaration,
-            resolver: TypeParameterResolver
-        ): Map<String, List<KSTypeReference>>?
+        fun extractGenerics(template: KSDeclaration): Map<String, List<KSTypeReference>>?
 
         fun mapClassScopeGenerics(
             generics: Map<String, List<KSTypeReference>>?,

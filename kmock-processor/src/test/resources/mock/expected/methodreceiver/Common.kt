@@ -64,8 +64,8 @@ internal class CommonMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.CommonMock#_doNothingReceiverWithTAny",
             collector = collector, freeze = freeze)
 
-    public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) ->
-    kotlin.Unit> =
+    public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any,
+        kotlin.Comparable<kotlin.Any?>) -> kotlin.Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.CommonMock#_doNothingElseReceiver",
             collector = collector, freeze = freeze)
 
@@ -110,8 +110,8 @@ internal class CommonMock<L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T, R : Any> T.doNothingElse(a: R): Unit where T : Something, T :
-    Comparable<T> = _doNothingElseReceiver.invoke(this@doNothingElse,a) {
+    public override fun <T, R : Any, X : Comparable<X>> T.doNothingElse(a: R, b: X): Unit where T :
+                                                                                                Something, T : Comparable<T> = _doNothingElseReceiver.invoke(this@doNothingElse,a, b) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 

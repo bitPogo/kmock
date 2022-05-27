@@ -15,7 +15,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 
 internal abstract class BaseSourceAggregator(
@@ -39,11 +38,7 @@ internal abstract class BaseSourceAggregator(
     }
 
     protected fun resolveGenerics(template: KSDeclaration): Map<String, List<KSTypeReference>>? {
-        val typeResolver = template.typeParameters.toTypeParameterResolver()
-        return generics.extractGenerics(
-            template,
-            typeResolver,
-        )
+        return generics.extractGenerics(template)
     }
 
     protected fun fetchCustomShared(

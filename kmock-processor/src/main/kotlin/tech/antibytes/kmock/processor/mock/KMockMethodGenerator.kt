@@ -119,9 +119,8 @@ internal class KMockMethodGenerator(
     ): Triple<PropertySpec, FunSpec, TypeVariableName> {
         val methodName = ksFunction.simpleName.asString()
 
-        val typeParameterResolver = ksFunction.typeParameters
-            .toTypeParameterResolver(typeResolver)
-        val generics = genericResolver.extractGenerics(ksFunction, typeParameterResolver)
+        val typeParameterResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
+        val generics = genericResolver.extractGenerics(ksFunction)
         val proxyGenerics = utils.resolveProxyGenerics(
             generics = generics,
             typeResolver = typeParameterResolver,

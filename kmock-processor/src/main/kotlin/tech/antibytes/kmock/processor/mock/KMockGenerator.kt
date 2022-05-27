@@ -86,7 +86,7 @@ internal class KMockGenerator(
         val constructor = FunSpec.constructorBuilder()
 
         val collector = ParameterSpec.builder(COLLECTOR_ARGUMENT, COLLECTOR_NAME)
-        collector.defaultValue(noopCollector.toString())
+        collector.defaultValue(noopCollector)
         constructor.addParameter(collector.build())
 
         val spy = ParameterSpec.builder(

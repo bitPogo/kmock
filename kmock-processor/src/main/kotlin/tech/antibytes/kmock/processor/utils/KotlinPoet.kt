@@ -26,7 +26,6 @@ import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
@@ -34,7 +33,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
-private fun TypeName.rawType(): ClassName {
+internal fun TypeName.rawType(): ClassName {
     return findRawType() ?: throw IllegalArgumentException("Cannot get raw type from $this")
 }
 
@@ -91,7 +90,7 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
     )
 }
 
-private fun extractAliasTypeResolver(
+internal fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
     typeParameterResolver: TypeParameterResolver
 ): TypeParameterResolver {
@@ -102,16 +101,31 @@ private fun extractAliasTypeResolver(
     }
 }
 
-private fun KSTypeAlias.abbreviateType(
+private fun List<KSTypeArgument>.mapArgumentType(
+    mapping: Map<String, String>,
+    typeParameterResolver: TypeParameterResolver,
+): List<TypeName> {
+    return this.map { argument ->
+        argument.mapArgumentType(
+            typeParameterResolver = typeParameterResolver,
+            mapping = mapping,
+        )
+    }
+}
+
+private fun KSType.abbreviateType(
+    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     isNullable: Boolean,
-    typeArguments: List<TypeName>
+    typeArguments: List<KSTypeArgument>,
+    mapping: Map<String, String>,
 ): TypeName {
-    return this.type.resolve()
-        .toTypeName(typeParameterResolver)
+    return this.mapArgumentType(extraResolver, mapping, emptyList())
         .copy(nullable = isNullable)
         .rawType()
-        .withTypeArguments(typeArguments)
+        .withTypeArguments(
+            typeArguments.mapArgumentType(mapping, typeParameterResolver)
+        )
 }
 
 private fun KSTypeAlias.parameterizedBy(
@@ -150,6 +164,52 @@ private fun KSTypeArgument.mapArgumentType(
     }
 }
 
+private fun KSTypeAlias.mapAbbreviatedType(
+    typeAliasTypeArguments: List<KSTypeArgument>,
+    abbreviatedType: KSType,
+): List<KSTypeArgument> {
+    return abbreviatedType.arguments
+        .map { typeArgument ->
+            // Check if type argument is a reference to a typealias type parameter, and not an actual type.
+            val typeAliasTypeParameterIndex = this.typeParameters.indexOfFirst { typeAliasTypeParameter ->
+                typeAliasTypeParameter.name.asString() == typeArgument.type.toString()
+            }
+            if (typeAliasTypeParameterIndex >= 0) {
+                typeAliasTypeArguments[typeAliasTypeParameterIndex]
+            } else {
+                typeArgument
+            }
+        }
+}
+
+private fun resolveAlias(
+    declaration: KSTypeAlias,
+    arguments: List<KSTypeArgument>,
+    typeParameterResolver: TypeParameterResolver,
+): Triple<KSType, List<KSTypeArgument>, TypeParameterResolver> {
+    var typeAlias: KSTypeAlias = declaration
+    var resolvedArguments = arguments
+    var resolvedType: KSType
+    var mappedArgs: List<KSTypeArgument>
+    var extraResolver: TypeParameterResolver
+
+    do {
+        resolvedType = typeAlias.type.resolve()
+        mappedArgs = typeAlias.mapAbbreviatedType(
+            typeAliasTypeArguments = resolvedArguments,
+            abbreviatedType = resolvedType,
+        )
+        extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver)
+
+        if (resolvedType.declaration is KSTypeAlias) {
+            typeAlias = resolvedType.declaration as KSTypeAlias
+            resolvedArguments = mappedArgs
+        }
+    } while (resolvedType.declaration is KSTypeAlias)
+
+    return Triple(resolvedType, mappedArgs, extraResolver)
+}
+
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L60
 internal fun KSType.mapArgumentType(
     typeParameterResolver: TypeParameterResolver,
@@ -181,27 +241,24 @@ internal fun KSType.mapArgumentType(
             )
         }
         is KSTypeAlias -> {
-            val extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver)
-
-            val mappedArgs = arguments.map { argument ->
-                argument.mapArgumentType(
-                    typeParameterResolver = typeParameterResolver,
-                    mapping = mapping,
-                )
-            }
-
-            val abbreviatedType = declaration.abbreviateType(
-                typeParameterResolver = extraResolver,
-                isNullable = isMarkedNullable,
-                typeArguments = mappedArgs
+            val (resolvedType, mappedArgs, extraResolver) = resolveAlias(
+                declaration = declaration,
+                arguments = arguments,
+                typeParameterResolver = typeParameterResolver,
             )
 
-            val aliasArgs = typeArguments.map { argument ->
-                argument.mapArgumentType(
-                    typeParameterResolver = typeParameterResolver,
-                    mapping = mapping,
-                )
-            }
+            val abbreviatedType = resolvedType.abbreviateType(
+                extraResolver = extraResolver,
+                typeParameterResolver = typeParameterResolver,
+                isNullable = isMarkedNullable,
+                typeArguments = mappedArgs,
+                mapping = mapping,
+            )
+
+            val aliasArgs = typeArguments.mapArgumentType(
+                mapping = mapping,
+                typeParameterResolver = typeParameterResolver
+            )
 
             declaration.parameterizedBy(abbreviatedType, aliasArgs)
         }
@@ -213,28 +270,102 @@ internal fun KSType.mapArgumentType(
 
 /* Workaround to overcome KSP misalignment on inherited types with function TypeParameter */
 // see: https://github.com/google/ksp/issues/958
-// TODO - Remove the following methods when KSP fixes this
+internal fun KSTypeReference.toSecuredTypeName(
+    inheritedVarargArg: Boolean,
+    generics: Map<String, GenericDeclaration>,
+    rootTypeArguments: List<KSTypeArgument>,
+    typeParameterResolver: TypeParameterResolver,
+): Pair<TypeName, TypeName> {
+    return resolve().toSecuredTypeName(
+        typeParameterResolver = typeParameterResolver,
+        inheritedVarargArg = inheritedVarargArg,
+        generics = generics,
+        rootTypeArguments = rootTypeArguments,
+        typeArguments = element?.typeArguments.orEmpty(),
+    )
+}
+
+private fun List<KSTypeArgument>.toSecuredTypeName(
+    inheritedVarargArg: Boolean,
+    generics: Map<String, GenericDeclaration>,
+    rootTypeArguments: List<KSTypeArgument>,
+    typeParameterResolver: TypeParameterResolver,
+): Pair<List<TypeName>, List<TypeName>> {
+    val methodTypes: MutableList<TypeName> = mutableListOf()
+    val proxyTypes: MutableList<TypeName> = mutableListOf()
+
+    this.forEach { argument ->
+        val (methodType, proxyType) = argument.toSecuredTypeName(
+            typeParameterResolver = typeParameterResolver,
+            inheritedVarargArg = inheritedVarargArg,
+            generics = generics,
+            rootTypeArguments = rootTypeArguments,
+        )
+
+        methodTypes.add(methodType)
+        proxyTypes.add(proxyType)
+    }
+
+    return methodTypes to proxyTypes
+}
+
+private fun KSType.abbreviateType(
+    inheritedVarargArg: Boolean,
+    generics: Map<String, GenericDeclaration>,
+    extraResolver: TypeParameterResolver,
+    typeParameterResolver: TypeParameterResolver,
+    isNullable: Boolean,
+    typeArguments: List<KSTypeArgument>,
+    rootTypeArguments: List<KSTypeArgument>,
+): Pair<TypeName, TypeName> {
+    val (methodType, proxyType) = this.toSecuredTypeName(
+        typeParameterResolver = extraResolver,
+        inheritedVarargArg = inheritedVarargArg,
+        generics = generics,
+        rootTypeArguments = rootTypeArguments,
+        typeArguments = emptyList(),
+    )
+
+    val (methodArgument, proxyArguments) = typeArguments.toSecuredTypeName(
+        typeParameterResolver = typeParameterResolver,
+        inheritedVarargArg = inheritedVarargArg,
+        generics = generics,
+        rootTypeArguments = rootTypeArguments,
+    )
+
+    val parameterizedMethodType = methodType.copy(nullable = isNullable)
+        .rawType()
+        .withTypeArguments(methodArgument)
+
+    val parameterizedProxyType = proxyType.copy(nullable = isNullable)
+        .rawType()
+        .withTypeArguments(proxyArguments)
+
+    return parameterizedMethodType to parameterizedProxyType
+}
+
 internal fun KSTypeArgument.toSecuredTypeName(
     inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
-    val typeName = type?.toSecuredTypeName(
+    val (methodTypeName, proxyTypeName) = type?.toSecuredTypeName(
         inheritedVarargArg = inheritedVarargArg,
         generics = generics,
-        typeParameterResolver = typeParameterResolver,
         rootTypeArguments = rootTypeArguments,
+        typeParameterResolver = typeParameterResolver,
     ) ?: return STAR to STAR
+
     return when (variance) {
         Variance.COVARIANT -> {
-            WildcardTypeName.producerOf(typeName.first) to WildcardTypeName.producerOf(typeName.second)
+            WildcardTypeName.producerOf(methodTypeName) to WildcardTypeName.producerOf(proxyTypeName)
         }
         Variance.CONTRAVARIANT -> {
-            WildcardTypeName.consumerOf(typeName.first) to WildcardTypeName.producerOf(typeName.second)
+            WildcardTypeName.consumerOf(methodTypeName) to WildcardTypeName.producerOf(proxyTypeName)
         }
         Variance.STAR -> STAR to STAR
-        Variance.INVARIANT -> typeName
+        Variance.INVARIANT -> methodTypeName to proxyTypeName
     }
 }
 
@@ -326,73 +457,41 @@ private fun KSType.toSecuredTypeName(
             }
         }
         is KSTypeAlias -> {
-            val extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver)
-            val mappedMethodArguments: MutableList<TypeName> = mutableListOf()
-            val mappedProxyArguments: MutableList<TypeName> = mutableListOf()
-            val aliasMethodTypes: MutableList<TypeName> = mutableListOf()
-            val aliasProxyTypes: MutableList<TypeName> = mutableListOf()
-
-            arguments.forEach { argument ->
-                val (methodArgument, proxyArgument) = argument.toSecuredTypeName(
-                    inheritedVarargArg = inheritedVarargArg,
-                    generics = generics,
-                    typeParameterResolver = typeParameterResolver,
-                    rootTypeArguments = rootTypeArguments,
-                )
-
-                mappedMethodArguments.add(methodArgument)
-                mappedProxyArguments.add(proxyArgument)
-            }
-
-            val abbreviatedMethodType = declaration.abbreviateType(
-                typeParameterResolver = extraResolver,
-                isNullable = isMarkedNullable,
-                typeArguments = mappedMethodArguments
+            val (resolvedType, mappedArgs, extraResolver) = resolveAlias(
+                declaration = declaration,
+                arguments = arguments,
+                typeParameterResolver = typeParameterResolver,
             )
 
-            val abbreviatedProxyType = declaration.abbreviateType(
-                typeParameterResolver = extraResolver,
+            val (abbreviatedMethodType, abbreviatedProxyType) = resolvedType.abbreviateType(
+                inheritedVarargArg = inheritedVarargArg,
+                generics = generics,
+                extraResolver = extraResolver,
+                typeParameterResolver = typeParameterResolver,
                 isNullable = isMarkedNullable,
-                typeArguments = mappedProxyArguments
+                typeArguments = mappedArgs,
+                rootTypeArguments = rootTypeArguments,
             )
 
-            typeArguments.forEach { argument ->
-                val (methodArgument, proxyArgument) = argument.toSecuredTypeName(
-                    inheritedVarargArg = inheritedVarargArg,
-                    generics = generics,
-                    typeParameterResolver = typeParameterResolver,
-                    rootTypeArguments = rootTypeArguments,
-                )
+            val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toSecuredTypeName(
+                inheritedVarargArg = inheritedVarargArg,
+                generics = generics,
+                typeParameterResolver = typeParameterResolver,
+                rootTypeArguments = rootTypeArguments,
+            )
+            val methodAlias = declaration.parameterizedBy(abbreviatedMethodType, aliasMethodArgs)
 
-                aliasMethodTypes.add(methodArgument)
-                aliasProxyTypes.add(proxyArgument)
-            }
+            val proxyAlias = declaration
+                .parameterizedBy(abbreviatedProxyType, aliasProxyArgs)
+                .transferProperties(methodAlias)
 
-            declaration.parameterizedBy(abbreviatedMethodType, aliasMethodTypes) to
-                declaration.parameterizedBy(abbreviatedProxyType, aliasProxyTypes)
+            methodAlias to proxyAlias
         }
         else -> error("Unsupported type: $declaration")
     }
 
     return methodType.copy(nullable = (isMarkedNullable || overrideNullability)) to
         proxyType.copy(nullable = (proxyType.isNullable || isMarkedNullable || overrideNullability))
-}
-
-private fun KSTypeReference.toSecuredTypeName(
-    inheritedVarargArg: Boolean,
-    generics: Map<String, GenericDeclaration>,
-    typeParameterResolver: TypeParameterResolver,
-    rootTypeArguments: List<KSTypeArgument>,
-): Pair<TypeName, TypeName> {
-    val typeElements = element?.typeArguments.orEmpty()
-
-    return resolve().toSecuredTypeName(
-        inheritedVarargArg = inheritedVarargArg,
-        generics = generics,
-        typeParameterResolver = typeParameterResolver,
-        typeArguments = typeElements,
-        rootTypeArguments = rootTypeArguments,
-    )
 }
 
 internal fun KSTypeReference.toSecuredTypeName(

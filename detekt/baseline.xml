@@ -61,6 +61,7 @@
     <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( proxyInfo: ProxyInfo, generics: Map&lt;String, List&lt;KSTypeReference>>?, isSuspending: Boolean, enableSpy: Boolean, receiverInfo: MemberArgumentTypeInfo, arguments: Array&lt;MemberArgumentTypeInfo>, typeParameter: List&lt;TypeName>, returnType: MemberReturnTypeInfo, typeResolver: TypeParameterResolver, relaxer: Relaxer? )</ID>
     <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( qualifier: String, propertyName: String, isMutable: Boolean, receiverInfo: MemberArgumentTypeInfo, generics: Map&lt;String, List&lt;KSTypeReference>>, proxyGenerics: Map&lt;String, GenericDeclaration>?, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, receiverTypeResolver: TypeParameterResolver, )</ID>
     <ID>LongParameterList:KmpSourceSetsConfigurator.kt$KmpSourceSetsConfigurator$( sourceSetName: String, platformName: String, dependencies: Set&lt;KotlinSourceSet>, kspCollector: MutableMap&lt;String, String>, dependencyCollector: MutableMap&lt;String, Set&lt;String>>, metaDependencies: MutableMap&lt;String, Set&lt;String>>, dependencyHandler: DependencyHandler )</ID>
+    <ID>LongParameterList:KotlinPoet.kt$( inheritedVarargArg: Boolean, generics: Map&lt;String, GenericDeclaration>, extraResolver: TypeParameterResolver, typeParameterResolver: TypeParameterResolver, isNullable: Boolean, typeArguments: List&lt;KSTypeArgument>, rootTypeArguments: List&lt;KSTypeArgument>, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.AggregatorFactory$( logger: KSPLogger, rootPackage: String, sourceSetValidator: SourceSetValidator, annotationFilter: AnnotationFilter, generics: GenericResolver, customAnnotations: Map&lt;String, String>, aliases: Map&lt;String, String> )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.MethodGenerator$( qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer?, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.MethodGeneratorHelper$( proxyInfo: ProxyInfo, arguments: Array&lt;MemberArgumentTypeInfo>, suspending: Boolean, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, generics: Map&lt;String, GenericDeclaration>?, methodReturnType: TypeName, proxyReturnType: TypeName, typeResolver: TypeParameterResolver, )</ID>
@@ -88,6 +89,8 @@
     <ID>MagicNumber:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator$6</ID>
     <ID>MagicNumber:KMockPublishingConfiguration.kt$KMockPublishingConfiguration$2022</ID>
     <ID>MagicNumber:KotlinPoet.kt$23</ID>
+    <ID>MagicNumber:build.gradle.kts$0.90</ID>
+    <ID>MagicNumber:build.gradle.kts$0.95</ID>
     <ID>MagicNumber:build.gradle.kts$30</ID>
     <ID>MagicNumber:build.gradle.kts$8</ID>
     <ID>MagicNumber:settings.gradle.kts$30</ID>
@@ -156,7 +159,6 @@
     <ID>TooManyFunctions:KMockProxyNameSelector.kt$KMockProxyNameSelector : ProxyNameSelectorProxyNameCollector</ID>
     <ID>TooManyFunctions:KMockReceiverGenerator.kt$KMockReceiverGenerator : ReceiverGenerator</ID>
     <ID>TooManyFunctions:KMockSingleSourceAggregator.kt$KMockSingleSourceAggregator : SingleSourceAggregatorBaseSourceAggregator</ID>
-    <ID>TooManyFunctions:KSExtensions.kt$tech.antibytes.kmock.processor.utils.KSExtensions.kt</ID>
     <ID>TooManyFunctions:KotlinPoet.kt$tech.antibytes.kmock.processor.utils.KotlinPoet.kt</ID>
     <ID>TooManyFunctions:PropertyProxy.kt$PropertyProxy&lt;Value> : PropertyProxy</ID>
     <ID>TooManyFunctions:SyncFunProxy.kt$SyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : SyncFunProxyFunProxy</ID>
@@ -187,9 +189,5 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(otherTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test") dependsOn(otherTest) }</ID>
     <ID>VariableNaming:AsserterBase.kt$AsserterBase$protected abstract val _references: MutableList&lt;Reference></ID>
-    <ID>VariableNaming:Dangerfile.df.kts$const val ERROR_ADDED_CODE = 2000</ID>
-    <ID>VariableNaming:Dangerfile.df.kts$const val LIGHT_WARN_ADDED_CODE = 500</ID>
-    <ID>VariableNaming:Dangerfile.df.kts$const val MIN_PR_BODY = 20</ID>
-    <ID>VariableNaming:Dangerfile.df.kts$const val WARN_ADDED_CODE = 1000</ID>
   </CurrentIssues>
 </SmellBaseline>

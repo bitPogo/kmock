@@ -6,25 +6,18 @@
 
 package tech.antibytes.kmock.processor.utils
 
-import com.google.devtools.ksp.innerArguments
 import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeArgument
-import com.google.devtools.ksp.symbol.KSTypeParameter
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
-import tech.antibytes.kmock.processor.KMockGenerics
-import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 
 internal fun KSClassDeclaration.deriveSimpleName(packageName: String): String {
     val qualifiedName = ensureNotNullClassName(this.qualifiedName?.asString())
@@ -39,57 +32,29 @@ internal fun KSClassDeclaration.deriveSimpleName(packageName: String): String {
 internal fun KSDeclaration.isPublicOpen(): Boolean = this.isPublic() && this.isOpen()
 
 internal fun KSClassDeclaration.isInherited(
-    parents: ProcessorContract.TemplateMultiSource?
+    parents: TemplateMultiSource?
 ): Boolean = parents != null || this.superTypes.firstOrNull() != null
 
-private fun ClassName.safeParameterize(
-    parameters: List<KSTypeParameter>,
-    arguments: List<KSTypeArgument>,
-    resolver: TypeParameterResolver
-): TypeName {
-    return if (parameters.isEmpty()) {
-        this
-    } else {
-        this.parameterizedBy(
-            arguments.map { argument -> argument.toTypeName(resolver) }
-        )
-    }
-}
-
-private fun KSType.resolveReceiver(
-    typeResolver: TypeParameterResolver,
+private fun KSTypeReference.resolveReceiver(
+    generics: Map<String, GenericDeclaration>?,
     receiverTypeResolver: TypeParameterResolver,
-): TypeName {
-    val arguments = this.innerArguments
-
-    return if (declaration is KSClassDeclaration) {
-        (declaration as KSClassDeclaration).toClassName().safeParameterize(
-            parameters = declaration.typeParameters,
-            arguments = arguments,
-            resolver = typeResolver
-        )
-    } else {
-        val generics = KMockGenerics.extractGenerics(
-            template = declaration.parentDeclaration!!,
-            resolver = receiverTypeResolver
-        )
-
-        KMockGenerics.mapDeclaredGenerics(
-            generics = generics!!,
-            typeResolver = receiverTypeResolver
-        ).first()
-    }
+): Pair<TypeName, TypeName> {
+    return this.toSecuredTypeName(
+        inheritedVarargArg = false,
+        generics = generics ?: emptyMap(),
+        typeParameterResolver = receiverTypeResolver,
+    )
 }
 
 internal fun KSPropertyDeclaration.resolveReceiver(
-    typeResolver: TypeParameterResolver,
+    generics: Map<String, GenericDeclaration>?,
     receiverTypeResolver: TypeParameterResolver,
-): TypeName = this.extensionReceiver!!.resolve().resolveReceiver(typeResolver, receiverTypeResolver)
+): Pair<TypeName, TypeName> = this.extensionReceiver!!.resolveReceiver(generics, receiverTypeResolver)
 
 internal fun KSFunctionDeclaration.resolveReceiver(
-    typeResolver: TypeParameterResolver,
+    generics: Map<String, GenericDeclaration>?,
     receiverTypeResolver: TypeParameterResolver,
-): TypeName = this.extensionReceiver!!.resolve().resolveReceiver(typeResolver, receiverTypeResolver)
+): Pair<TypeName, TypeName> = this.extensionReceiver!!.resolveReceiver(generics, receiverTypeResolver)
 
 internal fun KSPropertyDeclaration.isReceiverMethod(): Boolean = this.extensionReceiver != null
 
@@ -106,5 +71,6 @@ internal fun KSFunctionDeclaration.toReceiverTypeParameterResolver(
     parentResolver: TypeParameterResolver
 ): TypeParameterResolver {
     val receiver = this.extensionReceiver?.resolve()?.declaration
+
     return receiver?.parentDeclaration?.typeParameters?.toTypeParameterResolver(parentResolver) ?: parentResolver
 }
