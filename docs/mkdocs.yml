@@ -107,6 +107,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Changelog: changelog.md
+  - Roadmap: roadmap.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md

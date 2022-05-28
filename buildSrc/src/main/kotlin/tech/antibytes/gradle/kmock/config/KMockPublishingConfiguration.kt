@@ -79,7 +79,6 @@ open class KMockPublishingConfiguration {
     )
 
     val versioning = VersioningConfiguration(
-        useGitHashSnapshotSuffix = true,
         featurePrefixes = listOf("feature"),
     )
 
