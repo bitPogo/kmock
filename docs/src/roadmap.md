@@ -15,6 +15,7 @@
 - stabilize verification/assertion ✅️
 - stabilize proxy api ✅️
 - introduce a more robust way to access proxies ✅️
+- prototype an agnostic Annotation for arbitrary sources ✅️
 - publish to MavenCentral
 
 ## 0.1.0

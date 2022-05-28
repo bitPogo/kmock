@@ -108,6 +108,8 @@ nav:
   - Home: index.md
   - Changelog: changelog.md
   - Roadmap: roadmap.md
+  - Concept: concept.md
+  # - How To:
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md

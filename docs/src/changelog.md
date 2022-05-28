@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
 * `throwsMany` for FunProxies to align the the FunProxy API
 * `enableFineGrainedNames` in order to allow fine grained typing (experimental/not this will feature helps you only in a non JVM context)
+* `KMock` experimental annotation, which is agnostic in terms of source sets
+* `KMockMulti` experimental annotation, which is agnostic in terms of source sets
 
 ### Changed
 

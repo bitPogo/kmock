@@ -17,7 +17,7 @@ Issues are hold in high regards in this project, so please feel free to open <a 
 * _**Ideas**_ which are a great source for contributions
 * _**Problems**_ show where this project is lacking or not working as expected.
 
-If you are reporting a problem, please provide as much information as possible, since this will help us to fix it. 
+If you are reporting a problem, please provide as much information as possible, since this will help us to fix it.
 This includes, if possible, a description or small sample project how to reproduce the problem.
 
 Also please check out first if an issue had been already opened with your request.
@@ -68,7 +68,7 @@ If you (going to) contribute, please make sure you made clear which problem you 
 #### Create Pull Request
 
 Please use our title pattern: `{type of change} {short description}`:
- 
+
 `type of change` can be:
 - *Add* for new features or functionality
 - *Change* for changes in existing features or functionality
