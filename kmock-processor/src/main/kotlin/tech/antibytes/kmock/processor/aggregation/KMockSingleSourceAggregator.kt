@@ -14,10 +14,12 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
+import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_KMOCK_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
@@ -36,10 +38,19 @@ internal class KMockSingleSourceAggregator(
     private val customAnnotations: Map<String, String>,
     private val aliases: Map<String, String>
 ) : SingleSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
+    override fun extractKmockInterfaces(resolver: Resolver): AnnotationContainer {
+        val annotated = resolver.getSymbolsWithAnnotation(
+            ANNOTATION_KMOCK_NAME,
+            false
+        )
+
+        return resolveKmockAnnotation(annotated)
+    }
+
     private fun resolveInterface(
         declaration: KSDeclaration,
         sourceIndicator: String,
-        dependencies: List<KSFile>,
+        dependency: KSFile,
         templateCollector: MutableMap<String, TemplateSource>,
     ) {
         val interfaze = safeCastInterface(declaration)
@@ -50,7 +61,7 @@ internal class KMockSingleSourceAggregator(
             indicator = sourceIndicator,
             templateName = aliases[qualifiedName] ?: interfaze.deriveSimpleName(packageName),
             packageName = packageName,
-            dependencies = dependencies,
+            dependencies = listOf(dependency),
             template = interfaze,
             generics = resolveGenerics(interfaze)
         )
@@ -61,11 +72,11 @@ internal class KMockSingleSourceAggregator(
         templateCollector: MutableMap<String, TemplateSource>
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
-            interfaces.second.forEach { interfaze ->
+            interfaces.second.forEachIndexed { idx, interfaze ->
                 resolveInterface(
                     declaration = interfaze.declaration,
                     sourceIndicator = sourceIndicator,
-                    dependencies = interfaces.first,
+                    dependency = interfaces.first[idx],
                     templateCollector = templateCollector
                 )
             }
@@ -83,30 +94,76 @@ internal class KMockSingleSourceAggregator(
         }
     }
 
+    fun MutableList<KSFile>.addTimes(value: KSFile, times: Int) {
+        repeat(times) {
+            this.add(value)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
+    private fun resolveAnnotation(
+        indicator: String,
+        symbol: KSAnnotated,
+        annotation: KSAnnotation?,
+        illAnnotated: MutableList<KSAnnotated>,
+        typeContainer: MutableMap<String, Pair<MutableList<KSFile>, MutableList<KSType>>>,
+        fileCollector: MutableList<KSFile>,
+    ) {
+        if (annotation == null || annotation.arguments.isEmpty()) {
+            illAnnotated.add(symbol)
+        } else {
+            val sourceIndicator = determineSourceCategory(indicator, annotation)
+            val (dependencies, interfaces) = typeContainer.getOrElse(sourceIndicator) {
+                Pair(mutableListOf(), mutableListOf())
+            }
+
+            val extractedInterfaces: List<KSType> = annotation.arguments.last().value as List<KSType>
+            interfaces.addAll(extractedInterfaces)
+
+            dependencies.addTimes(symbol.containingFile!!, extractedInterfaces.size)
+
+            typeContainer[sourceIndicator] = Pair(dependencies, interfaces)
+            fileCollector.add(symbol.containingFile!!)
+        }
+    }
+
     private fun extractInterfaces(
         defaultIndicator: String,
         annotated: Sequence<KSAnnotated>,
+        kmockAnnotated: List<KSAnnotated>,
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
-        val typeContainer = mutableMapOf<String, Pair<List<KSFile>, MutableList<KSType>>>()
+        val typeContainer = mutableMapOf<String, Pair<MutableList<KSFile>, MutableList<KSType>>>()
         val templateCollector: MutableMap<String, TemplateSource> = mutableMapOf()
         val fileCollector: MutableList<KSFile> = mutableListOf()
 
         annotated.forEach { annotatedSymbol ->
             val annotation = findKMockAnnotation(annotatedSymbol.annotations, condition)
 
-            if (annotation == null || annotation.arguments.isEmpty()) {
-                illAnnotated.add(annotatedSymbol)
-            } else {
-                val sourceIndicator = determineSourceCategory(defaultIndicator, annotation)
-                val (_, interfaces) = typeContainer.getOrElse(sourceIndicator) { Pair(null, mutableListOf()) }
+            resolveAnnotation(
+                indicator = defaultIndicator,
+                symbol = annotatedSymbol,
+                annotation = annotation,
+                illAnnotated = illAnnotated,
+                typeContainer = typeContainer,
+                fileCollector = fileCollector
+            )
+        }
 
-                interfaces.addAll(annotation.arguments.last().value as List<KSType>)
-                typeContainer[sourceIndicator] = Pair(listOf(annotatedSymbol.containingFile!!), interfaces)
-                fileCollector.add(annotatedSymbol.containingFile!!)
+        kmockAnnotated.forEach { annotatedSymbol ->
+            val annotation = findKMockAnnotation(annotatedSymbol.annotations) { annotationName, _ ->
+                annotationName == ANNOTATION_KMOCK_NAME
             }
+
+            resolveAnnotation(
+                indicator = defaultIndicator,
+                symbol = annotatedSymbol,
+                annotation = annotation,
+                illAnnotated = illAnnotated,
+                typeContainer = typeContainer,
+                fileCollector = fileCollector
+            )
         }
 
         resolveInterfaces(typeContainer, templateCollector)
@@ -126,13 +183,16 @@ internal class KMockSingleSourceAggregator(
     }
 
     override fun extractCommonInterfaces(
-        resolver: Resolver
+        kmockAnnotated: List<KSAnnotated>,
+        resolver: Resolver,
     ): Aggregated<TemplateSource> {
         val annotated = fetchCommonAnnotated(resolver)
 
-        return extractInterfaces(COMMON_INDICATOR, annotated) { annotationName, _ ->
-            ANNOTATION_COMMON_NAME == annotationName
-        }
+        return extractInterfaces(
+            defaultIndicator = COMMON_INDICATOR,
+            annotated = annotated,
+            kmockAnnotated = kmockAnnotated,
+        ) { annotationName, _ -> ANNOTATION_COMMON_NAME == annotationName }
     }
 
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -155,7 +215,7 @@ internal class KMockSingleSourceAggregator(
     ): Aggregated<TemplateSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
-        return extractInterfaces("", annotated, ::isSharedAnnotation)
+        return extractInterfaces("", annotated, emptyList(), ::isSharedAnnotation)
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -170,7 +230,7 @@ internal class KMockSingleSourceAggregator(
     ): Aggregated<TemplateSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
-        return extractInterfaces("", annotated) { annotationName, _ ->
+        return extractInterfaces("", annotated, emptyList()) { annotationName, _ ->
             ANNOTATION_PLATFORM_NAME == annotationName
         }
     }

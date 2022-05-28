@@ -71,7 +71,7 @@ class KMockProcessorSpec {
         val illegalPlatform: List<KSAnnotated> = listOf(mockk())
 
         every {
-            singleSourceAggregator.extractCommonInterfaces(any())
+            singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(illegalCommon, listOf(mockk()), listOf(mockk()))
 
         every {
@@ -153,7 +153,7 @@ class KMockProcessorSpec {
         val illegalMultiPlatform: List<KSAnnotated> = listOf(mockk())
 
         every {
-            singleSourceAggregator.extractCommonInterfaces(any())
+            singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalCommonRound1, listOf(mockk()), listOf(mockk())),
             Aggregated(illegalCommonRound2, listOf(mockk()), listOf(mockk()))
@@ -287,7 +287,7 @@ class KMockProcessorSpec {
         val totalDependencies = listOf(dependenciesCommon, dependenciesShared, dependenciesPlatform,).flatten()
 
         every {
-            singleSourceAggregator.extractCommonInterfaces(any())
+            singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(illegal, interfacesCommon, dependenciesCommon)
 
         every {
@@ -467,7 +467,7 @@ class KMockProcessorSpec {
         ).flatten()
 
         every {
-            singleSourceAggregator.extractCommonInterfaces(any())
+            singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, interfacesCommonRound1, dependenciesCommon),
             Aggregated(illegal, interfacesCommonRound2, dependenciesCommon),
