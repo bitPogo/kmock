@@ -104,6 +104,21 @@ public annotation class MultiMockShared(
 )
 
 @Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Determines which interfaces should be stubbed/mocked for a arbitrary source.
+ *
+ * @param interfaces variable amount of interfaces.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
+ */
+@KMockExperimental
+public annotation class KMock(
+    vararg val interfaces: KClass<*>
+)
+
+@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FUNCTION)
 @MustBeDocumented
 /**
