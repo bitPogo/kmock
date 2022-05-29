@@ -112,6 +112,8 @@ kmock {
 In order to be able to utilize interfaces for the `kmock` or `kspy` factory you can enable this via `allowInterfaces`:
 !!!tip
     This will be handy if you use it together with Relaxation.
+!!!note
+    This will not work for Multi Interface Mocks.
 ```kotlin
 kmock {
     ...

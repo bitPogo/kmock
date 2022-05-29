@@ -79,6 +79,7 @@ markdown_extensions:
   - footnotes
   - meta
   - md_in_html
+  - tables
   - toc:
       permalink: true
 
@@ -114,6 +115,7 @@ nav:
       - Installation: howto/install.md
       - Setup: howto/setup.md
       - Declaring a Mock: howto/annotations.md
+      - Using Mocks: howto/proxy.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md
