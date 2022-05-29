@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* Method names with nullable or multi-bounded types defined as generic parameter
+* FunProxy names with nullable or multi-bounded types defined as generic parameter
 * Annotation was not picked up when more then one Annotation was used
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other

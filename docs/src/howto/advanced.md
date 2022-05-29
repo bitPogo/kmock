@@ -74,6 +74,10 @@ KMock also facilitates Relaxation to a certain degree and will hopefully get bet
 However it requires boilerplate code done by you.
 However, Relaxation of methods which return `Unit` is build-in feature, so do not worry about it.
 You only need to switch `relaxUnitFun` to `true` and be done with it.
+
+Similar things apply for Build-In methods, if they are enabled.
+They will fallback to their parents Build-In methods if no return value is set for them.
+
 To get full Relaxation support you need to implement a relaxer function and annotate it properly:
 ```kotlin
 @Relaxer

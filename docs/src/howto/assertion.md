@@ -224,6 +224,13 @@ fun sampleTest() {
 * `verifyStrictOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before that chain.
 * `verifyOrder` will fail if the invocation is not in the relative order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before, after or in between them.
 
+Optionally you can use `ensureVerificationOf` if you need any insurance that all Proxies have been covered during a run by a Verifier.
+
+Verifier/Asserter can additionally be initialised with the `coverAllInvocations` flag, which is false by default.
+This flag forces Proxies, which are excluded from Verification/Assertion by default, to be covered during a test unit run too.
+This is only important if you have to cover build-in methods like equals.
+Build-in methods are excluded from Verification via Verifier by default due to their special nature.
+
 ## Teardown
 As with Mocks Verifier/Asserter have a `clear` method, which opens them up for reuse.
 So do not forget to call it.

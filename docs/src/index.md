@@ -30,7 +30,7 @@ KMock has the following dependencies:
 * [Square KotlinPoet 1.11.0](https://square.github.io/kotlinpoet/)
 * [Kotlin Symbol Processing (KSP) 1.6.10-1.0.4](https://github.com/google/ksp)
 * [Gradle 7.4.2](https://gradle.org/)
-  
+
 ## Additional Requirements
 
 * Android 6.0 (API 21) to Android 12 (API 31)
@@ -42,7 +42,7 @@ KMock has the following dependencies:
 
 ## Changelog
 
-See [changelog](changelog.md)
+See [changelog](https://github.com/bitPogo/kmock/tree/main/docs/src/changelog.md)
 
 ## Versioning
 
@@ -52,15 +52,15 @@ This project uses [Semantic Versioning](http://semver.org/) as a guideline for o
 
 You want to help or share a proposal? You have a specific problem? Read the following:
 
-* [Code of conduct](development/code-of-conduct.md) for details on our code of conduct.
-* [ contributing guide](development/releasing.md) for details about how to report bugs and propose features.
+* [Code of Conduct](https://github.com/bitPogo/kmock/tree/main/docs/src/development/code-of-conduct.md) for details on our code of conduct.
+* [Contributing Guide](https://github.com/bitPogo/kmock/tree/main/docs/src/development/releasing.md) for details about how to report bugs and propose features.
 
 ## Releasing
 
-Please take a look [here](development/releasing.md)
+Please take a look [here](https://github.com/bitPogo/kmock/tree/main/docs/src/development/releasing.md)
 
 ## Copyright and License
 
 Copyright (c) 2022 Matthias Geisler / All rights reserved.
 
-Please refer to the [License](license.md) for further details.
+Please refer to the [License](https://github.com/bitPogo/kmock/tree/main/docs/src/license.md) for further details.
