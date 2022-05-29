@@ -314,6 +314,10 @@ public final class tech/antibytes/kmock/HintKt {
 	public static final fun hint ()Ltech/antibytes/kmock/Hint0;
 }
 
+public abstract interface annotation class tech/antibytes/kmock/KMock : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+}
+
 public final class tech/antibytes/kmock/KMockContract {
 	public static final field INSTANCE Ltech/antibytes/kmock/KMockContract;
 }

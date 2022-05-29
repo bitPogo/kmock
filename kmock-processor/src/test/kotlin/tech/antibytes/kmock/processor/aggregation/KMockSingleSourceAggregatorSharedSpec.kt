@@ -23,6 +23,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kmock.KMock
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
@@ -114,7 +116,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(),
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         illegal mustBe listOf(symbol, symbol, symbol, symbol)
@@ -174,7 +176,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -234,7 +236,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(),
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         illegal mustBe listOf(symbol, symbol, symbol, symbol)
@@ -293,7 +295,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -345,7 +347,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(),
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         illegal mustBe listOf(symbol, symbol, symbol, symbol)
@@ -389,7 +391,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val allowedSourceSets: Set<String> = setOf(fixture.fixture())
+        val allowedSourceSet: String = fixture.fixture()
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -403,7 +405,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns allowedSourceSets.first()
+        every { arguments[0].value } returns allowedSourceSet
         every { arguments[1].value } returns values
         every { arguments.size } returns 2
         every { type.declaration } returns declaration
@@ -424,7 +426,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 mockk(),
                 emptyMap(),
                 emptyMap(),
-            ).extractSharedInterfaces(resolver)
+            ).extractSharedInterfaces(emptyMap(), resolver)
         }
 
         // Then
@@ -497,7 +499,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 mockk(),
                 customAnnotations,
                 emptyMap(),
-            ).extractSharedInterfaces(resolver)
+            ).extractSharedInterfaces(emptyMap(), resolver)
         }
 
         // Then
@@ -555,7 +557,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val allowedSourceSets: Set<String> = setOf(fixture.fixture())
+        val allowedSourceSet: String = fixture.fixture()
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -569,7 +571,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns allowedSourceSets.first()
+        every { arguments[0].value } returns allowedSourceSet
         every { arguments[1].value } returns values
         every { arguments.size } returns 2
 
@@ -597,7 +599,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 mockk(),
                 emptyMap(),
                 emptyMap(),
-            ).extractSharedInterfaces(resolver)
+            ).extractSharedInterfaces(emptyMap(), resolver)
         }
 
         // Then
@@ -689,7 +691,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 mockk(),
                 customAnnotations,
                 emptyMap(),
-            ).extractSharedInterfaces(resolver)
+            ).extractSharedInterfaces(emptyMap(), resolver)
         }
 
         // Then
@@ -787,7 +789,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -886,7 +888,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -988,7 +990,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -1099,7 +1101,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -1258,7 +1260,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -1426,7 +1428,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -1498,9 +1500,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
-        val allowedSourceSets: Set<String> = setOf(
-            fixture.fixture()
-        )
+        val allowedSourceSet: String = fixture.fixture()
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -1514,7 +1514,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns allowedSourceSets.first()
+        every { arguments[0].value } returns allowedSourceSet
         every { arguments[1].value } returns values
         every { arguments.size } returns 2
 
@@ -1541,7 +1541,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -1620,7 +1620,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(relaxed = true),
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file, file)
@@ -1676,9 +1676,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val simpleName: String = fixture.fixture(named("stringAlpha"))
 
-        val allowedSourceSets: Set<String> = setOf(
-            fixture.fixture()
-        )
+        val allowedSourceSet: String = fixture.fixture()
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -1700,7 +1698,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotation.arguments } returns arguments
         every { arguments.isEmpty() } returns false
-        every { arguments[0].value } returns allowedSourceSets.first()
+        every { arguments[0].value } returns allowedSourceSet
         every { arguments[1].value } returns values
         every { arguments.size } returns 2
 
@@ -1727,12 +1725,12 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "${allowedSourceSets.first()}Test",
+                indicator = "${allowedSourceSet}Test",
                 templateName = simpleName,
                 packageName = packageName,
                 template = declaration,
@@ -1831,7 +1829,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             mockk(relaxed = true),
             customAnnotations,
             emptyMap(),
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -1889,9 +1887,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         val simpleName: String = fixture.fixture(named("stringAlpha"))
         val packageName: String = fixture.fixture(named("stringAlpha"))
         val alias: String = fixture.fixture(named("stringAlpha"))
-        val allowedSourceSets: Set<String> = setOf(
-            fixture.fixture()
-        )
+        val allowedSourceSet: String = fixture.fixture()
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -1916,7 +1912,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { arguments.isEmpty() } returns false
 
         every { arguments.size } returns 2
-        every { arguments[0].value } returns allowedSourceSets.first()
+        every { arguments[0].value } returns allowedSourceSet
         every { arguments[1].value } returns values
 
         every { type.declaration } returns declaration
@@ -1944,12 +1940,12 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             emptyMap(),
             mapping,
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
             TemplateSource(
-                indicator = "${allowedSourceSets.first()}Test",
+                indicator = "${allowedSourceSet}Test",
                 templateName = alias,
                 packageName = packageName,
                 template = declaration,
@@ -2044,7 +2040,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             genericResolver,
             customAnnotations,
             mapping,
-        ).extractSharedInterfaces(resolver)
+        ).extractSharedInterfaces(emptyMap(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -2072,6 +2068,185 @@ class KMockSingleSourceAggregatorSharedSpec {
             verify(exactly = 1) {
                 resolver.getSymbolsWithAnnotation(annotation, false)
             }
+        }
+    }
+
+    @OptIn(KMockExperimental::class)
+    @Test
+    fun `Given extractSharedInterfaces is called it returns the corresponding source files, while merging kmock annotations`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val sourceSetValidator: SourceSetValidator = mockk()
+        val symbolFetch: KSAnnotated = mockk()
+        val symbolGiven1: KSAnnotated = mockk()
+        val symbolGiven2: KSAnnotated = mockk()
+        val fileFetched: KSFile = mockk()
+        val fileGiven1: KSFile = mockk()
+        val fileGiven2: KSFile = mockk()
+        val resolver: Resolver = mockk()
+
+        val annotationFetched: KSAnnotation = mockk()
+        val sourceAnnotationsFetched: Sequence<KSAnnotation> = sequence {
+            yield(annotationFetched)
+        }
+
+        val annotationGiven1: KSAnnotation = mockk()
+        val sourceAnnotationsGiven1: Sequence<KSAnnotation> = sequence {
+            yield(annotationGiven1)
+        }
+
+        val annotationGiven2: KSAnnotation = mockk()
+        val sourceAnnotationsGiven2: Sequence<KSAnnotation> = sequence {
+            yield(annotationGiven2)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbolFetch)
+        }
+
+        val typeFetched: KSType = mockk(relaxed = true)
+        val declarationFetched: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsFetched: List<KSValueArgument> = mockk()
+
+        val valuesFetched: List<KSType> = listOf(typeFetched)
+
+        val packageNameFetched: String = fixture.fixture(named("stringAlpha"))
+        val simpleNameFetched: String = fixture.fixture(named("stringAlpha"))
+
+        val typeGiven1: KSType = mockk(relaxed = true)
+        val declarationGiven1: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsGiven1: List<KSValueArgument> = mockk()
+
+        val typeGiven2: KSType = mockk(relaxed = true)
+        val declarationGiven2: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsGiven2: List<KSValueArgument> = mockk()
+
+        val valuesGiven1: List<KSType> = listOf(typeGiven1)
+        val valuesGiven2: List<KSType> = listOf(typeGiven2)
+
+        val sourceSet1: String = fixture.fixture(named("stringAlpha"))
+        val packageNameGiven1: String = fixture.fixture(named("stringAlpha"))
+        val simpleNameGiven1: String = fixture.fixture(named("stringAlpha"))
+
+        val sourceSet2: String = fixture.fixture(named("stringAlpha"))
+        val packageNameGiven2: String = fixture.fixture(named("stringAlpha"))
+        val simpleNameGiven2: String = fixture.fixture(named("stringAlpha"))
+
+        val allowedSourceSet: String = fixture.fixture()
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            annotationFetched.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MockShared::class.qualifiedName!!
+
+        every {
+            annotationGiven1.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns KMock::class.qualifiedName!!
+
+        every {
+            annotationGiven2.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns KMock::class.qualifiedName!!
+
+        every { symbolFetch.annotations } returns sourceAnnotationsFetched
+        every { symbolGiven1.annotations } returns sourceAnnotationsGiven1
+        every { symbolGiven2.annotations } returns sourceAnnotationsGiven2
+
+        every { annotationFetched.arguments } returns argumentsFetched
+        every { argumentsFetched.size } returns 2
+        every { argumentsFetched.isEmpty() } returns false
+        every { argumentsFetched[0].value } returns allowedSourceSet
+        every { argumentsFetched[1].value } returns valuesFetched
+        every { typeFetched.declaration } returns declarationFetched
+        every { declarationFetched.classKind } returns ClassKind.INTERFACE
+
+        every { annotationGiven1.arguments } returns argumentsGiven1
+        every { argumentsGiven1.size } returns 1
+        every { argumentsGiven1.isEmpty() } returns false
+        every { argumentsGiven1[0].value } returns valuesGiven1
+        every { typeGiven1.declaration } returns declarationGiven1
+        every { declarationGiven1.classKind } returns ClassKind.INTERFACE
+
+        every { annotationGiven2.arguments } returns argumentsGiven2
+        every { argumentsGiven2.size } returns 1
+        every { argumentsGiven2.isEmpty() } returns false
+        every { argumentsGiven2[0].value } returns valuesGiven2
+        every { typeGiven2.declaration } returns declarationGiven2
+        every { declarationGiven2.classKind } returns ClassKind.INTERFACE
+
+        every { fileFetched.parent } returns null
+        every { symbolFetch.parent } returns fileFetched
+
+        every { fileGiven1.parent } returns null
+        every { symbolGiven1.parent } returns fileGiven1
+
+        every { fileGiven2.parent } returns null
+        every { symbolGiven2.parent } returns fileGiven2
+
+        every { declarationFetched.parentDeclaration } returns null
+        every { declarationFetched.packageName.asString() } returns packageNameFetched
+        every { declarationFetched.qualifiedName!!.asString() } returns "$packageNameFetched.$simpleNameFetched"
+
+        every { declarationGiven1.parentDeclaration } returns null
+        every { declarationGiven1.packageName.asString() } returns packageNameGiven1
+        every { declarationGiven1.qualifiedName!!.asString() } returns "$packageNameGiven1.$simpleNameGiven1"
+
+        every { declarationGiven2.parentDeclaration } returns null
+        every { declarationGiven2.packageName.asString() } returns packageNameGiven2
+        every { declarationGiven2.qualifiedName!!.asString() } returns "$packageNameGiven2.$simpleNameGiven2"
+
+        every { logger.error(any()) } just Runs
+
+        every { sourceSetValidator.isValidateSourceSet(any()) } returns true
+
+        // When
+        val (_, interfaces, sourceFiles) = KMockSingleSourceAggregator(
+            logger,
+            mockk(),
+            sourceSetValidator,
+            mockk(relaxed = true),
+            emptyMap(),
+            emptyMap(),
+        ).extractSharedInterfaces(
+            mapOf(
+                sourceSet1 to listOf(symbolGiven1),
+                sourceSet2 to listOf(symbolGiven2),
+            ),
+            resolver
+        )
+
+        // Then
+        sourceFiles mustBe listOf(fileFetched, fileGiven1, fileGiven2)
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "${allowedSourceSet}Test",
+                templateName = simpleNameFetched,
+                packageName = packageNameFetched,
+                template = declarationFetched,
+                generics = emptyMap(),
+                dependencies = listOf(fileFetched)
+            ),
+            TemplateSource(
+                indicator = sourceSet1,
+                templateName = simpleNameGiven1,
+                packageName = packageNameGiven1,
+                template = declarationGiven1,
+                generics = emptyMap(),
+                dependencies = listOf(fileGiven1)
+            ),
+            TemplateSource(
+                indicator = sourceSet2,
+                templateName = simpleNameGiven2,
+                packageName = packageNameGiven2,
+                template = declarationGiven2,
+                generics = emptyMap(),
+                dependencies = listOf(fileGiven2)
+            )
+        )
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)
         }
     }
 }

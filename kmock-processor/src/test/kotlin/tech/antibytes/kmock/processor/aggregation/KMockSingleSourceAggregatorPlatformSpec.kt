@@ -23,6 +23,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kmock.KMock
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
@@ -111,7 +113,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -155,7 +157,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             mockk(),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -216,7 +218,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
                 mockk(),
                 emptyMap(),
                 emptyMap(),
-            ).extractPlatformInterfaces(resolver)
+            ).extractPlatformInterfaces(emptyList(), resolver)
         }
 
         // Then
@@ -298,7 +300,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
                 mockk(),
                 emptyMap(),
                 emptyMap(),
-            ).extractPlatformInterfaces(resolver)
+            ).extractPlatformInterfaces(emptyList(), resolver)
         }
 
         // Then
@@ -378,7 +380,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -467,7 +469,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             genericResolver,
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -547,7 +549,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -632,7 +634,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             mockk(relaxed = true),
             emptyMap(),
             emptyMap(),
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -728,7 +730,7 @@ class KMockSingleSourceAggregatorPlatformSpec {
             genericResolver,
             emptyMap(),
             mapping,
-        ).extractPlatformInterfaces(resolver)
+        ).extractPlatformInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -743,6 +745,129 @@ class KMockSingleSourceAggregatorPlatformSpec {
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
+        }
+    }
+
+    @OptIn(KMockExperimental::class)
+    @Test
+    fun `Given extractPlatformInterfaces is called it returns the corresponding source files while merging kmock annotations`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val symbolFetch: KSAnnotated = mockk()
+        val symbolGiven: KSAnnotated = mockk()
+        val fileFetched: KSFile = mockk()
+        val fileGiven: KSFile = mockk()
+        val resolver: Resolver = mockk()
+
+        val annotationFetched: KSAnnotation = mockk()
+        val sourceAnnotationsFetched: Sequence<KSAnnotation> = sequence {
+            yield(annotationFetched)
+        }
+
+        val annotationGiven: KSAnnotation = mockk()
+        val sourceAnnotationsGiven: Sequence<KSAnnotation> = sequence {
+            yield(annotationGiven)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbolFetch)
+        }
+
+        val typeFetched: KSType = mockk(relaxed = true)
+        val declarationFetched: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsFetched: List<KSValueArgument> = mockk()
+
+        val valuesFetched: List<KSType> = listOf(typeFetched)
+
+        val packageNameFetched: String = fixture.fixture(named("stringAlpha"))
+        val simpleNameFetched: String = fixture.fixture(named("stringAlpha"))
+
+        val typeGiven: KSType = mockk(relaxed = true)
+        val declarationGiven: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsGiven: List<KSValueArgument> = mockk()
+
+        val valuesGiven: List<KSType> = listOf(typeGiven)
+
+        val packageNameGiven: String = fixture.fixture(named("stringAlpha"))
+        val simpleNameGiven: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            annotationFetched.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns Mock::class.qualifiedName!!
+
+        every {
+            annotationGiven.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns KMock::class.qualifiedName!!
+
+        every { symbolFetch.annotations } returns sourceAnnotationsFetched
+        every { symbolGiven.annotations } returns sourceAnnotationsGiven
+
+        every { annotationFetched.arguments } returns argumentsFetched
+        every { argumentsFetched.size } returns 1
+        every { argumentsFetched.isEmpty() } returns false
+        every { argumentsFetched[0].value } returns valuesFetched
+        every { typeFetched.declaration } returns declarationFetched
+        every { declarationFetched.classKind } returns ClassKind.INTERFACE
+
+        every { annotationGiven.arguments } returns argumentsGiven
+        every { argumentsGiven.size } returns 1
+        every { argumentsGiven.isEmpty() } returns false
+        every { argumentsGiven[0].value } returns valuesGiven
+        every { typeGiven.declaration } returns declarationGiven
+        every { declarationGiven.classKind } returns ClassKind.INTERFACE
+
+        every { fileFetched.parent } returns null
+        every { symbolFetch.parent } returns fileFetched
+
+        every { fileGiven.parent } returns null
+        every { symbolGiven.parent } returns fileGiven
+
+        every { declarationFetched.parentDeclaration } returns null
+        every { declarationFetched.packageName.asString() } returns packageNameFetched
+        every { declarationFetched.qualifiedName!!.asString() } returns "$packageNameFetched.$simpleNameFetched"
+
+        every { declarationGiven.parentDeclaration } returns null
+        every { declarationGiven.packageName.asString() } returns packageNameGiven
+        every { declarationGiven.qualifiedName!!.asString() } returns "$packageNameGiven.$simpleNameGiven"
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        val (_, interfaces, sourceFiles) = KMockSingleSourceAggregator(
+            logger,
+            mockk(),
+            mockk(),
+            mockk(relaxed = true),
+            emptyMap(),
+            emptyMap(),
+        ).extractPlatformInterfaces(listOf(symbolGiven), resolver)
+
+        // Then
+        sourceFiles mustBe listOf(fileFetched, fileGiven)
+        interfaces mustBe listOf(
+            TemplateSource(
+                indicator = "",
+                templateName = simpleNameFetched,
+                packageName = packageNameFetched,
+                template = declarationFetched,
+                generics = emptyMap(),
+                dependencies = listOf(fileFetched)
+            ),
+            TemplateSource(
+                indicator = "",
+                templateName = simpleNameGiven,
+                packageName = packageNameGiven,
+                template = declarationGiven,
+                generics = emptyMap(),
+                dependencies = listOf(fileGiven)
+            )
+        )
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Mock::class.qualifiedName!!, false)
         }

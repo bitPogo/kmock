@@ -30,8 +30,10 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
@@ -115,6 +117,12 @@ internal interface ProcessorContract {
         val totalDependencies: List<KSFile>,
     )
 
+    data class AnnotationContainer(
+        val common: List<KSAnnotated>,
+        val shared: Map<String, List<KSAnnotated>>,
+        val platform: List<KSAnnotated>,
+    )
+
     interface SourceSetValidator {
         fun isValidateSourceSet(sourceSet: Any?): Boolean
     }
@@ -151,9 +159,22 @@ internal interface ProcessorContract {
     }
 
     interface SingleSourceAggregator : Aggregator {
-        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateSource>
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
-        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractKmockInterfaces(resolver: Resolver): AnnotationContainer
+
+        fun extractCommonInterfaces(
+            kmockAnnotated: List<KSAnnotated>,
+            resolver: Resolver
+        ): Aggregated<TemplateSource>
+
+        fun extractSharedInterfaces(
+            kmockAnnotated: Map<String, List<KSAnnotated>>,
+            resolver: Resolver
+        ): Aggregated<TemplateSource>
+
+        fun extractPlatformInterfaces(
+            kmockAnnotated: List<KSAnnotated>,
+            resolver: Resolver
+        ): Aggregated<TemplateSource>
     }
 
     interface MultiSourceAggregator : Aggregator {
@@ -661,6 +682,8 @@ internal interface ProcessorContract {
         const val SPY_CONTEXT = "spyContext"
         const val SPY_PROPERTY = "__spyOn"
 
+        @OptIn(KMockExperimental::class)
+        val ANNOTATION_KMOCK_NAME: String = KMock::class.java.canonicalName
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName
@@ -668,6 +691,18 @@ internal interface ProcessorContract {
         val ANNOTATION_SHARED_NAME: String = MockShared::class.java.canonicalName
         val ANNOTATION_SHARED_MULTI_NAME: String = MultiMockShared::class.java.canonicalName
         val RELAXATION_NAME: String = RelaxationAnnotation::class.java.canonicalName
+
+        val supportedPlatforms = sortedSetOf(
+            "androidTest",
+            "androidAndroidTest",
+            "jsTest",
+            "jvmTest",
+            "linuxX64Test",
+            "iosArm64",
+            "iosX64",
+            "iosSimulatorArm64Test",
+            "test",
+        )
 
         val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
@@ -694,6 +729,7 @@ internal interface ProcessorContract {
         val multibounded = TypeVariableName("multiboundedKmock")
 
         const val COMMON_INDICATOR = "commonTest"
+        const val PLATFORM_INDICATOR = ""
 
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"

@@ -12,6 +12,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFile
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
+import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
@@ -150,9 +151,10 @@ internal class KMockProcessor(
 
     private fun stubCommonSources(
         resolver: Resolver,
+        kmockAnnotated: List<KSAnnotated>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(resolver)
+        val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(kmockAnnotated, resolver)
         val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(resolver)
 
         mockGenerator.writeCommonMocks(
@@ -199,10 +201,11 @@ internal class KMockProcessor(
 
     private fun stubSharedSources(
         resolver: Resolver,
+        kmockAnnotated: Map<String, List<KSAnnotated>>,
         commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(resolver)
+        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(kmockAnnotated, resolver)
         val multiAggregated = multiSourceAggregator.extractSharedInterfaces(resolver)
 
         val filteredSingleInterfaces = filter.filter(
@@ -259,11 +262,12 @@ internal class KMockProcessor(
 
     private fun stubPlatformSources(
         resolver: Resolver,
+        kmockAnnotated: List<KSAnnotated>,
         commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(resolver)
+        val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated, resolver)
         val multiAggregated = multiSourceAggregator.extractPlatformInterfaces(resolver)
 
         val filteredSingleInterfaces = filter.filter(
@@ -299,12 +303,18 @@ internal class KMockProcessor(
 
     private fun extractMetaSources(
         resolver: Resolver,
-        relaxer: Relaxer?
+        kmockAnnotated: AnnotationContainer,
+        relaxer: Relaxer?,
     ): Pair<Aggregated<TemplateSource>, Aggregated<TemplateSource>> {
         return if (isKmp) {
-            val commonAggregated = stubCommonSources(resolver, relaxer)
+            val commonAggregated = stubCommonSources(
+                resolver = resolver,
+                kmockAnnotated = kmockAnnotated.common,
+                relaxer = relaxer,
+            )
             val sharedAggregated = stubSharedSources(
                 resolver = resolver,
+                kmockAnnotated = kmockAnnotated.shared,
                 commonAggregated = commonAggregated,
                 relaxer = relaxer
             )
@@ -396,13 +406,23 @@ internal class KMockProcessor(
         )
     }
 
+    private fun extractKmockAnnotated(resolver: Resolver): AnnotationContainer {
+        return singleSourceAggregator.extractKmockInterfaces(resolver)
+    }
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = extractRelaxer(resolver)
+        val kmockAnnotated = extractKmockAnnotated(resolver)
 
-        val (commonAggregated, sharedAggregated) = extractMetaSources(resolver, relaxer)
+        val (commonAggregated, sharedAggregated) = extractMetaSources(
+            resolver = resolver,
+            kmockAnnotated = kmockAnnotated,
+            relaxer = relaxer,
+        )
 
         val platformAggregated = stubPlatformSources(
             resolver = resolver,
+            kmockAnnotated = kmockAnnotated.platform,
             commonAggregated = commonAggregated,
             sharedAggregated = sharedAggregated,
             relaxer = relaxer

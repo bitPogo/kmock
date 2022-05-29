@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor.aggregation
 
+import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.ClassKind
@@ -15,13 +16,48 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.toClassName
+import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.supportedPlatforms
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
+import java.io.File
 
 internal abstract class BaseSourceAggregator(
     private val logger: KSPLogger,
     private val customAnnotations: Map<String, String>,
     private val generics: GenericResolver,
 ) {
+    private fun resolveIndicator(path: String?): String? {
+        return path?.substringAfter("src${File.separator}")?.substringBefore(File.separator)
+    }
+
+    protected fun resolveKmockAnnotation(annotations: Sequence<KSAnnotated>): AnnotationContainer {
+        val common: MutableList<KSAnnotated> = mutableListOf()
+        val shared: MutableMap<String, MutableList<KSAnnotated>> = mutableMapOf()
+        val platform: MutableList<KSAnnotated> = mutableListOf()
+
+        annotations.forEach { ksAnnotated ->
+            val indicator = resolveIndicator(ksAnnotated.containingFile?.filePath)
+
+            when {
+                indicator != null && indicator in supportedPlatforms -> platform.add(ksAnnotated)
+                indicator == "commonTest" -> common.add(ksAnnotated)
+                indicator?.endsWith("Test") == true -> {
+                    val sources = shared.getOrElse(indicator) { mutableListOf() }
+                    sources.add(ksAnnotated)
+
+                    shared[indicator] = sources
+                }
+                else -> logger.error("Unprocessable source.", ksAnnotated)
+            }
+        }
+
+        return AnnotationContainer(
+            common = common,
+            shared = shared,
+            platform = platform
+        )
+    }
+
     protected fun resolveAnnotationName(
         annotation: KSAnnotation
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()

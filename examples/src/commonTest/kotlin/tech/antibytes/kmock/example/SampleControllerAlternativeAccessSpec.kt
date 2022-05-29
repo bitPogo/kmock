@@ -11,8 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockExperimental
-import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
@@ -46,14 +46,14 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-@MockCommon(
+@OptIn(KMockExperimental::class)
+@KMock(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     GenericSampleDomainObject::class,
     DecoderFactory::class,
     SampleUselessObject::class,
 )
-@OptIn(KMockExperimental::class)
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
