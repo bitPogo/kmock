@@ -87,7 +87,7 @@ public annotation class MockShared(val sourceSetName: String, vararg val interfa
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Determines which interfaces should be stubbed/mocked as a union of them for CommonCode.
+ * Determines which interfaces should be stubbed/mocked as a union of them a shared source.
  *
  * @param sourceSetName to bind the given interface to a sourceSet (e.g. nativeTest or native).
  * @param name name which used for the mock.
@@ -115,6 +115,24 @@ public annotation class MultiMockShared(
  */
 @KMockExperimental
 public annotation class KMock(
+    vararg val interfaces: KClass<*>
+)
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+/**
+ * Determines which interfaces should be stubbed/mocked as a union of them for a arbitrary source set.
+ *
+ * @param name name which used for the mock.
+ * @param interfaces variable amount of interfaces.
+ * @property name name which will be propagated to the (KSP) processor.
+ * @property interfaces which will be propagated to the (KSP) processor.
+ * @author Matthias Geisler
+ */
+@KMockExperimental
+public annotation class KMockMulti(
+    val name: String,
     vararg val interfaces: KClass<*>
 )
 
