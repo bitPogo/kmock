@@ -166,7 +166,10 @@ internal interface ProcessorContract {
             resolver: Resolver
         ): Aggregated<TemplateSource>
 
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractSharedInterfaces(
+            kmockAnnotated: Map<String, List<KSAnnotated>>,
+            resolver: Resolver
+        ): Aggregated<TemplateSource>
 
         fun extractPlatformInterfaces(
             kmockAnnotated: List<KSAnnotated>,
@@ -726,6 +729,7 @@ internal interface ProcessorContract {
         val multibounded = TypeVariableName("multiboundedKmock")
 
         const val COMMON_INDICATOR = "commonTest"
+        const val PLATFORM_INDICATOR = ""
 
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"

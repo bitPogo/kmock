@@ -202,7 +202,7 @@ internal class KMockProcessor(
         commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(resolver)
+        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(emptyMap(), resolver)
         val multiAggregated = multiSourceAggregator.extractSharedInterfaces(resolver)
 
         val filteredSingleInterfaces = filter.filter(

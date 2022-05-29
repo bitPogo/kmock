@@ -23,6 +23,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_KMO
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PLATFORM_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
@@ -130,7 +131,7 @@ internal class KMockSingleSourceAggregator(
     private fun extractInterfaces(
         defaultIndicator: String,
         annotated: Sequence<KSAnnotated>,
-        kmockAnnotated: List<KSAnnotated>,
+        kmockAnnotated: Map<String, List<KSAnnotated>>,
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
@@ -151,19 +152,21 @@ internal class KMockSingleSourceAggregator(
             )
         }
 
-        kmockAnnotated.forEach { annotatedSymbol ->
-            val annotation = findKMockAnnotation(annotatedSymbol.annotations) { annotationName, _ ->
-                annotationName == ANNOTATION_KMOCK_NAME
-            }
+        kmockAnnotated.forEach { (indicator, annotatedSymbols) ->
+            annotatedSymbols.forEach { annotatedSymbol ->
+                val annotation = findKMockAnnotation(annotatedSymbol.annotations) { annotationName, _ ->
+                    annotationName == ANNOTATION_KMOCK_NAME
+                }
 
-            resolveAnnotation(
-                indicator = defaultIndicator,
-                symbol = annotatedSymbol,
-                annotation = annotation,
-                illAnnotated = illAnnotated,
-                typeContainer = typeContainer,
-                fileCollector = fileCollector
-            )
+                resolveAnnotation(
+                    indicator = indicator,
+                    symbol = annotatedSymbol,
+                    annotation = annotation,
+                    illAnnotated = illAnnotated,
+                    typeContainer = typeContainer,
+                    fileCollector = fileCollector
+                )
+            }
         }
 
         resolveInterfaces(typeContainer, templateCollector)
@@ -191,7 +194,7 @@ internal class KMockSingleSourceAggregator(
         return extractInterfaces(
             defaultIndicator = COMMON_INDICATOR,
             annotated = annotated,
-            kmockAnnotated = kmockAnnotated,
+            kmockAnnotated = mapOf(COMMON_INDICATOR to kmockAnnotated),
         ) { annotationName, _ -> ANNOTATION_COMMON_NAME == annotationName }
     }
 
@@ -211,11 +214,17 @@ internal class KMockSingleSourceAggregator(
     }
 
     override fun extractSharedInterfaces(
-        resolver: Resolver
+        kmockAnnotated: Map<String, List<KSAnnotated>>,
+        resolver: Resolver,
     ): Aggregated<TemplateSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
-        return extractInterfaces("", annotated, emptyList(), ::isSharedAnnotation)
+        return extractInterfaces(
+            "",
+            annotated,
+            kmockAnnotated,
+            ::isSharedAnnotation
+        )
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -232,9 +241,9 @@ internal class KMockSingleSourceAggregator(
         val annotated = fetchPlatformAnnotated(resolver)
 
         return extractInterfaces(
-            defaultIndicator = "",
+            defaultIndicator = PLATFORM_INDICATOR,
             annotated = annotated,
-            kmockAnnotated = kmockAnnotated,
+            kmockAnnotated = mapOf(PLATFORM_INDICATOR to kmockAnnotated),
         ) { annotationName, _ -> ANNOTATION_PLATFORM_NAME == annotationName }
     }
 
