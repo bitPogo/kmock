@@ -96,7 +96,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { relaxationAggregator.extractRelaxer(any()) } returns mockk()
@@ -197,7 +197,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalMultiPlatform, listOf(mockk()), emptyList()),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -326,7 +326,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegal, interfacesPlatform, dependenciesPlatform)
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
@@ -546,7 +546,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesPlatform, dependenciesMultiPlatform),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -824,7 +824,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegal, interfacesPlatform, dependencies)
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
@@ -975,7 +975,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesPlatform, dependenciesMulti),
             Aggregated(emptyList(), emptyList(), emptyList()),

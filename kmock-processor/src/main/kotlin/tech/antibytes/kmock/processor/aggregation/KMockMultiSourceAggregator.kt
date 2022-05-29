@@ -24,6 +24,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_KMO
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PLATFORM_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
@@ -246,11 +247,16 @@ internal class KMockMultiSourceAggregator(
     }
 
     override fun extractPlatformInterfaces(
-        resolver: Resolver
+        kmockAnnotated: List<KSAnnotated>,
+        resolver: Resolver,
     ): Aggregated<TemplateMultiSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
-        return extractInterfaces("", annotated, emptyMap()) { annotationName, _ ->
+        return extractInterfaces(
+            defaultIndicator = PLATFORM_INDICATOR,
+            annotated = annotated,
+            kmockAnnotated = mapOf(PLATFORM_INDICATOR to kmockAnnotated),
+        ) { annotationName, _ ->
             ANNOTATION_PLATFORM_MULTI_NAME == annotationName
         }
     }

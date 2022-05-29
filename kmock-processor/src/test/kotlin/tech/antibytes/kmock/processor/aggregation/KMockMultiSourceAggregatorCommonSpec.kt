@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.Mock
-import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
