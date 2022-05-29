@@ -220,10 +220,10 @@ internal class KMockSingleSourceAggregator(
         val annotated = fetchSharedAnnotated(resolver)
 
         return extractInterfaces(
-            "",
-            annotated,
-            kmockAnnotated,
-            ::isSharedAnnotation
+            defaultIndicator = "",
+            annotated = annotated,
+            kmockAnnotated = kmockAnnotated,
+            condition = ::isSharedAnnotation
         )
     }
 

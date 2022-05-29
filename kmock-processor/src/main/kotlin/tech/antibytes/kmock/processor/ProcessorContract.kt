@@ -183,14 +183,17 @@ internal interface ProcessorContract {
 
         fun extractCommonInterfaces(
             kmockAnnotated: List<KSAnnotated>,
-            resolver: Resolver
+            resolver: Resolver,
         ): Aggregated<TemplateMultiSource>
 
-        fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractSharedInterfaces(
+            kmockAnnotated: Map<String, List<KSAnnotated>>,
+            resolver: Resolver,
+        ): Aggregated<TemplateMultiSource>
 
         fun extractPlatformInterfaces(
             kmockAnnotated: List<KSAnnotated>,
-            resolver: Resolver
+            resolver: Resolver,
         ): Aggregated<TemplateMultiSource>
     }
 

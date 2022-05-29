@@ -232,11 +232,17 @@ internal class KMockMultiSourceAggregator(
     }
 
     override fun extractSharedInterfaces(
-        resolver: Resolver
+        kmockAnnotated: Map<String, List<KSAnnotated>>,
+        resolver: Resolver,
     ): Aggregated<TemplateMultiSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
-        return extractInterfaces("", annotated, emptyMap(), ::isSharedAnnotation)
+        return extractInterfaces(
+            defaultIndicator = "",
+            annotated = annotated,
+            kmockAnnotated = kmockAnnotated,
+            condition = ::isSharedAnnotation
+        )
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
