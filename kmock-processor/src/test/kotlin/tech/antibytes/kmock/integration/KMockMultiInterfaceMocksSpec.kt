@@ -57,6 +57,7 @@ class KMockMultiInterfaceMocksSpec {
     private fun compile(
         processorProvider: SymbolProcessorProvider,
         isKmp: Boolean,
+        filePath: List<String> = emptyList(),
         kspArguments: Map<String, String> = emptyMap(),
         vararg sourceFiles: SourceFile,
     ): KotlinCompilation.Result {
@@ -72,6 +73,14 @@ class KMockMultiInterfaceMocksSpec {
             it["${DEPENDENCIES}sharedTest#0"] = "otherTest"
             it["${DEPENDENCIES}sharedTest#1"] = "commonTest"
             it["${DEPENDENCIES}otherTest#0"] = "commonTest"
+        }
+
+        if (filePath.isNotEmpty()) {
+            var dir: File = buildDir
+            filePath.forEach { part ->
+                dir = File(dir, part)
+                dir.mkdir()
+            }
         }
 
         return KotlinCompilation().apply {
@@ -1277,6 +1286,200 @@ class KMockMultiInterfaceMocksSpec {
         compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
         actualMock isNot null
 
-        actualMock!!.readText().normalizeSource() mustBe expectedMock.normalizeSource()
+        actualMock?.readText()?.normalizeSource() mustBe expectedMock.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform while annotated with KMockMulti with multiple Interface it writes a mock`() {
+        // Round1
+        // Given
+        val spyProvider = SymbolProcessorProviderSpy()
+        val rootInterface = SourceFile.kotlin(
+            "src/jvmTest/Regular1.kt",
+            loadResource("/template/kmock/platform/Regular1.kt")
+        )
+        val nestedInterface = SourceFile.kotlin(
+            "src/jvmTest/nested/Regular3.kt",
+            loadResource("/template/kmock/platform/nested/Regular3.kt")
+        )
+        val scopedInterface = SourceFile.kotlin(
+            "src/jvmTest/Regular2.kt",
+            loadResource("/template/kmock/platform/Regular2.kt")
+        )
+
+        val expectedInterface = loadResource("/expected/kmock/PlatformInterface.kt")
+
+        // When
+        val compilerResultRound1 = compile(
+            spyProvider,
+            isKmp = false,
+            filePath = listOf("sources", "src", "jvmTest", "nested"),
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
+            ),
+            sourceFiles = arrayOf(rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualIntermediateInterfaces = resolveGenerated("KMockMultiInterfaceArtifacts.kt")
+
+        // Then
+        compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualIntermediateInterfaces isNot null
+        actualIntermediateInterfaces?.readText()?.normalizeSource() mustBe expectedInterface.normalizeSource()
+
+        // Round2
+        // Given
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
+        val multiInterfaceInterface = SourceFile.kotlin(
+            "KMockMultiInterfaceArtifacts.kt",
+            actualIntermediateInterfaces!!.readText()
+        )
+        val expectedMock = loadResource("/expected/kmock/Platform.kt")
+
+        // When
+        val compilerResultRound2 = compile(
+            provider,
+            filePath = listOf("sources", "src", "jvmTest", "nested"),
+            isKmp = false,
+            sourceFiles = arrayOf(multiInterfaceInterface, rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualMock = resolveGenerated("PlatformMultiMock.kt")
+
+        // Then
+        compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualMock isNot null
+
+        actualMock?.absolutePath?.endsWith("ksp/sources/kotlin/multi/PlatformMultiMock.kt") mustBe true
+        actualMock?.readText()?.normalizeSource() mustBe expectedMock.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Shared Source while annotated with KMockMulti with multiple Interface it writes a mock`() {
+        // Round1
+        // Given
+        val spyProvider = SymbolProcessorProviderSpy()
+        val rootInterface = SourceFile.kotlin(
+            "src/sharedTest/Regular1.kt",
+            loadResource("/template/kmock/shared/Regular1.kt")
+        )
+        val nestedInterface = SourceFile.kotlin(
+            "src/sharedTest/nested/Regular3.kt",
+            loadResource("/template/kmock/shared/nested/Regular3.kt")
+        )
+        val scopedInterface = SourceFile.kotlin(
+            "src/sharedTest/Regular2.kt",
+            loadResource("/template/kmock/shared/Regular2.kt")
+        )
+
+        val expectedInterface = loadResource("/expected/kmock/SharedInterface.kt")
+
+        // When
+        val compilerResultRound1 = compile(
+            spyProvider,
+            isKmp = true,
+            filePath = listOf("sources", "src", "sharedTest", "nested"),
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
+            ),
+            sourceFiles = arrayOf(rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualIntermediateInterfaces = resolveGenerated("KMockMultiInterfaceArtifacts.kt")
+
+        // Then
+        compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualIntermediateInterfaces isNot null
+        actualIntermediateInterfaces?.readText()?.normalizeSource() mustBe expectedInterface.normalizeSource()
+
+        // Round2
+        // Given
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
+        val multiInterfaceInterface = SourceFile.kotlin(
+            "KMockMultiInterfaceArtifacts.kt",
+            actualIntermediateInterfaces!!.readText()
+        )
+        val expectedMock = loadResource("/expected/kmock/Shared.kt")
+
+        // When
+        val compilerResultRound2 = compile(
+            provider,
+            filePath = listOf("sources", "src", "sharedTest", "nested"),
+            isKmp = true,
+            sourceFiles = arrayOf(multiInterfaceInterface, rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualMock = resolveGenerated("SharedMultiMock.kt")
+
+        // Then
+        compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualMock isNot null
+
+        actualMock?.absolutePath?.endsWith(
+            "ksp/sources/kotlin/shared/sharedTest/kotlin/multi/SharedMultiMock.kt"
+        ) mustBe true
+        actualMock?.readText()?.normalizeSource() mustBe expectedMock.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Common Source while annotated with KMockMulti with multiple Interface it writes a mock`() {
+        // Round1
+        // Given
+        val spyProvider = SymbolProcessorProviderSpy()
+        val rootInterface = SourceFile.kotlin(
+            "src/commonTest/Regular1.kt",
+            loadResource("/template/kmock/common/Regular1.kt")
+        )
+        val nestedInterface = SourceFile.kotlin(
+            "src/commonTest/nested/Regular3.kt",
+            loadResource("/template/kmock/common/nested/Regular3.kt")
+        )
+        val scopedInterface = SourceFile.kotlin(
+            "src/commonTest/Regular2.kt",
+            loadResource("/template/kmock/common/Regular2.kt")
+        )
+
+        val expectedInterface = loadResource("/expected/kmock/CommonInterface.kt")
+
+        // When
+        val compilerResultRound1 = compile(
+            spyProvider,
+            isKmp = true,
+            filePath = listOf("sources", "src", "commonTest", "nested"),
+            kspArguments = mapOf(
+                "${KMOCK_PREFIX}allowInterfaces" to "true",
+            ),
+            sourceFiles = arrayOf(rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualIntermediateInterfaces = resolveGenerated("KMockMultiInterfaceArtifacts.kt")
+
+        // Then
+        compilerResultRound1.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualIntermediateInterfaces isNot null
+        actualIntermediateInterfaces?.readText()?.normalizeSource() mustBe expectedInterface.normalizeSource()
+
+        // Round2
+        // Given
+        val provider = ShallowSymbolProcessorProvider(spyProvider.lastProcessor)
+        val multiInterfaceInterface = SourceFile.kotlin(
+            "KMockMultiInterfaceArtifacts.kt",
+            actualIntermediateInterfaces!!.readText()
+        )
+        val expectedMock = loadResource("/expected/kmock/Common.kt")
+
+        // When
+        val compilerResultRound2 = compile(
+            provider,
+            filePath = listOf("sources", "src", "commonTest", "nested"),
+            isKmp = true,
+            sourceFiles = arrayOf(multiInterfaceInterface, rootInterface, nestedInterface, scopedInterface)
+        )
+        val actualMock = resolveGenerated("CommonMultiMock.kt")
+
+        // Then
+        compilerResultRound2.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actualMock isNot null
+
+        actualMock?.absolutePath?.endsWith(
+            "ksp/sources/kotlin/common/commonTest/kotlin/multi/CommonMultiMock.kt"
+        ) mustBe true
+
+        actualMock?.readText()?.normalizeSource() mustBe expectedMock.normalizeSource()
     }
 }

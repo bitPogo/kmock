@@ -23,12 +23,10 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
-import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.MultiMockShared
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kmock.processor.ProcessorContract
