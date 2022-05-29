@@ -86,7 +86,7 @@ You can use the following properties of FunProxies:
     `throwsMany` is used over  `throws`, returns` is used over `throwsMany`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
     If no behaviour is set the Proxy simply fails and acts therefore intrusively.
 
-A last word to SideEffects. 
+A last word to SideEffects.
 While they in general using the signature of the Template Method and therefore you can the full power of the Kotlin's type system, there is one exception to this.
 If you work with [Multi-Boundary Generics](https://kotlinlang.org/docs/generics.html) and declare them on Method level KMock cannot derive a certain type, since Kotlin has no Union Types per se.
 This means those types are derived as `Any` and you have to make sure to cast them correctly if you use them.
@@ -120,7 +120,7 @@ fun sampleTest() {
    ...
 }
 ```
-Setters are can be only a SideEffect are not required to run Mock to be assigned. 
+Setters are can be only a SideEffect are not required to run Mock to be assigned.
 Getters can be either stubs or a SideEffect.
 Both - Setter and Getter - do not allow multiple SideEffects since this should be considered as a clear sign that the usage of method is more appropriate instead.
 
@@ -146,7 +146,7 @@ The first argument of those methods will be always the type of the Receiver.
 In case the Template is a Property Receiver, KMock generates one or two methods which depends on the mutability of the Template Receiver.
 Additionally the generated Proxy is suffixed with `Getter`/`Setter`.
 In case the Template is a Method Receiver, KMock will just suffix the Name with a additional `Receiver`.
-Unlike other libraries this makes it possible to access Receivers directly without the need of any workaround to reference them. 
+Unlike other libraries this makes it possible to access Receivers directly without the need of any workaround to reference them.
 
 ## The KMock Factory
 As you might already seen at this point KMock generates also Factories to ease the initialization of Mocks.
@@ -185,8 +185,8 @@ fun sampleTest() {
 }
 ```
 
-Also KMock will not merge compatible Generic Types, since it cannot be sure if they are independent or not. 
-This means if you reference the Mock you always have to explicitly declare all generics. 
+Also KMock will not merge compatible Generic Types, since it cannot be sure if they are independent or not.
+This means if you reference the Mock you always have to explicitly declare all generics.
 
 ## Teardown
 All Mocks are generated with a `_clearMock` method which clears all Proxies owned by the Mock.
@@ -199,12 +199,12 @@ This enables you to use Mocks per test suite and not only per test case:
 )
 class SampleTestSet {
     private val someInstance: SomeInterfaceMock = kmock()
-    
+
     @AfterTest
     fun tearDown() {
         someInstance._clearMock()
     }
-    
+
     @Test
     fun sampleTest() {
         ...

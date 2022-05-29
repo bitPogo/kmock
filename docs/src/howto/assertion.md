@@ -12,7 +12,7 @@ While those methods will behave similarly in each Context, they have different n
 fun sampleTest() {
     // arrange
     val someInstance: SampleRemoteRepositoryMock = kmock()
-    
+
     ...
 
     // assert
@@ -57,7 +57,7 @@ fun sampleTest() {
 ```
 
 Internally all concrete types will be converted in a `eq` constraint.
-For example an Expectation Method is called with `42`. 
+For example an Expectation Method is called with `42`.
 `42` will be converted into `eq(42)`.
 Currently the following constraints are implemented:
 
@@ -93,11 +93,11 @@ fun sampleTest() {
     verify(atLeast = 1) {
         someInstance._find.hasBeenCalledWith(any(String::class))
     }
-    
+
     assertProxy {
         someInstance._fetch.hasBeenCalledWith(any(String::class))
         someInstance._fetch.hasBeenCalledWith(any(String::class))
-        
+
         someInstance._find.hasBeenCalledWith(any(String::class))
     }
 }
@@ -132,7 +132,7 @@ KMock will offer you following possibility to verify the invocations:
 fun sampleTest() {
     // arrange
     val someInstance: SampleThingMock = kmock()
-    
+
     ...
     verify(atLeast = 1) {
         someInstance._find.method("payload", 23, "any") or
@@ -147,7 +147,7 @@ Instead of:
 fun sampleTest() {
     // arrange
     val someInstance: SampleThingMock = kmock()
-    
+
     ...
     verify(atLeast = 1) {
         someInstance._find.method("payload", or(eq(23), eq(42)), or(eq("any"), eq("notAny")))
@@ -174,6 +174,8 @@ To make this possible you need to inject a Asserter/Verifier into the Mocks when
 
 !!!note
     Asserter and Verifier are the same. In fact Verifier is a type alias of Asserter.
+!!!import
+    Make sure you use the fitting type of Asserter/Verifier according to the [Memory Model](advanced.md).
 
 ```kotlin
 fun sampleTest() {
@@ -221,6 +223,10 @@ fun sampleTest() {
 * `assertOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` and are not only these invocations.
 * `verifyStrictOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before that chain.
 * `verifyOrder` will fail if the invocation is not in the relative order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before, after or in between them.
+
+## Teardown
+As with Mocks Verifier/Asserter have a `clear` method, which opens them up for reuse.
+So do not forget to call it.
 
 ## Compatibility with Proxy Access Methods
 

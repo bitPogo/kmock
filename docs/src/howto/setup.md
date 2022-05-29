@@ -76,6 +76,8 @@ In order to spy based on a certain template KMock offers you the `spyOn`.
 It expects a set of full qualified names of templates which are allowing spies.
 !!!note
     This will enable build-in methods for this particular mock as well.
+!!!note
+    Spies for Multi-Mocks will triggered if one Interface can be spied on.
 ```kotlin
 kmock {
     ...
@@ -107,6 +109,8 @@ kmock {
     spiesOnly = true
 }
 ```
+!!!note
+    `spiesOnly` will trigger that all Mocks can are spied on like `spyAll`.
 
 ### Enable Interface References
 In order to be able to utilize interfaces for the `kmock` or `kspy` factory you can enable this via `allowInterfaces`:
