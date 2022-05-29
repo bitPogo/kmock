@@ -113,6 +113,7 @@ nav:
       - Terminology: howto/terminology.md
       - Installation: howto/install.md
       - Setup: howto/setup.md
+      - Declaring a Mock: howto/annotations.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md
