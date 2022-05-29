@@ -552,6 +552,10 @@ public abstract interface annotation class tech/antibytes/kmock/KMockMulti : jav
 	public abstract fun name ()Ljava/lang/String;
 }
 
+public abstract interface annotation class tech/antibytes/kmock/KMockMulti$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Ltech/antibytes/kmock/KMockMulti;
+}
+
 public abstract interface annotation class tech/antibytes/kmock/Mock : java/lang/annotation/Annotation {
 	public abstract fun interfaces ()[Ljava/lang/Class;
 }
