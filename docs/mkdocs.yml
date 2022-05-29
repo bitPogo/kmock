@@ -116,6 +116,7 @@ nav:
       - Setup: howto/setup.md
       - Declaring a Mock: howto/annotations.md
       - Using Mocks: howto/proxy.md
+      - Assertion/Verification: howto/assertion.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md
