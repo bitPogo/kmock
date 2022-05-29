@@ -151,11 +151,12 @@ internal class KMockProcessor(
 
     private fun stubCommonSources(
         resolver: Resolver,
-        kmockAnnotated: List<KSAnnotated>,
+        kmockSingleAnnotated: List<KSAnnotated>,
+        kmockMultiAnnotated: List<KSAnnotated>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(kmockAnnotated, resolver)
-        val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(resolver)
+        val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(kmockSingleAnnotated, resolver)
+        val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(kmockMultiAnnotated, resolver)
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
@@ -201,12 +202,13 @@ internal class KMockProcessor(
 
     private fun stubSharedSources(
         resolver: Resolver,
-        kmockAnnotated: Map<String, List<KSAnnotated>>,
+        kmockSingleAnnotated: Map<String, List<KSAnnotated>>,
+        kmockMultiAnnotated: Map<String, List<KSAnnotated>>,
         commonAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(kmockAnnotated, resolver)
-        val multiAggregated = multiSourceAggregator.extractSharedInterfaces(resolver)
+        val singleAggregated = singleSourceAggregator.extractSharedInterfaces(kmockSingleAnnotated, resolver)
+        val multiAggregated = multiSourceAggregator.extractSharedInterfaces(kmockMultiAnnotated, resolver)
 
         val filteredSingleInterfaces = filter.filter(
             templateSources = filter.filterByDependencies(singleAggregated.extractedTemplates),
@@ -262,13 +264,14 @@ internal class KMockProcessor(
 
     private fun stubPlatformSources(
         resolver: Resolver,
-        kmockAnnotated: List<KSAnnotated>,
+        kmockSingleAnnotated: List<KSAnnotated>,
+        kmockMultiAnnotated: List<KSAnnotated>,
         commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
-        val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated, resolver)
-        val multiAggregated = multiSourceAggregator.extractPlatformInterfaces(resolver)
+        val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(kmockSingleAnnotated, resolver)
+        val multiAggregated = multiSourceAggregator.extractPlatformInterfaces(kmockMultiAnnotated, resolver)
 
         val filteredSingleInterfaces = filter.filter(
             templateSources = singleAggregated.extractedTemplates,
@@ -303,18 +306,21 @@ internal class KMockProcessor(
 
     private fun extractMetaSources(
         resolver: Resolver,
-        kmockAnnotated: AnnotationContainer,
+        kmockSingleAnnotated: AnnotationContainer,
+        kmockMultiAnnotated: AnnotationContainer,
         relaxer: Relaxer?,
     ): Pair<Aggregated<TemplateSource>, Aggregated<TemplateSource>> {
         return if (isKmp) {
             val commonAggregated = stubCommonSources(
                 resolver = resolver,
-                kmockAnnotated = kmockAnnotated.common,
+                kmockSingleAnnotated = kmockSingleAnnotated.common,
+                kmockMultiAnnotated = kmockMultiAnnotated.common,
                 relaxer = relaxer,
             )
             val sharedAggregated = stubSharedSources(
                 resolver = resolver,
-                kmockAnnotated = kmockAnnotated.shared,
+                kmockSingleAnnotated = kmockSingleAnnotated.shared,
+                kmockMultiAnnotated = kmockMultiAnnotated.shared,
                 commonAggregated = commonAggregated,
                 relaxer = relaxer
             )
@@ -406,23 +412,28 @@ internal class KMockProcessor(
         )
     }
 
-    private fun extractKmockAnnotated(resolver: Resolver): AnnotationContainer {
-        return singleSourceAggregator.extractKmockInterfaces(resolver)
+    private fun extractKmockAnnotated(resolver: Resolver): Pair<AnnotationContainer, AnnotationContainer> {
+        return Pair(
+            singleSourceAggregator.extractKmockInterfaces(resolver),
+            multiSourceAggregator.extractKmockInterfaces(resolver),
+        )
     }
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val relaxer = extractRelaxer(resolver)
-        val kmockAnnotated = extractKmockAnnotated(resolver)
+        val (kmockSingleAnnotated, kmockMultiAnnotated) = extractKmockAnnotated(resolver)
 
         val (commonAggregated, sharedAggregated) = extractMetaSources(
             resolver = resolver,
-            kmockAnnotated = kmockAnnotated,
+            kmockSingleAnnotated = kmockSingleAnnotated,
+            kmockMultiAnnotated = kmockMultiAnnotated,
             relaxer = relaxer,
         )
 
         val platformAggregated = stubPlatformSources(
             resolver = resolver,
-            kmockAnnotated = kmockAnnotated.platform,
+            kmockSingleAnnotated = kmockSingleAnnotated.platform,
+            kmockMultiAnnotated = kmockMultiAnnotated.platform,
             commonAggregated = commonAggregated,
             sharedAggregated = sharedAggregated,
             relaxer = relaxer

@@ -23,6 +23,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kmock.KMockExperimental
+import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.MultiMockCommon
@@ -110,7 +112,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             mockk(),
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -154,7 +156,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             mockk(),
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         illegal mustBe listOf(symbol)
@@ -218,7 +220,7 @@ class KMockMultiSourceAggregatorCommonSpec {
                 mockk(),
                 mockk(),
                 emptyMap(),
-            ).extractCommonInterfaces(resolver)
+            ).extractCommonInterfaces(emptyList(), resolver)
         }
 
         // Then
@@ -305,7 +307,7 @@ class KMockMultiSourceAggregatorCommonSpec {
                 mockk(),
                 mockk(),
                 emptyMap(),
-            ).extractCommonInterfaces(resolver)
+            ).extractCommonInterfaces(emptyList(), resolver)
         }
 
         // Then
@@ -386,7 +388,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             genericResolver,
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -478,7 +480,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             genericResolver,
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -590,7 +592,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             genericResolver,
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         interfaces mustBe listOf(
@@ -672,7 +674,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -758,7 +760,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             mockk(),
             mockk(relaxed = true),
             emptyMap(),
-        ).extractCommonInterfaces(resolver)
+        ).extractCommonInterfaces(emptyList(), resolver)
 
         // Then
         sourceFiles mustBe listOf(file)
@@ -770,6 +772,130 @@ class KMockMultiSourceAggregatorCommonSpec {
                 templates = listOf(declaration),
                 generics = listOf(emptyMap()),
                 dependencies = listOf(file)
+            )
+        )
+        verify(exactly = 1) {
+            resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
+        }
+    }
+
+    @OptIn(KMockExperimental::class)
+    @Test
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files, while merging kmock annotations`() {
+        // Given
+        val logger: KSPLogger = mockk()
+        val rootPackage: String = fixture.fixture()
+        val symbolFetch: KSAnnotated = mockk()
+        val symbolGiven: KSAnnotated = mockk()
+        val fileFetched: KSFile = mockk()
+        val fileGiven: KSFile = mockk()
+        val resolver: Resolver = mockk()
+
+        val annotationFetched: KSAnnotation = mockk()
+        val sourceAnnotationsFetched: Sequence<KSAnnotation> = sequence {
+            yield(annotationFetched)
+        }
+
+        val annotationGiven: KSAnnotation = mockk()
+        val sourceAnnotationsGiven: Sequence<KSAnnotation> = sequence {
+            yield(annotationGiven)
+        }
+
+        val annotated: Sequence<KSAnnotated> = sequence {
+            yield(symbolFetch)
+        }
+
+        val typeFetched: KSType = mockk(relaxed = true)
+        val declarationFetched: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsFetched: List<KSValueArgument> = mockk()
+
+        val valuesFetched: List<KSType> = listOf(typeFetched)
+
+        val mockNameFetched: String = fixture.fixture(named("stringAlpha"))
+        val packageNameFetched: String = fixture.fixture(named("stringAlpha"))
+
+        val typeGiven: KSType = mockk(relaxed = true)
+        val declarationGiven: KSClassDeclaration = mockk(relaxed = true)
+        val argumentsGiven: List<KSValueArgument> = mockk()
+
+        val valuesGiven: List<KSType> = listOf(typeGiven)
+
+        val mockNameGiven: String = fixture.fixture(named("stringAlpha"))
+        val packageNameGiven: String = fixture.fixture(named("stringAlpha"))
+
+        every {
+            resolver.getSymbolsWithAnnotation(any(), any())
+        } returns annotated
+
+        every {
+            annotationFetched.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns MultiMockCommon::class.qualifiedName!!
+
+        every {
+            annotationGiven.annotationType.resolve().declaration.qualifiedName!!.asString()
+        } returns KMockMulti::class.qualifiedName!!
+
+        every { symbolFetch.annotations } returns sourceAnnotationsFetched
+        every { symbolGiven.annotations } returns sourceAnnotationsGiven
+
+        every { annotationFetched.arguments } returns argumentsFetched
+        every { argumentsFetched.size } returns 2
+        every { argumentsFetched.isEmpty() } returns false
+        every { argumentsFetched[0].value } returns mockNameFetched
+        every { argumentsFetched[1].value } returns valuesFetched
+        every { typeFetched.declaration } returns declarationFetched
+        every { declarationFetched.classKind } returns ClassKind.INTERFACE
+
+        every { annotationGiven.arguments } returns argumentsGiven
+        every { argumentsGiven.size } returns 2
+        every { argumentsGiven.isEmpty() } returns false
+        every { argumentsGiven[0].value } returns mockNameGiven
+        every { argumentsGiven[1].value } returns valuesGiven
+        every { typeGiven.declaration } returns declarationGiven
+        every { declarationGiven.classKind } returns ClassKind.INTERFACE
+
+        every { fileFetched.parent } returns null
+        every { symbolFetch.parent } returns fileFetched
+
+        every { fileGiven.parent } returns null
+        every { symbolGiven.parent } returns fileGiven
+
+        every { declarationFetched.parentDeclaration } returns null
+        every { declarationFetched.packageName.asString() } returns packageNameFetched
+
+        every { declarationGiven.parentDeclaration } returns null
+        every { declarationGiven.packageName.asString() } returns packageNameGiven
+
+        every { logger.error(any()) } just Runs
+
+        // When
+        val (_, interfaces, sourceFiles) = KMockMultiSourceAggregator(
+            logger,
+            rootPackage,
+            mockk(),
+            mockk(),
+            mockk(relaxed = true),
+            emptyMap(),
+        ).extractCommonInterfaces(listOf(symbolGiven), resolver)
+
+        // Then
+        sourceFiles mustBe listOf(fileFetched, fileGiven)
+        interfaces mustBe listOf(
+            TemplateMultiSource(
+                indicator = "commonTest",
+                templateName = mockNameFetched,
+                packageName = rootPackage,
+                templates = listOf(declarationFetched),
+                generics = listOf(emptyMap()),
+                dependencies = listOf(fileFetched)
+            ),
+            TemplateMultiSource(
+                indicator = "commonTest",
+                templateName = mockNameGiven,
+                packageName = rootPackage,
+                templates = listOf(declarationGiven),
+                generics = listOf(emptyMap()),
+                dependencies = listOf(fileGiven)
             )
         )
         verify(exactly = 1) {

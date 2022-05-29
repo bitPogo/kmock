@@ -76,11 +76,15 @@ class KMockProcessorSpec {
         } returns mockk(relaxed = true)
 
         every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returns mockk(relaxed = true)
+
+        every {
             singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(illegalCommon, listOf(mockk()), listOf(mockk()))
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -88,7 +92,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegalShared, listOf(mockk()), listOf(mockk()))
 
         every {
-            multiSourceAggregator.extractSharedInterfaces(any())
+            multiSourceAggregator.extractSharedInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -96,7 +100,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { relaxationAggregator.extractRelaxer(any()) } returns mockk()
@@ -162,6 +166,10 @@ class KMockProcessorSpec {
         } returns mockk(relaxed = true)
 
         every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returns mockk(relaxed = true)
+
+        every {
             singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalCommonRound1, listOf(mockk()), listOf(mockk())),
@@ -169,7 +177,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalMultiCommon, listOf(mockk()), emptyList()),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -183,7 +191,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractSharedInterfaces(any())
+            multiSourceAggregator.extractSharedInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalMultiShared, listOf(mockk()), emptyList()),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -197,7 +205,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalMultiPlatform, listOf(mockk()), emptyList()),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -306,11 +314,19 @@ class KMockProcessorSpec {
         } returns kmockAnnotated
 
         every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returns AnnotationContainer(
+            common = emptyList(),
+            shared = emptyMap(),
+            platform = emptyList(),
+        )
+
+        every {
             singleSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(illegal, interfacesCommon, dependenciesCommon)
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -318,7 +334,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegal, interfacesShared, dependenciesShared)
 
         every {
-            multiSourceAggregator.extractSharedInterfaces(any())
+            multiSourceAggregator.extractSharedInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -326,7 +342,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegal, interfacesPlatform, dependenciesPlatform)
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
@@ -375,11 +391,23 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 1) {
+            multiSourceAggregator.extractCommonInterfaces(emptyList(), resolver)
+        }
+
+        verify(exactly = 1) {
             singleSourceAggregator.extractSharedInterfaces(kmockAnnotated.shared, resolver)
         }
 
         verify(exactly = 1) {
+            multiSourceAggregator.extractSharedInterfaces(emptyMap(), resolver)
+        }
+
+        verify(exactly = 1) {
             singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated.platform, resolver)
+        }
+
+        verify(exactly = 1) {
+            multiSourceAggregator.extractPlatformInterfaces(emptyList(), resolver)
         }
 
         verify(exactly = 1) {
@@ -497,7 +525,13 @@ class KMockProcessorSpec {
             dependenciesMultiPlatform,
         ).flatten()
 
-        val kmockAnnotated = AnnotationContainer(
+        val kmockSingleAnnotated = AnnotationContainer(
+            common = listOf(mockk()),
+            shared = mapOf(fixture.fixture<String>() to listOf(mockk())),
+            platform = listOf(mockk()),
+        )
+
+        val kmockMultiAnnotated = AnnotationContainer(
             common = listOf(mockk()),
             shared = mapOf(fixture.fixture<String>() to listOf(mockk())),
             platform = listOf(mockk()),
@@ -506,7 +540,14 @@ class KMockProcessorSpec {
         every {
             singleSourceAggregator.extractKmockInterfaces(any())
         } returnsMany listOf(
-            kmockAnnotated,
+            kmockSingleAnnotated,
+            AnnotationContainer(emptyList(), emptyMap(), emptyList())
+        )
+
+        every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returnsMany listOf(
+            kmockMultiAnnotated,
             AnnotationContainer(emptyList(), emptyMap(), emptyList())
         )
 
@@ -518,7 +559,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesCommon, dependenciesMultiCommon),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -532,7 +573,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractSharedInterfaces(any())
+            multiSourceAggregator.extractSharedInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesShared, dependenciesMultiShared),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -546,7 +587,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesPlatform, dependenciesMultiPlatform),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -601,15 +642,27 @@ class KMockProcessorSpec {
 
         // Then
         verify(exactly = 1) {
-            singleSourceAggregator.extractCommonInterfaces(kmockAnnotated.common, resolver)
+            singleSourceAggregator.extractCommonInterfaces(kmockSingleAnnotated.common, resolver)
         }
 
         verify(exactly = 1) {
-            singleSourceAggregator.extractSharedInterfaces(kmockAnnotated.shared, resolver)
+            multiSourceAggregator.extractCommonInterfaces(kmockMultiAnnotated.common, resolver)
         }
 
         verify(exactly = 1) {
-            singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated.platform, resolver)
+            singleSourceAggregator.extractSharedInterfaces(kmockSingleAnnotated.shared, resolver)
+        }
+
+        verify(exactly = 1) {
+            multiSourceAggregator.extractSharedInterfaces(kmockMultiAnnotated.shared, resolver)
+        }
+
+        verify(exactly = 1) {
+            singleSourceAggregator.extractPlatformInterfaces(kmockSingleAnnotated.platform, resolver)
+        }
+
+        verify(exactly = 1) {
+            multiSourceAggregator.extractPlatformInterfaces(kmockMultiAnnotated.platform, resolver)
         }
 
         verify(exactly = 1) {
@@ -820,11 +873,19 @@ class KMockProcessorSpec {
         } returns kmockAnnotated
 
         every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returns AnnotationContainer(
+            common = emptyList(),
+            shared = emptyMap(),
+            platform = emptyList(),
+        )
+
+        every {
             singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(illegal, interfacesPlatform, dependencies)
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every { filter.filter<Source>(any(), any()) } returnsMany listOf(
@@ -866,11 +927,23 @@ class KMockProcessorSpec {
         }
 
         verify(exactly = 0) {
+            multiSourceAggregator.extractCommonInterfaces(any(), resolver)
+        }
+
+        verify(exactly = 0) {
             singleSourceAggregator.extractSharedInterfaces(kmockAnnotated.shared, resolver)
+        }
+
+        verify(exactly = 0) {
+            multiSourceAggregator.extractSharedInterfaces(any(), resolver)
         }
 
         verify(exactly = 1) {
             singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated.platform, resolver)
+        }
+
+        verify(exactly = 1) {
+            multiSourceAggregator.extractPlatformInterfaces(emptyList(), resolver)
         }
 
         verify(exactly = 1) { singleSourceAggregator.extractPlatformInterfaces(any(), any()) }
@@ -953,7 +1026,13 @@ class KMockProcessorSpec {
         val dependencies: List<KSFile> = listOf(mockk())
         val dependenciesMulti: List<KSFile> = listOf(mockk())
 
-        val kmockAnnotated = AnnotationContainer(
+        val kmockSingleAnnotated = AnnotationContainer(
+            common = listOf(mockk()),
+            shared = mapOf(fixture.fixture<String>() to listOf(mockk())),
+            platform = listOf(mockk()),
+        )
+
+        val kmockMultiAnnotated = AnnotationContainer(
             common = listOf(mockk()),
             shared = mapOf(fixture.fixture<String>() to listOf(mockk())),
             platform = listOf(mockk()),
@@ -962,7 +1041,14 @@ class KMockProcessorSpec {
         every {
             singleSourceAggregator.extractKmockInterfaces(any())
         } returnsMany listOf(
-            kmockAnnotated,
+            kmockSingleAnnotated,
+            AnnotationContainer(emptyList(), emptyMap(), emptyList())
+        )
+
+        every {
+            multiSourceAggregator.extractKmockInterfaces(any())
+        } returnsMany listOf(
+            kmockMultiAnnotated,
             AnnotationContainer(emptyList(), emptyMap(), emptyList())
         )
 
@@ -975,7 +1061,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractPlatformInterfaces(any())
+            multiSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesPlatform, dependenciesMulti),
             Aggregated(emptyList(), emptyList(), emptyList()),
@@ -1020,15 +1106,27 @@ class KMockProcessorSpec {
 
         // Then
         verify(exactly = 0) {
-            singleSourceAggregator.extractCommonInterfaces(kmockAnnotated.common, resolver)
+            singleSourceAggregator.extractCommonInterfaces(kmockSingleAnnotated.common, resolver)
         }
 
         verify(exactly = 0) {
-            singleSourceAggregator.extractSharedInterfaces(kmockAnnotated.shared, resolver)
+            multiSourceAggregator.extractCommonInterfaces(kmockMultiAnnotated.common, resolver)
+        }
+
+        verify(exactly = 0) {
+            singleSourceAggregator.extractSharedInterfaces(kmockSingleAnnotated.shared, resolver)
+        }
+
+        verify(exactly = 0) {
+            multiSourceAggregator.extractSharedInterfaces(kmockMultiAnnotated.shared, resolver)
         }
 
         verify(exactly = 1) {
-            singleSourceAggregator.extractPlatformInterfaces(kmockAnnotated.platform, resolver)
+            singleSourceAggregator.extractPlatformInterfaces(kmockSingleAnnotated.platform, resolver)
+        }
+
+        verify(exactly = 1) {
+            multiSourceAggregator.extractPlatformInterfaces(kmockMultiAnnotated.platform, resolver)
         }
 
         verify(exactly = 1) { singleSourceAggregator.extractPlatformInterfaces(emptyList(), resolver) }

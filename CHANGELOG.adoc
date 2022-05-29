@@ -51,6 +51,7 @@ toc::[]
 * `throwsMany` for FunProxies to align the the FunProxy API
 * `enableFineGrainedNames` in order to allow fine grained typing (experimental/not this will feature helps you only in a non JVM context)
 * `KMock` experimental annotation, which is agnostic in terms of source sets
+* `KMockMulti` experimental annotation, which is agnostic in terms of source sets
 
 === Changed
 

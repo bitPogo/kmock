@@ -547,6 +547,11 @@ public abstract interface class tech/antibytes/kmock/KMockContract$VerificationC
 public abstract interface annotation class tech/antibytes/kmock/KMockExperimental : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class tech/antibytes/kmock/KMockMulti : java/lang/annotation/Annotation {
+	public abstract fun interfaces ()[Ljava/lang/Class;
+	public abstract fun name ()Ljava/lang/String;
+}
+
 public abstract interface annotation class tech/antibytes/kmock/Mock : java/lang/annotation/Annotation {
 	public abstract fun interfaces ()[Ljava/lang/Class;
 }
