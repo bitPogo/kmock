@@ -107,6 +107,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Quickstart: quickstart.md
   - Changelog: changelog.md
   - Roadmap: roadmap.md
   - Concept: concept.md

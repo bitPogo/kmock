@@ -45,7 +45,7 @@ mkdocs {
     }
     publish.generateVersionsFile = true
 
-    strict = false
+    strict = true
 
     extras = mapOf(
         "version" to version,

@@ -53,7 +53,6 @@ Every change has to branch of from `main` and use this branch naming convention:
 
 Examples:
 
-- `feature/ISSUE-456/add-awesome-hashing-algorithm`
 - `feature/add-awesome-hashing-algorithm`
 - `feature/remove-not-so-awesome-algorithm`
 - `feature/fix-algorithm-corner-case`
@@ -70,19 +69,21 @@ If you (going to) contribute, please make sure you made clear which problem you 
 Please use our title pattern: `{type of change} {short description}`:
 
 `type of change` can be:
-- *Add* for new features or functionality
-- *Change* for changes in existing features or functionality
-- *Deprecated* for features which are at their end of life and will be removed in the future
-- *Remove* for removed features or functionality
-- *Fix* for any bug fixes
-- *Security* in case of vulnerabilities
-- *Bump* for dependency updates
-- `short description` of your change
+
+- *Add* for new features or functionality,
+- *Change* for changes in existing features or functionality,
+- *Deprecated* for features which are at their end of life and will be removed in the future,
+- *Remove* for removed features or functionality,
+- *Fix* for any bug fixes,
+- *Security* in case of vulnerabilities,
+- *Bump* for dependency updates,
+
+followed by a `short description` of your change.
 
 Example:
 
-- Added awesome hashing algorithm
-- [Issue-156] Changed thumbnail generation
+- Add awesome hashing algorithm
+- Changed thumbnail generation
 
 Pull requests must fill the provided template. Put N/A when a paragraph cannot be filled.
 
