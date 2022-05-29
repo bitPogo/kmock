@@ -18,10 +18,32 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
                 }
             }
         }
+        dependencies {
+            ...
+            classpath("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+        }
+    }
+
+    allprojects {
+            ...
+        repositories {
+            ...
+            maven {
+                url = java.net.URI("https://maven.pkg.github.com/bitPogo/kmock")
+                credentials {
+                    username = project.findProperty("gpr.user")?.toString()
+                        ?: System.getenv("GITHUB_USER")
+                    password = project.findProperty("gpr.key")?.toString()
+                        ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
     }
     ```
 
-=== "buildSrc"
+=== "BuildSrc"
+
+    In your buildSrc/build.gradle.kts:
     ```kotlin
     repositories {
         ...
@@ -30,6 +52,29 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("PACKAGE_REGISTRY_DOWNLOAD_TOKEN")
+            }
+        }
+    }
+
+    dependencies {
+        implementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion")
+    }
+    ```
+
+    In your root project build.gradle.kts:
+    ```kotlin
+    allprojects {
+            ...
+        repositories {
+            ...
+            maven {
+                url = java.net.URI("https://maven.pkg.github.com/bitPogo/kmock")
+                credentials {
+                    username = project.findProperty("gpr.user")?.toString()
+                        ?: System.getenv("GITHUB_USER")
+                    password = project.findProperty("gpr.key")?.toString()
+                        ?: System.getenv("GITHUB_TOKEN")
+                }
             }
         }
     }
@@ -44,24 +89,58 @@ In case you need to consume snapshots:
             maven {
                 url = java.net.URI("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
 
-            content {
-                includeGroup("tech.antibytes.kmock")
+                content {
+                    includeGroup("tech.antibytes.kmock")
+                }
+            }
+        }
+    }
+    ...
+
+    allprojects {
+            ...
+        repositories {
+            ...
+            maven {
+                url = java.net.URI("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
+                content {
+                    includeGroup("tech.antibytes.kmock")
+                }
             }
         }
     }
     ```
 
-=== "buildSrc"
+=== "BuildSrc"
+
+    In your buildSrc/build.gradle.kts:
     ```kotlin
     repositories {
         ...
         maven {
-        url = java.net.URI("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
+            url = java.net.URI("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
 
             content {
                 includeGroup("tech.antibytes.kmock")
             }
         }
+    }
+    ...
+    ```
+    In your root project build.grade.kts:
+    ```kotlin
+    allprojects {
+            ...
+        repositories {
+            ...
+            maven {
+                url = java.net.URI("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
+                content {
+                    includeGroup("tech.antibytes.kmock")
+                }
+            }
+        }
+    }
     ```
 
 !!!warning
@@ -189,3 +268,54 @@ In case you need to consume snapshots:
 
 !!!tip
     You may find a full examples, how to set up KMock properly in the [Playground](https://github.com/bitPogo/kmock-playground).
+
+## Newer KSP or Kotlin Version
+KMock may not use the latest Kotlin and KSP version.
+This is mainly done due to the fact to enable also projects with those versions to use.
+However since this might cause problems or noise you can force a new version of KSP:
+
+=== "BuildScript"
+    ```kotlin
+    buildscript {
+        ...
+        dependencies {
+            classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+            classpath("tech.antibytes.kmock:kmock-gradle:0.1.1-SNAPSHOT") {
+                exclude(
+                    group = "com.google.devtools.ksp",
+                    module = "symbol-processing-api"
+                )
+                exclude(
+                    group = "com.google.devtools.ksp",
+                    module = "com.google.devtools.ksp.gradle.plugin"
+                )
+            }
+            classpath("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
+            classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.6.21-1.0.5")
+        }
+    }
+    ```
+=== "BuildSrc"
+
+    In your buildSrc/build.gradle.kts:
+    ```kotlin
+    dependencies {
+        ...
+        implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+        implementation("tech.antibytes.kmock:kmock-gradle:0.1.1-SNAPSHOT") {
+            exclude(
+                group = "com.google.devtools.ksp",
+                module = "symbol-processing-api"
+            )
+            exclude(
+                group = "com.google.devtools.ksp",
+                module = "com.google.devtools.ksp.gradle.plugin"
+            )
+        }
+        implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.5")
+        implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.6.21-1.0.5")
+    }
+    ```
+
+!!!warning
+    Try not to replace the Kotlin Version in the Runtime part of KMock.

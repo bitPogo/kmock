@@ -10,11 +10,6 @@ KMock offers you 6 annotations which are considered as stable to declare a Mock:
 * MockShared/MultiMockShared for Shared Sources (like native),
 * MockCommon/MultiMockCommon for CommonTest.
 
-## Using KMock
-
-Once you have declared the Mocks you are going to use, please run your test suite once even if you have no meaningful tests defined.
-This triggers the Generation the Mocks and you may benefit from autocompletion in your Editor or IDE right away.
-
 ### Single Interface Mocks
 Declaring a Mock for common or platforms working the same.
 Mock/MockCommon take a arbitrary amount of interfaces which will used as Templates to generate Mocks of:
