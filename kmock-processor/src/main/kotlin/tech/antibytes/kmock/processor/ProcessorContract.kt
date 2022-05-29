@@ -34,6 +34,7 @@ import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockExperimental
+import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.MockCommon
 import tech.antibytes.kmock.MockShared
@@ -178,6 +179,8 @@ internal interface ProcessorContract {
     }
 
     interface MultiSourceAggregator : Aggregator {
+        fun extractKmockInterfaces(resolver: Resolver): AnnotationContainer
+
         fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
         fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
         fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
@@ -684,6 +687,8 @@ internal interface ProcessorContract {
 
         @OptIn(KMockExperimental::class)
         val ANNOTATION_KMOCK_NAME: String = KMock::class.java.canonicalName
+        @OptIn(KMockExperimental::class)
+        val ANNOTATION_KMOCK_MULTI_NAME: String = KMockMulti::class.java.canonicalName
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName

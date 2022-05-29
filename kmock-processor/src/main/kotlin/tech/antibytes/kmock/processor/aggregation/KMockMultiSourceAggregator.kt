@@ -20,6 +20,7 @@ import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_MULTI_NAME
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_KMOCK_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_PLATFORM_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_SHARED_MULTI_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
@@ -36,6 +37,15 @@ internal class KMockMultiSourceAggregator(
     private val generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
 ) : MultiSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
+    override fun extractKmockInterfaces(resolver: Resolver): ProcessorContract.AnnotationContainer {
+        val annotated = resolver.getSymbolsWithAnnotation(
+            ANNOTATION_KMOCK_MULTI_NAME,
+            false
+        )
+
+        return resolveKmockAnnotation(annotated)
+    }
+
     private fun resolveInterfaces(
         interfaceName: String,
         interfaces: List<KSDeclaration>,
