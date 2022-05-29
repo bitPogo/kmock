@@ -1,5 +1,6 @@
 # Terminology
 Just to prevent any confusion about terms let's make some quick definitions:
+
 * A Proxy relates to a single property (PropertyProxy) or method (FunProxy).
 * A Mock owns multiple Proxies based on an given Interface.
 * Interfaces and their members are used as Templates for Proxies or a Mock.

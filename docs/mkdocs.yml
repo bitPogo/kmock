@@ -6,7 +6,7 @@ site_url: https://bitpogo.github.io/kmock/
 
 repo_name: bitPogo/kmock
 repo_url: https://github.com/bitPogo/kmock
-edit_uri: tree/main/docs/docs/src/
+edit_uri: tree/main/docs/src/
 
 copyright: Copyright &copy; 2022 Matthias Geisler
 
@@ -111,6 +111,8 @@ nav:
   - Concept: concept.md
   - How To:
       - Terminology: howto/terminology.md
+      - Installation: howto/install.md
+      - Setup: howto/setup.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md
