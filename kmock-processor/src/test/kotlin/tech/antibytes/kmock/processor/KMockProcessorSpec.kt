@@ -87,7 +87,7 @@ class KMockProcessorSpec {
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(illegalPlatform, listOf(mockk()), listOf(mockk()))
 
         every {
@@ -181,7 +181,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalPlatformRound1, listOf(mockk()), listOf(mockk())),
             Aggregated(illegalPlatformRound2, listOf(mockk()), listOf(mockk()))
@@ -284,7 +284,7 @@ class KMockProcessorSpec {
         val dependenciesCommon: List<KSFile> = listOf(mockk())
         val dependenciesShared: List<KSFile> = listOf(mockk())
         val dependenciesPlatform: List<KSFile> = listOf(mockk())
-        val totalDependencies = listOf(dependenciesCommon, dependenciesShared, dependenciesPlatform,).flatten()
+        val totalDependencies = listOf(dependenciesCommon, dependenciesShared, dependenciesPlatform).flatten()
 
         every {
             singleSourceAggregator.extractCommonInterfaces(any(), any())
@@ -303,7 +303,7 @@ class KMockProcessorSpec {
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(illegal, interfacesPlatform, dependenciesPlatform)
 
         every {
@@ -495,7 +495,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, interfacesPlatformRound1, dependenciesPlatform),
             Aggregated(illegal, interfacesPlatformRound2, dependenciesPlatform),
@@ -754,7 +754,7 @@ class KMockProcessorSpec {
         val dependencies: List<KSFile> = listOf(mockk())
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returns Aggregated(illegal, interfacesPlatform, dependencies)
 
         every {
@@ -795,7 +795,7 @@ class KMockProcessorSpec {
         ).process(resolver)
 
         // Then
-        verify(exactly = 1) { singleSourceAggregator.extractPlatformInterfaces(any()) }
+        verify(exactly = 1) { singleSourceAggregator.extractPlatformInterfaces(any(), any()) }
 
         verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
 
@@ -876,7 +876,7 @@ class KMockProcessorSpec {
         val dependenciesMulti: List<KSFile> = listOf(mockk())
 
         every {
-            singleSourceAggregator.extractPlatformInterfaces(any())
+            singleSourceAggregator.extractPlatformInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, interfacesPlatformRound1, dependencies),
             Aggregated(illegal, interfacesPlatformRound2, dependencies),
@@ -928,7 +928,7 @@ class KMockProcessorSpec {
         processor.process(resolver)
 
         // Then
-        verify(exactly = 2) { singleSourceAggregator.extractPlatformInterfaces(any()) }
+        verify(exactly = 2) { singleSourceAggregator.extractPlatformInterfaces(any(), any()) }
 
         verify(exactly = 0) { mockGenerator.writeCommonMocks(any(), any(), any()) }
 

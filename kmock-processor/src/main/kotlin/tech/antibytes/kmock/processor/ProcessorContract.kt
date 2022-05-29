@@ -168,7 +168,10 @@ internal interface ProcessorContract {
 
         fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateSource>
 
-        fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateSource>
+        fun extractPlatformInterfaces(
+            kmockAnnotated: List<KSAnnotated>,
+            resolver: Resolver
+        ): Aggregated<TemplateSource>
     }
 
     interface MultiSourceAggregator : Aggregator {

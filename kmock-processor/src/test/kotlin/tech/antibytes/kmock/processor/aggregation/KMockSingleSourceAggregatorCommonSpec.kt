@@ -752,7 +752,7 @@ class KMockSingleSourceAggregatorCommonSpec {
 
     @OptIn(KMockExperimental::class)
     @Test
-    fun `Given extractCommonInterfaces is called it returns the corresponding source files, while mergeing kmock annotations`() {
+    fun `Given extractCommonInterfaces is called it returns the corresponding source files, while merging kmock annotations`() {
         // Given
         val logger: KSPLogger = mockk()
         val symbolFetch: KSAnnotated = mockk()

@@ -226,13 +226,16 @@ internal class KMockSingleSourceAggregator(
     }
 
     override fun extractPlatformInterfaces(
-        resolver: Resolver
+        kmockAnnotated: List<KSAnnotated>,
+        resolver: Resolver,
     ): Aggregated<TemplateSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
-        return extractInterfaces("", annotated, emptyList()) { annotationName, _ ->
-            ANNOTATION_PLATFORM_NAME == annotationName
-        }
+        return extractInterfaces(
+            defaultIndicator = "",
+            annotated = annotated,
+            kmockAnnotated = kmockAnnotated,
+        ) { annotationName, _ -> ANNOTATION_PLATFORM_NAME == annotationName }
     }
 
     companion object : AggregatorFactory<SingleSourceAggregator> {
