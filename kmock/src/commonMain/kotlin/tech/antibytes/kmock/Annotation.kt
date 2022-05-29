@@ -107,7 +107,7 @@ public annotation class MultiMockShared(
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 /**
- * Determines which interfaces should be stubbed/mocked for a arbitrary source.
+ * Determines which interfaces should be stubbed/mocked for a arbitrary source set.
  *
  * @param interfaces variable amount of interfaces.
  * @property interfaces which will be propagated to the (KSP) processor.

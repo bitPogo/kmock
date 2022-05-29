@@ -11,7 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.KMock
+import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.MultiMock
 import tech.antibytes.kmock.example.contract.ExampleContract
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject
@@ -39,7 +40,8 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-@Mock(
+@OptIn(KMockExperimental::class)
+@KMock(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,

@@ -53,6 +53,13 @@ kotlin {
     linuxX64()
 
     sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("kotlin.ExperimentalUnsignedTypes")
+                optIn("kotlin.RequiresOptIn")
+            }
+        }
+
         val commonMain by getting {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.common)

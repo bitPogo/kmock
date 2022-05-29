@@ -14,9 +14,9 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
-import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
+import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_COMMON_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANNOTATION_KMOCK_NAME
