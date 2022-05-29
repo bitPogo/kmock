@@ -113,9 +113,37 @@ internal class KMockMultiSourceAggregator(
     }
 
     @Suppress("UNCHECKED_CAST")
+    private fun resolveAnnotation(
+        indicator: String,
+        symbol: KSAnnotated,
+        annotation: KSAnnotation?,
+        illAnnotated: MutableList<KSAnnotated>,
+        typeContainer: MutableMap<String, MutableList<Triple<String, List<KSFile>, List<KSType>>>>,
+        fileCollector: MutableList<KSFile>,
+    ) {
+        if (annotation == null || annotation.arguments.isEmpty()) {
+            illAnnotated.add(symbol)
+        } else {
+            val sourceIndicator = determineSourceCategory(indicator, annotation)
+            val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
+
+            interfaces.add(
+                Triple(
+                    determineMockName(annotation),
+                    listOf(symbol.containingFile!!),
+                    annotation.arguments.last().value as List<KSType>,
+                )
+            )
+            typeContainer[sourceIndicator] = interfaces
+            fileCollector.add(symbol.containingFile!!)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
     private fun extractInterfaces(
         defaultIndicator: String,
         annotated: Sequence<KSAnnotated>,
+        kmockAnnotated: Map<String, List<KSAnnotated>>,
         condition: (String, KSAnnotation) -> Boolean,
     ): Aggregated<TemplateMultiSource> {
         val illAnnotated = mutableListOf<KSAnnotated>()
@@ -126,21 +154,30 @@ internal class KMockMultiSourceAggregator(
         annotated.forEach { annotatedSymbol ->
             val annotation = findKMockAnnotation(annotatedSymbol.annotations, condition)
 
-            if (annotation == null || annotation.arguments.isEmpty()) {
-                illAnnotated.add(annotatedSymbol)
-            } else {
-                val sourceIndicator = determineSourceCategory(defaultIndicator, annotation)
-                val interfaces = typeContainer.getOrElse(sourceIndicator) { mutableListOf() }
+            resolveAnnotation(
+                indicator = defaultIndicator,
+                symbol = annotatedSymbol,
+                annotation = annotation,
+                illAnnotated = illAnnotated,
+                typeContainer = typeContainer,
+                fileCollector = fileCollector
+            )
+        }
 
-                interfaces.add(
-                    Triple(
-                        determineMockName(annotation),
-                        listOf(annotatedSymbol.containingFile!!),
-                        annotation.arguments.last().value as List<KSType>,
-                    )
+        kmockAnnotated.forEach { (indicator, annotatedSymbols) ->
+            annotatedSymbols.forEach { annotatedSymbol ->
+                val annotation = findKMockAnnotation(annotatedSymbol.annotations) { annotationName, _ ->
+                    annotationName == ANNOTATION_KMOCK_MULTI_NAME
+                }
+
+                resolveAnnotation(
+                    indicator = indicator,
+                    symbol = annotatedSymbol,
+                    annotation = annotation,
+                    illAnnotated = illAnnotated,
+                    typeContainer = typeContainer,
+                    fileCollector = fileCollector
                 )
-                typeContainer[sourceIndicator] = interfaces
-                fileCollector.add(annotatedSymbol.containingFile!!)
             }
         }
 
@@ -164,11 +201,16 @@ internal class KMockMultiSourceAggregator(
     }
 
     override fun extractCommonInterfaces(
+        kmockAnnotated: List<KSAnnotated>,
         resolver: Resolver
     ): Aggregated<TemplateMultiSource> {
         val annotated = fetchCommonAnnotated(resolver)
 
-        return extractInterfaces(COMMON_INDICATOR, annotated) { annotationName, _ ->
+        return extractInterfaces(
+            defaultIndicator = COMMON_INDICATOR,
+            annotated = annotated,
+            kmockAnnotated = mapOf(COMMON_INDICATOR to kmockAnnotated),
+        ) { annotationName, _ ->
             ANNOTATION_COMMON_MULTI_NAME == annotationName
         }
     }
@@ -193,7 +235,7 @@ internal class KMockMultiSourceAggregator(
     ): Aggregated<TemplateMultiSource> {
         val annotated = fetchSharedAnnotated(resolver)
 
-        return extractInterfaces("", annotated, ::isSharedAnnotation)
+        return extractInterfaces("", annotated, emptyMap(), ::isSharedAnnotation)
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
@@ -208,7 +250,7 @@ internal class KMockMultiSourceAggregator(
     ): Aggregated<TemplateMultiSource> {
         val annotated = fetchPlatformAnnotated(resolver)
 
-        return extractInterfaces("", annotated) { annotationName, _ ->
+        return extractInterfaces("", annotated, emptyMap()) { annotationName, _ ->
             ANNOTATION_PLATFORM_MULTI_NAME == annotationName
         }
     }

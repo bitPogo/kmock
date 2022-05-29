@@ -80,7 +80,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegalCommon, listOf(mockk()), listOf(mockk()))
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -169,7 +169,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegalMultiCommon, listOf(mockk()), emptyList()),
             Aggregated(emptyList(), emptyList(), emptyList())
@@ -310,7 +310,7 @@ class KMockProcessorSpec {
         } returns Aggregated(illegal, interfacesCommon, dependenciesCommon)
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returns Aggregated(emptyList(), emptyList(), emptyList())
 
         every {
@@ -518,7 +518,7 @@ class KMockProcessorSpec {
         )
 
         every {
-            multiSourceAggregator.extractCommonInterfaces(any())
+            multiSourceAggregator.extractCommonInterfaces(any(), any())
         } returnsMany listOf(
             Aggregated(illegal, multiInterfacesCommon, dependenciesMultiCommon),
             Aggregated(emptyList(), emptyList(), emptyList())

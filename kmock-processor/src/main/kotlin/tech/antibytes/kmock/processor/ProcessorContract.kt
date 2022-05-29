@@ -181,7 +181,11 @@ internal interface ProcessorContract {
     interface MultiSourceAggregator : Aggregator {
         fun extractKmockInterfaces(resolver: Resolver): AnnotationContainer
 
-        fun extractCommonInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
+        fun extractCommonInterfaces(
+            kmockAnnotated: List<KSAnnotated>,
+            resolver: Resolver
+        ): Aggregated<TemplateMultiSource>
+
         fun extractSharedInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
         fun extractPlatformInterfaces(resolver: Resolver): Aggregated<TemplateMultiSource>
     }
@@ -687,8 +691,10 @@ internal interface ProcessorContract {
 
         @OptIn(KMockExperimental::class)
         val ANNOTATION_KMOCK_NAME: String = KMock::class.java.canonicalName
+
         @OptIn(KMockExperimental::class)
         val ANNOTATION_KMOCK_MULTI_NAME: String = KMockMulti::class.java.canonicalName
+
         val ANNOTATION_PLATFORM_NAME: String = Mock::class.java.canonicalName
         val ANNOTATION_PLATFORM_MULTI_NAME: String = MultiMock::class.java.canonicalName
         val ANNOTATION_COMMON_NAME: String = MockCommon::class.java.canonicalName

@@ -155,7 +155,7 @@ internal class KMockProcessor(
         relaxer: Relaxer?
     ): Aggregated<TemplateSource> {
         val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(kmockAnnotated, resolver)
-        val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(resolver)
+        val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(emptyList(), resolver)
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
