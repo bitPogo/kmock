@@ -118,6 +118,7 @@ public annotation class KMock(
     vararg val interfaces: KClass<*>
 )
 
+@Repeatable
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented

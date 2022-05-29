@@ -26,13 +26,12 @@ internal interface KMockPluginContract {
         /**
          * Selection of targets which allow Proxies on build-in method (e.g. toString).
          *
-         * Set of full qualified name of target which should proxy build-in methods.
+         * Set of full qualified name of target which should use proxy build-in methods.
          */
         var useBuildInProxiesOn: Set<String>
 
         /**
          * Allows to prefix type names in order to resolve collisions for overloaded methods.
-         * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
          *
          * The key must be the full qualified name of target which should use an additional prefix.
          * The value is an arbitrary String, which is used as a prefix.
@@ -41,17 +40,17 @@ internal interface KMockPluginContract {
 
         /**
          * Allows to replace auto resolved method names with a given name. This also affects the ProxyId.
-         * Note: enableNewOverloadingNames must be set to true to enable this behaviour.
          *
          * The key must be the original full Id of the Proxy.
          * The value is an arbitrary String, which is used as method name.
          */
+        @KMockGradleExperimental
         var customMethodNames: Map<String, String>
 
         /**
          * Selection of targets which allow Proxies to use Spies.
          *
-         * Set of full qualified name of target which should allow proxy to spy on.
+         * Set of full qualified name of targets which should allowed to be spy on.
          * Note: This will also activate build-in methods.
          */
         var spyOn: Set<String>
@@ -95,7 +94,7 @@ internal interface KMockPluginContract {
         /**
          * Allows to use custom annotation for meta sources with the exception of commonTest.
          *
-         * The key must be the original full qualified name of the Annotation.
+         * The key must be the full qualified name of the Annotation.
          * The value is the source set it is referring to (nativeTest or native).
          */
         var customAnnotationsForMeta: Map<String, String>

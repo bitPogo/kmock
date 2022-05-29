@@ -18,6 +18,11 @@ repositories {
     gradlePluginPortal()
     mavenCentral()
     google()
+    repositories {
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+    }
     addCustomRepositories()
 }
 ensureKotlinVersion("1.5.31")
@@ -25,6 +30,7 @@ ensureKotlinVersion("1.5.31")
 dependencies {
     implementation(Dependency.gradle.dependency)
     implementation(Dependency.gradle.publishing)
+    implementation(Dependency.gradle.versioning)
     implementation(Dependency.gradle.pluginPublishing)
     implementation(Dependency.gradle.coverage)
     implementation(Dependency.gradle.spotless)

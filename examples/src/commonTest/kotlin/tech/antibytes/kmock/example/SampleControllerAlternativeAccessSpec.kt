@@ -182,7 +182,7 @@ class SampleControllerAlternativeAccessSpec {
         // Given
         val id = fixture.fixture<String>()
 
-        domainObject._toString.returnValue = id
+        domainObject.syncFunProxyOf(domainObject::toString).returnValue = id
 
         // When
         val actual = domainObject.toString()

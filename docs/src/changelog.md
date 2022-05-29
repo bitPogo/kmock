@@ -1,33 +1,13 @@
-= Changelog
-:link-repository: https://github.com/bitPogo/kmock
-:doctype: article
-:toc: macro
-:toclevels: 1
-:toc-title:
-:icons: font
-:imagesdir: assets/images
-:lang: en
-ifdef::env-github[]
-:warning-caption: :warning:
-:caution-caption: :fire:
-:important-caption: :exclamation:
-:note-caption: :paperclip:
-:tip-caption: :bulb:
-endif::[]
+# Changelog
 
 All important changes of this project must be documented in this file.
 
-The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
-and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-[discrete]
-==== Versions
+## <a href="{{ repo }}/compare/{{ latest }}...main">Unreleased</a>
 
-toc::[]
-
-== link:{link-repository}/releases/latest[Unreleased]
-
-=== Added
+### Added
 
 * `or` ArgumentConstraint
 * `not` ArgumentConstraint
@@ -53,7 +33,7 @@ toc::[]
 * `KMock` experimental annotation, which is agnostic in terms of source sets
 * `KMockMulti` experimental annotation, which is agnostic in terms of source sets
 
-=== Changed
+### Changed
 
 * Generated mocks don't contain runtime logic any longer
 * Mutable properties of Proxies now separate froze/unfrozen state is cleaner to improve Runtime
@@ -73,9 +53,9 @@ toc::[]
 * Proxy-Access-Methods and their corresponding verification/assertion counter parts
 * `verifer` argument is now called `collector`
 
-=== Deprecated
+### Deprecated
 
-=== Removed
+### Removed
 
 * `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
 * `allowInterfacesOnKmock`, use allowInterfaces instead
@@ -83,9 +63,9 @@ toc::[]
 * Old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
 * `uselessPrefixes` in the Gradle Extension
 
-=== Fixed
+### Fixed
 
-* Method names with nullable or multi-bounded types defined as generic parameter
+* FunProxy names with nullable or multi-bounded types defined as generic parameter
 * Annotation was not picked up when more then one Annotation was used
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other
@@ -93,25 +73,25 @@ toc::[]
 * Multibounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
 
 
-=== Security
+### Security
 
-=== Bumped
+### Bumped
 
 * KotlinPoet 1.10.2 -> 1.11.0
 * Gradle 7.4.1 -> 7.4.2
 * Android Gradle Plugin 7.1.2 -> 7.1.3
 
 
-== https://github.com/bitPogo/kmock/compare/v0.1.0\...v0.1.1[0.1.1]
+## <a href="{{ repo }}/compare/v0.1.0...v0.1.1">0.1.1</a>
 
-=== Fixed
+### Fixed
 
 * Warnings for unused expression and unused parameter in MockFactory
 
-=== Bumped
+### Bumped
 
 * Gradle 7.2 -> 7.4.1
 
-== https://github.com/bitPogo/kmock/compare/v0.1.0[0.1.0]
+## <a href="{{ repo }}/releases/tag/v0.1.0">0.1.0</a>
 
 Initial release.
