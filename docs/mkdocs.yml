@@ -123,4 +123,6 @@ nav:
       - Contributing: development/contributing.md
       - Releasing: development/releasing.md
       - Badges: development/badges.md
+  - Migration Guide: migration.md
+  - Security Policy: security.md
   - License: license.md
