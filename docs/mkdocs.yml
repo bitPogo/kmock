@@ -109,7 +109,8 @@ nav:
   - Changelog: changelog.md
   - Roadmap: roadmap.md
   - Concept: concept.md
-  # - How To:
+  - How To:
+      - Terminology: howto/terminology.md
   - Development:
       - Code of Conduct: development/code-of-conduct.md
       - Contributing: development/contributing.md
