@@ -1,13 +1,14 @@
 # KMock
 A humble mocking library for Kotlin, KotlinJS and Kotlin Multiplatform using Kotlin Symbol Processing (KSP).
 
-[![Latest release](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-release-latest.svg)](https://github.com/bitPogo/kmock/releases)
-[![License](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-license.svg)](https://github.com/bitPogo/kmock/blob/main/LICENSE)
-[![Platforms](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-platform-support.svg)](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-platform-support.svg)
+[![Latest release](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-release-latest.svg)](https://github.com/bitPogo/kmock/releases)
+[![License](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-license.svg)](https://github.com/bitPogo/kmock/blob/main/LICENSE)
+[![Platforms](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-platform-support.svg)](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-platform-support.svg)
 [![CI - Build Snapshot Version](https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg)](https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kmock)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kmock)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=kmock)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6023/badge)](https://bestpractices.coreinfrastructure.org/projects/6023)
 
 ## About The Project
 Writing mocks is certainly no witchcraft, but doing them by hand day for day can be dull.
@@ -53,7 +54,7 @@ This project uses [Semantic Versioning](http://semver.org/) as a guideline for o
 You want to help or share a proposal? You have a specific problem? Read the following:
 
 * [Code of Conduct](https://github.com/bitPogo/kmock/blob/main/CODE_OF_CONDUCT.md) for details on our code of conduct.
-* [Contributing Guide](https://github.com/bitPogo/kmock/blob/main/CONTRIBUTING.md) for details about how to report bugs and propose features.
+* [Contribution Guide](https://github.com/bitPogo/kmock/blob/main/CONTRIBUTING.md) for details about how to report bugs and propose features.
 
 ## Releasing
 
