@@ -6,7 +6,7 @@
 
 import tech.antibytes.gradle.kmock.dependency.MkDocs
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
-import tech.antibytes.gradle.verisoning.Versioning
+import tech.antibytes.gradle.versioning.Versioning
 
 // see: https://github.com/bitfunk/gradle-plugins/blob/29c798a0e0fc572fa94f49da85407c3769dc11cc/docs/build.gradle.kts
 plugins {
