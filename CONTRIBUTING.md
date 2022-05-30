@@ -4,14 +4,14 @@ When contributing to this project, this document should help you get started.
 
 ## Code Of Conduct
 
-This project adheres to the Contributor Covenant [Code Of Conduct](./code-of-conduct.md).
+This project adheres to the Contributor Covenant [Code Of Conduct](https://bitpogo.github.io/kmock/development/code-of-conduct/).
 By participating, you are expected to uphold this code.
 
 ## Issues
 
 GitHub issues are the way to track bugs and enhancements.
 
-Issues are hold in high regards in this project, so please feel free to open <a href="{{ repo }}/issues">issue</a> for:
+Issues are hold in high regards in this project, so please feel free to open [issue](https://github.com/bitPogo/kmock/issues) for:
 
 * _**Questions**_ to help to improve the user experience
 * _**Ideas**_ which are a great source for contributions
@@ -60,7 +60,7 @@ Examples:
 
 ### Pull Request
 
-<a href="{{ repo }}/pulls">Pull requests</a> are always welcome!
+[Pull requests](https://github.com/bitPogo/kmock/pulls) are always welcome!
 
 If you (going to) contribute, please make sure you made clear which problem you are attempt solve or what is nature of your improvement.
 

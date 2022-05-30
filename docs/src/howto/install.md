@@ -286,7 +286,7 @@ However since this might cause problems or noise you can force a new version of 
         ...
         dependencies {
             classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
-            classpath("tech.antibytes.kmock:kmock-gradle:0.1.1-SNAPSHOT") {
+            classpath("tech.antibytes.kmock:kmock-gradle:$KMockVersion-SNAPSHOT") {
                 exclude(
                     group = "com.google.devtools.ksp",
                     module = "symbol-processing-api"
@@ -308,7 +308,7 @@ However since this might cause problems or noise you can force a new version of 
     dependencies {
         ...
         implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
-        implementation("tech.antibytes.kmock:kmock-gradle:0.1.1-SNAPSHOT") {
+        implementation("tech.antibytes.kmock:kmock-gradle:$KMockVersion-SNAPSHOT") {
             exclude(
                 group = "com.google.devtools.ksp",
                 module = "symbol-processing-api"

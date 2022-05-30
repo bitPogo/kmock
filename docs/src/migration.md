@@ -2,7 +2,7 @@
 Apologies! Some was broken to improve KMock.
 But don't panic!
 
-## 0.1.1
+## 0.1.1 to 0.2.0-rc01
 ### API changes
 #### Names
 
