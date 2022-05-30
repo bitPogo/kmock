@@ -1,11 +1,10 @@
 # Assertion and Verification
-As other libraries KMock offers a way to assertion or verify invocations of Proxies (not Mock!).
-Please make sure you have read on the [Terminology](terminology.md) before you start.
+As other libraries KMock offers a way to assert or verify invocations of Proxies (not Mock!).
 
 ## Expectations Method
 
-Assertion and Verification share the same API if you reference a Proxy via an Expectation Method.
-While those methods will behave similarly in each Context, they have different nuances.
+Assertion and Verification share the same API - Expectation Methods.
+While those methods will behave similarly in both contexts, they have different nuances.
 
 ```kotlin
 @Test
@@ -56,7 +55,7 @@ fun sampleTest() {
 }
 ```
 
-Internally all concrete types will be converted in a `eq` constraint.
+Internally all concrete types will be converted into a `eq` constraint.
 For example an Expectation Method is called with `42`.
 `42` will be converted into `eq(42)`.
 Currently the following constraints are implemented:
@@ -68,7 +67,7 @@ Currently the following constraints are implemented:
 | `isNot`                 | matches if the recorded argument is not equal to the expected argument. |
 | `isSame`                | matches if the recorded argument is identical as the expected argument. |
 | `isNotSame`             | matches if the recorded argument is not identical as the expected argument. |
-| `not`                   | matches if the negated matcher of a given ArgumentConstraint matches. |
+| `not`                   | matches if the negated outcome of a given ArgumentConstraint matches. |
 | `or`                    | which allows to chain multiple values or constraints together with a logical or. |
 
 ## Single Proxy Assertion/Verification
@@ -79,7 +78,7 @@ Well, `verify` will look if any invocation of the Proxy will match the given Exp
 In short `verify` can skip invocations while `assertProxy` cannot.
 
 Also both functions are not capable be used to make statements about the interactions of multiple Proxies.
-But you can use them with multiple Proxies:
+However you can use `assertProxy` with multiple Proxies:
 ```kotlin
 @Test
 fun sampleTest() {
@@ -107,7 +106,7 @@ Also assuming `find` was invoked, `verify` and `assertProxy` will pass.
 However you cannot say if `fetch` was called before or after `find`.
 Assuming now `fetch` has been called only once, `verify` will still pass, while `assertProxy` will fail.
 Since `verify` can be less strict about the order it can check if a Proxy was invoked `exactly`, `atLeast` or `atMost` certain times.
-`assertProxy` on the other will always tell what is wrong and where but will only cover those invocation you told it cover.
+`assertProxy` on the other hand will always tell what is wrong with current and where but will only cover those invocation you told it cover.
 
 !!!tip
     As a rule of thumb - if you want to cover a Proxy which is invoked multiple times you should consider using verify.
@@ -169,8 +168,8 @@ Other Operators are:
 | `xor`                   | is an alias of `diff` |
 
 ## Multi Proxy Assertion/Verification
-To complete Assertion/Verification for Proxies KMock offers a way to keep track of interaction between Proxies of one or Mocks.
-To make this possible you need to inject a Asserter/Verifier into the Mocks when they are initialized via the `collector` argument of `kmock` or `kspy`.
+To keep track of interaction between Proxies KMock offers also a way.
+You'll need to inject a Asserter/Verifier into the Mocks when they are initialized via the `collector` argument of `kmock` or `kspy`.
 
 !!!note
     Asserter and Verifier are the same. In fact Verifier is a type alias of Asserter.
@@ -219,17 +218,17 @@ fun sampleTest() {
    }
 }
 ```
-
-* `assertOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` and are not only these invocations.
+To make the difference more clear:
+* `assertOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` and there are more than these invocations.
 * `verifyStrictOrder` will fail if the invocation will not exactly in the order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before that chain.
 * `verifyOrder` will fail if the invocation is not in the relative order `someProperty` - `someMethod` - `someMethod` but it will not care if any invocation happens before, after or in between them.
 
-Optionally you can use `ensureVerificationOf` if you need any insurance that all Proxies have been covered during a run by a Verifier.
+Optionally you can use `ensureVerificationOf` if you need any insurance that all Proxies have been covered during a run by a Verifier/Asserter.
 
 Verifier/Asserter can additionally be initialised with the `coverAllInvocations` flag, which is false by default.
-This flag forces Proxies, which are excluded from Verification/Assertion by default, to be covered during a test unit run too.
+This flag forces Proxies, which are excluded from Verification/Assertion by default, to be covered during a test unit run.
 This is only important if you have to cover build-in methods like equals.
-Build-in methods are excluded from Verification via Verifier by default due to their special nature.
+Build-In methods are excluded from Verification via Verifier/Asserter by default due to their special nature.
 
 ## Teardown
 As with Mocks Verifier/Asserter have a `clear` method, which opens them up for reuse.

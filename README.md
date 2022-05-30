@@ -37,13 +37,9 @@ KMock has the following dependencies:
 * Android 6.0 (API 21) to Android 12 (API 31)
 * [Java 11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot)
 
-## Built For
-
-* [Kotlin Multiplatform](https://kotlinlang.org/docs/reference/mpp-intro.html)
-
 ## Changelog
 
-See [changelog](https://github.com/bitPogo/kmock/blob/main/CHANGELOG.md)
+See [changelog](https://github.com/bitPogo/kmock/blob/main/CHANGELOG.md).
 
 ## Versioning
 
@@ -58,7 +54,7 @@ You want to help or share a proposal? You have a specific problem? Read the foll
 
 ## Releasing
 
-Please take a look [here](https://github.com/bitPogo/kmock/tree/main/docs/src/development/releasing.md)
+Please take a look [here](https://github.com/bitPogo/kmock/tree/main/docs/src/development/releasing.md).
 
 ## Copyright and License
 

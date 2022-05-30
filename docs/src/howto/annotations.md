@@ -8,11 +8,11 @@ KMock offers you 6 annotations which are considered as stable to declare a Mock:
 
 * Mock/MultiMock for Platform specific Mocks,
 * MockShared/MultiMockShared for Shared Sources (like native),
-* MockCommon/MultiMockCommon for CommonTest.
+* MockCommon/MultiMockCommon for commonTest.
 
 ### Single Interface Mocks
-Declaring a Mock for common or platforms working the same.
-Mock/MockCommon take a arbitrary amount of interfaces which will used as Templates to generate Mocks of:
+Declaring a Mock for common or platforms works alike.
+Mock/MockCommon takes an arbitrary amount of interfaces which will used as Templates to generate Mocks of:
 ```kotlin
 import tech.antibytes.kmock.MockCommon
 
@@ -26,8 +26,8 @@ class SampleTestSet {
 }
 ```
 
-MockShared takes an additional argument `sourceSetName` in order to associate with the Shared Source Set like `iosTest`.
-You can also you only a short reference instead of the full name (e.g. long: `iosTest`, short: `ios`):
+MockShared takes an additional argument `sourceSetName` in order to associate the Templates with the Shared Source Set like `iosTest`.
+You can also use only a short reference instead of the full name (e.g. long: `iosTest`, short: `ios`):
 ```kotlin
 import tech.antibytes.kmock.MockShared
 
@@ -43,9 +43,9 @@ class SampleTestSet {
 ```
 
 !!!tip
-    You do not have to mix those Annotations per test set.
+    You do not have to mix those Annotations per Test Set.
     KMock is totally fine if you declare a Template in one source as common and in another source as platform source.
-    It will simply resolve any conflicts according to their precedence in Kotlin's hierarchical source sets.
+    It will resolve any conflicts according to their precedence in Kotlin's hierarchical source sets.
     As a rule of thumb - you need for Single Interface Mocks one Annotation per test set.
 
 ### Multi Interface Mocks
@@ -66,7 +66,7 @@ class SampleTestSet {
 In difference to Single Interface Mocks, Multi Interface Mocks Annotations can be applied multiple times per test set.
 Also all Multi Interface Mocks Annotations need an additional argument `name` which will be used as name for the generated Mock.
 All referenced Interfaces will then be merged into one Mock.
-As with Single Interface Mocks, the Annotation for Shared Sources needs an argument `sourceSetName` to bind the generated Mock to an Source Set:
+As with Single Interface Mocks, the Annotation for Shared Sources needs an additional argument `sourceSetName` to bind the generated Mock to a source set:
 ```kotlin
 import tech.antibytes.kmock.MultiMockShared
 
@@ -84,7 +84,7 @@ class SampleTestSet {
     Do not use this feature to create one Mock for all tests. It was never intended for that.
 
 ## Custom Annotations
-You can also use your custom Annotations in order to ease the handling with Shared sources.
+You can also use your custom Annotations in order to ease the handling with Shared Sources.
 Your Annotations are not allowed to reference common and have to take a arbitrary amount of KClass (aka vararg) for Single Interface Mocks.
 For Multi Interface Mocks your Annotations have to take as the very first argument a String additionally to the KClasses:
 ```kotlin
@@ -103,8 +103,8 @@ annotation class MultiCustom(val name: String, vararg val interfaces: KClass<*>)
 ```
 
 ## Experimental Annotations
-With 0.2.0 KMock offers 2 new experimental Annotation - `KMock` and `KMockMulti` which lift the need of telling KMock to which Source Set a Mock binds.
-Those Annotations will determine the Source Set of a Mock based on the contexts it is declared.
+With 0.2.0 KMock offers 2 new experimental Annotations - `KMock` and `KMockMulti` which lift the need of telling KMock to which Source Set a Mock binds.
+Those Annotations will determine the Source Set of a Mock based on the contexts they are declared.
 However those Annotations are considers as experimental since there might be edge cases which are not covered by them.
 They can be used in the exact same way as `Mock` or `MockMulti`:
 ```kotlin

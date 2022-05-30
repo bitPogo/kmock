@@ -40,7 +40,7 @@ fun sampleTest() {
 }
 ```
 
-Also you still can override specific methods or properties by using the corresponding Proxy Property.
+You still can override specific methods or properties by using the corresponding Proxy Property.
 In other words methods or properties of an SO are used instead of throwing an error, if no behaviour or stub was assigned to a Proxy, so it acts completely non intrusive.
 
 !!!note
@@ -48,7 +48,7 @@ In other words methods or properties of an SO are used instead of throwing an er
 
 ### Special behaviour of Spies
 In terms of Spies there is one big difference you need to be aware of.
-Since build-in methods like `equals` are delegated to the SO as well it might result in a behaviour which is not obvious right away:
+Since Build-In methods like `equals` are delegated to the SO as well it might result in a behaviour which is not obvious right away:
 
 ```kotlin
 @Test
@@ -66,26 +66,26 @@ fun sampleTest() {
 While the first and second Assertion passes the last won't.
 Why is it that?
 KMock uses inheritance not reflection as you remember.
-The last assertion fails since `AnyImplementation` has no custom implementation of `equals` and uses the default.
-If `AnyImplementation` makes a custom comparison with taking properties for example into account, the Assertion could pass.
+The last assertion fails since `AnyImplementation` has no custom implementation of `equals` and uses the default one.
+If `AnyImplementation` makes a custom comparison while taking only properties into account, the Assertion may pass.
 
 ## Relaxing
-KMock also facilitates Relaxation to a certain degree and will hopefully get better over time.
+KMock also facilitates Relaxation to a certain degree and will hopefully get better in it over time.
 However it requires boilerplate code done by you.
-However, Relaxation of methods which return `Unit` is build-in feature, so do not worry about it.
+The Relaxation of methods which return `Unit` is Build-In feature, so do not worry about it.
 You only need to switch `relaxUnitFun` to `true` and be done with it.
 
 Similar things apply for Build-In methods, if they are enabled.
 They will fallback to their parents Build-In methods if no return value is set for them.
 
-To get full Relaxation support you need to implement a relaxer function and annotate it properly:
+To get full Relaxation support you need to implement a Relaxer function and annotate it properly:
 ```kotlin
 @Relaxer
 internal inline fun <reified T> relax(id: String): T {
    ...
 }
 ```
-The annotation `@Relaxer` tells KMock that a Relaxer is present and is up for usage.
+The Annotation `@Relaxer` tells KMock that a Relaxer is present and is up for usage.
 The Relaxer can be an arbitrary function but has to follow a specific signature, similar as shown above.
 The function can be either inline or not.
 The type parameter can be either `reified` or not, but must be present and used as the return value.
@@ -96,10 +96,11 @@ This argument will be provided when invoked by a Proxy and is its id.
 You may use it to differentiate between Proxies.
 At last you need to switch relaxing on by adding `relaxed = true` to `kmock`.
 
-However since this sounds cumbersome there is already a project - KFixture - on its way to ease this, so stay tuned.
+However since this sounds cumbersome for now there is already a project - KFixture - on its way to ease this, so stay tuned.
 
 Well, in certain cases the type parameter will not work as return value - Generics.
-If KMock encounters Generics as return values of a method/property it add additional arguments (`type$Idx`) to invocation of the Relaxer Function for example:
+If KMock encounters Generics as return values of a method/property it adds additional arguments (`type$Idx`) to invocation of the Relaxer Function
+For example:
 ```kotlin
 relax(
     proxyId,
