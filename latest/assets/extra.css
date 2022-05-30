@@ -1,0 +1,11 @@
+.md-content__inner a {
+    color: #6791e0!important;
+}
+
+.md-typeset table:not([class]) {
+    font-size: 0.75rem;
+}
+
+.md-typeset td > code {
+    word-break: keep-all!important;
+}
