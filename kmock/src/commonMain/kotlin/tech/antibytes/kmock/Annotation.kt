@@ -103,6 +103,7 @@ public annotation class MultiMockShared(
     vararg val interfaces: KClass<*>
 )
 
+@KMockExperimental
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
@@ -113,11 +114,11 @@ public annotation class MultiMockShared(
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-@KMockExperimental
 public annotation class KMock(
     vararg val interfaces: KClass<*>
 )
 
+@KMockExperimental
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
@@ -131,7 +132,6 @@ public annotation class KMock(
  * @property interfaces which will be propagated to the (KSP) processor.
  * @author Matthias Geisler
  */
-@KMockExperimental
 public annotation class KMockMulti(
     val name: String,
     vararg val interfaces: KClass<*>
