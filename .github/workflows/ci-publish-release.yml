@@ -39,14 +39,14 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Publish on GitHub Packages
-        run: ./gradlew publishAllPublicationsToGitHubPackageRegistryRepository --no-parallel
-
       - name: Publish documentation
         env:
           GRGIT_USER: ${{ github.actor }}
           GRGIT_PASS: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew --no-daemon --stacktrace mkdocsPublish -Prelease
+
+      - name: Publish on GitHub Packages
+        run: ./gradlew publishAllPublicationsToGitHubPackageRegistryRepository --no-parallel
 
       - name: Publish to Release Repository
         run: ./gradlew publishRelease --no-parallel
