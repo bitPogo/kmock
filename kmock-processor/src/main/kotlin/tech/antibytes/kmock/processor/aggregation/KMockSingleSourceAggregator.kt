@@ -95,7 +95,7 @@ internal class KMockSingleSourceAggregator(
         }
     }
 
-    fun MutableList<KSFile>.addTimes(value: KSFile, times: Int) {
+    private fun MutableList<KSFile>.addTimes(value: KSFile, times: Int) {
         repeat(times) {
             this.add(value)
         }

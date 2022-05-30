@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * KotlinPoet 1.10.2 -> 1.11.0
 * Gradle 7.4.1 -> 7.4.2
-* Android Gradle Plugin 7.1.2 -> 7.1.3
+* Android Gradle Plugin 7.1.2 -> 7.2.1
 
 
 ## <a href="{{ repo }}/compare/v0.1.0...v0.1.1">0.1.1</a>
