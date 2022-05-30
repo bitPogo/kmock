@@ -18,7 +18,7 @@ danger(args) {
         val isFeatureBranch = "(?:feature\\/(?:add|deprecate|change|remove|fix|bump|security)-[a-z0-9-.]*)"
             .toRegex()
             .matches(branchName)
-        val isReleaseBranch = "(?:release\\/(?:\\d{1,3}\\.\\d{1,3}(?:\\.\\d{1,3})?)(?:\\/prepare-\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})?)"
+        val isReleaseBranch = "(?:release\\/(?:\\d{1,3}\\.\\d{1,3}(?:\\.\\d{1,3})?(?:-rc\\d{1,3})?)(?:\\/prepare-\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?:-rc\\d{1,3})?)?)"
             .toRegex()
             .matches(branchName)
         val isDependabotBranch = "dependabot/(.*)"
@@ -30,7 +30,7 @@ danger(args) {
         val isFeatureTitle = "(?:(?:\\[[A-Z]{2,8}-\\d{1,6}\\]\\s)?(?:Add|Change|Remove|Fix|Bump|Security)\\s.*)"
             .toRegex()
             .matches(pullRequest.title)
-        val isReleaseTitle = "(?:(?:Prepare )?Release \\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
+        val isReleaseTitle = "(?:(?:Prepare )?Release \\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?:-rc\\d{1,3})?)"
             .toRegex()
             .matches(pullRequest.title)
 

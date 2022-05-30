@@ -5,7 +5,23 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## <a href="{{ repo }}/compare/{{ latest }}...main">Unreleased</a>
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.2.0-rc01...main)
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+### Bumped
+
+## [0.2.0-rc01](https://github.com/bitPogo/kmock/compare/v0.1.1...v0.2.0-rc01)
 
 ### Added
 
@@ -51,9 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Meta/Shared Source Annotation are now supporting platform references (e.g. instead of metaTest you can write meta)
 * Custom Source Annotation are now supporting platform references (e.g. instead of sharedTest you can write shared)
 * Proxy-Access-Methods and their corresponding verification/assertion counter parts
-* `verifer` argument is now called `collector`
-
-### Deprecated
+* `verifer` argument is now called `collector` in `kmock` and `kspy`
 
 ### Removed
 
@@ -72,17 +86,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Nested Generic Types were not resolved for Proxies
 * Multi-Bounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
 
-
-### Security
-
 ### Bumped
 
 * KotlinPoet 1.10.2 -> 1.11.0
 * Gradle 7.4.1 -> 7.4.2
 * Android Gradle Plugin 7.1.2 -> 7.2.1
 
-
-## <a href="{{ repo }}/compare/v0.1.0...v0.1.1">0.1.1</a>
+## [0.1.1](https://github.com/bitPogo/kmock/compare/v0.1.0...v0.1.1)
 
 ### Fixed
 
@@ -92,6 +102,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Gradle 7.2 -> 7.4.1
 
-## <a href="{{ repo }}/releases/tag/v0.1.0">0.1.0</a>
+## [0.1.0](https://github.com/bitPogo/kmock/compare/releases/tag/v0.1.0)
 
 Initial release.

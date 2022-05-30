@@ -24,7 +24,7 @@ So if the project caught your eye check out the [Playground](https://github.com/
 
 KMock has the following dependencies:
 
-* [AndroidGradlePlugin (AGP) 7.1.3](https://developer.android.com/studio/releases/gradle-plugin)
+* [AndroidGradlePlugin (AGP) 7.2.1](https://developer.android.com/studio/releases/gradle-plugin)
 * [Kotlin 1.6.10](https://kotlinlang.org/docs/releases.html)
 * [AtomicFu 0.17.1](https://github.com/Kotlin/kotlinx.atomicfu)
 * [Touchlab's Stately 1.2.1](https://github.com/touchlab/Stately)

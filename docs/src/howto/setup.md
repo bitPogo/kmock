@@ -184,7 +184,7 @@ It expects a map while the key must be the full id of the Proxy you are referrin
 
 !!!warning
     This feature will hurt you if the Template is subject to changes, since you have to adjust the mapping each time.
-```
+```kotlin
 kmock {
     ...
     rootPackage = "my.root.package"
@@ -196,7 +196,7 @@ kmock {
 
 ### Proxy Access Methods
 In order to enable the experimental ProxyAccessMethods you can switch `allowExperimentalProxyAccess` to true:
-```
+```kotlin
 kmock {
     ...
     rootPackage = "my.root.package"
@@ -209,7 +209,7 @@ If you have the need of Proxy names which support the full extend of KMP deferri
 !!!note
     You will not need that if you work with JVM or Android.
     This flag will you only help withs native sources and JS.
-```
+```kotlin
 kmock {
     ...
     rootPackage = "my.root.package"
