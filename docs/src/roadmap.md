@@ -15,11 +15,11 @@
 - stabilize verification/assertion ✅️
 - stabilize proxy api ✅️
 - introduce a more robust way to access proxies ✅️
-- prototype an agnostic Annotation for arbitrary sources ✅️
+- prototype an agnostic annotation for arbitrary sources ✅️
 - publish to MavenCentral
 
 ## 0.1.0
-- support hierarchical source-sets ✅
+- support hierarchical source sets ✅
 - support properties ✅
 - support methods ✅
 - support overloading ✅

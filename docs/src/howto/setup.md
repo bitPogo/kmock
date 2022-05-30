@@ -1,7 +1,7 @@
 # Setup
 ## Mandatory Options
 KMock brings a variety of configuration options.
-In order to access KMock's extension in Gradle please do the following **after** it's is apply:
+In order to access KMock's extension in Gradle please do the following **after** it is applied:
 
 === "Android/JVM"
     ```kotlin
@@ -27,13 +27,14 @@ In order to access KMock's extension in Gradle please do the following **after**
     }
     ```
 
-The only **mandatory option** is `rootPackage`, which expects the root package of **your project** as a String.
-This information is need in order to arrange the generate mocks properly.
+The only **mandatory option** is `rootPackage`,
+It expects the root package of **your project** as a String.
+This information is need in order to arrange the generate Mocks properly.
 
 ## Optional Features
 ### Aliases
 In order to resolve conflicts of mock names KMock allows you make mapping of aliases via `aliasNameMapping`.
-It expects a the key the full qualified name of the template target and as value the alias as a short name:
+It expects a the key of the full qualified name of the Template and as value the Alias as a short name:
 ```kotlin
 kmock {
     ...
@@ -45,9 +46,9 @@ kmock {
 ```
 
 ### Build-In Methods
-KMock will not generate proxies for build-in methods like hashCode by default in order to avoid unnecessary overhead in terms of the compile time.
-However if you need build-in methods you can tell KMock to generate via `useBuildInProxiesOn`.
-It expects a set of full qualified name of target templates which should use proxy build-in methods:
+KMock will not generate proxies for Build-In methods like hashCode by default in order to avoid unnecessary overhead.
+However if you need Build-In methods you can tell KMock to generate them via `useBuildInProxiesOn`.
+It expects a set of full qualified names of Templates which should have proxies for Build-In methods:
 ```kotlin
 kmock {
     ...
@@ -59,8 +60,8 @@ kmock {
 ```
 
 ### Colliding Method Names
-If KMock produces a collision of methods while resolving names for overloaded methods you can help it via `useTypePrefixFor`.
-It expects a map, while the key  must be the full qualified name of causing type and the value is an arbitrary String, which is used as a prefix.
+If KMock produces a collision of names for overloaded methods you can resolve it via `useTypePrefixFor`.
+It expects a map, while the key must be the full qualified name of causing type and the value is an arbitrary String, which is used as a prefix.
 ```kotlin
 kmock {
     ...
@@ -72,10 +73,10 @@ kmock {
 ```
 
 ### Spies
-In order to spy based on a certain template KMock offers you the `spyOn`.
-It expects a set of full qualified names of templates which are allowing spies.
+In order to enable Spies for certain Templates, KMock offers you the `spyOn`.
+It expects a set of full qualified names of Templates.
 !!!note
-    This will enable build-in methods for this particular mock as well.
+    This will enable Build-In methods for this particular mock as well.
 !!!note
     Spies for Multi-Mocks will triggered if one Interface can be spied on.
 ```kotlin
@@ -89,8 +90,8 @@ kmock {
 ```
 
 ### Spy on All
-By default KMock will only activate spies via `spyOn`, due to the overhead in terms of compile time.
-If you simply want to enable for all templates spies you can do that via `spyAll`:
+By default KMock will only activate spies via `spyOn`.
+If you simply want to enable spying for all Templates spies you can do that via `spyAll`:
 ```kotlin
 kmock {
     ...
@@ -100,8 +101,8 @@ kmock {
 ```
 
 ### Spies only
-If you have no use for mocks which cannot be spied and you want to spare the compile time of the `kmock` factories,
-you tell KMock this via `spiesOnly`:
+If you have no use for Mocks which cannot be spied and you want to spare the compile time of the `kmock` factories,
+you may tell this KMock via `spiesOnly`:
 ```kotlin
 kmock {
     ...
@@ -127,7 +128,7 @@ kmock {
 ```
 
 ### Default Freezing behaviour
-By the default all mocks are frozen in order to avoid any issues which can occur with Coroutines.
+By the default all Mocks are frozen in order to avoid any issues which can occur with Coroutines.
 If you do not wish that default you can set a new one via `freezeOnDefault`:
 ```kotlin
 kmock {
@@ -142,8 +143,8 @@ One of the biggest factors in terms of compile time are the generated factories.
 If you do not mind to wire everything by hand you can disable them via `disableFactories`:
 !!!warning
     If you do that you are on your own.
-    Also constructors of mocks are considered as internal.
-    This means do not expect them to have a stable api.
+    Also constructors of Mocks are considered as internal.
+    This means do not expect them to have a stable API.
 ```kotlin
 kmock {
     ...
@@ -153,15 +154,16 @@ kmock {
 ```
 
 ### Custom Annotations for Shared Sources
-In order to ease the declaration of Mocks for Shared Sources (e.g. `nativeTest`) offers you a hook to define custom
-annotations via `customAnnotationsForMeta` which takes a map.
-It expects as key the full qualified name of your Annotation and as value the (valid) source set it is referring too.
+In order to ease the declaration of Mocks for Shared Sources (e.g. `nativeTest`)  KMock offers you a hook to define custom
+annotations via `customAnnotationsForMeta`.
+It takes a map.
+The key must be the full qualified name of your Annotation and the value a (valid) Source Set your Annotations is referring to.
 
 !!!note
     Before you ask - no, inheritance does not work with annotations.
 
 !!!important
-    `commonTest` as source set is not allowed!
+    `commonTest` as Source Set is not allowed!
 
 ```kotlin
 kmock {
@@ -178,10 +180,10 @@ The following features are considered as experimental, which means there likely 
 
 ### CustomMethodNames
 Since overloaded method names of Proxies can become very ugly KMock offers you the possibility to rename them via `customMethodNames`.
-It expects a map while the key must be the full id of the Proxy you are refering to and the value can be an arbitrary String, which is used as name for the Proxy.
+It expects a map while the key must be the full id of the Proxy you are referring to and the value can be an arbitrary String, which is used as name for the Proxy.
 
 !!!warning
-    This feature will hurt you if the target template is subject to changes, since you have to adjust the mapping each time.
+    This feature will hurt you if the Template is subject to changes, since you have to adjust the mapping each time.
 ```
 kmock {
     ...
@@ -205,8 +207,8 @@ kmock {
 ### Fine Grained ProxyNames
 If you have the need of Proxy names which support the full extend of KMP deferring types you can enable `enableFineGrainedNames`.
 !!!note
-    You will not need that if you work only with JVM or Android.
-    This flag will you only help with native sources and JS to certain degree.
+    You will not need that if you work with JVM or Android.
+    This flag will you only help withs native sources and JS.
 ```
 kmock {
     ...

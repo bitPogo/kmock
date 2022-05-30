@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * `kmock` and `kspy` are using now a shared function to improve compile time
 * Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
 * Assertion-/VerificationChain is not coupled any longer directly to proxies and provide improved error messages
-* Expectation-methods do not bleed into the global context any longer
+* Expectation Methods do not bleed into the global context any longer
 * `verifyStrictOrder` is now used for total order of certain Proxies but allows partial order between different Proxies
 * Android MinSDK 23 -> 21
 * `spyOn` is now capable of picking up KMock defined Aliases
@@ -70,7 +70,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Factories for Common were not created when no Template was specified
 * Parallel declared shared source were eaten up by each other
 * Nested Generic Types were not resolved for Proxies
-* Multibounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
+* Multi-Bounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
 
 
 ### Security

@@ -6,6 +6,8 @@ However it is currently distributed via [GitHub Packages](https://docs.github.co
 Before you can consume KMock you need to add the GitHub Package to you repositories.
 
 === "BuildScript"
+
+    In your build.gradle.kts:
     ```kotlin
     buildScript {
         repositories {
@@ -82,6 +84,8 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
 
 In case you need to consume snapshots:
 === "BuildScript"
+
+    In your build.gradle.kts:
     ```kotlin
     buildScript {
         repositories {
@@ -262,19 +266,21 @@ In case you need to consume snapshots:
     ```
 
 !!!warning
-    For MP or KJs the plugin must be applied after your projects `kotlin` block has been set up as shown above.
+    For KMP or KJs you must apply the plugin after your projects `kotlin` block has been set up as shown above.
     This is due to the fact that Kotlin brings its own system of source sets and [Kotlin Symbol Processing (KSP)](https://github.com/google/ksp)
     must be configured during the evaluation of your project.
 
 !!!tip
-    You may find a full examples, how to set up KMock properly in the [Playground](https://github.com/bitPogo/kmock-playground).
+    You may find a full examples, how to set up KMock properly, in the [Playground](https://github.com/bitPogo/kmock-playground).
 
-## Newer KSP or Kotlin Version
-KMock may not use the latest Kotlin and KSP version.
-This is mainly done due to the fact to enable also projects with those versions to use.
+## Newer KSP or Kotlin Versions
+KMock eventually not use the latest version of Kotlin or KSP.
+This is mainly done to enable keep it open to projects which cannot update immediately.
 However since this might cause problems or noise you can force a new version of KSP:
 
 === "BuildScript"
+
+    In your build.gradle.kts:
     ```kotlin
     buildscript {
         ...
@@ -318,4 +324,4 @@ However since this might cause problems or noise you can force a new version of 
     ```
 
 !!!warning
-    Try not to replace the Kotlin Version in the Runtime part of KMock.
+    Do not replace the Kotlin Version in the Runtime part of KMock!

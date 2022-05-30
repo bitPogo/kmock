@@ -7,8 +7,9 @@ Well complaining is easy and "how hard can it"™ be to create such a library? H
 As other existing KMP mock libraries, KMock utilizes the power of [Kotlin Symbol Processing (KSP)](https://github.com/google/ksp) and generates mocks based on interfaces.
 Well, actually, in a strict sense, KMock generates [stubs or fakes](https://www.martinfowler.com/articles/mocksArentStubs.html) to a certain degree.
 
-It draws its biggest inspiration from Python’s MagicMock(https://docs.python.org/3/library/unittest.mock.html) in terms of the API, since it is easy to work with and offers conceptually a way to deal with the nature of KMP.
-While some mocking libraries depend on record-replay-verify pattern, KMock, in its core, tries to align as much as possible with the [arrange-act-assert pattern (AAA)](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-testspattern).
+It draws its biggest inspiration from Python’s [MagicMock](https://docs.python.org/3/library/unittest.mock.html) in terms of the API, since it is easy to work with and offers conceptually a way to deal with the nature of KMP.
+While some mocking libraries depend on record-replay-verify pattern, KMock does not.
+It's mind model blend into the [arrange-act-assert pattern (AAA)](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-testspattern) as much as possible.
 For example while you write in mockk:
 ```kotlin
 @Test
@@ -30,14 +31,14 @@ fun sampleTest() {
 }
 
 ```
-KMock tries to blend in more with AAA:
+You'll write in KMock:
 ```kotlin
 @Test
 fun sampleTest() {
     // arrange
     val someInstance: SomeInterfaceMock = kmock()
 
-    someInstance._someProperty.get =  "any"
+    someInstance._someProperty.get = "any"
     someInstance._someMethod.returns  = "any"
 
     // act
@@ -52,13 +53,14 @@ fun sampleTest() {
 }
 
 ```
-This is achieved due to the fact that KMock will proxy any public member of a given interface.
-It also allows for less intrusive behaviour than traditional mocking libraries.
+In fact KMock will proxy each public member of a given interface instead of proxy the entire interface at once.
+This also allows for less intrusive behaviour than traditional mocking libraries.
 
-A second noteworthy side effect due to this approach is that most functionality is directly bound to the generated Mocks, so things will just pop up in your IDE or Editor and this hopefully flattens the learning curve.
+A second noteworthy side effect due to this approach is that most functionality is directly bound to the generated Mocks, so things will just pop up in your IDE or Editor.
+This hopefully flattens the learning curve.
 Lastly this allows to minimize any ambiguity in terms of overloading or eases the work with receivers, which are runtime based libraries mostly struggle with.
 Another ingredient of KMock is that the library should do the heavy lifting as much as possible.
-This means a user should not have to engage too complicated configuration in order to work with the library conveniently in KMP Context.
+This means a consumer should not have to engage in complicated configuration to make it work with KMP.
 
 Ideally it should just work, while supporting different tests and code styles.
 Therefore KMock implements a basic support for Relaxation or Spying.
@@ -69,12 +71,14 @@ But each luck has its price…
 ## Trade Offs
 While it so far it all sounds appealing, KMock of course has its conceptual trade offs.
 First and foremost compile time - while other libraries will try to resolve mostly everything at runtime, KMock will distribute things between compile- and runtime.
-This naturally means compiling will need more time, even if we speak about seconds here. Even though KMock is not optimized yet, it will most likely never be completely able to go toe to toe with pure runtime libraries.
+This naturally means compiling will need more time, even if we speak about seconds here.
+Even though KMock is not optimized yet, it will most likely never be completely able to go toe to toe with pure runtime libraries.
 But you pay for accuracy and convenience.
 
 Also direct proxy access is not robust against refactoring since the generated names are detached from the interface it is based on.
-This goes especially for overloaded names, since they have to utilize the types of the given parameter, which also brings in some ugliness to a certain degree.
-While this a major drawback, KMock has experimental proxy access methods to address these problems. Even though they are not completely matured yet and cannot be used for all use cases, they hopefully ease those issues.
+This goes especially for overloaded names and their bring their own batch of ugliness.
+While this a major drawback, KMock has experimental features to address these problems.
+Even though they are not completely matured yet and cannot be used for all use cases, they hopefully ease those issues.
 
 ## What is the overall goal?
 Aside from the roadmap, KMock 's main aim is to make your life easier as much as possible.

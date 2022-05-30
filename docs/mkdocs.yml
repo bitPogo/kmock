@@ -112,9 +112,9 @@ nav:
   - Roadmap: roadmap.md
   - Concept: concept.md
   - How To:
-      - Terminology: howto/terminology.md
       - Installation: howto/install.md
       - Setup: howto/setup.md
+      - Terminology: howto/terminology.md
       - Declaring a Mock: howto/annotations.md
       - Using Mocks: howto/proxy.md
       - Assertion/Verification: howto/assertion.md
