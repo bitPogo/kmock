@@ -1,1 +1,97 @@
-docs/src/changelog.md
+# Changelog
+
+All important changes of this project must be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## <a href="{{ repo }}/compare/{{ latest }}...main">Unreleased</a>
+
+### Added
+
+* `or` ArgumentConstraint
+* `not` ArgumentConstraint
+* `spiesOnly` in the Gradle extension, in order to tell the processor to only create `kspy`. Also `spyOn` is not needed in this configuration
+* `spyAll` in the Gradle extension, in order to tell the processor to create for al given interfaces also a spy entryPoint
+* `vararg` is now supported by Mocks
+* `freezeOnDefault` in the Gradle extension, which sets a default freeze value for `kspy` and `kmock`
+* `useTypePrefixFor` for overloaded names in order to ease them and avoid collisions
+* `customMethodNames` in order to allow complete custom names for methods
+* `allowInterfaces`, which combines `allowInterfacesOnKmock` and `allowInterfacesOnKspy`
+* `disableFactories` in order to disable the generation of `kmock` and `kspy` if needed
+* `customAnnotationsForMeta` to provide a hook for the usage of customized annotation for meta/shared sources
+* `assertOrder` in order to make the names more consistent and preserves the old behaviour of `verifyStrictOrder`
+* `assertProxy` as alternative to `verify`
+* iosSimulatorArm64 support
+* Support for instrumented Android tests (aka androidAndroidTest) on KMP
+* Multi-Interface Mocks support
+* Interface receiver members are full supported
+* `run` for FunProxies to mitigate the strict assignment policy in terms of a single SideEffect
+* `runs` for FunProxies to mitigate the strict assignment policy in terms of SideEffects
+* `throwsMany` for FunProxies to align the the FunProxy API
+* `enableFineGrainedNames` in order to allow fine grained typing (experimental/not this will feature helps you only in a non JVM context)
+* `KMock` experimental annotation, which is agnostic in terms of source sets
+* `KMockMulti` experimental annotation, which is agnostic in terms of source sets
+
+### Changed
+
+* Generated mocks don't contain runtime logic any longer
+* Mutable properties of Proxies now separate froze/unfrozen state is cleaner to improve Runtime
+* `kmock` and `kspy` are using now a shared function to improve compile time
+* Non intrusive behaviour (spy & relaxation) is now resolved by proxy invocation rather then by proxy initialisation in order to cover edge cases
+* Assertion-/VerificationChain is not coupled any longer directly to proxies and provide improved error messages
+* Expectation-methods do not bleed into the global context any longer
+* `verifyStrictOrder` is now used for total order of certain Proxies but allows partial order between different Proxies
+* Android MinSDK 23 -> 21
+* `spyOn` is now capable of picking up KMock defined Aliases
+* `kspy` in terms of generics not longer exposed if not declared via `spyOn` or `spiesOnly`
+* Relaxation method gets now the return type boundaries delegated, if generic in order to resolve type conflicts
+* Generic methods names get prefixed by the generic type name, if it is overloaded to avoid name collisions
+* Generic methods names get prefixed by an indicator, if it is overloaded and nullable to avoid name collisions
+* Meta/Shared Source Annotation are now supporting platform references (e.g. instead of metaTest you can write meta)
+* Custom Source Annotation are now supporting platform references (e.g. instead of sharedTest you can write shared)
+* Proxy-Access-Methods and their corresponding verification/assertion counter parts
+* `verifer` argument is now called `collector`
+
+### Deprecated
+
+### Removed
+
+* `allowedRecursiveTypes`, since it is no longer needed due to the new spy invocation
+* `allowInterfacesOnKmock`, use allowInterfaces instead
+* `allowInterfacesOnKspy`, use allowInterfaces instead
+* Old experimental ProxyAssertion family, use `assertProxy` or `verify` instead
+* `uselessPrefixes` in the Gradle Extension
+
+### Fixed
+
+* FunProxy names with nullable or multi-bounded types defined as generic parameter
+* Annotation was not picked up when more then one Annotation was used
+* Factories for Common were not created when no Template was specified
+* Parallel declared shared source were eaten up by each other
+* Nested Generic Types were not resolved for Proxies
+* Multibounded Generics caused invalid Proxy name if overloaded and a leading boundary was nullable
+
+
+### Security
+
+### Bumped
+
+* KotlinPoet 1.10.2 -> 1.11.0
+* Gradle 7.4.1 -> 7.4.2
+* Android Gradle Plugin 7.1.2 -> 7.1.3
+
+
+## <a href="{{ repo }}/compare/v0.1.0...v0.1.1">0.1.1</a>
+
+### Fixed
+
+* Warnings for unused expression and unused parameter in MockFactory
+
+### Bumped
+
+* Gradle 7.2 -> 7.4.1
+
+## <a href="{{ repo }}/releases/tag/v0.1.0">0.1.0</a>
+
+Initial release.
