@@ -32,6 +32,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
 
+// see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
 internal fun TypeName.rawType(): ClassName {
     return findRawType() ?: throw IllegalArgumentException("Cannot get raw type from $this")
@@ -407,6 +408,17 @@ private fun MutableList<TypeName>.resolveVararg(parent: KSClassDeclaration): Typ
     }
 }
 
+private fun TypeName.starToNullableAny(
+    methodType: TypeName,
+    isInheritedVararg: Boolean
+): TypeName {
+    return if (!isInheritedVararg && this == STAR && methodType != STAR) {
+        outNullableAny
+    } else {
+        this
+    }
+}
+
 private fun KSType.toSecuredTypeName(
     inheritedVarargArg: Boolean,
     typeParameterResolver: TypeParameterResolver,
@@ -427,14 +439,16 @@ private fun KSType.toSecuredTypeName(
 
             arguments.forEach { argument ->
                 val (methodArgument, proxyArgument) = argument.toSecuredTypeName(
-                    inheritedVarargArg = inheritedVarargArg,
+                    inheritedVarargArg = false,
                     generics = generics,
                     typeParameterResolver = typeParameterResolver,
                     rootTypeArguments = rootTypeArguments,
                 )
 
                 methodArguments.add(methodArgument)
-                proxyArguments.add(proxyArgument)
+                proxyArguments.add(
+                    proxyArgument.starToNullableAny(methodArgument, inheritedVarargArg)
+                )
             }
 
             if (declaration.isMisalignedVararg(inheritedVarargArg, methodArguments, rootTypeArguments)) {
@@ -526,3 +540,5 @@ private val specialArrays: Map<String, TypeName> = mapOf(
     UIntArray::class.asTypeName().toString() to UInt::class.asTypeName(),
     ULongArray::class.asTypeName().toString() to ULong::class.asTypeName(),
 )
+
+private val outNullableAny = TypeVariableName("out $nullableAny")

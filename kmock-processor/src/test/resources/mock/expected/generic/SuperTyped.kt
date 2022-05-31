@@ -7,6 +7,7 @@ import kotlin.CharArray
 import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
+import kotlin.IntArray
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
@@ -78,9 +79,19 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_buzz", collector =
         collector, freeze = freeze)
 
-    public val _narv: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out L>) -> kotlin.Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narv", collector =
-        collector, freeze = freeze)
+    public val _narvWithLs: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out L>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithLs", collector
+        = collector, freeze = freeze)
+
+    public val _narvWithArrays: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Array<out
+    kotlin.Any>>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithArrays",
+            collector = collector, freeze = freeze)
+
+    public val _narvWithIntArrays: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.IntArray>) -> kotlin.Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithIntArrays",
+            collector = collector, freeze = freeze)
 
     public val _ooWithIntAnys: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Array<out
     kotlin.Any>) -> kotlin.Any> =
@@ -98,7 +109,7 @@ internal class SuperTypedMock<K : Any, L>(
             collector = collector, freeze = freeze)
 
     public val _ooWithAnyRRRs: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
-    mock.template.generic.RRR<kotlin.Any?>>) -> kotlin.Any> =
+    mock.template.generic.RRR<out kotlin.Any?>>) -> kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyRRRs",
             collector = collector, freeze = freeze)
 
@@ -106,6 +117,11 @@ internal class SuperTypedMock<K : Any, L>(
     kotlin.Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyCharArray",
             collector = collector, freeze = freeze)
+
+    public val _roo: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
+    mock.template.generic.RRR<*>>) -> kotlin.Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_roo", collector =
+        collector, freeze = freeze)
 
     public override fun <T> ppt(vararg x: T): Unit = _pptWithZTAnys.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
@@ -156,7 +172,15 @@ internal class SuperTypedMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun narv(vararg x: L): Unit = _narv.invoke(x) {
+    public override fun narv(vararg x: L): Unit = _narvWithLs.invoke(x) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun narv(vararg x: Array<out Any>): Unit = _narvWithArrays.invoke(x) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun narv(vararg x: IntArray): Unit = _narvWithIntArrays.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -166,9 +190,12 @@ internal class SuperTypedMock<K : Any, L>(
 
     public override fun <T> oo(fuzz: Any, vararg ozz: T): Any = _ooWithAnyZTAnys.invoke(fuzz, ozz)
 
-    public override fun <T> oo(fuzz: Any, vararg ozz: RRR<T>): Any = _ooWithAnyRRRs.invoke(fuzz, ozz)
+    public override fun <T> oo(fuzz: Any, vararg ozz: RRR<out T>): Any = _ooWithAnyRRRs.invoke(fuzz,
+        ozz)
 
     public override fun <T> oo(fuzz: Any, ozz: CharArray): Any = _ooWithAnyCharArray.invoke(fuzz, ozz)
+
+    public override fun <T> roo(fuzz: Any, vararg ozz: RRR<*>): Any = _roo.invoke(fuzz, ozz)
 
     public fun _clearMock(): Unit {
         _pptWithZTAnys.clear()
@@ -182,11 +209,14 @@ internal class SuperTypedMock<K : Any, L>(
         _lolWithZKAnyTComparable.clear()
         _lolWithTAny.clear()
         _buzz.clear()
-        _narv.clear()
+        _narvWithLs.clear()
+        _narvWithArrays.clear()
+        _narvWithIntArrays.clear()
         _ooWithIntAnys.clear()
         _ooWithAnyInts.clear()
         _ooWithAnyZTAnys.clear()
         _ooWithAnyRRRs.clear()
         _ooWithAnyCharArray.clear()
+        _roo.clear()
     }
 }
