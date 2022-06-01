@@ -87,7 +87,6 @@ internal class KMockFactoryEntryPointGenerator(
             KSPY_FACTORY_TYPE_NAME,
             templateSource
         )
-
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
 
         return utils.generateKspySignature(
@@ -145,6 +144,7 @@ internal class KMockFactoryEntryPointGenerator(
         return utils.generateKspySignature(
             spyType = spyType,
             mockType = mockType,
+            boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
@@ -152,13 +152,16 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun buildMultiInterfaceGenericKMockFactory(
+        source: TemplateMultiSource,
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>
     ): FunSpec {
-        val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(bounds = boundaries)
+        val mock = utils.resolveMockType(source, generics)
+        val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(bounds = listOf(mock))
 
         return utils.generateKmockSignature(
             type = mockType,
+            boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
@@ -179,6 +182,7 @@ internal class KMockFactoryEntryPointGenerator(
         return utils.generateKspySignature(
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
             modifier = KModifier.EXPECT
@@ -195,9 +199,16 @@ internal class KMockFactoryEntryPointGenerator(
         generics: List<TypeVariableName>
     ): FunSpec {
         return if (templateSource.isSpyable()) {
-            buildMultiInterfaceGenericKSpyFactory(boundaries, generics)
+            buildMultiInterfaceGenericKSpyFactory(
+                boundaries = boundaries,
+                generics = generics,
+            )
         } else {
-            buildMultiInterfaceGenericKMockFactory(boundaries, generics)
+            buildMultiInterfaceGenericKMockFactory(
+                source = templateSource,
+                boundaries = boundaries,
+                generics = generics,
+            )
         }
     }
 

@@ -179,7 +179,6 @@ internal class KMockFactoryWithoutGenerics(
         val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = kspyMockType,
             spyType = kspyType,
-            generics = emptyList(),
         )
 
         if (templateSources.isEmpty() && templateMultiSources.isEmpty()) {
@@ -200,7 +199,6 @@ internal class KMockFactoryWithoutGenerics(
 
         return utils.generateKmockSignature(
             type = kmockType,
-            generics = emptyList(),
             hasDefault = !isKmp,
             modifier = modifier
         ).addCode(factoryInvocation)
@@ -214,7 +212,6 @@ internal class KMockFactoryWithoutGenerics(
         return utils.generateKspySignature(
             mockType = kspyMockType,
             spyType = kspyType,
-            generics = emptyList(),
             hasDefault = !isKmp,
             modifier = modifier
         ).addCode(spyFactoryInvocation)

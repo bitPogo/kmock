@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 * vararg eats specialised Array Types (e.g. IntArray) and covariant types when inherited
+* Factories for Multi-Interface-Mocks
 
 ### Security
 

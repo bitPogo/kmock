@@ -32,6 +32,7 @@ ksp {
     arg("kmock_kspDir", "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
     arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
     arg("kmock_alternativeProxyAccess", "true")
+    arg("kmock_allowInterfaces", "true")
 }
 
 kotlin {

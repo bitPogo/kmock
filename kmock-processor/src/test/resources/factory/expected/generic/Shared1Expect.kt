@@ -8,6 +8,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -17,7 +18,7 @@ internal expect inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>,
+    templateType: KClass<Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L>
 
 internal expect inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
@@ -25,5 +26,5 @@ internal expect inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>,
+    templateType: KClass<Shared2<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

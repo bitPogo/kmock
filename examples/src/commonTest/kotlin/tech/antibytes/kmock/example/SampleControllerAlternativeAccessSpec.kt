@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockExperimental
+import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
@@ -54,6 +55,11 @@ import kotlin.test.Test
     DecoderFactory::class,
     SampleUselessObject::class,
 )
+@KMockMulti(
+    "MergedGeneric",
+    SampleLocalRepository::class,
+    GenericSampleDomainObject::class,
+)
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
@@ -65,9 +71,13 @@ class SampleControllerAlternativeAccessSpec {
         relaxed = true,
         templateType = GenericSampleDomainObject::class
     )
-    private val uselessObjectObject: SampleUselessObjectMock = kmock(
+    private val uselessObject: SampleUselessObjectMock = kmock(
         collector,
         relaxed = true,
+    )
+    private val mergedGenericMock: MergedGenericMock<String, Int, *> = kmock(
+        templateType0 = SampleLocalRepository::class,
+        templateType1 = GenericSampleDomainObject::class
     )
 
     @BeforeTest
@@ -211,27 +221,42 @@ class SampleControllerAlternativeAccessSpec {
     @IgnoreJs
     fun `Given a mocked SampleUselessThing it does strange things`() {
         // Given
-        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomething, hint<Any>()).returnValue = 23
-        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomething, hint<String>()).returnValue = 42
+        uselessObject.syncFunProxyOf<Any?>(uselessObject::doSomething, hint<Any>()).returnValue = 23
+        uselessObject.syncFunProxyOf(uselessObject::doSomething, hint<String>()).returnValue = 42
 
-        uselessObjectObject.syncFunProxyOf<Any?>(uselessObjectObject::doSomethingElse, hint<Any>()).returnValue = 107
-        uselessObjectObject.syncFunProxyOf(uselessObjectObject::doSomethingElse, hint<String>()).returnValue = 31
+        uselessObject.syncFunProxyOf<Any?>(uselessObject::doSomethingElse, hint<Any>()).returnValue = 107
+        uselessObject.syncFunProxyOf(uselessObject::doSomethingElse, hint<String>()).returnValue = 31
 
-        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomething, hint<Any, String>()).returnValue = "works!"
-        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomething, hint<Any, Int>()).returnValue = "It"
+        uselessObject.syncFunProxyOf<Any>(uselessObject::doSomething, hint<Any, String>()).returnValue = "works!"
+        uselessObject.syncFunProxyOf<Any>(uselessObject::doSomething, hint<Any, Int>()).returnValue = "It"
 
-        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomethingElse, hint<Any, String>()).returnValue = "works!"
-        uselessObjectObject.syncFunProxyOf<Any>(uselessObjectObject::doSomethingElse, hint<Any, Int>()).returnValue = "It"
+        uselessObject.syncFunProxyOf<Any>(uselessObject::doSomethingElse, hint<Any, String>()).returnValue = "works!"
+        uselessObject.syncFunProxyOf<Any>(uselessObject::doSomethingElse, hint<Any, Int>()).returnValue = "It"
 
         // When & Then
-        uselessObjectObject.doSomething(null) mustBe 23
-        uselessObjectObject.doSomething("null") mustBe 42
-        uselessObjectObject.doSomething(Any(), 21) mustBe "It"
-        uselessObjectObject.doSomething(Any(), "argggg") mustBe "works!"
+        uselessObject.doSomething(null) mustBe 23
+        uselessObject.doSomething("null") mustBe 42
+        uselessObject.doSomething(Any(), 21) mustBe "It"
+        uselessObject.doSomething(Any(), "argggg") mustBe "works!"
 
-        uselessObjectObject.doSomethingElse("null") mustBe 31
-        uselessObjectObject.doSomethingElse(null) mustBe 107
-        uselessObjectObject.doSomethingElse(Any(), 21) mustBe "It"
-        uselessObjectObject.doSomethingElse(Any(), "argggg") mustBe "works!"
+        uselessObject.doSomethingElse("null") mustBe 31
+        uselessObject.doSomethingElse(null) mustBe 107
+        uselessObject.doSomethingElse(Any(), 21) mustBe "It"
+        uselessObject.doSomethingElse(Any(), "argggg") mustBe "works!"
+    }
+
+    @Test
+    @JsName("fnx6")
+    @IgnoreJs
+    fun `Given a mocked MergedGeneric it does strange things`() {
+        // Given
+        val id = fixture.fixture<String>()
+        mergedGenericMock.propertyProxyOf(mergedGenericMock::id).get = id
+
+        // When
+        val actual = mergedGenericMock.id
+
+        // Then
+        actual mustBe id
     }
 }

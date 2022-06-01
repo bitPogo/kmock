@@ -19,7 +19,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FA
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TEMPLATE_TYPE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNKNOWN_INTERFACE
 import tech.antibytes.kmock.processor.ProcessorContract.FactoryMultiBundle
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
@@ -35,20 +34,6 @@ internal class KMockFactoryMultiInterfaceGenerator(
     private val genericResolver: GenericResolver,
     private val utils: MockFactoryGeneratorUtil,
 ) : MockFactoryMultiInterface {
-    private fun buildMockSelectorFlow(
-        mockFactory: FunSpec.Builder,
-        mockName: String,
-        addItems: FunSpec.Builder.() -> Unit,
-    ): FunSpec.Builder {
-        mockFactory.beginControlFlow("return if ($KMOCK_FACTORY_TYPE_NAME::class == $mockName::class)")
-        addItems(mockFactory)
-        mockFactory.nextControlFlow("else")
-        mockFactory.addCode(UNKNOWN_INTERFACE)
-        mockFactory.endControlFlow()
-
-        return mockFactory
-    }
-
     private fun determineMockTemplate(
         relaxer: Relaxer?
     ): String {
@@ -59,13 +44,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
         }
     }
 
-    private fun addMock(
-        mockFactory: FunSpec.Builder,
+    private fun FunSpec.Builder.addMock(
         qualifiedName: String,
         relaxer: Relaxer?
-    ) {
-        mockFactory.addStatement(
-            determineMockTemplate(relaxer),
+    ): FunSpec.Builder {
+        val statement = determineMockTemplate(relaxer)
+        return addStatement(
+            "return $statement",
             qualifiedName,
         )
     }
@@ -77,18 +62,16 @@ internal class KMockFactoryMultiInterfaceGenerator(
     ): FunSpec.Builder {
         val qualifiedName = "${templateSource.packageName}.${templateSource.templateName}"
 
-        return buildMockSelectorFlow(mockFactory, "${qualifiedName}Mock") {
-            addMock(
-                mockFactory = this,
-                qualifiedName = qualifiedName,
-                relaxer = relaxer
-            )
-        }
+        return mockFactory.addMock(
+            qualifiedName = qualifiedName,
+            relaxer = relaxer
+        )
     }
 
     private fun fillSpyMockFactory(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        boundaries: List<TypeName>,
         templateSource: TemplateMultiSource,
         generics: List<TypeVariableName>,
         relaxer: Relaxer?
@@ -96,6 +79,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         val mockFactory = utils.generateKspySignature(
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             generics = generics,
             hasDefault = false,
             modifier = utils.resolveModifier(templateSource)
@@ -118,11 +102,11 @@ internal class KMockFactoryMultiInterfaceGenerator(
         templateSource: TemplateMultiSource,
         relaxer: Relaxer?
     ): FunSpec {
-        val (bounds, _) = resolveBounds(templateSource)
+        val (boundaries, _) = resolveBounds(templateSource)
 
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
-            bounds = bounds
+            bounds = boundaries
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -130,6 +114,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return fillSpyMockFactory(
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             templateSource = templateSource,
             generics = emptyList(),
             relaxer = relaxer
@@ -139,12 +124,14 @@ internal class KMockFactoryMultiInterfaceGenerator(
     private fun fillMockFactory(
         templateSource: TemplateMultiSource,
         type: TypeVariableName,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
         val modifier = utils.resolveModifier(templateSource)
 
         return utils.generateKmockSignature(
             type = type,
+            boundaries = boundaries,
             generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
@@ -155,6 +142,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         templateSource: TemplateMultiSource,
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
         val modifier = utils.resolveModifier(templateSource)
@@ -162,18 +150,17 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return utils.generateKspySignature(
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             generics = generics,
             hasDefault = !isKmp,
             modifier = modifier
         ).addTypeVariables(generics)
     }
 
-    private fun generateTypeArgument(
-        bounds: List<TypeName>
-    ): String {
+    private fun generateTypeArguments(boundaries: List<TypeName>): String {
         val typeArgumentBuilder = StringBuilder()
 
-        bounds.forEachIndexed { idx, _ ->
+        repeat(boundaries.size) { idx ->
             typeArgumentBuilder.append("$TEMPLATE_TYPE_ARGUMENT$idx = $TEMPLATE_TYPE_ARGUMENT$idx,\n")
         }
 
@@ -182,32 +169,34 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun buildGenericKmockFactory(
         templateSource: TemplateMultiSource,
-        bounds: List<TypeName>,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec {
+        val mock = utils.resolveMockType(templateSource, generics)
         val type = TypeVariableName(
             KMOCK_FACTORY_TYPE_NAME,
-            bounds = bounds
+            bounds = listOf(mock)
         )
 
         return fillMockFactory(
             templateSource = templateSource,
+            boundaries = boundaries,
             generics = generics,
             type = type,
         ).addCode(
             factoryInvocationWithTemplate,
-            generateTypeArgument(bounds)
+            generateTypeArguments(boundaries)
         ).build()
     }
 
     private fun buildGenericKSpyFactory(
         templateSource: TemplateMultiSource,
-        bounds: List<TypeName>,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec {
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
-            bounds = bounds
+            bounds = boundaries
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -216,16 +205,18 @@ internal class KMockFactoryMultiInterfaceGenerator(
             templateSource = templateSource,
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             generics = generics,
         ).addCode(
             spyFactoryInvocationWithTemplate,
-            generateTypeArgument(bounds)
+            generateTypeArguments(boundaries)
         ).build()
     }
 
     private fun fillSharedMockFactory(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        boundaries: List<TypeName>,
         templateSource: TemplateMultiSource,
         generics: List<TypeVariableName>,
         relaxer: Relaxer?
@@ -233,6 +224,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = mockType,
             spyType = spyType,
+            boundaries = boundaries,
             generics = generics,
         )
 
@@ -247,13 +239,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun buildGenericSharedMockFactory(
         templateSource: TemplateMultiSource,
-        bounds: List<TypeName>,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
         relaxer: Relaxer?
     ): FunSpec {
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
-            bounds = bounds,
+            bounds = boundaries,
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -262,6 +254,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             mockType = mockType,
             spyType = spyType,
             templateSource = templateSource,
+            boundaries = boundaries,
             generics = generics,
             relaxer = relaxer
         ).build()
@@ -273,13 +266,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun resolveGenericSpyFactory(
         templateSource: TemplateMultiSource,
-        bounds: List<TypeName>,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec? {
         return if (templateSource.isSpyable()) {
             buildGenericKSpyFactory(
                 templateSource = templateSource,
-                bounds = bounds,
+                boundaries = boundaries,
                 generics = generics,
             )
         } else {
@@ -296,18 +289,18 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return FactoryMultiBundle(
             shared = buildGenericSharedMockFactory(
                 templateSource = templateSource,
-                bounds = bounds,
+                boundaries = bounds,
                 generics = generics,
                 relaxer = relaxer
             ),
             kmock = buildGenericKmockFactory(
                 templateSource = templateSource,
-                bounds = bounds,
+                boundaries = bounds,
                 generics = generics,
             ),
             kspy = resolveGenericSpyFactory(
                 templateSource = templateSource,
-                bounds = bounds,
+                boundaries = bounds,
                 generics = generics,
             ),
         )

@@ -279,7 +279,6 @@ internal class KMockFactoryWithGenerics(
     }
 
     private companion object {
-
         private val factoryInvocationWithTemplate = """
                 |return $SHARED_MOCK_FACTORY(
                 |   $SPY_ARGUMENT = null,

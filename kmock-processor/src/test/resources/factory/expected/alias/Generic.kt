@@ -7,6 +7,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -39,7 +40,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Generic<K, L>, K : Any
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.alias.Generic<*, *>>,
+    templateType: KClass<Generic<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.alias.AliasGenericMock::class -> factory.template.alias.AliasGenericMock<K,
         L>(collector = collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -52,7 +53,7 @@ internal inline fun <reified Mock : Generic<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.alias.Generic<*, *>>,
+    templateType: KClass<Generic<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,

@@ -6,9 +6,13 @@
 
 package tech.antibytes.kmock.processor.factory
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
@@ -27,6 +31,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.TEMPLATE_TYPE_
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Source
+import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import kotlin.reflect.KClass
 
@@ -70,38 +75,22 @@ internal class KMockFactoryGeneratorUtil(
         .defaultValue(freezeOnDefault.toString())
         .build()
 
-    private fun resolveArgumentType(identifier: TypeName): String {
-        return if (identifier is TypeVariableName) {
-            identifier
-                .bounds
-                .first()
-                .toString()
-                .substringBeforeLast('<')
-        } else {
-            identifier.toString()
-        }
-    }
+    private fun TypeName.toParameterizedByStar(): TypeName {
+        return if (this is ParameterizedTypeName) {
+            val parameter = List(this.typeArguments.size) { STAR }
 
-    private fun resolveGenericParameter(
-        generics: List<TypeVariableName>
-    ): String {
-        return if (generics.isEmpty()) {
-            ""
+            this.rawType.parameterizedBy(parameter)
         } else {
-            val genericTypes = List(generics.size) { "*" }
-
-            "<${genericTypes.joinToString(", ")}>"
+            this
         }
     }
 
     private fun buildGenericFactoryArgument(
         identifier: TypeName,
-        generics: List<TypeVariableName>
-    ): TypeVariableName {
-        val mockType = resolveArgumentType(identifier)
-        val parameter = resolveGenericParameter(generics)
-
-        return TypeVariableName("$kClass<$mockType$parameter>")
+    ): TypeName {
+        return kClass.parameterizedBy(
+            identifier.toParameterizedByStar()
+        )
     }
 
     private fun FunSpec.Builder.amendGenericValues(
@@ -114,7 +103,7 @@ internal class KMockFactoryGeneratorUtil(
             this.addParameter(
                 ParameterSpec.builder(
                     name = TEMPLATE_TYPE_ARGUMENT,
-                    type = buildGenericFactoryArgument(identifier, generics)
+                    type = buildGenericFactoryArgument(identifier)
                 ).build()
             )
         }
@@ -123,13 +112,13 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     private fun FunSpec.Builder.amendMultiBounded(
-        identifier: TypeVariableName,
+        boundaries: List<TypeName>,
     ): FunSpec.Builder {
-        identifier.bounds.forEachIndexed { idx, boundary ->
+        boundaries.forEachIndexed { idx, boundary ->
             this.addParameter(
                 ParameterSpec.builder(
                     name = "$TEMPLATE_TYPE_ARGUMENT$idx",
-                    type = buildGenericFactoryArgument(boundary, emptyList())
+                    type = buildGenericFactoryArgument(boundary)
                 ).build()
             )
         }
@@ -179,6 +168,7 @@ internal class KMockFactoryGeneratorUtil(
 
     override fun generateKmockSignature(
         type: TypeVariableName,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
         hasDefault: Boolean,
         modifier: KModifier?
@@ -190,16 +180,17 @@ internal class KMockFactoryGeneratorUtil(
             .addParameter(buildRelaxedParameter(hasDefault))
             .addParameter(buildUnitRelaxedParameter(hasDefault))
             .addParameter(buildFreezeParameter(hasDefault))
-            .returns(type).addTypeVariable(type.copy(reified = true))
+            .returns(type)
+            .addTypeVariable(type.copy(reified = true))
 
         if (modifier != null) {
             kmock.addModifiers(modifier)
         }
 
-        return if (type.bounds.size > 1) {
-            kmock.amendMultiBounded(type)
+        return if (boundaries.isNotEmpty()) {
+            kmock.amendMultiBounded(boundaries)
         } else {
-            kmock.amendGenericValues(type, generics)
+            kmock.amendGenericValues(type.bounds.first(), generics)
         }
     }
 
@@ -214,6 +205,7 @@ internal class KMockFactoryGeneratorUtil(
     override fun generateKspySignature(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
         hasDefault: Boolean,
         modifier: KModifier?
@@ -232,16 +224,17 @@ internal class KMockFactoryGeneratorUtil(
             kspy.addModifiers(modifier)
         }
 
-        return if (spyType.bounds.size > 1) {
-            kspy.amendMultiBounded(spyType)
+        return if (boundaries.isNotEmpty()) {
+            kspy.amendMultiBounded(spyType.bounds)
         } else {
-            kspy.amendGenericValues(spyType, generics)
+            kspy.amendGenericValues(spyType.bounds.first(), generics)
         }
     }
 
     override fun generateSharedMockFactorySignature(
         mockType: TypeVariableName,
         spyType: TypeVariableName,
+        boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
     ): FunSpec.Builder {
         val mockFactory = FunSpec.builder(SHARED_MOCK_FACTORY)
@@ -256,10 +249,10 @@ internal class KMockFactoryGeneratorUtil(
             .addParameter(buildUnitRelaxedParameter(false))
             .addParameter(buildFreezeParameter(false))
 
-        return if (spyType.bounds.size > 1) {
-            mockFactory.amendMultiBounded(spyType)
+        return if (boundaries.isNotEmpty()) {
+            mockFactory.amendMultiBounded(boundaries)
         } else {
-            mockFactory.amendGenericValues(spyType, generics)
+            mockFactory.amendGenericValues(spyType.bounds.first(), generics)
         }
     }
 
@@ -289,6 +282,28 @@ internal class KMockFactoryGeneratorUtil(
         } else {
             null
         }
+    }
+
+    private fun resolveParameter(rawParameter: List<TypeName>): List<TypeName> {
+        val parameter: MutableList<TypeName> = MutableList(rawParameter.size) { idx ->
+            TypeVariableName("${ProcessorContract.TYPE_PARAMETER}$idx")
+        }
+
+        parameter.add(STAR)
+
+        return parameter
+    }
+
+    override fun resolveMockType(
+        templateSource: TemplateMultiSource,
+        parameter: List<TypeName>,
+    ): TypeName {
+        return ClassName(
+            packageName = templateSource.packageName,
+            "${templateSource.templateName}Mock",
+        ).parameterizedBy(
+            resolveParameter(parameter)
+        )
     }
 
     companion object {
