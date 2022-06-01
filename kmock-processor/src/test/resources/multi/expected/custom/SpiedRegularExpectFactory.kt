@@ -4,6 +4,7 @@ package multi
 
 import kotlin.Boolean
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import multi.template.custom.Regular1
 import multi.template.custom.SharedContractRegular
 import multi.template.custom.nested.Regular3
@@ -15,7 +16,7 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType0: kotlin.reflect.KClass<multi.template.custom.Regular1>,
-    templateType1: kotlin.reflect.KClass<multi.template.custom.SharedContractRegular.Regular2>,
-    templateType2: kotlin.reflect.KClass<multi.template.custom.nested.Regular3>,
+    templateType0: KClass<Regular1>,
+    templateType1: KClass<SharedContractRegular.Regular2>,
+    templateType2: KClass<Regular3>,
 ): Mock where SpyOn : Regular1, SpyOn : SharedContractRegular.Regular2, SpyOn : Regular3

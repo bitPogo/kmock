@@ -22,6 +22,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PARAMETER
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.any
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
@@ -33,7 +34,6 @@ import tech.antibytes.kmock.processor.utils.rawType
 internal object KMockGenerics : GenericResolver {
     private val nullableAnys = listOf(nullableAny)
     private val nonNullableAnys = listOf(any)
-    private const val TYPE_PARAMETER = "KMockTypeParameter"
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
 

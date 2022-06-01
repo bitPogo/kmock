@@ -9,6 +9,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
@@ -40,7 +41,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Shared1<K, L>, K : Any
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>,
+    templateType: KClass<Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generic.Shared1Mock::class -> factory.template.generic.Shared1Mock<K,
         L>(collector = collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -53,7 +54,7 @@ internal actual inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared1<*, *>>,
+    templateType: KClass<Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -70,7 +71,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Shared2<K, L>, K : Any
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>,
+    templateType: KClass<Shared2<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generic.Shared2Mock::class -> factory.template.generic.Shared2Mock<K,
         L>(collector = collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -83,7 +84,7 @@ internal actual inline fun <reified Mock : Shared2<K, L>, K : Any, L> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared2<*, *>>,
+    templateType: KClass<Shared2<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -100,7 +101,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Shared3<K, L>, K : Any
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>,
+    templateType: KClass<Shared3<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.generic.Shared3Mock::class -> factory.template.generic.Shared3Mock<K,
         L>(collector = collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -113,7 +114,7 @@ internal actual inline fun <reified Mock : Shared3<K, L>, K : Any, L> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.generic.Shared3<*, *>>,
+    templateType: KClass<Shared3<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,

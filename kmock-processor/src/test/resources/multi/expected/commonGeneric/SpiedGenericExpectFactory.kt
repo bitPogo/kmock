@@ -6,6 +6,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import multi.template.commonGeneric.Generic1
 import multi.template.commonGeneric.GenericCommonContract
 import multi.template.commonGeneric.nested.Generic2
@@ -25,12 +26,9 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParame
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType0: kotlin.reflect.KClass<multi.template.commonGeneric.Generic1<KMockTypeParameter0,
-        KMockTypeParameter1>>,
-    templateType1: kotlin.reflect.KClass<multi.template.commonGeneric.nested.Generic2<KMockTypeParameter2,
-        KMockTypeParameter3>>,
-    templateType2: kotlin.reflect.KClass<multi.template.commonGeneric.GenericCommonContract.Generic3<KMockTypeParameter4,
-        KMockTypeParameter5>>,
+    templateType0: KClass<Generic1<*, *>>,
+    templateType1: KClass<Generic2<*, *>>,
+    templateType2: KClass<GenericCommonContract.Generic3<*, *>>,
 ): Mock where SpyOn : Generic1<KMockTypeParameter0, KMockTypeParameter1>, SpyOn :
 Generic2<KMockTypeParameter2, KMockTypeParameter3>, SpyOn :
               GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5>, KMockTypeParameter1 :

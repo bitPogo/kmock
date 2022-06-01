@@ -6,6 +6,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import multi.template.mixed.Generic1
 import multi.template.mixed.GenericPlatformContract
 import multi.template.mixed.nested.Generic2
@@ -45,45 +46,36 @@ private inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : A
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType0: kotlin.reflect.KClass<multi.template.mixed.Generic1<KMockTypeParameter0,
-        KMockTypeParameter1>>,
-    templateType1: kotlin.reflect.KClass<multi.template.mixed.GenericPlatformContract.Generic3<KMockTypeParameter2,
-        KMockTypeParameter3>>,
-    templateType2: kotlin.reflect.KClass<multi.template.mixed.nested.Generic2<KMockTypeParameter4,
-        KMockTypeParameter5>>,
+    templateType0: KClass<Generic1<*, *>>,
+    templateType1: KClass<GenericPlatformContract.Generic3<*, *>>,
+    templateType2: KClass<Generic2<*, *>>,
 ): Mock where SpyOn : Generic1<KMockTypeParameter0, KMockTypeParameter1>, SpyOn :
 GenericPlatformContract.Generic3<KMockTypeParameter2, KMockTypeParameter3>, SpyOn :
               Generic2<KMockTypeParameter4, KMockTypeParameter5>, KMockTypeParameter1 : Any,
               KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter5 : Any,
-              KMockTypeParameter5 : Comparable<KMockTypeParameter5> = if (Mock::class ==
-    multi.PlatformMultiMock::class) {
-    multi.PlatformMultiMock(collector = collector, freeze = freeze, spyOn = spyOn as SpyOn?) as Mock
-} else {
-    throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")}
+              KMockTypeParameter5 : Comparable<KMockTypeParameter5> = multi.PlatformMultiMock(collector =
+collector, freeze = freeze, spyOn = spyOn as SpyOn?) as Mock
 
-internal inline fun <reified Mock, KMockTypeParameter0 : Any, KMockTypeParameter1,
-    KMockTypeParameter2, KMockTypeParameter3, KMockTypeParameter4 : Any, KMockTypeParameter5> kmock(
+internal inline fun <reified Mock :
+PlatformMultiMock<KMockTypeParameter0, KMockTypeParameter1, KMockTypeParameter2, KMockTypeParameter3, KMockTypeParameter4, KMockTypeParameter5, *>,
+    KMockTypeParameter0 : Any, KMockTypeParameter1, KMockTypeParameter2, KMockTypeParameter3,
+    KMockTypeParameter4 : Any, KMockTypeParameter5> kmock(
     collector: KMockContract.Collector,
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType0: kotlin.reflect.KClass<multi.template.mixed.Generic1<KMockTypeParameter0,
-        KMockTypeParameter1>>,
-    templateType1: kotlin.reflect.KClass<multi.template.mixed.GenericPlatformContract.Generic3<KMockTypeParameter2,
-        KMockTypeParameter3>>,
-    templateType2: kotlin.reflect.KClass<multi.template.mixed.nested.Generic2<KMockTypeParameter4,
-        KMockTypeParameter5>>,
-): Mock where Mock : Generic1<KMockTypeParameter0, KMockTypeParameter1>, Mock :
-GenericPlatformContract.Generic3<KMockTypeParameter2, KMockTypeParameter3>, Mock :
-              Generic2<KMockTypeParameter4, KMockTypeParameter5>, KMockTypeParameter1 : Any,
-              KMockTypeParameter1 : Comparable<KMockTypeParameter1>, KMockTypeParameter5 : Any,
-              KMockTypeParameter5 : Comparable<KMockTypeParameter5> = getMockInstance(
-    spyOn = null,
-    collector = collector,
-    relaxed = relaxed,
-    relaxUnitFun = relaxUnitFun,
-    freeze = freeze,
-    templateType0 = templateType0,
-    templateType1 = templateType1,
-    templateType2 = templateType2,
-)
+    templateType0: KClass<Generic1<*, *>>,
+    templateType1: KClass<GenericPlatformContract.Generic3<*, *>>,
+    templateType2: KClass<Generic2<*, *>>,
+): Mock where KMockTypeParameter1 : Any, KMockTypeParameter1 : Comparable<KMockTypeParameter1>,
+              KMockTypeParameter5 : Any, KMockTypeParameter5 : Comparable<KMockTypeParameter5> =
+    getMockInstance(
+        spyOn = null,
+        collector = collector,
+        relaxed = relaxed,
+        relaxUnitFun = relaxUnitFun,
+        freeze = freeze,
+        templateType0 = templateType0,
+        templateType1 = templateType1,
+        templateType2 = templateType2,
+    )

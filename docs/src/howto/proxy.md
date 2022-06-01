@@ -177,7 +177,7 @@ Those type take the KClass of the Templates:
 @Test
 fun sampleTest() {
     // arrange
-    val genericThing: GenericMultiMock<Int, String> = kmock(
+    val genericThing: GenericMultiMock<Int, String, *> = kmock(
         templateType0 = SomethingGeneric::class,
         templateType1 = AnythingGeneric::class,
     )

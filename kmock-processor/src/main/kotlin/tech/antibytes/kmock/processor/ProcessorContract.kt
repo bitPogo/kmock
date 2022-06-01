@@ -577,12 +577,14 @@ internal interface ProcessorContract {
         fun generateSharedMockFactorySignature(
             mockType: TypeVariableName,
             spyType: TypeVariableName,
-            generics: List<TypeVariableName>,
+            boundaries: List<TypeName> = emptyList(),
+            generics: List<TypeVariableName> = emptyList(),
         ): FunSpec.Builder
 
         fun generateKmockSignature(
             type: TypeVariableName,
-            generics: List<TypeVariableName>,
+            boundaries: List<TypeName> = emptyList(),
+            generics: List<TypeVariableName> = emptyList(),
             hasDefault: Boolean,
             modifier: KModifier?
         ): FunSpec.Builder
@@ -590,7 +592,8 @@ internal interface ProcessorContract {
         fun generateKspySignature(
             mockType: TypeVariableName,
             spyType: TypeVariableName,
-            generics: List<TypeVariableName>,
+            boundaries: List<TypeName> = emptyList(),
+            generics: List<TypeVariableName> = emptyList(),
             hasDefault: Boolean,
             modifier: KModifier?
         ): FunSpec.Builder
@@ -602,6 +605,11 @@ internal interface ProcessorContract {
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
 
         fun <T : Source> resolveModifier(templateSource: T? = null): KModifier?
+
+        fun resolveMockType(
+            templateSource: TemplateMultiSource,
+            parameter: List<TypeName>,
+        ): TypeName
     }
 
     interface MockFactoryWithoutGenerics {
@@ -687,6 +695,8 @@ internal interface ProcessorContract {
         const val IGNORE_ARGUMENT = "ignorableForVerification"
 
         const val TEMPLATE_TYPE_ARGUMENT = "templateType"
+        const val TYPE_PARAMETER = "KMockTypeParameter"
+
         const val ARGUMENTS_WITH_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
         const val ARGUMENTS_WITHOUT_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"
         const val UNKNOWN_INTERFACE = "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"

@@ -4,6 +4,7 @@ package multi
 
 import kotlin.Boolean
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import multi.template.shared.Regular1
 import multi.template.shared.SharedContractRegular
 import multi.template.shared.nested.Regular3
@@ -39,11 +40,8 @@ internal actual inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector,
     freeze: Boolean,
-    templateType0: kotlin.reflect.KClass<multi.template.shared.Regular1>,
-    templateType1: kotlin.reflect.KClass<multi.template.shared.SharedContractRegular.Regular2>,
-    templateType2: kotlin.reflect.KClass<multi.template.shared.nested.Regular3>,
-): Mock where SpyOn : Regular1, SpyOn : SharedContractRegular.Regular2, SpyOn : Regular3 = if
-                                                                                               (Mock::class == multi.SharedMultiMock::class) {
+    templateType0: KClass<Regular1>,
+    templateType1: KClass<SharedContractRegular.Regular2>,
+    templateType2: KClass<Regular3>,
+): Mock where SpyOn : Regular1, SpyOn : SharedContractRegular.Regular2, SpyOn : Regular3 =
     multi.SharedMultiMock(collector = collector, freeze = freeze, spyOn = spyOn as SpyOn?) as Mock
-} else {
-    throw RuntimeException("Unknown Interface ${Mock::class.simpleName}.")}

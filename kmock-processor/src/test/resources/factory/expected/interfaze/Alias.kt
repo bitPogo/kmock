@@ -8,6 +8,7 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -72,7 +73,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : A
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
+    templateType: KClass<Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.interfaze.Platform1::class -> factory.template.interfaze.AliasPlatformMock<K,
         L>(collector = collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -89,7 +90,7 @@ internal inline fun <reified Mock : Platform1<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
+    templateType: KClass<Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -103,7 +104,7 @@ internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : 
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Platform1<*, *>>,
+    templateType: KClass<Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = spyOn,
     collector = collector,
@@ -120,7 +121,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Contract.Platform5<K, 
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Contract.Platform5<*, *>>,
+    templateType: KClass<Contract.Platform5<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = when (Mock::class) {
     factory.template.interfaze.Contract.Platform5::class ->
         factory.template.interfaze.Platform5Mock<K, L>(collector = collector, relaxUnitFun =
@@ -137,7 +138,7 @@ internal inline fun <reified Mock : Contract.Platform5<K, L>, K : Any, L> kmock(
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
     freeze: Boolean = true,
-    templateType: kotlin.reflect.KClass<factory.template.interfaze.Contract.Platform5<*, *>>,
+    templateType: KClass<Contract.Platform5<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,
     collector = collector,

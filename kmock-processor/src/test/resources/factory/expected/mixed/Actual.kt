@@ -10,6 +10,7 @@ import kotlin.Boolean
 import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Suppress
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
 
@@ -40,7 +41,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Common<L>, L> getMockI
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Common<*>>,
+    templateType: KClass<Common<*>>,
 ): Mock where L : Comparable<L>, L : CharSequence = when (Mock::class) {
     factory.template.mixed.CommonMock::class -> factory.template.mixed.CommonMock<L>(collector =
     collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -53,7 +54,7 @@ internal actual inline fun <reified Mock : Common<L>, L> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Common<*>>,
+    templateType: KClass<Common<*>>,
 ): Mock where L : Comparable<L>, L : CharSequence = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -69,7 +70,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Shared<K>, K> getMockI
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Shared<*>>,
+    templateType: KClass<Shared<*>>,
 ): Mock = when (Mock::class) {
     factory.template.mixed.SharedMock::class -> factory.template.mixed.SharedMock<K>(collector =
     collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -82,7 +83,7 @@ internal actual inline fun <reified Mock : Shared<K>, K> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Shared<*>>,
+    templateType: KClass<Shared<*>>,
 ): Mock = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -98,7 +99,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Platform<P>, P : Any> 
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Platform<*>>,
+    templateType: KClass<Platform<*>>,
 ): Mock = when (Mock::class) {
     factory.template.mixed.PlatformMock::class -> factory.template.mixed.PlatformMock<P>(collector =
     collector, relaxUnitFun = relaxUnitFun, freeze = freeze, spyOn = spyOn as
@@ -111,7 +112,7 @@ internal inline fun <reified Mock : Platform<P>, P : Any> kmock(
     relaxed: Boolean,
     relaxUnitFun: Boolean,
     freeze: Boolean,
-    templateType: kotlin.reflect.KClass<factory.template.mixed.Platform<*>>,
+    templateType: KClass<Platform<*>>,
 ): Mock = getMockInstance(
     spyOn = null,
     collector = collector,
