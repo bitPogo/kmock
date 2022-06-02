@@ -210,16 +210,14 @@ In case you need to consume snapshots:
         id("org.jetbrains.kotlin.js")
         ...
 
-        id("tech.antibytes.kmock.kmock-gradle") apply false
+        id("tech.antibytes.kmock.kmock-gradle")
     }
 
     kotlin {
         ...
     }
 
-    plugins.apply("tech.antibytes.kmock.kmock-gradle")
-
-    project.extensions.configure<KMockExtension>(KMockExtension::class.java) {
+    kmock {
         rootPackage = "my.root.package"
     }
 
@@ -238,7 +236,7 @@ In case you need to consume snapshots:
     plugins {
         ...
 
-        id("tech.antibytes.kmock.kmock-gradle") apply false
+        id("tech.antibytes.kmock.kmock-gradle")
     }
 
     kotlin {
@@ -258,15 +256,13 @@ In case you need to consume snapshots:
         ...
     }
 
-    plugins.apply("tech.antibytes.kmock.kmock-gradle")
-
-    project.extensions.configure<KMockExtension>("kmock") {
+    kmock {
         rootPackage = "my.root.package"
     }
     ```
 
 !!!warning
-    For KMP or KJs you must apply the plugin after your projects `kotlin` block has been set up as shown above.
+    For KMP or KJs it is mandatory to configure KMock after your projects `kotlin` block has been set up as shown above.
     This is due to the fact that Kotlin brings its own system of source sets and [Kotlin Symbol Processing (KSP)](https://github.com/google/ksp)
     must be configured during the evaluation of your project.
 

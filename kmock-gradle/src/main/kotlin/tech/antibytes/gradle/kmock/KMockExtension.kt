@@ -6,7 +6,6 @@
 
 package tech.antibytes.gradle.kmock
 
-import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALIASES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ALTERNATIVE_PROXY_ACCESS
@@ -24,11 +23,13 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ALL
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ON
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.TYPE_PREFIXES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.USE_BUILD_IN
+import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
+import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 
 public abstract class KMockExtension(
-    project: Project
+    project: Project,
 ) : KMockPluginContract.Extension {
-    private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+    private val kspBridge = KSPBridge.getInstance(project, SingleSourceSetConfigurator, KmpSourceSetsConfigurator)
     private val illegalNames = setOf(
         ROOT_PACKAGE,
         KMP_FLAG,
@@ -63,7 +64,7 @@ public abstract class KMockExtension(
     private fun propagateValue(
         id: String,
         value: String
-    ) = ksp.arg(id, value)
+    ) = kspBridge.propagateValue(id, value)
 
     private fun guardMapping(qualifiedName: String, name: String) {
         when {
@@ -76,11 +77,11 @@ public abstract class KMockExtension(
         kmockKey: String,
         mapping: Map<String, String>
     ) {
-        mapping.forEach { (qualifiedName, value) ->
-            guardMapping(qualifiedName, value)
-
-            ksp.arg("$kmockKey$qualifiedName", value)
-        }
+        kspBridge.propagateMapping(
+            kmockKey,
+            mapping,
+            ::guardMapping,
+        )
     }
 
     override var rootPackage: String
@@ -105,9 +106,11 @@ public abstract class KMockExtension(
         values: Iterable<T>,
         action: (T) -> String = { it.toString() },
     ) {
-        values.forEachIndexed { idx, type ->
-            ksp.arg("$prefix$idx", action(type))
-        }
+        kspBridge.propagateIterable(
+            prefix,
+            values,
+            action,
+        )
     }
 
     override var useBuildInProxiesOn: Set<String>
@@ -132,6 +135,7 @@ public abstract class KMockExtension(
             _typePrefixMapping = value
         }
 
+    @KMockGradleExperimental
     override var customMethodNames: Map<String, String>
         get() = _customMethodNames
         set(value) {
