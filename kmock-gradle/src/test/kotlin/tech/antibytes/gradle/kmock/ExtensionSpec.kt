@@ -6,13 +6,20 @@
 
 package tech.antibytes.gradle.kmock
 
-import com.google.devtools.ksp.gradle.KspExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.Project
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
+import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
+import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.util.test.fixture.fixture
 import tech.antibytes.util.test.fixture.kotlinFixture
@@ -32,24 +39,51 @@ class ExtensionSpec {
             qualifier = named("stringAlpha")
         )
     }
+    
+    @BeforeEach
+    fun setUp() {
+        mockkObject(KSPBridge)
+    }
+
+    fun tearDown() {
+        unmockkObject(KSPBridge)
+    }
 
     @Test
     fun `It fulfils Extension`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
         extension fulfils KMockPluginContract.Extension::class
     }
 
     @Test
+    fun `It initializes a KSPBridge`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
+
+        // When
+        createExtension<KMockExtension>(project)
+
+        // Then
+        verify(exactly = 1) {
+            KSPBridge.getInstance(
+                project = project,
+                singleSourceSetConfigurator = SingleSourceSetConfigurator,
+                kmpSourceSetConfigurator = KmpSourceSetsConfigurator,
+            )
+        }
+    }
+
+    @Test
     fun `Its default rootPackage is an empty string`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -60,25 +94,24 @@ class ExtensionSpec {
     fun `Its propagates rootPackage changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: String = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.rootPackage = expected
 
         extension.rootPackage mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_rootPackage", expected) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_rootPackage", expected) }
     }
 
     @Test
     fun `Its default aliasNameMapping is a empty map`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -89,27 +122,23 @@ class ExtensionSpec {
     fun `It propagates aliasNameMapping changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             valueQualifier = named("stringAlpha"),
             size = 3
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.aliasNameMapping = expected
 
+        // Then
         extension.aliasNameMapping mustBe expected
+
         verify(exactly = 1) {
-            kspExtension.arg("kmock_alias_${expected.keys.toList()[0]}", expected.values.toList()[0])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_alias_${expected.keys.toList()[1]}", expected.values.toList()[1])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_alias_${expected.keys.toList()[2]}", expected.values.toList()[2])
+            kspBridge.propagateMapping("kmock_alias_", expected, any())
         }
     }
 
@@ -117,7 +146,8 @@ class ExtensionSpec {
     fun `It fails if the aliasNameMapping contains internal names`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val action = slot<(String, String) -> Unit>()
 
         val internalNames = listOf(
             "kmock_rootPackage",
@@ -125,16 +155,18 @@ class ExtensionSpec {
             "kmock_kspDir"
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         internalNames.forEach { name ->
             val extension = createExtension<KMockExtension>(project)
+            // When
+            extension.aliasNameMapping = mapOf(
+                name to fixture.fixture(named("stringAlpha"))
+            )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                // When
-                extension.aliasNameMapping = mapOf(
-                    name to fixture.fixture(named("stringAlpha"))
-                )
+                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -145,18 +177,21 @@ class ExtensionSpec {
     fun `It fails if the aliasNameMapping contains special chars in the value`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
+        val action = slot<(String, String) -> Unit>()
         val illegal = "some.thing"
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         val extension = createExtension<KMockExtension>(project)
+        // When
+        extension.aliasNameMapping = mapOf(
+            fixture.fixture<String>(named("stringAlpha")) to illegal
+        )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            // When
-            extension.aliasNameMapping = mapOf(
-                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
-            )
+            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -165,9 +200,8 @@ class ExtensionSpec {
     @Test
     fun `Its default allowBuildInProxies is a empty set`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -175,30 +209,35 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `It propagates allowBuildInProxies changes to Ksp`() {
+    fun `It propagates allowBuildInProxies changes to Ksp while transforming them to string`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: List<String> = fixture.listFixture(size = 3)
+        val action = slot<(String) -> String>()
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val expected: Set<String> = fixture.listFixture<String>(size = 3).toSet()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateIterable(any(), any(), capture(action)) } just Runs
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.useBuildInProxiesOn = expected.toSet()
+        extension.useBuildInProxiesOn = expected
 
-        extension.useBuildInProxiesOn mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_buildIn_2", expected[2]) }
+        // Then
+        extension.useBuildInProxiesOn mustBe expected
+        verify(exactly = 1) {
+            kspBridge.propagateIterable("kmock_buildIn_", expected, action.captured)
+        }
+
+        val given: String = fixture.fixture()
+        action.captured.invoke(given) mustBe given
     }
 
     @Test
     fun `Its useTypePrefixFor has no values`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -209,27 +248,22 @@ class ExtensionSpec {
     fun `It propagates useTypePrefixFor changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
             valueQualifier = named("stringAlpha")
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.useTypePrefixFor = expected
 
+        // Then
         extension.useTypePrefixFor mustBe expected
         verify(exactly = 1) {
-            kspExtension.arg("kmock_namePrefix_${expected.keys.toList()[0]}", expected.values.toList()[0])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_namePrefix_${expected.keys.toList()[1]}", expected.values.toList()[1])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_namePrefix_${expected.keys.toList()[2]}", expected.values.toList()[2])
+            kspBridge.propagateMapping("kmock_namePrefix_", expected, any())
         }
     }
 
@@ -237,7 +271,8 @@ class ExtensionSpec {
     fun `It fails if the useTypePrefixFor contains internal names`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val action = slot<(String, String) -> Unit>()
 
         val internalNames = listOf(
             "kmock_rootPackage",
@@ -245,16 +280,18 @@ class ExtensionSpec {
             "kmock_kspDir"
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         internalNames.forEach { name ->
             val extension = createExtension<KMockExtension>(project)
+            // When
+            extension.useTypePrefixFor = mapOf(
+                name to fixture.fixture(named("stringAlpha"))
+            )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                // When
-                extension.useTypePrefixFor = mapOf(
-                    name to fixture.fixture(named("stringAlpha"))
-                )
+                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -265,18 +302,22 @@ class ExtensionSpec {
     fun `It fails if the useTypePrefixFor contains special chars in the value`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
+        val action = slot<(String, String) -> Unit>()
         val illegal = "some.thing"
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         val extension = createExtension<KMockExtension>(project)
+        // When
+        extension.useTypePrefixFor = mapOf(
+            fixture.fixture<String>(named("stringAlpha")) to illegal
+        )
+
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            // When
-            extension.useTypePrefixFor = mapOf(
-                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
-            )
+            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -285,9 +326,8 @@ class ExtensionSpec {
     @Test
     fun `Its customMethodNames has no values`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -298,27 +338,22 @@ class ExtensionSpec {
     fun `It propagates customMethodNames changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
             valueQualifier = named("stringAlpha")
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.customMethodNames = expected
 
+        // Then
         extension.customMethodNames mustBe expected
         verify(exactly = 1) {
-            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[0]}", expected.values.toList()[0])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[1]}", expected.values.toList()[1])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_customMethodName_${expected.keys.toList()[2]}", expected.values.toList()[2])
+            kspBridge.propagateMapping("kmock_customMethodName_", expected, any())
         }
     }
 
@@ -326,7 +361,8 @@ class ExtensionSpec {
     fun `It fails if the customMethodNames contains internal names`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val action = slot<(String, String) -> Unit>()
 
         val internalNames = listOf(
             "kmock_rootPackage",
@@ -334,16 +370,18 @@ class ExtensionSpec {
             "kmock_kspDir"
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         internalNames.forEach { name ->
             val extension = createExtension<KMockExtension>(project)
+            // When
+            extension.customMethodNames = mapOf(
+                name to fixture.fixture(named("stringAlpha"))
+            )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                // When
-                extension.customMethodNames = mapOf(
-                    name to fixture.fixture(named("stringAlpha"))
-                )
+                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -354,18 +392,21 @@ class ExtensionSpec {
     fun `It fails if the customMethodNames contains special chars in the value`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
+        val action = slot<(String, String) -> Unit>()
         val illegal = "some.thing"
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         val extension = createExtension<KMockExtension>(project)
+        // When
+        extension.customMethodNames = mapOf(
+            fixture.fixture<String>(named("stringAlpha")) to illegal
+        )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            // When
-            extension.customMethodNames = mapOf(
-                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
-            )
+            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -374,9 +415,8 @@ class ExtensionSpec {
     @Test
     fun `Its freezeOnDefault is true by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -387,25 +427,24 @@ class ExtensionSpec {
     fun `It propagates freezeOnDefault changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.freezeOnDefault = expected
 
         extension.freezeOnDefault mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_freeze", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_freeze", expected.toString()) }
     }
 
     @Test
     fun `Its allowInterfaces is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -416,25 +455,24 @@ class ExtensionSpec {
     fun `It propagates allowInterfaces changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.allowInterfaces = expected
 
         extension.allowInterfaces mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_allowInterfaces", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_allowInterfaces", expected.toString()) }
     }
 
     @Test
     fun `Its default spyOn is a empty set`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -442,30 +480,33 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `It propagates spyOn changes to Ksp`() {
+    fun `It propagates spyOn changes to Ksp while transforming them to string`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
-        val expected: List<String> = fixture.listFixture(size = 3)
+        val action = slot<(String) -> String>()
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
+        val expected: Set<String> = fixture.listFixture<String>(size = 3).toSet()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateIterable(any(), any(), capture(action)) } just Runs
 
         // When
         val extension = createExtension<KMockExtension>(project)
-        extension.spyOn = expected.toSet()
+        extension.spyOn = expected
 
-        extension.spyOn mustBe expected.toSet()
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_0", expected[0]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_1", expected[1]) }
-        verify(exactly = 1) { kspExtension.arg("kmock_spyOn_2", expected[2]) }
+        verify(exactly = 1) {
+            kspBridge.propagateIterable("kmock_spyOn_", expected, action.captured)
+        }
+
+        val given: String = fixture.fixture()
+        action.captured.invoke(given) mustBe given
     }
 
     @Test
     fun `Its spiesOnly is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -476,25 +517,24 @@ class ExtensionSpec {
     fun `It propagates spiesOnly changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.spiesOnly = expected
 
         extension.spiesOnly mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_spiesOnly", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_spiesOnly", expected.toString()) }
     }
 
     @Test
     fun `Its spyAll is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -505,25 +545,24 @@ class ExtensionSpec {
     fun `It propagates spyAll changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.spyAll = expected
 
         extension.spyAll mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_spyAll", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_spyAll", expected.toString()) }
     }
 
     @Test
     fun `Its disableFactories is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -534,25 +573,24 @@ class ExtensionSpec {
     fun `It propagates disableFactories changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.disableFactories = expected
 
         extension.disableFactories mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_disable_factories", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_disable_factories", expected.toString()) }
     }
 
     @Test
     fun `Its customSharedAnnotations has no values`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -563,13 +601,13 @@ class ExtensionSpec {
     fun `It propagates customSharedAnnotations changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
             valueQualifier = named("stringAlpha")
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
@@ -577,21 +615,16 @@ class ExtensionSpec {
 
         extension.customAnnotationsForMeta mustBe expected
         verify(exactly = 1) {
-            kspExtension.arg("kmock_customAnnotation_${expected.keys.toList()[0]}", expected.values.toList()[0])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_customAnnotation_${expected.keys.toList()[1]}", expected.values.toList()[1])
-        }
-        verify(exactly = 1) {
-            kspExtension.arg("kmock_customAnnotation_${expected.keys.toList()[2]}", expected.values.toList()[2])
+            kspBridge.propagateMapping("kmock_customAnnotation_", expected, any())
         }
     }
 
     @Test
-    fun `It fails if the customSharedAnnotations contains internal names`() {
+    fun `It fails if the customAnnotationsForMeta contains internal names`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val action = slot<(String, String) -> Unit>()
 
         val internalNames = listOf(
             "kmock_rootPackage",
@@ -599,16 +632,18 @@ class ExtensionSpec {
             "kmock_kspDir"
         )
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         internalNames.forEach { name ->
             val extension = createExtension<KMockExtension>(project)
+            // When
+            extension.customAnnotationsForMeta = mapOf(
+                name to fixture.fixture(named("stringAlpha"))
+            )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                // When
-                extension.customAnnotationsForMeta = mapOf(
-                    name to fixture.fixture(named("stringAlpha"))
-                )
+                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -616,21 +651,24 @@ class ExtensionSpec {
     }
 
     @Test
-    fun `It fails if the customSharedAnnotations contains special chars in the value`() {
+    fun `It fails if the customAnnotationsForMeta contains special chars in the value`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
+        val action = slot<(String, String) -> Unit>()
         val illegal = "some.thing"
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateMapping(any(), any(), capture(action)) } just Runs
 
         val extension = createExtension<KMockExtension>(project)
+        // When
+        extension.customAnnotationsForMeta = mapOf(
+            fixture.fixture<String>(named("stringAlpha")) to illegal
+        )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            // When
-            extension.customAnnotationsForMeta = mapOf(
-                fixture.fixture<String>(named("stringAlpha")) to "some.thing"
-            )
+            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -639,9 +677,8 @@ class ExtensionSpec {
     @Test
     fun `Its allowExperimentalProxyAccess is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -652,25 +689,24 @@ class ExtensionSpec {
     fun `It propagates allowExperimentalProxyAccess changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.allowExperimentalProxyAccess = expected
 
         extension.allowExperimentalProxyAccess mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_alternativeProxyAccess", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_alternativeProxyAccess", expected.toString()) }
     }
 
     @Test
     fun `Its enableFineGrainedNames is false by default`() {
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
 
         val extension = createExtension<KMockExtension>(project)
 
@@ -681,16 +717,16 @@ class ExtensionSpec {
     fun `It propagates enableFineGrainedNames changes to Ksp`() {
         // Given
         val project: Project = mockk(relaxed = true)
-        val kspExtension: KspExtension = mockk(relaxed = true)
+        val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Boolean = fixture.fixture()
 
-        every { project.extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
 
         // When
         val extension = createExtension<KMockExtension>(project)
         extension.enableFineGrainedNames = expected
 
         extension.enableFineGrainedNames mustBe expected
-        verify(exactly = 1) { kspExtension.arg("kmock_enableFineGrainedProxyNames", expected.toString()) }
+        verify(exactly = 1) { kspBridge.propagateValue("kmock_enableFineGrainedProxyNames", expected.toString()) }
     }
 }
