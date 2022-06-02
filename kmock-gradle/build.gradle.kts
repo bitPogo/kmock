@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.versioning.Versioning
-import org.gradle.api.tasks.Delete
 
 plugins {
     `kotlin-dsl`

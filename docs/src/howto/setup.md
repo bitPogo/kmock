@@ -1,31 +1,24 @@
 # Setup
 ## Mandatory Options
 KMock brings a variety of configuration options.
-In order to access KMock's extension in Gradle please do the following **after** it is applied:
+In order to access KMock's extension in Gradle please do the following:
 
-=== "Android/JVM"
-    ```kotlin
+
+```kotlin
     plugins {
         ...
 
         id("tech.antibytes.kmock.kmock-gradle")
     }
 
+    kotlin {
+        ...
+    }
+
     kmock {
         rootPackage = "my.root.package"
     }
-    ```
-=== "Kotlin Multiplatform/KJs"
-    ```kotlin
-    import tech.antibytes.gradle.kmock.KMockExtension
-    ...
-
-    plugins.apply("tech.antibytes.kmock.kmock-gradle")
-
-    project.extensions.configure<KMockExtension>(KMockExtension::class.java) {
-        rootPackage = "tech.antibytes.kmock.example"
-    }
-    ```
+```
 
 The only **mandatory option** is `rootPackage`,
 It expects the root package of **your project** as a String.
