@@ -16,7 +16,6 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.Test
-import tech.antibytes.util.test.fulfils
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fixture.fixture
@@ -24,6 +23,7 @@ import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fixture.qualifier.named
+import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
 

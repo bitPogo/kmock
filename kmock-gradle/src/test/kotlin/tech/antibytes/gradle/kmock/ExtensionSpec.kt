@@ -15,6 +15,7 @@ import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.Project
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
@@ -39,12 +40,13 @@ class ExtensionSpec {
             qualifier = named("stringAlpha")
         )
     }
-    
+
     @BeforeEach
     fun setUp() {
         mockkObject(KSPBridge)
     }
 
+    @AfterEach
     fun tearDown() {
         unmockkObject(KSPBridge)
     }

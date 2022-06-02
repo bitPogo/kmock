@@ -10,6 +10,9 @@ import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
+import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
+import tech.antibytes.gradle.versioning.Versioning
+import org.gradle.api.tasks.Delete
 
 plugins {
     `kotlin-dsl`
@@ -70,20 +73,23 @@ tasks.test {
     useJUnitPlatform()
 }
 
-afterEvaluate {
-    val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
-        packageName.set("tech.antibytes.gradle.kmock.config")
-        stringFields.set(
-            mapOf(
-                "version" to project.version as String,
-            )
+val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
+    packageName.set("tech.antibytes.gradle.kmock.config")
+    stringFields.set(
+        mapOf(
+            "version" to Versioning.getInstance(
+                project = project,
+                configuration = KMockPublishingConfiguration().versioning
+            ).versionName()
         )
-    }
+    )
 
-    tasks.withType(KotlinCompile::class.java) {
-        this.dependsOn(generateConfig)
-        this.mustRunAfter(generateConfig)
-    }
+    mustRunAfter("clean")
+}
+
+tasks.withType(KotlinCompile::class.java) {
+    this.dependsOn(generateConfig)
+    this.mustRunAfter(generateConfig)
 }
 
 pluginBundle {
