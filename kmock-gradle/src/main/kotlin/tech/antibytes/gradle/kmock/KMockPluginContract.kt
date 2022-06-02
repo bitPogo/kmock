@@ -120,6 +120,33 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface KSPBridge {
+        fun propagateValue(
+            rootKey: String,
+            value: String
+        )
+
+        fun propagateMapping(
+            rootKey: String,
+            mapping: Map<String, String>,
+            onPropagation: (String, String) -> Unit = { _, _ -> Unit }
+        )
+
+        fun <T> propagateIterable(
+            rootKey: String,
+            values: Iterable<T>,
+            action: (T) -> String = { it.toString() },
+        )
+    }
+
+    interface KSPBridgeFactory {
+        fun getInstance(
+            project: Project,
+            singleSourceSetConfigurator: SourceSetConfigurator,
+            kmpSourceSetConfigurator: SourceSetConfigurator,
+        ): KSPBridge
+    }
+
     interface DependencyGraph {
         fun resolveAncestors(
             sourceDependencies: Map<String, Set<String>>,

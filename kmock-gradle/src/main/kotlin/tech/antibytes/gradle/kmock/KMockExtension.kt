@@ -132,6 +132,7 @@ public abstract class KMockExtension(
             _typePrefixMapping = value
         }
 
+    @KMockGradleExperimental
     override var customMethodNames: Map<String, String>
         get() = _customMethodNames
         set(value) {
