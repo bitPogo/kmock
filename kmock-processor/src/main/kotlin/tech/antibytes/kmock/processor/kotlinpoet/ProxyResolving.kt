@@ -229,7 +229,7 @@ private fun KSType.toProxyPairTypeName(
             )
 
             val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toProxyPairTypeName(
-                inheritedVarargArg = inheritedVarargArg,
+                inheritedVarargArg = false,
                 generics = generics,
                 typeParameterResolver = typeParameterResolver,
                 rootTypeArguments = rootTypeArguments,
@@ -254,7 +254,7 @@ internal fun KSTypeReference.toProxyPairTypeName(
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
-    val typeElements = element?.typeArguments.orEmpty()
+    val typeElements = extractParameter()
     val type = resolve()
 
     return type.toProxyPairTypeName(
@@ -265,6 +265,29 @@ internal fun KSTypeReference.toProxyPairTypeName(
         rootTypeArguments = typeElements,
     )
 }
+
+internal fun KSType.toTypeName(
+    typeParameterResolver: TypeParameterResolver = TypeParameterResolver.EMPTY,
+    typeArguments: List<KSTypeArgument> = emptyList(),
+): TypeName = mapArgumentType(
+    typeParameterResolver = typeParameterResolver,
+    mapping = emptyMap(),
+    typeArguments = typeArguments,
+)
+
+private fun KSTypeArgument.toTypeName(
+    typeParameterResolver: TypeParameterResolver = TypeParameterResolver.EMPTY
+): TypeName = mapArgumentType(
+    typeParameterResolver = typeParameterResolver,
+    mapping = emptyMap(),
+)
+
+internal fun KSTypeReference.toTypeName(
+    typeParameterResolver: TypeParameterResolver = TypeParameterResolver.EMPTY
+): TypeName = mapArgumentType(
+    typeParameterResolver = typeParameterResolver,
+    mapping = emptyMap(),
+)
 
 @OptIn(ExperimentalUnsignedTypes::class)
 private val specialArrays: Map<String, TypeName> = mapOf(

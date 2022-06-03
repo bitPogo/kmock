@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeName
+import tech.antibytes.kmock.processor.utils.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_PROPERTY_PROXY
