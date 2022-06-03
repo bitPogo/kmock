@@ -238,6 +238,6 @@ internal class KMockPropertyGenerator(
 
     private companion object {
         private val proxy = PropertyProxy::class.asClassName()
-        private val template = "$PROXY_FACTORY.$CREATE_PROPERTY_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"
+        private val template = "${PROXY_FACTORY.simpleName}.$CREATE_PROPERTY_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"
     }
 }

@@ -5,12 +5,12 @@ import kotlin.Boolean
 import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
+import kotlin.IntArray
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.SafeJvmName
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -26,27 +26,27 @@ internal class SyncFunMock<L, T>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : SyncFun<L, T> where T : CharSequence, T : Comparable<T> {
-    public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+    public val _foo: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_foo", collector =
         collector, freeze = freeze)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+    public val _bar: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_bar", collector =
         collector, freeze = freeze)
 
-    public val _ozz: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
+    public val _ozz: KMockContract.SyncFunProxy<Any, (IntArray) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_ozz", collector =
         collector, freeze = freeze)
 
-    public val _izz: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> kotlin.Any> =
+    public val _izz: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_izz", collector =
         collector, freeze = freeze)
 
-    public val _uzz: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _uzz: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_uzz", collector =
         collector, freeze = freeze)
 
-    public val _tuz: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val _tuz: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tuz", collector =
         collector, freeze = freeze)
 
@@ -58,13 +58,22 @@ internal class SyncFunMock<L, T>(
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_tzz", collector =
         collector, freeze = freeze)
 
-    public val _lol: KMockContract.SyncFunProxy<Any?, (kotlin.Any?) -> kotlin.Any?> =
+    public val _lol: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_lol", collector =
         collector, freeze = freeze)
 
-    public val _veryLongMethodNameWithABunchOfVariables: KMockContract.SyncFunProxy<Unit, (kotlin.Int,
-        kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,
-        kotlin.Int, kotlin.Int) -> kotlin.Unit> =
+    public val _veryLongMethodNameWithABunchOfVariables: KMockContract.SyncFunProxy<Unit, (
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+    ) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_veryLongMethodNameWithABunchOfVariables",
             collector = collector, freeze = freeze)
 
@@ -78,7 +87,7 @@ internal class SyncFunMock<L, T>(
         "uz|() -> L" to _uz,
         "tzz|() -> T" to _tzz,
         "lol|(kotlin.Any?) -> kotlin.Any?" to _lol,
-        "veryLongMethodNameWithABunchOfVariables|(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) -> kotlin.Unit"
+        "veryLongMethodNameWithABunchOfVariables|( kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,) -> kotlin.Unit"
             to _veryLongMethodNameWithABunchOfVariables,
     )
 
@@ -135,9 +144,8 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf0")
-    public fun syncFunProxyOf(reference: (kotlin.Int, kotlin.Any) -> kotlin.Any):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Int, kotlin.Any) ->
-        kotlin.Any> =
+    public fun syncFunProxyOf(reference: (Int, Any) -> Any): KMockContract.FunProxy<Any, (Int,
+        Any) -> Any> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Any) -> kotlin.Any"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Any) -> kotlin.Any!"""))
@@ -147,8 +155,8 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf1")
-    public fun syncFunProxyOf(reference: (kotlin.IntArray) -> kotlin.Any):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.IntArray) -> kotlin.Any> =
+    public fun syncFunProxyOf(reference: (IntArray) -> Any):
+        KMockContract.FunProxy<Any, (IntArray) -> Any> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.IntArray) -> kotlin.Any"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.IntArray) -> kotlin.Any!"""))
@@ -157,9 +165,8 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf2")
-    public fun syncFunProxyOf(reference: (kotlin.Array<out kotlin.Any>) -> kotlin.Any):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Array<out kotlin.Any>) ->
-        kotlin.Any> =
+    public fun syncFunProxyOf(reference: (kotlin.Array<out kotlin.Any>) -> Any):
+        KMockContract.FunProxy<Any, (kotlin.Array<out kotlin.Any>) -> Any> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.Any>) -> kotlin.Any"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Any>) -> kotlin.Any!"""))
@@ -169,8 +176,7 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf3")
-    public fun syncFunProxyOf(reference: () -> kotlin.Unit):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, () -> kotlin.Unit> =
+    public fun syncFunProxyOf(reference: () -> Unit): KMockContract.FunProxy<Unit, () -> Unit> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Unit"""] ?:
         throw
         IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Unit!"""))
@@ -179,8 +185,7 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf4")
-    public fun syncFunProxyOf(reference: () -> kotlin.Int):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int> =
+    public fun syncFunProxyOf(reference: () -> Int): KMockContract.FunProxy<Int, () -> Int> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Int"""] ?:
         throw
         IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Int!"""))
@@ -189,26 +194,24 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf5")
-    public fun syncFunProxyOf(reference: () -> L): tech.antibytes.kmock.KMockContract.FunProxy<L,
-            () -> L> = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> L"""]
-        ?: throw
+    public fun syncFunProxyOf(reference: () -> L): KMockContract.FunProxy<L, () -> L> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> L"""] ?: throw
         IllegalStateException("""Unknown method ${reference.name} with signature () -> L!""")) as
-        tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L>
+            tech.antibytes.kmock.KMockContract.FunProxy<L, () -> L>
 
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf6")
-    public fun syncFunProxyOf(reference: () -> T): tech.antibytes.kmock.KMockContract.FunProxy<T,
-            () -> T> = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> T"""]
-        ?: throw
+    public fun syncFunProxyOf(reference: () -> T): KMockContract.FunProxy<T, () -> T> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> T"""] ?: throw
         IllegalStateException("""Unknown method ${reference.name} with signature () -> T!""")) as
-        tech.antibytes.kmock.KMockContract.FunProxy<T, () -> T>
+            tech.antibytes.kmock.KMockContract.FunProxy<T, () -> T>
 
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf7")
-    public fun syncFunProxyOf(reference: (kotlin.Any?) -> kotlin.Any?):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, (kotlin.Any?) -> kotlin.Any?> =
+    public fun syncFunProxyOf(reference: (Any?) -> Any?): KMockContract.FunProxy<Any?, (Any?) -> Any?>
+        =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Any?"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?) -> kotlin.Any?!"""))
@@ -217,15 +220,42 @@ internal class SyncFunMock<L, T>(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf8")
-    public fun syncFunProxyOf(reference: (kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,
-        kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) -> kotlin.Unit):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int, kotlin.Int, kotlin.Int,
-            kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) ->
-        kotlin.Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) -> kotlin.Unit"""]
+    public fun syncFunProxyOf(reference: (
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+    ) -> Unit): KMockContract.FunProxy<Unit, (
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+        Int,
+    ) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int, kotlin.Int,
-            kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,
-            kotlin.Int) -> kotlin.Unit>
+            IllegalStateException("""Unknown method ${reference.name} with signature (  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+            kotlin.Int,
+        ) -> kotlin.Unit>
 }

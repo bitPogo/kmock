@@ -8,7 +8,6 @@ import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.SafeJvmName
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -24,19 +23,19 @@ internal class BuildInMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : BuildIn {
-    public val _foo: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+    public val _foo: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_foo", collector =
         collector, freeze = freeze)
 
-    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+    public val _toString: KMockContract.SyncFunProxy<String, () -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_toString", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (Any?) -> Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_equals", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.access.BuildInMock#_hashCode", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
@@ -71,9 +70,8 @@ internal class BuildInMock(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf0")
-    public fun syncFunProxyOf(reference: (kotlin.Int, kotlin.Any) -> kotlin.Any):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Int, kotlin.Any) ->
-        kotlin.Any> =
+    public fun syncFunProxyOf(reference: (Int, Any) -> Any): KMockContract.FunProxy<Any, (Int,
+        Any) -> Any> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Any) -> kotlin.Any"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Any) -> kotlin.Any!"""))
@@ -83,8 +81,7 @@ internal class BuildInMock(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf1")
-    public fun syncFunProxyOf(reference: () -> kotlin.String):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.String, () -> kotlin.String> =
+    public fun syncFunProxyOf(reference: () -> String): KMockContract.FunProxy<String, () -> String> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.String"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.String!"""))
@@ -93,8 +90,8 @@ internal class BuildInMock(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf2")
-    public fun syncFunProxyOf(reference: (kotlin.Any?) -> kotlin.Boolean):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+    public fun syncFunProxyOf(reference: (Any?) -> Boolean):
+        KMockContract.FunProxy<Boolean, (Any?) -> Boolean> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Any?) -> kotlin.Boolean"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Any?) -> kotlin.Boolean!"""))
@@ -104,8 +101,7 @@ internal class BuildInMock(
     @Suppress("UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf3")
-    public fun syncFunProxyOf(reference: () -> kotlin.Int):
-        tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, () -> kotlin.Int> =
+    public fun syncFunProxyOf(reference: () -> Int): KMockContract.FunProxy<Int, () -> Int> =
         (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Int"""] ?:
         throw
         IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Int!"""))

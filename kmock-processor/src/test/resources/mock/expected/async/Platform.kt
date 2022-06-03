@@ -3,10 +3,10 @@ package mock.template.async
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.IntArray
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -20,21 +20,21 @@ internal class PlatformMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Platform {
-    public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_foo", collector =
-    collector, freeze = freeze)
+    public val _foo: KMockContract.AsyncFunProxy<Any, suspend (Int, Any) -> Any> =
+        ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_foo", collector =
+        collector, freeze = freeze)
 
-    public val _bar: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_bar", collector =
-    collector, freeze = freeze)
+    public val _bar: KMockContract.AsyncFunProxy<Any, suspend (Int, Any) -> Any> =
+        ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_bar", collector =
+        collector, freeze = freeze)
 
-    public val _ozz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.IntArray) -> kotlin.Any> =
+    public val _ozz: KMockContract.AsyncFunProxy<Any, suspend (IntArray) -> Any> =
         ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_ozz", collector =
         collector, freeze = freeze)
 
-    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) ->
-    kotlin.Any> = ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_izz",
-        collector = collector, freeze = freeze)
+    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) -> Any> =
+        ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_izz", collector =
+        collector, freeze = freeze)
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

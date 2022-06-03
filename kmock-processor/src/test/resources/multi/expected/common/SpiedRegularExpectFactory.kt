@@ -9,7 +9,6 @@ import multi.template.common.CommonContractRegular
 import multi.template.common.Regular1
 import multi.template.common.nested.Regular3
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock> kmock(

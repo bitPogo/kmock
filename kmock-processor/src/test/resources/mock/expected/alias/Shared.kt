@@ -6,7 +6,6 @@ import kotlin.Int
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -20,11 +19,11 @@ internal class AliasSharedMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Shared {
-    public val _foo: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Int, kotlin.Any) -> kotlin.Any>
-        = ProxyFactory.createAsyncFunProxy("mock.template.alias.AliasSharedMock#_foo", collector =
-    collector, freeze = freeze)
+    public val _foo: KMockContract.AsyncFunProxy<Any, suspend (Int, Any) -> Any> =
+        ProxyFactory.createAsyncFunProxy("mock.template.alias.AliasSharedMock#_foo", collector =
+        collector, freeze = freeze)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Any) -> kotlin.Any> =
+    public val _bar: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.alias.AliasSharedMock#_bar", collector =
         collector, freeze = freeze)
 

@@ -17,6 +17,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -33,14 +34,14 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICAT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_MOCK_TYPE
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT_RELAXER_ARGUMENT
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.multiMock
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.KmpCodeGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MethodGenerator
@@ -78,7 +79,7 @@ internal class KMockGenerator(
         return if (superTypes.size == 1) {
             superTypes.first()
         } else {
-            multiMock
+            MULTI_MOCK_TYPE
         }
     }
 
@@ -248,7 +249,7 @@ internal class KMockGenerator(
             arguments = method.parameters,
             returnType = method.returnType,
             proxyName = proxy.name,
-            proxySignature = proxy.type,
+            proxySignature = proxy.type as ParameterizedTypeName,
             proxySideEffect = sideEffect,
         )
     }
@@ -258,7 +259,7 @@ internal class KMockGenerator(
         val type = when (this.size) {
             0 -> {
                 isNullable = true
-                nullableAny
+                NULLABLE_ANY
             }
             1 -> {
                 val type = this.first()
@@ -269,7 +270,7 @@ internal class KMockGenerator(
             else -> {
                 isNullable = this.all { type -> type.isNullable }
 
-                nullableAny
+                NULLABLE_ANY
             }
         }
 
@@ -448,7 +449,7 @@ internal class KMockGenerator(
                     arguments = method.parameters,
                     returnType = method.returnType,
                     proxyName = proxy.name,
-                    proxySignature = proxy.type,
+                    proxySignature = proxy.type as ParameterizedTypeName,
                     proxySideEffect = sideEffect,
                 )
             }
@@ -506,8 +507,8 @@ internal class KMockGenerator(
         )
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
-        file.addImport(PROXY_FACTORY_CLASS.packageName, PROXY_FACTORY_CLASS.simpleName)
-        file.addImport(NOOP_COLLECTOR_CLASS.packageName, NOOP_COLLECTOR_CLASS.simpleName)
+        file.addImport(PROXY_FACTORY.packageName, PROXY_FACTORY.simpleName)
+        file.addImport(NOOP_COLLECTOR.packageName, NOOP_COLLECTOR.simpleName)
 
         if (relaxer != null) {
             file.addImport(relaxer.packageName, relaxer.functionName)

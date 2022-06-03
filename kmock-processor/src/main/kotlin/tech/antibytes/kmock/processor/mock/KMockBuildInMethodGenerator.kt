@@ -8,9 +8,9 @@ package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import tech.antibytes.kmock.KMockContract.SyncFunProxy
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
@@ -42,7 +42,7 @@ internal class KMockBuildInMethodGenerator(
         proxyInfo: ProxyInfo,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "$PROXY_FACTORY.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)",
+            "${PROXY_FACTORY.simpleName}.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)",
             proxyInfo.proxyId
         )
     }
@@ -98,7 +98,7 @@ internal class KMockBuildInMethodGenerator(
         qualifier: String,
         methodName: String,
         enableSpy: Boolean,
-    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
+    ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val proxyInfo = nameSelector.selectBuildInMethodName(
             qualifier = qualifier,
             methodName = methodName,
@@ -123,7 +123,7 @@ internal class KMockBuildInMethodGenerator(
         mockName: String,
         qualifier: String,
         enableSpy: Boolean,
-    ): List<Triple<PropertySpec, FunSpec, TypeVariableName>> {
+    ): List<Triple<PropertySpec, FunSpec, LambdaTypeName>> {
         return buildIns.keys.map { methodName ->
             buildBuildInMethodBundle(
                 mockName = mockName,
@@ -145,9 +145,9 @@ internal class KMockBuildInMethodGenerator(
             "hashCode" to Int::class.asClassName(),
         )
         private val sideEffects = mapOf(
-            "toString" to TypeVariableName("() -> ${String::class.asClassName()}"),
-            "equals" to TypeVariableName("($any) -> ${Boolean::class.asClassName()}"),
-            "hashCode" to TypeVariableName("() -> ${Int::class.asClassName()}"),
+            "toString" to LambdaTypeName.get(returnType = String::class.asClassName()),
+            "equals" to LambdaTypeName.get(returnType = Boolean::class.asClassName(), parameters = arrayOf(any)),
+            "hashCode" to LambdaTypeName.get(returnType = Int::class.asClassName()),
         )
     }
 }

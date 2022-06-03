@@ -9,8 +9,8 @@ package tech.antibytes.kmock.processor.mock
 import com.squareup.kotlinpoet.TypeName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.SpyGenerator
@@ -39,7 +39,7 @@ internal object KMockSpyGenerator : SpyGenerator {
         val invocation = """
             |   $SPY_CONTEXT {
             |       this@$propertyName.$propertyName = $VALUE
-            |       $unit
+            |       ${UNIT.simpleName}
             |   }
         """.trimMargin()
         return buildSpy(invocation)

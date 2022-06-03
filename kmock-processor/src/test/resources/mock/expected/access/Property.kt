@@ -11,7 +11,6 @@ import kotlin.Unit
 import kotlin.collections.Map
 import kotlin.reflect.KProperty
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory

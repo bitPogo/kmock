@@ -10,7 +10,6 @@ import kotlin.Comparable
 import kotlin.Suppress
 import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(

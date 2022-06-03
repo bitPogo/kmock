@@ -12,18 +12,19 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
@@ -182,8 +183,8 @@ internal class KMockReceiverGenerator(
                 suspending = false,
                 classScopeGenerics = classScopeGenerics,
                 generics = proxyGenerics,
-                methodReturnType = unit,
-                proxyReturnType = unit,
+                methodReturnType = UNIT,
+                proxyReturnType = UNIT,
                 typeResolver = receiverTypeResolver,
             )
 
@@ -356,7 +357,7 @@ internal class KMockReceiverGenerator(
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
-    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
+    ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
         val methodTypeResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
         val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(methodTypeResolver)
@@ -423,11 +424,18 @@ internal class KMockReceiverGenerator(
         return Triple(proxySignature.proxy, method, proxySignature.sideEffect)
     }
 
+    private fun TypeName.createReceiverSpy(): TypeName {
+        return LambdaTypeName.get(
+            returnType = NULLABLE_ANY,
+            receiver = this
+        ).copy(nullable = false)
+    }
+
     override fun buildReceiverSpyContext(spyType: TypeName, typeResolver: TypeParameterResolver): FunSpec {
         return FunSpec.builder(SPY_CONTEXT)
             .addParameter(
                 "action",
-                TypeVariableName("$spyType.() -> $nullableAny").copy(nullable = false),
+                spyType.createReceiverSpy(),
             )
             .addCode("return action($SPY_PROPERTY!!)")
             .build()

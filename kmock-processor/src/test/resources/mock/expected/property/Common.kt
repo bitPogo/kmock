@@ -7,7 +7,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 

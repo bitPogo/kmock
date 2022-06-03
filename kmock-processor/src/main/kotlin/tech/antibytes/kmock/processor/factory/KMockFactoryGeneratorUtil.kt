@@ -23,7 +23,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMEN
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSPY_FACTORY_TYPE_NAME
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.RELAXER_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SHARED_MOCK_FACTORY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ARGUMENT
@@ -67,7 +67,7 @@ internal class KMockFactoryGeneratorUtil(
 
     private val verifier = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME).build()
     private val verifierWithDefault = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME)
-        .defaultValue(NOOP_COLLECTOR_CLASS.simpleName)
+        .defaultValue(NOOP_COLLECTOR.simpleName)
         .build()
 
     private val freeze = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class).build()

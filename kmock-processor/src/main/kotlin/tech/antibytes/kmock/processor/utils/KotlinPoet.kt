@@ -28,7 +28,7 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
 
@@ -397,7 +397,7 @@ private fun MutableList<TypeName>.resolveVararg(parent: KSClassDeclaration): Typ
         (typeName is WildcardTypeName && typeName.outTypes.first() is TypeVariableName) -> {
             typeName.outTypes.first()
         }
-        typeName == STAR -> nullableAny
+        typeName == STAR -> NULLABLE_ANY
         (typeName is WildcardTypeName && typeName.outTypes.first() is ParameterizedTypeName) -> {
             typeName.outTypes.first()
         }
@@ -541,4 +541,4 @@ private val specialArrays: Map<String, TypeName> = mapOf(
     ULongArray::class.asTypeName().toString() to ULong::class.asTypeName(),
 )
 
-private val outNullableAny = TypeVariableName("out $nullableAny")
+private val outNullableAny = TypeVariableName("out $NULLABLE_ANY")

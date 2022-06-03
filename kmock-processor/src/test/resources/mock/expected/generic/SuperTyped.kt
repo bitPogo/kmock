@@ -12,7 +12,6 @@ import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -26,100 +25,96 @@ internal class SuperTypedMock<K : Any, L>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : SuperTyped<K, L> where L : Any, L : Comparable<L> {
-    public val _pptWithZTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) ->
-    kotlin.Unit> =
+    public val _pptWithZTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAnys",
             collector = collector, freeze = freeze)
 
     public val _pptWithTCharSequenceComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any>) -> kotlin.Unit> =
+    kotlin.Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceComparables",
             collector = collector, freeze = freeze)
 
     public val _pptWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.Any?>>) -> kotlin.Unit> =
+    kotlin.Comparable<kotlin.Any?>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTComparables",
             collector = collector, freeze = freeze)
 
-    public val _pptWithZTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+    public val _pptWithZTAny: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAny",
             collector = collector, freeze = freeze)
 
-    public val _pptWithTCharSequenceComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any) ->
-    kotlin.Unit> =
+    public val _pptWithTCharSequenceComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceComparable",
             collector = collector, freeze = freeze)
 
-    public val _pptWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.Any?>) -> kotlin.Unit> =
+    public val _pptWithTComparable: KMockContract.SyncFunProxy<Unit, (Comparable<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTComparable",
             collector = collector, freeze = freeze)
 
-    public val _lolWithZKAnyTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
-        kotlin.Array<out kotlin.Comparable<kotlin.Any?>>) -> kotlin.Unit> =
+    public val _lolWithZKAnyTComparables: KMockContract.SyncFunProxy<Unit, (Any?, kotlin.Array<out
+    kotlin.Comparable<kotlin.Any?>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZKAnyTComparables",
             collector = collector, freeze = freeze)
 
-    public val _lolWithTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) ->
-    kotlin.Unit> =
+    public val _lolWithTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithTAnys",
             collector = collector, freeze = freeze)
 
-    public val _lolWithZKAnyTComparable: KMockContract.SyncFunProxy<Unit, (kotlin.Any?,
-        kotlin.Comparable<kotlin.Any?>) -> kotlin.Unit> =
+    public val _lolWithZKAnyTComparable: KMockContract.SyncFunProxy<Unit, (Any?,
+        Comparable<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZKAnyTComparable",
             collector = collector, freeze = freeze)
 
-    public val _lolWithTAny: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+    public val _lolWithTAny: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithTAny", collector
         = collector, freeze = freeze)
 
     public val _buzz: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> kotlin.Unit> =
+    kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_buzz", collector =
         collector, freeze = freeze)
 
-    public val _narvWithLs: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out L>) -> kotlin.Unit> =
+    public val _narvWithLs: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out L>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithLs", collector
         = collector, freeze = freeze)
 
     public val _narvWithArrays: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Array<out
-    kotlin.Any>>) -> kotlin.Unit> =
+    kotlin.Any>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithArrays",
             collector = collector, freeze = freeze)
 
     public val _narvWithIntArrays: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.IntArray>) -> kotlin.Unit> =
+    kotlin.IntArray>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_narvWithIntArrays",
             collector = collector, freeze = freeze)
 
-    public val _ooWithIntAnys: KMockContract.SyncFunProxy<Any, (kotlin.Int, kotlin.Array<out
-    kotlin.Any>) -> kotlin.Any> =
+    public val _ooWithIntAnys: KMockContract.SyncFunProxy<Any, (Int, kotlin.Array<out
+    kotlin.Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithIntAnys",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyInts: KMockContract.SyncFunProxy<Any, (kotlin.Any?, kotlin.IntArray) ->
-    kotlin.Any> =
+    public val _ooWithAnyInts: KMockContract.SyncFunProxy<Any, (Any?, IntArray) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyInts",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyZTAnys: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
-    kotlin.Any?>) -> kotlin.Any> =
+    public val _ooWithAnyZTAnys: KMockContract.SyncFunProxy<Any, (Any, kotlin.Array<out
+    kotlin.Any?>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyZTAnys",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyRRRs: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
-    mock.template.generic.RRR<out kotlin.Any?>>) -> kotlin.Any> =
+    public val _ooWithAnyRRRs: KMockContract.SyncFunProxy<Any, (Any, kotlin.Array<out
+    mock.template.generic.RRR<out kotlin.Any?>>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyRRRs",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyCharArray: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.CharArray) ->
-    kotlin.Any> =
+    public val _ooWithAnyCharArray: KMockContract.SyncFunProxy<Any, (Any, CharArray) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_ooWithAnyCharArray",
             collector = collector, freeze = freeze)
 
-    public val _roo: KMockContract.SyncFunProxy<Any, (kotlin.Any, kotlin.Array<out
-    mock.template.generic.RRR<*>>) -> kotlin.Any> =
+    public val _roo: KMockContract.SyncFunProxy<Any, (Any, kotlin.Array<out
+    mock.template.generic.RRR<*>>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_roo", collector =
         collector, freeze = freeze)
 

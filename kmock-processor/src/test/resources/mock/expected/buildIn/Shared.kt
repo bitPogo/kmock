@@ -7,7 +7,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -43,15 +42,15 @@ internal class SharedMock(
         ProxyFactory.createPropertyProxy("mock.template.buildIn.SharedMock#_buzz", collector =
         collector, freeze = freeze)
 
-    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+    public val _toString: KMockContract.SyncFunProxy<String, () -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.SharedMock#_toString", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (Any?) -> Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.SharedMock#_equals", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.buildIn.SharedMock#_hashCode", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 

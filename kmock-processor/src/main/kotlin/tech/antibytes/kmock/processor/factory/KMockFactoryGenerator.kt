@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FACTORY_FILE_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR_CLASS
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NOOP_COLLECTOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNUSED
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryGeneratorUtil
@@ -51,7 +51,7 @@ internal class KMockFactoryGenerator(
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
 
         if (!isKmp) {
-            file.addImport(NOOP_COLLECTOR_CLASS.packageName, NOOP_COLLECTOR_CLASS.simpleName)
+            file.addImport(NOOP_COLLECTOR.packageName, NOOP_COLLECTOR.simpleName)
         }
 
         val (regular, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
