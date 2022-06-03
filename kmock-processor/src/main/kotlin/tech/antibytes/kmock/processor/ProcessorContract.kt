@@ -20,10 +20,11 @@ import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.AnnotationSpec
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -278,7 +279,7 @@ internal interface ProcessorContract {
     data class ProxyBundle(
         val proxy: PropertySpec,
         val returnType: MemberReturnTypeInfo,
-        val sideEffect: TypeVariableName,
+        val sideEffect: LambdaTypeName,
     )
 
     interface ProxyNameCollector {
@@ -471,7 +472,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Triple<PropertySpec, FunSpec, TypeVariableName>
+        ): Triple<PropertySpec, FunSpec, LambdaTypeName>
     }
 
     interface BuildInMethodGenerator {
@@ -479,7 +480,7 @@ internal interface ProcessorContract {
             mockName: String,
             qualifier: String,
             enableSpy: Boolean,
-        ): List<Triple<PropertySpec, FunSpec, TypeVariableName>>
+        ): List<Triple<PropertySpec, FunSpec, LambdaTypeName>>
     }
 
     interface ReceiverGenerator {
@@ -502,7 +503,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
-        ): Triple<PropertySpec, FunSpec, TypeVariableName>
+        ): Triple<PropertySpec, FunSpec, LambdaTypeName>
 
         fun buildReceiverSpyContext(
             spyType: TypeName,
@@ -524,8 +525,8 @@ internal interface ProcessorContract {
             arguments: List<ParameterSpec>,
             returnType: TypeName?,
             proxyName: String,
-            proxySignature: TypeName,
-            proxySideEffect: TypeVariableName,
+            proxySignature: ParameterizedTypeName,
+            proxySideEffect: LambdaTypeName,
         )
 
         fun createReferenceStorage(): PropertySpec
@@ -683,7 +684,6 @@ internal interface ProcessorContract {
         const val KSPY_FACTORY = "kspy"
         const val INTERMEDIATE_INTERFACES_FILE_NAME = "KMockMultiInterfaceArtifacts"
 
-        val PROXY_FACTORY = ProxyFactory::class.simpleName
         const val CREATE_PROPERTY_PROXY = "createPropertyProxy"
         const val CREATE_ASYNC_PROXY = "createAsyncFunProxy"
         const val CREATE_SYNC_PROXY = "createSyncFunProxy"
@@ -732,13 +732,14 @@ internal interface ProcessorContract {
             "test",
         )
 
-        val COLLECTOR_NAME = ClassName(
+        /*val COLLECTOR_NAME = ClassName(
             Collector::class.java.packageName,
             "KMockContract.${Collector::class.java.simpleName}"
-        )
+        )*/
+        val COLLECTOR_NAME = Collector::class.asClassName()
         val KMOCK_CONTRACT = KMockContract::class.asClassName()
-        val NOOP_COLLECTOR_CLASS = NoopCollector::class.asClassName()
-        val PROXY_FACTORY_CLASS = ProxyFactory::class.asClassName()
+        val NOOP_COLLECTOR = NoopCollector::class.asClassName()
+        val PROXY_FACTORY = ProxyFactory::class.asClassName()
 
         val UNUSED = AnnotationSpec.builder(Suppress::class).addMember(
             "%S, %S",

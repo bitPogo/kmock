@@ -7,7 +7,6 @@ import kotlin.Suppress
 import kotlin.Unit
 import mock.template.relaxed.relaxed
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -40,15 +39,15 @@ internal class SharedMock<T>(
         ProxyFactory.createPropertyProxy("mock.template.relaxed.SharedMock#_uzz", collector =
         collector, freeze = freeze)
 
-    public val _foo: KMockContract.SyncFunProxy<String, (kotlin.Any) -> kotlin.String> =
+    public val _foo: KMockContract.SyncFunProxy<String, (Any) -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_foo", collector =
         collector, freeze = freeze)
 
-    public val _bar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Any) -> kotlin.String> =
+    public val _bar: KMockContract.AsyncFunProxy<String, suspend (Any) -> String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.SharedMock#_bar", collector =
         collector, freeze = freeze)
 
-    public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _buzzWithVoid: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.SharedMock#_buzzWithVoid", collector =
         collector, freeze = freeze)
 

@@ -6,12 +6,12 @@ import kotlin.Boolean
 import kotlin.CharSequence
 import kotlin.Comparable
 import kotlin.Int
+import kotlin.IntArray
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -48,23 +48,23 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createPropertyProxy("mock.template.spy.CommonMock#_ozz", collector = collector,
             freeze = freeze)
 
-    public val _foo: KMockContract.SyncFunProxy<Unit, (kotlin.Any?) -> kotlin.Unit> =
+    public val _foo: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_foo", collector = collector,
             freeze = freeze)
 
-    public val _oo: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) -> kotlin.Unit> =
+    public val _oo: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_oo", collector = collector,
             freeze = freeze)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
+    public val _bar: KMockContract.SyncFunProxy<Any, (Int) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_bar", collector = collector,
             freeze = freeze)
 
-    public val _ar: KMockContract.SyncFunProxy<Any, (kotlin.IntArray) -> kotlin.Any> =
+    public val _ar: KMockContract.SyncFunProxy<Any, (IntArray) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_ar", collector = collector,
             freeze = freeze)
 
-    public val _buzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
+    public val _buzz: KMockContract.AsyncFunProxy<L, suspend (String) -> L> =
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_buzz", collector = collector,
             freeze = freeze)
 
@@ -72,19 +72,19 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_uzz", collector = collector,
             freeze = freeze)
 
-    public val _izz: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
+    public val _izz: KMockContract.SyncFunProxy<Any, () -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_izz", collector = collector,
             freeze = freeze)
 
-    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+    public val _toString: KMockContract.SyncFunProxy<String, () -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_toString", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (Any?) -> Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_equals", collector = collector,
             freeze = freeze, ignorableForVerification = true)
 
-    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val _hashCode: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_hashCode", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 

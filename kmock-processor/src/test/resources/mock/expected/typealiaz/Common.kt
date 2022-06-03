@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -19,10 +18,12 @@ internal class CommonMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Common {
-    public val _doSomething: KMockContract.SyncFunProxy<Any, (kotlin.Any,
-        mock.template.typealiaz.Alias0, mock.template.typealiaz.Alias1) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.CommonMock#_doSomething", collector =
-        collector, freeze = freeze)
+    public val _doSomething: KMockContract.SyncFunProxy<Any, (
+        Any,
+        Alias0,
+        Alias1,
+    ) -> Any> = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.CommonMock#_doSomething",
+        collector = collector, freeze = freeze)
 
     public override fun doSomething(
         arg0: Any,

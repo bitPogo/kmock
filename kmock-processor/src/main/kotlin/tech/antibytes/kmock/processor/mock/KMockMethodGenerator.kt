@@ -11,9 +11,9 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
@@ -116,7 +116,7 @@ internal class KMockMethodGenerator(
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
-    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
+    ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
 
         val typeParameterResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)

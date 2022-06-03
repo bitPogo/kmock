@@ -8,7 +8,6 @@ import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -22,68 +21,58 @@ internal class PlatformMock<L>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Platform<L> {
-    public val _equalsReceiver:
-        KMockContract.SyncFunProxy<Int, (mock.template.methodreceiver.Something) -> kotlin.Int> =
+    public val _equalsReceiver: KMockContract.SyncFunProxy<Int, (Something) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_equalsReceiver",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingReceiver:
-        KMockContract.SyncFunProxy<Int, (mock.template.methodreceiver.Something) -> kotlin.Int> =
+    public val _doSomethingReceiver: KMockContract.SyncFunProxy<Int, (Something) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingReceiver",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseReceiverWithSomethingElse:
-        KMockContract.SyncFunProxy<List<Any>, (mock.template.methodreceiver.SomethingElse<kotlin.Any>) ->
-        kotlin.collections.List<kotlin.Any>> =
+        KMockContract.SyncFunProxy<List<Any>, (SomethingElse<Any>) -> List<Any>> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElseReceiverWithSomethingElse",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<L, (kotlin.Any?) -> L> =
+    public val _doSomethingElseReceiverWithZTAny: KMockContract.SyncFunProxy<L, (Any?) -> L> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElseReceiverWithZTAny",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingElse:
-        KMockContract.SyncFunProxy<Unit, (mock.template.methodreceiver.SomethingElse<kotlin.Any>) ->
-        kotlin.Unit> =
+    public val _doSomethingElse: KMockContract.SyncFunProxy<Unit, (SomethingElse<Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doSomethingElse",
             collector = collector, freeze = freeze)
 
-    public val _mutaborReceiver:
-        KMockContract.SyncFunProxy<Int, (mock.template.methodreceiver.Platform<*>) -> kotlin.Int> =
+    public val _mutaborReceiver: KMockContract.SyncFunProxy<Int, (Platform<*>) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_mutaborReceiver",
             collector = collector, freeze = freeze)
 
-    public val _mutabor:
-        KMockContract.SyncFunProxy<Unit, (mock.template.methodreceiver.Platform<*>) -> kotlin.Unit> =
+    public val _mutabor: KMockContract.SyncFunProxy<Unit, (Platform<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_mutabor",
             collector = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable: KMockContract.AsyncFunProxy<Unit, suspend
-        (kotlin.Any) -> kotlin.Unit> =
+    public val _doNothingReceiverWithTSomethingComparable:
+        KMockContract.AsyncFunProxy<Unit, suspend (Any) -> Unit> =
         ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.PlatformMock#_doNothingReceiverWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTAny: KMockContract.AsyncFunProxy<Unit, suspend (kotlin.Any) ->
-    kotlin.Unit> =
+    public val _doNothingReceiverWithTAny: KMockContract.AsyncFunProxy<Unit, suspend (Any) -> Unit> =
         ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.PlatformMock#_doNothingReceiverWithTAny",
             collector = collector, freeze = freeze)
 
-    public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (kotlin.Any, kotlin.Any) ->
-    kotlin.Unit> =
+    public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (Any, Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doNothingElseReceiver",
             collector = collector, freeze = freeze)
 
-    public val _doNothingElse: KMockContract.SyncFunProxy<Any, (kotlin.Any) -> kotlin.Any> =
+    public val _doNothingElse: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doNothingElse",
             collector = collector, freeze = freeze)
 
     public val _doInsideReceiver:
-        KMockContract.SyncFunProxy<Int, (mock.template.methodreceiver.AnythingElse.SomethingInside) ->
-        kotlin.Int> =
+        KMockContract.SyncFunProxy<Int, (AnythingElse.SomethingInside) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_doInsideReceiver",
             collector = collector, freeze = freeze)
 
-    public val _iDo: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _iDo: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.PlatformMock#_iDo", collector =
         collector, freeze = freeze)
 

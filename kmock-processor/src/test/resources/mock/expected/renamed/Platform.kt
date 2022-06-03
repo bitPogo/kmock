@@ -8,7 +8,6 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -37,23 +36,23 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createPropertyProxy("mock.template.renamed.PlatformMock#_ozz", collector =
         collector, freeze = freeze)
 
-    public val _bar: KMockContract.SyncFunProxy<Any, (kotlin.Int) -> kotlin.Any> =
+    public val _bar: KMockContract.SyncFunProxy<Any, (Int) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.PlatformMock#_bar", collector =
         collector, freeze = freeze)
 
-    public val customName: KMockContract.AsyncFunProxy<L, suspend (kotlin.String) -> L> =
+    public val customName: KMockContract.AsyncFunProxy<L, suspend (String) -> L> =
         ProxyFactory.createAsyncFunProxy("mock.template.renamed.PlatformMock#customName", collector =
         collector, freeze = freeze)
 
-    public val _toString: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+    public val _toString: KMockContract.SyncFunProxy<String, () -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.PlatformMock#_toString", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val _equals: KMockContract.SyncFunProxy<Boolean, (kotlin.Any?) -> kotlin.Boolean> =
+    public val _equals: KMockContract.SyncFunProxy<Boolean, (Any?) -> Boolean> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.PlatformMock#_equals", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 
-    public val noHash: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val noHash: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.renamed.PlatformMock#noHash", collector =
         collector, freeze = freeze, ignorableForVerification = true)
 

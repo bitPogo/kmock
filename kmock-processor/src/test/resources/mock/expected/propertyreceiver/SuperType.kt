@@ -9,7 +9,6 @@ import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -29,22 +28,19 @@ internal class InheritedMock<R>(
             _thingSetter.invoke(this@thing, value)
         }
 
-    public val _thingGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
+    public val _thingGetter: KMockContract.SyncFunProxy<Int, (Something) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_thingGetter",
             collector = collector, freeze = freeze)
 
-    public val _thingSetter:
-        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
+    public val _thingSetter: KMockContract.SyncFunProxy<Unit, (Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_thingSetter",
             collector = collector, freeze = freeze)
 
     public override val SomethingElse<Any>.things: List<Any>
         get() = _thingsGetter.invoke(this@things)
 
-    public val _thingsGetter:
-        KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
-        kotlin.collections.List<kotlin.Any>> =
+    public val _thingsGetter: KMockContract.SyncFunProxy<List<Any>, (SomethingElse<Any>) -> List<Any>>
+        =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_thingsGetter",
             collector = collector, freeze = freeze)
 
@@ -54,13 +50,11 @@ internal class InheritedMock<R>(
             _extensionSetter.invoke(this@extension, value)
         }
 
-    public val _extensionGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Platform<*>) -> kotlin.Int> =
+    public val _extensionGetter: KMockContract.SyncFunProxy<Int, (Platform<*>) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_extensionGetter",
             collector = collector, freeze = freeze)
 
-    public val _extensionSetter:
-        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Platform<*>) -> Unit> =
+    public val _extensionSetter: KMockContract.SyncFunProxy<Unit, (Platform<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_extensionSetter",
             collector = collector, freeze = freeze)
 
@@ -71,13 +65,12 @@ internal class InheritedMock<R>(
             _nothingSetterWithTSomethingComparable.invoke(this@nothing, value)
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
-    kotlin.Any> =
+    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingGetterWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
+    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
+        =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingSetterWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
@@ -101,7 +94,7 @@ internal class InheritedMock<R>(
             _otherThingSetter.invoke(this@otherThing, value)
         }
 
-    public val _otherThingGetter: KMockContract.SyncFunProxy<String, (R) -> kotlin.String> =
+    public val _otherThingGetter: KMockContract.SyncFunProxy<String, (R) -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_otherThingGetter",
             collector = collector, freeze = freeze)
 
@@ -119,13 +112,11 @@ internal class InheritedMock<R>(
     public override val AnythingElse.SomethingInside.inside: Int
         get() = _insideGetter.invoke(this@inside)
 
-    public val _insideGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
-        kotlin.Int> =
+    public val _insideGetter: KMockContract.SyncFunProxy<Int, (AnythingElse.SomethingInside) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_insideGetter",
             collector = collector, freeze = freeze)
 
-    public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_getOtherThing",
             collector = collector, freeze = freeze)
 

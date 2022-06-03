@@ -4,7 +4,6 @@ import kotlin.Boolean
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -18,7 +17,7 @@ internal class SharedMock(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Shared {
-    public val _doSomething: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _doSomething: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.mixedannotation.SharedMock#_doSomething",
             collector = collector, freeze = freeze)
 

@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
@@ -356,7 +357,7 @@ internal class KMockReceiverGenerator(
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
-    ): Triple<PropertySpec, FunSpec, TypeVariableName> {
+    ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
         val methodTypeResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
         val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(methodTypeResolver)
@@ -423,11 +424,18 @@ internal class KMockReceiverGenerator(
         return Triple(proxySignature.proxy, method, proxySignature.sideEffect)
     }
 
+    private fun TypeName.createReceiverSpy(): TypeName {
+        return LambdaTypeName.get(
+            returnType = nullableAny,
+            receiver = this
+        ).copy(nullable = false)
+    }
+
     override fun buildReceiverSpyContext(spyType: TypeName, typeResolver: TypeParameterResolver): FunSpec {
         return FunSpec.builder(SPY_CONTEXT)
             .addParameter(
                 "action",
-                TypeVariableName("$spyType.() -> $nullableAny").copy(nullable = false),
+                spyType.createReceiverSpy(),
             )
             .addCode("return action($SPY_PROPERTY!!)")
             .build()

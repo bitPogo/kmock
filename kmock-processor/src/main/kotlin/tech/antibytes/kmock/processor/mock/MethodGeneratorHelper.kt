@@ -10,6 +10,7 @@ import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -81,11 +82,11 @@ internal class MethodGeneratorHelper(
         }
     }
 
-    private fun determineProxyType(suspending: Boolean): Triple<ClassName, String, String> {
+    private fun determineProxyType(suspending: Boolean): Pair<ClassName, String> {
         return if (suspending) {
-            Triple(asyncProxy, CREATE_ASYNC_PROXY, "suspend ")
+            Pair(asyncProxy, CREATE_ASYNC_PROXY)
         } else {
-            Triple(syncProxy, CREATE_SYNC_PROXY, "")
+            Pair(syncProxy, CREATE_SYNC_PROXY)
         }
     }
 
@@ -141,7 +142,7 @@ internal class MethodGeneratorHelper(
 
     private fun mapProxyArgumentTypeNames(
         arguments: Array<MemberArgumentTypeInfo>,
-    ): List<TypeName> {
+    ): Array<TypeName> {
         return arguments.map { argument ->
             if (!argument.isVarArg) {
                 argument.proxyTypeName
@@ -150,19 +151,21 @@ internal class MethodGeneratorHelper(
                     TypeVariableName("$array<out ${argument.proxyTypeName}>")
                 }
             }
-        }
+        }.toTypedArray()
     }
 
     private fun buildSideEffectSignature(
         arguments: Array<MemberArgumentTypeInfo>,
         proxyReturnType: TypeName,
-        prefix: String
-    ): TypeVariableName {
-        val argumentTypeName = mapProxyArgumentTypeNames(arguments)
-
-        return TypeVariableName(
-            "$prefix(${argumentTypeName.joinToString(", ")}) -> $proxyReturnType"
+        isSuspending: Boolean
+    ): LambdaTypeName {
+        val argumentTypes = mapProxyArgumentTypeNames(arguments)
+        val sideEffect = LambdaTypeName.get(
+            parameters = argumentTypes,
+            returnType = proxyReturnType,
         )
+
+        return sideEffect.copy(suspending = isSuspending)
     }
 
     private fun buildProxyInitializer(
@@ -171,7 +174,7 @@ internal class MethodGeneratorHelper(
         proxyFactoryMethod: String,
     ): PropertySpec.Builder {
         return proxySpec.initializer(
-            "$PROXY_FACTORY.%L(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)",
+            "${PROXY_FACTORY.simpleName}.%L(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)",
             proxyFactoryMethod,
             proxyInfo.proxyId,
         )
@@ -187,7 +190,7 @@ internal class MethodGeneratorHelper(
         proxyReturnType: TypeName,
         typeResolver: TypeParameterResolver,
     ): ProxyBundle {
-        val (proxyType, proxyFactoryMethod, sideEffectPrefix) = determineProxyType(suspending)
+        val (proxyType, proxyFactoryMethod) = determineProxyType(suspending)
 
         val returnTypeInfo = determineProxyReturnType(
             proxyReturnType = proxyReturnType,
@@ -199,7 +202,7 @@ internal class MethodGeneratorHelper(
         val sideEffect = buildSideEffectSignature(
             arguments = arguments,
             proxyReturnType = proxyReturnType,
-            prefix = sideEffectPrefix
+            isSuspending = suspending
         )
 
         return ProxyBundle(

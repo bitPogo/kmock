@@ -6,7 +6,6 @@ import kotlin.Comparable
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -20,43 +19,41 @@ internal class PlatformMock<L : Alias23>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Platform<L> {
-    public val _doSomething:
-        KMockContract.SyncFunProxy<Any, (mock.template.typealiaz.Alias77<kotlin.Any>,
-            mock.template.typealiaz.Alias23, mock.template.typealiaz.Alias21) -> kotlin.Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomething", collector
-        = collector, freeze = freeze)
+    public val _doSomething: KMockContract.SyncFunProxy<Any, (
+        Alias77<Any>,
+        Alias23,
+        Alias21,
+    ) -> Any> = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomething",
+        collector = collector, freeze = freeze)
 
-    public val _doAnythingElseWithAlias21Alias23:
-        KMockContract.SyncFunProxy<Unit, (mock.template.typealiaz.Alias21,
-            mock.template.typealiaz.Alias23) -> kotlin.Unit> =
+    public val _doAnythingElseWithAlias21Alias23: KMockContract.SyncFunProxy<Unit, (Alias21,
+        Alias23) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doAnythingElseWithAlias21Alias23",
             collector = collector, freeze = freeze)
 
     public val _doAnythingElseWithAlias77:
-        KMockContract.SyncFunProxy<Unit, (mock.template.typealiaz.Alias77<mock.template.typealiaz.Alias77<mock.template.typealiaz.Alias21>>) ->
-        kotlin.Unit> =
+        KMockContract.SyncFunProxy<Unit, (Alias77<Alias77<Alias21>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doAnythingElseWithAlias77",
             collector = collector, freeze = freeze)
 
     public val _doOtherThing:
-        KMockContract.SyncFunProxy<Unit, (mock.template.typealiaz.Alias77<mock.template.typealiaz.Generic<kotlin.Function1<kotlin.Any,
-            kotlin.Unit>>>, kotlin.Comparable<kotlin.Any?>) -> kotlin.Unit> =
+        KMockContract.SyncFunProxy<Unit, (Alias77<mock.template.typealiaz.Generic<kotlin.Function1<kotlin.Any,
+            kotlin.Unit>>>, kotlin.Comparable<kotlin.Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doOtherThing",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseWithTAlias21LAlias23:
         KMockContract.SyncFunProxy<Unit, (kotlin.Function1<kotlin.Any, kotlin.Unit>,
-            kotlin.Function1<kotlin.Any, kotlin.Any>) -> kotlin.Unit> =
+            kotlin.Function1<kotlin.Any, kotlin.Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomethingElseWithTAlias21LAlias23",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseWithTAlias77:
-        KMockContract.SyncFunProxy<Unit, (mock.template.typealiaz.Generic<kotlin.Any?>) ->
-        kotlin.Unit> =
+        KMockContract.SyncFunProxy<Unit, (mock.template.typealiaz.Generic<kotlin.Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomethingElseWithTAlias77",
             collector = collector, freeze = freeze)
 
-    public val _run: KMockContract.SyncFunProxy<Alias21, (L) -> mock.template.typealiaz.Alias21> =
+    public val _run: KMockContract.SyncFunProxy<Alias21, (L) -> Alias21> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_run", collector =
         collector, freeze = freeze)
 

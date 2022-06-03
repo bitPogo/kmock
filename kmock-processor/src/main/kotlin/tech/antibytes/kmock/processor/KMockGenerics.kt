@@ -13,6 +13,7 @@ import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Nullability
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
@@ -206,7 +207,12 @@ internal object KMockGenerics : GenericResolver {
             nested.types
         }
 
+        /*return listOf(
+            (typeName as ClassName).parameterizedBy(types).copy(nullable = nullable)
+        )
+
         return listOf(
+
             TypeVariableName(
                 "$typeName<${types.joinToString(", ")}>"
             ).copy(nullable = nullable)

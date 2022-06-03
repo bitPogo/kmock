@@ -10,7 +10,6 @@ import kotlin.Unit
 import kotlin.collections.List
 import mock.template.propertyreceiver.relaxed
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -32,13 +31,11 @@ internal class RelaxedMock<L>(
             _thingSetter.invoke(this@thing, value)
         }
 
-    public val _thingGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Something) -> kotlin.Int> =
+    public val _thingGetter: KMockContract.SyncFunProxy<Int, (Something) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_thingGetter",
             collector = collector, freeze = freeze)
 
-    public val _thingSetter:
-        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Something) -> Unit> =
+    public val _thingSetter: KMockContract.SyncFunProxy<Unit, (Something) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_thingSetter",
             collector = collector, freeze = freeze)
 
@@ -47,11 +44,9 @@ internal class RelaxedMock<L>(
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 
-    public val _thingsGetter:
-        KMockContract.SyncFunProxy<List<Any>, (mock.template.propertyreceiver.SomethingElse<kotlin.Any>) ->
-        kotlin.collections.List<kotlin.Any>> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_thingsGetter",
-            collector = collector, freeze = freeze)
+    public val _thingsGetter: KMockContract.SyncFunProxy<List<Any>, (SomethingElse<Any>) -> List<Any>>
+        = ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_thingsGetter",
+        collector = collector, freeze = freeze)
 
     public override var Relaxed<*>.extension: Int
         get() = _extensionGetter.invoke(this@extension) {
@@ -61,13 +56,11 @@ internal class RelaxedMock<L>(
             _extensionSetter.invoke(this@extension, value)
         }
 
-    public val _extensionGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.Relaxed<*>) -> kotlin.Int> =
+    public val _extensionGetter: KMockContract.SyncFunProxy<Int, (Relaxed<*>) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_extensionGetter",
             collector = collector, freeze = freeze)
 
-    public val _extensionSetter:
-        KMockContract.SyncFunProxy<Unit, (mock.template.propertyreceiver.Relaxed<*>) -> Unit> =
+    public val _extensionSetter: KMockContract.SyncFunProxy<Unit, (Relaxed<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_extensionSetter",
             collector = collector, freeze = freeze)
 
@@ -82,13 +75,12 @@ internal class RelaxedMock<L>(
             _nothingSetterWithTSomethingComparable.invoke(this@nothing, value)
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (kotlin.Any) ->
-    kotlin.Any> =
+    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_nothingGetterWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Any) -> Unit> =
+    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
+        =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_nothingSetterWithTSomethingComparable",
             collector = collector, freeze = freeze)
 
@@ -117,7 +109,7 @@ internal class RelaxedMock<L>(
             _otherThingSetterWithL.invoke(this@otherThing, value)
         }
 
-    public val _otherThingGetterWithL: KMockContract.SyncFunProxy<String, (L) -> kotlin.String> =
+    public val _otherThingGetterWithL: KMockContract.SyncFunProxy<String, (L) -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_otherThingGetterWithL",
             collector = collector, freeze = freeze)
 
@@ -174,13 +166,11 @@ internal class RelaxedMock<L>(
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 
-    public val _insideGetter:
-        KMockContract.SyncFunProxy<Int, (mock.template.propertyreceiver.AnythingElse.SomethingInside) ->
-        kotlin.Int> =
+    public val _insideGetter: KMockContract.SyncFunProxy<Int, (AnythingElse.SomethingInside) -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_insideGetter",
             collector = collector, freeze = freeze)
 
-    public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> kotlin.Unit> =
+    public val _getOtherThing: KMockContract.SyncFunProxy<Unit, () -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.RelaxedMock#_getOtherThing",
             collector = collector, freeze = freeze)
 
