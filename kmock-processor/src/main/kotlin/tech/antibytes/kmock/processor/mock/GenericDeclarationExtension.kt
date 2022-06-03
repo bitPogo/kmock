@@ -7,12 +7,12 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.squareup.kotlinpoet.TypeName
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 
 internal fun GenericDeclaration.resolveGeneric(): TypeName {
     return if (this.types.size > 1) {
-        nullableAny.copy(nullable = nullable)
+        NULLABLE_ANY.copy(nullable = nullable)
     } else {
         this.types.first().copy(nullable = nullable)
     }

@@ -123,13 +123,11 @@ internal class RefinedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithAlias",
             collector = collector, freeze = freeze)
 
-    public val _fooWithRList_T:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>) -> Unit> =
+    public val _fooWithRList_T: KMockContract.SyncFunProxy<Unit, (List<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithRList_T",
             collector = collector, freeze = freeze)
 
-    public val _fooWithRList_ZT:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>) -> Unit> =
+    public val _fooWithRList_ZT: KMockContract.SyncFunProxy<Unit, (List<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithRList_ZT",
             collector = collector, freeze = freeze)
 

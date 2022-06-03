@@ -3,6 +3,7 @@ package mock.template.typealiaz
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
+import kotlin.Function1
 import kotlin.Suppress
 import kotlin.Unit
 import mock.template.typealiaz.smooth
@@ -38,24 +39,19 @@ internal class RelaxedMock<L : Alias102>(
             collector = collector, freeze = freeze)
 
     public val _doOtherThing:
-        KMockContract.SyncFunProxy<mock.template.typealiaz.Generic<kotlin.Function1<kotlin.Any,
-            kotlin.Unit>>, (Alias107<mock.template.typealiaz.Generic<kotlin.Function1<kotlin.Any,
-            kotlin.Unit>>>,
-            kotlin.Comparable<kotlin.Any?>) -> mock.template.typealiaz.Generic<kotlin.Function1<kotlin.Any,
-            kotlin.Unit>>> =
+        KMockContract.SyncFunProxy<Generic<Function1<Any, Unit>>, (Alias107<Generic<Function1<Any, Unit>>>,
+            Comparable<Any?>) -> Generic<Function1<Any, Unit>>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doOtherThing", collector
         = collector, freeze = freeze)
 
     public val _doSomethingElseWithTAlias101LAlias102:
-        KMockContract.SyncFunProxy<kotlin.Function1<kotlin.Any,
-            kotlin.Any>, (kotlin.Function1<kotlin.Any, kotlin.Unit>, kotlin.Function1<kotlin.Any,
-            kotlin.Any>) -> kotlin.Function1<kotlin.Any, kotlin.Any>> =
+        KMockContract.SyncFunProxy<Function1<Any, Any>, (Function1<Any, Unit>,
+            Function1<Any, Any>) -> Function1<Any, Any>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doSomethingElseWithTAlias101LAlias102",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseWithTAlias107:
-        KMockContract.SyncFunProxy<mock.template.typealiaz.Generic<kotlin.Any?>, (mock.template.typealiaz.Generic<kotlin.Any?>) -> mock.template.typealiaz.Generic<kotlin.Any?>>
-        =
+        KMockContract.SyncFunProxy<Generic<Any?>, (Generic<Any?>) -> Generic<Any?>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doSomethingElseWithTAlias107",
             collector = collector, freeze = freeze)
 

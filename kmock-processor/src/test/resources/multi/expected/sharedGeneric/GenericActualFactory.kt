@@ -11,7 +11,6 @@ import multi.template.sharedGeneric.Generic1
 import multi.template.sharedGeneric.GenericSharedContract
 import multi.template.sharedGeneric.nested.Generic2
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
     spyOn: SpyOn?,

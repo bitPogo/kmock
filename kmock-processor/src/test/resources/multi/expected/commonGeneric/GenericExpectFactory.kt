@@ -11,7 +11,6 @@ import multi.template.commonGeneric.Generic1
 import multi.template.commonGeneric.GenericCommonContract
 import multi.template.commonGeneric.nested.Generic2
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock> kmock(

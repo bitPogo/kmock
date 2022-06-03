@@ -21,28 +21,20 @@ internal class CommonMock(
     private val relaxed: Boolean = false,
 ) : Common {
     public val _foo: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
-        ProxyFactory.createSyncFunProxy(
-            "mock.template.sync.CommonMock#_foo", collector = collector,
-            freeze = freeze
-        )
+        ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_foo", collector = collector,
+            freeze = freeze)
 
     public val _bar: KMockContract.SyncFunProxy<Any, (Int, Any) -> Any> =
-        ProxyFactory.createSyncFunProxy(
-            "mock.template.sync.CommonMock#_bar", collector = collector,
-            freeze = freeze
-        )
+        ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_bar", collector = collector,
+            freeze = freeze)
 
     public val _ozz: KMockContract.SyncFunProxy<Any, (IntArray) -> Any> =
-        ProxyFactory.createSyncFunProxy(
-            "mock.template.sync.CommonMock#_ozz", collector = collector,
-            freeze = freeze
-        )
+        ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_ozz", collector = collector,
+            freeze = freeze)
 
     public val _izz: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> Any> =
-        ProxyFactory.createSyncFunProxy(
-            "mock.template.sync.CommonMock#_izz", collector = collector,
-            freeze = freeze
-        )
+        ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_izz", collector = collector,
+            freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 

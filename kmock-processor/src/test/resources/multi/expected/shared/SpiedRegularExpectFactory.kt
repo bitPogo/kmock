@@ -9,7 +9,6 @@ import multi.template.shared.Regular1
 import multi.template.shared.SharedContractRegular
 import multi.template.shared.nested.Regular3
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(

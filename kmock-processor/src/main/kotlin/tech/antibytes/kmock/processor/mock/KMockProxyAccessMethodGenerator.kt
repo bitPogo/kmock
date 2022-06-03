@@ -37,12 +37,12 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.Mock
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARRAY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.MULTI_BOUNDED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.any
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.multibounded
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyAccessMethodGeneratorFactory
 import kotlin.reflect.KFunction
@@ -122,14 +122,14 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     fun LambdaTypeName.toInlineString(): String {
         return this.toString().replace("\n", "")
     }
-    
+
     private fun List<TypeVariableName>.mapTypeParameter(): Map<String, TypeVariableName> {
         return this.associateBy { type -> type.name }
     }
 
     private fun ParameterSpec.determineArgument(): TypeName {
         return if (this.modifiers.contains(KModifier.VARARG)) {
-            array.parameterizedBy(
+            ARRAY.parameterizedBy(
                 TypeVariableName("out $type")
             )
         } else {
@@ -358,7 +358,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 methodName = methodName,
                 typeParameter = typeParameter,
                 arguments = arguments,
-                returnType = returnType ?: unit,
+                returnType = returnType ?: UNIT,
                 proxyName = proxyName,
                 proxySignature = proxySignature,
                 proxySideEffect = proxySideEffect,
@@ -368,7 +368,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
                 methodName = methodName,
                 typeParameter = typeParameter,
                 arguments = arguments,
-                returnType = returnType ?: unit,
+                returnType = returnType ?: UNIT,
                 proxyName = proxyName,
                 proxySignature = proxySignature,
                 proxySideEffect = proxySideEffect,
@@ -509,7 +509,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         val type = when (this.size) {
             0 -> {
                 isNullable = true
-                nullableAny
+                NULLABLE_ANY
             }
             1 -> {
                 val type = this.first()
@@ -519,7 +519,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             }
             else -> {
                 isNullable = this.all { type -> type.isNullable }
-                multibounded
+                MULTI_BOUNDED
             }
         }
 
@@ -549,7 +549,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         nullableClassGenerics: Map<String, TypeName>
     ): TypeName {
         return when {
-            multibounded == first && second -> any
+            MULTI_BOUNDED == first && second -> ANY
             first.toString() in nullableClassGenerics -> nullableClassGenerics[first.toString()]!!
             second -> first
             else -> originalType
@@ -562,7 +562,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     ): TypeName {
         return when {
             this.modifiers.contains(KModifier.VARARG) -> {
-                array.parameterizedBy(
+                ARRAY.parameterizedBy(
                     TypeVariableName("out $type")
                 )
             }

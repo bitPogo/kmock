@@ -20,6 +20,7 @@ import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -732,10 +733,6 @@ internal interface ProcessorContract {
             "test",
         )
 
-        /*val COLLECTOR_NAME = ClassName(
-            Collector::class.java.packageName,
-            "KMockContract.${Collector::class.java.simpleName}"
-        )*/
         val COLLECTOR_NAME = Collector::class.asClassName()
         val KMOCK_CONTRACT = KMockContract::class.asClassName()
         val NOOP_COLLECTOR = NoopCollector::class.asClassName()
@@ -750,12 +747,12 @@ internal interface ProcessorContract {
         val UNCHECKED = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()
 
         const val MULTI_MOCK = "MultiMock"
-        val multiMock = TypeVariableName(MULTI_MOCK)
-        val unit = TypeVariableName("Unit").copy(nullable = false)
-        val any = Any::class.asTypeName().copy(nullable = false)
-        val nullableAny = Any::class.asTypeName().copy(nullable = true)
-        val array = Array::class.asTypeName()
-        val multibounded = TypeVariableName("multiboundedKmock")
+        val MULTI_MOCK_TYPE = TypeVariableName(MULTI_MOCK)
+        val UNIT = Unit::class.asClassName().copy(nullable = false) as ClassName
+        val ANY = Any::class.asTypeName().copy(nullable = false)
+        val NULLABLE_ANY = Any::class.asTypeName().copy(nullable = true)
+        val ARRAY = Array::class.asTypeName()
+        val MULTI_BOUNDED = TypeVariableName("multiboundedKmock")
 
         const val COMMON_INDICATOR = "commonTest"
         const val PLATFORM_INDICATOR = ""

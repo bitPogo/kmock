@@ -64,55 +64,47 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blaWithTCharSequenceComparableKCharSequenceComparable",
             collector = collector, freeze = freeze)
 
-    public val _barWithTList:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String>>) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithTList", collector
-    = collector, freeze = freeze)
+    public val _barWithTList: KMockContract.SyncFunProxy<Unit, (List<Array<String>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithTList", collector =
+        collector, freeze = freeze)
 
     public val _barWithVoid:
-        KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String>>, () -> kotlin.collections.List<kotlin.Array<kotlin.String>>>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithVoid", collector =
-    collector, freeze = freeze)
+        KMockContract.SyncFunProxy<List<Array<String>>, () -> List<Array<String>>> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_barWithVoid", collector =
+        collector, freeze = freeze)
 
-    public val _blubbWithTList:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.String?>>) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithTList",
-        collector = collector, freeze = freeze)
+    public val _blubbWithTList: KMockContract.SyncFunProxy<Unit, (List<Array<String?>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithTList", collector
+        = collector, freeze = freeze)
 
     public val _blubbWithVoid:
-        KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.String?>>, () -> kotlin.collections.List<kotlin.Array<kotlin.String?>>>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithVoid", collector
-    = collector, freeze = freeze)
+        KMockContract.SyncFunProxy<List<Array<String?>>, () -> List<Array<String?>>> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blubbWithVoid", collector =
+        collector, freeze = freeze)
 
-    public val _bussWithZTList:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithZTList",
-        collector = collector, freeze = freeze)
+    public val _bussWithZTList: KMockContract.SyncFunProxy<Unit, (List<Array<Int>>?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithZTList", collector
+        = collector, freeze = freeze)
 
-    public val _bussWithVoid:
-        KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithVoid", collector
-    = collector, freeze = freeze)
+    public val _bussWithVoid: KMockContract.SyncFunProxy<List<Array<Int>>?, () -> List<Array<Int>>?> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bussWithVoid", collector =
+        collector, freeze = freeze)
 
-    public val _bossWithTList:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>?>) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithTList", collector
-    = collector, freeze = freeze)
+    public val _bossWithTList: KMockContract.SyncFunProxy<Unit, (List<Array<Int>?>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithTList", collector =
+        collector, freeze = freeze)
 
-    public val _bossWithVoid:
-        KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>?>, () -> kotlin.collections.List<kotlin.Array<kotlin.Int>?>>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithVoid", collector
-    = collector, freeze = freeze)
+    public val _bossWithVoid: KMockContract.SyncFunProxy<List<Array<Int>?>, () -> List<Array<Int>?>> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_bossWithVoid", collector =
+        collector, freeze = freeze)
 
-    public val _buzzWithTList:
-        KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Array<kotlin.Int>>?) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithTList", collector
-    = collector, freeze = freeze)
+    public val _buzzWithTList: KMockContract.SyncFunProxy<Unit, (List<Array<Int>>?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithTList", collector =
+        collector, freeze = freeze)
 
-    public val _buzzWithVoid:
-        KMockContract.SyncFunProxy<kotlin.collections.List<kotlin.Array<kotlin.Int>>?, () -> kotlin.collections.List<kotlin.Array<kotlin.Int>>?>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithVoid", collector
-    = collector, freeze = freeze)
+    public val _buzzWithVoid: KMockContract.SyncFunProxy<List<Array<Int>>?, () -> List<Array<Int>>?> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_buzzWithVoid", collector =
+        collector, freeze = freeze)
 
     public val _ozzWithTL: KMockContract.SyncFunProxy<Unit, (L) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_ozzWithTL", collector =
@@ -123,32 +115,31 @@ internal class SharedMock<K : Any, L>(
         collector, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithTComparable",
-        collector = collector, freeze = freeze)
+        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any?>>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithTComparable",
+            collector = collector, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>, () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>
+        KMockContract.SyncFunProxy<Comparable<List<Array<Any?>>>, () -> Comparable<List<Array<Any?>>>>
         = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_brassWithVoid", collector
     = collector, freeze = freeze)
 
     public val _blissWithZTComparable:
-        KMockContract.SyncFunProxy<Unit, (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithZTComparable",
-        collector = collector, freeze = freeze)
+        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any?>>>?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithZTComparable",
+            collector = collector, freeze = freeze)
 
     public val _blissWithVoid:
-        KMockContract.SyncFunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?, () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>
+        KMockContract.SyncFunProxy<Comparable<List<Array<Any?>>>?, () -> Comparable<List<Array<Any?>>>?>
         = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_blissWithVoid", collector
     = collector, freeze = freeze)
 
-    public val _lossWithTMap: KMockContract.SyncFunProxy<Unit, (kotlin.collections.Map<kotlin.String,
-        kotlin.String>) -> Unit> =
+    public val _lossWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, String>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lossWithTMap", collector =
         collector, freeze = freeze)
 
-    public val _lossWithVoid: KMockContract.SyncFunProxy<kotlin.collections.Map<kotlin.String,
-        kotlin.String>, () -> kotlin.collections.Map<kotlin.String, kotlin.String>> =
+    public val _lossWithVoid:
+        KMockContract.SyncFunProxy<Map<String, String>, () -> Map<String, String>> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_lossWithVoid", collector =
         collector, freeze = freeze)
 
@@ -219,13 +210,12 @@ internal class SharedMock<K : Any, L>(
         collector, freeze = freeze)
 
     public val _pssWithTSomeGeneric:
-        KMockContract.SyncFunProxy<mock.template.generic.SomeGeneric<kotlin.String>, (mock.template.generic.SomeGeneric<kotlin.String>) -> mock.template.generic.SomeGeneric<kotlin.String>>
+        KMockContract.SyncFunProxy<SomeGeneric<String>, (SomeGeneric<String>) -> SomeGeneric<String>>
         = ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithTSomeGeneric",
         collector = collector, freeze = freeze)
 
     public val _pssWithTSomeGenericRSomeGeneric:
-        KMockContract.SyncFunProxy<Unit, (mock.template.generic.SomeGeneric<kotlin.String>,
-            mock.template.generic.SomeGeneric<kotlin.String>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (SomeGeneric<String>, SomeGeneric<String>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_pssWithTSomeGenericRSomeGeneric",
             collector = collector, freeze = freeze)
 
@@ -238,9 +228,13 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_xssWithZTAnyRSequenceCharSequence",
             collector = collector, freeze = freeze)
 
-    public val _rrr: KMockContract.SyncFunProxy<Unit, (kotlin.collections.List<kotlin.Any?>,
-        kotlin.sequences.Sequence<kotlin.collections.List<kotlin.Any?>>) -> Unit> =
+    public val _rrr: KMockContract.SyncFunProxy<Unit, (List<Any?>, Sequence<List<Any?>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rrr", collector =
+        collector, freeze = freeze)
+
+    public val _rol: KMockContract.SyncFunProxy<Unit, (List<Array<Int>>,
+        Sequence<List<Array<Int>>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_rol", collector =
         collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
@@ -437,6 +431,11 @@ internal class SharedMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <R : Sequence<T>, T : List<Array<out Int>>> rol(arg0: T, arg1: R): Unit =
+        _rol.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -485,5 +484,6 @@ internal class SharedMock<K : Any, L>(
         _xssWithZTAny.clear()
         _xssWithZTAnyRSequenceCharSequence.clear()
         _rrr.clear()
+        _rol.clear()
     }
 }

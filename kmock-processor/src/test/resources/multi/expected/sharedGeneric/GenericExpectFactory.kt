@@ -11,7 +11,6 @@ import multi.template.sharedGeneric.Generic1
 import multi.template.sharedGeneric.GenericSharedContract
 import multi.template.sharedGeneric.nested.Generic2
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock :

@@ -19,12 +19,12 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNCHECKED
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.UNIT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.VALUE
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.unit
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
@@ -183,8 +183,8 @@ internal class KMockReceiverGenerator(
                 suspending = false,
                 classScopeGenerics = classScopeGenerics,
                 generics = proxyGenerics,
-                methodReturnType = unit,
-                proxyReturnType = unit,
+                methodReturnType = UNIT,
+                proxyReturnType = UNIT,
                 typeResolver = receiverTypeResolver,
             )
 
@@ -426,7 +426,7 @@ internal class KMockReceiverGenerator(
 
     private fun TypeName.createReceiverSpy(): TypeName {
         return LambdaTypeName.get(
-            returnType = nullableAny,
+            returnType = NULLABLE_ANY,
             receiver = this
         ).copy(nullable = false)
     }

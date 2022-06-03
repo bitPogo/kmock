@@ -11,7 +11,6 @@ import multi.template.platformGeneric.Generic1
 import multi.template.platformGeneric.GenericPlatformContract
 import multi.template.platformGeneric.nested.Generic2
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(

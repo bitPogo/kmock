@@ -9,7 +9,6 @@ import kotlin.Comparable
 import kotlin.Suppress
 import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 
 internal expect inline fun <reified Mock : Shared3<K, L>, K : Any, L> kmock(

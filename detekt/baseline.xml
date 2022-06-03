@@ -2,7 +2,26 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int>?</ID>
     <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int>?</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int></ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int>?</ID>
     <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer? ): TypeSpec</ID>
     <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String> ): Options</ID>
     <ID>ComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
@@ -10,7 +29,7 @@
     <ID>LongMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer? ): TypeSpec</ID>
     <ID>LongMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String> ): Options</ID>
     <ID>LongMethod:KMockProcessorProvider.kt$KMockProcessorProvider$override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor</ID>
-    <ID>LongMethod:KMockReceiverGenerator.kt$KMockReceiverGenerator$override fun buildMethodBundle( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer? ): Triple&lt;PropertySpec, FunSpec, TypeVariableName></ID>
+    <ID>LongMethod:KMockReceiverGenerator.kt$KMockReceiverGenerator$override fun buildMethodBundle( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer? ): Triple&lt;PropertySpec, FunSpec, LambdaTypeName></ID>
     <ID>LongMethod:KotlinPoet.kt$private fun KSType.toSecuredTypeName( inheritedVarargArg: Boolean, typeParameterResolver: TypeParameterResolver, generics: Map&lt;String, GenericDeclaration>, typeArguments: List&lt;KSTypeArgument>, rootTypeArguments: List&lt;KSTypeArgument>, ): Pair&lt;TypeName, TypeName></ID>
     <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, )</ID>
     <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, type7: KClass&lt;Type7> = Type7::class, )</ID>
@@ -45,7 +64,7 @@
     <ID>LongParameterList:KMockMethodGenerator.kt$KMockMethodGenerator$( proxyInfo: ProxyInfo, generics: Map&lt;String, List&lt;KSTypeReference>>?, isSuspending: Boolean, enableSpy: Boolean, arguments: Array&lt;MemberArgumentTypeInfo>, parameter: List&lt;TypeName>, returnType: MemberReturnTypeInfo, typeResolver: TypeParameterResolver, relaxer: Relaxer? )</ID>
     <ID>LongParameterList:KMockProcessor.kt$KMockProcessor$( private val logger: KSPLogger, private val isUnderCompilerTest: Boolean, // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263 private val isKmp: Boolean, private val codeGenerator: KmpCodeGenerator, private val interfaceGenerator: MultiInterfaceBinder, private val mockGenerator: MockGenerator, private val factoryGenerator: MockFactoryGenerator, private val entryPointGenerator: MockFactoryEntryPointGenerator, private val multiSourceAggregator: MultiSourceAggregator, private val singleSourceAggregator: SingleSourceAggregator, private val relaxationAggregator: RelaxationAggregator, private val filter: SourceFilter, )</ID>
     <ID>LongParameterList:KMockPropertyGenerator.kt$KMockPropertyGenerator$( property: PropertySpec.Builder, proxyInfo: ProxyInfo, propertyType: TypeName, returnType: MemberReturnTypeInfo, isMutable: Boolean, enableSpy: Boolean, relaxer: Relaxer? )</ID>
-    <ID>LongParameterList:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator$( methodName: String, typeParameter: List&lt;TypeVariableName>, arguments: List&lt;ParameterSpec>, returnType: TypeName, proxyName: String, proxySignature: TypeName, proxySideEffect: TypeVariableName, )</ID>
+    <ID>LongParameterList:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator$( methodName: String, typeParameter: List&lt;TypeVariableName>, arguments: List&lt;ParameterSpec>, returnType: TypeName, proxyName: String, proxySignature: ParameterizedTypeName, proxySideEffect: LambdaTypeName, )</ID>
     <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( getterProxy: ProxyInfo, setterProxy: ProxyInfo?, enableSpy: Boolean, receiver: MemberArgumentTypeInfo, propertyType: MemberReturnTypeInfo, typeParameter: List&lt;TypeVariableName>, relaxer: Relaxer?, )</ID>
     <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( method: FunSpec.Builder, proxyInfo: ProxyInfo, enableSpy: Boolean, typeParameter: List&lt;TypeName>, arguments: Array&lt;MemberArgumentTypeInfo>, returnType: MemberReturnTypeInfo, relaxer: Relaxer? )</ID>
     <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( proxyInfo: ProxyInfo, generics: Map&lt;String, List&lt;KSTypeReference>>?, isSuspending: Boolean, enableSpy: Boolean, receiverInfo: MemberArgumentTypeInfo, arguments: Array&lt;MemberArgumentTypeInfo>, typeParameter: List&lt;TypeName>, returnType: MemberReturnTypeInfo, typeResolver: TypeParameterResolver, relaxer: Relaxer? )</ID>
@@ -55,7 +74,7 @@
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.AggregatorFactory$( logger: KSPLogger, rootPackage: String, sourceSetValidator: SourceSetValidator, annotationFilter: AnnotationFilter, generics: GenericResolver, customAnnotations: Map&lt;String, String>, aliases: Map&lt;String, String> )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.MethodGenerator$( qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer?, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.MethodGeneratorHelper$( proxyInfo: ProxyInfo, arguments: Array&lt;MemberArgumentTypeInfo>, suspending: Boolean, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, generics: Map&lt;String, GenericDeclaration>?, methodReturnType: TypeName, proxyReturnType: TypeName, typeResolver: TypeParameterResolver, )</ID>
-    <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ProxyAccessMethodGenerator$( methodName: String, isSuspending: Boolean, typeParameter: List&lt;TypeVariableName>, arguments: List&lt;ParameterSpec>, returnType: TypeName?, proxyName: String, proxySignature: TypeName, proxySideEffect: TypeVariableName, )</ID>
+    <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ProxyAccessMethodGenerator$( methodName: String, isSuspending: Boolean, typeParameter: List&lt;TypeVariableName>, arguments: List&lt;ParameterSpec>, returnType: TypeName?, proxyName: String, proxySignature: ParameterizedTypeName, proxySideEffect: LambdaTypeName, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ReceiverGenerator$( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksFunction: KSFunctionDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, inherited: Boolean, relaxer: Relaxer?, )</ID>
     <ID>LongParameterList:ProcessorContract.kt$ProcessorContract.ReceiverGenerator$( spyType: TypeName, qualifier: String, classScopeGenerics: Map&lt;String, List&lt;TypeName>>?, ksProperty: KSPropertyDeclaration, typeResolver: TypeParameterResolver, enableSpy: Boolean, relaxer: Relaxer?, )</ID>
     <ID>MagicNumber:Dangerfile.df.kts$1000</ID>
@@ -74,7 +93,6 @@
     <ID>MagicNumber:KMockContract.kt$KMockContract.PropertyProxyInvocationType.VALUES$3</ID>
     <ID>MagicNumber:KMockMultiSourceAggregator.kt$KMockMultiSourceAggregator$3</ID>
     <ID>MagicNumber:KMockNonIntrusiveInvocationGenerator.kt$KMockNonIntrusiveInvocationGenerator$4</ID>
-    <ID>MagicNumber:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator$6</ID>
     <ID>MagicNumber:KMockPublishingConfiguration.kt$KMockPublishingConfiguration$2022</ID>
     <ID>MagicNumber:KotlinPoet.kt$23</ID>
     <ID>MagicNumber:build.gradle.kts$0.90</ID>
@@ -99,16 +117,17 @@
     <ID>MaxLineLength:Hint.kt$Hint8$public data</ID>
     <ID>MaxLineLength:Hint.kt$Hint9$public data</ID>
     <ID>MaxLineLength:Hint.kt$public inline</ID>
-    <ID>MaxLineLength:KMockBuildInMethodGenerator.kt$KMockBuildInMethodGenerator$"$PROXY_FACTORY.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)"</ID>
+    <ID>MaxLineLength:KMockBuildInMethodGenerator.kt$KMockBuildInMethodGenerator$"${PROXY_FACTORY.simpleName}.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)"</ID>
     <ID>MaxLineLength:KMockFactoryMultiInterfaceGenerator.kt$KMockFactoryMultiInterfaceGenerator.Companion$private const val MULTI_INTERFACE_ARGUMENTS = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:KMockFactoryWithoutGenerics.kt$KMockFactoryWithoutGenerics.Companion$private const val ARGUMENTS_WITHOUT_RELAXER_AND_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"</ID>
     <ID>MaxLineLength:KMockFactoryWithoutGenerics.kt$KMockFactoryWithoutGenerics.Companion$private const val ARGUMENTS_WITHOUT_SPY = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT"</ID>
     <ID>MaxLineLength:KMockGenerator.kt$KMockGenerator.Companion$private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()</ID>
     <ID>MaxLineLength:KMockMultiSourceAggregator.kt$KMockMultiSourceAggregator$return</ID>
-    <ID>MaxLineLength:KMockPropertyGenerator.kt$KMockPropertyGenerator.Companion$private val template = "$PROXY_FACTORY.$CREATE_PROPERTY_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"</ID>
+    <ID>MaxLineLength:KMockPropertyGenerator.kt$KMockPropertyGenerator.Companion$private val template = "${PROXY_FACTORY.simpleName}.$CREATE_PROPERTY_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"</ID>
     <ID>MaxLineLength:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator.Companion$private const val REFERENCE_STORE_ACCESS = "return ($REFERENCE_STORE[%P] ?: throw IllegalStateException(%P)) as %L"</ID>
     <ID>MaxLineLength:KMockProxyNameSelector.kt$KMockProxyNameSelector$private</ID>
     <ID>MaxLineLength:KMockSingleSourceAggregator.kt$KMockSingleSourceAggregator$return</ID>
+    <ID>MaxLineLength:MethodGeneratorHelper.kt$MethodGeneratorHelper$"${PROXY_FACTORY.simpleName}.%L(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT)"</ID>
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val ARGUMENTS_WITHOUT_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val ARGUMENTS_WITH_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val UNKNOWN_INTERFACE = "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"</ID>

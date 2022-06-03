@@ -10,7 +10,6 @@ import multi.template.kmock.platform.PlatformContractRegular
 import multi.template.kmock.platform.Regular1
 import multi.template.kmock.platform.nested.Regular3
 import tech.antibytes.kmock.KMockContract
-import tech.antibytes.kmock.KMockContract.Collector
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
 
@@ -46,15 +45,15 @@ PlatformContractRegular.Regular2, MultiMock : Regular3 {
         ProxyFactory.createPropertyProxy("multi.PlatformMultiMock#_somethingElse", collector =
         collector, freeze = freeze)
 
-    public val _doSomething: KMockContract.SyncFunProxy<Int, () -> kotlin.Int> =
+    public val _doSomething: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("multi.PlatformMultiMock#_doSomething", collector = collector,
             freeze = freeze)
 
-    public val _doAnything: KMockContract.SyncFunProxy<Any, () -> kotlin.Any> =
+    public val _doAnything: KMockContract.SyncFunProxy<Any, () -> Any> =
         ProxyFactory.createSyncFunProxy("multi.PlatformMultiMock#_doAnything", collector = collector,
             freeze = freeze)
 
-    public val _doSomethingElse: KMockContract.SyncFunProxy<String, () -> kotlin.String> =
+    public val _doSomethingElse: KMockContract.SyncFunProxy<String, () -> String> =
         ProxyFactory.createSyncFunProxy("multi.PlatformMultiMock#_doSomethingElse", collector =
         collector, freeze = freeze)
 

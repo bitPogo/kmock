@@ -23,9 +23,9 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ANY
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PARAMETER
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.any
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.nullableAny
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
@@ -33,8 +33,8 @@ import tech.antibytes.kmock.processor.utils.mapArgumentType
 import tech.antibytes.kmock.processor.utils.rawType
 
 internal object KMockGenerics : GenericResolver {
-    private val nullableAnys = listOf(nullableAny)
-    private val nonNullableAnys = listOf(any)
+    private val nullableAnys = listOf(NULLABLE_ANY)
+    private val nonNullableAnys = listOf(ANY)
 
     private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
 
@@ -202,20 +202,13 @@ internal object KMockGenerics : GenericResolver {
         nullable: Boolean
     ): List<TypeName> {
         val types = if (nested.recursive) {
-            List(nested.types.size) { nullableAny }
+            List(nested.types.size) { NULLABLE_ANY }
         } else {
             nested.types
         }
 
-        /*return listOf(
-            (typeName as ClassName).parameterizedBy(types).copy(nullable = nullable)
-        )
-
         return listOf(
-
-            TypeVariableName(
-                "$typeName<${types.joinToString(", ")}>"
-            ).copy(nullable = nullable)
+            (typeName as ClassName).parameterizedBy(types).copy(nullable = nullable)
         )
     }
 

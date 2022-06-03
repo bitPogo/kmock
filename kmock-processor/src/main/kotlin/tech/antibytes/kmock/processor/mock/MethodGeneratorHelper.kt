@@ -21,12 +21,12 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARRAY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_ASYNC_PROXY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_SYNC_PROXY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.PROXY_FACTORY
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.array
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
@@ -148,7 +148,7 @@ internal class MethodGeneratorHelper(
                 argument.proxyTypeName
             } else {
                 specialArrays.getOrElse(argument.proxyTypeName.toString()) {
-                    TypeVariableName("$array<out ${argument.proxyTypeName}>")
+                    TypeVariableName("$ARRAY<out ${argument.proxyTypeName}>")
                 }
             }
         }.toTypedArray()
