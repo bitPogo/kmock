@@ -15,6 +15,7 @@ import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.example.contract.ExampleContract.DecoderFactory
+import tech.antibytes.kmock.example.contract.ExampleContract.Generic
 import tech.antibytes.kmock.example.contract.ExampleContract.GenericSampleDomainObject
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleLocalRepository
 import tech.antibytes.kmock.example.contract.ExampleContract.SampleRemoteRepository
@@ -230,19 +231,44 @@ class SampleControllerAlternativeAccessSpec {
         uselessObject.syncFunProxyOf<Any>(uselessObject::doSomething, hint<Any, String>()).returnValue = "works!"
         uselessObject.syncFunProxyOf<Any>(uselessObject::doSomething, hint<Any, Int>()).returnValue = "It"
 
-        uselessObject.syncFunProxyOf<Any>(uselessObject::doSomethingElse, hint<Any, String>()).returnValue = "works!"
+        uselessObject.syncFunProxyOf(
+            uselessObject::doSomethingElse, hint<Map<String, Generic<String>>, String>()
+        ).returnValue = "works!"
+
         uselessObject.syncFunProxyOf<Any>(uselessObject::doSomethingElse, hint<Any, Int>()).returnValue = "It"
+        uselessObject.syncFunProxyOf(
+            uselessObject::doAnything, hint<Generic<String>>()
+        ).returnValue = 109
+
+        uselessObject.syncFunProxyOf(
+            uselessObject::withFun,
+            hint<Function0<String>>()
+        ).returnValue = "still"
+
+        uselessObject.syncFunProxyOf(
+            uselessObject::withOtherFun,
+            hint<Function0<Unit>>(),
+        ).returnValue = 31
+
+        uselessObject.syncFunProxyOf<Any>(
+            uselessObject::run,
+            hint<Any>()
+        ).returnValue = 91
 
         // When & Then
         uselessObject.doSomething(null) mustBe 23
         uselessObject.doSomething("null") mustBe 42
         uselessObject.doSomething(Any(), 21) mustBe "It"
+        uselessObject.doAnything(Generic("Test")) mustBe 109
+        uselessObject.withFun { "Something" } mustBe "still"
+        uselessObject.withOtherFun { } mustBe 31
         uselessObject.doSomething(Any(), "argggg") mustBe "works!"
 
         uselessObject.doSomethingElse("null") mustBe 31
         uselessObject.doSomethingElse(null) mustBe 107
         uselessObject.doSomethingElse(Any(), 21) mustBe "It"
-        uselessObject.doSomethingElse(Any(), "argggg") mustBe "works!"
+        uselessObject.run(Any()) mustBe 91
+        uselessObject.doSomethingElse(mapOf("uff" to Generic("puff")), "argggg") mustBe "works!"
     }
 
     @Test

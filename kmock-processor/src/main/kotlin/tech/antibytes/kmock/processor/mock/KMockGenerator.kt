@@ -166,7 +166,7 @@ internal class KMockGenerator(
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksProperty = ksProperty,
-                typeResolver = typeResolver,
+                classWideResolver = typeResolver,
                 enableSpy = enableSpy,
                 relaxer = relaxer,
             )
@@ -186,7 +186,7 @@ internal class KMockGenerator(
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksProperty = ksProperty,
-                typeResolver = typeResolver,
+                classWideResolver = typeResolver,
                 enableSpy = enableSpy,
                 relaxer = relaxer,
             )
@@ -221,7 +221,7 @@ internal class KMockGenerator(
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksFunction = ksFunction,
-                typeResolver = typeResolver,
+                classWideResolver = typeResolver,
                 enableSpy = enableSpy,
                 inherited = inherited,
                 relaxer = relaxer,
@@ -231,7 +231,7 @@ internal class KMockGenerator(
                 qualifier = qualifier,
                 classScopeGenerics = classScopeGenerics,
                 ksFunction = ksFunction,
-                typeResolver = typeResolver,
+                classWideResolver = typeResolver,
                 enableSpy = enableSpy,
                 inherited = inherited,
                 relaxer = relaxer,
@@ -459,7 +459,7 @@ internal class KMockGenerator(
             mock.addFunction(
                 receiverGenerator.buildReceiverSpyContext(
                     spyType = spyType,
-                    typeResolver = typeResolver,
+                    classWideResolver = typeResolver,
                 )
             )
         }

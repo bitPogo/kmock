@@ -6,6 +6,7 @@ import kotlin.Boolean
 import kotlin.Char
 import kotlin.CharSequence
 import kotlin.Comparable
+import kotlin.Function0
 import kotlin.Int
 import kotlin.IntArray
 import kotlin.String
@@ -48,19 +49,26 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_fooWithZTAny", collector
         = collector, freeze = freeze)
 
-    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any?>) -> Unit> =
+    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_fooWithZTAnys", collector
         = collector, freeze = freeze)
 
-    public val _lolWithArrays: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Array<out
-    kotlin.Any>>) -> Unit> =
+    public val _lolWithArrays: KMockContract.SyncFunProxy<Unit, (Array<out Array<out Any>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithArrays", collector
         = collector, freeze = freeze)
 
     public val _lolWithArray: KMockContract.SyncFunProxy<Any, (Array<Any?>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithArray", collector
         = collector, freeze = freeze)
+
+    public val _lolWithTComparable: KMockContract.SyncFunProxy<Unit, (Comparable<in Char>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithTComparable",
+            collector = collector, freeze = freeze)
+
+    public val _lolWithTComparables:
+        KMockContract.SyncFunProxy<Unit, (Array<out Comparable<in Char>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lolWithTComparables",
+            collector = collector, freeze = freeze)
 
     public val _blaWithVoid: KMockContract.SyncFunProxy<Int, () -> Int> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blaWithVoid", collector =
@@ -83,8 +91,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_barWithTList", collector
         = collector, freeze = freeze)
 
-    public val _barWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.String>>>) -> Unit> =
+    public val _barWithTLists:
+        KMockContract.SyncFunProxy<Unit, (Array<out List<Array<String>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_barWithTLists", collector
         = collector, freeze = freeze)
 
@@ -97,8 +105,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blubbWithTList",
             collector = collector, freeze = freeze)
 
-    public val _blubbWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.String?>>>) -> Unit> =
+    public val _blubbWithTLists:
+        KMockContract.SyncFunProxy<Unit, (Array<out List<Array<String?>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blubbWithTLists",
             collector = collector, freeze = freeze)
 
@@ -110,8 +118,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_bussWithZTList",
             collector = collector, freeze = freeze)
 
-    public val _bussWithZTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> Unit> =
+    public val _bussWithZTLists:
+        KMockContract.SyncFunProxy<Unit, (Array<out List<Array<Int>>?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_bussWithZTLists",
             collector = collector, freeze = freeze)
 
@@ -123,8 +131,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_bossWithTList", collector
         = collector, freeze = freeze)
 
-    public val _bossWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.Int>?>>) -> Unit> =
+    public val _bossWithTLists:
+        KMockContract.SyncFunProxy<Unit, (Array<out List<Array<Int>?>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_bossWithTLists",
             collector = collector, freeze = freeze)
 
@@ -136,8 +144,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_buzzWithTList", collector
         = collector, freeze = freeze)
 
-    public val _buzzWithTLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.List<kotlin.Array<kotlin.Int>>?>) -> Unit> =
+    public val _buzzWithTLists:
+        KMockContract.SyncFunProxy<Unit, (Array<out List<Array<Int>>?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_buzzWithTLists",
             collector = collector, freeze = freeze)
 
@@ -149,7 +157,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ozzWithTL", collector =
         collector, freeze = freeze)
 
-    public val _ozzWithTLs: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out L>) -> Unit> =
+    public val _ozzWithTLs: KMockContract.SyncFunProxy<Unit, (Array<out L>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ozzWithTLs", collector =
         collector, freeze = freeze)
 
@@ -163,8 +171,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithTComparable",
             collector = collector, freeze = freeze)
 
-    public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> Unit> =
+    public val _brassWithTComparables:
+        KMockContract.SyncFunProxy<Unit, (Array<out Comparable<List<Array<Any>>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithTComparables",
             collector = collector, freeze = freeze)
 
@@ -178,8 +186,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blissWithZTComparable",
             collector = collector, freeze = freeze)
 
-    public val _blissWithZTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>?>) -> Unit> =
+    public val _blissWithZTComparables:
+        KMockContract.SyncFunProxy<Unit, (Array<out Comparable<List<Array<Any?>>>?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_blissWithZTComparables",
             collector = collector, freeze = freeze)
 
@@ -192,8 +200,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lossWithTMap", collector
         = collector, freeze = freeze)
 
-    public val _lossWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.Map<kotlin.String, kotlin.String>>) -> Unit> =
+    public val _lossWithTMaps:
+        KMockContract.SyncFunProxy<Unit, (Array<out Map<String, String>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lossWithTMaps", collector
         = collector, freeze = freeze)
 
@@ -205,8 +213,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericList",
             collector = collector, freeze = freeze)
 
-    public val _uzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any>) -> Unit> =
+    public val _uzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericLists",
             collector = collector, freeze = freeze)
 
@@ -218,8 +225,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericList",
             collector = collector, freeze = freeze)
 
-    public val _lzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any>) -> Unit> =
+    public val _lzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericLists",
             collector = collector, freeze = freeze)
 
@@ -231,8 +237,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericList",
             collector = collector, freeze = freeze)
 
-    public val _tzzWithZTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any?>) -> Unit> =
+    public val _tzzWithZTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericLists",
             collector = collector, freeze = freeze)
 
@@ -244,8 +249,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericMap",
             collector = collector, freeze = freeze)
 
-    public val _rzzWithTSomeGenericMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any>) -> Unit> =
+    public val _rzzWithTSomeGenericMaps: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericMaps",
             collector = collector, freeze = freeze)
 
@@ -257,8 +261,8 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericComparable",
             collector = collector, freeze = freeze)
 
-    public val _izzWithTSomeGenericComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any>) -> Unit> =
+    public val _izzWithTSomeGenericComparables:
+        KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericComparables",
             collector = collector, freeze = freeze)
 
@@ -270,8 +274,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithTAnyZRAny",
             collector = collector, freeze = freeze)
 
-    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (Any?, kotlin.Array<out
-    kotlin.Any?>) -> Unit> =
+    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (Any?, Array<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithZRAnyTAnys",
             collector = collector, freeze = freeze)
 
@@ -316,28 +319,35 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rolWithTMap", collector =
         collector, freeze = freeze)
 
-    public val _rolWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.Map<kotlin.String, kotlin.Any>>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rolWithTMaps", collector
-        = collector, freeze = freeze)
+    public val _rolWithTMaps: KMockContract.SyncFunProxy<Unit, (Array<out Map<String, Any>>) -> Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rolWithTMaps",
+        collector = collector, freeze = freeze)
 
     public val _polWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_polWithTMap", collector =
         collector, freeze = freeze)
 
-    public val _polWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.Map<kotlin.String, kotlin.Any>>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_polWithTMaps", collector
-        = collector, freeze = freeze)
+    public val _polWithTMaps: KMockContract.SyncFunProxy<Unit, (Array<out Map<String, Any>>) -> Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_polWithTMaps",
+        collector = collector, freeze = freeze)
 
     public val _nolWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_nolWithTMap", collector =
         collector, freeze = freeze)
 
-    public val _nolWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.collections.Map<kotlin.String, kotlin.Any?>>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_nolWithTMaps", collector
-        = collector, freeze = freeze)
+    public val _nolWithTMaps: KMockContract.SyncFunProxy<Unit, (Array<out Map<String, Any?>>) -> Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_nolWithTMaps",
+        collector = collector, freeze = freeze)
+
+    public val _colWithTFunction0RSequence: KMockContract.SyncFunProxy<Unit, (Function0<*>,
+        Sequence<Function0<*>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_colWithTFunction0RSequence",
+            collector = collector, freeze = freeze)
+
+    public val _colWithTListsRSequence: KMockContract.SyncFunProxy<Unit, (Array<out List<*>>,
+        Sequence<List<*>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_colWithTListsRSequence",
+            collector = collector, freeze = freeze)
 
     public override fun foo(payload: Any): String = _fooWithAny.invoke(payload)
 
@@ -357,6 +367,16 @@ internal class PlatformMock<K : Any, L>(
     }
 
     public override fun <T> lol(fuzz: Array<T>): Any = _lolWithArray.invoke(fuzz)
+
+    public override fun <T : Comparable<in Char>> lol(arg0: T): Unit =
+        _lolWithTComparable.invoke(arg0) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
+    public override fun <T : Comparable<in Char>> lol(vararg arg0: T): Unit =
+        _lolWithTComparables.invoke(arg0) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Int> bla(): T = _blaWithVoid.invoke() as T
@@ -634,6 +654,16 @@ internal class PlatformMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <R : Sequence<T>, T : Function0<*>> col(arg0: T, arg1: R): Unit =
+        _colWithTFunction0RSequence.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
+    public override fun <R : Sequence<T>, T : List<*>> col(vararg arg0: T, arg1: R): Unit =
+        _colWithTListsRSequence.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithAny.clear()
@@ -642,6 +672,8 @@ internal class PlatformMock<K : Any, L>(
         _fooWithZTAnys.clear()
         _lolWithArrays.clear()
         _lolWithArray.clear()
+        _lolWithTComparable.clear()
+        _lolWithTComparables.clear()
         _blaWithVoid.clear()
         _blaWithTInt.clear()
         _blaWithTInts.clear()
@@ -704,5 +736,7 @@ internal class PlatformMock<K : Any, L>(
         _polWithTMaps.clear()
         _nolWithTMap.clear()
         _nolWithTMaps.clear()
+        _colWithTFunction0RSequence.clear()
+        _colWithTListsRSequence.clear()
     }
 }

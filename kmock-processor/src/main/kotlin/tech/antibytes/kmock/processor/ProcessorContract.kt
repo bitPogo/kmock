@@ -284,10 +284,6 @@ internal interface ProcessorContract {
         val sideEffect: LambdaTypeName,
     )
 
-    data class MultiBoundaryTag(
-        val bounds: List<TypeName>
-    )
-
     interface ProxyNameCollector {
         fun collect(template: KSClassDeclaration)
     }
@@ -308,7 +304,7 @@ internal interface ProcessorContract {
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
             arguments: Array<MemberArgumentTypeInfo>,
-            typeResolver: TypeParameterResolver,
+            methodWideResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverGetterName(
@@ -316,7 +312,7 @@ internal interface ProcessorContract {
             propertyName: String,
             receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver,
+            propertyWideResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverSetterName(
@@ -324,7 +320,7 @@ internal interface ProcessorContract {
             propertyName: String,
             receiver: MemberArgumentTypeInfo,
             generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver
+            propertyWideResolver: TypeParameterResolver
         ): ProxyInfo
 
         fun selectReceiverMethodName(
@@ -332,7 +328,7 @@ internal interface ProcessorContract {
             methodName: String,
             generics: Map<String, List<KSTypeReference>>,
             arguments: Array<MemberArgumentTypeInfo>,
-            typeResolver: TypeParameterResolver,
+            methodWideResolver: TypeParameterResolver,
         ): ProxyInfo
     }
 
@@ -433,18 +429,18 @@ internal interface ProcessorContract {
             inherited: Boolean,
             generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
-            typeParameterResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver
         ): Array<MemberArgumentTypeInfo>
 
         fun resolveTypeParameter(
             parameter: List<KSTypeParameter>,
-            typeParameterResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver
         ): List<TypeName>
 
         fun resolveProxyGenerics(
             classScope: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>?,
-            typeResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver
         ): Map<String, GenericDeclaration>?
 
         fun buildProxy(
@@ -455,7 +451,7 @@ internal interface ProcessorContract {
             generics: Map<String, GenericDeclaration>?,
             methodReturnType: TypeName,
             proxyReturnType: TypeName,
-            typeResolver: TypeParameterResolver,
+            methodWideResolver: TypeParameterResolver,
         ): ProxyBundle
     }
 
@@ -464,7 +460,7 @@ internal interface ProcessorContract {
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksProperty: KSPropertyDeclaration,
-            typeResolver: TypeParameterResolver,
+            classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
             relaxer: Relaxer?,
         ): Pair<PropertySpec, PropertySpec>
@@ -475,7 +471,7 @@ internal interface ProcessorContract {
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksFunction: KSFunctionDeclaration,
-            typeResolver: TypeParameterResolver,
+            classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
@@ -496,7 +492,7 @@ internal interface ProcessorContract {
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksProperty: KSPropertyDeclaration,
-            typeResolver: TypeParameterResolver,
+            classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
             relaxer: Relaxer?,
         ): Triple<PropertySpec, PropertySpec?, PropertySpec>
@@ -506,7 +502,7 @@ internal interface ProcessorContract {
             qualifier: String,
             classScopeGenerics: Map<String, List<TypeName>>?,
             ksFunction: KSFunctionDeclaration,
-            typeResolver: TypeParameterResolver,
+            classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
             inherited: Boolean,
             relaxer: Relaxer?,
@@ -514,7 +510,7 @@ internal interface ProcessorContract {
 
         fun buildReceiverSpyContext(
             spyType: TypeName,
-            typeResolver: TypeParameterResolver,
+            classWideResolver: TypeParameterResolver,
         ): FunSpec
     }
 

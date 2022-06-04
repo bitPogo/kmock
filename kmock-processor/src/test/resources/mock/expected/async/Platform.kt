@@ -1,6 +1,7 @@
 package mock.template.async
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.IntArray
@@ -32,7 +33,7 @@ internal class PlatformMock(
         ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_ozz", collector =
         collector, freeze = freeze)
 
-    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) -> Any> =
+    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (Array<out Any>) -> Any> =
         ProxyFactory.createAsyncFunProxy("mock.template.async.PlatformMock#_izz", collector =
         collector, freeze = freeze)
 

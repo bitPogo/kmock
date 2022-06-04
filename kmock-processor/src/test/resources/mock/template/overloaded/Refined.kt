@@ -40,6 +40,8 @@ interface Refined : Parent {
     fun <T, R> foo(fuzz: R) where T : Comparable<Array<R>>, R : List<T>
     @JvmName("foo6")
     fun <T, R> foo(fuzz: R) where T : Comparable<Array<R>>, R : List<T?>
+    @JvmName("foo6")
+    fun <T> foo(fuzz: T) where T : Comparable<*>
 }
 
 data class Abc(

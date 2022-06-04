@@ -1,6 +1,7 @@
 package mock.template.overloaded
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Function1
 import kotlin.Int
@@ -76,7 +77,7 @@ internal class CollisionMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithTLPG",
             collector = collector, freeze = freeze)
 
-    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> Any> =
+    public val _fooWithAnys: KMockContract.SyncFunProxy<Any, (Array<out Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.CollisionMock#_fooWithAnys",
             collector = collector, freeze = freeze)
 

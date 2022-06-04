@@ -1,6 +1,7 @@
 package mock.template.access
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.CharSequence
 import kotlin.Comparable
@@ -10,6 +11,7 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.Map
+import tech.antibytes.kmock.Hint1
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.SafeJvmName
@@ -38,7 +40,7 @@ internal class AsyncFunMock<L, T>(
         ProxyFactory.createAsyncFunProxy("mock.template.access.AsyncFunMock#_ozz", collector =
         collector, freeze = freeze)
 
-    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) -> Any> =
+    public val _izz: KMockContract.AsyncFunProxy<Any, suspend (Array<out Any>) -> Any> =
         ProxyFactory.createAsyncFunProxy("mock.template.access.AsyncFunMock#_izz", collector =
         collector, freeze = freeze)
 
@@ -78,17 +80,17 @@ internal class AsyncFunMock<L, T>(
             collector = collector, freeze = freeze)
 
     private val referenceStore: Map<String, KMockContract.Proxy<*, *>> = mapOf(
-        "foo|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any" to _foo,
-        "bar|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any" to _bar,
-        "ozz|suspend (kotlin.IntArray) -> kotlin.Any" to _ozz,
-        "izz|suspend (kotlin.Array<out kotlin.Any>) -> kotlin.Any" to _izz,
-        "uzz|suspend () -> kotlin.Unit" to _uzz,
-        "tuz|suspend () -> kotlin.Int" to _tuz,
-        "uz|suspend () -> L" to _uz,
-        "tzz|suspend () -> T" to _tzz,
-        "lol|suspend (kotlin.Any?) -> kotlin.Any?" to _lol,
-        "veryLongMethodNameWithABunchOfVariables|suspend ( kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int,) -> kotlin.Unit"
+        "foo|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any|[]" to _foo,
+        "bar|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any|[]" to _bar,
+        "ozz|suspend (kotlin.IntArray) -> kotlin.Any|[]" to _ozz,
+        "izz|suspend (kotlin.Array<out kotlin.Any>) -> kotlin.Any|[]" to _izz,
+        "uzz|suspend () -> kotlin.Unit|[]" to _uzz,
+        "tuz|suspend () -> kotlin.Int|[]" to _tuz,
+        "uz|suspend () -> L|[]" to _uz,
+        "tzz|suspend () -> T|[]" to _tzz,
+        "veryLongMethodNameWithABunchOfVariables|suspend (  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit|[]"
             to _veryLongMethodNameWithABunchOfVariables,
+        "lol|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?]]" to _lol,
     )
 
     public override suspend fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
@@ -141,91 +143,80 @@ internal class AsyncFunMock<L, T>(
         _veryLongMethodNameWithABunchOfVariables.clear()
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf0")
     public fun asyncFunProxyOf(reference: suspend (Int, Any) -> Any):
         KMockContract.FunProxy<Any, suspend (Int, Any) -> Any> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Int, kotlin.Any) -> kotlin.Any|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Int, kotlin.Any) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Int, kotlin.Any) ->
         kotlin.Any>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf1")
-    public fun asyncFunProxyOf(reference: suspend (IntArray) -> Any):
+    public fun asyncFunProxyOf(reference: suspend (Array<out Int>) -> Any):
         KMockContract.FunProxy<Any, suspend (IntArray) -> Any> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.IntArray) -> kotlin.Any"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.IntArray) -> kotlin.Any|[]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.IntArray) -> kotlin.Any!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Array<out kotlin.Int>) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.IntArray) ->
         kotlin.Any>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf2")
-    public fun asyncFunProxyOf(reference: suspend (kotlin.Array<out kotlin.Any>) -> Any):
-        KMockContract.FunProxy<Any, suspend (kotlin.Array<out kotlin.Any>) -> Any> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Array<out kotlin.Any>) -> kotlin.Any"""]
+    public fun asyncFunProxyOf(reference: suspend (Array<out Any>) -> Any):
+        KMockContract.FunProxy<Any, suspend (Array<out Any>) -> Any> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Array<out kotlin.Any>) -> kotlin.Any|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Array<out kotlin.Any>) -> kotlin.Any!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, suspend (kotlin.Array<out
         kotlin.Any>) -> kotlin.Any>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf3")
     public fun asyncFunProxyOf(reference: suspend () -> Unit):
         KMockContract.FunProxy<Unit, suspend () -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Unit"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Unit|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend () -> kotlin.Unit>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf4")
     public fun asyncFunProxyOf(reference: suspend () -> Int):
         KMockContract.FunProxy<Int, suspend () -> Int> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Int"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> kotlin.Int|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> kotlin.Int!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Int, suspend () -> kotlin.Int>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf5")
     public fun asyncFunProxyOf(reference: suspend () -> L): KMockContract.FunProxy<L, suspend () -> L>
-        = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> L"""] ?:
-    throw
-    IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> L!"""))
+        = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> L|[]"""]
+        ?: throw
+        IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> L!"""))
         as tech.antibytes.kmock.KMockContract.FunProxy<L, suspend () -> L>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf6")
     public fun asyncFunProxyOf(reference: suspend () -> T): KMockContract.FunProxy<T, suspend () -> T>
-        = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> T"""] ?:
-    throw
-    IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> T!"""))
+        = (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend () -> T|[]"""]
+        ?: throw
+        IllegalStateException("""Unknown method ${reference.name} with signature suspend () -> T!"""))
         as tech.antibytes.kmock.KMockContract.FunProxy<T, suspend () -> T>
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("asyncFunProxyOf7")
-    public fun asyncFunProxyOf(reference: suspend (Any?) -> Any?):
-        KMockContract.FunProxy<Any?, suspend (Any?) -> Any?> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any?"""]
-            ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature suspend (kotlin.Any?) -> kotlin.Any?!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) ->
-        kotlin.Any?>
-
-    @Suppress("UNCHECKED_CAST")
-    @KMockExperimental
-    @SafeJvmName("asyncFunProxyOf8")
     public fun asyncFunProxyOf(reference: suspend (
         Int,
         Int,
@@ -249,7 +240,7 @@ internal class AsyncFunMock<L, T>(
         Int,
         Int,
     ) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature suspend (  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, suspend (
@@ -264,4 +255,15 @@ internal class AsyncFunMock<L, T>(
             kotlin.Int,
             kotlin.Int,
         ) -> kotlin.Unit>
+
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
+    @KMockExperimental
+    @SafeJvmName("asyncFunProxyOf8")
+    public fun <T> asyncFunProxyOf(reference: suspend (T) -> T, hint: Hint1<Any>):
+        KMockContract.FunProxy<Any?, suspend (Any?) -> Any?> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|suspend (kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature suspend (T) -> T!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, suspend (kotlin.Any?) ->
+        kotlin.Any?>
 }

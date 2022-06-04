@@ -120,7 +120,7 @@ complexity:
     excludes: ['**/test/**', '**/androidTest/**', '**/androidAndroidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/nativeTest/**', '**/iosTest/**']
   LongParameterList:
     active: true
-    functionThreshold: 7
+    functionThreshold: 10
     constructorThreshold: 7
     ignoreDefaultParameters: false
     ignoreDataClasses: true

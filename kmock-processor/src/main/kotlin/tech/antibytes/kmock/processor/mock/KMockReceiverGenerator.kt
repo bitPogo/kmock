@@ -17,7 +17,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import tech.antibytes.kmock.processor.utils.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
@@ -36,6 +35,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
 import tech.antibytes.kmock.processor.utils.resolveReceiver
 import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
 
@@ -174,7 +174,7 @@ internal class KMockReceiverGenerator(
                 propertyName = propertyName,
                 receiver = receiverInfo,
                 generics = generics,
-                typeResolver = receiverTypeResolver,
+                propertyWideResolver = receiverTypeResolver,
             )
 
             val (setterProxy, _) = utils.buildProxy(
@@ -185,7 +185,7 @@ internal class KMockReceiverGenerator(
                 generics = proxyGenerics,
                 methodReturnType = UNIT,
                 proxyReturnType = UNIT,
-                typeResolver = receiverTypeResolver,
+                methodWideResolver = receiverTypeResolver,
             )
 
             return Pair(setterProxyInfo, setterProxy)
@@ -207,17 +207,17 @@ internal class KMockReceiverGenerator(
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksProperty: KSPropertyDeclaration,
-        typeResolver: TypeParameterResolver,
+        classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): Triple<PropertySpec, PropertySpec?, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
-        val receiverTypeResolver = ksProperty.toReceiverTypeParameterResolver(typeResolver)
+        val receiverTypeResolver = ksProperty.toReceiverTypeParameterResolver(classWideResolver)
         val generics = genericResolver.extractGenerics(ksProperty) ?: emptyMap()
         val proxyGenerics = utils.resolveProxyGenerics(
             classScope = classScopeGenerics,
             generics = generics,
-            typeResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
 
         val receiverInfo = ksProperty.determineReceiver(
@@ -234,7 +234,7 @@ internal class KMockReceiverGenerator(
             propertyName = propertyName,
             receiver = receiverInfo,
             generics = generics,
-            typeResolver = receiverTypeResolver,
+            propertyWideResolver = receiverTypeResolver,
         )
 
         val (getter, getterReturnType) = utils.buildProxy(
@@ -245,7 +245,7 @@ internal class KMockReceiverGenerator(
             generics = proxyGenerics,
             methodReturnType = propertyType,
             proxyReturnType = receiverInfo.resolveProxyType(propertyType),
-            typeResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
 
         val (setterProxyInfo, setter) = resolveSetterProxy(
@@ -354,19 +354,19 @@ internal class KMockReceiverGenerator(
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksFunction: KSFunctionDeclaration,
-        typeResolver: TypeParameterResolver,
+        classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
-        val methodTypeResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
+        val methodTypeResolver = ksFunction.typeParameters.toTypeParameterResolver(classWideResolver)
         val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(methodTypeResolver)
         val generics = genericResolver.extractGenerics(ksFunction) ?: emptyMap()
         val proxyGenerics = utils.resolveProxyGenerics(
             classScope = classScopeGenerics,
             generics = generics,
-            typeResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
 
         val receiverInfo = ksFunction.determineReceiver(
@@ -377,12 +377,12 @@ internal class KMockReceiverGenerator(
             inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
-            typeParameterResolver = receiverTypeResolver
+            methodWideResolver = receiverTypeResolver
         )
         val argumentsWithReceiver = arguments.toMutableList().also { it.add(0, receiverInfo) }.toTypedArray()
         val parameter = utils.resolveTypeParameter(
             parameter = ksFunction.typeParameters,
-            typeParameterResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
 
         val proxyInfo = nameSelector.selectReceiverMethodName(
@@ -390,7 +390,7 @@ internal class KMockReceiverGenerator(
             methodName = methodName,
             arguments = argumentsWithReceiver,
             generics = generics,
-            typeResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
             inheritedVarargArg = false,
@@ -407,7 +407,7 @@ internal class KMockReceiverGenerator(
             suspending = isSuspending,
             methodReturnType = methodReturnType,
             proxyReturnType = proxyReturnType,
-            typeResolver = receiverTypeResolver,
+            methodWideResolver = receiverTypeResolver,
         )
 
         val method = buildMethod(
@@ -433,7 +433,7 @@ internal class KMockReceiverGenerator(
         ).copy(nullable = false)
     }
 
-    override fun buildReceiverSpyContext(spyType: TypeName, typeResolver: TypeParameterResolver): FunSpec {
+    override fun buildReceiverSpyContext(spyType: TypeName, classWideResolver: TypeParameterResolver): FunSpec {
         return FunSpec.builder(SPY_CONTEXT)
             .addParameter(
                 "action",

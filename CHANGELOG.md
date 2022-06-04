@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 * The plugin can now applied directly while configuration must be done after the `kotlin` setup
+* AccessMethods need always a hint if the Template has type parameters
 
 ### Deprecated
 
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * vararg eats specialised Array Types (e.g. IntArray) and covariant types when inherited
 * Factories for Multi-Interface-Mocks
 * Multi-Boundary Parameter are not right resolved when mixed multi with regular parameter in nested types
+* Collisions of type aliases with regular method signatures
 
 ### Security
 

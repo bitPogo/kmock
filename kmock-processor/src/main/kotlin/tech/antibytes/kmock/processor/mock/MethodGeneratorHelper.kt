@@ -14,7 +14,7 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -42,14 +42,14 @@ internal class MethodGeneratorHelper(
         inherited: Boolean,
         generics: Map<String, GenericDeclaration>?,
         arguments: List<KSValueParameter>,
-        typeParameterResolver: TypeParameterResolver,
+        methodWideResolver: TypeParameterResolver,
     ): Array<MemberArgumentTypeInfo> {
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
             val (methodType, proxyType) = parameter.type.toProxyPairTypeName(
                 inheritedVarargArg = parameter.isVararg && inherited,
                 generics = generics ?: emptyMap(),
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = methodWideResolver
             )
             MemberArgumentTypeInfo(
                 argumentName = argumentName,
@@ -62,11 +62,11 @@ internal class MethodGeneratorHelper(
 
     override fun resolveTypeParameter(
         parameter: List<KSTypeParameter>,
-        typeParameterResolver: TypeParameterResolver
+        methodWideResolver: TypeParameterResolver
     ): List<TypeName> {
         var distribute = false
         val parameterTypes = parameter.map { type ->
-            val parameterType = type.toTypeVariableName(typeParameterResolver)
+            val parameterType = type.toTypeVariableName(methodWideResolver)
 
             if (parameterType.bounds.size > 1) {
                 distribute = true
@@ -93,7 +93,7 @@ internal class MethodGeneratorHelper(
     override fun resolveProxyGenerics(
         classScope: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>?,
-        typeResolver: TypeParameterResolver
+        methodWideResolver: TypeParameterResolver
     ): Map<String, GenericDeclaration>? {
         return if (generics == null) {
             null
@@ -101,7 +101,7 @@ internal class MethodGeneratorHelper(
             genericResolver.mapProxyGenerics(
                 classScope,
                 generics,
-                typeResolver
+                methodWideResolver
             )
         }
     }
@@ -153,7 +153,9 @@ internal class MethodGeneratorHelper(
                 argument.proxyTypeName
             } else {
                 specialArrays.getOrElse(argument.proxyTypeName.toString()) {
-                    TypeVariableName("$ARRAY<out ${argument.proxyTypeName}>")
+                    ARRAY.parameterizedBy(
+                        WildcardTypeName.producerOf(argument.proxyTypeName)
+                    )
                 }
             }
         }.toTypedArray()
@@ -193,7 +195,7 @@ internal class MethodGeneratorHelper(
         generics: Map<String, GenericDeclaration>?,
         methodReturnType: TypeName,
         proxyReturnType: TypeName,
-        typeResolver: TypeParameterResolver,
+        methodWideResolver: TypeParameterResolver,
     ): ProxyBundle {
         val (proxyType, proxyFactoryMethod) = determineProxyType(suspending)
 

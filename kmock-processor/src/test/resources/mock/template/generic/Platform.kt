@@ -107,4 +107,10 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <T : Map<String, W>, W : G, G> nol(arg: T) where G : CharSequence?, G : Comparable<T>?
     fun <T : Map<String, W>, W : G, G> nol(vararg arg: T) where G : CharSequence?, G : Comparable<T>?
+
+    fun <R, T> col(arg0: T, arg1: R) where R : Sequence<T>, T : Function0<*>
+    fun <R, T> col(vararg arg0: T, arg1: R) where R : Sequence<T>, T : List<*>
+
+    fun <T> lol(arg0: T) where T : Comparable<in Char>
+    fun <T> lol(vararg arg0: T) where T : Comparable<in Char>
 }

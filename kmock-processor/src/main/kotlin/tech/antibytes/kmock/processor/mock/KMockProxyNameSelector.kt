@@ -9,11 +9,11 @@ package tech.antibytes.kmock.processor.mock
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import tech.antibytes.kmock.processor.utils.toTypeName
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
@@ -227,7 +227,9 @@ internal class KMockProxyNameSelector(
     private fun String.transformGenerics(
         generics: Map<String, String>
     ): String {
-        return this.split('<', '>', ',')
+        return this
+            .replace("*", "Any?")
+            .split('<', '>', ',')
             .filterNot { part -> part.isBlank() }
             .joinToString("_") { part ->
                 val resolved = generics.getOrElse(part.trim().trimNullable()) { part }
@@ -407,13 +409,13 @@ internal class KMockProxyNameSelector(
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         arguments: Array<MemberArgumentTypeInfo>,
-        typeResolver: TypeParameterResolver,
+        methodWideResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = "",
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        typeResolver = typeResolver,
+        typeResolver = methodWideResolver,
         arguments = arguments
     )
 
@@ -422,13 +424,13 @@ internal class KMockProxyNameSelector(
         propertyName: String,
         receiver: MemberArgumentTypeInfo,
         generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
+        propertyWideResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_GETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        typeResolver = typeResolver,
+        typeResolver = propertyWideResolver,
         arguments = arrayOf(receiver)
     )
 
@@ -437,13 +439,13 @@ internal class KMockProxyNameSelector(
         propertyName: String,
         receiver: MemberArgumentTypeInfo,
         generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
+        propertyWideResolver: TypeParameterResolver
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_SETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        typeResolver = typeResolver,
+        typeResolver = propertyWideResolver,
         arguments = arrayOf(receiver)
     )
 
@@ -452,13 +454,13 @@ internal class KMockProxyNameSelector(
         methodName: String,
         generics: Map<String, List<KSTypeReference>>,
         arguments: Array<MemberArgumentTypeInfo>,
-        typeResolver: TypeParameterResolver,
+        methodWideResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_METHOD,
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        typeResolver = typeResolver,
+        typeResolver = methodWideResolver,
         arguments = arguments
     )
 

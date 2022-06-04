@@ -31,7 +31,7 @@ private fun KSTypeArgument.resolveVariance(typeName: TypeName): TypeName {
 }
 
 private fun KSTypeArgument.mapArgumentType(
-    typeParameterResolver: TypeParameterResolver = TypeParameterResolver.EMPTY,
+    typeParameterResolver: TypeParameterResolver,
     mapping: Map<String, String>,
 ): TypeName {
     val typeName = type?.mapArgumentType(
@@ -70,7 +70,7 @@ private fun KSType.abbreviateType(
 }
 
 internal fun KSTypeReference.mapArgumentType(
-    typeParameterResolver: TypeParameterResolver = TypeParameterResolver.EMPTY,
+    typeParameterResolver: TypeParameterResolver,
     mapping: Map<String, String>,
 ): TypeName {
     return resolve().mapArgumentType(
@@ -109,8 +109,7 @@ internal fun KSType.mapArgumentType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = resolveAlias(
-                declaration = declaration,
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = arguments,
                 typeParameterResolver = typeParameterResolver,
             )

@@ -1,6 +1,7 @@
 package mock.template.typealiaz
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Char
 import kotlin.Comparable
@@ -51,13 +52,13 @@ internal class InheritedMock<R : Alias33>(
             collector = collector, freeze = freeze)
 
     public val _doAnythingElseWithAlias97:
-        KMockContract.SyncFunProxy<Unit, (Alias97<Generic<Function1<Any, Unit>>>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (Alias97<GenericSuper<Function1<Any, Unit>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doAnythingElseWithAlias97",
             collector = collector, freeze = freeze)
 
     public val _doOtherThing:
         KMockContract.SyncFunProxy<Unit, (Alias97<Alias97<Function1<Any, Unit>>>,
-            Comparable<Any?>) -> Unit> =
+            Comparable<Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doOtherThing",
             collector = collector, freeze = freeze)
 
@@ -66,12 +67,12 @@ internal class InheritedMock<R : Alias33>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias31LAlias33",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any?>) -> Unit>
+    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any>) -> Unit>
         =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias97",
             collector = collector, freeze = freeze)
 
-    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<String, Any?>) -> Unit> =
+    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<String, Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithTAlias93",
             collector = collector, freeze = freeze)
 
@@ -80,20 +81,18 @@ internal class InheritedMock<R : Alias33>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithAnyAlias93",
             collector = collector, freeze = freeze)
 
-    public val _fooWithCharAlias93s: KMockContract.SyncFunProxy<Unit, (Char, kotlin.Array<out
-    mock.template.typealiaz.Alias93<kotlin.String, kotlin.IntArray>>) -> Unit> =
+    public val _fooWithCharAlias93s: KMockContract.SyncFunProxy<Unit, (Char,
+        Array<out Alias93<String, IntArray>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithCharAlias93s",
             collector = collector, freeze = freeze)
 
-    public val _fooWithIntAlias93s: KMockContract.SyncFunProxy<Unit, (Int, kotlin.Array<out
-    mock.template.typealiaz.Alias93<kotlin.String, kotlin.String>>) -> Unit> =
+    public val _fooWithIntAlias93s: KMockContract.SyncFunProxy<Unit, (Int,
+        Array<out Alias93<String, String>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithIntAlias93s",
             collector = collector, freeze = freeze)
 
-    public val _fooWithLongTAlias93s: KMockContract.SyncFunProxy<Unit, (Long, kotlin.Array<out
-    mock.template.typealiaz.Alias93<kotlin.String,
-        mock.template.typealiaz.Generic<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> Unit>
-        =
+    public val _fooWithLongTAlias93s: KMockContract.SyncFunProxy<Unit, (Long,
+        Array<out Alias93<String, GenericSuper<Map<String, Int>>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithLongTAlias93s",
             collector = collector, freeze = freeze)
 
@@ -101,25 +100,22 @@ internal class InheritedMock<R : Alias33>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_barWithAlias199",
             collector = collector, freeze = freeze)
 
-    public val _barWithTAlias199s: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    mock.template.typealiaz.Alias199<kotlin.String>>) -> Unit> =
+    public val _barWithTAlias199s:
+        KMockContract.SyncFunProxy<Unit, (Array<out Alias199<String>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_barWithTAlias199s",
             collector = collector, freeze = freeze)
 
     public val _barWithLongTAlias199s:
-        KMockContract.SyncFunProxy<Alias199<Generic<Map<String, Int>>>, (Long, kotlin.Array<out
-        mock.template.typealiaz.Alias199<mock.template.typealiaz.Generic<kotlin.collections.Map<kotlin.String,
-            kotlin.Int>>>>) -> Alias199<Generic<Map<String, Int>>>> =
+        KMockContract.SyncFunProxy<Alias199<out GenericSuper<Map<String, Int>>>, (Long,
+            Array<out Alias199<out GenericSuper<Map<String, Int>>>>) -> Alias199<out GenericSuper<Map<String, Int>>>>
+        =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_barWithLongTAlias199s",
             collector = collector, freeze = freeze)
 
-    public val _barWithTAlias200s: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    mock.template.typealiaz.Alias200<mock.template.typealiaz.Alias105<kotlin.Function1<kotlin.Any,
-        kotlin.Any>>,
-        mock.template.typealiaz.Alias199<mock.template.typealiaz.Generic<kotlin.collections.Map<kotlin.String,
-            kotlin.Int>>>>>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_barWithTAlias200s",
-            collector = collector, freeze = freeze)
+    public val _barWithTAlias200s:
+        KMockContract.SyncFunProxy<Unit, (Array<out Alias200<Alias105<Function1<Any, Any>>, Alias199<out GenericSuper<Map<String, Int>>>>>) -> Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_barWithTAlias200s",
+        collector = collector, freeze = freeze)
 
     public val _run: KMockContract.SyncFunProxy<Alias31<Any, Unit>, (R) -> Alias31<Any, Unit>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_run", collector =
@@ -138,7 +134,7 @@ internal class InheritedMock<R : Alias33>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun doAnythingElse(arg1: Alias97<Generic<Function1<Any, Unit>>>): Unit =
+    public override fun doAnythingElse(arg1: Alias97<GenericSuper<Function1<Any, Unit>>>): Unit =
         _doAnythingElseWithAlias97.invoke(arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
@@ -178,7 +174,7 @@ internal class InheritedMock<R : Alias33>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T : Alias93<String, Generic<Map<String, Int>>>> foo(arg0: Long, vararg
+    public override fun <T : Alias93<String, GenericSuper<Map<String, Int>>>> foo(arg0: Long, vararg
     arg1: T): Unit = _fooWithLongTAlias93s.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
@@ -193,12 +189,12 @@ internal class InheritedMock<R : Alias33>(
         }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : Alias199<out Generic<Map<String, Int>>>> bar(arg0: Long, vararg arg1: T):
-        T = _barWithLongTAlias199s.invoke(arg0, arg1) as T
+    public override fun <T : Alias199<out GenericSuper<Map<String, Int>>>> bar(arg0: Long, vararg
+    arg1: T): T = _barWithLongTAlias199s.invoke(arg0, arg1) as T
 
     public override fun <T :
-    Alias200<Alias105<Function1<Any, Any>>, Alias199<out Generic<Map<String, Int>>>>> bar(vararg
-    arg1: T): Unit = _barWithTAlias200s.invoke(arg1) {
+    Alias200<Alias105<Function1<Any, Any>>, Alias199<out GenericSuper<Map<String, Int>>>>>
+        bar(vararg arg1: T): Unit = _barWithTAlias200s.invoke(arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 

@@ -112,29 +112,29 @@ internal class KMockMethodGenerator(
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksFunction: KSFunctionDeclaration,
-        typeResolver: TypeParameterResolver,
+        classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
         inherited: Boolean,
         relaxer: Relaxer?
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
 
-        val typeParameterResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
+        val typeParameterResolver = ksFunction.typeParameters.toTypeParameterResolver(classWideResolver)
         val generics = genericResolver.extractGenerics(ksFunction)
         val proxyGenerics = utils.resolveProxyGenerics(
             classScope = classScopeGenerics,
             generics = generics,
-            typeResolver = typeParameterResolver,
+            methodWideResolver = typeParameterResolver,
         )
         val arguments = utils.determineArguments(
             inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
-            typeParameterResolver = typeParameterResolver
+            methodWideResolver = typeParameterResolver
         )
         val parameter = utils.resolveTypeParameter(
             parameter = ksFunction.typeParameters,
-            typeParameterResolver = typeParameterResolver,
+            methodWideResolver = typeParameterResolver,
         )
 
         val proxyInfo = nameSelector.selectMethodName(
@@ -142,7 +142,7 @@ internal class KMockMethodGenerator(
             methodName = methodName,
             arguments = arguments,
             generics = generics ?: emptyMap(),
-            typeResolver = typeParameterResolver,
+            methodWideResolver = typeParameterResolver,
         )
 
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
@@ -160,7 +160,7 @@ internal class KMockMethodGenerator(
             suspending = isSuspending,
             methodReturnType = methodReturnType,
             proxyReturnType = proxyReturnType,
-            typeResolver = typeParameterResolver,
+            methodWideResolver = typeParameterResolver,
         )
 
         val method = buildMethod(

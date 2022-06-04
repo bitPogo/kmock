@@ -207,7 +207,7 @@ private fun KSType.abbreviateType(
     ).rawType()
         .withTypeArguments(
             argumentsDecorator.resolveArguments(
-                arguments = arguments,
+                arguments = typeArguments,
                 visited = visited,
                 classScope = classScope,
                 rootNullability = rootNullability,
@@ -410,8 +410,7 @@ private fun KSType.mapParameterType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = resolveAlias(
-                declaration = declaration,
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = arguments,
                 typeParameterResolver = typeParameterResolver,
             )

@@ -52,8 +52,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithZTAny", collector =
         collector, freeze = freeze)
 
-    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Any?>) -> Unit> =
+    public val _fooWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.PlatformMock#_fooWithZTAnys", collector =
         collector, freeze = freeze)
 
@@ -69,8 +68,7 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.PlatformMock#_buzzWithString", collector =
         collector, freeze = freeze)
 
-    public val _buzzWithStrings: KMockContract.AsyncFunProxy<L, suspend (kotlin.Array<out
-    kotlin.String>) -> L> =
+    public val _buzzWithStrings: KMockContract.AsyncFunProxy<L, suspend (Array<out String>) -> L> =
         ProxyFactory.createAsyncFunProxy("mock.template.spy.PlatformMock#_buzzWithStrings", collector
         = collector, freeze = freeze)
 

@@ -8,11 +8,11 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.Mock
 
-interface Generic<T>
+interface GenericSuper<T>
 
 typealias Alias31 = (Any) -> Unit
 typealias Alias33 = (Any) -> Any
-typealias Alias97<T> = Generic<T>
+typealias Alias97<T> = GenericSuper<T>
 typealias Alias93<T> = Map<String, T>
 typealias Alias105<T> = Alias97<T>
 typealias Alias199<T> = Alias105<T>

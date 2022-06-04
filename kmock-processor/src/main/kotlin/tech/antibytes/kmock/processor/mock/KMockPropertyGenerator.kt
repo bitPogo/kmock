@@ -15,7 +15,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import tech.antibytes.kmock.processor.utils.toTypeName
 import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CREATE_PROPERTY_PROXY
@@ -28,6 +27,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.PropertyGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
 
 internal class KMockPropertyGenerator(
     private val nameSelector: ProxyNameSelector,
@@ -202,12 +202,12 @@ internal class KMockPropertyGenerator(
         qualifier: String,
         classScopeGenerics: Map<String, List<TypeName>>?,
         ksProperty: KSPropertyDeclaration,
-        typeResolver: TypeParameterResolver,
+        classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
         relaxer: Relaxer?
     ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
-        val propertyType = ksProperty.type.toTypeName(typeResolver)
+        val propertyType = ksProperty.type.toTypeName(classWideResolver)
         val isMutable = ksProperty.isMutable
         val proxyInfo = nameSelector.selectPropertyName(
             qualifier = qualifier,
