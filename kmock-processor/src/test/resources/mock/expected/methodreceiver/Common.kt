@@ -58,7 +58,7 @@ internal class CommonMock<L>(
     public val _doNothingElseReceiver: KMockContract.SyncFunProxy<Unit, (
         Any,
         Any,
-        Comparable<Any?>,
+        Comparable<Any>,
     ) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.CommonMock#_doNothingElseReceiver",
             collector = collector, freeze = freeze)

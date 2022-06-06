@@ -98,4 +98,13 @@ interface Platform<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <R, T> xss(arg0: T): R where R : Sequence<Char>, R : CharSequence
     fun <R, T> xss(arg0: T, arg1: R) where R : Sequence<Char>, R : CharSequence
+
+    fun <T : Map<G, W>, W, G : String> rol(arg: T) where W : CharSequence, W : Comparable<T>
+    fun <T : Map<G, W>, W, G : String> rol(vararg arg: T) where W : CharSequence, W : Comparable<T>
+
+    fun <T : Map<String, W>, W : G, G> pol(arg: T) where G : CharSequence, G : Comparable<T>
+    fun <T : Map<String, W>, W : G, G> pol(vararg arg: T) where G : CharSequence, G : Comparable<T>
+
+    fun <T : Map<String, W>, W : G, G> nol(arg: T) where G : CharSequence?, G : Comparable<T>?
+    fun <T : Map<String, W>, W : G, G> nol(vararg arg: T) where G : CharSequence?, G : Comparable<T>?
 }

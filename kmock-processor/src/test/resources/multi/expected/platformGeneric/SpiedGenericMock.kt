@@ -172,17 +172,17 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
             collector = collector, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<Comparable<List<Array<Any?>>>, () -> Comparable<List<Array<Any?>>>>
-        = ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_brassWithVoid", collector =
-    collector, freeze = freeze)
+        KMockContract.SyncFunProxy<Comparable<List<Array<Any>>>, () -> Comparable<List<Array<Any>>>> =
+        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_brassWithVoid", collector =
+        collector, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any?>>>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_brassWithTComparable",
             collector = collector, freeze = freeze)
 
     public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> Unit> =
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_brassWithTComparables",
             collector = collector, freeze = freeze)
 

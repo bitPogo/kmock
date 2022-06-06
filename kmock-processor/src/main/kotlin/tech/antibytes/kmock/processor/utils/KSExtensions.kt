@@ -18,6 +18,7 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
+import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 
 internal fun KSClassDeclaration.deriveSimpleName(packageName: String): String {
     val qualifiedName = ensureNotNullClassName(this.qualifiedName?.asString())
@@ -39,7 +40,7 @@ private fun KSTypeReference.resolveReceiver(
     generics: Map<String, GenericDeclaration>?,
     receiverTypeResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
-    return this.toSecuredTypeName(
+    return this.toProxyPairTypeName(
         inheritedVarargArg = false,
         generics = generics ?: emptyMap(),
         typeParameterResolver = receiverTypeResolver,

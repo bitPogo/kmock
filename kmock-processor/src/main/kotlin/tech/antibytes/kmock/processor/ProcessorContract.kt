@@ -223,12 +223,12 @@ internal interface ProcessorContract {
 
         fun mapClassScopeGenerics(
             generics: Map<String, List<KSTypeReference>>?,
-            resolver: TypeParameterResolver,
+            typeParameterResolver: TypeParameterResolver,
         ): Map<String, List<TypeName>>?
 
         fun resolveMockClassType(
             template: KSClassDeclaration,
-            resolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver
         ): TypeName
 
         fun resolveKMockFactoryType(
@@ -238,7 +238,7 @@ internal interface ProcessorContract {
 
         fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver
         ): List<TypeVariableName>
 
         fun remapTypes(
@@ -247,8 +247,9 @@ internal interface ProcessorContract {
         ): Pair<List<TypeName>, List<TypeVariableName>>
 
         fun mapProxyGenerics(
+            classScope: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>,
-            typeResolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver
         ): Map<String, GenericDeclaration>
     }
 
@@ -281,6 +282,10 @@ internal interface ProcessorContract {
         val proxy: PropertySpec,
         val returnType: MemberReturnTypeInfo,
         val sideEffect: LambdaTypeName,
+    )
+
+    data class MultiBoundaryTag(
+        val bounds: List<TypeName>
     )
 
     interface ProxyNameCollector {
@@ -437,6 +442,7 @@ internal interface ProcessorContract {
         ): List<TypeName>
 
         fun resolveProxyGenerics(
+            classScope: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>?,
             typeResolver: TypeParameterResolver
         ): Map<String, GenericDeclaration>?

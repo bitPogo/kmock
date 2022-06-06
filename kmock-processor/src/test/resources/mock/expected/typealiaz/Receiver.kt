@@ -3,7 +3,6 @@ package mock.template.typealiaz
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
-import kotlin.Function1
 import kotlin.Suppress
 import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
@@ -27,12 +26,11 @@ internal class ReceiverMock<L : Alias11>(
             _memberSetter.invoke(this@member, value)
         }
 
-    public val _memberGetter:
-        KMockContract.SyncFunProxy<Generic<Any?>, (Generic<Any?>) -> Generic<Any?>> =
+    public val _memberGetter: KMockContract.SyncFunProxy<Alias3<Any>, (Alias3<Any>) -> Alias3<Any>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_memberGetter",
             collector = collector, freeze = freeze)
 
-    public val _memberSetter: KMockContract.SyncFunProxy<Unit, (Generic<Any?>) -> Unit> =
+    public val _memberSetter: KMockContract.SyncFunProxy<Unit, (Alias3<Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_memberSetter",
             collector = collector, freeze = freeze)
 
@@ -46,7 +44,7 @@ internal class ReceiverMock<L : Alias11>(
             collector = collector, freeze = freeze)
 
     public val _doAnythingElseReceiver: KMockContract.SyncFunProxy<Unit, (
-        Alias3<Comparable<Any?>>,
+        Alias3<Comparable<Any>>,
         Alias11,
         Alias2,
     ) -> Unit> =
@@ -58,23 +56,23 @@ internal class ReceiverMock<L : Alias11>(
             collector = collector, freeze = freeze)
 
     public val _doOtherThingReceiver: KMockContract.SyncFunProxy<Unit, (
-        Generic<Function1<Any, Any>>,
-        Alias3<Generic<Function1<Any, Any>>>,
-        Comparable<Any?>,
+        Alias3<Alias2>,
+        Alias3<Alias3<Alias2>>,
+        Comparable<Any>,
     ) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_doOtherThingReceiver",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseReceiverWithLAlias2TAlias11LAlias2: KMockContract.SyncFunProxy<Unit, (
-        Function1<Any, Any>,
-        Function1<Any, Unit>,
-        Function1<Any, Any>,
+        Alias2,
+        Alias11,
+        Alias2,
     ) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_doSomethingElseReceiverWithLAlias2TAlias11LAlias2",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseReceiverWithTAlias3TAlias3:
-        KMockContract.SyncFunProxy<Unit, (Generic<Any?>, Generic<Any?>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (Alias3<Any?>, Alias3<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_doSomethingElseReceiverWithTAlias3TAlias3",
             collector = collector, freeze = freeze)
 

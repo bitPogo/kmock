@@ -21,7 +21,7 @@ interface Overloaded<K, L, U : Int?, W> where L : Any, L : Comparable<L>, K : An
     fun urr()
     fun urr(arg: U)
     fun urr(arg: W)
-    fun <U: CharSequence?> urr(arg: U)
+    fun <U : CharSequence?> urr(arg: U)
 
     fun <T : Int> krr(arg: T)
     fun <T : Int?> krr(arg: T)

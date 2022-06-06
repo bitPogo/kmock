@@ -3,7 +3,6 @@ package mock.template.typealiaz
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
-import kotlin.Function1
 import kotlin.Suppress
 import kotlin.Unit
 import mock.template.typealiaz.smooth
@@ -39,19 +38,18 @@ internal class RelaxedMock<L : Alias102>(
             collector = collector, freeze = freeze)
 
     public val _doOtherThing:
-        KMockContract.SyncFunProxy<Generic<Function1<Any, Unit>>, (Alias107<Generic<Function1<Any, Unit>>>,
-            Comparable<Any?>) -> Generic<Function1<Any, Unit>>> =
+        KMockContract.SyncFunProxy<Alias107<Alias101>, (Alias107<Alias107<Alias101>>,
+            Comparable<Any>) -> Alias107<Alias101>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doOtherThing", collector
         = collector, freeze = freeze)
 
-    public val _doSomethingElseWithTAlias101LAlias102:
-        KMockContract.SyncFunProxy<Function1<Any, Any>, (Function1<Any, Unit>,
-            Function1<Any, Any>) -> Function1<Any, Any>> =
+    public val _doSomethingElseWithTAlias101LAlias102: KMockContract.SyncFunProxy<Alias102, (Alias101,
+        Alias102) -> Alias102> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doSomethingElseWithTAlias101LAlias102",
             collector = collector, freeze = freeze)
 
     public val _doSomethingElseWithTAlias107:
-        KMockContract.SyncFunProxy<Generic<Any?>, (Generic<Any?>) -> Generic<Any?>> =
+        KMockContract.SyncFunProxy<Alias107<Any?>, (Alias107<Any?>) -> Alias107<Any?>> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.RelaxedMock#_doSomethingElseWithTAlias107",
             collector = collector, freeze = freeze)
 
@@ -81,21 +79,21 @@ internal class RelaxedMock<L : Alias102>(
     public override fun <T : Alias107<Alias101>, X : Comparable<X>> doOtherThing(arg1: Alias107<T>,
         arg0: X): T = _doOtherThing.invoke(arg1, arg0) {
         useRelaxerIf(relaxed) { proxyId -> smooth(proxyId,
-            type0 = mock.template.typealiaz.Generic::class,) as T }
+            type0 = mock.template.typealiaz.Alias107::class,) as T }
     } as T
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Alias101, L : Alias102> doSomethingElse(arg1: T, arg2: L): L =
         _doSomethingElseWithTAlias101LAlias102.invoke(arg1, arg2) {
             useRelaxerIf(relaxed) { proxyId -> smooth(proxyId,
-                type0 = kotlin.Function1::class,) as L }
+                type0 = mock.template.typealiaz.Alias102::class,) as L }
         } as L
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : Alias107<K>, K> doSomethingElse(arg1: T): T =
         _doSomethingElseWithTAlias107.invoke(arg1) {
             useRelaxerIf(relaxed) { proxyId -> smooth(proxyId,
-                type0 = mock.template.typealiaz.Generic::class,) as T }
+                type0 = mock.template.typealiaz.Alias107::class,) as T }
         } as T
 
     public override fun run(arg: L): Alias101 = _run.invoke(arg) {

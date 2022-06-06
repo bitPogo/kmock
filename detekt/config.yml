@@ -116,7 +116,7 @@ complexity:
     excludes: ['**/test/**', '**/androidTest/**', '**/androidAndroidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/nativeTest/**', '**/iosTest/**']
   LongMethod:
     active: true
-    threshold: 60
+    threshold: 80
     excludes: ['**/test/**', '**/androidTest/**', '**/androidAndroidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/nativeTest/**', '**/iosTest/**']
   LongParameterList:
     active: true

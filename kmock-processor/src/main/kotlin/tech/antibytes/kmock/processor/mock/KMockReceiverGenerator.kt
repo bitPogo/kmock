@@ -35,9 +35,9 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
+import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 import tech.antibytes.kmock.processor.utils.resolveReceiver
 import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
-import tech.antibytes.kmock.processor.utils.toSecuredTypeName
 
 internal class KMockReceiverGenerator(
     private val utils: MethodGeneratorHelper,
@@ -215,6 +215,7 @@ internal class KMockReceiverGenerator(
         val receiverTypeResolver = ksProperty.toReceiverTypeParameterResolver(typeResolver)
         val generics = genericResolver.extractGenerics(ksProperty) ?: emptyMap()
         val proxyGenerics = utils.resolveProxyGenerics(
+            classScope = classScopeGenerics,
             generics = generics,
             typeResolver = receiverTypeResolver,
         )
@@ -363,6 +364,7 @@ internal class KMockReceiverGenerator(
         val receiverTypeResolver = ksFunction.toReceiverTypeParameterResolver(methodTypeResolver)
         val generics = genericResolver.extractGenerics(ksFunction) ?: emptyMap()
         val proxyGenerics = utils.resolveProxyGenerics(
+            classScope = classScopeGenerics,
             generics = generics,
             typeResolver = receiverTypeResolver,
         )
@@ -390,7 +392,7 @@ internal class KMockReceiverGenerator(
             generics = generics,
             typeResolver = receiverTypeResolver,
         )
-        val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toSecuredTypeName(
+        val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
             inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = receiverTypeResolver

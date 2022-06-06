@@ -26,7 +26,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.NonIntrusiveInvocationGe
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
-import tech.antibytes.kmock.processor.utils.toSecuredTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 
 internal class KMockMethodGenerator(
     private val utils: MethodGeneratorHelper,
@@ -122,6 +122,7 @@ internal class KMockMethodGenerator(
         val typeParameterResolver = ksFunction.typeParameters.toTypeParameterResolver(typeResolver)
         val generics = genericResolver.extractGenerics(ksFunction)
         val proxyGenerics = utils.resolveProxyGenerics(
+            classScope = classScopeGenerics,
             generics = generics,
             typeResolver = typeParameterResolver,
         )
@@ -144,7 +145,7 @@ internal class KMockMethodGenerator(
             typeResolver = typeParameterResolver,
         )
 
-        val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toSecuredTypeName(
+        val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
             inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = typeParameterResolver

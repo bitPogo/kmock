@@ -270,7 +270,7 @@ internal class KMockFactoryGeneratorUtil(
 
         return genericResolver.mapDeclaredGenerics(
             generics = templateSource.generics!!,
-            typeResolver = typeResolver
+            typeParameterResolver = typeResolver
         )
     }
 
