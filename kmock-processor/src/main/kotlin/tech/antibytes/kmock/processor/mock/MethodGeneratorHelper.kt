@@ -33,7 +33,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
-import tech.antibytes.kmock.processor.utils.toSecuredTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 
 internal class MethodGeneratorHelper(
     private val genericResolver: GenericResolver,
@@ -46,7 +46,7 @@ internal class MethodGeneratorHelper(
     ): Array<MemberArgumentTypeInfo> {
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
-            val (methodType, proxyType) = parameter.type.toSecuredTypeName(
+            val (methodType, proxyType) = parameter.type.toProxyPairTypeName(
                 inheritedVarargArg = parameter.isVararg && inherited,
                 generics = generics ?: emptyMap(),
                 typeParameterResolver = typeParameterResolver
@@ -91,13 +91,18 @@ internal class MethodGeneratorHelper(
     }
 
     override fun resolveProxyGenerics(
+        classScope: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>?,
         typeResolver: TypeParameterResolver
     ): Map<String, GenericDeclaration>? {
         return if (generics == null) {
             null
         } else {
-            genericResolver.mapProxyGenerics(generics, typeResolver)
+            genericResolver.mapProxyGenerics(
+                classScope,
+                generics,
+                typeResolver
+            )
         }
     }
 

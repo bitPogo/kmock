@@ -111,17 +111,17 @@ internal class OverloadedMock<K : Any, L, U : Int?, W>(
             collector = collector, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<Comparable<List<Array<Any?>>>, () -> Comparable<List<Array<Any?>>>>
-        = ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_brassWithVoid",
-        collector = collector, freeze = freeze)
+        KMockContract.SyncFunProxy<Comparable<List<Array<Any>>>, () -> Comparable<List<Array<Any>>>> =
+        ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_brassWithVoid",
+            collector = collector, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any?>>>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_brassWithTComparable",
             collector = collector, freeze = freeze)
 
     public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> Unit> =
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.access.OverloadedMock#_brassWithTComparables",
             collector = collector, freeze = freeze)
 
@@ -388,11 +388,11 @@ internal class OverloadedMock<K : Any, L, U : Int?, W>(
         "foo|() -> kotlin.Any?|[[kotlin.Any?]]" to _fooWithVoid,
         "foo|(kotlin.Array<out kotlin.Any?>) -> kotlin.Unit|[[kotlin.Any?]]" to _fooWithZTAnys,
         "lol|(kotlin.Array<out kotlin.Array<out kotlin.Any>>) -> kotlin.Unit|[]" to _lolWithArrays,
-        "brass|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
+        "brass|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
             to _brassWithVoid,
-        "brass|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
+        "brass|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
             to _brassWithTComparable,
-        "brass|(kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
+        "brass|(kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"
             to _brassWithTComparables,
         "bar|() -> kotlin.collections.List<kotlin.Array<kotlin.String>>|[[kotlin.collections.List<kotlin.Array<kotlin.String>>]]"
             to _barWithVoid,
@@ -1036,36 +1036,36 @@ internal class OverloadedMock<K : Any, L, U : Int?, W>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf13")
     public fun <T : Comparable<List<Array<T>>>> syncFunProxyOf(reference: () -> T, hint: Hint0):
-        KMockContract.FunProxy<Comparable<List<Array<Any?>>>, () -> Comparable<List<Array<Any?>>>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        KMockContract.FunProxy<Comparable<List<Array<Any>>>, () -> Comparable<List<Array<Any>>>> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>!"""))
             as
-            tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>,
-                    () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>
+            tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>,
+                    () -> kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf14")
     public fun <T : Comparable<List<Array<T>>>> syncFunProxyOf(reference: (T) -> Unit,
-        hint: Hint1<T>): KMockContract.FunProxy<Unit, (Comparable<List<Array<Any?>>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+        hint: Hint1<T>): KMockContract.FunProxy<Unit, (Comparable<List<Array<Any>>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
-                (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>) -> kotlin.Unit>
+                (kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf15")
     public fun <T : Comparable<List<Array<T>>>> syncFunProxyOf(reference: (Array<out T>) -> Unit,
         hint: Hint1<Array<out T>>): KMockContract.FunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> kotlin.Unit|[[kotlin.Comparable<kotlin.collections.List<kotlin.Array<T>>>]]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Array<out
-        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> kotlin.Unit>
+        kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental

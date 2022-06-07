@@ -21,8 +21,8 @@ interface Parent<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <nulled : List<Array<Int>>> buzz(vararg payload: nulled?)
 
     fun <T> ppt(x: T)
-    fun <T> ppt(x: T) where T : CharSequence, T : Comparable<T>
-    fun <T> ppt(x: T) where T : Comparable<T>
+    fun <T> ppt(x: T) where T : CharSequence?, T : Comparable<T>?
+    fun <T> ppt(x: T) where T : Comparable<T>?
     fun <T, K> lol(arg: K, x: T) where T : Comparable<T>
     fun <T, K> lol(x: T) where T : K
 

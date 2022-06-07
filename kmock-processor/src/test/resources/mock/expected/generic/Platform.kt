@@ -154,17 +154,17 @@ internal class PlatformMock<K : Any, L>(
         collector, freeze = freeze)
 
     public val _brassWithVoid:
-        KMockContract.SyncFunProxy<Comparable<List<Array<Any?>>>, () -> Comparable<List<Array<Any?>>>>
-        = ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithVoid",
-        collector = collector, freeze = freeze)
+        KMockContract.SyncFunProxy<Comparable<List<Array<Any>>>, () -> Comparable<List<Array<Any>>>> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithVoid", collector
+        = collector, freeze = freeze)
 
     public val _brassWithTComparable:
-        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any?>>>) -> Unit> =
+        KMockContract.SyncFunProxy<Unit, (Comparable<List<Array<Any>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithTComparable",
             collector = collector, freeze = freeze)
 
     public val _brassWithTComparables: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
-    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any?>>>>) -> Unit> =
+    kotlin.Comparable<kotlin.collections.List<kotlin.Array<kotlin.Any>>>>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_brassWithTComparables",
             collector = collector, freeze = freeze)
 
@@ -311,6 +311,33 @@ internal class PlatformMock<K : Any, L>(
         Any) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_xssWithZTAnyRSequenceCharSequence",
             collector = collector, freeze = freeze)
+
+    public val _rolWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rolWithTMap", collector =
+        collector, freeze = freeze)
+
+    public val _rolWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.collections.Map<kotlin.String, kotlin.Any>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rolWithTMaps", collector
+        = collector, freeze = freeze)
+
+    public val _polWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_polWithTMap", collector =
+        collector, freeze = freeze)
+
+    public val _polWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.collections.Map<kotlin.String, kotlin.Any>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_polWithTMaps", collector
+        = collector, freeze = freeze)
+
+    public val _nolWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any?>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_nolWithTMap", collector =
+        collector, freeze = freeze)
+
+    public val _nolWithTMaps: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out
+    kotlin.collections.Map<kotlin.String, kotlin.Any?>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_nolWithTMaps", collector
+        = collector, freeze = freeze)
 
     public override fun foo(payload: Any): String = _fooWithAny.invoke(payload)
 
@@ -577,6 +604,36 @@ internal class PlatformMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <T : Map<G, W>, W, G : String> rol(arg: T): Unit where W : CharSequence, W :
+    Comparable<T> = _rolWithTMap.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun <T : Map<G, W>, W, G : String> rol(vararg arg: T): Unit where W :
+                                                                                      CharSequence, W : Comparable<T> = _rolWithTMaps.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun <T : Map<String, W>, W : G, G> pol(arg: T): Unit where G : CharSequence, G :
+    Comparable<T> = _polWithTMap.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun <T : Map<String, W>, W : G, G> pol(vararg arg: T): Unit where G :
+                                                                                      CharSequence, G : Comparable<T> = _polWithTMaps.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun <T : Map<String, W>, W : G, G> nol(arg: T): Unit where G : CharSequence?, G :
+    Comparable<T>? = _nolWithTMap.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun <T : Map<String, W>, W : G, G> nol(vararg arg: T): Unit where G :
+                                                                                      CharSequence?, G : Comparable<T>? = _nolWithTMaps.invoke(arg) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithAny.clear()
@@ -641,5 +698,11 @@ internal class PlatformMock<K : Any, L>(
         _pssWithTSomeGenericRSomeGeneric.clear()
         _xssWithZTAny.clear()
         _xssWithZTAnyRSequenceCharSequence.clear()
+        _rolWithTMap.clear()
+        _rolWithTMaps.clear()
+        _polWithTMap.clear()
+        _polWithTMaps.clear()
+        _nolWithTMap.clear()
+        _nolWithTMaps.clear()
     }
 }
