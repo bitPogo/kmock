@@ -13,11 +13,8 @@ import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Variance
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -153,21 +150,11 @@ private fun TypeName.transferProperties(source: TypeName): TypeName {
 }
 
 private fun List<TypeName>.resolveVararg(parent: KSClassDeclaration): TypeName {
-    val typeName = this.firstOrNull()
-
-    return when {
-        typeName == null -> specialArrays["kotlin.${parent.simpleName.getShortName().trimEnd('?')}"]!!
-        (typeName is WildcardTypeName && typeName.outTypes.first() is TypeVariableName) -> {
-            typeName.outTypes.first()
-        }
-        typeName == STAR -> NULLABLE_ANY
-        (typeName is WildcardTypeName && typeName.outTypes.first() is ParameterizedTypeName) -> {
-            typeName.outTypes.first()
-        }
-        (typeName is WildcardTypeName && typeName.outTypes.first() is ClassName) -> {
-            typeName.outTypes.first()
-        }
-        else -> typeName
+    return when (val typeName = this.firstOrNull()) {
+        null -> specialArrays["kotlin.${parent.simpleName.asString().trimEnd('?')}"]!!
+        STAR -> NULLABLE_ANY
+        is WildcardTypeName -> typeName.outTypes.first()
+        else -> error("Cannot resolve vararg of ${parent.toClassName()}")
     }
 }
 

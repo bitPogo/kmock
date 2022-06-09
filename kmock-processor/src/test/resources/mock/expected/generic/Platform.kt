@@ -209,91 +209,93 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithVoid", collector =
         collector, freeze = freeze)
 
-    public val _uzzWithTSomeGenericList: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericList",
+    public val _uzzWithTSomeGenericTList: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericTList",
             collector = collector, freeze = freeze)
 
-    public val _uzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericLists",
+    public val _uzzWithTSomeGenericTLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit>
+        =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_uzzWithTSomeGenericTLists",
             collector = collector, freeze = freeze)
 
     public val _lzzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithVoid", collector =
         collector, freeze = freeze)
 
-    public val _lzzWithTSomeGenericList: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericList",
+    public val _lzzWithTSomeGenericTList: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericTList",
             collector = collector, freeze = freeze)
 
-    public val _lzzWithTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericLists",
+    public val _lzzWithTSomeGenericTLists: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit>
+        =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_lzzWithTSomeGenericTLists",
             collector = collector, freeze = freeze)
 
     public val _tzzWithVoid: KMockContract.SyncFunProxy<Any?, () -> Any?> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithVoid", collector =
         collector, freeze = freeze)
 
-    public val _tzzWithZTSomeGenericList: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericList",
+    public val _tzzWithZTSomeGenericZTList: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericZTList",
             collector = collector, freeze = freeze)
 
-    public val _tzzWithZTSomeGenericLists: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericLists",
+    public val _tzzWithZTSomeGenericZTLists: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_tzzWithZTSomeGenericZTLists",
             collector = collector, freeze = freeze)
 
     public val _rzzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithVoid", collector =
         collector, freeze = freeze)
 
-    public val _rzzWithTSomeGenericMap: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericMap",
+    public val _rzzWithTSomeGenericTMap: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericTMap",
             collector = collector, freeze = freeze)
 
-    public val _rzzWithTSomeGenericMaps: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericMaps",
+    public val _rzzWithTSomeGenericTMaps: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_rzzWithTSomeGenericTMaps",
             collector = collector, freeze = freeze)
 
     public val _izzWithVoid: KMockContract.SyncFunProxy<Any, () -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithVoid", collector =
         collector, freeze = freeze)
 
-    public val _izzWithTSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericComparable",
+    public val _izzWithTSomeGenericTComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericTComparable",
             collector = collector, freeze = freeze)
 
-    public val _izzWithTSomeGenericComparables:
+    public val _izzWithTSomeGenericTComparables:
         KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericComparables",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_izzWithTSomeGenericTComparables",
             collector = collector, freeze = freeze)
 
-    public val _ossWithTAny: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithTAny", collector =
-        collector, freeze = freeze)
+    public val _ossWithZTAny: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithZTAny", collector
+        = collector, freeze = freeze)
 
-    public val _ossWithTAnyZRAny: KMockContract.SyncFunProxy<Unit, (Any?, Any?) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithTAnyZRAny",
+    public val _ossWithZTAnyZRAny: KMockContract.SyncFunProxy<Unit, (Any?, Any?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithZTAnyZRAny",
             collector = collector, freeze = freeze)
 
-    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (Any?, Array<*>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithZRAnyTAnys",
+    public val _ossWithZRAnyZTAnys: KMockContract.SyncFunProxy<Unit, (Any?, Array<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_ossWithZRAnyZTAnys",
             collector = collector, freeze = freeze)
 
-    public val _kssWithTSomeGenericComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_kssWithTSomeGenericComparable",
+    public val _kssWithTSomeGenericTComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_kssWithTSomeGenericTComparable",
             collector = collector, freeze = freeze)
 
-    public val _kssWithTSomeGenericComparableRSomeGenericComparable:
+    public val _kssWithTSomeGenericTComparableRSomeGenericRComparable:
         KMockContract.SyncFunProxy<Unit, (Any, Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_kssWithTSomeGenericComparableRSomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_kssWithTSomeGenericTComparableRSomeGenericRComparable",
             collector = collector, freeze = freeze)
 
     public val _issWithZTAny: KMockContract.SyncFunProxy<Any, (Any?) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_issWithZTAny", collector
         = collector, freeze = freeze)
 
-    public val _issWithZTAnyRSomeGenericComparable: KMockContract.SyncFunProxy<Unit, (Any?,
+    public val _issWithZTAnyRSomeGenericRComparable: KMockContract.SyncFunProxy<Unit, (Any?,
         Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_issWithZTAnyRSomeGenericComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_issWithZTAnyRSomeGenericRComparable",
             collector = collector, freeze = freeze)
 
     public val _pssWithTSomeGeneric:
@@ -310,9 +312,9 @@ internal class PlatformMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_xssWithZTAny", collector
         = collector, freeze = freeze)
 
-    public val _xssWithZTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (Any?,
+    public val _xssWithZTAnyRSequenceRCharSequence: KMockContract.SyncFunProxy<Unit, (Any?,
         Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_xssWithZTAnyRSequenceCharSequence",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.PlatformMock#_xssWithZTAnyRSequenceRCharSequence",
             collector = collector, freeze = freeze)
 
     public val _rolWithTMap: KMockContract.SyncFunProxy<Unit, (Map<String, Any>) -> Unit> =
@@ -509,12 +511,12 @@ internal class PlatformMock<K : Any, L>(
         _uzzWithVoid.invoke() as T
 
     public override fun <T> uzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String> =
-        _uzzWithTSomeGenericList.invoke(payload) {
+        _uzzWithTSomeGenericTList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public override fun <T> uzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    List<String> = _uzzWithTSomeGenericLists.invoke(payload) {
+    List<String> = _uzzWithTSomeGenericTLists.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -523,12 +525,12 @@ internal class PlatformMock<K : Any, L>(
         _lzzWithVoid.invoke() as T
 
     public override fun <T> lzz(payload: T): Unit where T : SomeGeneric<String>, T : List<String>? =
-        _lzzWithTSomeGenericList.invoke(payload) {
+        _lzzWithTSomeGenericTList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public override fun <T> lzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    List<String>? = _lzzWithTSomeGenericLists.invoke(payload) {
+    List<String>? = _lzzWithTSomeGenericTLists.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -537,12 +539,12 @@ internal class PlatformMock<K : Any, L>(
         _tzzWithVoid.invoke() as T
 
     public override fun <T> tzz(payload: T): Unit where T : SomeGeneric<String>?, T : List<String>? =
-        _tzzWithZTSomeGenericList.invoke(payload) {
+        _tzzWithZTSomeGenericZTList.invoke(payload) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     public override fun <T> tzz(vararg payload: T): Unit where T : SomeGeneric<String>?, T :
-    List<String>? = _tzzWithZTSomeGenericLists.invoke(payload) {
+    List<String>? = _tzzWithZTSomeGenericZTLists.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -551,12 +553,12 @@ internal class PlatformMock<K : Any, L>(
         _rzzWithVoid.invoke() as T
 
     public override fun <T> rzz(payload: T): Unit where T : SomeGeneric<String>, T :
-    Map<String, String> = _rzzWithTSomeGenericMap.invoke(payload) {
+    Map<String, String> = _rzzWithTSomeGenericTMap.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public override fun <T> rzz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    Map<String, String> = _rzzWithTSomeGenericMaps.invoke(payload) {
+    Map<String, String> = _rzzWithTSomeGenericTMaps.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -565,44 +567,44 @@ internal class PlatformMock<K : Any, L>(
         _izzWithVoid.invoke() as T
 
     public override fun <T> izz(payload: T): Unit where T : SomeGeneric<String>, T :
-    Comparable<List<Array<T>>> = _izzWithTSomeGenericComparable.invoke(payload) {
+    Comparable<List<Array<T>>> = _izzWithTSomeGenericTComparable.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public override fun <T> izz(vararg payload: T): Unit where T : SomeGeneric<String>, T :
-    Comparable<List<Array<T>>> = _izzWithTSomeGenericComparables.invoke(payload) {
+    Comparable<List<Array<T>>> = _izzWithTSomeGenericTComparables.invoke(payload) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithTAny.invoke(arg0) as R
+    public override fun <T : R, R> oss(arg0: T): R = _ossWithZTAny.invoke(arg0) as R
 
-    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyZRAny.invoke(arg0, arg1)
+    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithZTAnyZRAny.invoke(arg0, arg1)
     {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
     public override fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit =
-        _ossWithZRAnyTAnys.invoke(arg0, arg1) {
+        _ossWithZRAnyZTAnys.invoke(arg0, arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T : R, R> kss(arg0: T): R where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithTSomeGenericComparable.invoke(arg0) as R
+    Comparable<List<Array<R>>> = _kssWithTSomeGenericTComparable.invoke(arg0) as R
 
     public override fun <T : R, R> kss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
-    Comparable<List<Array<R>>> = _kssWithTSomeGenericComparableRSomeGenericComparable.invoke(arg0,
-        arg1) {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    Comparable<List<Array<R>>> =
+        _kssWithTSomeGenericTComparableRSomeGenericRComparable.invoke(arg0, arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     @Suppress("UNCHECKED_CAST")
     public override fun <R, T> iss(arg0: T): R where R : SomeGeneric<String>, R :
     Comparable<List<Array<T>>> = _issWithZTAny.invoke(arg0) as R
 
     public override fun <R, T> iss(arg0: T, arg1: R): Unit where R : SomeGeneric<String>, R :
-    Comparable<List<Array<T>>> = _issWithZTAnyRSomeGenericComparable.invoke(arg0, arg1) {
+    Comparable<List<Array<T>>> = _issWithZTAnyRSomeGenericRComparable.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -620,7 +622,7 @@ internal class PlatformMock<K : Any, L>(
         _xssWithZTAny.invoke(arg0) as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
-        = _xssWithZTAnyRSequenceCharSequence.invoke(arg0, arg1) {
+        = _xssWithZTAnyRSequenceRCharSequence.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -705,31 +707,31 @@ internal class PlatformMock<K : Any, L>(
         _lossWithTMap.clear()
         _lossWithTMaps.clear()
         _uzzWithVoid.clear()
-        _uzzWithTSomeGenericList.clear()
-        _uzzWithTSomeGenericLists.clear()
+        _uzzWithTSomeGenericTList.clear()
+        _uzzWithTSomeGenericTLists.clear()
         _lzzWithVoid.clear()
-        _lzzWithTSomeGenericList.clear()
-        _lzzWithTSomeGenericLists.clear()
+        _lzzWithTSomeGenericTList.clear()
+        _lzzWithTSomeGenericTLists.clear()
         _tzzWithVoid.clear()
-        _tzzWithZTSomeGenericList.clear()
-        _tzzWithZTSomeGenericLists.clear()
+        _tzzWithZTSomeGenericZTList.clear()
+        _tzzWithZTSomeGenericZTLists.clear()
         _rzzWithVoid.clear()
-        _rzzWithTSomeGenericMap.clear()
-        _rzzWithTSomeGenericMaps.clear()
+        _rzzWithTSomeGenericTMap.clear()
+        _rzzWithTSomeGenericTMaps.clear()
         _izzWithVoid.clear()
-        _izzWithTSomeGenericComparable.clear()
-        _izzWithTSomeGenericComparables.clear()
-        _ossWithTAny.clear()
-        _ossWithTAnyZRAny.clear()
-        _ossWithZRAnyTAnys.clear()
-        _kssWithTSomeGenericComparable.clear()
-        _kssWithTSomeGenericComparableRSomeGenericComparable.clear()
+        _izzWithTSomeGenericTComparable.clear()
+        _izzWithTSomeGenericTComparables.clear()
+        _ossWithZTAny.clear()
+        _ossWithZTAnyZRAny.clear()
+        _ossWithZRAnyZTAnys.clear()
+        _kssWithTSomeGenericTComparable.clear()
+        _kssWithTSomeGenericTComparableRSomeGenericRComparable.clear()
         _issWithZTAny.clear()
-        _issWithZTAnyRSomeGenericComparable.clear()
+        _issWithZTAnyRSomeGenericRComparable.clear()
         _pssWithTSomeGeneric.clear()
         _pssWithTSomeGenericRSomeGeneric.clear()
         _xssWithZTAny.clear()
-        _xssWithZTAnyRSequenceCharSequence.clear()
+        _xssWithZTAnyRSequenceRCharSequence.clear()
         _rolWithTMap.clear()
         _rolWithTMaps.clear()
         _polWithTMap.clear()

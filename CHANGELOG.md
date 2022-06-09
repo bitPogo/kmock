@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * The plugin can now applied directly while configuration must be done after the `kotlin` setup
 * AccessMethods need always a hint if the Template has type parameters
+* ProxyNameResolver is capable of utilizing the actual types of generic parameters when overloaded
 
 ### Deprecated
 

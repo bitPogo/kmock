@@ -51,9 +51,9 @@ internal class RelaxedMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_mutabor", collector
         = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable:
+    public val _doNothingReceiverWithTSomethingTComparable:
         KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_doNothingReceiverWithTSomethingComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.RelaxedMock#_doNothingReceiverWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public val _doNothingReceiverWithTAny: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
@@ -111,7 +111,7 @@ internal class RelaxedMock<L>(
     }
 
     public override fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
-        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
+        _doNothingReceiverWithTSomethingTComparable.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -148,7 +148,7 @@ internal class RelaxedMock<L>(
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()
-        _doNothingReceiverWithTSomethingComparable.clear()
+        _doNothingReceiverWithTSomethingTComparable.clear()
         _doNothingReceiverWithTAny.clear()
         _doNothingElseReceiver.clear()
         _doNothingElse.clear()

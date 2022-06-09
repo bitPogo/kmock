@@ -52,9 +52,9 @@ private fun TypeName.tagTypeFromDecorator(
         amendTag { tags ->
             tags[GenericDeclaration::class] = GenericDeclaration(
                 types = listOf(this),
-                nullable = isNullable || markedAsNullable,
-                recursive = decorator.recursive,
-                castReturnType = decorator.castReturnType,
+                isNullable = isNullable || markedAsNullable,
+                isRecursive = decorator.recursive,
+                doCastReturnType = decorator.castReturnType,
             )
         }
     }
@@ -71,9 +71,9 @@ private fun TypeName.transferGenericDeclaration(
         this.amendTag { tags ->
             tags[GenericDeclaration::class] = GenericDeclaration(
                 types = listOf(this),
-                recursive = declaration.recursive,
-                castReturnType = declaration.castReturnType,
-                nullable = this.isNullable,
+                isRecursive = declaration.isRecursive,
+                doCastReturnType = declaration.doCastReturnType,
+                isNullable = this.isNullable,
             )
         }
     }
@@ -91,6 +91,7 @@ private fun KSTypeArgument.resolveVariance(typeName: TypeName): TypeName {
 private fun KSTypeArgument.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
@@ -98,6 +99,7 @@ private fun KSTypeArgument.mapParameterType(
     val typeName = type?.mapParameterType(
         visited = visited,
         classScope = classScope,
+        allGenerics = allGenerics,
         rootNullability = rootNullability,
         resolved = resolved,
         typeParameterResolver = typeParameterResolver,
@@ -111,6 +113,7 @@ internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? = tag(Gen
 private fun List<KSTypeArgument>.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
@@ -123,6 +126,7 @@ private fun List<KSTypeArgument>.mapParameterType(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
+            allGenerics = allGenerics,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -130,8 +134,8 @@ private fun List<KSTypeArgument>.mapParameterType(
         val genericDeclaration = resolvedArgument.resolveGenericDeclaration()
             ?: return null
 
-        isRecursive = isRecursive || genericDeclaration.recursive
-        doCastOnReturn = doCastOnReturn || genericDeclaration.castReturnType
+        isRecursive = isRecursive || genericDeclaration.isRecursive
+        doCastOnReturn = doCastOnReturn || genericDeclaration.doCastReturnType
 
         resolvedArgument
     }
@@ -146,6 +150,7 @@ private fun List<KSTypeArgument>.mapParameterType(
 private fun List<KSTypeArgument>.resolveUntaggedTypes(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
@@ -155,6 +160,7 @@ private fun List<KSTypeArgument>.resolveUntaggedTypes(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
+            allGenerics = allGenerics,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -164,6 +170,7 @@ private fun List<KSTypeArgument>.resolveUntaggedTypes(
 private fun ArgumentMappingDecorator?.resolveArguments(
     arguments: List<KSTypeArgument>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     rootNullability: Boolean,
     visited: Set<String>,
     resolved: Map<String, GenericDeclaration>,
@@ -174,6 +181,7 @@ private fun ArgumentMappingDecorator?.resolveArguments(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
+            allGenerics = allGenerics,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -182,6 +190,7 @@ private fun ArgumentMappingDecorator?.resolveArguments(
 private fun KSType.abbreviateType(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
@@ -192,6 +201,7 @@ private fun KSType.abbreviateType(
     val argumentsDecorator = typeArguments.mapParameterType(
         visited = visited,
         classScope = classScope,
+        allGenerics = allGenerics,
         rootNullability = rootNullability,
         resolved = resolved,
         typeParameterResolver = typeParameterResolver,
@@ -200,6 +210,7 @@ private fun KSType.abbreviateType(
     val type = mapParameterType(
         visited = visited,
         classScope = classScope,
+        allGenerics = allGenerics,
         resolved = resolved,
         rootNullability = rootNullability,
         typeArguments = emptyList(),
@@ -210,6 +221,7 @@ private fun KSType.abbreviateType(
                 arguments = typeArguments,
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
@@ -222,6 +234,7 @@ private fun KSType.abbreviateType(
 internal fun KSTypeReference.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     rootNullability: Boolean,
     typeParameterResolver: TypeParameterResolver,
@@ -229,6 +242,7 @@ internal fun KSTypeReference.mapParameterType(
     return resolve().mapParameterType(
         visited = visited,
         classScope = classScope,
+        allGenerics = allGenerics,
         resolved = resolved,
         rootNullability = rootNullability,
         typeParameterResolver = typeParameterResolver,
@@ -244,9 +258,9 @@ private fun TypeName.tagWithGenericDeclaration(
     return amendTag { tags ->
         tags[GenericDeclaration::class] = GenericDeclaration(
             types = listOf(this),
-            recursive = recursive,
-            nullable = nullable,
-            castReturnType = castReturnType,
+            isRecursive = recursive,
+            isNullable = nullable,
+            doCastReturnType = castReturnType,
         )
     }
 }
@@ -258,35 +272,31 @@ private fun GenericDeclaration?.resolveEventuallyKnownType(
     return when {
         this == null -> typeReference
         this.types.size > 1 -> ANY.copy(
-            nullable = nullable || markedAsNullable,
+            nullable = isNullable || markedAsNullable,
             tags = mapOf(
                 GenericDeclaration::class to GenericDeclaration(
                     types = types,
-                    recursive = recursive,
-                    nullable = nullable || markedAsNullable,
-                    castReturnType = true,
+                    isRecursive = isRecursive,
+                    isNullable = isNullable || markedAsNullable,
+                    doCastReturnType = true,
                 )
             )
         )
         else -> types.first().amendTag { tags ->
             tags[GenericDeclaration::class] = GenericDeclaration(
                 types = types,
-                recursive = recursive,
-                nullable = nullable || markedAsNullable,
-                castReturnType = castReturnType,
+                isRecursive = isRecursive,
+                isNullable = isNullable || markedAsNullable,
+                doCastReturnType = doCastReturnType,
             )
         }
     }
 }
 
-private fun TypeVariableName.isRecursive(
-    declaration: GenericDeclaration?,
-    visited: Set<String>
-): Boolean = declaration == null && name in visited
-
 private fun TypeVariableName.resolveTypeVariable(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     rootNullability: Boolean,
     nullable: Boolean,
     resolved: Map<String, GenericDeclaration>,
@@ -294,14 +304,14 @@ private fun TypeVariableName.resolveTypeVariable(
     val declaration = resolved[name]
 
     return when {
-        isRecursive(declaration, visited) -> {
+        declaration == null && name in visited -> {
             ANY.tagWithGenericDeclaration(
                 recursive = true,
                 nullable = rootNullability,
                 castReturnType = true
-            ).copy(nullable = rootNullability)
+            )
         }
-        name in classScope -> {
+        name in classScope && name !in allGenerics -> {
             this.tagWithGenericDeclaration(
                 recursive = false,
                 nullable = nullable,
@@ -321,7 +331,7 @@ private fun ClassName.markAsNonGeneric(
     return amendTag { tags ->
         tags[GenericDeclaration::class] = NON_GENERIC.copy(
             types = listOf(this),
-            nullable = nullable
+            isNullable = nullable
         )
     } as ClassName
 }
@@ -333,17 +343,19 @@ private fun ClassName.resolveClassType(
     markedAsNullable: Boolean,
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): TypeName {
     return if (arguments.isEmpty()) {
-        this.markAsNonGeneric(markedAsNullable)
+        markAsNonGeneric(markedAsNullable)
     } else {
         withTypeArguments(
             argumentsDecorator.resolveArguments(
                 arguments = arguments,
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
@@ -353,13 +365,13 @@ private fun ClassName.resolveClassType(
 }
 
 private fun TypeName.resolveNullability(
-    visited: Set<String>,
     rootNullability: Boolean,
     isMarkedNullable: Boolean,
-    resolved: Map<String, GenericDeclaration>,
 ): TypeName {
-    return if (this is TypeVariableName && isRecursive(resolved[name], visited)) {
-        copy(nullable = rootNullability)
+    val genericTag = tag(GenericDeclaration::class)
+
+    return if (this == ANY && genericTag?.isRecursive == true) {
+        copy(nullable = isMarkedNullable || rootNullability)
     } else {
         copy(nullable = isMarkedNullable || isNullable)
     }
@@ -369,6 +381,7 @@ private fun TypeName.resolveNullability(
 private fun KSType.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
+    allGenerics: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     typeArguments: List<KSTypeArgument>,
     rootNullability: Boolean,
@@ -384,6 +397,7 @@ private fun KSType.mapParameterType(
                 .resolveTypeVariable(
                     visited = visited,
                     classScope = classScope,
+                    allGenerics = allGenerics,
                     resolved = resolved,
                     rootNullability = rootNullability,
                     nullable = isMarkedNullable
@@ -393,6 +407,7 @@ private fun KSType.mapParameterType(
             val argumentsDecorator = arguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 resolved = resolved,
                 rootNullability = rootNullability,
                 typeParameterResolver = typeParameterResolver,
@@ -405,6 +420,7 @@ private fun KSType.mapParameterType(
                 rootNullability = rootNullability,
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -418,6 +434,7 @@ private fun KSType.mapParameterType(
             val abbreviatedType = resolvedType.abbreviateType(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 resolved = resolved,
                 extraResolver = extraResolver,
                 typeParameterResolver = typeParameterResolver,
@@ -429,6 +446,7 @@ private fun KSType.mapParameterType(
             val aliasArgsDecorator = typeArguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver
@@ -440,6 +458,7 @@ private fun KSType.mapParameterType(
                     arguments = typeArguments,
                     visited = visited,
                     classScope = classScope,
+                    allGenerics = allGenerics,
                     rootNullability = rootNullability,
                     resolved = resolved,
                     typeParameterResolver = typeParameterResolver,
@@ -450,8 +469,6 @@ private fun KSType.mapParameterType(
     }
 
     return type.resolveNullability(
-        visited = visited,
-        resolved = resolved,
         isMarkedNullable = isMarkedNullable,
         rootNullability = rootNullability
     )
@@ -461,16 +478,16 @@ private val STAR_WITH_DECLARATION = STAR.copy(
     tags = mapOf(
         GenericDeclaration::class to GenericDeclaration(
             types = listOf(NULLABLE_ANY),
-            recursive = false,
-            nullable = true,
-            castReturnType = false,
+            isRecursive = false,
+            isNullable = true,
+            doCastReturnType = false,
         )
     )
 )
 
 private val NON_GENERIC = GenericDeclaration(
     types = emptyList(),
-    recursive = false,
-    nullable = false,
-    castReturnType = false,
+    isRecursive = false,
+    isNullable = false,
+    doCastReturnType = false,
 )

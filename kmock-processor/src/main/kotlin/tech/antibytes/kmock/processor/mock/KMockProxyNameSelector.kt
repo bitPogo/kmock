@@ -7,13 +7,17 @@
 package tech.antibytes.kmock.processor.mock
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSTypeReference
-import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.WildcardTypeName
+import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameCollector
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
-import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.rawType
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.processor.utils.titleCase
 import java.util.SortedSet
@@ -30,21 +34,19 @@ internal class KMockProxyNameSelector(
         "_hashCode" to "_hashCodeWithVoid"
     )
 
-    private val suffixResolver: Function3<Array<MemberArgumentTypeInfo>, Map<String, List<KSTypeReference>>, TypeParameterResolver, List<String>> =
+    private val suffixResolver: Function2<Array<MemberArgumentTypeInfo>, Map<String, GenericDeclaration>, String> =
         if (enableFineGrainedNames) {
-            { arguments, generics, typeResolver: TypeParameterResolver ->
+            { arguments, generics ->
                 resolveLongProxySuffixFromArguments(
                     arguments = arguments,
                     generics = generics,
-                    typeResolver = typeResolver,
                 )
             }
         } else {
-            { arguments, generics, typeResolver: TypeParameterResolver ->
+            { arguments, generics ->
                 resolveProxySuffixFromArguments(
                     arguments = arguments,
                     generics = generics,
-                    typeResolver = typeResolver,
                 )
             }
         }
@@ -120,29 +122,7 @@ internal class KMockProxyNameSelector(
         )
     }
 
-    private fun String.trimNullable(): String = this.trimEnd('?')
-
-    private fun String.prefixNullable(): String {
-        return when {
-            this == "?" -> this
-            this.endsWith('?') -> "$NULLABLE_INDICATOR$this".dropLast(1)
-            else -> this
-        }
-    }
-
-    private fun String.resolvePrefixedTypeName(): String {
-        val className = this.substringAfterLast('.').titleCase()
-        val prefix = useTypePrefixFor.getOrDefault(this, "").titleCase()
-
-        return "$prefix$className"
-    }
-
-    private fun String.trimTypeName(): String {
-        return this.substringBefore('<') // Generics
-            .resolvePrefixedTypeName()
-    }
-
-    private fun determineNullablePrefix(isNullable: Boolean): String {
+    private fun GenericDeclaration.determineNullabilityPrefix(): String {
         return if (isNullable) {
             NULLABLE_INDICATOR
         } else {
@@ -150,166 +130,227 @@ internal class KMockProxyNameSelector(
         }
     }
 
-    private fun resolveGenericName(
-        boundaries: List<KSTypeReference>?,
-        typeResolver: TypeParameterResolver
-    ): Pair<String, Boolean>? {
-        var isNullable = true
-        return if (boundaries.isNullOrEmpty()) {
-            null
+    private fun String.trimTypeName(): String = substringAfterLast('.')
+
+    private fun ClassName.resolveClassPrefix(): String = useTypePrefixFor[this.toString()]?.titleCase() ?: ""
+
+    private fun TypeName.determineNullabilityPrefix(): String {
+        return if (isNullable) {
+            NULLABLE_INDICATOR
         } else {
-            val boundaryNames = boundaries.joinToString("") { typeName ->
-                val type = typeName.toTypeName(typeResolver)
-                isNullable = isNullable && type.isNullable
-
-                type.toString().trimTypeName().trimNullable()
-            }
-
-            Pair(boundaryNames, isNullable)
+            ""
         }
     }
 
-    private fun determineGenericName(
-        name: String,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
-    ): String {
-        var currentName = name
-        var isNullable = true
-
-        do {
-            val (boundaryName, nullable) = resolveGenericName(generics[currentName], typeResolver)
-                ?: nullableAnyGeneric
-
-            isNullable = isNullable && nullable
-            currentName = boundaryName
-        } while (currentName in generics)
-
-        val zero = determineNullablePrefix(isNullable)
-
-        return "$zero$name${currentName.trimNullable()}"
+    private fun StringBuilder.appendVarargIndicator(): StringBuilder {
+        return append(ARRAY).append(NESTED_TYPE_SEPARATOR)
     }
 
-    private fun String.resolveActualName(
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
+    private fun ClassName.resolveExhaustiveName(): String {
+        val zero = determineNullabilityPrefix()
+        val prefix = resolveClassPrefix()
+        val name = resolveRawClassFlatName()
+
+        return "$zero$prefix$name"
+    }
+
+    private fun WildcardTypeName.resolveExhaustiveName(
+        generics: Map<String, GenericDeclaration>
     ): String {
-        return if (this in generics) {
-            determineGenericName(this, generics, typeResolver)
+        val name = StringBuilder(0)
+        val types = inTypes.ifEmpty { outTypes }
+
+        types.forEach { type -> name.resolveExhaustiveName(type, generics) }
+
+        return name.toString()
+    }
+
+    private fun GenericDeclaration.mapExhaustiveBoundaries(
+        typePrefix: String,
+        generics: Map<String, GenericDeclaration>,
+    ): String {
+        val name = StringBuilder()
+
+        types.forEach { type ->
+            name.append(typePrefix)
+                .resolveExhaustiveName(type, generics)
+        }
+
+        return name.toString()
+    }
+
+    private fun TypeVariableName.resolveExhaustiveName(
+        generics: Map<String, GenericDeclaration>
+    ): String {
+        val zero = determineNullabilityPrefix()
+        val typePrefix = "$zero$name"
+
+        return if (name in generics) {
+            generics[name]!!.mapExhaustiveBoundaries(typePrefix, generics)
         } else {
-            this
+            typePrefix
         }
     }
 
-    private fun String.amendPlural(usePlural: Boolean): String {
-        return if (usePlural) {
-            "${this}s"
-        } else {
-            this
-        }
-    }
-
-    private fun resolveProxySuffixFromArguments(
-        arguments: Array<MemberArgumentTypeInfo>,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
-    ): List<String> {
-        return arguments.map { (_, suffix, _, usePlural) ->
-            suffix
-                .toString()
-                .trimNullable()
-                .resolveActualName(generics, typeResolver)
-                .trimTypeName()
-                .amendPlural(usePlural)
-        }
-    }
-
-    private fun String.transformGenerics(
-        generics: Map<String, String>
+    private fun ParameterizedTypeName.resolveParameterNames(
+        generics: Map<String, GenericDeclaration>
     ): String {
-        return this
-            .replace("*", "Any?")
-            .split('<', '>', ',')
-            .filterNot { part -> part.isBlank() }
-            .joinToString("_") { part ->
-                val resolved = generics.getOrElse(part.trim().trimNullable()) { part }
+        val parameterNames = StringBuilder()
+        typeArguments.forEach { type ->
+            parameterNames
+                .append(NESTED_TYPE_SEPARATOR)
+                .resolveExhaustiveName(type, generics)
+        }
 
-                resolved.resolvePrefixedTypeName().prefixNullable()
-            }
-            .prefixNullable()
-            .trimEnd('_')
+        return parameterNames.toString()
     }
 
-    private fun List<KSTypeReference>?.resolveBoundaries(
-        typeResolver: TypeParameterResolver
+    private fun ParameterizedTypeName.resolveExhaustiveName(
+        generics: Map<String, GenericDeclaration>,
     ): String {
-        return if (this.isNullOrEmpty()) {
-            NULLABLE_ANY_LONG_NAME
-        } else {
-            this.joinToString("") { typeName ->
-                val type = typeName.toTypeName(typeResolver)
-                type.toString().transformGenerics(emptyMap()).trimNullable()
+        val zero = determineNullabilityPrefix()
+        val parameter = resolveParameterNames(generics)
+        val name = rawType().resolveRawClassFlatName()
+
+        return "$zero$name$parameter"
+    }
+
+    private fun StringBuilder.resolveExhaustiveName(
+        type: TypeName,
+        generics: Map<String, GenericDeclaration>,
+    ): StringBuilder {
+        val name = when (type) {
+            is ParameterizedTypeName -> type.resolveExhaustiveName(generics)
+            is ClassName -> type.resolveExhaustiveName()
+            is TypeVariableName -> type.resolveExhaustiveName(generics)
+            is WildcardTypeName -> type.resolveExhaustiveName(generics)
+            else -> {
+                throw IllegalStateException("Unexpected Type ${type::class.simpleName}!")
             }
         }
-    }
 
-    private fun Map<String, List<KSTypeReference>>.determineGenericName(
-        name: String,
-        typeResolver: TypeParameterResolver
-    ): String {
-        val resolved = this[name].resolveBoundaries(typeResolver)
-
-        return "$name${resolved.prefixNullable()}"
-    }
-
-    private fun Map<String, List<KSTypeReference>>.resolve(typeResolver: TypeParameterResolver): Map<String, String> {
-        return this.keys.associateWith { key ->
-            this.determineGenericName(key, typeResolver)
-        }
-    }
-
-    private fun String.addArrayPrefix(addPrefix: Boolean): String {
-        return if (addPrefix) {
-            "Array_$this"
-        } else {
-            this
-        }
+        return append(name)
     }
 
     private fun resolveLongProxySuffixFromArguments(
         arguments: Array<MemberArgumentTypeInfo>,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
-    ): List<String> {
-        val resolved = generics.resolve(typeResolver)
-        return arguments.map { (_, suffix, _, addPrefix) ->
-            suffix
-                .toString()
-                .transformGenerics(resolved)
-                .prefixNullable()
-                .addArrayPrefix(addPrefix)
+        generics: Map<String, GenericDeclaration>,
+    ): String {
+        val suffix = StringBuilder()
+
+        arguments.forEach { (_, type, _, isVararg) ->
+            if (isVararg) {
+                suffix.appendVarargIndicator()
+            }
+
+            suffix.resolveExhaustiveName(type, generics)
         }
+
+        return suffix.toString()
+    }
+
+    private fun StringBuilder.amendPlural(usePlural: Boolean): StringBuilder {
+        return if (usePlural) {
+            append('s')
+        } else {
+            this
+        }
+    }
+
+    private fun ClassName.resolveRawClassFlatName(): String = simpleName.trimTypeName().titleCase()
+
+    private fun TypeName.resolveFlatBoundary(): String {
+        return if (this is TypeVariableName) {
+            name
+        } else {
+            rawType().resolveRawClassFlatName()
+        }
+    }
+
+    private fun GenericDeclaration.mapFlatBoundaries(
+        typePrefix: String,
+    ): String {
+        val name = StringBuilder()
+
+        types.forEach { type ->
+            val boundaryName = type.resolveFlatBoundary()
+
+            name.append(typePrefix)
+            name.append(boundaryName)
+        }
+
+        return name.toString()
+    }
+
+    private fun TypeVariableName.resolveFlatName(
+        generics: Map<String, GenericDeclaration>
+    ): String {
+        return if (name in generics) {
+            val genericDeclaration = generics[name]!!
+            val zero = genericDeclaration.determineNullabilityPrefix()
+            val typePrefix = "$zero$name"
+
+            genericDeclaration.mapFlatBoundaries(typePrefix)
+        } else {
+            name
+        }
+    }
+
+    private fun ClassName.resolveFlatName(): String {
+        val prefix = resolveClassPrefix()
+        val className = resolveRawClassFlatName()
+
+        return "$prefix$className"
+    }
+
+    private fun ParameterizedTypeName.resolveFlatName(): String = rawType.resolveFlatName()
+
+    private fun StringBuilder.resolveFlatName(
+        type: TypeName,
+        generics: Map<String, GenericDeclaration>,
+    ): StringBuilder {
+        val name = when (type) {
+            is ParameterizedTypeName -> type.resolveFlatName()
+            is ClassName -> type.resolveFlatName()
+            is TypeVariableName -> type.resolveFlatName(generics)
+            else -> {
+                throw IllegalStateException("Unexpected Type ${type::class.simpleName}!")
+            }
+        }
+
+        return append(name)
+    }
+
+    private fun resolveProxySuffixFromArguments(
+        arguments: Array<MemberArgumentTypeInfo>,
+        generics: Map<String, GenericDeclaration>,
+    ): String {
+        val suffix = StringBuilder()
+
+        arguments.forEach { (_, type, _, usePlural) ->
+            suffix.resolveFlatName(type, generics).amendPlural(usePlural)
+        }
+
+        return suffix.toString()
     }
 
     private fun determineSuffixedMethodProxyName(
         methodName: String,
         arguments: Array<MemberArgumentTypeInfo>,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver
+        generics: Map<String, GenericDeclaration>,
     ): String {
         val titleCasedSuffixes = if (arguments.isNotEmpty()) {
-            this.suffixResolver(arguments, generics, typeResolver)
+            suffixResolver(arguments, generics)
         } else {
-            listOf("Void")
+            VOID_SUFFIX
         }
 
-        return "${methodName}With${titleCasedSuffixes.joinToString("")}"
+        return "$methodName$METHOD_SUFFIX_SEPARATOR$titleCasedSuffixes"
     }
 
     private fun selectMethodProxyName(
         proxyMethodNameCandidate: String,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver,
+        generics: Map<String, GenericDeclaration>,
         arguments: Array<MemberArgumentTypeInfo>
     ): String {
         return if (proxyMethodNameCandidate in overloadedProxies) {
@@ -317,7 +358,6 @@ internal class KMockProxyNameSelector(
                 methodName = proxyMethodNameCandidate,
                 arguments = arguments,
                 generics = generics,
-                typeResolver = typeResolver
             )
         } else {
             proxyMethodNameCandidate
@@ -379,15 +419,13 @@ internal class KMockProxyNameSelector(
         suffix: String,
         qualifier: String,
         methodName: String,
-        generics: Map<String, List<KSTypeReference>>,
-        typeResolver: TypeParameterResolver,
+        generics: Map<String, GenericDeclaration>,
         arguments: Array<MemberArgumentTypeInfo>
     ): ProxyInfo {
         val proxyName = selectMethodProxyName(
             proxyMethodNameCandidate = "_$methodName$suffix",
             arguments = arguments,
             generics = generics,
-            typeResolver = typeResolver,
         )
 
         val proxyIdCandidate = "$qualifier#$proxyName"
@@ -407,15 +445,13 @@ internal class KMockProxyNameSelector(
     override fun selectMethodName(
         qualifier: String,
         methodName: String,
-        generics: Map<String, List<KSTypeReference>>,
+        generics: Map<String, GenericDeclaration>,
         arguments: Array<MemberArgumentTypeInfo>,
-        methodWideResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = "",
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        typeResolver = methodWideResolver,
         arguments = arguments
     )
 
@@ -423,14 +459,12 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         propertyName: String,
         receiver: MemberArgumentTypeInfo,
-        generics: Map<String, List<KSTypeReference>>,
-        propertyWideResolver: TypeParameterResolver
+        generics: Map<String, GenericDeclaration>,
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_GETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        typeResolver = propertyWideResolver,
         arguments = arrayOf(receiver)
     )
 
@@ -438,29 +472,25 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         propertyName: String,
         receiver: MemberArgumentTypeInfo,
-        generics: Map<String, List<KSTypeReference>>,
-        propertyWideResolver: TypeParameterResolver
+        generics: Map<String, GenericDeclaration>,
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_SETTER,
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        typeResolver = propertyWideResolver,
         arguments = arrayOf(receiver)
     )
 
     override fun selectReceiverMethodName(
         qualifier: String,
         methodName: String,
-        generics: Map<String, List<KSTypeReference>>,
+        generics: Map<String, GenericDeclaration>,
         arguments: Array<MemberArgumentTypeInfo>,
-        methodWideResolver: TypeParameterResolver,
     ): ProxyInfo = selectMethodName(
         suffix = RECEIVER_METHOD,
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        typeResolver = methodWideResolver,
         arguments = arguments
     )
 
@@ -469,7 +499,9 @@ internal class KMockProxyNameSelector(
         const val RECEIVER_SETTER = "Setter"
         const val RECEIVER_METHOD = "Receiver"
         const val NULLABLE_INDICATOR = "Z"
-        const val NULLABLE_ANY_LONG_NAME = "ZAny"
-        private val nullableAnyGeneric = Pair("Any", true)
+        const val VOID_SUFFIX = "Void"
+        const val METHOD_SUFFIX_SEPARATOR = "With"
+        const val NESTED_TYPE_SEPARATOR = "_"
+        const val ARRAY = "Array"
     }
 }

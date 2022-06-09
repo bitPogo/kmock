@@ -12,7 +12,7 @@ import tech.antibytes.kmock.MockCommon
 interface Common {
     val foo: Any
     var hashCode: Int
-    fun foo(fuzz: Int, ozz: Any): Any
+    fun foo(fuzz: Int, ozz: dynamic): Any
     fun foo(fuzz: Any, ozz: Int): Any
     fun foo(fuzz: Any, ozz: String): Any
     fun foo(fuzz: String, ozz: Any): Any

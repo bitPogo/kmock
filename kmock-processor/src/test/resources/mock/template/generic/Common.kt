@@ -99,4 +99,7 @@ interface Common<K, L> where L : Any, L : Comparable<L>, K : Any {
 
     fun <R, T> rrr(arg0: T, arg1: R) where R : Sequence<T>, T : List<R>
     fun <R, T> rrr(arg0: R, arg1: T) where R : Sequence<T>, T : List<R>
+
+    fun <T : K> trr(arg0: T, arg1: String)
+    fun <T : K, K> trr(arg0: T, arg1: K) where K : CharSequence, K : Comparable<K>?
 }

@@ -11,17 +11,17 @@ import tech.antibytes.kmock.Mock
 typealias alias = () -> Any
 
 @Mock(Refined::class)
-interface Refined : Parent {
+interface Refined<Q : List<Int>> : Parent {
     val foo: Any
     var hashCode: Int
     fun foo(fuzz: Int, ozz: Any): Any
     fun foo(fuzz: Any?, ozz: Int): Any
     fun foo(fuzz: Any, ozz: String): Any
-    fun foo(fuzz: String, ozz: Any): Any
+    fun foo(fuzz: String, ozz: dynamic): Any
     fun foo(fuzz: String?, ozz: Abc): Any
     fun foo(fuzz: (Any) -> Unit): Any
     fun <T> foo(fuzz: T)
-    fun <T : Refined> foo(fuzz: T)
+    fun <T : Refined<*>> foo(fuzz: T)
     fun <T : LPG> foo(fuzz: T)
     fun foo(vararg fuzz: Any): Any
     @JvmName("foo1")
@@ -30,18 +30,32 @@ interface Refined : Parent {
     fun <T> foo(fuzz: Comparable<Array<Map<T, Any>>>): Any
     fun foo(fuzz: Comparable<Array<Map<String, Any>>>): Any
     @JvmName("foo3")
-    fun <T> foo(fuzz: T?, ozz: Abc): Any where T : CharSequence?, T : Comparable<T>
+    fun foo(fuzz: Array<in Any>): Any
     @JvmName("foo4")
-    fun <T> foo(fuzz: T, ozz: Abc): Any where T : CharSequence, T : Comparable<T>?
+    fun <T> foo(fuzz: T?, ozz: Abc): Any where T : CharSequence?, T : Comparable<T>
     @JvmName("foo5")
+    fun <T> foo(fuzz: T, ozz: Abc): Any where T : CharSequence, T : Comparable<T>?
+    @JvmName("foo6")
     fun <T> foo(fuzz: T, ozz: Abc): Any where T : CharSequence?, T : Comparable<T>?
+    @JvmName("foo7")
     fun <T> foo(fuzz: T?, ozz: Abc): Any where T : CharSequence, T : Comparable<T>
     fun foo(fuzz: alias): Any
+    @JvmName("foo8")
     fun <T, R> foo(fuzz: R) where T : Comparable<Array<R>>, R : List<T>
-    @JvmName("foo6")
+    @JvmName("foo9")
     fun <T, R> foo(fuzz: R) where T : Comparable<Array<R>>, R : List<T?>
-    @JvmName("foo6")
+    @JvmName("foo10")
     fun <T> foo(fuzz: T) where T : Comparable<*>
+    @JvmName("foo11")
+    fun foo(fuzz: Q)
+    @JvmName("foo12")
+    fun <T> foo(fuzz: T) where T : Comparable<Q>
+    @JvmName("foo13")
+    fun foo(fuzz: Q?)
+    @JvmName("foo14")
+    fun <T> foo(fuzz: T) where T : Comparable<Q?>
+    fun <T : Q> foo(arg0: T, arg1: String)
+    fun <T : Q, Q> foo(arg0: T, arg1: Q) where Q : CharSequence, Q : Comparable<Q>?
 }
 
 data class Abc(

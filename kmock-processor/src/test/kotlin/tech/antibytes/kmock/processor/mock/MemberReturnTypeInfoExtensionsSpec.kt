@@ -185,7 +185,7 @@ class MemberReturnTypeInfoExtensionsSpec {
         )
 
         every { generics.types } returns listOf(mockk())
-        every { generics.castReturnType } returns false
+        every { generics.doCastReturnType } returns false
 
         // When
         val actual = typeInfo.needsCastForReceiverProperty()
@@ -226,7 +226,7 @@ class MemberReturnTypeInfoExtensionsSpec {
         )
 
         every { generics.types } returns emptyList()
-        every { generics.castReturnType } returns true
+        every { generics.doCastReturnType } returns true
 
         // When
         val actual = typeInfo.needsCastForReceiverProperty()
@@ -424,7 +424,7 @@ class MemberReturnTypeInfoExtensionsSpec {
         )
 
         every { generics.types } returns listOf(mockk())
-        every { generics.castReturnType } returns false
+        every { generics.doCastReturnType } returns false
 
         // When
         val actual = typeInfo.resolveCastForReceiverProperty()
@@ -467,7 +467,7 @@ class MemberReturnTypeInfoExtensionsSpec {
         )
 
         every { generics.types } returns emptyList()
-        every { generics.castReturnType } returns true
+        every { generics.doCastReturnType } returns true
 
         // When
         val actual = typeInfo.resolveCastForReceiverProperty()

@@ -1,6 +1,7 @@
 package mock.template.overloaded
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Function1
 import kotlin.Int
@@ -72,6 +73,14 @@ internal class SharedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTLPG", collector
         = collector, freeze = freeze)
 
+    public val _fooWithTAbc: KMockContract.SyncFunProxy<Unit, (Abc) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTAbc", collector
+        = collector, freeze = freeze)
+
+    public val _fooWithArray: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithArray", collector
+        = collector, freeze = freeze)
+
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
 
     public override fun foo(fuzz: Any, ozz: Int): Any = _fooWithAnyInt.invoke(fuzz, ozz)
@@ -96,6 +105,14 @@ internal class SharedMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <T : R, R : Abc> foo(fuzz: T): Unit = _fooWithTAbc.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
+    public override fun foo(fuzz: Array<in Any>): Unit = _fooWithArray.invoke(fuzz) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
     public fun _clearMock(): Unit {
         _foo.clear()
         _hashCode.clear()
@@ -108,5 +125,7 @@ internal class SharedMock(
         _fooWithZTAny.clear()
         _fooWithTShared.clear()
         _fooWithTLPG.clear()
+        _fooWithTAbc.clear()
+        _fooWithArray.clear()
     }
 }

@@ -234,17 +234,17 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_izz", collector = collector,
             freeze = freeze)
 
-    public val _ossWithTAny: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
-        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithTAny", collector =
+    public val _ossWithZTAny: KMockContract.SyncFunProxy<Any?, (Any?) -> Any?> =
+        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithZTAny", collector =
         collector, freeze = freeze)
 
-    public val _ossWithTAnyZRAny: KMockContract.SyncFunProxy<Unit, (Any?, Any?) -> Unit> =
-        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithTAnyZRAny", collector
+    public val _ossWithZTAnyZRAny: KMockContract.SyncFunProxy<Unit, (Any?, Any?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithZTAnyZRAny", collector
         = collector, freeze = freeze)
 
-    public val _ossWithZRAnyTAnys: KMockContract.SyncFunProxy<Unit, (Any?, Array<*>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithZRAnyTAnys", collector
-        = collector, freeze = freeze)
+    public val _ossWithZRAnyZTAnys: KMockContract.SyncFunProxy<Unit, (Any?, Array<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_ossWithZRAnyZTAnys",
+            collector = collector, freeze = freeze)
 
     public val _kss: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
         ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_kss", collector = collector,
@@ -263,9 +263,9 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_xssWithZTAny", collector =
         collector, freeze = freeze)
 
-    public val _xssWithZTAnyRSequenceCharSequence: KMockContract.SyncFunProxy<Unit, (Any?,
+    public val _xssWithZTAnyRSequenceRCharSequence: KMockContract.SyncFunProxy<Unit, (Any?,
         Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_xssWithZTAnyRSequenceCharSequence",
+        ProxyFactory.createSyncFunProxy("multi.PlatformGenericMultiMock#_xssWithZTAnyRSequenceRCharSequence",
             collector = collector, freeze = freeze)
 
     public val _doSomething:
@@ -503,18 +503,18 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         } as T
 
     @Suppress("UNCHECKED_CAST")
-    public override fun <T : R, R> oss(arg0: T): R = _ossWithTAny.invoke(arg0) {
+    public override fun <T : R, R> oss(arg0: T): R = _ossWithZTAny.invoke(arg0) {
         useSpyIf(__spyOn) { __spyOn!!.oss(arg0) }
     } as R
 
-    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithTAnyZRAny.invoke(arg0, arg1)
+    public override fun <T : R, R> oss(arg0: T, arg1: R): Unit = _ossWithZTAnyZRAny.invoke(arg0, arg1)
     {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.oss(arg0, arg1) }
     }
 
     public override fun <T : R, R> oss(arg0: R, vararg arg1: T): Unit =
-        _ossWithZRAnyTAnys.invoke(arg0, arg1) {
+        _ossWithZRAnyZTAnys.invoke(arg0, arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) { __spyOn!!.oss(arg0, *arg1) }
         }
@@ -543,7 +543,7 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         } as R
 
     public override fun <R, T> xss(arg0: T, arg1: R): Unit where R : Sequence<Char>, R : CharSequence
-        = _xssWithZTAnyRSequenceCharSequence.invoke(arg0, arg1) {
+        = _xssWithZTAnyRSequenceRCharSequence.invoke(arg0, arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         useSpyIf(__spyOn) { __spyOn!!.xss<R, T>(arg0, arg1) }
     }
@@ -620,14 +620,14 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         _tzz.clear()
         _rzz.clear()
         _izz.clear()
-        _ossWithTAny.clear()
-        _ossWithTAnyZRAny.clear()
-        _ossWithZRAnyTAnys.clear()
+        _ossWithZTAny.clear()
+        _ossWithZTAnyZRAny.clear()
+        _ossWithZRAnyZTAnys.clear()
         _kss.clear()
         _iss.clear()
         _pss.clear()
         _xssWithZTAny.clear()
-        _xssWithZTAnyRSequenceCharSequence.clear()
+        _xssWithZTAnyRSequenceRCharSequence.clear()
         _doSomething.clear()
         _compareTo.clear()
         _toString.clear()

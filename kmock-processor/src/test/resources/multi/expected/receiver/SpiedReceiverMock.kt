@@ -92,13 +92,13 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
-        get() = _nothingGetterWithTSomethingComparable.invoke(this@nothing) {
+        get() = _nothingGetterWithTSomethingTComparable.invoke(this@nothing) {
             useSpyIf(__spyOn) {    spyContext {
                 this@nothing.nothing
             } as T }
         } as T
         set(`value`) {
-            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value) {
+            _nothingSetterWithTSomethingTComparable.invoke(this@nothing, value) {
                 useSpyIf(__spyOn) {    spyContext {
                     this@nothing.nothing = value
                     Unit
@@ -106,13 +106,14 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
             }
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingGetterWithTSomethingComparable",
+    public val _nothingGetterWithTSomethingTComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any>
+        =
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingGetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
-        =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingSetterWithTSomethingComparable",
+    public val _nothingSetterWithTSomethingTComparable:
+        KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_nothingSetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
@@ -221,9 +222,9 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_mutabor", collector = collector,
             freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable:
+    public val _doNothingReceiverWithTSomethingTComparable:
         KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingReceiverWithTSomethingComparable",
+        ProxyFactory.createSyncFunProxy("multi.ReceiverMultiMock#_doNothingReceiverWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public val _doNothingReceiverWithTAny: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
@@ -314,7 +315,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
-        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
+        _doNothingReceiverWithTSomethingTComparable.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) {    spyContext {
                 this@doNothing.doNothing<T>()
@@ -384,8 +385,8 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         _thingsGetter.clear()
         _extensionGetter.clear()
         _extensionSetter.clear()
-        _nothingGetterWithTSomethingComparable.clear()
-        _nothingSetterWithTSomethingComparable.clear()
+        _nothingGetterWithTSomethingTComparable.clear()
+        _nothingSetterWithTSomethingTComparable.clear()
         _nothingGetterWithTKMockTypeParameter0.clear()
         _nothingSetterWithTKMockTypeParameter0.clear()
         _otherThingGetter.clear()
@@ -400,7 +401,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()
-        _doNothingReceiverWithTSomethingComparable.clear()
+        _doNothingReceiverWithTSomethingTComparable.clear()
         _doNothingReceiverWithTAny.clear()
         _doNothingElseReceiver.clear()
         _doNothingElse.clear()
