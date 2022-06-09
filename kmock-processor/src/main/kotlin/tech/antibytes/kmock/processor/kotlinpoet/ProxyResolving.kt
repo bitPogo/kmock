@@ -25,6 +25,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
+import tech.antibytes.kmock.processor.utils.extractParameter
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
@@ -212,8 +213,7 @@ private fun KSType.toProxyPairTypeName(
             }
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = resolveAlias(
-                declaration = declaration,
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = arguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -229,7 +229,7 @@ private fun KSType.toProxyPairTypeName(
             )
 
             val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toProxyPairTypeName(
-                inheritedVarargArg = inheritedVarargArg,
+                inheritedVarargArg = false,
                 generics = generics,
                 typeParameterResolver = typeParameterResolver,
                 rootTypeArguments = rootTypeArguments,
@@ -254,7 +254,7 @@ internal fun KSTypeReference.toProxyPairTypeName(
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
-    val typeElements = element?.typeArguments.orEmpty()
+    val typeElements = extractParameter()
     val type = resolve()
 
     return type.toProxyPairTypeName(

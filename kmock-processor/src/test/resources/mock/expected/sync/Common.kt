@@ -1,6 +1,7 @@
 package mock.template.sync
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.IntArray
@@ -32,7 +33,7 @@ internal class CommonMock(
         ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_ozz", collector = collector,
             freeze = freeze)
 
-    public val _izz: KMockContract.SyncFunProxy<Any, (kotlin.Array<out kotlin.Any>) -> Any> =
+    public val _izz: KMockContract.SyncFunProxy<Any, (Array<out Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.sync.CommonMock#_izz", collector = collector,
             freeze = freeze)
 

@@ -17,7 +17,6 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
@@ -28,18 +27,19 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.kotlinpoet.mapArgumentType
 import tech.antibytes.kmock.processor.kotlinpoet.mapParameterType
 import tech.antibytes.kmock.processor.kotlinpoet.resolveGenericDeclaration
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
 
 internal object KMockGenerics : GenericResolver {
     private val nullableAnys = listOf(NULLABLE_ANY)
 
-    private fun resolveBound(type: KSTypeParameter): List<KSTypeReference> = type.bounds.toList()
+    private fun KSTypeParameter.resolveBound(): List<KSTypeReference> = bounds.toList()
 
     private fun extractGenerics(
         typeParameter: List<KSTypeParameter>,
     ): Map<String, List<KSTypeReference>> {
         val generic: MutableMap<String, List<KSTypeReference>> = mutableMapOf()
         typeParameter.forEach { type ->
-            generic[type.name.getShortName()] = resolveBound(type)
+            generic[type.name.getShortName()] = type.resolveBound()
         }
 
         return generic

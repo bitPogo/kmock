@@ -76,7 +76,7 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
     )
 }
 
-internal fun extractAliasTypeResolver(
+private fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
     typeParameterResolver: TypeParameterResolver
 ): TypeParameterResolver {
@@ -105,12 +105,11 @@ private fun KSTypeAlias.mapAbbreviatedType(
         }
 }
 
-internal fun resolveAlias(
-    declaration: KSTypeAlias,
+internal fun KSTypeAlias.resolveAlias(
     arguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
 ): Triple<KSType, List<KSTypeArgument>, TypeParameterResolver> {
-    var typeAlias: KSTypeAlias = declaration
+    var typeAlias: KSTypeAlias = this
     var resolvedArguments = arguments
     var resolvedType: KSType
     var mappedArgs: List<KSTypeArgument>
@@ -122,7 +121,7 @@ internal fun resolveAlias(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = extractAliasTypeResolver(declaration, typeParameterResolver)
+        extraResolver = extractAliasTypeResolver(this, typeParameterResolver)
 
         if (resolvedType.declaration is KSTypeAlias) {
             typeAlias = resolvedType.declaration as KSTypeAlias

@@ -52,7 +52,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_foo", collector = collector,
             freeze = freeze)
 
-    public val _oo: KMockContract.SyncFunProxy<Unit, (kotlin.Array<out kotlin.Any?>) -> Unit> =
+    public val _oo: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.spy.CommonMock#_oo", collector = collector,
             freeze = freeze)
 
@@ -68,7 +68,7 @@ internal class CommonMock<K : Any, L>(
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_buzz", collector = collector,
             freeze = freeze)
 
-    public val _uzz: KMockContract.AsyncFunProxy<L, suspend (kotlin.Array<out kotlin.String>) -> L> =
+    public val _uzz: KMockContract.AsyncFunProxy<L, suspend (Array<out String>) -> L> =
         ProxyFactory.createAsyncFunProxy("mock.template.spy.CommonMock#_uzz", collector = collector,
             freeze = freeze)
 

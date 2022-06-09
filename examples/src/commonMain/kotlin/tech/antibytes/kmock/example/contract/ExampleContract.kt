@@ -42,6 +42,10 @@ interface ExampleContract {
         fun createDecoder(): PlatformDecoder?
     }
 
+    data class Generic<T>(
+        val value: T
+    )
+
     interface SampleUselessObject {
         fun doSomething(): Int
 
@@ -59,8 +63,19 @@ interface ExampleContract {
 
         fun <T> doSomethingElse(arg: T): Int where T : Comparable<T>, T : CharSequence
 
-        fun <T> doSomethingElse(arg0: T, arg1: String): String
+        fun <T : Map<String, B<K>>, K> doSomethingElse(arg0: T, arg1: String): String
 
         fun <T> doSomethingElse(arg0: T, arg1: Int): String
+
+        fun <K : A<T>, T> doAnything(arg: K): Int where T : Comparable<T>, T : CharSequence
+
+        fun <T> run(arg: T): Int
+
+        fun <T : () -> String> withFun(arg: T): String
+
+        fun <T : () -> Unit> withOtherFun(arg: T): Int
     }
 }
+
+typealias A<T> = ExampleContract.Generic<T>
+typealias B<T> = A<T>

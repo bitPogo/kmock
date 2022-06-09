@@ -980,6 +980,57 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform which contains TypeAliases and is inherited is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "SuperType.kt",
+            loadResource("/template/typealiaz/SuperType.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/SuperType.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("InheritedMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
+    fun `Given a annotated Source for a Platform and has AccessMethods is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "SuperType.kt",
+            loadResource("/template/typealiaz/AccessMethods.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/Access.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true"
+            )
+        )
+        val actual = resolveGenerated("AccessMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Shared which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(

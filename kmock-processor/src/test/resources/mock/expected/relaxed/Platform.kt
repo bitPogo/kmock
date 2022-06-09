@@ -1,6 +1,7 @@
 package mock.template.relaxed
 
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.Suppress
@@ -33,7 +34,7 @@ internal class PlatformMock(
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.PlatformMock#_foo", collector =
         collector, freeze = freeze)
 
-    public val _oo: KMockContract.SyncFunProxy<String, (kotlin.Array<out kotlin.Any>) -> String> =
+    public val _oo: KMockContract.SyncFunProxy<String, (Array<out Any>) -> String> =
         ProxyFactory.createSyncFunProxy("mock.template.relaxed.PlatformMock#_oo", collector =
         collector, freeze = freeze)
 
@@ -41,8 +42,7 @@ internal class PlatformMock(
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.PlatformMock#_bar", collector =
         collector, freeze = freeze)
 
-    public val _ar: KMockContract.AsyncFunProxy<String, suspend (kotlin.Array<out
-    kotlin.Any>) -> String> =
+    public val _ar: KMockContract.AsyncFunProxy<String, suspend (Array<out Any>) -> String> =
         ProxyFactory.createAsyncFunProxy("mock.template.relaxed.PlatformMock#_ar", collector =
         collector, freeze = freeze)
 

@@ -79,8 +79,7 @@ internal class RefinedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTLPG", collector
         = collector, freeze = freeze)
 
-    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (kotlin.Array<out
-    kotlin.Any>) -> Any> =
+    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (Array<out Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithArray_Any",
             collector = collector, freeze = freeze)
 
@@ -131,8 +130,11 @@ internal class RefinedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithRList_ZT",
             collector = collector, freeze = freeze)
 
-    public val _ooWithIntArray_Any: KMockContract.SyncFunProxy<Any, (Int, kotlin.Array<out
-    kotlin.Any>) -> Any> =
+    public val _fooWithTComparable_ZAny: KMockContract.SyncFunProxy<Unit, (Comparable<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTComparable_ZAny",
+            collector = collector, freeze = freeze)
+
+    public val _ooWithIntArray_Any: KMockContract.SyncFunProxy<Any, (Int, Array<out Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithIntArray_Any",
             collector = collector, freeze = freeze)
 
@@ -140,13 +142,12 @@ internal class RefinedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithZAnyArray_Int",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_TZAny: KMockContract.SyncFunProxy<Any, (Any, kotlin.Array<out
-    kotlin.Any?>) -> Any> =
+    public val _ooWithAnyArray_TZAny: KMockContract.SyncFunProxy<Any, (Any, Array<*>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_TZAny",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_RRR_TZAny: KMockContract.SyncFunProxy<Any, (Any, kotlin.Array<out
-    mock.template.overloaded.RRR<kotlin.Any?>>) -> Any> =
+    public val _ooWithAnyArray_RRR_TZAny: KMockContract.SyncFunProxy<Any, (Any,
+        Array<out RRR<Any?>>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_RRR_TZAny",
             collector = collector, freeze = freeze)
 
@@ -209,6 +210,11 @@ internal class RefinedMock(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
+    public override fun <T : Comparable<*>> foo(fuzz: T): Unit = _fooWithTComparable_ZAny.invoke(fuzz)
+    {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
     public override fun oo(fuzz: Int, vararg ozz: Any): Any = _ooWithIntArray_Any.invoke(fuzz, ozz)
 
     public override fun oo(fuzz: Any?, vararg ozz: Int): Any = _ooWithZAnyArray_Int.invoke(fuzz, ozz)
@@ -242,6 +248,7 @@ internal class RefinedMock(
         _fooWithAlias.clear()
         _fooWithRList_T.clear()
         _fooWithRList_ZT.clear()
+        _fooWithTComparable_ZAny.clear()
         _ooWithIntArray_Any.clear()
         _ooWithZAnyArray_Int.clear()
         _ooWithAnyArray_TZAny.clear()
