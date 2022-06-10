@@ -76,6 +76,23 @@ class SyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn2aa")
+    fun `throws is an alias to throws`() {
+        // Given
+        val proxy = SyncFunProxy<Any, Function0<Any>>(
+            fixture.fixture(),
+            freeze = false
+        )
+        val error = RuntimeException(fixture.fixture<String>())
+
+        // When
+        proxy throws error
+
+        // Then
+        proxy.throws mustBe error
+    }
+
+    @Test
     @JsName("fn2a")
     fun `Given throwMany is set with an emptyList it fails`() {
         // Given
@@ -105,6 +122,20 @@ class SyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn2c")
+    fun `throwMany is an alias to throwsMany`() {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture(), freeze = false)
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        proxy throwsMany errors
+
+        // Then
+        proxy.throwsMany mustBe errors
+    }
+
+    @Test
+    @JsName("fn2d")
     fun `Given a returnValue is set it is retrievable`() {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
@@ -115,6 +146,23 @@ class SyncFunProxyUnfrozenSpec {
 
         // When
         proxy.returnValue = value
+
+        // Then
+        proxy.returnValue mustBe value
+    }
+
+    @Test
+    @JsName("fn2e")
+    fun `returns is a alias to returnValue`() {
+        // Given
+        val proxy = SyncFunProxy<Any, Function0<Any>>(
+            fixture.fixture(),
+            freeze = false
+        )
+        val value: Any = fixture.fixture()
+
+        // When
+        proxy returns value
 
         // Then
         proxy.returnValue mustBe value
@@ -166,6 +214,23 @@ class SyncFunProxyUnfrozenSpec {
 
         // When
         proxy.returnValues = values
+
+        // Then
+        proxy.returnValues mustBe values
+    }
+
+    @Test
+    @JsName("fn5a")
+    fun `returnsMany is an alias to returnValues`() {
+        // Given
+        val proxy = SyncFunProxy<Any, Function0<Any>>(
+            fixture.fixture(),
+            freeze = false
+        )
+        val values: List<Any> = fixture.listFixture()
+
+        // When
+        proxy returnsMany values
 
         // Then
         proxy.returnValues mustBe values
@@ -645,6 +710,25 @@ class SyncFunProxyUnfrozenSpec {
         proxy.invoke(argument)
 
         val actual = proxy.getArgumentsForCall(0)
+
+        actual.size mustBe 1
+        actual[0] mustBe argument
+    }
+
+    @Test
+    @JsName("fn19a")
+    fun `Given invoke is called it captures Arguments which can be accessed ArrayStyle`() {
+        // Given
+        val proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
+        val values: List<Any> = fixture.listFixture(size = 5)
+        val argument: String = fixture.fixture()
+
+        // When
+        proxy.returnValues = values.toList()
+
+        proxy.invoke(argument)
+
+        val actual = proxy[0]
 
         actual.size mustBe 1
         actual[0] mustBe argument

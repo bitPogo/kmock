@@ -25,21 +25,21 @@ internal class CommonMultiMock<MultiMock>(
 ) : Regular1, CommonContractRegular.Regular2, Regular3 where MultiMock : Regular1, MultiMock :
 CommonContractRegular.Regular2, MultiMock : Regular3 {
     public override val something: Int
-        get() = _something.onGet()
+        get() = _something.executeOnGet()
 
     public val _something: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_something", collector = collector,
             freeze = freeze)
 
     public override val anything: Any
-        get() = _anything.onGet()
+        get() = _anything.executeOnGet()
 
     public val _anything: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_anything", collector = collector,
             freeze = freeze)
 
     public override val somethingElse: String
-        get() = _somethingElse.onGet()
+        get() = _somethingElse.executeOnGet()
 
     public val _somethingElse: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("multi.CommonMultiMock#_somethingElse", collector =

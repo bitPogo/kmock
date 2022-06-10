@@ -34,7 +34,7 @@ internal class AccessMock<L : Alias623>(
     private val relaxed: Boolean = false,
 ) : Access<L> {
     public override val prop: Alias673<String>
-        get() = _prop.onGet()
+        get() = _prop.executeOnGet()
 
     public val _prop: KMockContract.PropertyProxy<Alias673<String>> =
         ProxyFactory.createPropertyProxy("mock.template.typealiaz.AccessMock#_prop", collector =

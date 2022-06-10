@@ -27,7 +27,7 @@ PlatformContractRegular.Regular2, MultiMock : Regular3 {
     private val __spyOn: MultiMock? = spyOn
 
     public override val something: Int
-        get() = _something.onGet {
+        get() = _something.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.something }
         }
 
@@ -36,7 +36,7 @@ PlatformContractRegular.Regular2, MultiMock : Regular3 {
             freeze = freeze)
 
     public override val anything: Any
-        get() = _anything.onGet {
+        get() = _anything.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.anything }
         }
 
@@ -45,7 +45,7 @@ PlatformContractRegular.Regular2, MultiMock : Regular3 {
             freeze = freeze)
 
     public override val somethingElse: String
-        get() = _somethingElse.onGet {
+        get() = _somethingElse.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.somethingElse }
         }
 

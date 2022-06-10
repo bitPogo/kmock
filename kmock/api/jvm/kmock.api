@@ -392,16 +392,24 @@ public abstract interface class tech/antibytes/kmock/KMockContract$Expectation {
 	public abstract fun getProxy ()Ltech/antibytes/kmock/KMockContract$Proxy;
 }
 
-public abstract interface class tech/antibytes/kmock/KMockContract$FunProxy : tech/antibytes/kmock/KMockContract$Proxy, tech/antibytes/kmock/KMockContract$ProxySideEffectBuilder {
+public abstract interface class tech/antibytes/kmock/KMockContract$FunProxy : tech/antibytes/kmock/KMockContract$Proxy, tech/antibytes/kmock/KMockContract$ProxyReturnValueSetter, tech/antibytes/kmock/KMockContract$ProxySideEffectBuilder {
+	public abstract fun getError ()Ljava/lang/Throwable;
+	public abstract fun getErrors ()Ljava/util/List;
 	public abstract fun getIgnorableForVerification ()Z
 	public abstract fun getReturnValue ()Ljava/lang/Object;
 	public abstract fun getReturnValues ()Ljava/util/List;
 	public abstract fun getThrows ()Ljava/lang/Throwable;
 	public abstract fun getThrowsMany ()Ljava/util/List;
+	public abstract fun returns (Ljava/lang/Object;)V
+	public abstract fun returnsMany (Ljava/util/List;)V
+	public abstract fun setError (Ljava/lang/Throwable;)V
+	public abstract fun setErrors (Ljava/util/List;)V
 	public abstract fun setReturnValue (Ljava/lang/Object;)V
 	public abstract fun setReturnValues (Ljava/util/List;)V
 	public abstract fun setThrows (Ljava/lang/Throwable;)V
 	public abstract fun setThrowsMany (Ljava/util/List;)V
+	public abstract fun throws (Ljava/lang/Throwable;)V
+	public abstract fun throwsMany (Ljava/util/List;)V
 }
 
 public abstract class tech/antibytes/kmock/KMockContract$GetOrSet {
@@ -420,13 +428,17 @@ public abstract interface class tech/antibytes/kmock/KMockContract$NonIntrusiveF
 public abstract interface class tech/antibytes/kmock/KMockContract$NonIntrusivePropertyConfigurator : tech/antibytes/kmock/KMockContract$PropertySpyTargetInvocation, tech/antibytes/kmock/KMockContract$RelaxationPropertyConfigurator {
 }
 
-public abstract interface class tech/antibytes/kmock/KMockContract$PropertyProxy : tech/antibytes/kmock/KMockContract$Proxy {
+public abstract interface class tech/antibytes/kmock/KMockContract$PropertyProxy : tech/antibytes/kmock/KMockContract$Proxy, tech/antibytes/kmock/KMockContract$ProxyReturnValueSetter {
+	public abstract fun executeOnGet (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun executeOnSet (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun getGet ()Ljava/lang/Object;
 	public abstract fun getGetMany ()Ljava/util/List;
 	public abstract fun getGetSideEffect ()Lkotlin/jvm/functions/Function0;
 	public abstract fun getSet ()Lkotlin/jvm/functions/Function1;
-	public abstract fun onGet (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public abstract fun onSet (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun returns (Ljava/lang/Object;)V
+	public abstract fun returnsMany (Ljava/util/List;)V
+	public abstract fun runOnGet (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun runOnSet (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun setGet (Ljava/lang/Object;)V
 	public abstract fun setGetMany (Ljava/util/List;)V
 	public abstract fun setGetSideEffect (Lkotlin/jvm/functions/Function0;)V
@@ -434,8 +446,8 @@ public abstract interface class tech/antibytes/kmock/KMockContract$PropertyProxy
 }
 
 public final class tech/antibytes/kmock/KMockContract$PropertyProxy$DefaultImpls {
-	public static synthetic fun onGet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun onSet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun executeOnGet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun executeOnSet$default (Ltech/antibytes/kmock/KMockContract$PropertyProxy;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public abstract interface class tech/antibytes/kmock/KMockContract$PropertySpyTargetInvocation {
@@ -444,6 +456,7 @@ public abstract interface class tech/antibytes/kmock/KMockContract$PropertySpyTa
 
 public abstract interface class tech/antibytes/kmock/KMockContract$Proxy {
 	public abstract fun clear ()V
+	public abstract fun get (I)Ljava/lang/Object;
 	public abstract fun getArgumentsForCall (I)Ljava/lang/Object;
 	public abstract fun getCalls ()I
 	public abstract fun getFrozen ()Z
@@ -460,6 +473,11 @@ public final class tech/antibytes/kmock/KMockContract$ProxyFactory$DefaultImpls 
 	public static synthetic fun createAsyncFunProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$AsyncFunProxy;
 	public static synthetic fun createPropertyProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$PropertyProxy;
 	public static synthetic fun createSyncFunProxy$default (Ltech/antibytes/kmock/KMockContract$ProxyFactory;Ljava/lang/String;Ltech/antibytes/kmock/KMockContract$Collector;ZZILjava/lang/Object;)Ltech/antibytes/kmock/KMockContract$SyncFunProxy;
+}
+
+public abstract interface class tech/antibytes/kmock/KMockContract$ProxyReturnValueSetter {
+	public abstract fun returns (Ljava/lang/Object;)V
+	public abstract fun returnsMany (Ljava/util/List;)V
 }
 
 public abstract interface class tech/antibytes/kmock/KMockContract$ProxySideEffectBuilder {
@@ -545,6 +563,9 @@ public abstract interface class tech/antibytes/kmock/KMockContract$VerificationC
 }
 
 public abstract interface annotation class tech/antibytes/kmock/KMockExperimental : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class tech/antibytes/kmock/KMockInternal : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class tech/antibytes/kmock/KMockMulti : java/lang/annotation/Annotation {

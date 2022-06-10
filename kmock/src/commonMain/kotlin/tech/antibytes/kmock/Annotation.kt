@@ -174,3 +174,16 @@ public annotation class Relaxer
     AnnotationTarget.CONSTRUCTOR
 )
 public annotation class KMockExperimental
+
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+/**
+ * Marks a thing which is intended only for internal usage.
+ */
+public annotation class KMockInternal

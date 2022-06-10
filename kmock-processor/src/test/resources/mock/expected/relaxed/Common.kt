@@ -23,19 +23,19 @@ internal class CommonMock<K : Any, L>(
     private val relaxed: Boolean = false,
 ) : Common<K, L> where L : Any, L : Comparable<L> {
     public override var template: L
-        get() = _template.onGet {
+        get() = _template.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,
                 type1 = kotlin.Comparable::class,) as L }
         }
-        set(`value`) = _template.onSet(value)
+        set(`value`) = _template.executeOnSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> =
         ProxyFactory.createPropertyProxy("mock.template.relaxed.CommonMock#_template", collector =
         collector, freeze = freeze)
 
     public override val buzz: String
-        get() = _buzz.onGet {
+        get() = _buzz.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 

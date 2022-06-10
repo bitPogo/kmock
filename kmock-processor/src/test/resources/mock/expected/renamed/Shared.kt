@@ -22,15 +22,15 @@ internal class SharedMock<K : Any, L>(
     private val relaxed: Boolean = false,
 ) : Shared<K, L> where L : Any, L : Comparable<L> {
     public override var template: L
-        get() = _template.onGet()
-        set(`value`) = _template.onSet(value)
+        get() = _template.executeOnGet()
+        set(`value`) = _template.executeOnSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> =
         ProxyFactory.createPropertyProxy("mock.template.renamed.SharedMock#_template", collector =
         collector, freeze = freeze)
 
     public override val ozz: Int
-        get() = _ozz.onGet()
+        get() = _ozz.executeOnGet()
 
     public val _ozz: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.renamed.SharedMock#_ozz", collector =

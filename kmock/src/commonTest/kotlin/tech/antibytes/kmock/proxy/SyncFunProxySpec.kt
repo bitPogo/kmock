@@ -94,6 +94,26 @@ class SyncFunProxySpec {
     }
 
     @Test
+    @JsName("fn2aa")
+    fun `throws is an alias to throws`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val error = RuntimeException()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy throws error
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.throws mustBe error
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn2a")
     fun `Given throwMany is set with an emptyList it fails`() {
         // Given
@@ -109,7 +129,7 @@ class SyncFunProxySpec {
 
     @Test
     @JsName("fn2b")
-    fun `Given throwMany is set it is threadsafe retrievable`() {
+    fun `Given throwMany is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
         val errors = listOf(RuntimeException(), RuntimeException())
@@ -123,10 +143,32 @@ class SyncFunProxySpec {
         runBlockingTestInContext(testScope2.coroutineContext) {
             proxy.throwsMany mustBe errors
         }
+
+        return resolveMultiBlockCalls()
     }
 
     @Test
     @JsName("fn2c")
+    fun `throwMany is an alias to throwsMany`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy throwsMany errors
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.throwsMany mustBe errors
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn2d")
     fun `Given a returnValue is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
         val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
@@ -135,6 +177,26 @@ class SyncFunProxySpec {
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.returnValue = value
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.returnValue mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn2e")
+    fun `returns is a alias to returnValue`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy returns value
         }
 
         // Then
@@ -189,6 +251,26 @@ class SyncFunProxySpec {
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.returnValues = values
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.returnValues mustBe values
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn5a")
+    fun `returnsMany is an alias to returnValues`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, () -> Any>(fixture.fixture())
+        val values: List<Any> = fixture.listFixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy returnsMany values
         }
 
         // Then
@@ -751,6 +833,33 @@ class SyncFunProxySpec {
 
         runBlockingTest {
             val actual = proxy.getArgumentsForCall(0)
+
+            actual.size mustBe 1
+            actual[0] mustBe argument
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn19a")
+    fun `Given invoke is called it captures Arguments which can be accessed ArrayStyle`(): AsyncTestReturnValue {
+        // Given
+        val proxy = SyncFunProxy<Any, (String) -> Any>(fixture.fixture())
+        val values: List<Any> = fixture.listFixture(size = 5)
+        val argument: String = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.returnValues = values.toList()
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.invoke(argument)
+        }
+
+        runBlockingTest {
+            val actual = proxy[0]
 
             actual.size mustBe 1
             actual[0] mustBe argument

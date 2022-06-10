@@ -227,4 +227,22 @@ class SyncFunProxyStub(
     override var throwsMany: List<Throwable>
         get() = TODO("Not yet implemented")
         set(value) {}
+
+    override fun get(callIndex: Int): Array<out Any?> = getArgumentsForCall(callIndex)
+
+    override fun returns(value: Any) {
+        TODO("Not yet implemented")
+    }
+
+    override fun returnsMany(values: List<Any>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun throws(error: Throwable) {
+        TODO("Not yet implemented")
+    }
+
+    override fun throwsMany(errors: List<Throwable>) {
+        TODO("Not yet implemented")
+    }
 }

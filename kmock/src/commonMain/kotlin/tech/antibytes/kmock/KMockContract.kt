@@ -29,12 +29,12 @@ public object KMockContract {
      */
     public sealed interface Proxy<ReturnValue, Arguments> {
         /**
-         * Unique Id of the proxy derived from the Interface which it build upon.
+         * Unique Id of the Proxy derived from the Interface which it build upon.
          */
         public val id: String
 
         /**
-         * Counter of the actual invocations of the proxy.
+         * Counter of the actual invocations of the Proxy.
          */
         public val calls: Int
 
@@ -46,15 +46,41 @@ public object KMockContract {
         /**
          * Resolves given arguments of an invocation.
          * @param callIndex index of an invocation.
-         * @return the Arguments of the given invocation or null if the proxy is used for void invocations.
+         * @return the Arguments of the given invocation or null if the Proxy is used for void invocations.
          * @throws MissingCall if the callIndex is invalid.
          */
         public fun getArgumentsForCall(callIndex: Int): Arguments
 
         /**
+         * Alias for getArgumentsForCall
+         * @param callIndex index of an invocation.
+         * @return the Arguments of the given invocation or null if the Proxy is used for void invocations.
+         * @throws MissingCall if the callIndex is invalid.
+         */
+        public operator fun get(callIndex: Int): Arguments
+
+        /**
          * Clears the Proxies captured arguments
          */
         public fun clear()
+    }
+
+    /**
+     * Definition of simple setter methods which are equal for Fun- and PropertyProxies.
+     * @author Matthias Geisler
+     */
+    public sealed interface ProxyReturnValueSetter<ReturnValue> {
+        /**
+         * An Alias method which sets a ReturnValue.
+         * @param value which is returned when the Proxy is invoked.
+         */
+        public infix fun returns(value: ReturnValue)
+
+        /**
+         * An Alias method which sets ReturnValues.
+         * @param values which are returned when the Proxy is invoked.
+         */
+        public infix fun returnsMany(values: List<ReturnValue>)
     }
 
     /**
@@ -354,12 +380,12 @@ public object KMockContract {
         /**
          * Holds a given Throwable.
          */
-        var throws: Throwable?
+        var error: Throwable?
 
         /**
          * Holds a given Throwables.
          */
-        val throwsMany: MutableList<Throwable>
+        val errors: MutableList<Throwable>
 
         /**
          * Holds a given ReturnValue.
@@ -390,7 +416,7 @@ public object KMockContract {
      */
     public interface ProxySideEffectBuilder<ReturnValue, SideEffect : Function<ReturnValue>> {
         /**
-         * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be for fine grained behaviour of a Proxy
+         * Setter/Getter in order to set/get a custom SideEffect for the function. SideEffects can be used for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
@@ -403,17 +429,17 @@ public object KMockContract {
 
         /**
          * Alias method for sideEffect
-         * @param SideEffect which is chained into the sideEffects propert.
+         * @param action - a SideEffect which is chained into the sideEffect property.
          */
-        public fun run(action: SideEffect)
+        public infix fun run(action: SideEffect)
 
         /**
          * Convenient method for multiple SideEffects, which uses under the sideEffects property.
          * This chains SideEffects together according to their given order.
-         * @param SideEffect which is chained into the sideEffects propert.
+         * @param action - a SideEffect which is chained into the sideEffects property.
          * @return ProxySideEffectBuilder.
          */
-        public fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
+        public infix fun runs(action: SideEffect): ProxySideEffectBuilder<ReturnValue, SideEffect>
     }
 
     /**
@@ -424,10 +450,12 @@ public object KMockContract {
      */
     public interface FunProxy<ReturnValue, SideEffect : Function<ReturnValue>> :
         Proxy<ReturnValue, Array<out Any?>>,
+        ProxyReturnValueSetter<ReturnValue>,
         ProxySideEffectBuilder<ReturnValue, SideEffect> {
         /**
-         * Marks the proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
+         * Marks the Proxy as ignore during verification (e.g. build-in methods). Intended for internal usage only!
          */
+        @KMockInternal
         public val ignorableForVerification: Boolean
 
         /**
@@ -437,6 +465,12 @@ public object KMockContract {
         public var returnValue: ReturnValue
 
         /**
+         * Alias setter of returnValue.
+         * @param value which is returned when the Proxy is invoked.
+         */
+        public override infix fun returns(value: ReturnValue)
+
+        /**
          * Setter/Getter in order to set/get a List of ReturnValues of the Proxy. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws MissingStub if the given List is empty.
@@ -444,17 +478,62 @@ public object KMockContract {
         public var returnValues: List<ReturnValue>
 
         /**
+         * Alias setter of returnValues.
+         * @param values which are returned when the Proxy is invoked. If the given List has
+         * a smaller size than the actual invocation the last value of the list is used for any further invocation.
+         * @throws MissingStub if the given List is empty.
+         */
+        public override infix fun returnsMany(values: List<ReturnValue>)
+
+        /**
          * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy.
          * @throws NullPointerException on get if no value was set.
          */
+        @Deprecated(
+            message = "This property will be replaced with 0.3.0 by error.",
+            replaceWith = ReplaceWith("error"),
+            level = DeprecationLevel.WARNING
+        )
         public var throws: Throwable
+
+        /**
+         * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy.
+         * @throws NullPointerException on get if no value was set.
+         */
+        public var error: Throwable
+
+        /**
+         * Alias setter of error.
+         * @param error which is thrown when the Proxy is invoked.
+         */
+        public infix fun throws(error: Throwable)
 
         /**
          * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy. If the given List has
          * a smaller size than the actual invocation the last value of the list is used for any further invocation.
          * @throws MissingStub if the given List is empty.
          */
+        public var errors: List<Throwable>
+
+        /**
+         * Setter/Getter in order to set/get a constant error which is thrown on the invocation of the Proxy. If the given List has
+         * a smaller size than the actual invocation the last value of the list is used for any further invocation.
+         * @throws MissingStub if the given List is empty.
+         */
+        @Deprecated(
+            message = "This property will be replaced with 0.3.0 by errors.",
+            replaceWith = ReplaceWith("errors"),
+            level = DeprecationLevel.WARNING
+        )
         public var throwsMany: List<Throwable>
+
+        /**
+         * Alias setter of errors.
+         * @param errors which are thrown when the Proxy is invoked. If the given List has
+         * a smaller size than the actual invocation the last value of the list is used for any further invocation.
+         * @throws MissingStub if the given List is empty.
+         */
+        public infix fun throwsMany(errors: List<Throwable>)
     }
 
     /**
@@ -985,12 +1064,18 @@ public object KMockContract {
      * @param Value the value type of the hosting PropertyProxy.
      * @author Matthias Geisler
      */
-    public interface PropertyProxy<Value> : Proxy<Value, GetOrSet> {
+    public interface PropertyProxy<Value> : Proxy<Value, GetOrSet>, ProxyReturnValueSetter<Value> {
         /**
          * Setter/Getter in order to set/get constant Value of the property.
          * @throws NullPointerException on get if no value was set.
          */
         public var get: Value
+
+        /**
+         * Alias setter of get.
+         * @param value which is returned when the getter is invoked.
+         */
+        override infix fun returns(value: Value)
 
         /**
          * Setter/Getter in order to set/get a List of Values of the property. If the given List has
@@ -1001,25 +1086,51 @@ public object KMockContract {
         public var getMany: List<Value>
 
         /**
-         * Setter/Getter in order to set/get custom SideEffect for the properties getter. SideEffects can be for fine grained behaviour of a Proxy
+         * Alias getMany get.
+         * @param values which are returned when the getter is invoked. If the given List has
+         * a smaller size than the actual invocation the last value of the list is used for any further invocation.
+         * @throws MissingStub if the given List is empty.
+         */
+        override infix fun returnsMany(values: List<Value>)
+
+        /**
+         * Setter/Getter in order to set/get custom SideEffect for the properties getter. SideEffects can be used for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
         public var getSideEffect: Function0<Value>
 
         /**
-         * Setter/Getter in order to set/get custom SideEffect for the properties setter. SideEffects can be for fine grained behaviour of a Proxy
+         * Alias setter of getSideEffect.
+         * @param sideEffect which is executed when the getter is invoked.
+         * SideEffects can be used for fine grained behaviour of a Proxy
+         * on invocation.
+         */
+        public infix fun runOnGet(sideEffect: Function0<Value>)
+
+        /**
+         * Setter/Getter in order to set/get custom SideEffect for the properties setter.
+         * SideEffects can be used for fine grained behaviour of a Proxy
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
         public var set: Function1<Value, Unit>
 
         /**
+         * Alias setter of set.
+         * @param sideEffect which is executed when the setter is invoked.
+         * SideEffects can be used for fine grained behaviour of a Proxy
+         * on invocation.
+         */
+        public infix fun runOnSet(sideEffect: Function1<Value, Unit>)
+
+        /**
          * Invocation of property getter. This is meant for internal use only.
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        public fun onGet(
+        @KMockInternal
+        public fun executeOnGet(
             nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>.() -> Unit = {},
         ): Value
 
@@ -1028,7 +1139,8 @@ public object KMockContract {
          * @throws MissingStub if no behaviour instruction was given.
          * @suppress
          */
-        public fun onSet(
+        @KMockInternal
+        public fun executeOnSet(
             value: Value,
             nonIntrusiveHook: NonIntrusivePropertyConfigurator<Unit>.() -> Unit = {},
         )
@@ -1100,7 +1212,7 @@ public object KMockContract {
     public fun interface Collector {
         /**
          * Collects a invocation of a Proxy. Intended for internal use only.
-         * @param referredProxy the proxy it is referring to.
+         * @param referredProxy the Proxy it is referring to.
          * @param referredCall the invocation index of the Proxy it refers to.
          * @suppress
          */
@@ -1166,6 +1278,7 @@ public object KMockContract {
      * Intended for internal usage only!
      * @author Matthias Geisler
      */
+    @KMockInternal
     public data class Reference(
         /**
          * The referenced Proxy.
@@ -1186,7 +1299,7 @@ public object KMockContract {
         /**
          * Asserts that a FunProxy was called.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @throws AssertionError if the assertion fails.
          */
         fun hasBeenCalledAtIndex(
@@ -1197,7 +1310,7 @@ public object KMockContract {
         /**
          * Asserts that a FunProxy was called without any parameter.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @throws AssertionError if the assertion fails.
          */
         fun hasBeenCalledWithVoidAtIndex(
@@ -1209,7 +1322,7 @@ public object KMockContract {
          * Asserts that a FunProxy was called with n-parameter.
          * The arguments do not need to be complete.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @param arguments the expected arguments.
          * @throws AssertionError if the assertion fails
          */
@@ -1223,7 +1336,7 @@ public object KMockContract {
          * Asserts that a FunProxy was called with n-parameter.
          * The arguments must be complete.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @param arguments the expected arguments.
          * @throws AssertionError if the assertion fails
          */
@@ -1237,7 +1350,7 @@ public object KMockContract {
          * Asserts that a FunProxy was without called n-parameter.
          * The arguments do not need to be complete.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @param illegal the forbidden arguments.
          * @throws AssertionError if the assertion fails
          */
@@ -1250,7 +1363,7 @@ public object KMockContract {
         /**
          * Asserts that a PropertyProxy was invoked as a Getter.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @throws AssertionError if the assertion fails.
          */
         fun wasGottenAtIndex(
@@ -1261,7 +1374,7 @@ public object KMockContract {
         /**
          * Asserts that a PropertyProxy was invoked as a Setter.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @throws AssertionError if the assertion fails.
          */
         fun wasSetAtIndex(
@@ -1272,7 +1385,7 @@ public object KMockContract {
         /**
          * Asserts that a PropertyProxy was invoked as a Setter with a given value.
          * @param proxy the actual proxy.
-         * @param callIndex the index of the invocation from the proxy.
+         * @param callIndex the index of the invocation from the Proxy.
          * @param value the expected value.
          * @throws AssertionError if the assertion fails.
          */

@@ -103,7 +103,7 @@ internal class CommonMock<L>(
             collector = collector, freeze = freeze)
 
     public override val myThing: String
-        get() = _myThing.onGet()
+        get() = _myThing.executeOnGet()
 
     public val _myThing: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.propertyreceiver.CommonMock#_myThing",

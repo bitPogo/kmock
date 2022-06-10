@@ -94,6 +94,26 @@ class PropertyProxySpec {
     }
 
     @Test
+    @JsName("fn2aa")
+    fun `returns is an alias to get`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy returns value
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.get mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn3")
     fun `Given a getMany is set with an emptyList it fails`() {
         // Given
@@ -128,6 +148,26 @@ class PropertyProxySpec {
     }
 
     @Test
+    @JsName("fn4a")
+    fun `returnMany is an alias to getMany`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val values: List<Any> = fixture.listFixture()
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy returnsMany values
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.getMany mustBe values
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn5")
     fun `Given a getSideEffect is set it is threadsafe retrievable`(): AsyncTestReturnValue {
         // Given
@@ -137,6 +177,26 @@ class PropertyProxySpec {
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.getSideEffect = sideEffect
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.getSideEffect mustBe sideEffect
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
+    @JsName("fn5a")
+    fun `runOnGet is an alias to getSideEffect`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val sideEffect = { fixture.fixture<Any>() }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy runOnGet sideEffect
         }
 
         // Then
@@ -168,8 +228,28 @@ class PropertyProxySpec {
     }
 
     @Test
+    @JsName("fn6a")
+    fun `runOnSet is an alias to set`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val effect: (Any) -> Unit = { }
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy runOnSet effect
+        }
+
+        // Then
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.set sameAs effect
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn7")
-    fun `Given onGet is called it fails if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it fails if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
         val proxy = PropertyProxy<Any>(name)
@@ -178,7 +258,7 @@ class PropertyProxySpec {
             // Then
             val error = assertFailsWith<MockError.MissingStub> {
                 // When
-                proxy.onGet()
+                proxy.executeOnGet()
             }
 
             error.message mustBe "Missing stub value for $name"
@@ -187,7 +267,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn7a")
-    fun `Given onGet is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it uses the given Relaxer if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
         val value = AtomicReference(fixture.fixture<Any>())
@@ -196,7 +276,7 @@ class PropertyProxySpec {
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.onGet {
+            val actual = proxy.executeOnGet {
                 useRelaxerIf(true) { givenId ->
                     capturedId.set(givenId)
 
@@ -212,7 +292,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn7b")
-    fun `Given onGet is called it uses the given Spy if no ReturnValue Provider is set`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it uses the given Spy if no ReturnValue Provider is set`(): AsyncTestReturnValue {
         // Given
         val name: String = fixture.fixture()
         val value: Any = fixture.fixture()
@@ -224,7 +304,7 @@ class PropertyProxySpec {
 
         return runBlockingTestInContext(testScope1.coroutineContext) {
             // When
-            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
+            val actual = proxy.executeOnGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -233,7 +313,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn8")
-    fun `Given onGet is called it returns the Get Value threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it returns the Get Value threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: String = fixture.fixture()
@@ -244,7 +324,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet()
+            val actual = proxy.executeOnGet()
 
             // Then
             actual mustBe value
@@ -255,7 +335,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn9")
-    fun `Given onGet is called it returns the GetMany Value threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it returns the GetMany Value threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<String> = fixture.listFixture()
@@ -267,7 +347,7 @@ class PropertyProxySpec {
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             values.forEach { value ->
-                val actual = proxy.onGet()
+                val actual = proxy.executeOnGet()
 
                 // Then
                 actual mustBe value
@@ -279,7 +359,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn10")
-    fun `Given onGet is called it returns the last GetMany Value if the given List is down to one value threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it returns the last GetMany Value if the given List is down to one value threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 1)
@@ -291,7 +371,7 @@ class PropertyProxySpec {
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             repeat(10) {
-                val actual = proxy.onGet()
+                val actual = proxy.executeOnGet()
 
                 // Then
                 actual mustBe values.first()
@@ -303,7 +383,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn11")
-    fun `Given onGet is called it returns the GetSideEffect Value threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it returns the GetSideEffect Value threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value = fixture.fixture<Any>()
@@ -315,7 +395,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet()
+            val actual = proxy.executeOnGet()
 
             // Then
             actual mustBe value
@@ -326,7 +406,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn12")
-    fun `Given onGet is called it uses GetMany over Get`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it uses GetMany over Get`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
@@ -339,7 +419,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet()
+            val actual = proxy.executeOnGet()
 
             // Then
             actual mustBe values.first()
@@ -350,7 +430,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn13")
-    fun `Given onGet is called it uses GetSideEffect over GetMany`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it uses GetSideEffect over GetMany`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
@@ -364,7 +444,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet()
+            val actual = proxy.executeOnGet()
 
             // Then
             actual mustBe value
@@ -375,7 +455,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn14")
-    fun `Given onGet is called it uses OnGetSpy over GetSideEffect`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it uses OnGetSpy over GetSideEffect`(): AsyncTestReturnValue {
         // Given
         val value: Any = fixture.fixture()
         val implementation = Implementation(fooProp = value)
@@ -390,7 +470,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            val actual = proxy.onGet { useSpyIf(implementation) { implementation.foo } }
+            val actual = proxy.executeOnGet { useSpyIf(implementation) { implementation.foo } }
 
             // Then
             actual mustBe value
@@ -401,7 +481,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn15")
-    fun `Given onSet is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnSet is called it calls the given SideEffect and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val newValue: Any = fixture.fixture()
@@ -419,7 +499,7 @@ class PropertyProxySpec {
 
         runBlockingTestInContext(testScope2.coroutineContext) {
             // When
-            val actual = proxy.onSet(newValue)
+            val actual = proxy.executeOnSet(newValue)
 
             // Then
             actual mustBe Unit
@@ -431,7 +511,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn16")
-    fun `Given onGet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it captures Arguments threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -442,7 +522,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onGet()
+            proxy.executeOnGet()
         }
 
         runBlockingTest {
@@ -456,15 +536,41 @@ class PropertyProxySpec {
     }
 
     @Test
+    @JsName("fn16a")
+    fun `Given executeOnGet is called it captures Arguments which are accessable ArrayStyle`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val values: List<Any> = fixture.listFixture(size = 5)
+
+        // When
+        runBlockingTestInContext(testScope1.coroutineContext) {
+            proxy.getMany = values.toList()
+        }
+
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.executeOnGet()
+        }
+
+        runBlockingTest {
+            val actual = proxy[0]
+
+            actual fulfils KMockContract.GetOrSet.Get::class
+            actual.value mustBe null
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn17")
-    fun `Given onSet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnSet is called it sets an Arguments to capture the call threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onSet(value)
+            proxy.executeOnSet(value)
         }
 
         runBlockingTest {
@@ -478,8 +584,30 @@ class PropertyProxySpec {
     }
 
     @Test
+    @JsName("fn17a")
+    fun `Given executeOnSet is called it captures Arguments which are accessable ArrayStyle`(): AsyncTestReturnValue {
+        // Given
+        val proxy = PropertyProxy<Any>(fixture.fixture())
+        val value: Any = fixture.fixture()
+
+        // When
+        runBlockingTestInContext(testScope2.coroutineContext) {
+            proxy.executeOnSet(value)
+        }
+
+        runBlockingTest {
+            val actual = proxy[0]
+
+            actual fulfils KMockContract.GetOrSet.Set::class
+            actual.value mustBe value
+        }
+
+        return resolveMultiBlockCalls()
+    }
+
+    @Test
     @JsName("fn18")
-    fun `Given onSet is called it uses the given Spy`(): AsyncTestReturnValue {
+    fun `Given executeOnSet is called it uses the given Spy`(): AsyncTestReturnValue {
         // Given
         val implementation = Implementation<Any>()
 
@@ -488,7 +616,7 @@ class PropertyProxySpec {
 
         // When
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onSet(value) { useSpyIf(implementation) { implementation.bar = value } }
+            proxy.executeOnSet(value) { useSpyIf(implementation) { implementation.bar = value } }
         }
 
         runBlockingTest {
@@ -519,7 +647,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn21")
-    fun `Given onGet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnGet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val values: List<Any> = fixture.listFixture(size = 5)
@@ -530,7 +658,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onGet()
+            proxy.executeOnGet()
         }
 
         runBlockingTest {
@@ -542,14 +670,14 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn22")
-    fun `Given onSet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
+    fun `Given executeOnSet is called it increments the call counter threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = PropertyProxy<Any>(fixture.fixture())
         val value: Any = fixture.fixture()
 
         // When
         runBlockingTestInContext(testScope1.coroutineContext) {
-            proxy.onSet(value)
+            proxy.executeOnSet(value)
         }
 
         runBlockingTest {
@@ -561,7 +689,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn23")
-    fun `Given the Proxy has a Collector and onGet is called it calls the Collect`(): AsyncTestReturnValue {
+    fun `Given the Proxy has a Collector and executeOnGet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val values: List<Any> = fixture.listFixture(size = 5)
 
@@ -581,7 +709,7 @@ class PropertyProxySpec {
         }
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onGet()
+            proxy.executeOnGet()
         }
 
         runBlockingTest {
@@ -594,7 +722,7 @@ class PropertyProxySpec {
 
     @Test
     @JsName("fn24")
-    fun `Given the Proxy has a Collector and onSet is called it calls the Collect`(): AsyncTestReturnValue {
+    fun `Given the Proxy has a Collector and executeOnSet is called it calls the Collect`(): AsyncTestReturnValue {
         // Given
         val value: Any = fixture.fixture()
 
@@ -610,7 +738,7 @@ class PropertyProxySpec {
         val proxy = PropertyProxy<Any>(fixture.fixture(), collector)
 
         runBlockingTestInContext(testScope2.coroutineContext) {
-            proxy.onSet(value)
+            proxy.executeOnSet(value)
         }
 
         runBlockingTest {
@@ -635,8 +763,8 @@ class PropertyProxySpec {
         proxy.getSideEffect = { value }
         proxy.set = sideEffect
 
-        proxy.onGet()
-        proxy.onSet(fixture.fixture())
+        proxy.executeOnGet()
+        proxy.executeOnSet(fixture.fixture())
 
         // When
         proxy.clear()

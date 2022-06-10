@@ -21,7 +21,7 @@ internal class SharedMock<T>(
     private val relaxed: Boolean = false,
 ) : Shared<T> {
     public override val buzz: String
-        get() = _buzz.onGet {
+        get() = _buzz.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 
@@ -30,7 +30,7 @@ internal class SharedMock<T>(
         collector, freeze = freeze)
 
     public override val uzz: T
-        get() = _uzz.onGet {
+        get() = _uzz.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,) as T }
         }

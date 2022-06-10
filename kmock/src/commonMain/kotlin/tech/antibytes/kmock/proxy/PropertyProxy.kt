@@ -145,6 +145,8 @@ internal class PropertyProxy<Value>(
             state.get = value
         }
 
+    override fun returns(value: Value) { get = value }
+
     private fun setGetManyValue(values: List<Value>) {
         state.getMany.clear()
         state.getMany.addAll(values)
@@ -161,6 +163,8 @@ internal class PropertyProxy<Value>(
             }
         }
 
+    override fun returnsMany(values: List<Value>) { getMany = values }
+
     override var getSideEffect: Function0<Value>
         get() {
             return if (state.sideEffect is Function0<Value>) {
@@ -174,6 +178,8 @@ internal class PropertyProxy<Value>(
             state.sideEffect = value
         }
 
+    override fun runOnGet(sideEffect: () -> Value) { getSideEffect = sideEffect }
+
     override var set: Function1<Value, Unit>
         get() {
             return if (state.set is Function1<*, *>) {
@@ -185,6 +191,8 @@ internal class PropertyProxy<Value>(
         set(value) {
             state.set = value
         }
+
+    override fun runOnSet(sideEffect: (Value) -> Unit) { set = sideEffect }
 
     override val calls: Int
         get() = state.calls
@@ -240,7 +248,7 @@ internal class PropertyProxy<Value>(
         return nonIntrusiveConfiguration
     }
 
-    override fun onGet(
+    override fun executeOnGet(
         nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Value>.() -> Unit,
     ): Value {
         val nonIntrusiveConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook)
@@ -256,7 +264,7 @@ internal class PropertyProxy<Value>(
         }
     }
 
-    override fun onSet(
+    override fun executeOnSet(
         value: Value,
         nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Unit>.() -> Unit,
     ) {
@@ -273,6 +281,8 @@ internal class PropertyProxy<Value>(
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
+
+    override fun get(callIndex: Int): GetOrSet = getArgumentsForCall(callIndex)
 
     override fun clear() {
         state.clear(PropertyProxyInvocationType.NO_PROVIDER)

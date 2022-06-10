@@ -47,9 +47,9 @@ internal class KMockPropertyGenerator(
         )
 
         val statement = if (nonIntrusive.isNotEmpty()) {
-            "return $propertyName.onGet$nonIntrusive"
+            "return $propertyName.executeOnGet$nonIntrusive"
         } else {
-            "return $propertyName.onGet()"
+            "return $propertyName.executeOnGet()"
         }
 
         return this.addStatement(statement)
@@ -82,9 +82,9 @@ internal class KMockPropertyGenerator(
         )
 
         val statement = if (nonIntrusive.isNotEmpty()) {
-            "return $propertyName.onSet($VALUE)$nonIntrusive"
+            "return $propertyName.executeOnSet($VALUE)$nonIntrusive"
         } else {
-            "return $propertyName.onSet($VALUE)"
+            "return $propertyName.executeOnSet($VALUE)"
         }
 
         return this.addStatement(statement)

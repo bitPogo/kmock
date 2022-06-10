@@ -26,15 +26,15 @@ internal class PlatformMock<Q : List<Int>>(
     private val relaxed: Boolean = false,
 ) : Platform<Q> {
     public override val foo: Any
-        get() = _foo.onGet()
+        get() = _foo.executeOnGet()
 
     public val _foo: KMockContract.PropertyProxy<Any> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.PlatformMock#_foo", collector =
         collector, freeze = freeze)
 
     public override var hashCode: Int
-        get() = _hashCode.onGet()
-        set(`value`) = _hashCode.onSet(value)
+        get() = _hashCode.executeOnGet()
+        set(`value`) = _hashCode.executeOnSet(value)
 
     public val _hashCode: KMockContract.PropertyProxy<Int> =
         ProxyFactory.createPropertyProxy("mock.template.overloaded.PlatformMock#_hashCode", collector

@@ -208,7 +208,7 @@ class ProxyFactorySpec {
 
         // Then
         proxy.get = fixture.fixture()
-        proxy.onGet()
+        proxy.executeOnGet()
 
         // Then
         capturedProxy sameAs proxy
@@ -231,7 +231,7 @@ class ProxyFactorySpec {
             proxy.get = fixture.fixture()
 
             // Then
-            proxy.onGet() // just runs
+            proxy.executeOnGet() // just runs
         }
     }
 }

@@ -37,15 +37,33 @@ class PropertyProxyStub(
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
 
-    override fun onGet(nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Any>.() -> Unit): Any {
+    override fun executeOnGet(nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Any>.() -> Unit): Any {
         TODO("Not yet implemented")
     }
 
-    override fun onSet(value: Any, nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Unit>.() -> Unit) {
+    override fun executeOnSet(value: Any, nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Unit>.() -> Unit) {
         TODO("Not yet implemented")
     }
 
     override fun clear() {
+        TODO("Not yet implemented")
+    }
+
+    override fun get(callIndex: Int): GetOrSet = getArgumentsForCall(callIndex)
+
+    override fun returns(value: Any) {
+        TODO("Not yet implemented")
+    }
+
+    override fun returnsMany(values: List<Any>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun runOnGet(sideEffect: () -> Any) {
+        TODO("Not yet implemented")
+    }
+
+    override fun runOnSet(sideEffect: (Any) -> Unit) {
         TODO("Not yet implemented")
     }
 }
