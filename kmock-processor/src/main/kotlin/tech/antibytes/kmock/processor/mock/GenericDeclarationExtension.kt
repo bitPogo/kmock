@@ -12,8 +12,8 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 
 internal fun GenericDeclaration.resolveGeneric(): TypeName {
     return if (this.types.size > 1) {
-        NULLABLE_ANY.copy(nullable = nullable)
+        NULLABLE_ANY.copy(nullable = isNullable)
     } else {
-        this.types.first().copy(nullable = nullable)
+        this.types.first().copy(nullable = isNullable)
     }
 }

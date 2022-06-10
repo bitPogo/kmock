@@ -30,7 +30,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockContract
@@ -213,9 +212,9 @@ internal interface ProcessorContract {
 
     data class GenericDeclaration(
         val types: List<TypeName>,
-        val recursive: Boolean,
-        val nullable: Boolean,
-        val castReturnType: Boolean = false
+        val isRecursive: Boolean,
+        val isNullable: Boolean,
+        val doCastReturnType: Boolean = false
     )
 
     interface GenericResolver {
@@ -302,33 +301,29 @@ internal interface ProcessorContract {
         fun selectMethodName(
             qualifier: String,
             methodName: String,
-            generics: Map<String, List<KSTypeReference>>,
+            generics: Map<String, GenericDeclaration>,
             arguments: Array<MemberArgumentTypeInfo>,
-            methodWideResolver: TypeParameterResolver,
         ): ProxyInfo
 
         fun selectReceiverGetterName(
             qualifier: String,
             propertyName: String,
             receiver: MemberArgumentTypeInfo,
-            generics: Map<String, List<KSTypeReference>>,
-            propertyWideResolver: TypeParameterResolver,
+            generics: Map<String, GenericDeclaration>,
         ): ProxyInfo
 
         fun selectReceiverSetterName(
             qualifier: String,
             propertyName: String,
             receiver: MemberArgumentTypeInfo,
-            generics: Map<String, List<KSTypeReference>>,
-            propertyWideResolver: TypeParameterResolver
+            generics: Map<String, GenericDeclaration>,
         ): ProxyInfo
 
         fun selectReceiverMethodName(
             qualifier: String,
             methodName: String,
-            generics: Map<String, List<KSTypeReference>>,
+            generics: Map<String, GenericDeclaration>,
             arguments: Array<MemberArgumentTypeInfo>,
-            methodWideResolver: TypeParameterResolver,
         ): ProxyInfo
     }
 
@@ -751,9 +746,9 @@ internal interface ProcessorContract {
         const val MULTI_MOCK = "MultiMock"
         val MULTI_MOCK_TYPE = TypeVariableName(MULTI_MOCK)
         val UNIT = Unit::class.asClassName().copy(nullable = false) as ClassName
-        val ANY = Any::class.asTypeName().copy(nullable = false)
-        val NULLABLE_ANY = Any::class.asTypeName().copy(nullable = true)
-        val ARRAY = Array::class.asTypeName()
+        val ANY = Any::class.asClassName().copy(nullable = false)
+        val NULLABLE_ANY = Any::class.asClassName().copy(nullable = true)
+        val ARRAY = Array::class.asClassName()
         val MULTI_BOUNDED = TypeVariableName("multiboundedKmock")
 
         const val COMMON_INDICATOR = "commonTest"

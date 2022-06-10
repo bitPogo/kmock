@@ -26,9 +26,9 @@ class GenericDeclarationExtensionSpec {
         // When
         val actual = GenericDeclaration(
             types = listOf(type),
-            recursive = fixture.fixture(),
-            nullable = false,
-            castReturnType = fixture.fixture(),
+            isRecursive = fixture.fixture(),
+            isNullable = false,
+            doCastReturnType = fixture.fixture(),
         ).resolveGeneric()
 
         // Then
@@ -44,9 +44,9 @@ class GenericDeclarationExtensionSpec {
         // When
         val actual = GenericDeclaration(
             types = listOf(type),
-            recursive = fixture.fixture(),
-            nullable = nullable,
-            castReturnType = fixture.fixture(),
+            isRecursive = fixture.fixture(),
+            isNullable = nullable,
+            doCastReturnType = fixture.fixture(),
         ).resolveGeneric()
 
         // Then
@@ -58,9 +58,9 @@ class GenericDeclarationExtensionSpec {
         // When
         val actual = GenericDeclaration(
             types = listOf(mockk(), mockk()),
-            recursive = fixture.fixture(),
-            nullable = false,
-            castReturnType = fixture.fixture(),
+            isRecursive = fixture.fixture(),
+            isNullable = false,
+            doCastReturnType = fixture.fixture(),
         ).resolveGeneric()
 
         // Then
@@ -75,9 +75,9 @@ class GenericDeclarationExtensionSpec {
         // When
         val actual = GenericDeclaration(
             types = listOf(mockk(), mockk()),
-            recursive = fixture.fixture(),
-            nullable = nullable,
-            castReturnType = fixture.fixture(),
+            isRecursive = fixture.fixture(),
+            isNullable = nullable,
+            doCastReturnType = fixture.fixture(),
         ).resolveGeneric()
 
         // Then

@@ -22,7 +22,7 @@ private fun MemberReturnTypeInfo.needsCastForRelaxer(relaxer: Relaxer?): Boolean
 }
 
 internal fun MemberReturnTypeInfo.needsCastForReceiverProperty(): Boolean {
-    return (this.generic != null && (this.generic.types.size > 1 || this.generic.castReturnType))
+    return (this.generic != null && (this.generic.types.size > 1 || this.generic.doCastReturnType))
 }
 
 internal fun MemberReturnTypeInfo.needsCastAnnotation(

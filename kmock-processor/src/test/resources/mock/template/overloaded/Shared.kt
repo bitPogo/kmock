@@ -24,6 +24,8 @@ interface Shared {
     fun <T> foo(fuzz: T)
     fun <T : Shared> foo(fuzz: T)
     fun <T : LPG> foo(fuzz: T)
+    fun <T : R, R : Abc> foo(fuzz: T)
+    fun foo(fuzz: Array<in Any>)
 }
 
 data class Abc(

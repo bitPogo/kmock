@@ -60,18 +60,19 @@ internal class InheritedMock<R>(
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
-        get() = _nothingGetterWithTSomethingComparable.invoke(this@nothing) as T
+        get() = _nothingGetterWithTSomethingTComparable.invoke(this@nothing) as T
         set(`value`) {
-            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value)
+            _nothingSetterWithTSomethingTComparable.invoke(this@nothing, value)
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingGetterWithTSomethingComparable",
+    public val _nothingGetterWithTSomethingTComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any>
+        =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingGetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
-        =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingSetterWithTSomethingComparable",
+    public val _nothingSetterWithTSomethingTComparable:
+        KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.InheritedMock#_nothingSetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public override var <T : R> T.nothing: R
@@ -130,8 +131,8 @@ internal class InheritedMock<R>(
         _thingsGetter.clear()
         _extensionGetter.clear()
         _extensionSetter.clear()
-        _nothingGetterWithTSomethingComparable.clear()
-        _nothingSetterWithTSomethingComparable.clear()
+        _nothingGetterWithTSomethingTComparable.clear()
+        _nothingSetterWithTSomethingTComparable.clear()
         _nothingGetterWithTR.clear()
         _nothingSetterWithTR.clear()
         _otherThingGetter.clear()

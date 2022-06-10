@@ -163,7 +163,6 @@ internal class KMockReceiverGenerator(
         propertyName: String,
         isMutable: Boolean,
         receiverInfo: MemberArgumentTypeInfo,
-        generics: Map<String, List<KSTypeReference>>,
         proxyGenerics: Map<String, GenericDeclaration>?,
         classScopeGenerics: Map<String, List<TypeName>>?,
         receiverTypeResolver: TypeParameterResolver,
@@ -173,8 +172,7 @@ internal class KMockReceiverGenerator(
                 qualifier = qualifier,
                 propertyName = propertyName,
                 receiver = receiverInfo,
-                generics = generics,
-                propertyWideResolver = receiverTypeResolver,
+                generics = proxyGenerics ?: emptyMap()
             )
 
             val (setterProxy, _) = utils.buildProxy(
@@ -233,8 +231,7 @@ internal class KMockReceiverGenerator(
             qualifier = qualifier,
             propertyName = propertyName,
             receiver = receiverInfo,
-            generics = generics,
-            propertyWideResolver = receiverTypeResolver,
+            generics = proxyGenerics ?: emptyMap()
         )
 
         val (getter, getterReturnType) = utils.buildProxy(
@@ -253,7 +250,6 @@ internal class KMockReceiverGenerator(
             propertyName = propertyName,
             isMutable = isMutable,
             receiverInfo = receiverInfo,
-            generics = generics,
             proxyGenerics = proxyGenerics,
             classScopeGenerics = classScopeGenerics,
             receiverTypeResolver = receiverTypeResolver,
@@ -389,8 +385,7 @@ internal class KMockReceiverGenerator(
             qualifier = qualifier,
             methodName = methodName,
             arguments = argumentsWithReceiver,
-            generics = generics,
-            methodWideResolver = receiverTypeResolver,
+            generics = proxyGenerics ?: emptyMap()
         )
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
             inheritedVarargArg = false,

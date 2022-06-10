@@ -59,18 +59,19 @@ internal class CommonMock<L>(
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
-        get() = _nothingGetterWithTSomethingComparable.invoke(this@nothing) as T
+        get() = _nothingGetterWithTSomethingTComparable.invoke(this@nothing) as T
         set(`value`) {
-            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value)
+            _nothingSetterWithTSomethingTComparable.invoke(this@nothing, value)
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingGetterWithTSomethingComparable",
+    public val _nothingGetterWithTSomethingTComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any>
+        =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingGetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
-        =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingSetterWithTSomethingComparable",
+    public val _nothingSetterWithTSomethingTComparable:
+        KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.CommonMock#_nothingSetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public override var <T : L> T.nothing: L
@@ -129,8 +130,8 @@ internal class CommonMock<L>(
         _thingsGetter.clear()
         _extensionGetter.clear()
         _extensionSetter.clear()
-        _nothingGetterWithTSomethingComparable.clear()
-        _nothingSetterWithTSomethingComparable.clear()
+        _nothingGetterWithTSomethingTComparable.clear()
+        _nothingSetterWithTSomethingTComparable.clear()
         _nothingGetterWithTL.clear()
         _nothingSetterWithTL.clear()
         _otherThingGetter.clear()

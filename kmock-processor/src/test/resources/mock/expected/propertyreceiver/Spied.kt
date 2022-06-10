@@ -86,13 +86,13 @@ internal class SpiedMock<L>(
 
     @Suppress("UNCHECKED_CAST")
     public override var <T> T.nothing: T where T : Something, T : Comparable<T>
-        get() = _nothingGetterWithTSomethingComparable.invoke(this@nothing) {
+        get() = _nothingGetterWithTSomethingTComparable.invoke(this@nothing) {
             useSpyIf(__spyOn) {    spyContext {
                 this@nothing.nothing
             } as T }
         } as T
         set(`value`) {
-            _nothingSetterWithTSomethingComparable.invoke(this@nothing, value) {
+            _nothingSetterWithTSomethingTComparable.invoke(this@nothing, value) {
                 useSpyIf(__spyOn) {    spyContext {
                     this@nothing.nothing = value
                     Unit
@@ -100,13 +100,14 @@ internal class SpiedMock<L>(
             }
         }
 
-    public val _nothingGetterWithTSomethingComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTSomethingComparable",
+    public val _nothingGetterWithTSomethingTComparable: KMockContract.SyncFunProxy<Any, (Any) -> Any>
+        =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingGetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
-    public val _nothingSetterWithTSomethingComparable: KMockContract.SyncFunProxy<Unit, (Any) -> Unit>
-        =
-        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTSomethingComparable",
+    public val _nothingSetterWithTSomethingTComparable:
+        KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.propertyreceiver.SpiedMock#_nothingSetterWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     @Suppress("UNCHECKED_CAST")
@@ -227,8 +228,8 @@ internal class SpiedMock<L>(
         _thingsGetter.clear()
         _extensionGetter.clear()
         _extensionSetter.clear()
-        _nothingGetterWithTSomethingComparable.clear()
-        _nothingSetterWithTSomethingComparable.clear()
+        _nothingGetterWithTSomethingTComparable.clear()
+        _nothingSetterWithTSomethingTComparable.clear()
         _nothingGetterWithTL.clear()
         _nothingSetterWithTL.clear()
         _otherThingGetter.clear()

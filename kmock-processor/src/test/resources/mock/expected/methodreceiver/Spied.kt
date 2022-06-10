@@ -53,9 +53,9 @@ internal class SpiedMock<L>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_mutabor", collector =
         collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable:
+    public val _doNothingReceiverWithTSomethingTComparable:
         KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_doNothingReceiverWithTSomethingComparable",
+        ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.SpiedMock#_doNothingReceiverWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public val _doNothingReceiverWithTAny: KMockContract.SyncFunProxy<Unit, (Any) -> Unit> =
@@ -141,7 +141,7 @@ internal class SpiedMock<L>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
-        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
+        _doNothingReceiverWithTSomethingTComparable.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
             useSpyIf(__spyOn) {    spyContext {
                 this@doNothing.doNothing<T>()
@@ -213,7 +213,7 @@ internal class SpiedMock<L>(
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()
-        _doNothingReceiverWithTSomethingComparable.clear()
+        _doNothingReceiverWithTSomethingTComparable.clear()
         _doNothingReceiverWithTAny.clear()
         _doNothingElseReceiver.clear()
         _doNothingElse.clear()

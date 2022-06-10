@@ -138,8 +138,8 @@ internal object KMockGenerics : GenericResolver {
     private fun resolveNullableAny(): GenericDeclaration {
         return GenericDeclaration(
             types = nullableAnys,
-            recursive = false,
-            nullable = true
+            isRecursive = false,
+            isNullable = true
         )
     }
 
@@ -152,6 +152,7 @@ internal object KMockGenerics : GenericResolver {
     private fun KSTypeReference.resolveSingleBoundary(
         visited: Set<String>,
         classScope: Set<String>,
+        allGenerics: Set<String>,
         rootNullability: Boolean,
         resolved: Map<String, GenericDeclaration>,
         typeParameterResolver: TypeParameterResolver,
@@ -159,6 +160,7 @@ internal object KMockGenerics : GenericResolver {
         val type = mapParameterType(
             visited = visited,
             classScope = classScope,
+            allGenerics = allGenerics,
             rootNullability = rootNullability,
             resolved = resolved,
             typeParameterResolver = typeParameterResolver,
@@ -170,6 +172,7 @@ internal object KMockGenerics : GenericResolver {
     private fun List<KSTypeReference>.resolveMultiBoundary(
         visited: Set<String>,
         classScope: Set<String>,
+        allGenerics: Set<String>,
         rootNullability: Boolean,
         resolved: Map<String, GenericDeclaration>,
         typeParameterResolver: TypeParameterResolver,
@@ -182,6 +185,7 @@ internal object KMockGenerics : GenericResolver {
             val type = rawType.mapParameterType(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
@@ -190,25 +194,26 @@ internal object KMockGenerics : GenericResolver {
             val genericDeclaration = type.resolveGenericDeclaration()
                 ?: return null
 
-            isRecursive = isRecursive || genericDeclaration.recursive
+            isRecursive = isRecursive || genericDeclaration.isRecursive
             isNullable = isNullable && type.isNullable
 
-            castOnReturn = castOnReturn || genericDeclaration.castReturnType
+            castOnReturn = castOnReturn || genericDeclaration.doCastReturnType
 
             type
         }
 
         return GenericDeclaration(
             types = resolvedTypes,
-            recursive = isRecursive,
-            nullable = isNullable,
-            castReturnType = castOnReturn,
+            isRecursive = isRecursive,
+            isNullable = isNullable,
+            doCastReturnType = castOnReturn,
         )
     }
 
     private fun determineType(
         visited: Set<String>,
         classScope: Set<String>,
+        allGenerics: Set<String>,
         types: List<KSTypeReference>,
         resolved: Map<String, GenericDeclaration>,
         typeParameterResolver: TypeParameterResolver,
@@ -219,6 +224,7 @@ internal object KMockGenerics : GenericResolver {
             1 -> types.first().resolveSingleBoundary(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver
@@ -226,6 +232,7 @@ internal object KMockGenerics : GenericResolver {
             else -> types.resolveMultiBoundary(
                 visited = visited,
                 classScope = classScope,
+                allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver
@@ -252,6 +259,7 @@ internal object KMockGenerics : GenericResolver {
                     val type = determineType(
                         visited = visited,
                         classScope = classWideGenerics,
+                        allGenerics = allGenerics,
                         types = declaration,
                         resolved = resolved,
                         typeParameterResolver = typeParameterResolver,

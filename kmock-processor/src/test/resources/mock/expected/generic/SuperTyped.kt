@@ -29,9 +29,9 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAnys",
             collector = collector, freeze = freeze)
 
-    public val _pptWithTCharSequenceComparables:
+    public val _pptWithTCharSequenceTComparables:
         KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceComparables",
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithTCharSequenceTComparables",
             collector = collector, freeze = freeze)
 
     public val _pptWithTComparables:
@@ -43,8 +43,8 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTAny",
             collector = collector, freeze = freeze)
 
-    public val _pptWithZTCharSequenceComparable: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTCharSequenceComparable",
+    public val _pptWithZTCharSequenceZTComparable: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_pptWithZTCharSequenceZTComparable",
             collector = collector, freeze = freeze)
 
     public val _pptWithZTComparable: KMockContract.SyncFunProxy<Unit, (Comparable<Any?>?) -> Unit> =
@@ -56,8 +56,8 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZKAnyTComparables",
             collector = collector, freeze = freeze)
 
-    public val _lolWithTAnys: KMockContract.SyncFunProxy<Unit, (Array<out K>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithTAnys",
+    public val _lolWithZTAnys: KMockContract.SyncFunProxy<Unit, (Array<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZTAnys",
             collector = collector, freeze = freeze)
 
     public val _lolWithZKAnyTComparable: KMockContract.SyncFunProxy<Unit, (Any?,
@@ -65,9 +65,9 @@ internal class SuperTypedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZKAnyTComparable",
             collector = collector, freeze = freeze)
 
-    public val _lolWithTAny: KMockContract.SyncFunProxy<Unit, (K) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithTAny", collector
-        = collector, freeze = freeze)
+    public val _lolWithZTAny: KMockContract.SyncFunProxy<Unit, (Any?) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_lolWithZTAny",
+            collector = collector, freeze = freeze)
 
     public val _buzz: KMockContract.SyncFunProxy<Unit, (Array<out List<Array<Int>>?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.generic.SuperTypedMock#_buzz", collector =
@@ -114,7 +114,7 @@ internal class SuperTypedMock<K : Any, L>(
     }
 
     public override fun <T> ppt(vararg x: T): Unit where T : CharSequence, T : Comparable<T> =
-        _pptWithTCharSequenceComparables.invoke(x) {
+        _pptWithTCharSequenceTComparables.invoke(x) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -127,7 +127,7 @@ internal class SuperTypedMock<K : Any, L>(
     }
 
     public override fun <T> ppt(x: T): Unit where T : CharSequence?, T : Comparable<T>? =
-        _pptWithZTCharSequenceComparable.invoke(x) {
+        _pptWithZTCharSequenceZTComparable.invoke(x) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -140,7 +140,7 @@ internal class SuperTypedMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T : K, K> lol(vararg x: T): Unit = _lolWithTAnys.invoke(x) {
+    public override fun <T : K, K> lol(vararg x: T): Unit = _lolWithZTAnys.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -149,7 +149,7 @@ internal class SuperTypedMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun <T : K, K> lol(x: T): Unit = _lolWithTAny.invoke(x) {
+    public override fun <T : K, K> lol(x: T): Unit = _lolWithZTAny.invoke(x) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
@@ -185,15 +185,15 @@ internal class SuperTypedMock<K : Any, L>(
 
     public fun _clearMock(): Unit {
         _pptWithZTAnys.clear()
-        _pptWithTCharSequenceComparables.clear()
+        _pptWithTCharSequenceTComparables.clear()
         _pptWithTComparables.clear()
         _pptWithZTAny.clear()
-        _pptWithZTCharSequenceComparable.clear()
+        _pptWithZTCharSequenceZTComparable.clear()
         _pptWithZTComparable.clear()
         _lolWithZKAnyTComparables.clear()
-        _lolWithTAnys.clear()
+        _lolWithZTAnys.clear()
         _lolWithZKAnyTComparable.clear()
-        _lolWithTAny.clear()
+        _lolWithZTAny.clear()
         _buzz.clear()
         _narvWithLs.clear()
         _narvWithArrays.clear()

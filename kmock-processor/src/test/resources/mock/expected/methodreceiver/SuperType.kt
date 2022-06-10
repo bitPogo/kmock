@@ -50,9 +50,9 @@ internal class InheritedMock<P>(
         ProxyFactory.createSyncFunProxy("mock.template.methodreceiver.InheritedMock#_mutabor",
             collector = collector, freeze = freeze)
 
-    public val _doNothingReceiverWithTSomethingComparable:
+    public val _doNothingReceiverWithTSomethingTComparable:
         KMockContract.AsyncFunProxy<Unit, suspend (Any) -> Unit> =
-        ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTSomethingComparable",
+        ProxyFactory.createAsyncFunProxy("mock.template.methodreceiver.InheritedMock#_doNothingReceiverWithTSomethingTComparable",
             collector = collector, freeze = freeze)
 
     public val _doNothingReceiverWithTAny: KMockContract.AsyncFunProxy<Unit, suspend (Any) -> Unit> =
@@ -97,7 +97,7 @@ internal class InheritedMock<P>(
     }
 
     public override suspend fun <T> T.doNothing(): Unit where T : Something, T : Comparable<T> =
-        _doNothingReceiverWithTSomethingComparable.invoke(this@doNothing,) {
+        _doNothingReceiverWithTSomethingTComparable.invoke(this@doNothing,) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -128,7 +128,7 @@ internal class InheritedMock<P>(
         _doSomethingElse.clear()
         _mutaborReceiver.clear()
         _mutabor.clear()
-        _doNothingReceiverWithTSomethingComparable.clear()
+        _doNothingReceiverWithTSomethingTComparable.clear()
         _doNothingReceiverWithTAny.clear()
         _doNothingElseReceiver.clear()
         _doNothingElse.clear()
