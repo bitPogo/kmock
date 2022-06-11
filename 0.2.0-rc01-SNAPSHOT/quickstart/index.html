@@ -33,7 +33,7 @@
 <span class=n>plugins</span><span class=w> </span><span class=p>{</span><span class=w></span>
 <span class=w>    </span><span class=p>...</span><span class=w></span>
 
-<span class=w>    </span><span class=n>id</span><span class=p>(</span><span class=s>&quot;tech.antibytes.kmock.kmock-gradle&quot;</span><span class=p>)</span><span class=w> </span><span class=n>apply</span><span class=w> </span><span class=kc>false</span><span class=w></span>
+<span class=w>    </span><span class=n>id</span><span class=p>(</span><span class=s>&quot;tech.antibytes.kmock.kmock-gradle&quot;</span><span class=p>)</span><span class=w></span>
 <span class=p>}</span><span class=w></span>
 
 <span class=n>kotlin</span><span class=w> </span><span class=p>{</span><span class=w></span>
@@ -53,9 +53,7 @@
 <span class=w>    </span><span class=p>...</span><span class=w></span>
 <span class=p>}</span><span class=w></span>
 
-<span class=n>plugins</span><span class=p>.</span><span class=na>apply</span><span class=p>(</span><span class=s>&quot;tech.antibytes.kmock.kmock-gradle&quot;</span><span class=p>)</span><span class=w></span>
-
-<span class=n>project</span><span class=p>.</span><span class=na>extensions</span><span class=p>.</span><span class=na>configure</span><span class=o>&lt;</span><span class=n>KMockExtension</span><span class=o>&gt;</span><span class=p>(</span><span class=s>&quot;kmock&quot;</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w></span>
+<span class=n>kmock</span><span class=w> </span><span class=p>{</span><span class=w></span>
 <span class=w>    </span><span class=n>rootPackage</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&quot;my.root.package&quot;</span><span class=w></span>
 <span class=p>}</span><span class=w></span>
 </code></pre></div> <h2 id=generate-a-mock>Generate a Mock<a class=headerlink href=#generate-a-mock title="Permanent link">&para;</a></h2> <div class=highlight><pre><span></span><code><span class=k>import</span><span class=w> </span><span class=nn>tech.antibytes.kmock.MockCommon</span><span class=w></span>
@@ -74,8 +72,8 @@
 <span class=w>   </span><span class=c1>// arrange</span><span class=w></span>
 <span class=w>   </span><span class=kd>val</span><span class=w> </span><span class=nv>someInstance</span><span class=p>:</span><span class=w> </span><span class=n>OtherSampleInterfaceMock</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>kmock</span><span class=p>()</span><span class=w></span>
 
-<span class=w>   </span><span class=n>someInstance</span><span class=p>.</span><span class=na>_fetch</span><span class=p>.</span><span class=na>returns</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kt>Any</span><span class=p>()</span><span class=w></span>
-<span class=w>   </span><span class=n>someInstance</span><span class=p>.</span><span class=na>_find</span><span class=p>.</span><span class=na>returns</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&quot;any&quot;</span><span class=w></span>
+<span class=w>   </span><span class=n>someInstance</span><span class=p>.</span><span class=na>_fetch</span><span class=p>.</span><span class=na>returnValue</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kt>Any</span><span class=p>()</span><span class=w></span>
+<span class=w>   </span><span class=n>someInstance</span><span class=p>.</span><span class=na>_find</span><span class=w> </span><span class=n>returns</span><span class=w> </span><span class=s>&quot;any&quot;</span><span class=w></span>
 
 <span class=w>   </span><span class=c1>// act</span><span class=w></span>
 <span class=w>   </span><span class=kd>val</span><span class=w> </span><span class=nv>someOtherInstance</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>SomeClass</span><span class=p>(</span><span class=n>someInstance</span><span class=p>)</span><span class=w></span>
