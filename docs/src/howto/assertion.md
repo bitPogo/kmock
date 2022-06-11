@@ -62,6 +62,7 @@ Currently the following constraints are implemented:
 
 | ArgumentConstraint      | What it does                         |
 | ----------------------- | ------------------------------------ |
+| `and`                    | which allows to chain multiple values or constraints together with an logical and. |
 | `any`                   | matches always (including null).<br/>If a concrete type was given it matches only if a recorded argument fulfils the expected type (exclusive null). |
 | `eq`                    | matches if the recorded argument is equal to the expected argument. |
 | `isNot`                 | matches if the recorded argument is not equal to the expected argument. |

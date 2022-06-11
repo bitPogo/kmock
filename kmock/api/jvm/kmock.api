@@ -700,6 +700,12 @@ public final class tech/antibytes/kmock/verification/constraints/IsNotSameKt {
 	public static final fun isNotSame (Ljava/lang/Object;)Ltech/antibytes/kmock/KMockContract$ArgumentConstraint;
 }
 
+public final class tech/antibytes/kmock/verification/constraints/and : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
+	public fun <init> ([Ljava/lang/Object;)V
+	public fun matches (Ljava/lang/Object;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class tech/antibytes/kmock/verification/constraints/any : tech/antibytes/kmock/KMockContract$ArgumentConstraint {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/reflect/KClass;)V

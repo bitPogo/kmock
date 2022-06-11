@@ -12,14 +12,14 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 
 /**
  * VerificationConstraint which allows to chain multiple values or constraints together.
- * It matches if at least one value or constraints matches.
+ * It matches if all values or constraints matches.
  * @param subConstraints the expected values or constraints.
  * @property subConstraints  the expected values or constraints.
  * @throws IllegalArgumentException if no value or constraint was provided.
  * @see ArgumentConstraint
  * @author Matthias Geisler
  */
-public class or(
+public class and(
     vararg subConstraints: Any?
 ) : ArgumentConstraint {
     private val subConstraints: Array<out ArgumentConstraint> = mapSubConstraints(subConstraints)
@@ -29,7 +29,7 @@ public class or(
         action: Array<out Any?>.() -> Array<out ArgumentConstraint>
     ): Array<out ArgumentConstraint> {
         return if (subConstraints.isEmpty()) {
-            throw IllegalArgumentException("or should not be empty!")
+            throw IllegalArgumentException("and should not be empty!")
         } else {
             subConstraints.action()
         }
@@ -51,10 +51,10 @@ public class or(
 
     override fun matches(
         actual: Any?
-    ): Boolean = subConstraints.any { expected -> expected.matches(actual) }
+    ): Boolean = subConstraints.all { expected -> expected.matches(actual) }
 
     override fun toString(): String {
         val constraints = subConstraints.joinToString(", ")
-        return "or[$constraints]"
+        return "and[$constraints]"
     }
 }

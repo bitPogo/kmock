@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+* `and` ArgumentConstraint
 * getValue which preserves the old behaviour of get (PropertyProxy)
 * getValues to replace getMany (PropertyProxy)
 * error to replace throws (FunProxy)
