@@ -31,12 +31,12 @@ fun sampleTest() {
    // arrange
    val someInstance: SampleRemoteRepositoryMock = kmock()
 
-   someInstance._fetch.returns = Any()
-   someInstance._find.returns = "any"
+   someInstance._fetch.returnValue = Any()
+   someInstance._find returns "any"
 
    // act
    val someOtherInstance = SomeClass(someInstance)
-   someOtherInstance.run()
+   someOtherInstance.execute()
    ...
 }
 ```
@@ -49,7 +49,7 @@ fun sampleTest() {
    // arrange
    val someInstance: SampleRemoteRepositoryMock = kmock()
 
-   someInstance._fetch.sideEffect = {
+   someInstance._fetch run {
        delay(20)
        return Any()
    }
@@ -69,23 +69,33 @@ fun sampleTest() {
 }
 ```
 
-You can use the following members of FunProxies:
+You can use the following properties of FunProxies:
 
-| Property/Method | What it does                         |
+| Property        | What it does                         |
 | --------------- | ------------------------------------ |
-| `returns`       | the Proxy will return the always the given value. |
-| `returnMany`    | the Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
-| `throws`        | the Proxy will throw the given error/exception. |
-| `throwsMany`    | the Proxy will throw each value of the given list.<br/> If only one error/exception is left it will throw it until the run is completed. |
-| `sideEffect`    | the Proxy will execute the given SideEffect and returns its result. |
-| `sideEffects`   | the Proxy will execute each SideEffect and returns its result. <br/> If only one SideEffect is left it will execute it until the run is completed. |
-| `run`           | is an alias to `sideEffect. |
-| `runs`          | is an alias to `sideEffects. |
+| `returnValue`   | The Proxy will return the always the given value. |
+| `returnValues`  | The Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
+| `error`         | The Proxy will throw the given error/exception. |
+| `errors`        | The Proxy will throw each value of the given list.<br/> If only one error/exception is left it will throw it until the run is completed. |
+| `sideEffect`    | The Proxy will execute the given SideEffect and returns its result. |
+| `sideEffects`   | The Proxy will execute each SideEffect and returns its result. <br/> If only one SideEffect is left it will execute it until the run is completed. |
+
 
 !!!note
-    Please be aware there is a precedence of invocation.
-    `throwsMany` is used over  `throws`, `returns` is used over `throwsMany`, `returnsMany` is used over `returns`, `sideEffect` is used over `returnsMany` and `sideEffects` is used over `sideEffect`.
-    If no behaviour is set the Proxy simply fails and acts therefore intrusively.
+Please be aware there is a precedence of invocation.
+`errors` is used over  `error`, `returnValue` is used over `errors`, `returnValues` is used over `returnValues`, `sideEffect` is used over `returnValues` and `sideEffects` is used over `sideEffect`.
+If no behaviour is set the Proxy simply fails and acts therefore intrusively.
+
+Additionally you can use the following infix methods to mutate its values:
+
+| Method          | What it does                         |
+| --------------- | ------------------------------------ |
+| `returns`       | Alias setter of `returnValue`.<br/>The Proxy will return the always the given value. |
+| `returnsMany`   | Alias setter of `returnValues`.<br/>The Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
+| `throws`        | Alias setter of `error`.<br/>The Proxy will throw the given error/exception. |
+| `throwsMany`    | Alias setter of `errors`.<br/>The Proxy will throw each value of the given list.<br/> If only one error/exception is left it will throw it until the run is completed. |
+| `run`           | Alias setter of `sideEffect`.<br/>The Proxy will execute the given SideEffect and returns its result. |
+| `runs`          | Alias setter of `sideEffects`.<br/>The Proxy will execute each SideEffect and returns its result. <br/> If only one SideEffect is left it will execute it until the run is completed. |
 
 A last word to SideEffects.
 While they in general using the signature of the Template and therefore you can the full power of the Kotlin's type system, there is one exception to this.
@@ -108,7 +118,7 @@ fun sampleTest() {
    // arrange
    val someInstance: SampleDomainObjectMock = kmock()
 
-   someInstance._id.get = "Any"
+   someInstance._id.getValue = "Any"
    someInstance._something.set = { value ->
        if (value == 0) {
            throw RuntimeException()
@@ -117,7 +127,7 @@ fun sampleTest() {
 
    // act
    val someOtherInstance = SomeClass()
-   someOtherInstance.run(someInstance)
+   someOtherInstance.execute(someInstance)
    ...
 }
 ```
@@ -129,16 +139,25 @@ PropertyProxies have the following properties:
 
 | Property       | What it does                         |
 | -------------- | ------------------------------------ |
-| `get`          | the Proxy will return the always the given value. |
-| `getMany`      | the Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
-| `getSideEffect`| the Proxy will execute the given SideEffect and return its result. |
-| `set`          | the Proxy will execute the given SideEffect. |
+| `getValue`     | The Proxy will return the always the given value. |
+| `getValues`    | The Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
+| `get`          | The Proxy will execute the given SideEffect and return its result. |
+| `set`          | The Proxy will execute the given SideEffect. |
+
 
 !!!note
-    Please be aware there is a precedence of invocation.
-    `getMany` is used over `get` and `getSideEffect` is used over `getMany`.
-    If no behaviour is set the Proxy simply fails and acts intrusively.
+Please be aware there is a precedence of invocation.
+`getValues` is used over `getValue` and `get` is used over `getValues`.
+If no behaviour is set the Proxy simply fails and acts intrusively.
 
+Additionally you can use the following infix methods to mutate its values:
+
+| Method         | What it does                         |
+| -------------- | ------------------------------------ |
+| `returns`      | Alias setter of `getValue`.<br/> Proxy will return the always the given value. |
+| `returnsMany`  | Alias setter of `getValues`.<br/> Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
+| `runOnGet`     | Alias setter of `get`.<br/> Proxy will execute the given SideEffect and return its result. |
+| `runOnet`     | Alias setter of `set`.<br/> Proxy will execute the given SideEffect. |
 
 ## ReceiverProxies
 While receivers are technically not a special type of Proxy they are still special.
@@ -253,8 +272,7 @@ fun sampleTest() {
 }
 ```
 
-In case you deal with overloaded methods you need to give additionally those methods a hint, which is composed of the argument types.
-Also if you mixin generics on the methods you have to reference them as well.
+In case you deal with overloaded methods or methods with generics you need to give additionally those methods a hint, which is composed of the argument types of the Template.
 Consider following source:
 ```kotlin
 interface SampleGenericRemoteRepositoryMock {
@@ -286,12 +304,12 @@ fun sampleTest() {
 
     // act
     val someOtherInstance = SomeClass(someInstance)
-    someOtherInstance.run()
+    someOtherInstance.execute()
     ...
 }
 ```
 
 While this may sound amazing these access method have their natural limitations due to Kotlin itself.
 You will not be able to address Receivers in that way.
-The signature of the Template may be too ambiguous in certain cases which makes them unable to resolve the correct Proxy.
+The signature of the Template maybe too ambiguous in certain cases which makes them unable to resolve the correct Proxy.
 In those cases you may access Proxies directly.
