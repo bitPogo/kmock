@@ -207,7 +207,7 @@ class ProxyFactorySpec {
         )
 
         // Then
-        proxy.get = fixture.fixture()
+        proxy.getValue = fixture.fixture()
         proxy.executeOnGet()
 
         // Then
@@ -228,7 +228,7 @@ class ProxyFactorySpec {
         )
 
         return runBlockingTest {
-            proxy.get = fixture.fixture()
+            proxy.getValue = fixture.fixture()
 
             // Then
             proxy.executeOnGet() // just runs

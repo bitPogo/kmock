@@ -72,7 +72,7 @@ class SampleControllerAutoStubFactorySpec {
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)
 
-        domainObject._id.getMany = id
+        domainObject._id.getValues = id
 
         remote._fetch.returnValue = domainObject
         local._store.returnValue = domainObject
@@ -112,7 +112,7 @@ class SampleControllerAutoStubFactorySpec {
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
 
-        domainObject._id.get = id
+        domainObject._id.getValue = id
 
         remote._find.returnValue = domainObject
         local._contains.sideEffect = { true }

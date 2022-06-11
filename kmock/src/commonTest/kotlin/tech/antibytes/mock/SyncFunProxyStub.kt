@@ -9,6 +9,7 @@ package tech.antibytes.mock
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.error.MockError
 
+@Suppress("UNUSED_PARAMETER")
 class SyncFunProxyStub(
     override val id: String,
     override val calls: Int,
@@ -16,9 +17,28 @@ class SyncFunProxyStub(
     override val ignorableForVerification: Boolean = false,
     override val frozen: Boolean = true
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
+    @Deprecated(
+        "This property will be replaced with 0.3.0 by error.",
+        replaceWith = ReplaceWith("error"),
+        level = DeprecationLevel.WARNING
+    )
     override var throws: Throwable
         get() = TODO("Not yet implemented")
         set(_) {}
+    @Deprecated(
+        "This property will be replaced with 0.3.0 by errors.",
+        replaceWith = ReplaceWith("errors"),
+        level = DeprecationLevel.WARNING
+    )
+    override var throwsMany: List<Throwable>
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var error: Throwable
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override var errors: List<Throwable>
+        get() = TODO("Not yet implemented")
+        set(value) {}
     override var returnValue: Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
@@ -223,10 +243,6 @@ class SyncFunProxyStub(
     override fun run(action: () -> Any) {
         TODO("Not yet implemented")
     }
-
-    override var throwsMany: List<Throwable>
-        get() = TODO("Not yet implemented")
-        set(value) {}
 
     override fun get(callIndex: Int): Array<out Any?> = getArgumentsForCall(callIndex)
 

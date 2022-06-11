@@ -438,17 +438,19 @@ public abstract interface class tech/antibytes/kmock/KMockContract$NonIntrusiveP
 public abstract interface class tech/antibytes/kmock/KMockContract$PropertyProxy : tech/antibytes/kmock/KMockContract$Proxy, tech/antibytes/kmock/KMockContract$ProxyReturnValueSetter {
 	public abstract fun executeOnGet (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public abstract fun executeOnSet (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun getGet ()Ljava/lang/Object;
+	public abstract fun getGet ()Lkotlin/jvm/functions/Function0;
 	public abstract fun getGetMany ()Ljava/util/List;
-	public abstract fun getGetSideEffect ()Lkotlin/jvm/functions/Function0;
+	public abstract fun getGetValue ()Ljava/lang/Object;
+	public abstract fun getGetValues ()Ljava/util/List;
 	public abstract fun getSet ()Lkotlin/jvm/functions/Function1;
 	public abstract fun returns (Ljava/lang/Object;)V
 	public abstract fun returnsMany (Ljava/util/List;)V
 	public abstract fun runOnGet (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun runOnSet (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun setGet (Ljava/lang/Object;)V
+	public abstract fun setGet (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun setGetMany (Ljava/util/List;)V
-	public abstract fun setGetSideEffect (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun setGetValue (Ljava/lang/Object;)V
+	public abstract fun setGetValues (Ljava/util/List;)V
 	public abstract fun setSet (Lkotlin/jvm/functions/Function1;)V
 }
 

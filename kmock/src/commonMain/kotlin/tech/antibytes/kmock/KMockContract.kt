@@ -1041,17 +1041,17 @@ public object KMockContract {
         /**
          * Holds the get value.
          */
-        var get: Value?
+        var getValue: Value?
 
         /**
          * Holds the (chained) get values
          */
-        val getMany: MutableList<Value>
+        val getValues: MutableList<Value>
 
         /**
          * Holds the SideEffect for get
          */
-        var sideEffect: Function0<Value>?
+        var get: Function0<Value>?
 
         /**
          * Holds the SideEffect for set
@@ -1069,7 +1069,7 @@ public object KMockContract {
          * Setter/Getter in order to set/get constant Value of the property.
          * @throws NullPointerException on get if no value was set.
          */
-        public var get: Value
+        public var getValue: Value
 
         /**
          * Alias setter of get.
@@ -1083,6 +1083,13 @@ public object KMockContract {
          * @throws NullPointerException on get if no value was set.
          * @throws MissingStub if the given List is empty.
          */
+        public var getValues: List<Value>
+
+        @Deprecated(
+            message = "This property will be replaced with 0.3.0 by getValues.",
+            replaceWith = ReplaceWith("error"),
+            level = DeprecationLevel.WARNING
+        )
         public var getMany: List<Value>
 
         /**
@@ -1098,7 +1105,7 @@ public object KMockContract {
          * on invocation.
          * @throws NullPointerException on get if no value was set.
          */
-        public var getSideEffect: Function0<Value>
+        public var get: Function0<Value>
 
         /**
          * Alias setter of getSideEffect.

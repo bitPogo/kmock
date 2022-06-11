@@ -24,13 +24,22 @@ class PropertyProxyStub(
         }
     }
 
-    override var get: Any
+    override var getValue: Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
+    override var getValues: List<Any>
+        get() = TODO("Not yet implemented")
+        set(_) = TODO("Not yet implemented")
+
+    @Deprecated(
+        "This property will be replaced with 0.3.0 by getValues.",
+        replaceWith = ReplaceWith("error"),
+        level = DeprecationLevel.WARNING
+    )
     override var getMany: List<Any>
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
-    override var getSideEffect: () -> Any
+    override var get: () -> Any
         get() = TODO("Not yet implemented")
         set(_) = TODO("Not yet implemented")
     override var set: (Any) -> Unit
