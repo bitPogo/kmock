@@ -28,13 +28,13 @@ internal class RelaxedMock<K : Any, L>(
     private val __spyOn: Relaxed<K, L>? = spyOn
 
     public override var template: L
-        get() = _template.onGet {
+        get() = _template.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,
                 type0 = kotlin.Any::class,
                 type1 = kotlin.Comparable::class,) as L }
             useSpyIf(__spyOn) { __spyOn!!.template }
         }
-        set(`value`) = _template.onSet(value) {
+        set(`value`) = _template.executeOnSet(value) {
             useSpyIf(__spyOn) { __spyOn!!.template = value }
         }
 
@@ -43,7 +43,7 @@ internal class RelaxedMock<K : Any, L>(
         collector, freeze = freeze)
 
     public override val ozz: Int
-        get() = _ozz.onGet {
+        get() = _ozz.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
             useSpyIf(__spyOn) { __spyOn!!.ozz }
         }

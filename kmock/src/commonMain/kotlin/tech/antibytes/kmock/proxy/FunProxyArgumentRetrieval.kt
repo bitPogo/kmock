@@ -20,7 +20,7 @@ import tech.antibytes.kmock.error.MockError.MissingCall
 @KMockExperimental
 public inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
     callIndex: Int
-): List<T> = this.getArgumentsForCall(callIndex).filterIsInstance<T>()
+): List<T> = this[callIndex].filterIsInstance<T>()
 
 /**
  * Retrieves arguments for given type of FunProxy.
@@ -33,7 +33,7 @@ public inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArguments
     val aggregated: MutableList<T> = mutableListOf()
 
     for (idx in 0 until this.calls) {
-        this.getArgumentsForCall(idx).filterIsInstance<T>().also { arguments ->
+        this[idx].filterIsInstance<T>().also { arguments ->
             aggregated.addAll(arguments)
         }
     }
@@ -52,7 +52,7 @@ public inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getAllArguments
     val aggregated: MutableList<List<T>> = mutableListOf()
 
     for (idx in 0 until this.calls) {
-        this.getArgumentsForCall(idx).filterIsInstance<T>().also { arguments ->
+        this[idx].filterIsInstance<T>().also { arguments ->
             aggregated.add(arguments)
         }
     }

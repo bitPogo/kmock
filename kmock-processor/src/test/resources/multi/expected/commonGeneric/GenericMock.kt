@@ -42,15 +42,15 @@ Generic1<KMockTypeParameter0, KMockTypeParameter1>, MultiMock :
 Generic2<KMockTypeParameter2, KMockTypeParameter3>, MultiMock :
 GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     public override var template: KMockTypeParameter1
-        get() = _template.onGet()
-        set(`value`) = _template.onSet(value)
+        get() = _template.executeOnGet()
+        set(`value`) = _template.executeOnSet(value)
 
     public val _template: KMockContract.PropertyProxy<KMockTypeParameter1> =
         ProxyFactory.createPropertyProxy("multi.CommonGenericMultiMock#_template", collector =
         collector, freeze = freeze)
 
     public override val lol: KMockTypeParameter2
-        get() = _lol.onGet()
+        get() = _lol.executeOnGet()
 
     public val _lol: KMockContract.PropertyProxy<KMockTypeParameter2> =
         ProxyFactory.createPropertyProxy("multi.CommonGenericMultiMock#_lol", collector = collector,

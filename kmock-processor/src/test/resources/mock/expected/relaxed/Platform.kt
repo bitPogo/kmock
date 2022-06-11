@@ -22,7 +22,7 @@ internal class PlatformMock(
     private val relaxed: Boolean = false,
 ) : Platform {
     public override val buzz: String
-        get() = _buzz.onGet {
+        get() = _buzz.executeOnGet {
             useRelaxerIf(relaxed) { proxyId -> relaxed(proxyId,) }
         }
 

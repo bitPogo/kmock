@@ -36,7 +36,7 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         collector: Collector,
         setProvider: (FunProxyInvocationType) -> Unit,
     ) : FunProxyState<ReturnValue, SideEffect> {
-        private val _throws: AtomicRef<Throwable?> = atomic(null)
+        private val _error: AtomicRef<Throwable?> = atomic(null)
         private val _returnValue: AtomicRef<ReturnValue?> = atomic(null)
         private val _sideEffect: AtomicRef<SideEffect?> = atomic(null)
         override val sideEffects = SideEffectChain<ReturnValue, SideEffect>(true) {
@@ -48,8 +48,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         private val _collector: AtomicRef<Collector> = atomic(collector)
         private val _invocationType: AtomicRef<FunProxyInvocationType> = atomic(defaultInvocationType)
 
-        override var throws: Throwable? by _throws
-        override val throwsMany: MutableList<Throwable> = sharedMutableListOf()
+        override var error: Throwable? by _error
+        override val errors: MutableList<Throwable> = sharedMutableListOf()
 
         override var returnValue: ReturnValue? by _returnValue
         override val returnValues: MutableList<ReturnValue> = sharedMutableListOf()
@@ -67,7 +67,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         }
 
         override fun clear(defaultInvocationType: FunProxyInvocationType) {
-            _throws.update { null }
+            _error.update { null }
+            errors.clear()
             _returnValue.update { null }
             returnValues.clear()
             _sideEffect.update { null }
@@ -87,8 +88,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
     ) : FunProxyState<ReturnValue, SideEffect> {
         private var _calls = 0
 
-        override var throws: Throwable? = null
-        override val throwsMany: MutableList<Throwable> = mutableListOf()
+        override var error: Throwable? = null
+        override val errors: MutableList<Throwable> = mutableListOf()
 
         override var returnValue: ReturnValue? = null
         override val returnValues: MutableList<ReturnValue> = mutableListOf()
@@ -108,7 +109,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         }
 
         override fun clear(defaultInvocationType: FunProxyInvocationType) {
-            throws = null
+            error = null
+            errors.clear()
             returnValue = null
             returnValues.clear()
             sideEffect = null
@@ -156,32 +158,54 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         }
     }
 
-    override var throws: Throwable
+    final override var error: Throwable
         get() {
-            return if (state.throws is Throwable) {
-                state.throws as Throwable
+            return if (state.error is Throwable) {
+                state.error as Throwable
             } else {
                 throw NullPointerException()
             }
         }
         set(value) {
             setFunProxyInvocationType(FunProxyInvocationType.THROWS)
-            state.throws = value
+            state.error = value
         }
 
-    private fun _setThrowables(values: List<Throwable>) {
-        state.throwsMany.clear()
-        state.throwsMany.addAll(values)
+    @Deprecated("This property will be replaced with 0.3.0 by error.")
+    final override var throws: Throwable
+        get() = error
+        set(value) {
+            error = value
+        }
+
+    override fun throws(error: Throwable) {
+        this.error = error
     }
 
-    override var throwsMany: List<Throwable>
-        get() = state.throwsMany.toList()
+    private fun _setThrowables(values: List<Throwable>) {
+        state.errors.clear()
+        state.errors.addAll(values)
+    }
+
+    final override var errors: List<Throwable>
+        get() = state.errors.toList()
         set(values) {
             setListValue(values) {
                 setFunProxyInvocationType(FunProxyInvocationType.THROWS_MANY)
                 _setThrowables(values)
             }
         }
+
+    @Deprecated("This property will be replaced with 0.3.0 by error.")
+    override var throwsMany: List<Throwable>
+        get() = errors
+        set(value) {
+            errors = value
+        }
+
+    override fun throwsMany(errors: List<Throwable>) {
+        this.errors = errors
+    }
 
     override var returnValue: ReturnValue
         @Suppress("UNCHECKED_CAST")
@@ -190,6 +214,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
             setFunProxyInvocationType(FunProxyInvocationType.RETURN_VALUE)
             state.returnValue = value
         }
+
+    override fun returns(value: ReturnValue) { returnValue = value }
 
     private fun _setReturnValues(values: List<ReturnValue>) {
         state.returnValues.clear()
@@ -204,6 +230,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
                 _setReturnValues(values)
             }
         }
+
+    override fun returnsMany(values: List<ReturnValue>) { returnValues = values }
 
     override var sideEffect: SideEffect
         get() {
@@ -241,7 +269,7 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
         }
     }
 
-    protected fun retrieveFromThrowables(): Throwable = resolveListValue(state.throwsMany)
+    protected fun retrieveFromThrowables(): Throwable = resolveListValue(state.errors)
     protected fun retrieveFromValues(): ReturnValue = resolveListValue(state.returnValues)
 
     protected fun fail(): ReturnValue {
@@ -294,6 +322,8 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
+
+    override fun get(callIndex: Int): Array<out Any?> = getArgumentsForCall(callIndex)
 
     override fun clear() {
         state.clear(FunProxyInvocationType.NO_GIVEN_VALUE)

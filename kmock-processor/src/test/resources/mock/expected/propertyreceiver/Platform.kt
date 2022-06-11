@@ -117,7 +117,7 @@ internal class PlatformMock<L>(
             collector = collector, freeze = freeze)
 
     public override val myThing: String
-        get() = _myThing.onGet()
+        get() = _myThing.executeOnGet()
 
     public val _myThing: KMockContract.PropertyProxy<String> =
         ProxyFactory.createPropertyProxy("mock.template.propertyreceiver.PlatformMock#_myThing",

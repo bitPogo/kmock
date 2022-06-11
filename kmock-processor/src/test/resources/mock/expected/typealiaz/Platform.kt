@@ -28,7 +28,7 @@ internal class PlatformMock<L : Alias23>(
     private val relaxed: Boolean = false,
 ) : Platform<L> {
     public override val prop: Alias73<String>
-        get() = _prop.onGet()
+        get() = _prop.executeOnGet()
 
     public val _prop: KMockContract.PropertyProxy<Alias73<String>> =
         ProxyFactory.createPropertyProxy("mock.template.typealiaz.PlatformMock#_prop", collector =

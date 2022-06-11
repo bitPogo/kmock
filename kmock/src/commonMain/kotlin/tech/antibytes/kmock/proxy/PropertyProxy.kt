@@ -43,8 +43,8 @@ internal class PropertyProxy<Value>(
         defaultInvocationType: PropertyProxyInvocationType,
         collector: Collector,
     ) : PropertyProxyState<Value> {
-        private val _get: AtomicRef<Value?> = atomic(null)
-        private val _sideEffect: AtomicRef<Function0<Value>?> = atomic(null)
+        private val _getValue: AtomicRef<Value?> = atomic(null)
+        private val _get: AtomicRef<Function0<Value>?> = atomic(null)
 
         private val _set: AtomicRef<Function1<Value, Unit>?> = atomic { /*Do Nothing on Default*/ }
 
@@ -53,9 +53,9 @@ internal class PropertyProxy<Value>(
         private val _collector: AtomicRef<Collector> = atomic(collector)
         private val _invocationType: AtomicRef<PropertyProxyInvocationType> = atomic(defaultInvocationType)
 
-        override var get: Value? by _get
-        override val getMany: MutableList<Value> = sharedMutableListOf()
-        override var sideEffect: Function0<Value>? by _sideEffect
+        override var getValue: Value? by _getValue
+        override val getValues: MutableList<Value> = sharedMutableListOf()
+        override var get: Function0<Value>? by _get
         override var set: Function1<Value, Unit>? by _set
 
         override var invocationType: PropertyProxyInvocationType by _invocationType
@@ -69,9 +69,9 @@ internal class PropertyProxy<Value>(
         }
 
         override fun clear(defaultInvocationType: PropertyProxyInvocationType) {
+            _getValue.update { null }
+            getValues.clear()
             _get.update { null }
-            getMany.clear()
-            _sideEffect.update { null }
 
             _set.update { null }
             _calls.update { 0 }
@@ -87,9 +87,9 @@ internal class PropertyProxy<Value>(
     ) : PropertyProxyState<Value> {
         private var _calls = 0
 
-        override var get: Value? = null
-        override val getMany: MutableList<Value> = mutableListOf()
-        override var sideEffect: Function0<Value>? = null
+        override var getValue: Value? = null
+        override val getValues: MutableList<Value> = mutableListOf()
+        override var get: Function0<Value>? = null
         override var set: Function1<Value, Unit>? = null
 
         override var invocationType: PropertyProxyInvocationType = defaultInvocationType
@@ -102,9 +102,9 @@ internal class PropertyProxy<Value>(
         }
 
         override fun clear(defaultInvocationType: PropertyProxyInvocationType) {
+            getValue = null
+            getValues.clear()
             get = null
-            getMany.clear()
-            sideEffect = null
 
             set = null
             _calls = 0
@@ -137,21 +137,25 @@ internal class PropertyProxy<Value>(
         }
     }
 
-    override var get: Value
+    override var getValue: Value
         @Suppress("UNCHECKED_CAST")
-        get() = state.get as Value
+        get() = state.getValue as Value
         set(value) {
             setPropertyProxyInvocationType(PropertyProxyInvocationType.VALUE)
-            state.get = value
+            state.getValue = value
         }
 
-    private fun setGetManyValue(values: List<Value>) {
-        state.getMany.clear()
-        state.getMany.addAll(values)
+    override fun returns(value: Value) {
+        getValue = value
     }
 
-    override var getMany: List<Value>
-        get() = state.getMany.toList()
+    private fun setGetManyValue(values: List<Value>) {
+        state.getValues.clear()
+        state.getValues.addAll(values)
+    }
+
+    override var getValues: List<Value>
+        get() = state.getValues.toList()
         set(values) {
             if (values.isEmpty()) {
                 throw MockError.MissingStub("Empty Lists are not valid as value provider.")
@@ -161,18 +165,37 @@ internal class PropertyProxy<Value>(
             }
         }
 
-    override var getSideEffect: Function0<Value>
+    @Deprecated(
+        "This property will be replaced with 0.3.0 by getValues.",
+        replaceWith = ReplaceWith("error"),
+        level = DeprecationLevel.WARNING
+    )
+    override var getMany: List<Value>
+        get() = getValues
+        set(value) {
+            getValues = value
+        }
+
+    override fun returnsMany(values: List<Value>) {
+        getValues = values
+    }
+
+    override var get: () -> Value
         get() {
-            return if (state.sideEffect is Function0<Value>) {
-                state.sideEffect as Function0<Value>
+            return if (state.get is Function0<Value>) {
+                state.get as Function0<Value>
             } else {
                 throw NullPointerException()
             }
         }
         set(value) {
             setPropertyProxyInvocationType(PropertyProxyInvocationType.SIDE_EFFECT)
-            state.sideEffect = value
+            state.get = value
         }
+
+    override fun runOnGet(sideEffect: () -> Value) {
+        get = sideEffect
+    }
 
     override var set: Function1<Value, Unit>
         get() {
@@ -186,11 +209,13 @@ internal class PropertyProxy<Value>(
             state.set = value
         }
 
+    override fun runOnSet(sideEffect: (Value) -> Unit) { set = sideEffect }
+
     override val calls: Int
         get() = state.calls
 
     private fun retrieveValue(): Value {
-        val values = state.getMany
+        val values = state.getValues
 
         return if (values.size == 1) {
             values.first()
@@ -240,23 +265,23 @@ internal class PropertyProxy<Value>(
         return nonIntrusiveConfiguration
     }
 
-    override fun onGet(
+    override fun executeOnGet(
         nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Value>.() -> Unit,
     ): Value {
         val nonIntrusiveConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook)
         onEvent(GetOrSet.Get)
 
         return when (state.invocationType) {
-            PropertyProxyInvocationType.VALUE -> get
+            PropertyProxyInvocationType.VALUE -> getValue
             PropertyProxyInvocationType.VALUES -> retrieveValue()
-            PropertyProxyInvocationType.SIDE_EFFECT -> getSideEffect.invoke()
+            PropertyProxyInvocationType.SIDE_EFFECT -> get.invoke()
             PropertyProxyInvocationType.SPY -> nonIntrusiveConfiguration.unwrapSpy()!!.invoke()
             PropertyProxyInvocationType.RELAXED -> nonIntrusiveConfiguration.unwrapRelaxer()!!.relax(id)
             else -> throw MockError.MissingStub("Missing stub value for $id")
         }
     }
 
-    override fun onSet(
+    override fun executeOnSet(
         value: Value,
         nonIntrusiveHook: KMockContract.NonIntrusivePropertyConfigurator<Unit>.() -> Unit,
     ) {
@@ -273,6 +298,8 @@ internal class PropertyProxy<Value>(
             throw throw MockError.MissingCall("$callIndex was not found for $id!")
         }
     }
+
+    override fun get(callIndex: Int): GetOrSet = getArgumentsForCall(callIndex)
 
     override fun clear() {
         state.clear(PropertyProxyInvocationType.NO_PROVIDER)

@@ -168,7 +168,7 @@ internal class ReceiverMultiMock<KMockTypeParameter0, KMockTypeParameter1, Multi
         collector, freeze = freeze)
 
     public override val myThing: String
-        get() = _myThing.onGet {
+        get() = _myThing.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.myThing }
         }
 

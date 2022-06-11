@@ -82,8 +82,8 @@ class SampleControllerAutoSpyFactorySpec {
         val id = fixture.listFixture<String>(size = 2)
         val number = fixture.fixture<Int>()
 
-        domainObject._id.getMany = id
-        domainObject._value.get = number
+        domainObject._id.getValues = id
+        domainObject._value.getValue = number
 
         remote._fetch.returnValue = domainObject
         local._store.returnValue = domainObject
@@ -129,8 +129,8 @@ class SampleControllerAutoSpyFactorySpec {
         val id = fixture.fixture<String>()
         val number = fixture.fixture<Int>()
 
-        domainObject._id.get = id
-        domainObject._value.get = number
+        domainObject._id.getValue = id
+        domainObject._value.getValue = number
 
         remote._find.returnValue = domainObject
         local._contains.sideEffect = { true }
@@ -220,7 +220,7 @@ class SampleControllerAutoSpyFactorySpec {
         val mock: MergedCommonMock<*> = kmock()
 
         // When
-        mock._id.get = "23"
+        mock._id.getValue = "23"
 
         // Then
         mock.id mustBe "23"

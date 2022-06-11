@@ -44,10 +44,10 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     private val __spyOn: MultiMock? = spyOn
 
     public override var template: KMockTypeParameter1
-        get() = _template.onGet {
+        get() = _template.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.template }
         }
-        set(`value`) = _template.onSet(value) {
+        set(`value`) = _template.executeOnSet(value) {
             useSpyIf(__spyOn) { __spyOn!!.template = value }
         }
 
@@ -56,7 +56,7 @@ GenericPlatformContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         collector, freeze = freeze)
 
     public override val lol: KMockTypeParameter2
-        get() = _lol.onGet {
+        get() = _lol.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.lol }
         }
 

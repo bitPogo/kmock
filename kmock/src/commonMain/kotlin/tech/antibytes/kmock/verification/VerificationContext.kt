@@ -20,7 +20,7 @@ internal object VerificationContext : KMockContract.VerificationContext {
         val callIndices = mutableListOf<Int>()
 
         for (idx in 0 until proxy.calls) {
-            if (action(proxy.getArgumentsForCall(idx))) {
+            if (action(proxy[idx])) {
                 callIndices.add(idx)
             }
         }

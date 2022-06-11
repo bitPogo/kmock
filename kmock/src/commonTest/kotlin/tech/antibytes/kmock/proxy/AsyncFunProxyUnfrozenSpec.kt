@@ -43,7 +43,7 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn0_b")
-    fun `It is never ignorable for verfication`() {
+    fun `It is never ignorable for verification`() {
         AsyncFunProxy<Unit, suspend () -> Unit>(
             fixture.fixture(),
             freeze = false
@@ -58,7 +58,35 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given a throws is set it is retrievable`() = runBlockingTest {
+    fun `Given an error is set it is retrievable`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val error = RuntimeException(fixture.fixture<String>())
+
+        // When
+        proxy.error = error
+
+        // Then
+        proxy.error mustBe error
+    }
+
+    @Test
+    @JsName("fn2a")
+    fun `throws is a setter alias to error`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val error = RuntimeException(fixture.fixture<String>())
+
+        // When
+        proxy throws error
+
+        // Then
+        proxy.error mustBe error
+    }
+
+    @Test
+    @JsName("fn2b")
+    fun `throws is an alias setter of error`() {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val error = RuntimeException(fixture.fixture<String>())
@@ -67,26 +95,55 @@ class AsyncFunProxyUnfrozenSpec {
         proxy.throws = error
 
         // Then
+        proxy.error mustBe error
         proxy.throws mustBe error
     }
 
     @Test
-    @JsName("fn2a")
-    fun `Given throwMany is set with an emptyList it fails`() {
+    @JsName("fn2c")
+    fun `Given errors is set with an emptyList it fails`() {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
 
         // Then
         val error = assertFailsWith<MockError.MissingStub> {
-            proxy.throwsMany = emptyList()
+            proxy.errors = emptyList()
         }
 
         error.message mustBe "Empty Lists are not valid as value provider."
     }
 
     @Test
-    @JsName("fn2b")
-    fun `Given throwMany is set it is retrievable`() {
+    @JsName("fn2d")
+    fun `Given errors is set it is retrievable`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        proxy.errors = errors
+
+        // Then
+        proxy.errors mustBe errors
+    }
+
+    @Test
+    @JsName("fn2e")
+    fun `throwMany is an alias setter of errors`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val errors = listOf(RuntimeException(), RuntimeException())
+
+        // When
+        proxy throwsMany errors
+
+        // Then
+        proxy.errors mustBe errors
+    }
+
+    @Test
+    @JsName("fn2f")
+    fun `throwMany is an setter of errors`() {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val errors = listOf(RuntimeException(), RuntimeException())
@@ -95,11 +152,12 @@ class AsyncFunProxyUnfrozenSpec {
         proxy.throwsMany = errors
 
         // Then
+        proxy.errors mustBe errors
         proxy.throwsMany mustBe errors
     }
 
     @Test
-    @JsName("fn2c")
+    @JsName("fn3")
     fun `Given a returnValue is set it is retrievable`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
@@ -113,7 +171,7 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
-    @JsName("fn3")
+    @JsName("fn3a")
     fun `Given a returnValue is set with nullable value it is retrievable`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any?, suspend () -> Any?>(fixture.fixture(), freeze = false)
@@ -121,6 +179,20 @@ class AsyncFunProxyUnfrozenSpec {
 
         // When
         proxy.returnValue = value
+
+        // Then
+        proxy.returnValue mustBe value
+    }
+
+    @Test
+    @JsName("fn3b")
+    fun `returns is an alias setter of returnValue`() {
+        // Given
+        val proxy = AsyncFunProxy<Any?, suspend () -> Any?>(fixture.fixture(), freeze = false)
+        val value: Any? = null
+
+        // When
+        proxy returns value
 
         // Then
         proxy.returnValue mustBe value
@@ -149,6 +221,20 @@ class AsyncFunProxyUnfrozenSpec {
 
         // When
         proxy.returnValues = values
+
+        // Then
+        proxy.returnValues mustBe values
+    }
+
+    @Test
+    @JsName("fn5a")
+    fun `returnsMany is an alias setter of returnValues`() {
+        // Given
+        val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
+        val values: List<Any> = fixture.listFixture()
+
+        // When
+        proxy returnsMany values
 
         // Then
         proxy.returnValues mustBe values
@@ -256,13 +342,13 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn8")
-    fun `Given invoke is called it throws the Throwable`() = runBlockingTest {
+    fun `Given invoke is called it throws the Error`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val error = RuntimeException(fixture.fixture<String>())
 
         // When
-        proxy.throws = error
+        proxy.error = error
 
         val actual = assertFailsWith<RuntimeException> { proxy.invoke() }
 
@@ -272,13 +358,13 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn8a")
-    fun `Given invoke is called it throws the given Throwables threadsafe`() = runBlockingTest {
+    fun `Given invoke is called it throws the given Errors threadsafe`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val errors = listOf(RuntimeException(), RuntimeException())
 
         // When
-        proxy.throwsMany = errors
+        proxy.errors = errors
 
         errors.forEach { error ->
             val actual = assertFailsWith<RuntimeException> {
@@ -436,14 +522,14 @@ class AsyncFunProxyUnfrozenSpec {
         val actualArgument3 = AtomicReference<Int?>(null)
 
         // When
-        proxy.runs { givenArg0, givenArg1 ->
+        proxy runs { givenArg0, givenArg1 ->
             actualArgument0.set(givenArg0)
             actualArgument1.set(givenArg1)
 
             expected0
         }
 
-        proxy.runs { givenArg0, givenArg1 ->
+        proxy runs { givenArg0, givenArg1 ->
             actualArgument2.set(givenArg0)
             actualArgument3.set(givenArg1)
 
@@ -463,15 +549,15 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn14")
-    fun `Given invoke is called it uses ThrowMany over Throws`() = runBlockingTest {
+    fun `Given invoke is called it uses Errors over Error`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val error = RuntimeException(fixture.fixture<String>())
         val errors = listOf(RuntimeException(fixture.fixture<String>()), RuntimeException(fixture.fixture<String>()))
 
         // When
-        proxy.throws = error
-        proxy.throwsMany = errors
+        proxy.error = error
+        proxy.errors = errors
 
         val actual = assertFailsWith<RuntimeException> {
             proxy.invoke()
@@ -483,7 +569,7 @@ class AsyncFunProxyUnfrozenSpec {
 
     @Test
     @JsName("fn14a")
-    fun `Given invoke is called it uses ReturnValue over ThrowMany`() = runBlockingTest {
+    fun `Given invoke is called it uses ReturnValue over Error`() = runBlockingTest {
         // Given
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(fixture.fixture(), freeze = false)
         val value: Any = fixture.fixture()
@@ -491,7 +577,7 @@ class AsyncFunProxyUnfrozenSpec {
 
         // When
         proxy.returnValue = value
-        proxy.throwsMany = error
+        proxy.errors = error
 
         val actual = proxy.invoke()
 
@@ -610,6 +696,26 @@ class AsyncFunProxyUnfrozenSpec {
     }
 
     @Test
+    @JsName("fn19a")
+    fun `Given invoke is called it captures Arguments which are accessible Array style`() = runBlockingTest {
+        // Given
+        val proxy = AsyncFunProxy<Any, (String) -> Any>(fixture.fixture(), freeze = false)
+        val values: List<Any> = fixture.listFixture(size = 5)
+        val argument: String = fixture.fixture()
+
+        // When
+        proxy.returnValues = values.toList()
+
+        proxy.invoke(argument)
+
+        val actual = proxy[0]
+
+        // Then
+        actual.size mustBe 1
+        actual[0] mustBe argument
+    }
+
+    @Test
     @JsName("fn20")
     fun `Given invoke is called it captures void Arguments`() = runBlockingTest {
         // Given
@@ -703,8 +809,8 @@ class AsyncFunProxyUnfrozenSpec {
             fixture.fixture()
         }
 
-        proxy.throws = error
-        proxy.throwsMany = errors
+        proxy.error = error
+        proxy.errors = errors
         proxy.returnValue = value
         proxy.returnValues = values
         proxy.sideEffect = sideEffect
@@ -716,7 +822,8 @@ class AsyncFunProxyUnfrozenSpec {
         proxy.clear()
 
         // Then
-        assertFailsWith<NullPointerException> { proxy.throws }
+        assertFailsWith<NullPointerException> { proxy.error mustBe null }
+        proxy.errors mustBe emptyList()
         proxy.returnValue mustBe null
 
         assertFailsWith<IndexOutOfBoundsException> { proxy.returnValues[0] }

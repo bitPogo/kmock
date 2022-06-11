@@ -1,6 +1,19 @@
 # Migration Guide
-Apologies! Some was broken to improve KMock.
+Apologies! Something was broken to improve KMock.
 But don't panic!
+
+## 0.2.0-rc01 to 0.2.0
+### API changes
+
+### Behaviour Changes
+
+* The `get` property of PropertyProxy is now responsible for the SideEffect.
+This was done to get a more coherent API for this proxy type.
+`getValue` takes over for `get` to hold simple values.
+
+#### Removed
+
+* Replace `getSideEffect` with `get`.
 
 ## 0.1.1 to 0.2.0-rc01
 ### API changes

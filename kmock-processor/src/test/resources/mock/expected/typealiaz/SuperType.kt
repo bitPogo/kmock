@@ -28,7 +28,7 @@ internal class InheritedMock<R : Alias33>(
     private val relaxed: Boolean = false,
 ) : Inherited<R> {
     public override val prop: Alias93<String, String>
-        get() = _prop.onGet()
+        get() = _prop.executeOnGet()
 
     public val _prop: KMockContract.PropertyProxy<Alias93<String, String>> =
         ProxyFactory.createPropertyProxy("mock.template.typealiaz.InheritedMock#_prop", collector =

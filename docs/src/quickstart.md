@@ -45,7 +45,7 @@ import tech.antibytes.gradle.kmock.KMockExtension
 plugins {
     ...
 
-    id("tech.antibytes.kmock.kmock-gradle") apply false
+    id("tech.antibytes.kmock.kmock-gradle")
 }
 
 kotlin {
@@ -65,9 +65,7 @@ kotlin {
     ...
 }
 
-plugins.apply("tech.antibytes.kmock.kmock-gradle")
-
-project.extensions.configure<KMockExtension>("kmock") {
+kmock {
     rootPackage = "my.root.package"
 }
 
@@ -95,8 +93,8 @@ fun sampleTest() {
    // arrange
    val someInstance: OtherSampleInterfaceMock = kmock()
 
-   someInstance._fetch.returns = Any()
-   someInstance._find.returns = "any"
+   someInstance._fetch.returnValue = Any()
+   someInstance._find returns "any"
 
    // act
    val someOtherInstance = SomeClass(someInstance)

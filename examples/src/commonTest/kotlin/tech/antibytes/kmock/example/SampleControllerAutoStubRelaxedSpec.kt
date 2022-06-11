@@ -143,7 +143,7 @@ class SampleControllerAutoStubRelaxedSpec {
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
 
-        domainObject._id.get = id
+        domainObject._id.getValue = id
 
         remote._find.returnValue = domainObject
         local._contains.sideEffect = { true }

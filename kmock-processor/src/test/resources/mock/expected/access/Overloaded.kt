@@ -37,8 +37,8 @@ internal class OverloadedMock<K : Any, L, U : Int?, W>(
     private val relaxed: Boolean = false,
 ) : Overloaded<K, L, U, W> where L : Any, L : Comparable<L> {
     public override var template: L
-        get() = _template.onGet()
-        set(`value`) = _template.onSet(value)
+        get() = _template.executeOnGet()
+        set(`value`) = _template.executeOnSet(value)
 
     public val _template: KMockContract.PropertyProxy<L> =
         ProxyFactory.createPropertyProxy("mock.template.access.OverloadedMock#_template", collector =

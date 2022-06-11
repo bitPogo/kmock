@@ -24,10 +24,10 @@ internal class SharedMock<K : Any, L>(
     private val __spyOn: Shared<K, L>? = spyOn
 
     public override var template: L
-        get() = _template.onGet {
+        get() = _template.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.template }
         }
-        set(`value`) = _template.onSet(value) {
+        set(`value`) = _template.executeOnSet(value) {
             useSpyIf(__spyOn) { __spyOn!!.template = value }
         }
 
@@ -36,7 +36,7 @@ internal class SharedMock<K : Any, L>(
         collector, freeze = freeze)
 
     public override val ozz: Int
-        get() = _ozz.onGet {
+        get() = _ozz.executeOnGet {
             useSpyIf(__spyOn) { __spyOn!!.ozz }
         }
 

@@ -104,7 +104,7 @@ class SampleControllerAlternativeAccessSpec {
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)
 
-        domainObject.propertyProxyOf(domainObject::id).getMany = id
+        domainObject.propertyProxyOf(domainObject::id).getValues = id
 
         remote.asyncFunProxyOf(remote::fetch).returnValue = domainObject
         local.asyncFunProxyOf(local::store).returnValue = domainObject
@@ -144,7 +144,7 @@ class SampleControllerAlternativeAccessSpec {
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
 
-        domainObject.propertyProxyOf(domainObject::id).get = id
+        domainObject.propertyProxyOf(domainObject::id).getValue = id
 
         remote.syncFunProxyOf(remote::find).returnValue = domainObject
         local.syncFunProxyOf(local::contains).sideEffect = { true }
@@ -208,7 +208,7 @@ class SampleControllerAlternativeAccessSpec {
         // Given
         val id = fixture.fixture<String>()
 
-        genericDomainObject.propertyProxyOf(genericDomainObject::id).get = id
+        genericDomainObject.propertyProxyOf(genericDomainObject::id).getValue = id
 
         // When
         val actual = genericDomainObject.id
@@ -277,7 +277,7 @@ class SampleControllerAlternativeAccessSpec {
     fun `Given a mocked MergedGeneric it does strange things`() {
         // Given
         val id = fixture.fixture<String>()
-        mergedGenericMock.propertyProxyOf(mergedGenericMock::id).get = id
+        mergedGenericMock.propertyProxyOf(mergedGenericMock::id).getValue = id
 
         // When
         val actual = mergedGenericMock.id
