@@ -6,10 +6,10 @@
 
 package tech.antibytes.kmock.fixture
 
+import tech.antibytes.kfixture.PublicApi
+import tech.antibytes.kfixture.fixture
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.mock.SyncFunProxyStub
-import tech.antibytes.util.test.fixture.PublicApi
-import tech.antibytes.util.test.fixture.fixture
 
 internal fun PublicApi.Fixture.funProxyFixture(
     id: String? = null,

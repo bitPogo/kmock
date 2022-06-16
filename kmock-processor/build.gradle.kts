@@ -68,3 +68,8 @@ kotlin {
 tasks.test {
     useJUnitPlatform()
 }
+
+configure<JavaPluginExtension> {
+    withJavadocJar()
+    withSourcesJar()
+}

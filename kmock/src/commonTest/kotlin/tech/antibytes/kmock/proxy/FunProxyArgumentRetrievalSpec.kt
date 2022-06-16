@@ -6,11 +6,11 @@
 
 package tech.antibytes.kmock.proxy
 
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.mock.SyncFunProxyStub
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test

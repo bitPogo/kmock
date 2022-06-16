@@ -29,7 +29,7 @@ python {
 
 val version = Versioning.getInstance(
     project = project,
-    configuration = KMockPublishingConfiguration().versioning
+    configuration = KMockPublishingConfiguration.versioning
 ).versionName()
 
 mkdocs {

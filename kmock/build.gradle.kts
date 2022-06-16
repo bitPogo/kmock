@@ -16,7 +16,6 @@ import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
-import java.net.URL
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -37,11 +36,16 @@ plugins {
 }
 
 group = KMockConfiguration.group
+val dokkaDir = buildDir.resolve("dokka")
 
 antiBytesPublishing {
     packageConfiguration = KMockConfiguration.publishing.packageConfiguration
     repositoryConfiguration = KMockConfiguration.publishing.repositories
     versioning = KMockConfiguration.publishing.versioning
+    documentation = tech.antibytes.gradle.publishing.api.DocumentationConfiguration(
+        tasks = setOf("dokkaHtml"),
+        outputDir = dokkaDir
+    )
 }
 
 antiBytesCoverage {
@@ -241,7 +245,7 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
 
 
 tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
-    outputDirectory.set(buildDir.resolve("dokka"))
+    outputDirectory.set(dokkaDir)
 
     moduleName.set("KMock")
     offlineMode.set(false)
@@ -255,16 +259,6 @@ tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
             noStdlibLink.set(false)
             noJdkLink.set(false)
             noAndroidSdkLink.set(false)
-
-            sourceLink {
-                localDirectory.set(rootDir.resolve("docs/api"))
-
-                remoteUrl.set(
-                    URL("https://github.com/bitPogo/kmock/blob/main/docs/api")
-                )
-
-                remoteLineSuffix.set("#L")
-            }
         }
     }
 }

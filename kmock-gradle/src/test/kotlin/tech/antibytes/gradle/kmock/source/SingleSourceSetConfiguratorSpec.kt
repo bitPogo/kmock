@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.test.invokeGradleAction
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 
 class SingleSourceSetConfiguratorSpec {

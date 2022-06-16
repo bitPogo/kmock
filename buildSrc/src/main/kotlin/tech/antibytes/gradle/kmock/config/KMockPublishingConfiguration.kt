@@ -10,13 +10,19 @@ import tech.antibytes.gradle.publishing.api.DeveloperConfiguration
 import tech.antibytes.gradle.publishing.api.GitRepositoryConfiguration
 import tech.antibytes.gradle.publishing.api.LicenseConfiguration
 import tech.antibytes.gradle.publishing.api.MavenRepositoryConfiguration
+import tech.antibytes.gradle.publishing.api.MemorySigningConfiguration
 import tech.antibytes.gradle.publishing.api.SourceControlConfiguration
 import tech.antibytes.gradle.versioning.api.VersioningConfiguration
 
 open class KMockPublishingConfiguration {
     private val username = System.getenv("PACKAGE_REGISTRY_UPLOAD_USERNAME")?.toString() ?: ""
     private val passwordGitHubRepos = System.getenv("PACKAGE_REGISTRY_UPLOAD_TOKEN")?.toString() ?: ""
-    private val passwordGitHubPackages = System.getenv("PACKAGE_REGISTRY_REGISTER_TOKEN")?.toString() ?: ""
+    private val key = System.getenv("MAVEN_KEY") ?: ""
+    private val passphrase = System.getenv("MAVEN_PASSPHRASE") ?: ""
+
+    private val nexusUsername = System.getenv("OSSR_USERNAME") ?: ""
+    private val nexusPassword = System.getenv("OSSR_PASSWORD") ?: ""
+
     private val githubOwner = "bitPogo"
     private val githubRepository = "kmock"
     val description = "KMock - a Mock Generator for Kotlin (Multiplatform)."
@@ -39,7 +45,7 @@ open class KMockPublishingConfiguration {
         id = githubOwner,
         name = githubOwner,
         url = "https://$host/$githubOwner",
-        email = "solascriptura001+antibytes@gmail.com"
+        email = "bitpogo@antibytes.tech"
     )
 
     protected val sourceControl = SourceControlConfiguration(
@@ -50,10 +56,10 @@ open class KMockPublishingConfiguration {
 
     val repositories = setOf(
         MavenRepositoryConfiguration(
-            name = "GitHubPackageRegistry",
-            url = "https://maven.pkg.github.com/$path",
-            username = username,
-            password = passwordGitHubPackages
+            name = "MavenCentral",
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/",
+            username = nexusUsername,
+            password = nexusPassword
         ),
         GitRepositoryConfiguration(
             name = "Development",
@@ -82,10 +88,16 @@ open class KMockPublishingConfiguration {
         featurePrefixes = listOf("feature"),
     )
 
+    val signing = MemorySigningConfiguration(
+        key = key,
+        password = passphrase,
+    )
+
     companion object {
         private val configuration = KMockPublishingConfiguration()
 
         val repositories = configuration.repositories
         val versioning = configuration.versioning
+        val signing = configuration.signing
     }
 }

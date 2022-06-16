@@ -108,3 +108,8 @@ gradlePlugin {
         version = KMockGradleConfiguration.version
     }
 }
+
+configure<JavaPluginExtension> {
+    withJavadocJar()
+    withSourcesJar()
+}
