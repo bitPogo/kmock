@@ -9,6 +9,8 @@ package tech.antibytes.kmock.proxy
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
 import tech.antibytes.util.test.coroutine.clearBlockingTest
@@ -16,8 +18,6 @@ import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.BeforeTest

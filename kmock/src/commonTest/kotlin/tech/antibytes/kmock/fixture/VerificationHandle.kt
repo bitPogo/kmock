@@ -6,10 +6,10 @@
 
 package tech.antibytes.kmock.fixture
 
+import tech.antibytes.kfixture.PublicApi
+import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.verification.Expectation
-import tech.antibytes.util.test.fixture.PublicApi
-import tech.antibytes.util.test.fixture.listFixture
 
 internal fun PublicApi.Fixture.fixtureVerificationHandle(
     proxy: KMockContract.Proxy<*, *>? = null,

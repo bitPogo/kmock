@@ -12,10 +12,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import java.io.File
@@ -25,11 +25,11 @@ class KMockCodeGeneratorSpec {
     @TempDir
     lateinit var kspDir: File
 
-    private val fixture = kotlinFixture { config ->
-        config.addGenerator(
+    private val fixture = kotlinFixture {
+        addGenerator(
             String::class,
             StringAlphaGenerator,
-            named("alpha")
+            qualifiedBy("alpha")
         )
     }
 
@@ -47,9 +47,9 @@ class KMockCodeGeneratorSpec {
     fun `Given createNewFile is called it delegates the call to the given kspGenerator`() {
         // Given
         val ksp = kspDir.absolutePath
-        val packageName: String = fixture.fixture(named("alpha"))
-        val fileName: String = fixture.fixture(named("alpha"))
-        val extensionName: String = fixture.fixture(named("alpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("alpha"))
+        val fileName: String = fixture.fixture(qualifiedBy("alpha"))
+        val extensionName: String = fixture.fixture(qualifiedBy("alpha"))
         val kspGenerator: CodeGenerator = mockk(relaxed = true)
 
         val dependencies: Dependencies = mockk()
@@ -80,9 +80,9 @@ class KMockCodeGeneratorSpec {
     fun `Given createNewFile is called it writes a File to a given SourceSet if told in the given KSP Dir`() {
         // Given
         val ksp = kspDir.absolutePath
-        val packageName: String = fixture.fixture(named("alpha"))
-        val fileName: String = fixture.fixture(named("alpha"))
-        val extensionName: String = fixture.fixture(named("alpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("alpha"))
+        val fileName: String = fixture.fixture(qualifiedBy("alpha"))
+        val extensionName: String = fixture.fixture(qualifiedBy("alpha"))
         val kspGenerator: CodeGenerator = mockk(relaxed = true)
 
         val dependencies: Dependencies = mockk()
@@ -122,9 +122,9 @@ class KMockCodeGeneratorSpec {
     fun `Given createNewFile is called it files while writing a File to a given SourceSet if told in the given KSP Dir, if the file already exists`() {
         // Given
         val ksp = kspDir.absolutePath
-        val packageName: String = fixture.fixture(named("alpha"))
-        val fileName: String = fixture.fixture(named("alpha"))
-        val extensionName: String = fixture.fixture(named("alpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("alpha"))
+        val fileName: String = fixture.fixture(qualifiedBy("alpha"))
+        val extensionName: String = fixture.fixture(qualifiedBy("alpha"))
         val kspGenerator: CodeGenerator = mockk(relaxed = true)
 
         val dependencies: Dependencies = mockk()

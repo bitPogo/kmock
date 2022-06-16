@@ -1,10 +1,7 @@
 # Installation
-KMock is capable to work with are variety of projects.
-However it is currently distributed via [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package), but will go soon to MavenCentral.
+KMock is capable to work with a variety of projects.
 
 ## Preparation
-Before you can consume KMock you need to add the GitHub Package to you repositories.
-
 === "BuildScript"
 
     In your build.gradle.kts:
@@ -12,13 +9,7 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
     buildScript {
         repositories {
             ...
-            maven {
-                url = uri("https://maven.pkg.github.com/bitPogo/kmock")
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
-                    password = project.findProperty("gpr.key") ?: System.getenv("PACKAGE_REGISTRY_DOWNLOAD_TOKEN")
-                }
-            }
+            mavenCentral()
         }
         dependencies {
             ...
@@ -30,15 +21,7 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
             ...
         repositories {
             ...
-            maven {
-                url = java.net.URI("https://maven.pkg.github.com/bitPogo/kmock")
-                credentials {
-                    username = project.findProperty("gpr.user")?.toString()
-                        ?: System.getenv("GITHUB_USER")
-                    password = project.findProperty("gpr.key")?.toString()
-                        ?: System.getenv("GITHUB_TOKEN")
-                }
-            }
+            mavenCentral()
         }
     }
     ```
@@ -49,13 +32,7 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
     ```kotlin
     repositories {
         ...
-        maven {
-            url = uri("https://maven.pkg.github.com/bitPogo/kmock")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("PACKAGE_REGISTRY_DOWNLOAD_TOKEN")
-            }
-        }
+        mavenCentral()
     }
 
     dependencies {
@@ -69,15 +46,7 @@ Before you can consume KMock you need to add the GitHub Package to you repositor
             ...
         repositories {
             ...
-            maven {
-                url = java.net.URI("https://maven.pkg.github.com/bitPogo/kmock")
-                credentials {
-                    username = project.findProperty("gpr.user")?.toString()
-                        ?: System.getenv("GITHUB_USER")
-                    password = project.findProperty("gpr.key")?.toString()
-                        ?: System.getenv("GITHUB_TOKEN")
-                }
-            }
+            mavenCentral()
         }
     }
     ```

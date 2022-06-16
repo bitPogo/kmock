@@ -11,14 +11,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.mapFixture
 import tech.antibytes.kmock.processor.ProcessorContract.AggregatorFactory
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.mapFixture
 import tech.antibytes.util.test.fulfils
 
 class KMockSingleSourceAggregatorFactorySpec {

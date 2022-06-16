@@ -22,11 +22,11 @@ import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.gradle.kmock.source.KmpSourceSetsConfigurator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.createExtension
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
-import tech.antibytes.util.test.fixture.mapFixture
-import tech.antibytes.util.test.fixture.qualifier.named
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.listFixture
+import tech.antibytes.kfixture.mapFixture
+import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
@@ -34,10 +34,10 @@ import kotlin.test.assertFailsWith
 @OptIn(KMockGradleExperimental::class)
 class ExtensionSpec {
     private val fixture = kotlinFixture {
-        it.addGenerator(
+        addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifier = named("stringAlpha")
+            qualifier = qualifiedBy("stringAlpha")
         )
     }
 
@@ -126,7 +126,7 @@ class ExtensionSpec {
         val project: Project = mockk(relaxed = true)
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
-            valueQualifier = named("stringAlpha"),
+            valueQualifier = qualifiedBy("stringAlpha"),
             size = 3
         )
 
@@ -164,11 +164,11 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.aliasNameMapping = mapOf(
-                name to fixture.fixture(named("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha"))
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
+                action.captured.invoke(name, fixture.fixture(qualifiedBy("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -189,11 +189,11 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.aliasNameMapping = mapOf(
-            fixture.fixture<String>(named("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
+            action.captured.invoke(fixture.fixture(qualifiedBy("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -253,7 +253,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = named("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha")
         )
 
         every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
@@ -289,11 +289,11 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.useTypePrefixFor = mapOf(
-                name to fixture.fixture(named("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha"))
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
+                action.captured.invoke(name, fixture.fixture(qualifiedBy("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -314,12 +314,12 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.useTypePrefixFor = mapOf(
-            fixture.fixture<String>(named("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
         )
 
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
+            action.captured.invoke(fixture.fixture(qualifiedBy("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -343,7 +343,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = named("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha")
         )
 
         every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
@@ -379,11 +379,11 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.customMethodNames = mapOf(
-                name to fixture.fixture(named("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha"))
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
+                action.captured.invoke(name, fixture.fixture(qualifiedBy("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -404,11 +404,11 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.customMethodNames = mapOf(
-            fixture.fixture<String>(named("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
+            action.captured.invoke(fixture.fixture(qualifiedBy("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"
@@ -606,7 +606,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = named("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha")
         )
 
         every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
@@ -641,11 +641,11 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.customAnnotationsForMeta = mapOf(
-                name to fixture.fixture(named("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha"))
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
-                action.captured.invoke(name, fixture.fixture(named("stringAlpha")))
+                action.captured.invoke(name, fixture.fixture(qualifiedBy("stringAlpha")))
             }
 
             error.message mustBe "$name is not allowed!"
@@ -666,11 +666,11 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.customAnnotationsForMeta = mapOf(
-            fixture.fixture<String>(named("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
-            action.captured.invoke(fixture.fixture(named("stringAlpha")), illegal)
+            action.captured.invoke(fixture.fixture(qualifiedBy("stringAlpha")), illegal)
         }
 
         error.message mustBe "$illegal is not applicable!"

@@ -16,25 +16,25 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregator
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.supportedPlatforms
 import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
 @OptIn(KMockExperimental::class)
 class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
-    private val fixture = kotlinFixture { configuration ->
-        configuration.addGenerator(
+    private val fixture = kotlinFixture {
+        addGenerator(
             String::class,
             StringAlphaGenerator,
-            named("stringAlpha")
+            qualifiedBy("stringAlpha")
         )
     }
 
@@ -221,8 +221,8 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
         val annotation2: KSAnnotated = mockk()
         val context1: KSFile = mockk()
         val context2: KSFile = mockk()
-        val source1: String = fixture.fixture(named("stringAlpha"))
-        val source2: String = fixture.fixture(named("stringAlpha"))
+        val source1: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val source2: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val annotated: Sequence<KSAnnotated> = sequence {
             yield(annotation1)

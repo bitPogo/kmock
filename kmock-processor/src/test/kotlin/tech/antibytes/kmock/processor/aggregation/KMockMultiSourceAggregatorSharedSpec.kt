@@ -23,6 +23,10 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.mapFixture
+import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.KMockMulti
 import tech.antibytes.kmock.Mock
@@ -35,20 +39,16 @@ import tech.antibytes.kmock.processor.ProcessorContract.AnnotationFilter
 import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.mapFixture
-import tech.antibytes.util.test.fixture.qualifier.named
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
 
 class KMockMultiSourceAggregatorSharedSpec {
-    private val fixture = kotlinFixture { configuration ->
-        configuration.addGenerator(
+    private val fixture = kotlinFixture {
+        addGenerator(
             String::class,
             StringAlphaGenerator,
-            named("stringAlpha")
+            qualifiedBy("stringAlpha")
         )
     }
 
@@ -393,7 +393,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val allowedSourceSet: String = fixture.fixture()
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -469,7 +469,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -544,7 +544,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             ClassKind.ANNOTATION_CLASS
         )
 
-        val selector = fixture.random.access { it.nextInt(0, selection.lastIndex) }
+        val selector = fixture.random.nextInt(0, selection.lastIndex)
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -561,9 +561,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
         val allowedSourceSet: String = fixture.fixture()
 
         every {
@@ -640,7 +640,7 @@ class KMockMultiSourceAggregatorSharedSpec {
             ClassKind.ANNOTATION_CLASS
         )
 
-        val selector = fixture.random.access { it.nextInt(0, selection.lastIndex) }
+        val selector = fixture.random.nextInt(0, selection.lastIndex)
 
         val annotation: KSAnnotation = mockk()
         val sourceAnnotations: Sequence<KSAnnotation> = sequence {
@@ -657,9 +657,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -749,9 +749,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -851,9 +851,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -957,9 +957,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -1071,9 +1071,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -1211,9 +1211,9 @@ class KMockMultiSourceAggregatorSharedSpec {
             null
         }
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -1385,9 +1385,9 @@ class KMockMultiSourceAggregatorSharedSpec {
             null
         }
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -1532,14 +1532,14 @@ class KMockMultiSourceAggregatorSharedSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type1, type2, type3)
-        val mockName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
-        val className1: String = fixture.fixture(named("stringAlpha"))
-        val packageName1 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
-        val className2: String = fixture.fixture(named("stringAlpha"))
-        val packageName2 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
-        val className3: String = fixture.fixture(named("stringAlpha"))
-        val packageName3 = fixture.fixture<String>(named("stringAlpha"))
+        val className1: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName1 = "${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}"
+        val className2: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName2 = "${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}"
+        val className3: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName3 = fixture.fixture<String>(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -1654,14 +1654,14 @@ class KMockMultiSourceAggregatorSharedSpec {
         val arguments: List<KSValueArgument> = mockk()
 
         val values: List<KSType> = listOf(type1, type2, type3)
-        val mockName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
-        val className1: String = fixture.fixture(named("stringAlpha"))
-        val packageName1 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
-        val className2: String = fixture.fixture(named("stringAlpha"))
-        val packageName2 = "${fixture.fixture<String>(named("stringAlpha"))}.${fixture.fixture<String>(named("stringAlpha"))}"
-        val className3: String = fixture.fixture(named("stringAlpha"))
-        val packageName3 = fixture.fixture<String>(named("stringAlpha"))
+        val className1: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName1 = "${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}"
+        val className2: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName2 = "${fixture.fixture<String>(qualifiedBy("stringAlpha"))}.${fixture.fixture<String>(qualifiedBy("stringAlpha"))}"
+        val className3: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName3 = fixture.fixture<String>(qualifiedBy("stringAlpha"))
 
         val genericResolver: ProcessorContract.GenericResolver = mockk()
         val generics: Map<String, List<KSTypeReference>>? = if (fixture.fixture()) {
@@ -1774,9 +1774,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
         val allowedSourceSet: String = fixture.fixture()
 
         every {
@@ -1857,9 +1857,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -1954,9 +1954,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val allowedSourceSet: String = fixture.fixture()
 
@@ -2065,9 +2065,9 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val values: List<KSType> = listOf(type)
 
-        val mockName: String = fixture.fixture(named("stringAlpha"))
-        val qualifiedName: String = fixture.fixture(named("stringAlpha"))
-        val packageName: String = fixture.fixture(named("stringAlpha"))
+        val mockName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val qualifiedName: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageName: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -2187,8 +2187,8 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         val valuesFetched: List<KSType> = listOf(typeFetched)
 
-        val mockNameFetched: String = fixture.fixture(named("stringAlpha"))
-        val packageNameFetched: String = fixture.fixture(named("stringAlpha"))
+        val mockNameFetched: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageNameFetched: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val typeGiven1: KSType = mockk(relaxed = true)
         val declarationGiven1: KSClassDeclaration = mockk(relaxed = true)
@@ -2201,13 +2201,13 @@ class KMockMultiSourceAggregatorSharedSpec {
         val valuesGiven1: List<KSType> = listOf(typeGiven1)
         val valuesGiven2: List<KSType> = listOf(typeGiven2)
 
-        val mockNameGiven1: String = fixture.fixture(named("stringAlpha"))
-        val sourceSet1: String = fixture.fixture(named("stringAlpha"))
-        val packageNameGiven1: String = fixture.fixture(named("stringAlpha"))
+        val mockNameGiven1: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val sourceSet1: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageNameGiven1: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
-        val mockNameGiven2: String = fixture.fixture(named("stringAlpha"))
-        val sourceSet2: String = fixture.fixture(named("stringAlpha"))
-        val packageNameGiven2: String = fixture.fixture(named("stringAlpha"))
+        val mockNameGiven2: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val sourceSet2: String = fixture.fixture(qualifiedBy("stringAlpha"))
+        val packageNameGiven2: String = fixture.fixture(qualifiedBy("stringAlpha"))
 
         val allowedSourceSet: String = fixture.fixture()
 

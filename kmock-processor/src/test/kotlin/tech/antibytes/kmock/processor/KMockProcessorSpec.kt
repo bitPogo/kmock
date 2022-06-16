@@ -16,6 +16,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.processor.ProcessorContract.Aggregated
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.MockFactoryEntryPointGenerator
@@ -29,8 +31,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.SingleSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 

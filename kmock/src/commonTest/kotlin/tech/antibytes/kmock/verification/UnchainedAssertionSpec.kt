@@ -7,6 +7,8 @@
 package tech.antibytes.kmock.verification
 
 import co.touchlab.stately.isFrozen
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract.AssertionContext
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.fixture.funProxyFixture
@@ -14,8 +16,6 @@ import tech.antibytes.kmock.fixture.propertyProxyFixture
 import tech.antibytes.mock.AssertionsStub
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.runBlockingTest
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs

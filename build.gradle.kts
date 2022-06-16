@@ -30,6 +30,7 @@ plugins {
 antiBytesPublishing {
     versioning = KMockPublishingConfiguration.versioning
     repositoryConfiguration = KMockPublishingConfiguration.repositories
+    signingConfiguration = KMockPublishingConfiguration.signing
 }
 
 tasks.named<Wrapper>("wrapper") {

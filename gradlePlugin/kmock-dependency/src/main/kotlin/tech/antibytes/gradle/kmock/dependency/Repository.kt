@@ -20,7 +20,8 @@ data class CustomRepository(
 
 val githubGroups = listOf(
     "tech.antibytes.gradle-plugins",
-    "tech.antibytes.test-utils-kmp"
+    "tech.antibytes.test-utils-kmp",
+    "tech.antibytes.kfixture"
 )
 
 val repositories = listOf(
@@ -32,10 +33,10 @@ val repositories = listOf(
         "https://raw.github.com/bitPogo/maven-snapshots/main/snapshots",
         githubGroups
     ),
-    CustomRepository(
+    /*CustomRepository(
         "https://raw.github.com/bitPogo/maven-releases/main/releases",
         githubGroups
-    )
+    )*/
 )
 
 fun RepositoryHandler.addCustomRepositories() {

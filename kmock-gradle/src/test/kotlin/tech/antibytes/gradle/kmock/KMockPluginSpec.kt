@@ -18,18 +18,18 @@ import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.qualifier.named
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.util.test.fulfils
 import java.io.File
 
 class KMockPluginSpec {
     private val fixture = kotlinFixture {
-        it.addGenerator(
+        addGenerator(
             String::class,
             StringAlphaGenerator,
-            named("stringAlpha")
+            qualifiedBy("stringAlpha")
         )
     }
 
@@ -45,7 +45,7 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
-        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
+        val buildDir = File(fixture.fixture<String>(qualifiedBy("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
@@ -71,7 +71,7 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
-        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
+        val buildDir = File(fixture.fixture<String>(qualifiedBy("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
@@ -100,7 +100,7 @@ class KMockPluginSpec {
         val project: Project = mockk()
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
-        val buildDir = File(fixture.fixture<String>(named("stringAlpha")))
+        val buildDir = File(fixture.fixture<String>(qualifiedBy("stringAlpha")))
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions

@@ -6,8 +6,8 @@
 
 package tech.antibytes.kmock.proxy
 
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName

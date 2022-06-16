@@ -23,7 +23,7 @@ object Dependency {
         object Test {
             const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations:${Version.antibytes.test}"
             const val core = "tech.antibytes.test-utils-kmp:test-utils:${Version.antibytes.test}"
-            const val fixture = "tech.antibytes.test-utils-kmp:test-utils-fixture:${Version.antibytes.test}"
+            const val fixture = "tech.antibytes.kfixture:core:${Version.antibytes.kfixture}"
             const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine:${Version.antibytes.test}"
             const val gradle = "tech.antibytes.gradle-plugins:antibytes-gradle-test-utils:${Version.gradle.antibytes}"
         }

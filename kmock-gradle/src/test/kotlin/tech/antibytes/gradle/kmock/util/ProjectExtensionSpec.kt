@@ -12,8 +12,8 @@ import io.mockk.verify
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.Test
-import tech.antibytes.util.test.fixture.kotlinFixture
-import tech.antibytes.util.test.fixture.listFixture
+import tech.antibytes.kfixture.kotlinFixture
+import tech.antibytes.kfixture.listFixture
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

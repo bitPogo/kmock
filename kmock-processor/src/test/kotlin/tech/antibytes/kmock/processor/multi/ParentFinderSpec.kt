@@ -8,11 +8,11 @@ package tech.antibytes.kmock.processor.multi
 
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
+import tech.antibytes.kfixture.fixture
+import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.util.test.fixture.fixture
-import tech.antibytes.util.test.fixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
