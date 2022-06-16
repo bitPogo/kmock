@@ -25,6 +25,7 @@ antiBytesPublishing {
     packageConfiguration = KMockProcessorConfiguration.publishing.packageConfiguration
     repositoryConfiguration = KMockProcessorConfiguration.publishing.repositories
     versioning = KMockProcessorConfiguration.publishing.versioning
+    signingConfiguration = KMockProcessorConfiguration.publishing.signing
 }
 
 

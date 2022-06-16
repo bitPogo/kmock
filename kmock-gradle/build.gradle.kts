@@ -18,7 +18,6 @@ plugins {
     `java-gradle-plugin`
 
     id("tech.antibytes.gradle.publishing")
-    id("com.gradle.plugin-publish")
 
     id("tech.antibytes.gradle.coverage")
 
@@ -32,6 +31,7 @@ antiBytesPublishing {
     packageConfiguration = KMockGradleConfiguration.publishing.packageConfiguration
     repositoryConfiguration = KMockGradleConfiguration.publishing.repositories
     versioning = KMockGradleConfiguration.publishing.versioning
+    signingConfiguration = KMockGradleConfiguration.publishing.signing
 }
 
 dependencies {
@@ -91,13 +91,6 @@ tasks.withType(KotlinCompile::class.java) {
     this.mustRunAfter(generateConfig)
 }
 
-pluginBundle {
-    description = KMockGradleConfiguration.longDescription
-    website = KMockGradleConfiguration.publishing.url
-    vcsUrl = KMockGradleConfiguration.publishing.packageConfiguration.scm.url
-    tags = listOf("kotlin", "stub", "spy", "mock", "test")
-}
-
 gradlePlugin {
     plugins.register(KMockGradleConfiguration.pluginId) {
         id = KMockGradleConfiguration.pluginId
@@ -108,7 +101,6 @@ gradlePlugin {
         version = KMockGradleConfiguration.version
     }
 }
-
 configure<JavaPluginExtension> {
     withJavadocJar()
     withSourcesJar()

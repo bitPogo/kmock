@@ -24,7 +24,7 @@ object KMockGradleConfiguration {
     object Publishing : KMockPublishingConfiguration() {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
-                name = id,
+                name = "KMock Gradle Plugin",
                 description = description,
                 year = year,
                 url = url

@@ -17,7 +17,7 @@ object KMockConfiguration {
     object Publishing : KMockPublishingConfiguration() {
         val packageConfiguration = PackageConfiguration(
             pom = PomConfiguration(
-                name = "kmock",
+                name = "KMock Runtime",
                 description = description,
                 year = year,
                 url = url

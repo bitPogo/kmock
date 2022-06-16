@@ -18,7 +18,7 @@ object KMockProcessorConfiguration {
         val packageConfiguration = PackageConfiguration(
             isPureJavaLibrary = true,
             pom = PomConfiguration(
-                name = "kmock-processor",
+                name = "KMock Processor",
                 description = description,
                 year = year,
                 url = url

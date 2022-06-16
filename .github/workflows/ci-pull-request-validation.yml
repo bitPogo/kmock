@@ -23,6 +23,8 @@ jobs:
     env:
       PACKAGE_REGISTRY_UPLOAD_USERNAME: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
       PACKAGE_REGISTRY_UPLOAD_TOKEN: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
+      MAVEN_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
+      MAVEN_KEY: ${{ secrets.MAVEN_GPG_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -60,5 +62,5 @@ jobs:
         run: ./gradlew --no-daemon --stacktrace multiplatformCoverageVerification jvmCoverage sonarqube --info
 
       - name: Publish to Development Repository
-        run: ./gradlew publishDevelopment --no-parallel
+        run: ./gradlew publishDevelopment --stacktrace --no-parallel
 

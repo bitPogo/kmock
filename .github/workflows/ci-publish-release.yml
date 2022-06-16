@@ -52,4 +52,4 @@ jobs:
         run: ./gradlew publishMavenCentral --stacktrace --no-parallel
 
       - name: Publish to Release Repository
-        run: ./gradlew publishRelease --no-parallel
+        run: ./gradlew publishRelease --stacktrace --no-parallel
