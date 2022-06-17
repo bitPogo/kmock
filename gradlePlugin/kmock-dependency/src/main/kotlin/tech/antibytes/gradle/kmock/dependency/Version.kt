@@ -20,17 +20,12 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "2fa240c"
+        const val antibytes = "b1a580e"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
         const val spotless = "6.4.2"
-
-        /**
-         * [Gradle Plugin Publishing](https://plugins.gradle.org/plugin/com.gradle.plugin-publish)
-         */
-        const val pluginPublishing = "1.0.0-rc-1"
     }
 
     val antibytes = Antibytes

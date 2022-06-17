@@ -16,6 +16,7 @@ import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
+import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -42,10 +43,11 @@ antiBytesPublishing {
     packageConfiguration = KMockConfiguration.publishing.packageConfiguration
     repositoryConfiguration = KMockConfiguration.publishing.repositories
     versioning = KMockConfiguration.publishing.versioning
-    documentation = tech.antibytes.gradle.publishing.api.DocumentationConfiguration(
+    documentation = DocumentationConfiguration(
         tasks = setOf("dokkaHtml"),
         outputDir = dokkaDir
     )
+    signingConfiguration = KMockConfiguration.publishing.signing
 }
 
 antiBytesCoverage {

@@ -14,6 +14,8 @@ jobs:
     env:
       PACKAGE_REGISTRY_UPLOAD_USERNAME: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
       PACKAGE_REGISTRY_UPLOAD_TOKEN: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
+      MAVEN_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
+      MAVEN_KEY: ${{ secrets.MAVEN_GPG_KEY }}
 
     steps:
       - name: Display runner context
@@ -52,4 +54,4 @@ jobs:
         run: ./gradlew --no-daemon --stacktrace mkdocsPublish
 
       - name: Publish to Snapshot Repository
-        run: ./gradlew publishSnapshot --no-parallel
+        run: ./gradlew publishSnapshot --stacktrace --no-parallel

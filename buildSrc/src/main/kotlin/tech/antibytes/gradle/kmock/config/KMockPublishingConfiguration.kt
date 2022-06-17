@@ -17,6 +17,7 @@ import tech.antibytes.gradle.versioning.api.VersioningConfiguration
 open class KMockPublishingConfiguration {
     private val username = System.getenv("PACKAGE_REGISTRY_UPLOAD_USERNAME")?.toString() ?: ""
     private val passwordGitHubRepos = System.getenv("PACKAGE_REGISTRY_UPLOAD_TOKEN")?.toString() ?: ""
+
     private val key = System.getenv("MAVEN_KEY") ?: ""
     private val passphrase = System.getenv("MAVEN_PASSPHRASE") ?: ""
 
@@ -98,6 +99,5 @@ open class KMockPublishingConfiguration {
 
         val repositories = configuration.repositories
         val versioning = configuration.versioning
-        val signing = configuration.signing
     }
 }
