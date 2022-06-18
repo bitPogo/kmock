@@ -2,6 +2,7 @@
 
 ## 0.3.0
 - optimize & stabilize proxy access methods
+- stabilize agnostic annotations
 - improve support for Android
 - prototype class mocking for JVM based sources sets
 - support more platforms

@@ -26,36 +26,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 * `and` ArgumentConstraint
-* getValue which preserves the old behaviour of get (PropertyProxy)
-* getValues to replace getMany (PropertyProxy)
-* error to replace throws (FunProxy)
-* errors to replace throwsMany (FunProxy)
-* returns which acts as setter for getValue/returnValue for Proxies
-* returnsMay which acts as setter for getValues/returnValues for Proxies
-* throws (infix method) which acts as setter for error for FunProxies
-* throwsMany (infix method) which acts as setter for errors for FunProxies
-* runOnGet which acts as setter for getSideEffect for PropertyProxies
-* runOnSet which acts as setter for getSideEffect for PropertyProxies
-* hasNoFurtherInvocations to ease `assertProxy`
+* `getValue` which preserves the old behaviour of get (PropertyProxy)
+* `getValues` to replace getMany (PropertyProxy)
+* `error` to replace throws (FunProxy)
+* `errors` to replace throwsMany (FunProxy)
+* `returns` which acts as setter for getValue/returnValue for Proxies
+* `returnsMany` which acts as setter for getValues/returnValues for Proxies
+* `throws` (infix method) which acts as setter for error for FunProxies
+* `throwsMany` (infix method) which acts as setter for errors for FunProxies
+* `runOnGet` which acts as setter for getSideEffect for PropertyProxies
+* `runOnSet` which acts as setter for getSideEffect for PropertyProxies
+* `hasNoFurtherInvocations` to ease `assertProxy`
 
 ### Changed
 
 * The plugin can now applied directly while configuration must be done after the `kotlin` setup
 * AccessMethods need always a hint if the Template has type parameters
 * ProxyNameResolver is capable of utilizing the actual types of generic parameters when overloaded
-* run/runs are now infix methods
+* `run`/`runs` are now infix methods
 * Proxies have now an operator for get which means they can be accessed like Arrays
-* _*BREAKING*_ get is now responsible for the SideEffect of PropertyProxies
+* _*BREAKING*_ `get` is now responsible for the SideEffect of PropertyProxies
 
 ### Deprecated
 
-* getMany (PropertyProxy)
-* throws (FunProxy)
-* throwsMany (FunProxy)
+* `getMany` (PropertyProxy)
+* `throws` (FunProxy)
+* `throwsMany` (FunProxy)
 
 ### Removed
 
-* _*BREAKING*_ getSideEffect (PropertyProxy)
+* _*BREAKING*_ `getSideEffect` (PropertyProxy)
 
 ### Fixed
 

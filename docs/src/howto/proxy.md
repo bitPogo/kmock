@@ -82,9 +82,9 @@ You can use the following properties of FunProxies:
 
 
 !!!note
-Please be aware there is a precedence of invocation.
-`errors` is used over  `error`, `returnValue` is used over `errors`, `returnValues` is used over `returnValues`, `sideEffect` is used over `returnValues` and `sideEffects` is used over `sideEffect`.
-If no behaviour is set the Proxy simply fails and acts therefore intrusively.
+    Please be aware there is a precedence of invocation.
+    `errors` is used over  `error`, `returnValue` is used over `errors`, `returnValues` is used over `returnValues`, `sideEffect` is used over `returnValues` and `sideEffects` is used over `sideEffect`.
+    If no behaviour is set the Proxy simply fails and acts therefore intrusively.
 
 Additionally you can use the following infix methods to mutate its values:
 
@@ -98,9 +98,10 @@ Additionally you can use the following infix methods to mutate its values:
 | `runs`          | Alias setter of `sideEffects`.<br/>The Proxy will execute each SideEffect and returns its result. <br/> If only one SideEffect is left it will execute it until the run is completed. |
 
 A last word to SideEffects.
-While they in general using the signature of the Template and therefore you can the full power of the Kotlin's type system, there is one exception to this.
+While they in general using the signature of the Template and therefore you can utilize the full power of the Kotlin's type system, there is 2 exceptions to this.
 If you work with [Multi-Boundary Generics](https://kotlinlang.org/docs/generics.html) and declare them on Method level KMock cannot derive a certain type, since Kotlin has no Union Types per se.
-This means those types are derived as `Any` and you have to make sure to cast them correctly if you use them.
+The same goes for recursive types as well (e.g. `T : Comparable<T>`).
+Those types are derived as `Any` and you have to make sure to cast them correctly if you use them.
 
 ## PropertyProxies
 PropertyProxies work in a very similar fashion as FunProxies.
@@ -111,7 +112,8 @@ interface SampleDomainObject {
     var something: Int
 }
 ```
-In short KMock allows to assign simple canned values which are return once the Template Property is invoked:
+
+In short KMock allows to assign simple canned values which are returned once the Template Property is invoked:
 ```kotlin
 @Test
 fun sampleTest() {
@@ -131,8 +133,9 @@ fun sampleTest() {
    ...
 }
 ```
-Setters are always using SideEffects but work completely non intrusive and have no need for a explicit setup.
-Getters can be either stub values or a SideEffect.
+
+Property Setters are always using SideEffects but work completely non intrusive and have no need for a explicit setup.
+Property Getters can be use either stub values or a SideEffect.
 Both - Setter and Getter - do not allow multiple SideEffects since this should be considered as a clear sign that the usage of method is more appropriate instead.
 
 PropertyProxies have the following properties:
@@ -146,18 +149,18 @@ PropertyProxies have the following properties:
 
 
 !!!note
-Please be aware there is a precedence of invocation.
-`getValues` is used over `getValue` and `get` is used over `getValues`.
-If no behaviour is set the Proxy simply fails and acts intrusively.
+    Please be aware there is a precedence of invocation.
+    `getValues` is used over `getValue` and `get` is used over `getValues`.
+    If no behaviour is set the Proxy simply fails and acts intrusively.
 
-Additionally you can use the following infix methods to mutate its values:
+Additionally you can use the following infix methods to set values:
 
 | Method         | What it does                         |
 | -------------- | ------------------------------------ |
 | `returns`      | Alias setter of `getValue`.<br/> Proxy will return the always the given value. |
 | `returnsMany`  | Alias setter of `getValues`.<br/> Proxy will return each value of the given list.<br/> If only one value is left it will return it until the run is completed. |
 | `runOnGet`     | Alias setter of `get`.<br/> Proxy will execute the given SideEffect and return its result. |
-| `runOnet`     | Alias setter of `set`.<br/> Proxy will execute the given SideEffect. |
+| `runOnSet`     | Alias setter of `set`.<br/> Proxy will execute the given SideEffect. |
 
 ## ReceiverProxies
 While receivers are technically not a special type of Proxy they are still special.
@@ -189,7 +192,7 @@ fun sampleTest() {
 }
 ```
 
-In case of Multi Interface Mocks and a Template uses Generics a additional arguments are mandatory - `templateType$Idx`.
+In case of Multi-Interface Mocks and a Template uses Generics a additional arguments are mandatory - `templateType$Idx`.
 Those type take the KClass of the Templates:
 
 ```kotlin
@@ -234,8 +237,8 @@ class SampleTestSet {
 ```
 
 ## Experimental Proxy Access Methods
-As with 0.2.0 KMock introduces a new way to work with Proxies.
-This is done to provide a more robust way in terms of refactoring to work with Proxies.
+0.2.0 KMock introduces a new way to work with Proxies.
+This is done to provide a more robust way in terms of refactoring.
 However since those methods need a lot more thought and optimization they are considered as experimental but get hopefully soon in a much more stable state.
 
 | Method           | What it does                         |
@@ -244,7 +247,7 @@ However since those methods need a lot more thought and optimization they are co
 | `syncFunProxyOf` | will reference a non suspending FunProxy. |
 | `asyncFunProxyOf`| will reference a suspending FunProxy. |
 
-For example can they used as followed:
+For example they can used as followed:
 
 ```kotlin
 @Test
@@ -272,7 +275,7 @@ fun sampleTest() {
 }
 ```
 
-In case you deal with overloaded methods or methods with generics you need to give additionally those methods a hint, which is composed of the argument types of the Template.
+In case you deal with overloaded methods or methods with generics you need to provide those methods a hint, which is composed of the argument types of the Template.
 Consider following source:
 ```kotlin
 interface SampleGenericRemoteRepositoryMock {
