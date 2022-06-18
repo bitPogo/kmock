@@ -24,6 +24,7 @@ import tech.antibytes.kmock.example.contract.SampleLocalRepositoryMock
 import tech.antibytes.kmock.example.contract.SampleRemoteRepositoryMock
 import tech.antibytes.kmock.verification.Asserter
 import tech.antibytes.kmock.verification.assertOrder
+import tech.antibytes.kmock.verification.assertProxy
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
@@ -87,8 +88,12 @@ class SampleControllerAutoStubSpec {
             // Then
             actual mustBe domainObject
 
-            verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local._store.hasBeenStrictlyCalledWith(id[1], number) }
+            assertProxy {
+                remote._fetch.hasBeenStrictlyCalledWith(url)
+                remote._fetch.hasNoFurtherInvocations()
+                local._store.hasBeenStrictlyCalledWith(id[1], number)
+                local._store.hasNoFurtherInvocations()
+            }
 
             collector.assertOrder {
                 remote._fetch.hasBeenStrictlyCalledWith(url)

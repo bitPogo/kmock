@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * throwsMany (infix method) which acts as setter for errors for FunProxies
 * runOnGet which acts as setter for getSideEffect for PropertyProxies
 * runOnSet which acts as setter for getSideEffect for PropertyProxies
+* hasNoFurtherInvocations to ease `assertProxy`
 
 ### Changed
 

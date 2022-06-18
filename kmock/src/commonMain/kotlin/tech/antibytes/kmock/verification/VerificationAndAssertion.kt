@@ -10,12 +10,14 @@ import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Asserter
 import tech.antibytes.kmock.KMockContract.AssertionContext
 import tech.antibytes.kmock.KMockContract.ChainedAssertion
+import tech.antibytes.kmock.KMockContract.CloseableAssertionContext
 import tech.antibytes.kmock.KMockContract.Expectation
 import tech.antibytes.kmock.KMockContract.NOT_CALLED
 import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.util.format
+import kotlin.math.abs
 
 private fun determineAtLeastMessage(actual: Int, expected: Int): String {
     return if (actual == 0) {
@@ -26,9 +28,11 @@ private fun determineAtLeastMessage(actual: Int, expected: Int): String {
 }
 
 private infix fun Expectation.mustBeAtLeast(value: Int) {
-    if (this.callIndices.size < value) {
+    val boundary = abs(value)
+
+    if (this.callIndices.size < boundary) {
         val message = determineAtLeastMessage(
-            expected = value,
+            expected = boundary,
             actual = this.callIndices.size
         )
 
@@ -37,8 +41,10 @@ private infix fun Expectation.mustBeAtLeast(value: Int) {
 }
 
 private infix fun Expectation.mustBeAtMost(value: Int) {
-    if (this.callIndices.size > value) {
-        val message = TOO_MANY_CALLS.format(value, this.callIndices.size)
+    val boundary = abs(value)
+
+    if (this.callIndices.size > boundary) {
+        val message = TOO_MANY_CALLS.format(boundary, this.callIndices.size)
 
         throw AssertionError(message)
     }
@@ -110,7 +116,7 @@ public suspend fun asyncVerify(
  * @see AssertionContext
  * @author Matthias Geisler
  */
-public fun assertProxy(action: AssertionContext.() -> Unit): Unit = action(UnchainedAssertion())
+public fun assertProxy(action: CloseableAssertionContext.() -> Unit): Unit = action(UnchainedAssertion())
 
 /**
  * Asserts Expectations of proxies in Coroutine Context. Each Expectation relates to a specific Proxy and they must be in order.
@@ -122,7 +128,9 @@ public fun assertProxy(action: AssertionContext.() -> Unit): Unit = action(Uncha
  * @author Matthias Geisler
  */
 @KMockExperimental
-public suspend fun asyncAssertProxy(action: suspend AssertionContext.() -> Unit): Unit = action(UnchainedAssertion())
+public suspend fun asyncAssertProxy(
+    action: suspend CloseableAssertionContext.() -> Unit
+): Unit = action(UnchainedAssertion())
 
 private fun <T> runChainedAssertion(
     chain: T,

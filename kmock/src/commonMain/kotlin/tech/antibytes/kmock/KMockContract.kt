@@ -1404,7 +1404,7 @@ public object KMockContract {
     }
 
     /**
-     * Provider for Assertion.
+     * Provider for Assertions.
      * @author Matthias Geisler
      */
     public interface AssertionContext {
@@ -1459,6 +1459,18 @@ public object KMockContract {
          * @throws AssertionError if the assertion fails.
          */
         public fun PropertyProxy<*>.wasSetTo(value: Any?)
+    }
+
+    /**
+     * Provider for Assertions.
+     * @author Matthias Geisler
+     */
+    public interface CloseableAssertionContext : AssertionContext {
+        /**
+         * Asserts that all invocations had been covered.
+         * @throws AssertionError if the assertion fails.
+         */
+        public fun Proxy<*, *>.hasNoFurtherInvocations()
     }
 
     /**

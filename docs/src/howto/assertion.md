@@ -108,11 +108,11 @@ However you cannot say if `fetch` was called before or after `find`.
 Assuming now `fetch` has been called only once, `verify` will still pass, while `assertProxy` will fail.
 Since `verify` can be less strict about the order it can check if a Proxy was invoked `exactly`, `atLeast` or `atMost` certain times.
 `assertProxy` on the other hand will always tell what is wrong with current and where but will only cover those invocation you told it cover.
+In order to ensure you covered all invocations via `assertProxy` you can use `hasNoFurtherInvocations`.
 
 !!!tip
     As a rule of thumb - if you want to cover a Proxy which is invoked multiple times you should consider using verify.
     If you cover a proxy which is invoked only once you should consider `assertProxy`.
-    If you want really make sure a proxy is invoked in a certain order and certain times use both.
 
 !!!note
     You need only one `assertProxy` per test case, strictly speaking.
