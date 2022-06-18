@@ -56,6 +56,24 @@ class VerificationAndAssertionSpec {
     }
 
     @Test
+    @JsName("fn1a")
+    fun `Given verify is called it fails if the covered mock does not have the minimum amount of calls if a negative value was assigned`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 1
+        val expectedCalls = 3
+
+        // When
+        val error = assertFailsWith<AssertionError> {
+            verify(atLeast = -expectedCalls) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
+            }
+        }
+
+        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
+    }
+
+    @Test
     @JsName("fn2")
     fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls`() {
         // Given
@@ -66,6 +84,24 @@ class VerificationAndAssertionSpec {
         // When
         val error = assertFailsWith<AssertionError> {
             verify(atMost = expectedCalls) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
+            }
+        }
+
+        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
+    }
+
+    @Test
+    @JsName("fn2a")
+    fun `Given verify is called it fails if the covered mock does exceeds the maximum amount of calls if a negative value was assigned`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 3
+        val expectedCalls = 1
+
+        // When
+        val error = assertFailsWith<AssertionError> {
+            verify(atMost = -expectedCalls) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }
@@ -92,6 +128,24 @@ class VerificationAndAssertionSpec {
     }
 
     @Test
+    @JsName("fn3a")
+    fun `Given verify is called it fails if the covered mock does not have the exact minimum amount of calls with a negative number`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 1
+        val expectedCalls = 3
+
+        // When
+        val error = assertFailsWith<AssertionError> {
+            verify(exactly = -expectedCalls, atLeast = 0) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
+            }
+        }
+
+        error.message mustBe "Expected at least $expectedCalls calls, but found only $givenCalls."
+    }
+
+    @Test
     @JsName("fn4")
     fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls`() {
         // Given
@@ -102,6 +156,24 @@ class VerificationAndAssertionSpec {
         // When
         val error = assertFailsWith<AssertionError> {
             verify(exactly = expectedCalls, atMost = 0) {
+                Expectation(proxy, fixture.listFixture(size = givenCalls))
+            }
+        }
+
+        error.message mustBe "Expected at most $expectedCalls calls, but exceeded with $givenCalls."
+    }
+
+    @Test
+    @JsName("fn4a")
+    fun `Given verify is called it fails if the covered mock does exceeds the exact maximum amount of calls with a negative number`() {
+        // Given
+        val proxy = fixture.funProxyFixture()
+        val givenCalls = 3
+        val expectedCalls = 1
+
+        // When
+        val error = assertFailsWith<AssertionError> {
+            verify(exactly = -expectedCalls, atMost = 0) {
                 Expectation(proxy, fixture.listFixture(size = givenCalls))
             }
         }

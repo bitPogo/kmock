@@ -9,7 +9,7 @@ package tech.antibytes.kmock.verification
 import co.touchlab.stately.isFrozen
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
-import tech.antibytes.kmock.KMockContract.AssertionContext
+import tech.antibytes.kmock.KMockContract.CloseableAssertionContext
 import tech.antibytes.kmock.KMockContract.Proxy
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.kmock.fixture.propertyProxyFixture
@@ -21,6 +21,7 @@ import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
 import kotlin.js.JsName
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class UnchainedAssertionSpec {
     private val fixture = kotlinFixture()
@@ -28,7 +29,7 @@ class UnchainedAssertionSpec {
     @Test
     @JsName("fn0")
     fun `It fulfils AssertionContext`() {
-        UnchainedAssertion() fulfils AssertionContext::class
+        UnchainedAssertion() fulfils CloseableAssertionContext::class
     }
 
     private fun invoke(
@@ -1245,5 +1246,46 @@ class UnchainedAssertionSpec {
         }
 
         expectedProxy.isFrozen mustBe false
+    }
+
+    @Test
+    @JsName("fn41")
+    fun `Given hasNoFurtherInvocations is called it fails if the given Proxy has still coverageble invocations left`() {
+        // Given
+        val calls = 23
+        val expectedProxy = fixture.propertyProxyFixture(calls = calls)
+
+        val container = UnchainedAssertion()
+
+        // Then
+        val error = assertFailsWith<AssertionError> {
+            invoke(container) {
+                // When
+                expectedProxy.hasNoFurtherInvocations()
+            }
+        }
+
+        error.message mustBe "Only 0 of $calls invocations had been asserted."
+    }
+
+    @Test
+    @JsName("fn42")
+    fun `Given hasNoFurtherInvocations is called it accepts if the given Proxy has no coverageble invocations left`() {
+        // Given
+        val calls = 1
+        val expectedProxy = fixture.propertyProxyFixture(calls = calls)
+
+        val assertions = AssertionsStub(
+            wasSetToAtIndex = { _, _, _ -> }
+        )
+
+        val container = UnchainedAssertion(assertions)
+
+        // Then
+        invoke(container) {
+            // When
+            expectedProxy.wasSetTo(fixture.fixture())
+            expectedProxy.hasNoFurtherInvocations()
+        }
     }
 }

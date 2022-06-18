@@ -390,6 +390,10 @@ public final class tech/antibytes/kmock/KMockContract$AsyncFunProxy$DefaultImpls
 public abstract interface class tech/antibytes/kmock/KMockContract$ChainedAssertion : tech/antibytes/kmock/KMockContract$AssertionContext, tech/antibytes/kmock/KMockContract$AssertionInsurance {
 }
 
+public abstract interface class tech/antibytes/kmock/KMockContract$CloseableAssertionContext : tech/antibytes/kmock/KMockContract$AssertionContext {
+	public abstract fun hasNoFurtherInvocations (Ltech/antibytes/kmock/KMockContract$Proxy;)V
+}
+
 public abstract interface class tech/antibytes/kmock/KMockContract$Collector {
 	public abstract fun addReference (Ltech/antibytes/kmock/KMockContract$Proxy;I)V
 }
