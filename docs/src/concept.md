@@ -9,7 +9,7 @@ Well, actually, in a strict sense, KMock generates [stubs or fakes](https://www.
 
 It draws its biggest inspiration from Python’s [MagicMock](https://docs.python.org/3/library/unittest.mock.html) in terms of the API, since it is easy to work with and offers conceptually a way to deal with the nature of KMP.
 While some mocking libraries depend on record-replay-verify pattern, KMock does not.
-It's mind model blend into the [arrange-act-assert pattern (AAA)](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-testspattern) as much as possible.
+It's mind model blends more into the [arrange-act-assert pattern (AAA)](https://automationpanda.com/2020/07/07/arrange-act-assert-a-pattern-for-writing-good-testspattern).
 For example while you write in mockk:
 ```kotlin
 @Test
@@ -38,8 +38,8 @@ fun sampleTest() {
     // arrange
     val someInstance: SomeInterfaceMock = kmock()
 
-    someInstance._someProperty.get = "any"
-    someInstance._someMethod.returns  = "any"
+    someInstance._someProperty.getValue = "any"
+    someInstance._someMethod.returnValue  = "any"
 
     // act
     val someOtherInstance = SomeClass(someInstance)
@@ -57,8 +57,9 @@ In fact KMock will proxy each public member of a given interface instead of prox
 This also allows for less intrusive behaviour than traditional mocking libraries.
 
 A second noteworthy side effect due to this approach is that most functionality is directly bound to the generated Mocks, so things will just pop up in your IDE or Editor.
-This hopefully flattens the learning curve.
-Lastly this allows to minimize any ambiguity in terms of overloading or eases the work with receivers, which are runtime based libraries mostly struggle with.
+This hopefully flattens the learning curve too.
+Lastly it allows to minimize any ambiguity in terms of overloading or eases the work with receivers, which are runtime based libraries mostly struggle with.
+
 Another ingredient of KMock is that the library should do the heavy lifting as much as possible.
 This means a consumer should not have to engage in complicated configuration to make it work with KMP.
 
@@ -76,9 +77,9 @@ Even though KMock is not optimized yet, it will most likely never be completely 
 But you pay for accuracy and convenience.
 
 Also direct proxy access is not robust against refactoring since the generated names are detached from the interface it is based on.
-This goes especially for overloaded names and their bring their own batch of ugliness.
-While this a major drawback, KMock has experimental features to address these problems.
-Even though they are not completely matured yet and cannot be used for all use cases, they hopefully ease those issues.
+This goes especially for overloaded names and it bring its own batch of ugliness.
+While this a major drawback, KMock has experimental features to address these issues.
+Even though they are not completely matured yet and cannot be used for all use cases, they hopefully tackle these problems.
 
 ## What is the overall goal?
 Aside from the roadmap, KMock 's main aim is to make your life easier as much as possible.

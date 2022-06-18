@@ -5,7 +5,23 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.2.0-rc01...main)
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.2.0...main)
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+### Bumped
+
+## [0.2.0](https://github.com/bitPogo/kmock/compare/v0.2.0-rc01...v0.2.0)
 
 ### Added
 
@@ -47,10 +63,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Factories for Multi-Interface-Mocks
 * Multi-Boundary Parameter are not right resolved when mixed multi with regular parameter in nested types
 * Collisions of type aliases with regular method signatures
-
-### Security
-
-### Bumped
 
 ## [0.2.0-rc01](https://github.com/bitPogo/kmock/compare/v0.1.1...v0.2.0-rc01)
 

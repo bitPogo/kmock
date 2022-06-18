@@ -3,8 +3,6 @@ Apologies! Something was broken to improve KMock.
 But don't panic!
 
 ## 0.2.0-rc01 to 0.2.0
-### API changes
-
 ### Behaviour Changes
 
 * The `get` property of PropertyProxy is now responsible for the SideEffect.

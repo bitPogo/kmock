@@ -4,13 +4,7 @@ In your buildSrc/build.gradle.kts:
 ```kotlin
 repositories {
     ...
-    maven {
-        url = uri("https://maven.pkg.github.com/bitPogo/kmock")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("PACKAGE_REGISTRY_DOWNLOAD_TOKEN")
-        }
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -24,15 +18,7 @@ allprojects {
     ...
     repositories {
         ...
-        maven {
-            url = java.net.URI("https://maven.pkg.github.com/bitPogo/kmock")
-            credentials {
-                username = project.findProperty("gpr.user")?.toString()
-                    ?: System.getenv("GITHUB_USER")
-                password = project.findProperty("gpr.key")?.toString()
-                    ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+        mavenCentral()
     }
 }
 ```

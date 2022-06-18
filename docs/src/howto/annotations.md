@@ -43,7 +43,7 @@ class SampleTestSet {
 ```
 
 !!!tip
-    You do not have to mix those Annotations per Test Set.
+    You do not have to mix those Annotations per test set.
     KMock is totally fine if you declare a Template in one source as common and in another source as platform source.
     It will resolve any conflicts according to their precedence in Kotlin's hierarchical source sets.
     As a rule of thumb - you need for Single Interface Mocks one Annotation per test set.
@@ -82,6 +82,8 @@ class SampleTestSet {
 ```
 !!!warning
     Do not use this feature to create one Mock for all tests. It was never intended for that.
+!!!note
+    Even if it is not directly intended you can use Multi-Interface Annotations to produce Aliases for Single-Interface Mocks.
 
 ## Custom Annotations
 You can also use your custom Annotations in order to ease the handling with Shared Sources.
