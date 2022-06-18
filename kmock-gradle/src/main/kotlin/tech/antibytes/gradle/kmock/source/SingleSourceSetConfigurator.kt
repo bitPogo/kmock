@@ -12,7 +12,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_PLUGIN
 import tech.antibytes.gradle.kmock.config.MainConfig
+import tech.antibytes.gradle.kmock.util.applyIfNotExists
 import tech.antibytes.gradle.kmock.util.isAndroid
 import tech.antibytes.gradle.kmock.util.isJs
 
@@ -65,7 +67,10 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
 
         when {
-            project.isJs() -> extendJsSourceSet(project, buildDir)
+            project.isJs() -> {
+                project.applyIfNotExists(KSP_PLUGIN)
+                extendJsSourceSet(project, buildDir)
+            }
             project.isAndroid() -> extendAndroidSourceSet(project, buildDir)
             else -> extendJvmSourceSet(project, buildDir)
         }

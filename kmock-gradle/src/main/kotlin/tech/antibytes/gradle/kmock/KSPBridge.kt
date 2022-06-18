@@ -19,18 +19,21 @@ internal class KSPBridge private constructor(
     private val kmpSourceSetConfigurator: SourceSetConfigurator,
 ) : KMockPluginContract.KSPBridge {
     private var locked = false
-    private val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
+    private val ksp: KspExtension by lazy {
+        project.extensions.getByType(KspExtension::class.java)
+    }
 
     private fun configureSources() {
         val isKMP = project.isKmp()
-        ksp.arg(KMP_FLAG, isKMP.toString())
-        ksp.arg(KSP_DIR, "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
 
         if (!isKMP) {
             singleSourceSetConfigurator.configure(project)
         } else {
             kmpSourceSetConfigurator.configure(project)
         }
+
+        ksp.arg(KMP_FLAG, isKMP.toString())
+        ksp.arg(KSP_DIR, "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
     }
 
     private fun configureOnce() {

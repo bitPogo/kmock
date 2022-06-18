@@ -45,7 +45,8 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                     "$buildDir/generated/ksp/android/androidReleaseAndroidTest"
                 )
             }
-            platformName == "androidAndroid" -> { /* Do nothing*/
+            platformName == "androidAndroid" -> {
+                /* Do nothing*/
             }
             else -> {
                 sourceSet.kotlin.srcDir(
