@@ -1,5 +1,5 @@
 # Assertion and Verification
-As other libraries KMock offers a way to assert or verify invocations of Proxies (not Mock!).
+As other libraries KMock offers a way to assert or verify invocations of Proxies (not Mocks!).
 
 ## Expectations Method
 
@@ -40,7 +40,7 @@ PropertyProxies have their own specialized set of Expectation Methods:
 | `wasSetTo`              | determines if the Proxy was invoked as a setter with the given argument. |
 
 ## Argument Constraints
-While it might not always be desirable to assert/verify against a concrete value, KMock also offers ArgumentConstraints.
+While it might not always be desirable to assert/verify against an concrete value, KMock also offers ArgumentConstraints.
 For example if you simply want to confirm that a Proxy was called with a certain type you may do the following:
 
 ```kotlin
@@ -55,14 +55,14 @@ fun sampleTest() {
 }
 ```
 
-Internally all concrete types will be converted into a `eq` constraint.
+Internally all concrete types will be converted into an `eq` constraint.
 For example an Expectation Method is called with `42`.
 `42` will be converted into `eq(42)`.
 Currently the following constraints are implemented:
 
 | ArgumentConstraint      | What it does                         |
 | ----------------------- | ------------------------------------ |
-| `and`                    | which allows to chain multiple values or constraints together with an logical and. |
+| `and`                   | which allows to chain multiple values or constraints together with an logical and. |
 | `any`                   | matches always (including null).<br/>If a concrete type was given it matches only if a recorded argument fulfils the expected type (exclusive null). |
 | `eq`                    | matches if the recorded argument is equal to the expected argument. |
 | `isNot`                 | matches if the recorded argument is not equal to the expected argument. |
@@ -78,7 +78,7 @@ Well, `verify` will look if any invocation of the Proxy will match the given Exp
 `assertProxy` will go through the invocation from the first to latest.
 In short `verify` can skip invocations while `assertProxy` cannot.
 
-Also both functions are not capable be used to make statements about the interactions of multiple Proxies.
+Also both functions are not capable to be used in order to make statements about the interactions between Proxies.
 However you can use `assertProxy` with multiple Proxies:
 ```kotlin
 @Test
@@ -106,7 +106,7 @@ As shown above you can and assuming `fetch` has been called 2x and with that `_f
 Also assuming `find` was invoked, `verify` and `assertProxy` will pass.
 However you cannot say if `fetch` was called before or after `find`.
 Assuming now `fetch` has been called only once, `verify` will still pass, while `assertProxy` will fail.
-Since `verify` can be less strict about the order it can check if a Proxy was invoked `exactly`, `atLeast` or `atMost` certain times.
+Since `verify` is less strict about the order it checks if a Proxy was invoked `exactly`, `atLeast` or `atMost` certain times.
 `assertProxy` on the other hand will always tell what is wrong with current and where but will only cover those invocation you told it cover.
 In order to ensure you covered all invocations via `assertProxy` you can use `hasNoFurtherInvocations`.
 
@@ -126,7 +126,7 @@ interface SampleThing {
     fun method(arg0: String, arg1: Int, arg2: Any)
 }
 ```
-KMock will offer you following possibility to verify the invocations:
+Now you can use Operators with `verify` like :
 ```kotlin
 @Test
 fun sampleTest() {
@@ -227,9 +227,8 @@ To make the difference more clear:
 Optionally you can use `ensureVerificationOf` if you need any insurance that all Proxies have been covered during a run by a Verifier/Asserter.
 
 Verifier/Asserter can additionally be initialised with the `coverAllInvocations` flag, which is false by default.
-This flag forces Proxies, which are excluded from Verification/Assertion by default, to be covered during a test unit run.
-This is only important if you have to cover build-in methods like equals.
-Build-In methods are excluded from Verification via Verifier/Asserter by default due to their special nature.
+This flag forces Proxies, which are excluded from Verification/Assertion by default to be covered during a test run.
+This is only important if you have to cover build-in methods like `equals`, since they are excluded from Verification via Verifier/Asserter by default due to their special nature.
 
 ## Teardown
 As with Mocks Verifier/Asserter have a `clear` method, which opens them up for reuse.
@@ -238,5 +237,8 @@ So do not forget to call it.
 ## Compatibility with Proxy Access Methods
 
 In case you use Proxy Access Methods with Coroutines (aka `asyncProxyOf`) you may have to use the corresponding Verification/Assertion methods.
-They act the very same way as describe the described methods above and start with the prefix `async` like `asyncVerify`.
-Do not use them with direct Proxy Access together - their soul purpose is bound to `asyncProxyOf` and `asyncProxyOf` only.
+They act the very same way as they synchronous counter parts.
+The only difference is that they start with the prefix `async` like `asyncVerify`.
+
+!!!important
+    Do not use them with direct Proxy Access together - their soul purpose is bound to `asyncProxyOf` and `asyncProxyOf` only.

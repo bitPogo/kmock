@@ -16,7 +16,7 @@
 - stabilize proxy api ✅️
 - introduce a more robust way to access proxies ✅️
 - prototype an agnostic annotation for arbitrary sources ✅️
-- publish to MavenCentral
+- publish to MavenCentral ✅️
 
 ## 0.1.0
 - support hierarchical source sets ✅

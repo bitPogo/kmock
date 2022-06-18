@@ -96,7 +96,7 @@ This argument will be provided when invoked by a Proxy and is its id.
 You may use it to differentiate between Proxies.
 At last you need to switch relaxing on by adding `relaxed = true` to `kmock`.
 
-However since this sounds cumbersome for now there is already a project - KFixture - on its way to ease this, so stay tuned.
+However since this sounds cumbersome you may want to use it together with [KFixture](http://kfixture.antibytes.tech).
 
 Well, in certain cases the type parameter will not work as return value - Generics.
 If KMock encounters Generics as return values of a method/property it adds additional arguments (`type$Idx`) to invocation of the Relaxer Function
