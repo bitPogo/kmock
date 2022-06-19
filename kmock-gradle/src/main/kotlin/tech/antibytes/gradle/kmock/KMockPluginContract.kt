@@ -155,6 +155,7 @@ internal interface KMockPluginContract {
     }
 
     companion object {
+        const val KSP_PLUGIN = "com.google.devtools.ksp"
         const val KMOCK_PREFIX = "kmock_"
         const val KSP_DIR = "${KMOCK_PREFIX}kspDir"
         const val KMP_FLAG = "${KMOCK_PREFIX}isKmp"

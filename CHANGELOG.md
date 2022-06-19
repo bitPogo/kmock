@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* Plugin triggered the usage of the legacy JS compiler to be used for KotlinJs
+
 ### Security
 
 ### Bumped
@@ -30,12 +32,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * `getValues` to replace getMany (PropertyProxy)
 * `error` to replace throws (FunProxy)
 * `errors` to replace throwsMany (FunProxy)
-* `returns` which acts as setter for getValue/returnValue for Proxies
-* `returnsMany` which acts as setter for getValues/returnValues for Proxies
-* `throws` (infix method) which acts as setter for error for FunProxies
-* `throwsMany` (infix method) which acts as setter for errors for FunProxies
-* `runOnGet` which acts as setter for getSideEffect for PropertyProxies
-* `runOnSet` which acts as setter for getSideEffect for PropertyProxies
+* `returns` which acts as setter for `getValue`/`returnValue` for Proxies
+* `returnsMany` which acts as setter for `getValues`/`returnValues` for Proxies
+* `throws` (infix method) which acts as setter for `error` for FunProxies
+* `throwsMany` (infix method) which acts as setter for `errors` for FunProxies
+* `runOnGet` which acts as setter for `getSideEffect` for PropertyProxies
+* `runOnSet` which acts as setter for `setSideEffect` for PropertyProxies
 * `hasNoFurtherInvocations` to ease `assertProxy`
 
 ### Changed
@@ -59,7 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* vararg eats specialised Array Types (e.g. IntArray) and covariant types when inherited
+* `vararg` eats specialised Array Types (e.g. IntArray) and covariant types when inherited
 * Factories for Multi-Interface-Mocks
 * Multi-Boundary Parameter are not right resolved when mixed multi with regular parameter in nested types
 * Collisions of type aliases with regular method signatures

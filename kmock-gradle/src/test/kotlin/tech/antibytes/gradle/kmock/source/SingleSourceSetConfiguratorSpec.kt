@@ -13,6 +13,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.plugins.PluginContainer
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -86,6 +87,7 @@ class SingleSourceSetConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
 
         every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
+        every { project.plugins.hasPlugin("com.google.devtools.ksp") } returns true
         every { project.plugins.hasPlugin("com.android.library") } returns false
         every { project.plugins.hasPlugin("com.android.application") } returns false
 
@@ -107,6 +109,51 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
+    }
+
+    @Test
+    fun `Given configure is called with a Project it adds the output directory of the code generation to the consumer for Js, while applying KSP`() {
+        // Given
+        val project: Project = mockk()
+        val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val kotlin: KotlinJsProjectExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val test: KotlinSourceSet = mockk()
+        val path: String = fixture.fixture()
+
+        every { project.dependencies } returns mockk(relaxed = true)
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins } returns plugins
+
+        every { plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
+        every { plugins.hasPlugin("com.google.devtools.ksp") } returns false
+        every { plugins.hasPlugin("com.android.library") } returns false
+        every { plugins.hasPlugin("com.android.application") } returns false
+
+        every { plugins.apply(any()) } returns mockk()
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinJsProjectExtension>("kotlin", probe) },
+            kotlin
+        )
+
+        every { kotlin.sourceSets } returns sources
+
+        invokeGradleAction(
+            { probe -> sources.getByName("test", probe) },
+            test,
+            test,
+        )
+
+        every { test.kotlin.srcDir(any<String>()) } returns mockk()
+
+        // When
+        SingleSourceSetConfigurator.configure(project)
+
+        verify(exactly = 1) { plugins.apply("com.google.devtools.ksp") }
         verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
     }
 

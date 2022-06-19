@@ -65,6 +65,34 @@ class KMockPluginSpec {
     }
 
     @Test
+    fun `Given apply is called it does not applies the gradle Ksp Plugin if it does not exists and KotlinJs is used`() {
+        // Given
+        val kmock = KMockPlugin()
+        val project: Project = mockk()
+        val plugins: PluginContainer = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val buildDir = File(fixture.fixture<String>(qualifiedBy("stringAlpha")))
+
+        every { project.plugins } returns plugins
+        every { project.extensions } returns extensions
+        every { project.buildDir } returns buildDir
+
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
+        every { plugins.apply(any()) } returns mockk()
+
+        every { extensions.create(any(), KMockExtension::class.java) } returns mockk()
+        every { extensions.getByType(KspExtension::class.java) } returns mockk(relaxed = true)
+
+        // When
+        kmock.apply(project)
+
+        verify(exactly = 1) { plugins.hasPlugin("org.jetbrains.kotlin.js") }
+        verify(exactly = 0) { plugins.hasPlugin("com.google.devtools.ksp") }
+        verify(exactly = 0) { plugins.apply("com.google.devtools.ksp") }
+    }
+
+    @Test
     fun `Given apply is called it does not applies the gradle Ksp Plugin if it already exists`() {
         // Given
         val kmock = KMockPlugin()
