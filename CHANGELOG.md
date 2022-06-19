@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* Plugin triggered the usage of the legacy JS compiler to be used for KotlinJs
+* Plugin triggered the usage of the legacy JS compiler for KotlinJs
 
 
 ## [0.2.0](https://github.com/bitPogo/kmock/compare/v0.2.0-rc01...v0.2.0)
