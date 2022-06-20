@@ -9,7 +9,7 @@ package tech.antibytes.gradle.kmock.dependency
 object Version {
 
     val gradle = Gradle
-    const val kotlin = "1.6.10"
+    const val kotlin = "1.6.21"
 
     object Gradle {
         /**
@@ -20,7 +20,7 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "b1a580e"
+        const val antibytes = "a5c6f90"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
@@ -31,8 +31,8 @@ object Version {
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "98f5a1d"
-        const val kfixture = "0.1.0"
+        const val test = "f25b461"
+        const val kfixture = "0.2.0"
     }
 
     val google = Google
@@ -44,7 +44,7 @@ object Version {
         /**
          * [KSP DevTools on MavenCentral](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin)
          */
-        const val ksp = "1.6.10-1.0.4"
+        const val ksp = "1.6.21-1.0.6"
     }
 
     val square = Square
@@ -59,7 +59,7 @@ object Version {
     /**
      * [Compiler Test](https://github.com/tschuchortdev/kotlin-compile-testing)
      */
-    const val compilerTest = "1.4.7"
+    const val compilerTest = "1.4.8"
 
     val mkdocs = MkDoccs
 
