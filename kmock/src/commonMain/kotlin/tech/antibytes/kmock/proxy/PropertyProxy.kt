@@ -209,7 +209,9 @@ internal class PropertyProxy<Value>(
             state.set = value
         }
 
-    override fun runOnSet(sideEffect: (Value) -> Unit) { set = sideEffect }
+    override fun runOnSet(sideEffect: (Value) -> Unit) {
+        set = sideEffect
+    }
 
     override val calls: Int
         get() = state.calls

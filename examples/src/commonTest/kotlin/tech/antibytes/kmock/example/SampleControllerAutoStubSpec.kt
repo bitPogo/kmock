@@ -124,7 +124,7 @@ class SampleControllerAutoStubSpec {
         domainObject._value.getValue = number
 
         remote._find.returnValue = domainObject
-        local._contains.sideEffect = { true }
+        local._contains run { true }
         local._fetch.returnValue = domainObject
 
         // When

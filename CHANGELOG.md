@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* `run`/`runs` does not trigger SideEffect invocation
+
 ### Security
 
 ### Bumped
