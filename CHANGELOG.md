@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+## [0.3.0-rc01](https://github.com/bitPogo/kmock/compare/v0.2.2...v0.3.0-rc01)
+
+### Bumped
+
 * Kotlin 1.6.10 -> 1.6.21
 * AtomicFu 0.17.1 -> 0.17.3
 * KSP 1.6.10-1.0.4 -> 1.6.21-1.0.6
