@@ -1031,6 +1031,40 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source for a Platform and has AccessMethods is processed and prevents Aliases from resolving, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "PreventResolving.kt",
+            loadResource("/template/typealiaz/PreventResolving.kt")
+        )
+        val expected = loadResource("/expected/typealiaz/PreventResolving.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+            kspArguments = mapOf(
+                "kmock_alternativeProxyAccess" to "true",
+                "kmock_preventAliasResolving_0" to "mock.template.typealiaz.Alias921",
+                "kmock_preventAliasResolving_1" to "mock.template.typealiaz.Alias923",
+                "kmock_preventAliasResolving_2" to "mock.template.typealiaz.Alias977",
+                "kmock_preventAliasResolving_3" to "mock.template.typealiaz.Alias973",
+                "kmock_preventAliasResolving_4" to "mock.template.typealiaz.Alias955",
+                "kmock_preventAliasResolving_5" to "mock.template.typealiaz.Alias999",
+                "kmock_preventAliasResolving_6" to "mock.template.typealiaz.Alias1000",
+            )
+        )
+        val actual = resolveGenerated("PreventResolvingMock.kt")
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source for Shared which contains TypeAliases is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(

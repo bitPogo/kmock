@@ -194,7 +194,8 @@ public class KMockProcessorProvider(
                 methodGenerator = methodGenerator,
                 buildInGenerator = buildInGenerator,
                 receiverGenerator = receiverGenerator,
-                proxyAccessMethodGeneratorFactory = KMockProxyAccessMethodGenerator
+                proxyAccessMethodGeneratorFactory = KMockProxyAccessMethodGenerator,
+                preventResolvingOfAliases = options.preventResolvingOfAliases,
             ),
             factoryGenerator = factoryGenerator,
             entryPointGenerator = entryPointGenerator,

@@ -17,6 +17,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.FREEZE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.INTERFACES
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KMP_FLAG
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_DIR
+import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.PREVENT_ALIAS_RESOLVING
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.ROOT_PACKAGE
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPIES_ONLY
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.SPY_ALL
@@ -60,6 +61,8 @@ public abstract class KMockExtension(
     private var _alternativeAccess = false
 
     private var _enableFineGrainedNames = false
+
+    private var _preventResolvingOfAliases: Set<String> = emptySet()
 
     private fun propagateValue(
         id: String,
@@ -218,5 +221,17 @@ public abstract class KMockExtension(
         set(value) {
             propagateValue(FINE_GRAINED_PROXY_NAMES, value.toString())
             _enableFineGrainedNames = value
+        }
+
+    @KMockGradleExperimental
+    override var preventResolvingOfAliases: Set<String>
+        get() = _preventResolvingOfAliases
+        set(value) {
+            propagateIterable(
+                prefix = PREVENT_ALIAS_RESOLVING,
+                values = value
+            )
+
+            _preventResolvingOfAliases = value
         }
 }

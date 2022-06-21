@@ -73,7 +73,8 @@ internal class KMockGenerator(
     private val methodGenerator: MethodGenerator,
     private val buildInGenerator: BuildInMethodGenerator,
     private val receiverGenerator: ReceiverGenerator,
-    private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory
+    private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory,
+    private val preventResolvingOfAliases: Set<String>,
 ) : ProcessorContract.MockGenerator {
     private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
         return if (superTypes.size == 1) {
@@ -345,6 +346,7 @@ internal class KMockGenerator(
             .collectNullableClassGenerics()
         val proxyAccessMethodGenerator = proxyAccessMethodGeneratorFactory.getInstance(
             enableGenerator = enableProxyAccessMethodGenerator,
+            preventResolvingOfAliases = preventResolvingOfAliases,
             nullableClassGenerics = nullableClassGenerics,
         )
 

@@ -316,3 +316,5 @@ While this may sound amazing these access method have their natural limitations 
 You will not be able to address Receivers in that way.
 The signature of the Template maybe too ambiguous in certain cases which makes them unable to resolve the correct Proxy.
 In those cases you may access Proxies directly.
+Also you may encounter problems with incremental builds when you use expect/actual Aliases.
+In those cases take a look at `preventResolvingOfAliases` in the Gradle Plugin [setup](setup.md).
