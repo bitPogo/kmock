@@ -11,6 +11,7 @@ import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kfixture.mapFixture
+import tech.antibytes.kfixture.setFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
@@ -126,7 +127,7 @@ class KMockOptionExtractorSpec {
     }
 
     @Test
-    fun `Given convertOptions it returns a set of derived sourceSets, which are extracted from dependenciess`() {
+    fun `Given convertOptions it returns a set of derived sourceSets, which are extracted from dependencies`() {
         // Given
         val rootPackage: String = fixture.fixture()
         val isKmp: Boolean = fixture.fixture()
@@ -755,5 +756,51 @@ class KMockOptionExtractorSpec {
 
         // Then
         actual.enableFineGrainedNames mustBe expected
+    }
+
+    @Test
+    fun `Given convertOptions it returns a empty set for preventResolvingOfAliases`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.preventResolvingOfAliases mustBe emptySet()
+    }
+
+    @Test
+    fun `Given convertOptions it returns a set for preventResolvingOfAliases`() {
+        // Given
+        val rootPackage: String = fixture.fixture()
+        val isKmp: Boolean = fixture.fixture()
+        val kspDir: String = fixture.fixture()
+
+        val delegateKSP = mutableMapOf(
+            "kmock_kspDir" to kspDir,
+            "kmock_rootPackage" to rootPackage,
+            "kmock_isKmp" to isKmp.toString()
+        )
+
+        val aliasLocks: Set<String> = fixture.setFixture(size = 3)
+
+        aliasLocks.forEachIndexed { index, alias ->
+            delegateKSP["kmock_preventAliasResolving_$index"] = alias
+        }
+
+        // When
+        val actual = KMockOptionExtractor.convertOptions(delegateKSP)
+
+        // Then
+        actual.preventResolvingOfAliases mustBe aliasLocks
     }
 }

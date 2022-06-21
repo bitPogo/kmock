@@ -17,6 +17,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_OPTION
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.INTERFACES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMP_FLAG
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
+import tech.antibytes.kmock.processor.ProcessorContract.Companion.PREVENT_ALIAS_RESOLVING
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPIES_ONLY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_ALL
@@ -81,6 +82,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         val useTypePrefixFor: MutableMap<String, String> = mutableMapOf()
         val customMethodNames: MutableMap<String, String> = mutableMapOf()
         val customAnnotations: MutableMap<String, String> = mutableMapOf()
+        val preventResolvingOfAliases: MutableSet<String> = mutableSetOf()
 
         kspRawOptions.forEach { (key, value) ->
             when {
@@ -124,6 +126,7 @@ internal object KMockOptionExtractor : OptionExtractor {
                     useBuildInProxiesOn.add(value)
                     spyOn.add(value)
                 }
+                key.startsWith(PREVENT_ALIAS_RESOLVING) -> preventResolvingOfAliases.add(value)
             }
         }
 
@@ -146,6 +149,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             customMethodNames = customMethodNames,
             allowExperimentalProxyAccess = allowExperimentalProxyAccess,
             enableFineGrainedNames = enableFineGrainedNames,
+            preventResolvingOfAliases = preventResolvingOfAliases,
         )
     }
 }

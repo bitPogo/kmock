@@ -72,6 +72,7 @@ internal interface ProcessorContract {
         val customMethodNames: Map<String, String>,
         val allowExperimentalProxyAccess: Boolean,
         val enableFineGrainedNames: Boolean,
+        val preventResolvingOfAliases: Set<String>,
     )
 
     fun interface OptionExtractor {
@@ -772,5 +773,6 @@ internal interface ProcessorContract {
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
         const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
         const val FINE_GRAINED_PROXY_NAMES = "${KMOCK_PREFIX}enableFineGrainedProxyNames"
+        const val PREVENT_ALIAS_RESOLVING = "${KMOCK_PREFIX}preventAliasResolving_"
     }
 }
