@@ -209,3 +209,14 @@ kmock {
     enableFineGrainedNames = true
 }
 ```
+
+### Prevent resolving of Aliases
+It may occur that AccessMethods in combination with expect/actual Aliases cause problems with incremental builds.
+Since it is currently not possible to resolve that automatically you need to declare them by hand:
+```kotlin
+kmock {
+    ...
+    rootPackage = "my.root.package"
+    preventResolvingOfAliases = "my.root.package.subpacke.Alias"
+}
+```
