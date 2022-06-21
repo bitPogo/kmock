@@ -116,7 +116,7 @@ internal interface KMockPluginContract {
         var enableFineGrainedNames: Boolean
 
         /**
-         * Selects an Alias not to be resolved for AccessMethods.
+         * Selects an Alias not to be resolved when used with AccessMethods.
          *
          * Set of full qualified names of targets which should not be resolved.
          */
