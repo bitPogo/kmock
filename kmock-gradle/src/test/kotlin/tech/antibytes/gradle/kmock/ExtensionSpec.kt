@@ -24,9 +24,9 @@ import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 import tech.antibytes.gradle.test.createExtension
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
-import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kfixture.mapFixture
 import tech.antibytes.kfixture.qualifier.qualifiedBy
+import tech.antibytes.kfixture.setFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import kotlin.test.assertFailsWith
@@ -216,7 +216,7 @@ class ExtensionSpec {
         val project: Project = mockk(relaxed = true)
         val action = slot<(String) -> String>()
         val kspBridge: KMockPluginContract.KSPBridge = mockk()
-        val expected: Set<String> = fixture.listFixture<String>(size = 3).toSet()
+        val expected: Set<String> = fixture.setFixture(size = 3)
 
         every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
         every { kspBridge.propagateIterable(any(), any(), capture(action)) } just Runs
@@ -487,7 +487,7 @@ class ExtensionSpec {
         val project: Project = mockk(relaxed = true)
         val action = slot<(String) -> String>()
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
-        val expected: Set<String> = fixture.listFixture<String>(size = 3).toSet()
+        val expected: Set<String> = fixture.setFixture(size = 3)
 
         every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
         every { kspBridge.propagateIterable(any(), any(), capture(action)) } just Runs
@@ -730,5 +730,41 @@ class ExtensionSpec {
 
         extension.enableFineGrainedNames mustBe expected
         verify(exactly = 1) { kspBridge.propagateValue("kmock_enableFineGrainedProxyNames", expected.toString()) }
+    }
+    
+    @Test
+    fun `Its default preventResolvingOfAliases is a empty set`() {
+        val project: Project = mockk(relaxed = true)
+
+        every { KSPBridge.getInstance(any(), any(), any()) } returns mockk(relaxed = true)
+
+        val extension = createExtension<KMockExtension>(project)
+
+        extension.preventResolvingOfAliases mustBe emptySet()
+    }
+
+    @Test
+    fun `It propagates preventResolvingOfAliases changes to Ksp while transforming them to string`() {
+        // Given
+        val project: Project = mockk(relaxed = true)
+        val action = slot<(String) -> String>()
+        val kspBridge: KMockPluginContract.KSPBridge = mockk()
+        val expected: Set<String> = fixture.setFixture(size = 3)
+
+        every { KSPBridge.getInstance(any(), any(), any()) } returns kspBridge
+        every { kspBridge.propagateIterable(any(), any(), capture(action)) } just Runs
+
+        // When
+        val extension = createExtension<KMockExtension>(project)
+        extension.preventResolvingOfAliases = expected
+
+        // Then
+        extension.preventResolvingOfAliases mustBe expected
+        verify(exactly = 1) {
+            kspBridge.propagateIterable("kmock_preventAliasResolving_", expected, action.captured)
+        }
+
+        val given: String = fixture.fixture()
+        action.captured.invoke(given) mustBe given
     }
 }

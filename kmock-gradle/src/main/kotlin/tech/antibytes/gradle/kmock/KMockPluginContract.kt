@@ -26,7 +26,7 @@ internal interface KMockPluginContract {
         /**
          * Selection of targets which allow Proxies on build-in method (e.g. toString).
          *
-         * Set of full qualified name of target which should use proxy build-in methods.
+         * Set of full qualified names of targets which should use proxy build-in methods.
          */
         var useBuildInProxiesOn: Set<String>
 
@@ -50,7 +50,7 @@ internal interface KMockPluginContract {
         /**
          * Selection of targets which allow Proxies to use Spies.
          *
-         * Set of full qualified name of targets which should allowed to be spy on.
+         * Set of full qualified names of targets which should allowed to be spy on.
          * Note: This will also activate build-in methods.
          */
         var spyOn: Set<String>
@@ -114,6 +114,14 @@ internal interface KMockPluginContract {
          */
         @KMockGradleExperimental
         var enableFineGrainedNames: Boolean
+
+        /**
+         * Selects an Alias not to be resolved for AccessMethods.
+         *
+         * Set of full qualified names of targets which should not be resolved.
+         */
+        @KMockGradleExperimental
+        var preventResolvingOfAliases: Set<String>
     }
 
     interface SourceSetConfigurator {
@@ -174,5 +182,6 @@ internal interface KMockPluginContract {
         const val CUSTOM_ANNOTATION = "${KMOCK_PREFIX}customAnnotation_"
         const val ALTERNATIVE_PROXY_ACCESS = "${KMOCK_PREFIX}alternativeProxyAccess"
         const val FINE_GRAINED_PROXY_NAMES = "${KMOCK_PREFIX}enableFineGrainedProxyNames"
+        const val PREVENT_ALIAS_RESOLVING = "${KMOCK_PREFIX}preventAliasResolving_"
     }
 }
