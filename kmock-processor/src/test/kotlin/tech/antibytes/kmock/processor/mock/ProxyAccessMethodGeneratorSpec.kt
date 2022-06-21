@@ -20,6 +20,10 @@ class ProxyAccessMethodGeneratorSpec {
 
     @Test
     fun `Given getInstance is called with a Boolean it creates a ProxyAccessMethodGenerator`() {
-        KMockProxyAccessMethodGenerator.getInstance(false, mockk()) fulfils ProxyAccessMethodGenerator::class
+        KMockProxyAccessMethodGenerator.getInstance(
+            false,
+            mockk(),
+            mockk()
+        ) fulfils ProxyAccessMethodGenerator::class
     }
 }

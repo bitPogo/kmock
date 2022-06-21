@@ -8,6 +8,7 @@ public abstract class tech/antibytes/gradle/kmock/KMockExtension : tech/antibyte
 	public fun getDisableFactories ()Z
 	public fun getEnableFineGrainedNames ()Z
 	public fun getFreezeOnDefault ()Z
+	public fun getPreventResolvingOfAliases ()Ljava/util/Set;
 	public fun getRootPackage ()Ljava/lang/String;
 	public fun getSpiesOnly ()Z
 	public fun getSpyAll ()Z
@@ -22,6 +23,7 @@ public abstract class tech/antibytes/gradle/kmock/KMockExtension : tech/antibyte
 	public fun setDisableFactories (Z)V
 	public fun setEnableFineGrainedNames (Z)V
 	public fun setFreezeOnDefault (Z)V
+	public fun setPreventResolvingOfAliases (Ljava/util/Set;)V
 	public fun setRootPackage (Ljava/lang/String;)V
 	public fun setSpiesOnly (Z)V
 	public fun setSpyAll (Z)V

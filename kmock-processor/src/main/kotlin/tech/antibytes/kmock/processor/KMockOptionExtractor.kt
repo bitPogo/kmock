@@ -149,7 +149,7 @@ internal object KMockOptionExtractor : OptionExtractor {
             customMethodNames = customMethodNames,
             allowExperimentalProxyAccess = allowExperimentalProxyAccess,
             enableFineGrainedNames = enableFineGrainedNames,
-            preventResolvingOfAliases = preventResolvingOfAliases,
+            preventResolvingOfAliases = preventResolvingOfAliases.toSortedSet(),
         )
     }
 }

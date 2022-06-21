@@ -731,7 +731,7 @@ class ExtensionSpec {
         extension.enableFineGrainedNames mustBe expected
         verify(exactly = 1) { kspBridge.propagateValue("kmock_enableFineGrainedProxyNames", expected.toString()) }
     }
-    
+
     @Test
     fun `Its default preventResolvingOfAliases is a empty set`() {
         val project: Project = mockk(relaxed = true)

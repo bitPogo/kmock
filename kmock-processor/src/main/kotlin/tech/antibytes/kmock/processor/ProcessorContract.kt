@@ -535,6 +535,7 @@ internal interface ProcessorContract {
     interface ProxyAccessMethodGeneratorFactory {
         fun getInstance(
             enableGenerator: Boolean,
+            preventResolvingOfAliases: Set<String>,
             nullableClassGenerics: Map<String, TypeName>,
         ): ProxyAccessMethodGenerator
     }

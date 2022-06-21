@@ -53,6 +53,7 @@ import kotlin.reflect.KProperty
 
 internal class KMockProxyAccessMethodGenerator private constructor(
     private val enabled: Boolean,
+    private val preventResolvingOfAliases: Set<String>,
     private val nullableClassGenerics: Map<String, TypeName>,
 ) : ProxyAccessMethodGenerator {
     private sealed interface Member {
@@ -131,10 +132,18 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         return this.associateBy { type -> type.name }
     }
 
-    private fun TypeName.resolveTypeNames(): TypeName {
-        val type = tag(TypeAliasTag::class)?.abbreviatedType ?: this
+    private fun TypeName.resolveTypeName(): TypeName {
+        val alias = tag(TypeAliasTag::class)
 
-        return when (type) {
+        return if (alias == null || this.rawType().toString().trimEnd('?') in preventResolvingOfAliases) {
+            this
+        } else {
+            alias.abbreviatedType
+        }
+    }
+
+    private fun TypeName.resolveTypeNames(): TypeName {
+        return when (val type = resolveTypeName()) {
             is ParameterizedTypeName -> {
                 type.rawType().parameterizedBy(
                     type.typeArguments.resolveTypeNames()
@@ -847,7 +856,12 @@ internal class KMockProxyAccessMethodGenerator private constructor(
 
         override fun getInstance(
             enableGenerator: Boolean,
+            preventResolvingOfAliases: Set<String>,
             nullableClassGenerics: Map<String, TypeName>,
-        ): ProxyAccessMethodGenerator = KMockProxyAccessMethodGenerator(enableGenerator, nullableClassGenerics)
+        ): ProxyAccessMethodGenerator = KMockProxyAccessMethodGenerator(
+            enabled = enableGenerator,
+            preventResolvingOfAliases = preventResolvingOfAliases,
+            nullableClassGenerics = nullableClassGenerics
+        )
     }
 }

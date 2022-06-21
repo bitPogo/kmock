@@ -33,6 +33,7 @@ ksp {
     arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
     arg("kmock_alternativeProxyAccess", "true")
     arg("kmock_allowInterfaces", "true")
+    arg("kmock_preventAliasResolving_0", "tech.antibytes.kmock.example.contract.PlatformDecoder")
 }
 
 kotlin {
