@@ -10,9 +10,9 @@ import org.gradle.api.Project
 
 internal object CacheController : KMockPluginContract.CacheController {
     private fun String.isAndroidKSPTask(): Boolean {
-       return startsWith("ksp") && (
+        return startsWith("ksp") && (
             endsWith("UnitTestKotlinAndroid") || endsWith("AndroidTestKotlinAndroid")
-       )
+            )
     }
 
     private fun String.isKSPTask(): Boolean = startsWith("kspTestKotlin") || isAndroidKSPTask()

@@ -16,6 +16,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
 import org.junit.jupiter.api.Test
+import tech.antibytes.gradle.kmock.KMockPluginContract.CacheController
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.kfixture.fixture
@@ -49,6 +50,7 @@ class KSPBridgeSpec {
         val kmpSource: SourceSetConfigurator = mockk(relaxed = true)
 
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
         val extensions: ExtensionContainer = mockk()
 
         every { project.extensions } returns extensions
@@ -57,6 +59,7 @@ class KSPBridgeSpec {
         // When
         val actual: Any = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -72,6 +75,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -90,12 +94,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateValue(fixture.fixture(), fixture.fixture())
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -107,6 +113,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -125,6 +132,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -133,6 +141,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -144,6 +153,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -162,12 +172,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateValue(fixture.fixture(), fixture.fixture())
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -179,6 +191,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -197,6 +210,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -205,6 +219,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -219,6 +234,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -237,6 +253,7 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateValue(key, value)
@@ -252,6 +269,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -270,12 +288,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateMapping(fixture.fixture(), fixture.mapFixture())
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -287,6 +307,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -305,6 +326,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -313,6 +335,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -324,6 +347,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -342,12 +366,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateMapping(fixture.fixture(), fixture.mapFixture())
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -359,6 +385,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -377,6 +404,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -385,6 +413,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -404,6 +433,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -422,6 +452,7 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateMapping(
@@ -444,6 +475,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -462,12 +494,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateIterable(fixture.fixture(), fixture.listFixture<String>())
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -479,6 +513,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -497,6 +532,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -505,6 +541,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { singleSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "false") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -516,6 +553,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -534,12 +572,14 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateIterable(fixture.fixture(), fixture.listFixture<String>())
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -551,6 +591,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -569,6 +610,7 @@ class KSPBridgeSpec {
         // When
         val bridge = KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         )
@@ -577,6 +619,7 @@ class KSPBridgeSpec {
 
         // Then
         verify(exactly = 1) { kmpSource.configure(project) }
+        verify(exactly = 1) { cacheController.configure(project) }
         verify(exactly = 1) { ksp.arg("kmock_isKmp", "true") }
         verify(exactly = 1) { ksp.arg("kmock_kspDir", "${buildDir.absolutePath}/generated/ksp") }
     }
@@ -598,6 +641,7 @@ class KSPBridgeSpec {
         val singleSource: SourceSetConfigurator = mockk()
         val kmpSource: SourceSetConfigurator = mockk()
         val ksp: KspExtension = mockk()
+        val cacheController: CacheController = mockk(relaxUnitFun = true)
 
         val plugins: PluginContainer = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -616,6 +660,7 @@ class KSPBridgeSpec {
         // When
         KSPBridge.getInstance(
             project = project,
+            cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
             kmpSourceSetConfigurator = kmpSource
         ).propagateIterable(

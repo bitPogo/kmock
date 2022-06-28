@@ -154,6 +154,7 @@ internal interface KMockPluginContract {
     interface KSPBridgeFactory {
         fun getInstance(
             project: Project,
+            cacheController: CacheController,
             singleSourceSetConfigurator: SourceSetConfigurator,
             kmpSourceSetConfigurator: SourceSetConfigurator,
         ): KSPBridge

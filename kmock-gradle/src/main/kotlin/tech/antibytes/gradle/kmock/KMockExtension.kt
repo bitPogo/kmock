@@ -30,7 +30,12 @@ import tech.antibytes.gradle.kmock.source.SingleSourceSetConfigurator
 public abstract class KMockExtension(
     project: Project,
 ) : KMockPluginContract.Extension {
-    private val kspBridge = KSPBridge.getInstance(project, SingleSourceSetConfigurator, KmpSourceSetsConfigurator)
+    private val kspBridge = KSPBridge.getInstance(
+        project,
+        CacheController,
+        SingleSourceSetConfigurator,
+        KmpSourceSetsConfigurator
+    )
     private val illegalNames = setOf(
         ROOT_PACKAGE,
         KMP_FLAG,
