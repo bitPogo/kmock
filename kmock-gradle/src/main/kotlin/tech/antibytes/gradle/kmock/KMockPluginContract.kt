@@ -128,6 +128,10 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface CacheController {
+        fun configure(project: Project)
+    }
+
     interface KSPBridge {
         fun propagateValue(
             rootKey: String,
@@ -150,6 +154,7 @@ internal interface KMockPluginContract {
     interface KSPBridgeFactory {
         fun getInstance(
             project: Project,
+            cacheController: CacheController,
             singleSourceSetConfigurator: SourceSetConfigurator,
             kmpSourceSetConfigurator: SourceSetConfigurator,
         ): KSPBridge
