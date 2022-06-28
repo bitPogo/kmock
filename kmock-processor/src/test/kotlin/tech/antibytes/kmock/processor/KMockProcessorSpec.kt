@@ -289,7 +289,7 @@ class KMockProcessorSpec {
         val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
 
         val filter: ProcessorContract.SourceFilter = mockk()
-        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture(), mockk())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
@@ -487,7 +487,7 @@ class KMockProcessorSpec {
         val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
 
         val filter: ProcessorContract.SourceFilter = mockk()
-        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture(), mockk())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
@@ -853,7 +853,7 @@ class KMockProcessorSpec {
         val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
 
         val filter: ProcessorContract.SourceFilter = mockk()
-        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture(), mockk())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 
@@ -1011,7 +1011,7 @@ class KMockProcessorSpec {
         val entryPointGenerator: MockFactoryEntryPointGenerator = mockk()
 
         val filter: ProcessorContract.SourceFilter = mockk()
-        val relaxer = Relaxer(fixture.fixture(), fixture.fixture())
+        val relaxer = Relaxer(fixture.fixture(), fixture.fixture(), mockk())
 
         val illegal: List<KSAnnotated> = listOf(mockk())
 

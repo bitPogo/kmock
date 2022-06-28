@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 * Build Cache enabled, Mocks are not created
+* Relaxer not picked correctly up on multiple test runs
 
 ### Security
 
