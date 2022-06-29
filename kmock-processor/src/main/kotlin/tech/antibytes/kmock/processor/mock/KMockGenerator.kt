@@ -476,6 +476,14 @@ internal class KMockGenerator(
         return mock.build()
     }
 
+    private fun List<KSFile>.amendRelaxer(relaxer: Relaxer?): List<KSFile> {
+        return if (relaxer == null) {
+            this
+        } else {
+            this.toMutableList().also { it.add(relaxer.source) }
+        }
+    }
+
     private fun writeMock(
         template: KSClassDeclaration,
         parents: TemplateMultiSource?,
@@ -520,7 +528,7 @@ internal class KMockGenerator(
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = true,
-            originatingKSFiles = dependencies
+            originatingKSFiles = dependencies.amendRelaxer(relaxer)
         )
     }
 

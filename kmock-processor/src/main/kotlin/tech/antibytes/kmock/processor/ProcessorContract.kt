@@ -50,7 +50,8 @@ import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 internal interface ProcessorContract {
     data class Relaxer(
         val packageName: String,
-        val functionName: String
+        val functionName: String,
+        val source: KSFile,
     )
 
     data class Options(

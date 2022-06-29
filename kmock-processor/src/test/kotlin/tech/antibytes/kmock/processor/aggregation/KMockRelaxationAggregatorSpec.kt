@@ -9,6 +9,7 @@ package tech.antibytes.kmock.processor.aggregation
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
@@ -105,6 +106,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns mockk()
 
         every { logger.error(any()) } just Runs
 
@@ -151,6 +153,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns mockk()
 
         every { logger.error(any()) } just Runs
 
@@ -197,6 +200,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns mockk()
 
         every { logger.error(any()) } just Runs
 
@@ -247,6 +251,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns mockk()
 
         every { logger.error(any()) } just Runs
 
@@ -293,6 +298,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns mockk()
 
         every { logger.error(any()) } just Runs
 
@@ -322,6 +328,7 @@ class KMockRelaxationAggregatorSpec {
         val packageName: String = fixture.fixture()
         val parameter: KSValueParameter = mockk()
         val typeParameter: KSTypeParameter = mockk()
+        val dependency: KSFile = mockk()
 
         every {
             resolver.getSymbolsWithAnnotation(any(), any())
@@ -339,6 +346,7 @@ class KMockRelaxationAggregatorSpec {
 
         every { source.packageName.asString() } returns packageName
         every { source.simpleName.asString() } returns functionName
+        every { source.containingFile } returns dependency
 
         every { logger.error(any()) } just Runs
 
@@ -348,7 +356,7 @@ class KMockRelaxationAggregatorSpec {
         // Then
         verify(exactly = 0) { logger.error(any()) }
 
-        actual mustBe ProcessorContract.Relaxer(packageName, functionName)
+        actual mustBe ProcessorContract.Relaxer(packageName, functionName, dependency)
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
         }

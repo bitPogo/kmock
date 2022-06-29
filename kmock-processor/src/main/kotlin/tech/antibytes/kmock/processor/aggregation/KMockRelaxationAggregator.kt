@@ -55,9 +55,11 @@ internal class KMockRelaxationAggregator(
 
         return if (annotatedSymbol is KSFunctionDeclaration) {
             validateRelaxer(annotatedSymbol)
+
             Relaxer(
                 annotatedSymbol.packageName.asString(),
-                annotatedSymbol.simpleName.asString()
+                annotatedSymbol.simpleName.asString(),
+                annotatedSymbol.containingFile!!
             )
         } else {
             null

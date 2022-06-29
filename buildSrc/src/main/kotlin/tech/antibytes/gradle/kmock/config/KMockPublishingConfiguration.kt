@@ -67,7 +67,7 @@ open class KMockPublishingConfiguration {
             gitWorkDirectory = "dev",
             url = "https://$gitHubOwnerPath/maven-dev",
             username = username,
-            password = passwordGitHubRepos
+            password = passwordGitHubRepos,
         ),
         GitRepositoryConfiguration(
             name = "Snapshot",
