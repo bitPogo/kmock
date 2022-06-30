@@ -8,7 +8,6 @@ package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
@@ -27,17 +26,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
         }
     }
 
-    private fun extendAndroidSourceSet(project: Project, buildDir: String) {
-        project.extensions.configure<KotlinAndroidProjectExtension>("kotlin") {
-            sourceSets.getByName("test") {
-                kotlin.srcDir("$buildDir/generated/ksp/test")
-            }
-
-            sourceSets.getByName("androidTest") {
-                kotlin.srcDir("$buildDir/generated/ksp/androidTest")
-            }
-        }
-    }
+    private fun extendAndroidSourceSet(project: Project) = AndroidSourceBinder.bind(project)
 
     private fun extendJsSourceSet(project: Project, buildDir: String) {
         project.extensions.configure<KotlinJsProjectExtension>("kotlin") {
@@ -71,7 +60,7 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
                 project.applyIfNotExists(KSP_PLUGIN)
                 extendJsSourceSet(project, buildDir)
             }
-            project.isAndroid() -> extendAndroidSourceSet(project, buildDir)
+            project.isAndroid() -> extendAndroidSourceSet(project)
             else -> extendJvmSourceSet(project, buildDir)
         }
 
