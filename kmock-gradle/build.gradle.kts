@@ -37,6 +37,7 @@ antiBytesPublishing {
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
     implementation(LocalDependency.gradle.ksp)
+    implementation(Dependency.android.androidGradlePlugin)
 
     testImplementation(LocalDependency.antibytes.test.core)
     testImplementation(LocalDependency.antibytes.test.fixture)

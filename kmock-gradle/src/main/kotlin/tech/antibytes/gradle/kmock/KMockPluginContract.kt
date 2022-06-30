@@ -128,6 +128,10 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface AndroidSourceBinder {
+        fun bind(project: Project)
+    }
+
     interface CacheController {
         fun configure(project: Project)
     }
