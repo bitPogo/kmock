@@ -34,7 +34,7 @@ KMock has the following dependencies:
 
 ## Additional Requirements
 
-* Android 5.0 (API 21) to Android 12 (API 31)
+* Android 5.0 (API 21) to Android 12L (API 32)
 * [Java 11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot)
 
 ## Changelog
