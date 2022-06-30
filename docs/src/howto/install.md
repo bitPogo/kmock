@@ -132,19 +132,6 @@ In case you need to consume snapshots:
         rootPackage = "my.root.package"
     }
 
-    android {
-        ...
-        sourceSets {
-            ...
-            // Note: Do not use this while running debug and release together aka check/test/build
-            /*getByName("test") {
-                java.srcDirs(
-                    "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/debugUnitTest", // Just to make the IDE happy
-                )
-            }*/
-        }
-    }
-
     dependencies {
         ...
         testImplementation("tech.antibytes.kmock:kmock:$KMockVersion")
@@ -196,6 +183,11 @@ In case you need to consume snapshots:
         ...
     }
     ```
+
+!!!note
+    While the Gradle Plugin will add for `release` and `debug` the source folders, it will not configure additional build types or flavours.
+    If make use of that feature you need to add the generated files yourself.
+    You may find all generated sources in the project's build folder under `generated/ksp` and the documentation on build-variants can be found [here](https://developer.android.com/studio/build/build-variants).
 
 === "Kotlin Multiplatform"
     ```kotlin
