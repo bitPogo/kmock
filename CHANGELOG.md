@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+* sources for `release` and `debug` for non KMP are now added via the Android extension while custom build-variant need manual setup
+
 ### Deprecated
 
 ### Removed

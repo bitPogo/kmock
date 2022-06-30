@@ -6,18 +6,23 @@
 
 package tech.antibytes.gradle.kmock.source
 
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
@@ -28,6 +33,16 @@ import tech.antibytes.util.test.fulfils
 
 class SingleSourceSetConfiguratorSpec {
     private val fixture = kotlinFixture()
+
+    @BeforeEach
+    fun setUp() {
+        mockkObject(AndroidSourceBinder)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkObject(AndroidSourceBinder)
+    }
 
     @Test
     fun `It fulfils SourceSetConfigurator`() {
@@ -69,6 +84,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
         verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
     }
 
@@ -109,6 +125,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
         verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
     }
 
@@ -153,104 +170,9 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
         verify(exactly = 1) { plugins.apply("com.google.devtools.ksp") }
         verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
-    }
-
-    @Test
-    fun `Given configure is called with a Project it adds the output directory of the code generation to the consumer for an AndroidLibrary`() {
-        // Given
-        val project: Project = mockk()
-        val extensions: ExtensionContainer = mockk()
-        val kotlin: KotlinAndroidProjectExtension = mockk()
-        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
-        val test: KotlinSourceSet = mockk()
-        val androidTest: KotlinSourceSet = mockk()
-        val path: String = fixture.fixture()
-
-        every { project.dependencies } returns mockk(relaxed = true)
-        every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
-
-        every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns false
-        every { project.plugins.hasPlugin("com.android.library") } returns true
-        every { project.plugins.hasPlugin("com.android.application") } returns false
-
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinAndroidProjectExtension>("kotlin", probe) },
-            kotlin
-        )
-
-        every { kotlin.sourceSets } returns sources
-
-        invokeGradleAction(
-            { probe -> sources.getByName("test", probe) },
-            test,
-            test,
-        )
-
-        invokeGradleAction(
-            { probe -> sources.getByName("androidTest", probe) },
-            androidTest,
-            androidTest,
-        )
-
-        every { test.kotlin.srcDir(any<String>()) } returns mockk()
-        every { androidTest.kotlin.srcDir(any<String>()) } returns mockk()
-
-        // When
-        SingleSourceSetConfigurator.configure(project)
-
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
-        verify(exactly = 1) { androidTest.kotlin.srcDir("$path/generated/ksp/androidTest") }
-    }
-
-    @Test
-    fun `Given configure is called with a Project it adds the output directory of the code generation to the consumer for an AndroidApplication`() {
-        // Given
-        val project: Project = mockk()
-        val extensions: ExtensionContainer = mockk()
-        val kotlin: KotlinAndroidProjectExtension = mockk()
-        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
-        val test: KotlinSourceSet = mockk()
-        val androidTest: KotlinSourceSet = mockk()
-        val path: String = fixture.fixture()
-
-        every { project.dependencies } returns mockk(relaxed = true)
-        every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
-
-        every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns false
-        every { project.plugins.hasPlugin("com.android.library") } returns false
-        every { project.plugins.hasPlugin("com.android.application") } returns true
-
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinAndroidProjectExtension>("kotlin", probe) },
-            kotlin
-        )
-
-        every { kotlin.sourceSets } returns sources
-
-        invokeGradleAction(
-            { probe -> sources.getByName("test", probe) },
-            test,
-            test,
-        )
-
-        invokeGradleAction(
-            { probe -> sources.getByName("androidTest", probe) },
-            androidTest,
-            androidTest,
-        )
-
-        every { test.kotlin.srcDir(any<String>()) } returns mockk()
-        every { androidTest.kotlin.srcDir(any<String>()) } returns mockk()
-
-        // When
-        SingleSourceSetConfigurator.configure(project)
-
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
-        verify(exactly = 1) { androidTest.kotlin.srcDir("$path/generated/ksp/androidTest") }
     }
 
     @Test
@@ -272,6 +194,7 @@ class SingleSourceSetConfiguratorSpec {
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
         verify(exactly = 1) {
             dependencies.add(
                 "kspTest",
@@ -296,9 +219,13 @@ class SingleSourceSetConfiguratorSpec {
         every { project.plugins.hasPlugin("com.android.library") } returns true
         every { project.plugins.hasPlugin("com.android.application") } returns false
 
+        every { AndroidSourceBinder.bind(any()) } just Runs
+
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
+        verify(exactly = 1) { AndroidSourceBinder.bind(project) }
         verify(atLeast = 1) {
             dependencies.add(
                 "kspAndroidTest",
@@ -323,9 +250,13 @@ class SingleSourceSetConfiguratorSpec {
         every { project.plugins.hasPlugin("com.android.library") } returns false
         every { project.plugins.hasPlugin("com.android.application") } returns true
 
+        every { AndroidSourceBinder.bind(any()) } just Runs
+
         // When
         SingleSourceSetConfigurator.configure(project)
 
+        // Then
+        verify(exactly = 1) { AndroidSourceBinder.bind(project) }
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
