@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Build Cache enabled, Mocks are not created
 * Relaxer not picked correctly up on multiple test runs
+* Multi Interface Cleanup causes compilation to fail
 
 ### Security
 

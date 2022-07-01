@@ -127,35 +127,20 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
     }
 
-    // TODO: Native Workaround for MultiMocks
-    private fun addPurgeTask(project: Project) {
-        val kspTasks = project.tasks.matching { task -> task.name.startsWith("ksp") }
-
-        kspTasks.configureEach {
-            doLast {
-                project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
-                    .walkBottomUp()
-                    .toList()
-                    .forEach { file ->
-                        if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
-                            file.delete()
-                        }
-                    }
-            }
-        }
-    }
-
     override fun configure(project: Project) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
         val kspCollector: MutableMap<String, String> = mutableMapOf()
         val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
         val metaDependencies: MutableMap<String, Set<String>> = mutableMapOf()
+        val platforms: MutableList<String> = mutableListOf()
 
         project.extensions.configure<KotlinMultiplatformExtension>("kotlin") {
             for (sourceSet in sourceSets) {
                 if (isAllowedSourceSet(sourceSet.name)) {
                     val platformName = cleanSourceName(sourceSet.name)
+                    platforms.add(platformName)
+
                     extendSourceSet(platformName, sourceSet, buildDir)
 
                     addSource(
@@ -178,7 +163,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
         if (kspCollector.isNotEmpty()) {
             propagateDependencies(project, ancestors)
-            addPurgeTask(project)
+            KmpCleanup.cleanup(project, platforms)
         }
     }
 }

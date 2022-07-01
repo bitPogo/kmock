@@ -136,6 +136,10 @@ internal interface KMockPluginContract {
         fun configure(project: Project)
     }
 
+    interface KmpCleanup {
+        fun cleanup(project: Project, platforms: List<String>)
+    }
+
     interface KSPBridge {
         fun propagateValue(
             rootKey: String,
