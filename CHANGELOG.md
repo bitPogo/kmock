@@ -5,13 +5,11 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc01...main)
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...main)
 
 ### Added
 
 ### Changed
-
-* sources for `release` and `debug` for non KMP are now added via the Android extension while custom build-variant need manual setup
 
 ### Deprecated
 
@@ -19,13 +17,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+### Security
+
+### Bumped
+
+## [0.3.0-rc02](https://github.com/bitPogo/kmock/compare/v0.3.0-rc01...v0.3.0-rc02)
+
+### Changed
+
+* sources for `release` and `debug` for non KMP are now added via the Android extension while custom build-variant need manual setup
+
+### Fixed
+
 * Build Cache enabled, Mocks are not created
 * Relaxer not picked correctly up on multiple test runs
 * Multi Interface Cleanup causes compilation to fail
 
-### Security
-
 ### Bumped
+
+* Android Target SDK 31 -> 32
 
 ## [0.3.0-rc01](https://github.com/bitPogo/kmock/compare/v0.2.2...v0.3.0-rc01)
 
