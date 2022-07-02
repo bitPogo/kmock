@@ -11,9 +11,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
-import org.junit.jupiter.api.Test
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -45,7 +45,7 @@ import tech.antibytes.util.test.mustBe
     ExampleContract.DecoderFactory::class,
     AndroidThing::class
 )
-@Disabled
+@Ignore("Should not invoked on CI")
 class AndroidSampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
@@ -54,7 +54,7 @@ class AndroidSampleControllerAutoStubSpec {
     private val domainObject = SampleDomainObjectMock(collector)
     private val androidThing = AndroidThingMock()
 
-    @BeforeEach
+    @Before
     fun setUp() {
         collector.clear()
         local._clearMock()

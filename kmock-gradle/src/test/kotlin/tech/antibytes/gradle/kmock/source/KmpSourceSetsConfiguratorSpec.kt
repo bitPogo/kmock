@@ -12,45 +12,37 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.api.specs.Spec
-import org.gradle.api.tasks.TaskCollection
-import org.gradle.api.tasks.TaskContainer
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.fulfils
-import tech.antibytes.util.test.mustBe
-import java.io.File
 
 class KmpSourceSetsConfiguratorSpec {
     private val fixture = kotlinFixture()
-    @TempDir
-    lateinit var kspDir: File
 
     @BeforeEach
     fun setUp() {
         mockkObject(DependencyGraph)
+        mockkObject(KmpCleanup)
     }
 
     @AfterEach
     fun tearDown() {
         unmockkObject(DependencyGraph)
+        unmockkObject(KmpCleanup)
     }
 
     @Test
@@ -155,6 +147,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { kspExtension.arg(any(), any()) } just Runs
 
         every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
 
         every { project.tasks } returns mockk(relaxed = true)
 
@@ -191,6 +184,13 @@ class KmpSourceSetsConfiguratorSpec {
                     source2DependenciesName to setOf("js"),
                 ),
                 metaDependencies = emptyMap()
+            )
+        }
+
+        verify(exactly = 1) {
+            KmpCleanup.cleanup(
+                project,
+                listOf("jvm", "js")
             )
         }
 
@@ -285,6 +285,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { kspExtension.arg(any(), any()) } just Runs
 
         every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
 
         every { project.tasks } returns mockk(relaxed = true)
 
@@ -341,6 +342,13 @@ class KmpSourceSetsConfiguratorSpec {
                     source3DependenciesName to setOf("androidAndroid"),
                 ),
                 metaDependencies = emptyMap()
+            )
+        }
+
+        verify(exactly = 1) {
+            KmpCleanup.cleanup(
+                project,
+                listOf("jvm", "android", "androidAndroid", "androidAndroid", "androidAndroid")
             )
         }
 
@@ -406,6 +414,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { kspExtension.arg(any(), any()) } just Runs
 
         every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
 
         every { project.tasks } returns mockk(relaxed = true)
 
@@ -443,6 +452,13 @@ class KmpSourceSetsConfiguratorSpec {
                 metaDependencies = mapOf(
                     "commonTest" to setOf("nativeTest")
                 )
+            )
+        }
+
+        verify(exactly = 1) {
+            KmpCleanup.cleanup(
+                project,
+                listOf("common", "native", "iosX64")
             )
         }
 
@@ -562,6 +578,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { kspExtension.arg(any(), any()) } just Runs
 
         every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
 
         every { project.tasks } returns mockk(relaxed = true)
 
@@ -690,6 +707,24 @@ class KmpSourceSetsConfiguratorSpec {
             )
         }
 
+        verify(exactly = 1) {
+            KmpCleanup.cleanup(
+                project,
+                listOf(
+                    "concurrent",
+                    "ios",
+                    "native",
+                    "common",
+                    "iosX64",
+                    "iosArm32",
+                    "linuxX64",
+                    "jvm",
+                    "meta",
+                    "other"
+                )
+            )
+        }
+
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_iosTest#0", "nativeTest") }
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_iosTest#1", "commonTest") }
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_iosTest#2", "concurrentTest") }
@@ -708,105 +743,5 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_concurrentTest#1", "metaTest") }
 
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_metaTest#0", "commonTest") }
-    }
-
-    @Test
-    fun `Given configure is called it amends a workaround for native multi mocks`() {
-        // Given
-        val project: Project = mockk()
-        val extensions: ExtensionContainer = mockk()
-        val dependencies: DependencyHandler = mockk()
-        val kotlin: KotlinMultiplatformExtension = mockk()
-        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
-        val path: String = fixture.fixture()
-        val tasks: TaskContainer = mockk()
-        val matcherSlot = slot<Spec<Task>>()
-        val kspCollection: TaskCollection<Task> = mockk()
-        val kspTask: Task = mockk()
-
-        val kspExtension: KspExtension = mockk()
-        val interfaceFile = File(kspDir, "${fixture.fixture<String>()}KMockMultiInterfaceArtifacts.kt")
-        interfaceFile.writeText(fixture.fixture())
-
-        val source1: KotlinSourceSet = mockk()
-        val source1Dependencies: KotlinSourceSet = mockk()
-        val source1DependenciesName: String = fixture.fixture()
-
-        val source2: KotlinSourceSet = mockk()
-        val source2Dependencies: KotlinSourceSet = mockk()
-        val source2DependenciesName: String = fixture.fixture()
-
-        val sourceSets = mutableListOf(
-            source1,
-            source2
-        )
-
-        val dependencyGraph = mapOf(
-            "commonTest" to emptySet<String>()
-        )
-
-        every { project.dependencies } returns dependencies
-        every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
-        every { project.plugins.hasPlugin(any<String>()) } returns false
-
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin
-        )
-
-        every { kotlin.sourceSets } returns sources
-        every { sources.iterator() } returns sourceSets.listIterator()
-
-        every { dependencies.add(any(), any()) } returns mockk()
-
-        every { source1.name } returns "jvmTest"
-        every { source1.kotlin.srcDir(any()) } returns mockk()
-        every { source1.dependsOn } returns setOf(source1Dependencies)
-        every { source1Dependencies.name } returns source1DependenciesName
-
-        every { source2.name } returns "jsTest"
-        every { source2.kotlin.srcDir(any()) } returns mockk()
-        every { source2.dependsOn } returns setOf(source2Dependencies)
-        every { source2Dependencies.name } returns source2DependenciesName
-
-        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
-        every { kspExtension.arg(any(), any()) } just Runs
-
-        every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
-
-        every { project.tasks } returns tasks
-        every { project.file(any()) } returns interfaceFile
-
-        every { tasks.matching(capture(matcherSlot)) } returns kspCollection
-
-        invokeGradleAction(
-            { probe -> kspCollection.configureEach(probe) },
-            kspTask
-        )
-
-        invokeGradleAction(
-            { probe -> kspTask.doLast(probe) },
-            kspTask,
-            kspTask
-        )
-
-        interfaceFile.exists() mustBe true
-        // When
-        KmpSourceSetsConfigurator.configure(project)
-
-        // Then
-        val noKspTask: Task = mockk(relaxed = true)
-        val kspMatcherTask: Task = mockk()
-
-        every { kspMatcherTask.name } returns "ksp${fixture.fixture<String>()}"
-
-        interfaceFile.exists() mustBe false
-        matcherSlot.captured.isSatisfiedBy(noKspTask) mustBe false
-        matcherSlot.captured.isSatisfiedBy(kspMatcherTask) mustBe true
-
-        verify(exactly = 1) {
-            project.file("$path/generated/ksp")
-        }
     }
 }

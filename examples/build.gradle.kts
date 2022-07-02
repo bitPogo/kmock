@@ -121,7 +121,6 @@ kotlin {
             dependsOn(androidTestFixtures)
             dependsOn(androidTestFixturesDebug)
             dependsOn(androidTestFixturesRelease)
-            dependsOn(androidAndroidTestRelease)
 
             dependencies {
                 implementation(Dependency.multiplatform.test.jvm)
@@ -132,11 +131,14 @@ kotlin {
 
         val androidAndroidTest by getting {
             dependsOn(concurrentTest)
+            dependsOn(androidAndroidTestRelease)
 
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
+                implementation(Dependency.jvm.test.junit)
                 implementation(Dependency.android.test.junit)
-                implementation(Dependency.android.test.junit5)
+                implementation(Dependency.android.test.composeJunit4)
+                implementation(Dependency.android.test.espressoCore)
+                implementation(Dependency.android.test.uiAutomator)
             }
         }
 
