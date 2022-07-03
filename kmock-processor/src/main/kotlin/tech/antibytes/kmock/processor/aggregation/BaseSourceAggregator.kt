@@ -16,10 +16,10 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ksp.toClassName
+import java.io.File
 import tech.antibytes.kmock.processor.ProcessorContract.AnnotationContainer
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.supportedPlatforms
 import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
-import java.io.File
 
 internal abstract class BaseSourceAggregator(
     private val logger: KSPLogger,
@@ -54,17 +54,17 @@ internal abstract class BaseSourceAggregator(
         return AnnotationContainer(
             common = common,
             shared = shared,
-            platform = platform
+            platform = platform,
         )
     }
 
     protected fun resolveAnnotationName(
-        annotation: KSAnnotation
+        annotation: KSAnnotation,
     ): String = annotation.annotationType.resolve().declaration.qualifiedName!!.asString()
 
     protected fun findKMockAnnotation(
         annotations: Sequence<KSAnnotation>,
-        condition: (String, KSAnnotation) -> Boolean
+        condition: (String, KSAnnotation) -> Boolean,
     ): KSAnnotation? {
         val annotation = annotations.firstOrNull { annotation ->
             condition(resolveAnnotationName(annotation), annotation)
@@ -78,12 +78,12 @@ internal abstract class BaseSourceAggregator(
     }
 
     protected fun fetchCustomShared(
-        resolver: Resolver
+        resolver: Resolver,
     ): Array<Sequence<KSAnnotated>> {
         return customAnnotations.keys.map { annotation ->
             resolver.getSymbolsWithAnnotation(
                 annotation,
-                false
+                false,
             )
         }.toTypedArray()
     }

@@ -86,13 +86,13 @@ internal class KMockCodeGenerator(
         dependencies: Dependencies,
         packageName: String,
         fileName: String,
-        extensionName: String
+        extensionName: String,
     ): OutputStream {
         return if (oneTimeSourceSet != null) {
             val absoluteFilePath = pathOf(
                 oneTimeSourceSet!!,
                 packageName,
-                fileName
+                fileName,
             )
             oneTimeSourceSet = null
 
@@ -103,7 +103,7 @@ internal class KMockCodeGenerator(
                 dependencies = dependencies,
                 packageName = packageName,
                 fileName = fileName,
-                extensionName = extensionName
+                extensionName = extensionName,
             )
         }
     }
@@ -112,14 +112,14 @@ internal class KMockCodeGenerator(
         sources: List<KSFile>,
         packageName: String,
         fileName: String,
-        extensionName: String
+        extensionName: String,
     ) = TODO("Not yet implemented")
 
     override fun associateWithClasses(
         classes: List<KSClassDeclaration>,
         packageName: String,
         fileName: String,
-        extensionName: String
+        extensionName: String,
     ) = TODO("Not yet implemented")
 
     private companion object {

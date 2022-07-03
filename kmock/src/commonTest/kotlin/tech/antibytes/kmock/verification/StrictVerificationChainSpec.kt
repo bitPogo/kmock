@@ -6,6 +6,9 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -18,9 +21,6 @@ import tech.antibytes.mock.AssertionsStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class StrictVerificationChainSpec {
     private val fixture = kotlinFixture()
@@ -80,8 +80,8 @@ class StrictVerificationChainSpec {
         val proxy = fixture.funProxyFixture()
         val container = StrictVerificationChain(
             listOf(
-                Reference(proxy, 0)
-            )
+                Reference(proxy, 0),
+            ),
         )
 
         // When
@@ -90,7 +90,7 @@ class StrictVerificationChainSpec {
 
     private fun invoke(
         chain: StrictVerificationChain,
-        action: StrictVerificationChain.() -> Unit
+        action: StrictVerificationChain.() -> Unit,
     ) = action(chain)
 
     @Test
@@ -153,7 +153,7 @@ class StrictVerificationChainSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -228,7 +228,7 @@ class StrictVerificationChainSpec {
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -309,7 +309,7 @@ class StrictVerificationChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -391,7 +391,7 @@ class StrictVerificationChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -473,7 +473,7 @@ class StrictVerificationChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -551,7 +551,7 @@ class StrictVerificationChainSpec {
             wasGottenAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -628,7 +628,7 @@ class StrictVerificationChainSpec {
             wasSetAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -709,7 +709,7 @@ class StrictVerificationChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedValue = argument
-            }
+            },
         )
 
         val container = StrictVerificationChain(references, assertions)
@@ -807,7 +807,7 @@ class StrictVerificationChainSpec {
             wasSetToAtIndex = { givenProxy, givenIdx, _ ->
                 capturedProxies.add(givenProxy)
                 capturedCallIdx.add(givenIdx)
-            }
+            },
         )
 
         val chain = StrictVerificationChain(references, assertions)

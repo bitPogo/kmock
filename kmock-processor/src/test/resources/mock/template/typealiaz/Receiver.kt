@@ -12,7 +12,7 @@ interface Generic<T>
 
 typealias Alias11 = (Any) -> Unit
 typealias Alias2 = (Any) -> Any
-typealias Alias3<T> = Generic<T>
+typealias Alias3<Q> = Generic<Q>
 
 @Mock(Receiver::class)
 interface Receiver<L : Alias11> {

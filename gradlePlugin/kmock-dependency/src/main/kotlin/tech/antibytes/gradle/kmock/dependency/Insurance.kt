@@ -13,7 +13,7 @@ private val modules = listOf(
     "kotlin-stdlib-jdk8",
     "kotlin-stdlib",
     "kotlin-stdlib-common",
-    "kotlin-reflect"
+    "kotlin-reflect",
 )
 
 fun Project.ensureKotlinVersion(version: String? = null) {

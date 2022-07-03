@@ -18,7 +18,7 @@ internal inline fun <reified T> smooth(id: String): T {
 
 typealias Alias101 = (Any) -> Unit
 typealias Alias102 = (Any) -> Any
-typealias Alias107<T> = Generic<T>
+typealias Alias107<Q> = Generic<Q>
 
 @Mock(Relaxed::class)
 interface Relaxed<L : Alias102> {

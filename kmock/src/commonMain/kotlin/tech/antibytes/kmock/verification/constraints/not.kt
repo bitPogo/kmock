@@ -10,7 +10,7 @@ package tech.antibytes.kmock.verification.constraints
 import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 
 public class not(
-    private val constraint: ArgumentConstraint
+    private val constraint: ArgumentConstraint,
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = !constraint.matches(actual)
 

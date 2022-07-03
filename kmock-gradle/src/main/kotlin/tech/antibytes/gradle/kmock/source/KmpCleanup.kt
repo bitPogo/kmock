@@ -6,10 +6,10 @@
 
 package tech.antibytes.gradle.kmock.source
 
+import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.Task
 import tech.antibytes.gradle.kmock.KMockPluginContract
-import java.util.Locale
 
 internal object KmpCleanup : KMockPluginContract.KmpCleanup {
     private fun Task?.addPurgeHook(platform: String) {
@@ -30,7 +30,7 @@ internal object KmpCleanup : KMockPluginContract.KmpCleanup {
             platforms.forEach { platform ->
                 if (!platform.startsWith("android")) {
                     project.tasks.findByName(
-                        "kspTestKotlin${platform.capitalize(Locale.getDefault())}"
+                        "kspTestKotlin${platform.capitalize(Locale.getDefault())}",
                     ).addPurgeHook(platform)
                 }
             }

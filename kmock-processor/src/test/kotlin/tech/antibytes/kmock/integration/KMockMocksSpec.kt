@@ -11,6 +11,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
+import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
@@ -21,7 +22,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
-import java.io.File
 
 class KMockMocksSpec {
     @TempDir
@@ -95,7 +95,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/property/Platform.kt")
+            loadResource("/template/property/Platform.kt"),
         )
         val expected = loadResource("/expected/property/Platform.kt")
 
@@ -115,7 +115,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/property/Shared.kt")
+            loadResource("/template/property/Shared.kt"),
         )
         val expected = loadResource("/expected/property/Shared.kt")
 
@@ -128,7 +128,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/property/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/property/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -138,7 +138,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/property/Common.kt")
+            loadResource("/template/property/Common.kt"),
         )
         val expected = loadResource("/expected/property/Common.kt")
 
@@ -151,7 +151,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/property/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/property/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -161,7 +161,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/sync/Platform.kt")
+            loadResource("/template/sync/Platform.kt"),
         )
         val expected = loadResource("/expected/sync/Platform.kt")
 
@@ -181,7 +181,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/sync/Shared.kt")
+            loadResource("/template/sync/Shared.kt"),
         )
         val expected = loadResource("/expected/sync/Shared.kt")
 
@@ -194,7 +194,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/sync/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/sync/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -204,7 +204,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/sync/Common.kt")
+            loadResource("/template/sync/Common.kt"),
         )
         val expected = loadResource("/expected/sync/Common.kt")
 
@@ -217,7 +217,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/sync/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/sync/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -227,7 +227,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/async/Platform.kt")
+            loadResource("/template/async/Platform.kt"),
         )
         val expected = loadResource("/expected/async/Platform.kt")
 
@@ -247,7 +247,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/async/Shared.kt")
+            loadResource("/template/async/Shared.kt"),
         )
         val expected = loadResource("/expected/async/Shared.kt")
 
@@ -260,7 +260,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/async/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/async/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -270,7 +270,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/async/Common.kt")
+            loadResource("/template/async/Common.kt"),
         )
         val expected = loadResource("/expected/async/Common.kt")
 
@@ -283,7 +283,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/async/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/async/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -293,7 +293,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/generic/Platform.kt")
+            loadResource("/template/generic/Platform.kt"),
         )
         val expected = loadResource("/expected/generic/Platform.kt")
 
@@ -313,7 +313,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "SuperTyped.kt",
-            loadResource("/template/generic/SuperTyped.kt")
+            loadResource("/template/generic/SuperTyped.kt"),
         )
         val expected = loadResource("/expected/generic/SuperTyped.kt")
 
@@ -333,7 +333,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/generic/Shared.kt")
+            loadResource("/template/generic/Shared.kt"),
         )
         val expected = loadResource("/expected/generic/Shared.kt")
 
@@ -346,7 +346,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/generic/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/generic/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -356,7 +356,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/generic/Common.kt")
+            loadResource("/template/generic/Common.kt"),
         )
         val expected = loadResource("/expected/generic/Common.kt")
 
@@ -369,7 +369,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/generic/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/generic/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -379,7 +379,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/relaxed/Platform.kt")
+            loadResource("/template/relaxed/Platform.kt"),
         )
         val expected = loadResource("/expected/relaxed/Platform.kt")
 
@@ -399,7 +399,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/relaxed/Shared.kt")
+            loadResource("/template/relaxed/Shared.kt"),
         )
         val expected = loadResource("/expected/relaxed/Shared.kt")
 
@@ -412,7 +412,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/relaxed/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/relaxed/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -422,7 +422,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/relaxed/Common.kt")
+            loadResource("/template/relaxed/Common.kt"),
         )
         val expected = loadResource("/expected/relaxed/Common.kt")
 
@@ -435,7 +435,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/relaxed/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/relaxed/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -445,7 +445,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/overloaded/Platform.kt")
+            loadResource("/template/overloaded/Platform.kt"),
         )
         val expected = loadResource("/expected/overloaded/Platform.kt")
 
@@ -469,7 +469,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Collision.kt",
-            loadResource("/template/overloaded/Collision.kt")
+            loadResource("/template/overloaded/Collision.kt"),
         )
         val expected = loadResource("/expected/overloaded/Collision.kt")
 
@@ -479,8 +479,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_namePrefix_mock.template.overloaded.Scope.Abc" to "Scoped"
-            )
+                "kmock_namePrefix_mock.template.overloaded.Scope.Abc" to "Scoped",
+            ),
         )
         val actual = resolveGenerated("CollisionMock.kt")
 
@@ -496,7 +496,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Refined.kt",
-            loadResource("/template/overloaded/Refined.kt")
+            loadResource("/template/overloaded/Refined.kt"),
         )
         val expected = loadResource("/expected/overloaded/Refined.kt")
 
@@ -506,8 +506,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_enableFineGrainedProxyNames" to "true"
-            )
+                "kmock_enableFineGrainedProxyNames" to "true",
+            ),
         )
         val actual = resolveGenerated("RefinedMock.kt")
 
@@ -523,7 +523,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/overloaded/Shared.kt")
+            loadResource("/template/overloaded/Shared.kt"),
         )
         val expected = loadResource("/expected/overloaded/Shared.kt")
 
@@ -536,7 +536,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/overloaded/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/overloaded/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -546,7 +546,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/overloaded/Common.kt")
+            loadResource("/template/overloaded/Common.kt"),
         )
         val expected = loadResource("/expected/overloaded/Common.kt")
 
@@ -559,7 +559,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/overloaded/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/overloaded/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -569,7 +569,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/alias/Platform.kt")
+            loadResource("/template/alias/Platform.kt"),
         )
         val expected = loadResource("/expected/alias/Platform.kt")
 
@@ -580,7 +580,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "kmock_alias_mock.template.alias.Platform" to "AliasPlatform",
-            )
+            ),
         )
         val actual = resolveGenerated("AliasPlatformMock.kt")
 
@@ -596,7 +596,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/alias/Shared.kt")
+            loadResource("/template/alias/Shared.kt"),
         )
         val expected = loadResource("/expected/alias/Shared.kt")
 
@@ -607,7 +607,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}alias_mock.template.alias.Shared" to "AliasShared",
-            )
+            ),
         )
         val actual = resolveGenerated("AliasSharedMock.kt")
 
@@ -616,7 +616,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/alias/AliasSharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/alias/AliasSharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -626,7 +626,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/alias/Common.kt")
+            loadResource("/template/alias/Common.kt"),
         )
         val expected = loadResource("/expected/alias/Common.kt")
 
@@ -637,7 +637,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}alias_mock.template.alias.Common" to "AliasCommon",
-            )
+            ),
         )
         val actual = resolveGenerated("AliasCommonMock.kt")
 
@@ -646,7 +646,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/alias/AliasCommonMock.kt"
+            "common/commonTest/kotlin/mock/template/alias/AliasCommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -656,7 +656,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/buildIn/Platform.kt")
+            loadResource("/template/buildIn/Platform.kt"),
         )
         val expected = loadResource("/expected/buildIn/Platform.kt")
 
@@ -667,7 +667,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Platform",
-            )
+            ),
         )
         val actual = resolveGenerated("PlatformMock.kt")
 
@@ -683,7 +683,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Collision.kt",
-            loadResource("/template/buildIn/Collision.kt")
+            loadResource("/template/buildIn/Collision.kt"),
         )
         val expected = loadResource("/expected/buildIn/Collision.kt")
 
@@ -694,7 +694,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Collision",
-            )
+            ),
         )
         val actual = resolveGenerated("CollisionMock.kt")
 
@@ -710,7 +710,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/buildIn/Shared.kt")
+            loadResource("/template/buildIn/Shared.kt"),
         )
         val expected = loadResource("/expected/buildIn/Shared.kt")
 
@@ -721,7 +721,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Shared",
-            )
+            ),
         )
         val actual = resolveGenerated("SharedMock.kt")
 
@@ -730,7 +730,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/buildIn/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/buildIn/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -740,7 +740,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/buildIn/Common.kt")
+            loadResource("/template/buildIn/Common.kt"),
         )
         val expected = loadResource("/expected/buildIn/Common.kt")
 
@@ -751,7 +751,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.buildIn.Common",
-            )
+            ),
         )
         val actual = resolveGenerated("CommonMock.kt")
 
@@ -760,7 +760,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/buildIn/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/buildIn/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -770,7 +770,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/spy/Platform.kt")
+            loadResource("/template/spy/Platform.kt"),
         )
         val expected = loadResource("/expected/spy/Platform.kt")
 
@@ -781,7 +781,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Platform",
-            )
+            ),
         )
         val actual = resolveGenerated("PlatformMock.kt")
 
@@ -797,7 +797,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/spy/Platform.kt")
+            loadResource("/template/spy/Platform.kt"),
         )
         val expected = loadResource("/expected/spy/Alias.kt")
 
@@ -809,7 +809,7 @@ class KMockMocksSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.AliasPlatform",
                 "${KMOCK_PREFIX}alias_mock.template.spy.Platform" to "AliasPlatform",
-            )
+            ),
         )
         val actual = resolveGenerated("AliasPlatformMock.kt")
 
@@ -825,7 +825,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Collision.kt",
-            loadResource("/template/spy/Relaxed.kt")
+            loadResource("/template/spy/Relaxed.kt"),
         )
         val expected = loadResource("/expected/spy/Relaxed.kt")
 
@@ -836,7 +836,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Relaxed",
-            )
+            ),
         )
         val actual = resolveGenerated("RelaxedMock.kt")
 
@@ -852,7 +852,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/spy/Shared.kt")
+            loadResource("/template/spy/Shared.kt"),
         )
         val expected = loadResource("/expected/spy/Shared.kt")
 
@@ -863,7 +863,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Shared",
-            )
+            ),
         )
         val actual = resolveGenerated("SharedMock.kt")
 
@@ -872,7 +872,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/spy/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/spy/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -882,7 +882,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/spy/Common.kt")
+            loadResource("/template/spy/Common.kt"),
         )
         val expected = loadResource("/expected/spy/Common.kt")
 
@@ -893,7 +893,7 @@ class KMockMocksSpec {
             isKmp = true,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.spy.Common",
-            )
+            ),
         )
         val actual = resolveGenerated("CommonMock.kt")
 
@@ -902,7 +902,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/spy/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/spy/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -912,7 +912,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/typealiaz/Platform.kt")
+            loadResource("/template/typealiaz/Platform.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Platform.kt")
 
@@ -936,7 +936,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Relaxed.kt",
-            loadResource("/template/typealiaz/Relaxed.kt")
+            loadResource("/template/typealiaz/Relaxed.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Relaxed.kt")
 
@@ -960,7 +960,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Receiver.kt",
-            loadResource("/template/typealiaz/Receiver.kt")
+            loadResource("/template/typealiaz/Receiver.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Receiver.kt")
 
@@ -984,7 +984,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "SuperType.kt",
-            loadResource("/template/typealiaz/SuperType.kt")
+            loadResource("/template/typealiaz/SuperType.kt"),
         )
         val expected = loadResource("/expected/typealiaz/SuperType.kt")
 
@@ -1007,8 +1007,8 @@ class KMockMocksSpec {
     fun `Given a annotated Source for a Platform and has AccessMethods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
-            "SuperType.kt",
-            loadResource("/template/typealiaz/AccessMethods.kt")
+            "AccessMethods.kt",
+            loadResource("/template/typealiaz/AccessMethods.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Access.kt")
 
@@ -1018,15 +1018,15 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_alternativeProxyAccess" to "true"
-            )
+                "kmock_alternativeProxyAccess" to "true",
+            ),
         )
         val actual = resolveGenerated("AccessMock.kt")
+        println(actual?.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
         actual isNot null
-
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
 
@@ -1035,7 +1035,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "PreventResolving.kt",
-            loadResource("/template/typealiaz/PreventResolving.kt")
+            loadResource("/template/typealiaz/PreventResolving.kt"),
         )
         val expected = loadResource("/expected/typealiaz/PreventResolving.kt")
 
@@ -1053,7 +1053,7 @@ class KMockMocksSpec {
                 "kmock_preventAliasResolving_4" to "mock.template.typealiaz.Alias955",
                 "kmock_preventAliasResolving_5" to "mock.template.typealiaz.Alias999",
                 "kmock_preventAliasResolving_6" to "mock.template.typealiaz.Alias1000",
-            )
+            ),
         )
         val actual = resolveGenerated("PreventResolvingMock.kt")
 
@@ -1069,7 +1069,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/typealiaz/Shared.kt")
+            loadResource("/template/typealiaz/Shared.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Shared.kt")
 
@@ -1086,7 +1086,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/typealiaz/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/typealiaz/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1096,7 +1096,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/typealiaz/Common.kt")
+            loadResource("/template/typealiaz/Common.kt"),
         )
         val expected = loadResource("/expected/typealiaz/Common.kt")
 
@@ -1113,7 +1113,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/typealiaz/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/typealiaz/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1123,7 +1123,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/propertyreceiver/Platform.kt")
+            loadResource("/template/propertyreceiver/Platform.kt"),
         )
         val expected = loadResource("/expected/propertyreceiver/Platform.kt")
 
@@ -1147,7 +1147,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Relaxed.kt",
-            loadResource("/template/propertyreceiver/Relaxed.kt")
+            loadResource("/template/propertyreceiver/Relaxed.kt"),
         )
         val expected = loadResource("/expected/propertyreceiver/Relaxed.kt")
 
@@ -1171,7 +1171,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Inherited.kt",
-            loadResource("/template/propertyreceiver/SuperType.kt")
+            loadResource("/template/propertyreceiver/SuperType.kt"),
         )
         val expected = loadResource("/expected/propertyreceiver/SuperType.kt")
 
@@ -1195,7 +1195,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Spied.kt",
-            loadResource("/template/propertyreceiver/Spied.kt")
+            loadResource("/template/propertyreceiver/Spied.kt"),
         )
         val expected = loadResource("/expected/propertyreceiver/Spied.kt")
 
@@ -1206,7 +1206,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.propertyreceiver.Spied",
-            )
+            ),
         )
         val actual = resolveGenerated("SpiedMock.kt")
 
@@ -1222,7 +1222,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/propertyreceiver/Common.kt")
+            loadResource("/template/propertyreceiver/Common.kt"),
         )
         val expected = loadResource("/expected/propertyreceiver/Common.kt")
 
@@ -1239,7 +1239,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/propertyreceiver/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/propertyreceiver/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1249,7 +1249,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/methodreceiver/Platform.kt")
+            loadResource("/template/methodreceiver/Platform.kt"),
         )
         val expected = loadResource("/expected/methodreceiver/Platform.kt")
 
@@ -1273,7 +1273,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Relaxed.kt",
-            loadResource("/template/methodreceiver/Relaxed.kt")
+            loadResource("/template/methodreceiver/Relaxed.kt"),
         )
         val expected = loadResource("/expected/methodreceiver/Relaxed.kt")
 
@@ -1297,7 +1297,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Inherited.kt",
-            loadResource("/template/methodreceiver/SuperType.kt")
+            loadResource("/template/methodreceiver/SuperType.kt"),
         )
         val expected = loadResource("/expected/methodreceiver/SuperType.kt")
 
@@ -1321,7 +1321,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Spied.kt",
-            loadResource("/template/methodreceiver/Spied.kt")
+            loadResource("/template/methodreceiver/Spied.kt"),
         )
         val expected = loadResource("/expected/methodreceiver/Spied.kt")
 
@@ -1332,7 +1332,7 @@ class KMockMocksSpec {
             isKmp = false,
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spyOn_0" to "mock.template.methodreceiver.Spied",
-            )
+            ),
         )
         val actual = resolveGenerated("SpiedMock.kt")
 
@@ -1348,7 +1348,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/methodreceiver/Common.kt")
+            loadResource("/template/methodreceiver/Common.kt"),
         )
         val expected = loadResource("/expected/methodreceiver/Common.kt")
 
@@ -1365,7 +1365,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/methodreceiver/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/methodreceiver/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1375,7 +1375,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/renamed/Platform.kt")
+            loadResource("/template/renamed/Platform.kt"),
         )
         val expected = loadResource("/expected/renamed/Platform.kt")
 
@@ -1387,8 +1387,8 @@ class KMockMocksSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Platform",
                 "kmock_customMethodName_mock.template.renamed.PlatformMock#_buzz" to "customName",
-                "kmock_customMethodName_mock.template.renamed.PlatformMock#_hashCode" to "noHash"
-            )
+                "kmock_customMethodName_mock.template.renamed.PlatformMock#_hashCode" to "noHash",
+            ),
         )
         val actual = resolveGenerated("PlatformMock.kt")
 
@@ -1404,7 +1404,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/renamed/Shared.kt")
+            loadResource("/template/renamed/Shared.kt"),
         )
         val expected = loadResource("/expected/renamed/Shared.kt")
 
@@ -1416,8 +1416,8 @@ class KMockMocksSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Shared",
                 "kmock_customMethodName_mock.template.renamed.SharedMock#_buzz" to "customName",
-                "kmock_customMethodName_mock.template.renamed.SharedMock#_hashCode" to "noHash"
-            )
+                "kmock_customMethodName_mock.template.renamed.SharedMock#_hashCode" to "noHash",
+            ),
         )
         val actual = resolveGenerated("SharedMock.kt")
 
@@ -1426,7 +1426,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/renamed/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/renamed/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1436,7 +1436,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/renamed/Common.kt")
+            loadResource("/template/renamed/Common.kt"),
         )
         val expected = loadResource("/expected/renamed/Common.kt")
 
@@ -1448,8 +1448,8 @@ class KMockMocksSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.renamed.Common",
                 "kmock_customMethodName_mock.template.renamed.CommonMock#_buzz" to "customName",
-                "kmock_customMethodName_mock.template.renamed.CommonMock#_hashCode" to "noHash"
-            )
+                "kmock_customMethodName_mock.template.renamed.CommonMock#_hashCode" to "noHash",
+            ),
         )
         val actual = resolveGenerated("CommonMock.kt")
 
@@ -1458,7 +1458,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/renamed/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/renamed/CommonMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1468,7 +1468,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/customshared/Shared.kt")
+            loadResource("/template/customshared/Shared.kt"),
         )
         val expected = loadResource("/expected/customshared/Shared.kt")
 
@@ -1478,8 +1478,8 @@ class KMockMocksSpec {
             source,
             isKmp = true,
             kspArguments = mapOf(
-                "kmock_customAnnotation_mock.template.customshared.CustomShared" to "sharedTest"
-            )
+                "kmock_customAnnotation_mock.template.customshared.CustomShared" to "sharedTest",
+            ),
         )
         val actual = resolveGenerated("SharedMock.kt")
 
@@ -1488,7 +1488,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/customshared/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/customshared/SharedMock.kt",
         ) mustBe true
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
     }
@@ -1498,7 +1498,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Sample.kt",
-            loadResource("/template/mixedannotation/Sample.kt")
+            loadResource("/template/mixedannotation/Sample.kt"),
         )
         val expectedPlatform = loadResource("/expected/mixedannotation/Platform.kt")
         val expectedShared = loadResource("/expected/mixedannotation/Shared.kt")
@@ -1518,10 +1518,10 @@ class KMockMocksSpec {
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
 
         actualShared?.absolutePath?.toString()?.endsWith(
-            "shared/sharedTest/kotlin/mock/template/mixedannotation/SharedMock.kt"
+            "shared/sharedTest/kotlin/mock/template/mixedannotation/SharedMock.kt",
         ) mustBe true
         actualCommon?.absolutePath?.toString()?.endsWith(
-            "common/commonTest/kotlin/mock/template/mixedannotation/CommonMock.kt"
+            "common/commonTest/kotlin/mock/template/mixedannotation/CommonMock.kt",
         ) mustBe true
 
         actualPlatform!!.readText().normalizeSource() mustBe expectedPlatform.normalizeSource()
@@ -1534,7 +1534,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Property.kt",
-            loadResource("/template/access/Property.kt")
+            loadResource("/template/access/Property.kt"),
         )
         val expected = loadResource("/expected/access/Property.kt")
 
@@ -1544,8 +1544,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_alternativeProxyAccess" to "true"
-            )
+                "kmock_alternativeProxyAccess" to "true",
+            ),
         )
         val actual = resolveGenerated("PropertyMock.kt")
 
@@ -1561,7 +1561,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "SyncFun.kt",
-            loadResource("/template/access/SyncFun.kt")
+            loadResource("/template/access/SyncFun.kt"),
         )
         val expected = loadResource("/expected/access/SyncFun.kt")
 
@@ -1571,8 +1571,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_alternativeProxyAccess" to "true"
-            )
+                "kmock_alternativeProxyAccess" to "true",
+            ),
         )
         val actual = resolveGenerated("SyncFunMock.kt")
 
@@ -1588,7 +1588,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "AsyncFun.kt",
-            loadResource("/template/access/AsyncFun.kt")
+            loadResource("/template/access/AsyncFun.kt"),
         )
         val expected = loadResource("/expected/access/AsyncFun.kt")
 
@@ -1598,8 +1598,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_alternativeProxyAccess" to "true"
-            )
+                "kmock_alternativeProxyAccess" to "true",
+            ),
         )
         val actual = resolveGenerated("AsyncFunMock.kt")
 
@@ -1615,7 +1615,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "Overloaded.kt",
-            loadResource("/template/access/Overloaded.kt")
+            loadResource("/template/access/Overloaded.kt"),
         )
         val expected = loadResource("/expected/access/Overloaded.kt")
 
@@ -1625,8 +1625,8 @@ class KMockMocksSpec {
             source,
             isKmp = false,
             kspArguments = mapOf(
-                "kmock_alternativeProxyAccess" to "true"
-            )
+                "kmock_alternativeProxyAccess" to "true",
+            ),
         )
         val actual = resolveGenerated("OverloadedMock.kt")
 
@@ -1642,7 +1642,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "BuildIn.kt",
-            loadResource("/template/access/BuildIn.kt")
+            loadResource("/template/access/BuildIn.kt"),
         )
         val expected = loadResource("/expected/access/BuildIn.kt")
 
@@ -1654,7 +1654,7 @@ class KMockMocksSpec {
             kspArguments = mapOf(
                 "kmock_alternativeProxyAccess" to "true",
                 "${KMOCK_PREFIX}buildIn_0" to "mock.template.access.BuildIn",
-            )
+            ),
         )
         val actual = resolveGenerated("BuildInMock.kt")
 
@@ -1670,7 +1670,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "src/jvmTest/Platform.kt",
-            loadResource("/template/kmock/Platform.kt/")
+            loadResource("/template/kmock/Platform.kt/"),
         )
         val expected = loadResource("/expected/kmock/Platform.kt")
 
@@ -1697,7 +1697,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "src/sharedTest/Shared.kt",
-            loadResource("/template/kmock/Shared.kt/")
+            loadResource("/template/kmock/Shared.kt/"),
         )
         val expected = loadResource("/expected/kmock/Shared.kt")
 
@@ -1715,7 +1715,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.endsWith(
-            "ksp/sources/kotlin/shared/sharedTest/kotlin/mock/template/kmock/SharedMock.kt"
+            "ksp/sources/kotlin/shared/sharedTest/kotlin/mock/template/kmock/SharedMock.kt",
         ) mustBe true
 
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
@@ -1726,7 +1726,7 @@ class KMockMocksSpec {
         // Given
         val source = SourceFile.kotlin(
             "src/commonTest/Common.kt",
-            loadResource("/template/kmock/Common.kt/")
+            loadResource("/template/kmock/Common.kt/"),
         )
         val expected = loadResource("/expected/kmock/Common.kt")
 
@@ -1744,7 +1744,7 @@ class KMockMocksSpec {
         actual isNot null
 
         actual?.absolutePath?.endsWith(
-            "ksp/sources/kotlin/common/commonTest/kotlin/mock/template/kmock/CommonMock.kt"
+            "ksp/sources/kotlin/common/commonTest/kotlin/mock/template/kmock/CommonMock.kt",
         ) mustBe true
 
         actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()

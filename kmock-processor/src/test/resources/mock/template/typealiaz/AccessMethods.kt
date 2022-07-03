@@ -8,15 +8,18 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.Mock
 
-interface Generics<T>
+interface GenericsAccess<W>
 
 typealias Alias621 = (Any) -> Unit
 typealias Alias623 = (Any) -> Any
-typealias Alias677<X> = Generics<X>
-typealias Alias673<X> = Map<String, X>
-typealias Alias655<X> = Alias673<X>
-typealias Alias699<X> = Alias655<X>
-typealias Alias700<X> = Alias655<X>
+typealias Alias677<E> = GenericsAccess<E>
+typealias Alias673<E> = Map<String, E>
+typealias Alias655<E> = Alias673<E>
+typealias Alias699<E> = Alias655<E>
+typealias Alias700<E> = Alias655<E>
+typealias Alias701<E> = Alias677<E>
+typealias Alias702<E> = Alias701<E>
+typealias Alias703<Z, Q> = (Alias701<Z>) -> Alias702<Q>
 
 @Mock(Access::class)
 interface Access<L : Alias623> {
@@ -59,6 +62,7 @@ interface Access<L : Alias623> {
     fun foo(arg0: Char, vararg arg1: Alias673<IntArray>)
     fun foo(arg0: Int, vararg arg1: Alias673<out String>)
     fun <T : Alias673<out Alias677<Alias673<Int>>>> foo(arg0: Long, vararg arg1: T)
+    fun <T : Alias673<*>> foo(vararg arg1: T)
 
     fun bar(arg1: Alias699<String>)
     fun <T : Alias699<String>> bar(vararg arg1: T): T
@@ -68,4 +72,5 @@ interface Access<L : Alias623> {
 
     fun <T : Alias700<K>, K> rol(arg: T)
     fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>
+    fun <T : Alias703<Alias623, out Alias677<Alias673<Int>>>> bar(vararg arg1: T)
 }

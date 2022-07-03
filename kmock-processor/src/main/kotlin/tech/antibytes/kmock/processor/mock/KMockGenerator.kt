@@ -24,7 +24,6 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
@@ -55,6 +54,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 import tech.antibytes.kmock.processor.utils.isInherited
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
@@ -109,7 +109,7 @@ internal class KMockGenerator(
 
         val relaxed = ParameterSpec.builder(
             RELAXER_ARGUMENT,
-            Boolean::class
+            Boolean::class,
         ).addAnnotation(UNUSED).defaultValue("false")
         constructor.addParameter(relaxed.build())
 
@@ -146,7 +146,7 @@ internal class KMockGenerator(
             parameterizedParent
         } else {
             listOf(
-                genericsResolver.resolveMockClassType(template, typeResolver)
+                genericsResolver.resolveMockClassType(template, typeResolver),
             )
         }
     }
@@ -279,7 +279,7 @@ internal class KMockGenerator(
     }
 
     private fun TypeVariableName.resolveNullableType(
-        mapping: Map<String, TypeVariableName>
+        mapping: Map<String, TypeVariableName>,
     ): Pair<Boolean, TypeName> {
         var currentName = this.name
         var isNullable = false
@@ -295,7 +295,7 @@ internal class KMockGenerator(
 
         return Pair(
             isNullable,
-            currentType.copy(nullable = false)
+            currentType.copy(nullable = false),
         )
     }
 
@@ -324,7 +324,7 @@ internal class KMockGenerator(
         parents: TemplateMultiSource?,
         template: KSClassDeclaration,
         generics: Map<String, List<KSTypeReference>>?,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): TypeSpec {
         val mock = TypeSpec.classBuilder(mockName)
         val typeResolver = template.typeParameters.toTypeParameterResolver()
@@ -355,18 +355,18 @@ internal class KMockGenerator(
 
         if (generics != null) {
             mock.typeVariables.addAll(
-                genericsResolver.mapDeclaredGenerics(generics, typeResolver)
+                genericsResolver.mapDeclaredGenerics(generics, typeResolver),
             )
         }
 
         if (superTypes.size > 1) {
             mock.typeVariables.add(
-                TypeVariableName(MULTI_MOCK, bounds = superTypes)
+                TypeVariableName(MULTI_MOCK, bounds = superTypes),
             )
         }
 
         mock.primaryConstructor(
-            buildConstructor(superTypes)
+            buildConstructor(superTypes),
         )
 
         mock.addProperty(
@@ -374,7 +374,7 @@ internal class KMockGenerator(
                 UNIT_RELAXER_ARGUMENT,
                 Boolean::class,
                 KModifier.PRIVATE,
-            ).initializer(UNIT_RELAXER_ARGUMENT).build()
+            ).initializer(UNIT_RELAXER_ARGUMENT).build(),
         )
 
         mock.addProperty(
@@ -382,7 +382,7 @@ internal class KMockGenerator(
                 RELAXER_ARGUMENT,
                 Boolean::class,
                 KModifier.PRIVATE,
-            ).initializer(RELAXER_ARGUMENT).build()
+            ).initializer(RELAXER_ARGUMENT).build(),
         )
 
         if (enableSpy) {
@@ -391,7 +391,7 @@ internal class KMockGenerator(
                     SPY_PROPERTY,
                     resolveSpyType(superTypes).copy(nullable = true),
                     KModifier.PRIVATE,
-                ).initializer(SPY_ARGUMENT).build()
+                ).initializer(SPY_ARGUMENT).build(),
             )
         }
 
@@ -407,7 +407,7 @@ internal class KMockGenerator(
                     classScopeGenerics = classScopeGenerics,
                     typeResolver = typeResolver,
                     enableSpy = enableSpy,
-                    relaxer = relaxer
+                    relaxer = relaxer,
                 )
             }
         }
@@ -436,7 +436,7 @@ internal class KMockGenerator(
             val bundle = buildInGenerator.buildMethodBundles(
                 mockName = mockName,
                 qualifier = qualifier,
-                enableSpy = enableSpy
+                enableSpy = enableSpy,
             )
 
             bundle.forEach { (proxy, method, sideEffect) ->
@@ -462,7 +462,7 @@ internal class KMockGenerator(
                 receiverGenerator.buildReceiverSpyContext(
                     spyType = spyType,
                     classWideResolver = typeResolver,
-                )
+                ),
             )
         }
 
@@ -491,12 +491,12 @@ internal class KMockGenerator(
         packageName: String,
         generics: Map<String, List<KSTypeReference>>?,
         dependencies: List<KSFile>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val mockName = "${templateName.substringAfterLast('.')}Mock"
         val file = FileSpec.builder(
             packageName,
-            mockName
+            mockName,
         )
 
         val enableSpy = spyContainer.isSpyable(
@@ -513,7 +513,7 @@ internal class KMockGenerator(
             template = template,
             enableSpy = enableSpy,
             generics = generics,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
@@ -528,14 +528,14 @@ internal class KMockGenerator(
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = true,
-            originatingKSFiles = dependencies.amendRelaxer(relaxer)
+            originatingKSFiles = dependencies.amendRelaxer(relaxer),
         )
     }
 
     override fun writeCommonMocks(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         templateSources.forEach { template ->
             codeGenerator.setOneTimeSourceSet(COMMON_INDICATOR)
@@ -552,7 +552,7 @@ internal class KMockGenerator(
                 packageName = template.packageName,
                 generics = template.generics,
                 dependencies = template.dependencies,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
         }
     }
@@ -560,7 +560,7 @@ internal class KMockGenerator(
     override fun writeSharedMocks(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         templateSources.forEach { template ->
             codeGenerator.setOneTimeSourceSet(template.indicator)
@@ -577,7 +577,7 @@ internal class KMockGenerator(
                 packageName = template.packageName,
                 generics = template.generics,
                 dependencies = template.dependencies,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
         }
     }
@@ -585,7 +585,7 @@ internal class KMockGenerator(
     override fun writePlatformMocks(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         templateSources.forEach { template ->
             val parents = parentFinder.find(
@@ -600,7 +600,7 @@ internal class KMockGenerator(
                 packageName = template.packageName,
                 generics = template.generics,
                 dependencies = template.dependencies,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
         }
     }

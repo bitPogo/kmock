@@ -7,6 +7,9 @@
 package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import tech.antibytes.kfixture.fixture
@@ -19,9 +22,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 class AsyncFunProxyInvocationsSpec {
     private val fixture = kotlinFixture()
@@ -1275,7 +1275,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument4,
                 argument5,
                 argument6,
-                argument7
+                argument7,
             )
 
             // Then
@@ -1355,7 +1355,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument4,
                 argument5,
                 argument6,
-                argument7
+                argument7,
             )
 
             // Then
@@ -1440,7 +1440,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument4,
                 argument5,
                 argument6,
-                argument7
+                argument7,
             ) {
                 useSpyIf(implementation) {
                     implementation.fun8(
@@ -1451,7 +1451,7 @@ class AsyncFunProxyInvocationsSpec {
                         argument4,
                         argument5,
                         argument6,
-                        argument7
+                        argument7,
                     )
                 }
             }
@@ -1537,7 +1537,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument5,
                 argument6,
                 argument7,
-                argument8
+                argument8,
             )
 
             // Then
@@ -1623,7 +1623,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument5,
                 argument6,
                 argument7,
-                argument8
+                argument8,
             )
 
             // Then
@@ -1714,7 +1714,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument5,
                 argument6,
                 argument7,
-                argument8
+                argument8,
             ) {
                 useSpyIf(implementation) {
                     implementation.fun9(
@@ -1726,7 +1726,7 @@ class AsyncFunProxyInvocationsSpec {
                         argument5,
                         argument6,
                         argument7,
-                        argument8
+                        argument8,
                     )
                 }
             }
@@ -1764,7 +1764,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffect with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1820,7 +1820,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument6,
                 argument7,
                 argument8,
-                argument9
+                argument9,
             )
 
             // Then
@@ -1858,7 +1858,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffectChain with 10 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1914,7 +1914,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument6,
                 argument7,
                 argument8,
-                argument9
+                argument9,
             )
 
             // Then
@@ -2064,7 +2064,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffect with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2125,7 +2125,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument7,
                 argument8,
                 argument9,
-                argument10
+                argument10,
             )
 
             // Then
@@ -2165,7 +2165,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffectChain with 11 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2226,7 +2226,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument7,
                 argument8,
                 argument9,
-                argument10
+                argument10,
             )
 
             // Then
@@ -2385,7 +2385,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffect with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2449,7 +2449,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument8,
                 argument9,
                 argument10,
-                argument11
+                argument11,
             )
 
             // Then
@@ -2491,7 +2491,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffectChain with 12 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2555,7 +2555,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument8,
                 argument9,
                 argument10,
-                argument11
+                argument11,
             )
 
             // Then
@@ -2723,7 +2723,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffect with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2791,7 +2791,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument9,
                 argument10,
                 argument11,
-                argument12
+                argument12,
             )
 
             // Then
@@ -2835,7 +2835,7 @@ class AsyncFunProxyInvocationsSpec {
     fun `Given invoke is called it calls the given SideEffectChain with 13 Arguments and delegates values threadsafe`(): AsyncTestReturnValue {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
-            fixture.fixture()
+            fixture.fixture(),
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2903,7 +2903,7 @@ class AsyncFunProxyInvocationsSpec {
                 argument9,
                 argument10,
                 argument11,
-                argument12
+                argument12,
             )
 
             // Then
@@ -3094,30 +3094,43 @@ class AsyncFunProxyInvocationsSpec {
 
         @JsName("fun0a")
         var fun0 by _fun0
+
         @JsName("fun1a")
         var fun1 by _fun1
+
         @JsName("fun2a")
         var fun2 by _fun2
+
         @JsName("fun3a")
         var fun3 by _fun3
+
         @JsName("fun4a")
         var fun4 by _fun4
+
         @JsName("fun5a")
         var fun5 by _fun5
+
         @JsName("fun6a")
         var fun6 by _fun6
+
         @JsName("fun7a")
         var fun7 by _fun7
+
         @JsName("fun8a")
         var fun8 by _fun8
+
         @JsName("fun9a")
         var fun9 by _fun9
+
         @JsName("fun10a")
         var fun10 by _fun10
+
         @JsName("fun11a")
         var fun11 by _fun11
+
         @JsName("fun12a")
         var fun12 by _fun12
+
         @JsName("fun13a")
         var fun13 by _fun13
 
@@ -3162,7 +3175,7 @@ class AsyncFunProxyInvocationsSpec {
             arg4: Any?,
             arg5: Any?,
             arg6: Any?,
-            arg7: Any?
+            arg7: Any?,
         ): T {
             return _fun8.value?.invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
                 ?: throw RuntimeException("Missing sideeffect fun8")

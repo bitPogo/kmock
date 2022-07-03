@@ -20,13 +20,13 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @author Matthias Geisler
  */
 public class or(
-    vararg subConstraints: Any?
+    vararg subConstraints: Any?,
 ) : ArgumentConstraint {
     private val subConstraints: Array<out ArgumentConstraint> = mapSubConstraints(subConstraints)
 
     private fun guard(
         subConstraints: Array<out Any?>,
-        action: Array<out Any?>.() -> Array<out ArgumentConstraint>
+        action: Array<out Any?>.() -> Array<out ArgumentConstraint>,
     ): Array<out ArgumentConstraint> {
         return if (subConstraints.isEmpty()) {
             throw IllegalArgumentException("or should not be empty!")
@@ -36,7 +36,7 @@ public class or(
     }
 
     private fun mapSubConstraints(
-        subConstraints: Array<out Any?>
+        subConstraints: Array<out Any?>,
     ): Array<out ArgumentConstraint> {
         return guard(subConstraints) {
             map { value ->
@@ -50,7 +50,7 @@ public class or(
     }
 
     override fun matches(
-        actual: Any?
+        actual: Any?,
     ): Boolean = subConstraints.any { expected -> expected.matches(actual) }
 
     override fun toString(): String {

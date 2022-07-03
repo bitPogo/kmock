@@ -37,7 +37,7 @@ internal class KMockPropertyGenerator(
         propertyName: String,
         returnType: MemberReturnTypeInfo,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val nonIntrusive = nonIntrusiveInvocationGenerator.buildGetterNonIntrusiveInvocation(
             propertyType = returnType,
@@ -59,7 +59,7 @@ internal class KMockPropertyGenerator(
         propertyName: String,
         returnType: MemberReturnTypeInfo,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         return FunSpec
             .getterBuilder()
@@ -74,7 +74,7 @@ internal class KMockPropertyGenerator(
 
     private fun FunSpec.Builder.addSetterInvocation(
         propertyName: String,
-        enableSpy: Boolean
+        enableSpy: Boolean,
     ): FunSpec.Builder {
         val nonIntrusive = nonIntrusiveInvocationGenerator.buildSetterNonIntrusiveInvocation(
             enableSpy = enableSpy,
@@ -93,7 +93,7 @@ internal class KMockPropertyGenerator(
     private fun buildSetter(
         propertyName: String,
         propertyType: TypeName,
-        enableSpy: Boolean
+        enableSpy: Boolean,
     ): FunSpec {
         return FunSpec
             .setterBuilder()
@@ -109,7 +109,7 @@ internal class KMockPropertyGenerator(
         returnType: MemberReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         if (isMutable) {
             property.mutable(true)
@@ -118,7 +118,7 @@ internal class KMockPropertyGenerator(
                     propertyName = proxyInfo.proxyName,
                     propertyType = propertyType,
                     enableSpy = enableSpy,
-                )
+                ),
             )
         }
 
@@ -128,8 +128,8 @@ internal class KMockPropertyGenerator(
                     propertyName = proxyInfo.proxyName,
                     returnType = returnType,
                     enableSpy = enableSpy,
-                    relaxer = relaxer
-                )
+                    relaxer = relaxer,
+                ),
             )
     }
 
@@ -139,12 +139,12 @@ internal class KMockPropertyGenerator(
         returnType: MemberReturnTypeInfo,
         isMutable: Boolean,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): PropertySpec {
         val property = PropertySpec.builder(
             proxyInfo.templateName,
             propertyType,
-            KModifier.OVERRIDE
+            KModifier.OVERRIDE,
         )
 
         buildPropertyBody(
@@ -154,7 +154,7 @@ internal class KMockPropertyGenerator(
             returnType = returnType,
             isMutable = isMutable,
             enableSpy = enableSpy,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return property.build()
@@ -179,7 +179,7 @@ internal class KMockPropertyGenerator(
         return propertyProxy.initializer(
             buildPropertyProxy(
                 proxyInfo = proxyInfo,
-            )
+            ),
         )
     }
 
@@ -204,20 +204,20 @@ internal class KMockPropertyGenerator(
         ksProperty: KSPropertyDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Pair<PropertySpec, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val propertyType = ksProperty.type.toTypeName(classWideResolver)
         val isMutable = ksProperty.isMutable
         val proxyInfo = nameSelector.selectPropertyName(
             qualifier = qualifier,
-            propertyName = propertyName
+            propertyName = propertyName,
         )
         val returnType = MemberReturnTypeInfo(
             methodTypeName = propertyType,
             proxyTypeName = propertyType,
             generic = null,
-            classScope = classScopeGenerics
+            classScope = classScopeGenerics,
         )
 
         return Pair(

@@ -12,7 +12,7 @@ import tech.antibytes.kmock.KMockExperimental
 private fun guardInvocation(
     handle1: Expectation,
     handle2: Expectation,
-    method: String
+    method: String,
 ) {
     if (handle1.proxy !== handle2.proxy) {
         throw IllegalArgumentException("$method cannot be applied to handles which refer to different proxies.")
@@ -30,7 +30,7 @@ private fun guardInvocation(
  */
 @KMockExperimental
 public infix fun Expectation.union(
-    other: Expectation
+    other: Expectation,
 ): Expectation {
     guardInvocation(this, other, "union")
 
@@ -39,7 +39,7 @@ public infix fun Expectation.union(
 
     return Expectation(
         this.proxy,
-        multiSet.sorted()
+        multiSet.sorted(),
     )
 }
 
@@ -50,7 +50,7 @@ public infix fun Expectation.union(
  */
 @KMockExperimental
 public infix fun Expectation.or(
-    other: Expectation
+    other: Expectation,
 ): Expectation = this.union(other)
 
 /**
@@ -64,7 +64,7 @@ public infix fun Expectation.or(
  */
 @KMockExperimental
 public infix fun Expectation.intersection(
-    other: Expectation
+    other: Expectation,
 ): Expectation {
     guardInvocation(this, other, "intersection")
 
@@ -74,7 +74,7 @@ public infix fun Expectation.intersection(
 
     return Expectation(
         this.proxy,
-        set
+        set,
     )
 }
 
@@ -85,7 +85,7 @@ public infix fun Expectation.intersection(
  */
 @KMockExperimental
 public infix fun Expectation.and(
-    other: Expectation
+    other: Expectation,
 ): Expectation = this.intersection(other)
 
 /**
@@ -99,7 +99,7 @@ public infix fun Expectation.and(
  */
 @KMockExperimental
 public infix fun Expectation.diff(
-    other: Expectation
+    other: Expectation,
 ): Expectation {
     guardInvocation(this, other, "diff")
     val intersection = this.intersection(other)
@@ -112,7 +112,7 @@ public infix fun Expectation.diff(
 
     return Expectation(
         this.proxy,
-        set
+        set,
     )
 }
 
@@ -123,5 +123,5 @@ public infix fun Expectation.diff(
  */
 @KMockExperimental
 public infix fun Expectation.xor(
-    other: Expectation
+    other: Expectation,
 ): Expectation = this.diff(other)

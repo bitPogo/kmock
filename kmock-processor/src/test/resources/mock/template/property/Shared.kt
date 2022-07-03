@@ -16,4 +16,5 @@ interface Shared {
         get() = foo.length
 
     var buzz: Any
+    val enum: Enum<*>
 }

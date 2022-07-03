@@ -7,17 +7,17 @@
 package tech.antibytes.kmock.processor.utils
 
 import com.google.devtools.ksp.processing.KSPLogger
+import java.util.SortedSet
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Source
-import java.util.SortedSet
 
 internal class SourceFilter(
     private val dependencies: Map<String, SortedSet<String>>,
-    private val logger: KSPLogger
+    private val logger: KSPLogger,
 ) : ProcessorContract.SourceFilter {
     override fun <T : Source> filter(
         templateSources: List<T>,
-        filteredBy: List<T>
+        filteredBy: List<T>,
     ): List<T> {
         val filter = filteredBy.map { source ->
             "${source.packageName}.${source.templateName}"
@@ -86,7 +86,7 @@ internal class SourceFilter(
                 newSource = currentSource,
                 overrides = overrideIndices.sorted(),
                 indicators = indicators,
-                filtered = filtered
+                filtered = filtered,
             )
         }
     }
@@ -104,7 +104,7 @@ internal class SourceFilter(
                 val (updatedIndicators, updatedFiltered) = filterCandidates(
                     currentSource = source,
                     indicators = filteredIndicators,
-                    filtered = filteredSources
+                    filtered = filteredSources,
                 )
 
                 filteredSourceSet[qualifiedName] = updatedIndicators

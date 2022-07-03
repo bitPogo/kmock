@@ -43,7 +43,7 @@ import tech.antibytes.util.test.mustBe
     SampleLocalRepository::class,
     SampleDomainObject::class,
     ExampleContract.DecoderFactory::class,
-    AndroidThing::class
+    AndroidThing::class,
 )
 @Ignore("Should not invoked on CI")
 class AndroidSampleControllerAutoStubSpec {

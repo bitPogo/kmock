@@ -18,7 +18,7 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @author Matthias Geisler
  */
 public class isSame(
-    private val expected: Any?
+    private val expected: Any?,
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = expected === actual
 

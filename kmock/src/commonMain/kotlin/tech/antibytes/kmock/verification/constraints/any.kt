@@ -8,9 +8,9 @@
 
 package tech.antibytes.kmock.verification.constraints
 
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 import tech.antibytes.kmock.util.extractKClassName
-import kotlin.reflect.KClass
 
 /**
  * VerificationConstraint which allows any value including null.
@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
  * @author Matthias Geisler
  */
 public class any(
-    private val expected: KClass<*>? = null
+    private val expected: KClass<*>? = null,
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {

@@ -7,6 +7,9 @@
 package tech.antibytes.kmock.example
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -34,15 +37,12 @@ import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 @MockCommon(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,
-    ExampleContract.DecoderFactory::class
+    ExampleContract.DecoderFactory::class,
 )
 class SampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()

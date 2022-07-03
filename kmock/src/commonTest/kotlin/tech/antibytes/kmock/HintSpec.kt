@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock
 
-import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
+import tech.antibytes.util.test.mustBe
 
 class HintSpec {
     @Test
@@ -136,7 +136,7 @@ class HintSpec {
             Long::class,
             IntArray::class,
             ByteArray::class,
-            Char::class
+            Char::class,
         )
     }
 
@@ -154,7 +154,7 @@ class HintSpec {
             IntArray::class,
             ByteArray::class,
             Char::class,
-            Appendable::class
+            Appendable::class,
         )
     }
 

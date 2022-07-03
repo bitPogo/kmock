@@ -11,7 +11,7 @@ import tech.antibytes.kmock.Mock
 import tech.antibytes.util.test.fulfils
 
 @Mock(
-    ExampleContractJvm.JvmDecoder::class
+    ExampleContractJvm.JvmDecoder::class,
 )
 class JvmDecoderAutoSpec {
     @Test

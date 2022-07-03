@@ -88,4 +88,6 @@ interface Shared<K, L> where L : Any, L : Comparable<L>, K : Any {
     fun <R, T> rol(arg0: T, arg1: R) where R : Sequence<T>, T : List<Array<out Int>>
     fun <R, T> lol(arg0: T, arg1: R) where R : Sequence<T>, T : List<Array<in Int>>
     fun <R, T> nol(arg0: T, arg1: R) where R : Sequence<T>, T : List<Array<out Any?>>
+
+    fun <X : Enum<*>> zok(arg0: X)
 }

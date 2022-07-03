@@ -10,15 +10,15 @@ import com.android.build.api.dsl.AndroidSourceSet
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
+import java.util.Locale
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import tech.antibytes.gradle.kmock.KMockPluginContract
-import java.util.Locale
 
 internal object AndroidSourceBinder : KMockPluginContract.AndroidSourceBinder {
     private fun Project.resolveAndroidExtension(
-        action: (CommonExtension<*, *, *, *>) -> Unit
+        action: (CommonExtension<*, *, *, *>) -> Unit,
     ) {
         if (plugins.findPlugin("com.android.application") is Plugin<*>) {
             extensions.configure(ApplicationExtension::class.java) {

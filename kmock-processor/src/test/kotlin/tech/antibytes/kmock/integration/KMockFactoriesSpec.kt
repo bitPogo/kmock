@@ -11,6 +11,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
+import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
@@ -21,7 +22,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.KSP_DIR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
-import java.io.File
 
 class KMockFactoriesSpec {
     @TempDir
@@ -43,7 +43,7 @@ class KMockFactoriesSpec {
         val args = mutableMapOf(
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to rootPackage,
-            KMP_FLAG to isKmp.toString()
+            KMP_FLAG to isKmp.toString(),
         ).also {
             it.putAll(kspArguments)
         }.also {
@@ -84,7 +84,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/regular/Platform.kt")
+            loadResource("/template/regular/Platform.kt"),
         )
         val expected = loadResource("/expected/regular/Platform.kt")
 
@@ -93,7 +93,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             emptyMap(),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -109,7 +109,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/regular/Common.kt")
+            loadResource("/template/regular/Common.kt"),
         )
         val expectedActual = loadResource("/expected/regular/CommonActual.kt")
         val expectedExpect = loadResource("/expected/regular/CommonExpect.kt")
@@ -119,7 +119,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -138,7 +138,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/relaxed/Platform.kt")
+            loadResource("/template/relaxed/Platform.kt"),
         )
         val expected = loadResource("/expected/relaxed/Platform.kt")
 
@@ -147,7 +147,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             emptyMap(),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -163,7 +163,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/relaxed/Common.kt")
+            loadResource("/template/relaxed/Common.kt"),
         )
         val expectedActual = loadResource("/expected/relaxed/CommonActual.kt")
         val expectedExpect = loadResource("/expected/relaxed/CommonExpect.kt")
@@ -173,7 +173,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -192,7 +192,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/generic/Platform.kt")
+            loadResource("/template/generic/Platform.kt"),
         )
         val expected = loadResource("/expected/generic/Platform.kt")
 
@@ -201,7 +201,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = false,
             emptyMap(),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -217,15 +217,15 @@ class KMockFactoriesSpec {
         // Given
         val source1 = SourceFile.kotlin(
             "Shared1.kt",
-            loadResource("/template/generic/Shared1.kt")
+            loadResource("/template/generic/Shared1.kt"),
         )
         val source2 = SourceFile.kotlin(
             "Shared2.kt",
-            loadResource("/template/generic/Shared2.kt")
+            loadResource("/template/generic/Shared2.kt"),
         )
         val source3 = SourceFile.kotlin(
             "Shared3.kt",
-            loadResource("/template/generic/Shared3.kt")
+            loadResource("/template/generic/Shared3.kt"),
         )
         val expectedExpect1 = loadResource("/expected/generic/Shared1Expect.kt")
         val expectedExpect2 = loadResource("/expected/generic/Shared2Expect.kt")
@@ -240,7 +240,7 @@ class KMockFactoriesSpec {
             emptyMap(),
             source1,
             source2,
-            source3
+            source3,
         )
 
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
@@ -263,7 +263,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/generic/Common.kt")
+            loadResource("/template/generic/Common.kt"),
         )
         val expectedActual = loadResource("/expected/generic/CommonActual.kt")
         val expectedExpect = loadResource("/expected/generic/CommonExpect.kt")
@@ -273,7 +273,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -292,7 +292,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/alias/Platform.kt")
+            loadResource("/template/alias/Platform.kt"),
         )
         val expected = loadResource("/expected/alias/Platform.kt")
 
@@ -303,7 +303,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Platform" to "AliasPlatform",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -319,7 +319,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Generic.kt",
-            loadResource("/template/alias/Generic.kt")
+            loadResource("/template/alias/Generic.kt"),
         )
         val expected = loadResource("/expected/alias/Generic.kt")
 
@@ -330,7 +330,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Generic" to "AliasGeneric",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -346,7 +346,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/alias/Common.kt")
+            loadResource("/template/alias/Common.kt"),
         )
         val expectedActual = loadResource("/expected/alias/CommonActual.kt")
         val expectedExpect = loadResource("/expected/alias/CommonExpect.kt")
@@ -358,7 +358,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}alias_factory.template.alias.Common" to "AliasCommon",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -377,7 +377,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/spy/Platform.kt")
+            loadResource("/template/spy/Platform.kt"),
         )
         val expected = loadResource("/expected/spy/Platform.kt")
 
@@ -389,7 +389,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.spy.Platform1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.spy.Platform2",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -405,7 +405,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/spy/Shared.kt")
+            loadResource("/template/spy/Shared.kt"),
         )
         val expectedActual = loadResource("/expected/spy/SharedActual.kt")
         val expectedExpect = loadResource("/expected/spy/SharedExpect.kt")
@@ -418,7 +418,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.spy.Shared1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.spy.Shared2",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
@@ -437,7 +437,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/spy/Common.kt")
+            loadResource("/template/spy/Common.kt"),
         )
         val expectedActual = loadResource("/expected/spy/CommonActual.kt")
         val expectedExpect = loadResource("/expected/spy/CommonExpect.kt")
@@ -450,7 +450,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.spy.Common1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.spy.Common2",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -469,7 +469,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/interfaze/Platform.kt")
+            loadResource("/template/interfaze/Platform.kt"),
         )
         val expected = loadResource("/expected/interfaze/NoSpy.kt")
 
@@ -480,7 +480,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -496,7 +496,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/interfaze/Platform.kt")
+            loadResource("/template/interfaze/Platform.kt"),
         )
         val expected = loadResource("/expected/interfaze/Platform.kt")
 
@@ -509,7 +509,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Platform2",
                 "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -525,7 +525,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/interfaze/Platform.kt")
+            loadResource("/template/interfaze/Platform.kt"),
         )
         val expected = loadResource("/expected/interfaze/Alias.kt")
 
@@ -539,7 +539,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}alias_factory.template.interfaze.Platform1" to "AliasPlatform",
                 "${KMOCK_PREFIX}allowInterfaces" to "true",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -555,7 +555,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/interfaze/Shared.kt")
+            loadResource("/template/interfaze/Shared.kt"),
         )
         val expectedActual = loadResource("/expected/interfaze/SharedActual.kt")
         val expectedExpect = loadResource("/expected/interfaze/SharedExpect.kt")
@@ -568,7 +568,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Shared1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Shared2",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
@@ -587,7 +587,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/interfaze/Common.kt")
+            loadResource("/template/interfaze/Common.kt"),
         )
         val expectedActual = loadResource("/expected/interfaze/CommonActual.kt")
         val expectedExpect = loadResource("/expected/interfaze/CommonExpect.kt")
@@ -600,7 +600,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Common1",
                 "${KMOCK_PREFIX}spyOn_1" to "factory.template.interfaze.Common2",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -619,7 +619,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/spiesonly/Platform.kt")
+            loadResource("/template/spiesonly/Platform.kt"),
         )
         val expected = loadResource("/expected/spiesonly/Platform.kt")
 
@@ -630,7 +630,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spiesOnly" to "true",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -646,7 +646,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/spiesonly/Shared.kt")
+            loadResource("/template/spiesonly/Shared.kt"),
         )
         val expectedActual = loadResource("/expected/spiesonly/SharedActual.kt")
         val expectedExpect = loadResource("/expected/spiesonly/SharedExpect.kt")
@@ -658,7 +658,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spiesOnly" to "true",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
@@ -677,7 +677,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/spiesonly/Common.kt")
+            loadResource("/template/spiesonly/Common.kt"),
         )
         val expectedActual = loadResource("/expected/spiesonly/CommonActual.kt")
         val expectedExpect = loadResource("/expected/spiesonly/CommonExpect.kt")
@@ -689,7 +689,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}spiesOnly" to "true",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -708,7 +708,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/freeze/Platform.kt")
+            loadResource("/template/freeze/Platform.kt"),
         )
         val expected = loadResource("/expected/freeze/Platform.kt")
 
@@ -720,7 +720,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}freeze" to "false",
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Platform",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -736,7 +736,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/freeze/Common.kt")
+            loadResource("/template/freeze/Common.kt"),
         )
         val expectedActual = loadResource("/expected/freeze/CommonActual.kt")
         val expectedExpect = loadResource("/expected/freeze/CommonExpect.kt")
@@ -749,7 +749,7 @@ class KMockFactoriesSpec {
                 "${KMOCK_PREFIX}freeze" to "false",
                 "${KMOCK_PREFIX}spyOn_0" to "factory.template.interfaze.Common",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -768,7 +768,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/nofactory/Platform.kt")
+            loadResource("/template/nofactory/Platform.kt"),
         )
 
         // When
@@ -778,7 +778,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}disable_factories" to "true",
             ),
-            source
+            source,
         )
         val actual = resolveGenerated("MockFactory.kt")
 
@@ -792,7 +792,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/nofactory/Shared.kt")
+            loadResource("/template/nofactory/Shared.kt"),
         )
 
         // When
@@ -802,7 +802,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "${KMOCK_PREFIX}disable_factories" to "true",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
@@ -818,7 +818,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/nofactory/Common.kt")
+            loadResource("/template/nofactory/Common.kt"),
         )
 
         // When
@@ -828,7 +828,7 @@ class KMockFactoriesSpec {
             mapOf(
                 "${KMOCK_PREFIX}disable_factories" to "true",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
@@ -844,7 +844,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/customshared/Shared.kt")
+            loadResource("/template/customshared/Shared.kt"),
         )
         val expectedActual = loadResource("/expected/customshared/SharedActual.kt")
         val expectedExpect = loadResource("/expected/customshared/SharedExpect.kt")
@@ -856,7 +856,7 @@ class KMockFactoriesSpec {
             kspArguments = mapOf(
                 "kmock_customAnnotation_factory.template.customshared.CustomShared" to "sharedTest",
             ),
-            source
+            source,
         )
         val actualActual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
         val actualExpect = resolveGenerated("kotlin/shared/sharedTest/kotlin/$rootPackage/MockFactory.kt")
@@ -875,7 +875,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/nocommon/Platform.kt")
+            loadResource("/template/nocommon/Platform.kt"),
         )
         val expected = loadResource("/expected/nocommon/CommonExpect.kt")
 
@@ -884,7 +884,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            source
+            source,
         )
         val actual = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
@@ -900,7 +900,7 @@ class KMockFactoriesSpec {
         // Given
         val source = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/nocommon/Shared.kt")
+            loadResource("/template/nocommon/Shared.kt"),
         )
         val expected = loadResource("/expected/nocommon/CommonExpect.kt")
 
@@ -909,7 +909,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            source
+            source,
         )
         val actual = resolveGenerated("kotlin/common/commonTest/kotlin/$rootPackage/MockFactory.kt")
 
@@ -925,15 +925,15 @@ class KMockFactoriesSpec {
         // Given
         val common = SourceFile.kotlin(
             "Common.kt",
-            loadResource("/template/mixed/Common.kt")
+            loadResource("/template/mixed/Common.kt"),
         )
         val shared = SourceFile.kotlin(
             "Shared.kt",
-            loadResource("/template/mixed/Shared.kt")
+            loadResource("/template/mixed/Shared.kt"),
         )
         val platform = SourceFile.kotlin(
             "Platform.kt",
-            loadResource("/template/mixed/Platform.kt")
+            loadResource("/template/mixed/Platform.kt"),
         )
         val expected = loadResource("/expected/mixed/Actual.kt")
 
@@ -942,7 +942,7 @@ class KMockFactoriesSpec {
             provider,
             isKmp = true,
             emptyMap(),
-            sourceFiles = arrayOf(common, shared, platform)
+            sourceFiles = arrayOf(common, shared, platform),
         )
         val actual = resolveGenerated("ksp/sources/kotlin/$rootPackage/MockFactory.kt")
 

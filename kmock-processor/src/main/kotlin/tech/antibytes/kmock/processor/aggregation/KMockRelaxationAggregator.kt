@@ -18,7 +18,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.RelaxationAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 
 internal class KMockRelaxationAggregator(
-    private val logger: KSPLogger
+    private val logger: KSPLogger,
 ) : RelaxationAggregator {
     private fun hasValidParameter(parameter: List<KSValueParameter>): Boolean {
         return parameter.size == 1 &&
@@ -27,7 +27,7 @@ internal class KMockRelaxationAggregator(
 
     private fun hasValidTypeParameter(
         typeParameter: List<KSTypeParameter>,
-        returnType: KSTypeReference?
+        returnType: KSTypeReference?,
     ): Boolean {
         return typeParameter.size == 1 &&
             typeParameter.first().bounds.toList().isEmpty() &&
@@ -46,7 +46,7 @@ internal class KMockRelaxationAggregator(
     private fun fetchRelaxerAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
             ProcessorContract.RELAXATION_NAME,
-            false
+            false,
         )
     }
 
@@ -59,7 +59,7 @@ internal class KMockRelaxationAggregator(
             Relaxer(
                 annotatedSymbol.packageName.asString(),
                 annotatedSymbol.simpleName.asString(),
-                annotatedSymbol.containingFile!!
+                annotatedSymbol.containingFile!!,
             )
         } else {
             null

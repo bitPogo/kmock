@@ -22,6 +22,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
@@ -38,14 +39,13 @@ import tech.antibytes.kmock.processor.ProcessorContract.MultiSourceAggregator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.test.assertFailsWith
 
 class KMockMultiSourceAggregatorCommonSpec {
     private val fixture = kotlinFixture {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 
@@ -244,7 +244,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             ClassKind.ENUM_CLASS,
             ClassKind.ENUM_ENTRY,
             ClassKind.OBJECT,
-            ClassKind.ANNOTATION_CLASS
+            ClassKind.ANNOTATION_CLASS,
         )
 
         val selector = fixture.random.nextInt(0, selection.lastIndex)
@@ -398,8 +398,8 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(generics),
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
@@ -490,8 +490,8 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(generics),
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
@@ -602,8 +602,8 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declaration1, declaration2, declaration3),
                 generics = listOf(generics, generics, generics),
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration1) }
@@ -725,7 +725,7 @@ class KMockMultiSourceAggregatorCommonSpec {
             notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returnsMany listOf(
             MockShared::class.qualifiedName!!,
-            Mock::class.qualifiedName!!
+            Mock::class.qualifiedName!!,
         )
 
         every {
@@ -771,8 +771,8 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declaration),
                 generics = listOf(emptyMap()),
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
@@ -887,7 +887,7 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declarationFetched),
                 generics = listOf(emptyMap()),
-                dependencies = listOf(fileFetched)
+                dependencies = listOf(fileFetched),
             ),
             TemplateMultiSource(
                 indicator = "commonTest",
@@ -895,8 +895,8 @@ class KMockMultiSourceAggregatorCommonSpec {
                 packageName = rootPackage,
                 templates = listOf(declarationGiven),
                 generics = listOf(emptyMap()),
-                dependencies = listOf(fileGiven)
-            )
+                dependencies = listOf(fileGiven),
+            ),
         )
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)

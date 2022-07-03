@@ -6,6 +6,9 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
@@ -17,9 +20,6 @@ import tech.antibytes.mock.AssertionsStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class AssertionChainSpec {
     private val fixture = kotlinFixture()
@@ -38,7 +38,7 @@ class AssertionChainSpec {
 
     private fun invoke(
         chain: AssertionChain,
-        action: AssertionChain.() -> Unit
+        action: AssertionChain.() -> Unit,
     ) = action(chain)
 
     @Test
@@ -73,7 +73,7 @@ class AssertionChainSpec {
         )
 
         val assertions = AssertionsStub(
-            hasBeenCalledAtIndex = { _, _ -> Unit }
+            hasBeenCalledAtIndex = { _, _ -> Unit },
         )
 
         val chain = AssertionChain(references, assertions)
@@ -111,8 +111,8 @@ class AssertionChainSpec {
         val proxy = fixture.funProxyFixture()
         val container = AssertionChain(
             listOf(
-                Reference(proxy, 0)
-            )
+                Reference(proxy, 0),
+            ),
         )
 
         // When
@@ -179,7 +179,7 @@ class AssertionChainSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -254,7 +254,7 @@ class AssertionChainSpec {
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -335,7 +335,7 @@ class AssertionChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -417,7 +417,7 @@ class AssertionChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -499,7 +499,7 @@ class AssertionChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -577,7 +577,7 @@ class AssertionChainSpec {
             wasGottenAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -654,7 +654,7 @@ class AssertionChainSpec {
             wasSetAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -735,7 +735,7 @@ class AssertionChainSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedValue = argument
-            }
+            },
         )
 
         val container = AssertionChain(references, assertions)
@@ -804,7 +804,7 @@ class AssertionChainSpec {
             wasSetToAtIndex = { givenProxy, givenIdx, _ ->
                 capturedProxies.add(givenProxy)
                 capturedCallIdx.add(givenIdx)
-            }
+            },
         )
 
         val chain = AssertionChain(references, assertions)
