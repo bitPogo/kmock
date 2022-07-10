@@ -21,10 +21,10 @@ class DependencyGraphSpec {
     fun `Given resolveAncestors is called with a flat mapping it returns a Mapping of a meta Source set to all its ancestors`() {
         // Given
         val platformSources = mapOf(
-            "concurrentTest" to setOf("jvm")
+            "concurrentTest" to setOf("jvm"),
         )
         val metaSources = mapOf(
-            "commonTest" to setOf("concurrentTest")
+            "commonTest" to setOf("concurrentTest"),
         )
 
         // When
@@ -33,7 +33,7 @@ class DependencyGraphSpec {
         // Then
         actual mustBe mapOf(
             "commonTest" to emptySet(),
-            "concurrentTest" to setOf("commonTest")
+            "concurrentTest" to setOf("commonTest"),
         )
     }
 
@@ -57,7 +57,7 @@ class DependencyGraphSpec {
             "commonTest" to emptySet(),
             "concurrentTest" to setOf("commonTest"),
             "nativeTest" to setOf("commonTest", "concurrentTest"),
-            "iosTest" to setOf("commonTest", "nativeTest", "concurrentTest")
+            "iosTest" to setOf("commonTest", "nativeTest", "concurrentTest"),
         )
     }
 
@@ -81,7 +81,7 @@ class DependencyGraphSpec {
             "commonTest" to emptySet(),
             "concurrentTest" to setOf("commonTest"),
             "nativeTest" to setOf("commonTest", "concurrentTest"),
-            "iosTest" to setOf("commonTest", "nativeTest", "concurrentTest")
+            "iosTest" to setOf("commonTest", "nativeTest", "concurrentTest"),
         )
     }
 
@@ -93,13 +93,13 @@ class DependencyGraphSpec {
             "commonTest" to setOf("iosX64", "iosArm32", "linuxX64", "jvm"),
             "otherTest" to setOf("linuxX64"),
             "nativeTest" to setOf("linuxX64"),
-            "concurrentTest" to setOf("jvm")
+            "concurrentTest" to setOf("jvm"),
         )
         val metaSources = mapOf(
             "metaTest" to setOf("concurrentTest"),
             "nativeTest" to setOf("otherTest", "iosTest"),
             "commonTest" to setOf("otherTest", "nativeTest", "iosTest", "metaTest"),
-            "concurrentTest" to setOf("nativeTest")
+            "concurrentTest" to setOf("nativeTest"),
         )
 
         // When

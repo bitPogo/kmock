@@ -16,5 +16,5 @@ import tech.antibytes.kmock.KMockContract.Proxy
  */
 internal data class Expectation(
     override val proxy: Proxy<*, *>,
-    override val callIndices: List<Int>
+    override val callIndices: List<Int>,
 ) : KMockContract.Expectation

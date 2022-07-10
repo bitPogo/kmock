@@ -51,7 +51,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
 
     private fun addRelaxer(
         methodReturnType: MemberReturnTypeInfo,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): String {
         val types = resolveTypeParameter(methodReturnType)
         val cast = methodReturnType.resolveCastForRelaxer(relaxer)
@@ -65,7 +65,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
 
     private fun addFunRelaxer(
         methodReturnType: MemberReturnTypeInfo,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): String {
         return if (methodReturnType.proxyTypeName.toString() == "kotlin.Unit") {
             "useUnitFunRelaxerIf($UNIT_RELAXER_ARGUMENT || $RELAXER_ARGUMENT)\n"
@@ -84,7 +84,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         relaxer: Relaxer?,
     ): String = addFunRelaxer(
         methodReturnType = methodReturnType,
-        relaxer = relaxer
+        relaxer = relaxer,
     )
 
     private fun buildRelaxationInvocation(
@@ -99,7 +99,7 @@ internal class KMockRelaxerGenerator : RelaxerGenerator {
         val argumentName = argument?.argumentName ?: ""
         val relaxerBody = buildRelaxationInvocation(
             methodName = methodName,
-            argumentName = argumentName
+            argumentName = argumentName,
         )
 
         return "useRelaxerIf(true) $relaxerBody\n"

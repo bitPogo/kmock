@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Relaxer
-import kotlin.reflect.KClass
 
 internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<ReturnValue>> :
     KMockContract.NonIntrusiveFunConfigurator<ReturnValue, SideEffect>,
@@ -24,7 +24,7 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
 
     override fun useRelaxerIf(
         condition: Boolean,
-        relaxer: Function1<String, ReturnValue>
+        relaxer: Function1<String, ReturnValue>,
     ) {
         this.relaxer = condition.guardRelaxer(relaxer)
     }
@@ -41,7 +41,7 @@ internal class NonIntrusiveFunConfigurator<ReturnValue, SideEffect : Function<Re
         spyTarget: Any?,
         other: Any?,
         spyOn: Function1<Any?, Boolean>,
-        mockKlass: KClass<out Any>
+        mockKlass: KClass<out Any>,
     ) {
         @Suppress("UNCHECKED_CAST")
         this.spyOn = spyTarget.guardSpy {

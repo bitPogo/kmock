@@ -37,12 +37,12 @@ internal class KMockSingleSourceAggregator(
     private val sourceSetValidator: SourceSetValidator,
     generics: GenericResolver,
     private val customAnnotations: Map<String, String>,
-    private val aliases: Map<String, String>
+    private val aliases: Map<String, String>,
 ) : SingleSourceAggregator, BaseSourceAggregator(logger, customAnnotations, generics) {
     override fun extractKmockInterfaces(resolver: Resolver): AnnotationContainer {
         val annotated = resolver.getSymbolsWithAnnotation(
             ANNOTATION_KMOCK_NAME,
-            false
+            false,
         )
 
         return resolveKmockAnnotation(annotated)
@@ -64,13 +64,13 @@ internal class KMockSingleSourceAggregator(
             packageName = packageName,
             dependencies = listOf(dependency),
             template = interfaze,
-            generics = resolveGenerics(interfaze)
+            generics = resolveGenerics(interfaze),
         )
     }
 
     private fun resolveInterfaces(
         raw: Map<String, Pair<List<KSFile>, MutableList<KSType>>>,
-        templateCollector: MutableMap<String, TemplateSource>
+        templateCollector: MutableMap<String, TemplateSource>,
     ) {
         raw.forEach { (sourceIndicator, interfaces) ->
             interfaces.second.forEachIndexed { idx, interfaze ->
@@ -78,7 +78,7 @@ internal class KMockSingleSourceAggregator(
                     declaration = interfaze.declaration,
                     sourceIndicator = sourceIndicator,
                     dependency = interfaces.first[idx],
-                    templateCollector = templateCollector
+                    templateCollector = templateCollector,
                 )
             }
         }
@@ -86,7 +86,7 @@ internal class KMockSingleSourceAggregator(
 
     private fun determineSourceCategory(
         defaultIndicator: String,
-        annotation: KSAnnotation
+        annotation: KSAnnotation,
     ): String {
         return if (annotation.arguments.size == 2) {
             (annotation.arguments.first().value as String).ensureTestSourceSet()!!
@@ -148,7 +148,7 @@ internal class KMockSingleSourceAggregator(
                 annotation = annotation,
                 illAnnotated = illAnnotated,
                 typeContainer = typeContainer,
-                fileCollector = fileCollector
+                fileCollector = fileCollector,
             )
         }
 
@@ -164,7 +164,7 @@ internal class KMockSingleSourceAggregator(
                     annotation = annotation,
                     illAnnotated = illAnnotated,
                     typeContainer = typeContainer,
-                    fileCollector = fileCollector
+                    fileCollector = fileCollector,
                 )
             }
         }
@@ -174,14 +174,14 @@ internal class KMockSingleSourceAggregator(
         return Aggregated(
             illFormed = illAnnotated,
             extractedTemplates = templateCollector.values.toList(),
-            totalDependencies = fileCollector
+            totalDependencies = fileCollector,
         )
     }
 
     private fun fetchCommonAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
             ANNOTATION_COMMON_NAME,
-            false
+            false,
         )
     }
 
@@ -201,7 +201,7 @@ internal class KMockSingleSourceAggregator(
     private fun fetchSharedAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         val shared = resolver.getSymbolsWithAnnotation(
             ANNOTATION_SHARED_NAME,
-            false
+            false,
         )
         val customShared = fetchCustomShared(resolver)
 
@@ -223,14 +223,14 @@ internal class KMockSingleSourceAggregator(
             defaultIndicator = "",
             annotated = annotated,
             kmockAnnotated = kmockAnnotated,
-            condition = ::isSharedAnnotation
+            condition = ::isSharedAnnotation,
         )
     }
 
     private fun fetchPlatformAnnotated(resolver: Resolver): Sequence<KSAnnotated> {
         return resolver.getSymbolsWithAnnotation(
             ANNOTATION_PLATFORM_NAME,
-            false
+            false,
         )
     }
 
@@ -258,7 +258,7 @@ internal class KMockSingleSourceAggregator(
             aliases: Map<String, String>,
         ): SingleSourceAggregator {
             val additionalAnnotations = annotationFilter.filterAnnotation(
-                customAnnotations
+                customAnnotations,
             )
 
             return KMockSingleSourceAggregator(

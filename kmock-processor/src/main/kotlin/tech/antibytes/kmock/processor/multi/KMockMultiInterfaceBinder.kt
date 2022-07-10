@@ -33,7 +33,7 @@ internal class KMockMultiInterfaceBinder(
 ) : MultiInterfaceBinder {
     private fun TypeSpec.Builder.addMockAnnotation(
         indicator: String,
-        interfaceName: String
+        interfaceName: String,
     ): TypeSpec.Builder {
         val annotation = when {
             indicator == COMMON_INDICATOR -> AnnotationSpec.builder(MockCommon::class)
@@ -42,7 +42,7 @@ internal class KMockMultiInterfaceBinder(
         }
 
         return this.addAnnotation(
-            annotation.addMember("$interfaceName::class").build()
+            annotation.addMember("$interfaceName::class").build(),
         )
     }
 
@@ -63,7 +63,7 @@ internal class KMockMultiInterfaceBinder(
 
         interfaze.addMockAnnotation(
             indicator = indicator,
-            interfaceName = interfaceName
+            interfaceName = interfaceName,
         )
         interfaze.addModifiers(KModifier.PRIVATE)
 
@@ -72,11 +72,11 @@ internal class KMockMultiInterfaceBinder(
 
     override fun bind(
         templateSources: List<TemplateMultiSource>,
-        dependencies: List<KSFile>
+        dependencies: List<KSFile>,
     ) {
         val file = FileSpec.builder(
             rootPackage,
-            INTERMEDIATE_INTERFACES_FILE_NAME
+            INTERMEDIATE_INTERFACES_FILE_NAME,
         )
 
         templateSources.map { source ->
@@ -84,7 +84,7 @@ internal class KMockMultiInterfaceBinder(
                 interfaceName = source.templateName,
                 indicator = source.indicator,
                 templates = source.templates,
-                generics = source.generics
+                generics = source.generics,
             )
 
             file.addType(implementation)
@@ -93,7 +93,7 @@ internal class KMockMultiInterfaceBinder(
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = true,
-            originatingKSFiles = dependencies
+            originatingKSFiles = dependencies,
         )
     }
 }

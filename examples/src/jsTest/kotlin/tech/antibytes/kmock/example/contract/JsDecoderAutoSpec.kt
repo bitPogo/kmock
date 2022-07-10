@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock.example.contract
 
+import kotlin.test.Test
 import tech.antibytes.kmock.Mock
 import tech.antibytes.util.test.fulfils
-import kotlin.test.Test
 
 @Mock(ExampleContractJs.JsDecoder::class)
 class JsDecoderAutoSpec {

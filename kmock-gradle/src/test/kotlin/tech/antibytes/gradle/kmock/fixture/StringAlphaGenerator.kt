@@ -6,11 +6,11 @@
 
 package tech.antibytes.gradle.kmock.fixture
 
-import tech.antibytes.kfixture.PublicApi
 import kotlin.random.Random
+import tech.antibytes.kfixture.PublicApi
 
 internal class StringAlphaGenerator(
-    private val random: Random
+    private val random: Random,
 ) : PublicApi.Generator<String> {
     override fun generate(): String {
         val length = random.nextInt(1, 10)

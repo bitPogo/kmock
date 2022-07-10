@@ -13,12 +13,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Source
 internal class SpyContainer(
     private val spyOn: Set<String>,
     private val spiesOnly: Boolean,
-    private val spyAll: Boolean
+    private val spyAll: Boolean,
 ) : ProcessorContract.SpyContainer {
     override fun isSpyable(
         template: KSClassDeclaration?,
         packageName: String,
-        templateName: String
+        templateName: String,
     ): Boolean {
         return spiesOnly ||
             spyAll ||

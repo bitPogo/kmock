@@ -10,6 +10,8 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.File
+import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kfixture.fixture
@@ -18,8 +20,6 @@ import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.kmock.fixture.StringAlphaGenerator
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import java.io.File
-import kotlin.test.assertFailsWith
 
 class KMockCodeGeneratorSpec {
     @TempDir
@@ -29,7 +29,7 @@ class KMockCodeGeneratorSpec {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("alpha")
+            qualifiedBy("alpha"),
         )
     }
 
@@ -71,7 +71,7 @@ class KMockCodeGeneratorSpec {
                 dependencies,
                 packageName,
                 fileName,
-                extensionName
+                extensionName,
             )
         }
     }
@@ -111,7 +111,7 @@ class KMockCodeGeneratorSpec {
                 dependencies,
                 packageName,
                 fileName,
-                extensionName
+                extensionName,
             )
         }
 
@@ -158,7 +158,7 @@ class KMockCodeGeneratorSpec {
                 dependencies,
                 packageName,
                 fileName,
-                extensionName
+                extensionName,
             )
         }
     }
@@ -169,7 +169,7 @@ class KMockCodeGeneratorSpec {
             KMockCodeGenerator(fixture.fixture(), mockk()).associate(
                 listOf(),
                 fixture.fixture(),
-                fixture.fixture()
+                fixture.fixture(),
             )
         }
     }
@@ -180,7 +180,7 @@ class KMockCodeGeneratorSpec {
             KMockCodeGenerator(fixture.fixture(), mockk()).associateWithClasses(
                 listOf(),
                 fixture.fixture(),
-                fixture.fixture()
+                fixture.fixture(),
             )
         }
     }

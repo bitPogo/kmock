@@ -12,7 +12,7 @@ import tech.antibytes.kmock.KMockContract.CloseableAssertionContext
 import tech.antibytes.kmock.KMockContract.Proxy
 
 internal class UnchainedAssertion(
-    assertions: Assertions = Assertions
+    assertions: Assertions = Assertions,
 ) : BaseAssertionContext(assertions), CloseableAssertionContext {
     private val frozenInvocations: MutableMap<Proxy<*, *>, Int> = sharedMutableMapOf()
     private val unfrozenInvocations: MutableMap<Proxy<*, *>, Int> = mutableMapOf()
@@ -37,7 +37,7 @@ internal class UnchainedAssertion(
 
     override fun runAssertion(
         proxy: Proxy<*, *>,
-        action: (callIndex: Int) -> Unit
+        action: (callIndex: Int) -> Unit,
     ) {
         val callIndices = getCallIndices(proxy)
         val callIndex = callIndices.getOrElse(proxy) { 0 }

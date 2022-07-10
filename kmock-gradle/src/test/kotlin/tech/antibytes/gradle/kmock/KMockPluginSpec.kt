@@ -11,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkObject
 import io.mockk.verify
+import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
@@ -22,14 +23,13 @@ import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.util.test.fulfils
-import java.io.File
 
 class KMockPluginSpec {
     private val fixture = kotlinFixture {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 

@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
@@ -20,8 +22,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
 
 // NOTE: This is a entry point and the reason for its integration character
 class ProxyFactorySpec {
@@ -39,7 +39,7 @@ class ProxyFactorySpec {
     fun `Given createSyncFunProxy it creates a SyncFunProxy`() {
         // When
         val proxy = ProxyFactory.createSyncFunProxy<Any, (Any, Any) -> Any>(
-            id = fixture.fixture()
+            id = fixture.fixture(),
         )
 
         // Then
@@ -112,7 +112,7 @@ class ProxyFactorySpec {
     fun `Given createAsyncFunProxy it creates a AsyncFunProxy`() {
         // When
         val proxy = ProxyFactory.createAsyncFunProxy<Any, suspend (Any, Any) -> Any>(
-            id = fixture.fixture()
+            id = fixture.fixture(),
         )
 
         // Then
@@ -184,7 +184,7 @@ class ProxyFactorySpec {
     fun `Given createPropertyProxy it creates a PropertyProxy`() {
         // When
         val proxy: Proxy<Int, KMockContract.GetOrSet> = ProxyFactory.createPropertyProxy(
-            id = fixture.fixture()
+            id = fixture.fixture(),
         )
 
         // Then

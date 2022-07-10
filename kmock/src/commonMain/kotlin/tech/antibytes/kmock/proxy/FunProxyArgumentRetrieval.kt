@@ -19,7 +19,7 @@ import tech.antibytes.kmock.error.MockError.MissingCall
  */
 @KMockExperimental
 public inline fun <reified T : Any> KMockContract.FunProxy<*, *>.getArgumentsByType(
-    callIndex: Int
+    callIndex: Int,
 ): List<T> = this[callIndex].filterIsInstance<T>()
 
 /**

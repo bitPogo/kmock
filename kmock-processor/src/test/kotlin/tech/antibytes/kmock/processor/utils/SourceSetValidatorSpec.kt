@@ -100,7 +100,7 @@ class SourceSetValidatorSpec {
         // When
         val actual = SourceSetValidator(
             logger,
-            knownSourceSets
+            knownSourceSets,
         ).isValidateSourceSet(annotation)
 
         // Then
@@ -127,7 +127,7 @@ class SourceSetValidatorSpec {
         // When
         val actual = SourceSetValidator(
             logger,
-            knownSourceSets
+            knownSourceSets,
         ).isValidateSourceSet(annotation)
 
         // Then
@@ -154,7 +154,7 @@ class SourceSetValidatorSpec {
         // When
         val actual = SourceSetValidator(
             logger,
-            knownSourceSets
+            knownSourceSets,
         ).isValidateSourceSet(annotation)
 
         // Then

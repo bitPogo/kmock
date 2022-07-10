@@ -18,7 +18,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
@@ -78,7 +77,7 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
 
 private fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
-    typeParameterResolver: TypeParameterResolver
+    typeParameterResolver: TypeParameterResolver,
 ): TypeParameterResolver {
     return if (declaration.typeParameters.isEmpty()) {
         typeParameterResolver
@@ -113,7 +112,7 @@ internal fun KSTypeAlias.resolveAlias(
     var resolvedArguments = arguments
     var resolvedType: KSType
     var mappedArgs: List<KSTypeArgument>
-    var extraResolver: TypeParameterResolver
+    var extraResolver: TypeParameterResolver = typeParameterResolver
 
     do {
         resolvedType = typeAlias.type.resolve()
@@ -121,7 +120,7 @@ internal fun KSTypeAlias.resolveAlias(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = extractAliasTypeResolver(this, typeParameterResolver)
+        extraResolver = extractAliasTypeResolver(this, extraResolver)
 
         if (resolvedType.declaration is KSTypeAlias) {
             typeAlias = resolvedType.declaration as KSTypeAlias

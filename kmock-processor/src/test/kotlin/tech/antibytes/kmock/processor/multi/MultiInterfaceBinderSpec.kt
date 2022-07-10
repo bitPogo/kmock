@@ -18,7 +18,7 @@ class MultiInterfaceBinderSpec {
             mockk(),
             mockk(),
             "any",
-            mockk()
+            mockk(),
         ) fulfils ProcessorContract.MultiInterfaceBinder::class
     }
 }

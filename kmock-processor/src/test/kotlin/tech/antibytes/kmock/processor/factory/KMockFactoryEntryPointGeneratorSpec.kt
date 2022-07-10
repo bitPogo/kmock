@@ -21,7 +21,7 @@ internal class KMockFactoryEntryPointGeneratorSpec {
             false,
             mockk(),
             mockk(),
-            mockk()
+            mockk(),
         ) fulfils ProcessorContract.MockFactoryEntryPointGenerator::class
     }
 }

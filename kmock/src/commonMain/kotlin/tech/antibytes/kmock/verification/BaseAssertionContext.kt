@@ -13,7 +13,7 @@ import tech.antibytes.kmock.KMockContract.PropertyProxy
 import tech.antibytes.kmock.KMockContract.Proxy
 
 internal abstract class BaseAssertionContext(
-    private val assertions: Assertions
+    private val assertions: Assertions,
 ) : AssertionContext {
     protected abstract fun runAssertion(proxy: Proxy<*, *>, action: (callIndex: Int) -> Unit)
 
@@ -34,7 +34,7 @@ internal abstract class BaseAssertionContext(
             assertions.hasBeenCalledWithAtIndex(
                 proxy = this,
                 callIndex = callIndex,
-                arguments = arguments
+                arguments = arguments,
             )
         }
     }
@@ -44,7 +44,7 @@ internal abstract class BaseAssertionContext(
             assertions.hasBeenStrictlyCalledWithAtIndex(
                 proxy = this,
                 callIndex = callIndex,
-                arguments = arguments
+                arguments = arguments,
             )
         }
     }
@@ -54,7 +54,7 @@ internal abstract class BaseAssertionContext(
             assertions.hasBeenCalledWithoutAtIndex(
                 proxy = this,
                 callIndex = callIndex,
-                illegal = illegal
+                illegal = illegal,
             )
         }
     }
@@ -76,7 +76,7 @@ internal abstract class BaseAssertionContext(
             assertions.wasSetToAtIndex(
                 proxy = this,
                 callIndex = callIndex,
-                value = value
+                value = value,
             )
         }
     }

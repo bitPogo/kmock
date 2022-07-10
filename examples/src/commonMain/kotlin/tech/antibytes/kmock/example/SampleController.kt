@@ -16,7 +16,7 @@ import tech.antibytes.kmock.example.contract.ExampleContract
 
 class SampleController(
     private val localRepository: ExampleContract.SampleLocalRepository,
-    private val remoteRepository: ExampleContract.SampleRemoteRepository
+    private val remoteRepository: ExampleContract.SampleRemoteRepository,
 ) : ExampleContract.SampleController {
     override suspend fun fetchAndStore(url: String): ExampleContract.SampleDomainObject {
         val domainObject = remoteRepository.fetch(url)

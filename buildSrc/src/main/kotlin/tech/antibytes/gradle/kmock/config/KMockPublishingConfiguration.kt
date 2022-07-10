@@ -39,14 +39,14 @@ open class KMockPublishingConfiguration {
     protected val license = LicenseConfiguration(
         name = "Apache License, Version 2.0",
         url = "https://www.apache.org/licenses/LICENSE-2.0.txt",
-        distribution = "repo"
+        distribution = "repo",
     )
 
     protected val developer = DeveloperConfiguration(
         id = githubOwner,
         name = githubOwner,
         url = "https://$host/$githubOwner",
-        email = "bitpogo@antibytes.tech"
+        email = "bitpogo@antibytes.tech",
     )
 
     protected val sourceControl = SourceControlConfiguration(
@@ -60,7 +60,7 @@ open class KMockPublishingConfiguration {
             name = "MavenCentral",
             url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/",
             username = nexusUsername,
-            password = nexusPassword
+            password = nexusPassword,
         ),
         GitRepositoryConfiguration(
             name = "Development",
@@ -74,15 +74,15 @@ open class KMockPublishingConfiguration {
             gitWorkDirectory = "snapshots",
             url = "https://$gitHubOwnerPath/maven-snapshots",
             username = username,
-            password = passwordGitHubRepos
+            password = passwordGitHubRepos,
         ),
         GitRepositoryConfiguration(
             name = "Release",
             gitWorkDirectory = "releases",
             url = "https://$gitHubOwnerPath/maven-releases",
             username = username,
-            password = passwordGitHubRepos
-        )
+            password = passwordGitHubRepos,
+        ),
     )
 
     val versioning = VersioningConfiguration(

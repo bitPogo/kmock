@@ -48,7 +48,7 @@ internal class KMockFactoryWithoutGenerics(
     }
 
     private fun determineMockTemplate(
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Pair<String, String> {
         return if (relaxer == null) {
             Pair(
@@ -67,7 +67,7 @@ internal class KMockFactoryWithoutGenerics(
         mockFactory: FunSpec.Builder,
         qualifiedName: String,
         interfaceName: String,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val (interfaceInvocationTemplate, mockInvocationTemplate) = determineMockTemplate(relaxer)
         if (allowInterfaces) {
@@ -90,7 +90,7 @@ internal class KMockFactoryWithoutGenerics(
     private fun amendSource(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val packageName = templateSource.packageName
         val qualifiedName = ensureNotNullClassName(templateSource.template.qualifiedName?.asString())
@@ -105,7 +105,7 @@ internal class KMockFactoryWithoutGenerics(
     }
 
     private fun determineMultiMockTemplate(
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): String {
         return if (relaxer == null) {
             "%LMock::class -> %LMock<%LMock<*>>($ARGUMENTS_WITHOUT_RELAXER_AND_SPY) as $KMOCK_FACTORY_TYPE_NAME"
@@ -117,7 +117,7 @@ internal class KMockFactoryWithoutGenerics(
     private fun addMultiMock(
         mockFactory: FunSpec.Builder,
         qualifiedName: String,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         mockFactory.addStatement(
             determineMultiMockTemplate(relaxer),
@@ -130,28 +130,28 @@ internal class KMockFactoryWithoutGenerics(
     private fun amendMultiSource(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateMultiSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val mockName = "${templateSource.packageName}.${templateSource.templateName}"
 
         addMultiMock(
             mockFactory = mockFactory,
             qualifiedName = mockName,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
     }
 
     private fun FunSpec.Builder.buildMockSelectors(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         buildMockSelectorFlow(this) {
             templateSources.forEach { source ->
                 amendSource(
                     mockFactory = this,
                     templateSource = source,
-                    relaxer = relaxer
+                    relaxer = relaxer,
                 )
             }
 
@@ -160,7 +160,7 @@ internal class KMockFactoryWithoutGenerics(
                     amendMultiSource(
                         mockFactory = this,
                         templateSource = source,
-                        relaxer = relaxer
+                        relaxer = relaxer,
                     )
                 }
             }
@@ -174,7 +174,7 @@ internal class KMockFactoryWithoutGenerics(
     override fun buildSharedMockFactory(
         templateSources: List<TemplateSource>,
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = kspyMockType,
@@ -187,7 +187,7 @@ internal class KMockFactoryWithoutGenerics(
             mockFactory.buildMockSelectors(
                 templateSources = templateSources,
                 templateMultiSources = templateMultiSources,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
         }
 
@@ -200,7 +200,7 @@ internal class KMockFactoryWithoutGenerics(
         return utils.generateKmockSignature(
             type = kmockType,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addCode(factoryInvocation)
     }
 
@@ -213,7 +213,7 @@ internal class KMockFactoryWithoutGenerics(
             mockType = kspyMockType,
             spyType = kspyType,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addCode(spyFactoryInvocation)
     }
 

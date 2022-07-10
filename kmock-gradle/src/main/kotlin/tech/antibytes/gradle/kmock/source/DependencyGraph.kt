@@ -13,7 +13,7 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
 
     private fun expand(
         dependencyGraph: Map<String, Node>,
-        metaDependencies: Map<String, Set<String>>
+        metaDependencies: Map<String, Set<String>>,
     ): Map<String, Node> {
         val traversed: MutableMap<String, Node> = dependencyGraph.toMutableMap()
 
@@ -24,14 +24,14 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
                 val childNode = traversed[child]!!
 
                 childNode.copy(
-                    parents = childNode.parents.toMutableSet().also { it.add(currentNode.name) }
+                    parents = childNode.parents.toMutableSet().also { it.add(currentNode.name) },
                 ).also { node ->
                     traversed[child] = node
                 }.name
             }
 
             traversed[sourceSet] = currentNode.copy(
-                children = listOf(currentNode.children, childNodes).flatten().toSet()
+                children = listOf(currentNode.children, childNodes).flatten().toSet(),
             )
         }
 
@@ -55,7 +55,7 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
 
     override fun resolveAncestors(
         sourceDependencies: Map<String, Set<String>>,
-        metaDependencies: Map<String, Set<String>>
+        metaDependencies: Map<String, Set<String>>,
     ): Map<String, Set<String>> {
         val allSources: Map<String, Node> = listOf(sourceDependencies.keys, metaDependencies.keys)
             .flatten()
@@ -63,7 +63,7 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
                 Node(
                     name = sourceSet,
                     children = emptySet(),
-                    parents = emptySet()
+                    parents = emptySet(),
                 )
             }.toMutableMap()
 

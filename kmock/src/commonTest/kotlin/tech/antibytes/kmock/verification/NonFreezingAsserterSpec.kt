@@ -6,6 +6,9 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.math.absoluteValue
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
@@ -15,9 +18,6 @@ import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.math.absoluteValue
-import kotlin.test.Test
 
 class NonFreezingAsserterSpec {
     private val fixture = kotlinFixture()
@@ -99,7 +99,7 @@ class NonFreezingAsserterSpec {
         // Given
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
-            fixture.fixture()
+            fixture.fixture(),
         )
 
         val verifier = NonFreezingAsserter()
@@ -118,7 +118,7 @@ class NonFreezingAsserterSpec {
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
             fixture.fixture(),
-            ignorableForVerification = true
+            ignorableForVerification = true,
         )
 
         val verifier = NonFreezingAsserter()
@@ -137,7 +137,7 @@ class NonFreezingAsserterSpec {
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
             fixture.fixture(),
-            ignorableForVerification = true
+            ignorableForVerification = true,
         )
 
         val verifier = NonFreezingAsserter(coverAllInvocations = true)

@@ -12,10 +12,13 @@ interface Generic<T>
 
 typealias Alias21 = (Any) -> Unit
 typealias Alias23 = (Any) -> Any
-typealias Alias77<T> = Generic<T>
-typealias Alias73<T> = Map<String, T>
-typealias Alias55<T> = Alias73<T>
-typealias Alias99<T> = Alias55<T>
+typealias Alias77<Q> = Generic<Q>
+typealias Alias73<Q> = Map<String, Q>
+typealias Alias55<Q> = Alias73<Q>
+typealias Alias99<Q> = Alias55<Q>
+typealias Alias43<Q> = Alias77<Q>
+typealias Alias47<Q> = Alias43<Q>
+typealias Alias41<Z, Q> = (Alias43<Z>) -> Alias47<Q>
 
 @Mock(Platform::class)
 interface Platform<L : Alias23> {
@@ -57,4 +60,5 @@ interface Platform<L : Alias23> {
     fun <T : Alias73<K>, K> rol(arg1: T) where K : CharSequence, K : Comparable<K>
     fun <T : Alias73<K>, K> lol(arg1: T) where K : CharSequence, K : Comparable<T>
     fun <T : Map<String, K>, K> fol(arg1: T) where K : CharSequence, K : Comparable<K>
+    fun <T : Alias41<Alias23, out Alias77<Alias73<Int>>>> bar(vararg arg1: T)
 }

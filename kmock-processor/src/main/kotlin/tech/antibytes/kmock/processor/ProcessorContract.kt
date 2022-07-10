@@ -31,6 +31,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import java.util.SortedSet
 import tech.antibytes.kmock.KMock
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Collector
@@ -42,10 +43,9 @@ import tech.antibytes.kmock.MockShared
 import tech.antibytes.kmock.MultiMock
 import tech.antibytes.kmock.MultiMockCommon
 import tech.antibytes.kmock.MultiMockShared
+import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
-import java.util.SortedSet
-import tech.antibytes.kmock.Relaxer as RelaxationAnnotation
 
 internal interface ProcessorContract {
     data class Relaxer(
@@ -84,7 +84,7 @@ internal interface ProcessorContract {
         fun isSpyable(
             template: KSClassDeclaration?,
             packageName: String,
-            templateName: String
+            templateName: String,
         ): Boolean
 
         fun hasSpies(filter: List<Source> = emptyList()): Boolean
@@ -103,7 +103,7 @@ internal interface ProcessorContract {
         override val packageName: String,
         override val dependencies: List<KSFile>,
         val template: KSClassDeclaration,
-        val generics: Map<String, List<KSTypeReference>>?
+        val generics: Map<String, List<KSTypeReference>>?,
     ) : Source
 
     data class TemplateMultiSource(
@@ -112,7 +112,7 @@ internal interface ProcessorContract {
         override val packageName: String,
         override val dependencies: List<KSFile>,
         val templates: List<KSClassDeclaration>,
-        val generics: List<Map<String, List<KSTypeReference>>?>
+        val generics: List<Map<String, List<KSTypeReference>>?>,
     ) : Source
 
     data class Aggregated<out T : Source>(
@@ -133,26 +133,26 @@ internal interface ProcessorContract {
 
     interface AnnotationFilter {
         fun filterAnnotation(
-            annotations: Map<String, String>
+            annotations: Map<String, String>,
         ): Map<String, String>
 
         fun isApplicableSingleSourceAnnotation(
-            annotation: KSAnnotation
+            annotation: KSAnnotation,
         ): Boolean
 
         fun isApplicableMultiSourceAnnotation(
-            annotation: KSAnnotation
+            annotation: KSAnnotation,
         ): Boolean
     }
 
     interface SourceFilter {
         fun <T : Source> filter(
             templateSources: List<T>,
-            filteredBy: List<T>
+            filteredBy: List<T>,
         ): List<T>
 
         fun <T : Source> filterByDependencies(
-            templateSources: List<T>
+            templateSources: List<T>,
         ): List<T>
     }
 
@@ -167,17 +167,17 @@ internal interface ProcessorContract {
 
         fun extractCommonInterfaces(
             kmockAnnotated: List<KSAnnotated>,
-            resolver: Resolver
+            resolver: Resolver,
         ): Aggregated<TemplateSource>
 
         fun extractSharedInterfaces(
             kmockAnnotated: Map<String, List<KSAnnotated>>,
-            resolver: Resolver
+            resolver: Resolver,
         ): Aggregated<TemplateSource>
 
         fun extractPlatformInterfaces(
             kmockAnnotated: List<KSAnnotated>,
-            resolver: Resolver
+            resolver: Resolver,
         ): Aggregated<TemplateSource>
     }
 
@@ -208,7 +208,7 @@ internal interface ProcessorContract {
             annotationFilter: AnnotationFilter,
             generics: GenericResolver,
             customAnnotations: Map<String, String>,
-            aliases: Map<String, String>
+            aliases: Map<String, String>,
         ): T
     }
 
@@ -216,7 +216,7 @@ internal interface ProcessorContract {
         val types: List<TypeName>,
         val isRecursive: Boolean,
         val isNullable: Boolean,
-        val doCastReturnType: Boolean = false
+        val doCastReturnType: Boolean = false,
     )
 
     interface GenericResolver {
@@ -229,7 +229,7 @@ internal interface ProcessorContract {
 
         fun resolveMockClassType(
             template: KSClassDeclaration,
-            typeParameterResolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver,
         ): TypeName
 
         fun resolveKMockFactoryType(
@@ -239,18 +239,18 @@ internal interface ProcessorContract {
 
         fun mapDeclaredGenerics(
             generics: Map<String, List<KSTypeReference>>,
-            typeParameterResolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver,
         ): List<TypeVariableName>
 
         fun remapTypes(
             templates: List<KSClassDeclaration>,
-            generics: List<Map<String, List<KSTypeReference>>?>
+            generics: List<Map<String, List<KSTypeReference>>?>,
         ): Pair<List<TypeName>, List<TypeVariableName>>
 
         fun mapProxyGenerics(
             classScope: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>,
-            typeParameterResolver: TypeParameterResolver
+            typeParameterResolver: TypeParameterResolver,
         ): Map<String, GenericDeclaration>
     }
 
@@ -262,21 +262,21 @@ internal interface ProcessorContract {
     data class ProxyInfo(
         val templateName: String,
         val proxyName: String,
-        val proxyId: String
+        val proxyId: String,
     )
 
     data class MemberArgumentTypeInfo(
         val argumentName: String,
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
-        val isVarArg: Boolean
+        val isVarArg: Boolean,
     )
 
     data class MemberReturnTypeInfo(
         val methodTypeName: TypeName,
         val proxyTypeName: TypeName,
         val generic: GenericDeclaration?,
-        val classScope: Map<String, List<TypeName>>?
+        val classScope: Map<String, List<TypeName>>?,
     )
 
     data class ProxyBundle(
@@ -292,7 +292,7 @@ internal interface ProcessorContract {
     interface ProxyNameSelector {
         fun selectPropertyName(
             qualifier: String,
-            propertyName: String
+            propertyName: String,
         ): ProxyInfo
 
         fun selectBuildInMethodName(
@@ -375,7 +375,7 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             propertyName: String,
             propertyType: MemberReturnTypeInfo,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         ): String
 
         fun buildSetterNonIntrusiveInvocation(
@@ -396,14 +396,14 @@ internal interface ProcessorContract {
             enableSpy: Boolean,
             mockName: String,
             methodName: String,
-            argument: MemberArgumentTypeInfo?
+            argument: MemberArgumentTypeInfo?,
         ): String
 
         fun buildReceiverGetterNonIntrusiveInvocation(
             enableSpy: Boolean,
             propertyName: String,
             propertyType: MemberReturnTypeInfo,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         ): String
 
         fun buildReceiverSetterNonIntrusiveInvocation(
@@ -426,18 +426,18 @@ internal interface ProcessorContract {
             inherited: Boolean,
             generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
-            methodWideResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver,
         ): Array<MemberArgumentTypeInfo>
 
         fun resolveTypeParameter(
             parameter: List<KSTypeParameter>,
-            methodWideResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver,
         ): List<TypeName>
 
         fun resolveProxyGenerics(
             classScope: Map<String, List<TypeName>>?,
             generics: Map<String, List<KSTypeReference>>?,
-            methodWideResolver: TypeParameterResolver
+            methodWideResolver: TypeParameterResolver,
         ): Map<String, GenericDeclaration>?
 
         fun buildProxy(
@@ -545,19 +545,19 @@ internal interface ProcessorContract {
         fun writePlatformMocks(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         )
 
         fun writeSharedMocks(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         )
 
         fun writeCommonMocks(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         )
     }
 
@@ -588,7 +588,7 @@ internal interface ProcessorContract {
             boundaries: List<TypeName> = emptyList(),
             generics: List<TypeVariableName> = emptyList(),
             hasDefault: Boolean,
-            modifier: KModifier?
+            modifier: KModifier?,
         ): FunSpec.Builder
 
         fun generateKspySignature(
@@ -597,11 +597,11 @@ internal interface ProcessorContract {
             boundaries: List<TypeName> = emptyList(),
             generics: List<TypeVariableName> = emptyList(),
             hasDefault: Boolean,
-            modifier: KModifier?
+            modifier: KModifier?,
         ): FunSpec.Builder
 
         fun splitInterfacesIntoRegularAndGenerics(
-            templateSources: List<TemplateSource>
+            templateSources: List<TemplateSource>,
         ): Pair<List<TemplateSource>, List<TemplateSource>>
 
         fun resolveGenerics(templateSource: TemplateSource): List<TypeVariableName>
@@ -621,33 +621,33 @@ internal interface ProcessorContract {
         fun buildSharedMockFactory(
             templateSources: List<TemplateSource>,
             templateMultiSources: List<TemplateMultiSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         ): FunSpec
     }
 
     data class FactoryBundle(
         val kmock: FunSpec,
         val kspy: FunSpec?,
-        val shared: FunSpec
+        val shared: FunSpec,
     )
 
     data class FactoryMultiBundle(
         val kmock: FunSpec?,
         val kspy: FunSpec?,
-        val shared: FunSpec?
+        val shared: FunSpec?,
     )
 
     interface MockFactoryWithGenerics {
         fun buildGenericFactories(
             templateSources: List<TemplateSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         ): List<FactoryBundle>
     }
 
     interface MockFactoryMultiInterface {
         fun buildFactories(
             templateMultiSources: List<TemplateMultiSource>,
-            relaxer: Relaxer?
+            relaxer: Relaxer?,
         ): List<FactoryMultiBundle>
     }
 
@@ -741,7 +741,7 @@ internal interface ProcessorContract {
         val UNUSED = AnnotationSpec.builder(Suppress::class).addMember(
             "%S, %S",
             "UNUSED_PARAMETER",
-            "UNUSED_EXPRESSION"
+            "UNUSED_EXPRESSION",
         ).build()
 
         val UNCHECKED = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST").build()

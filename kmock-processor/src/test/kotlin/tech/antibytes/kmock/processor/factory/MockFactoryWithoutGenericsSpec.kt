@@ -17,7 +17,7 @@ class MockFactoryWithoutGenericsSpec {
         KMockFactoryWithoutGenerics(
             true,
             true,
-            mockk()
+            mockk(),
         ) fulfils ProcessorContract.MockFactoryWithoutGenerics::class
     }
 }

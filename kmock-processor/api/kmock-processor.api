@@ -1,7 +1,12 @@
 public final class tech/antibytes/kmock/processor/KMockProcessorProvider : com/google/devtools/ksp/processing/SymbolProcessorProvider {
 	public fun <init> ()V
-	public fun <init> (Z)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)Lcom/google/devtools/ksp/processing/SymbolProcessor;
+}
+
+public final class tech/antibytes/kmock/processor/kotlinpoet/TypeParameterResolverKt {
+	public static final fun toTypeParameterResolver (Ljava/util/List;Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;Ljava/lang/String;)Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;
+	public static synthetic fun toTypeParameterResolver$default (Ljava/util/List;Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;
+	public static final fun toTypeVariableName (Lcom/google/devtools/ksp/symbol/KSTypeParameter;Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;)Lcom/squareup/kotlinpoet/TypeVariableName;
+	public static synthetic fun toTypeVariableName$default (Lcom/google/devtools/ksp/symbol/KSTypeParameter;Lcom/squareup/kotlinpoet/ksp/TypeParameterResolver;ILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeVariableName;
 }
 

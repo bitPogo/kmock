@@ -2,6 +2,7 @@ package mock.template.sync
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Enum
 import kotlin.Int
 import kotlin.Suppress
 import kotlin.Unit
@@ -27,12 +28,19 @@ internal class SharedMock(
         ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_bar", collector = collector,
             freeze = freeze)
 
+    public val _nol: KMockContract.SyncFunProxy<Any, (Enum<*>) -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.sync.SharedMock#_nol", collector = collector,
+            freeze = freeze)
+
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
 
     public override fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
 
+    public override fun nol(buzz: Enum<*>): Any = _nol.invoke(buzz)
+
     public fun _clearMock(): Unit {
         _foo.clear()
         _bar.clear()
+        _nol.clear()
     }
 }

@@ -19,7 +19,7 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @author Matthias Geisler
  */
 public class eq(
-    private val expected: Any?
+    private val expected: Any?,
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean {
         return when {

@@ -27,7 +27,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 
 internal class KMockBuildInMethodGenerator(
     private val nameSelector: ProxyNameSelector,
-    private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator
+    private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator,
 ) : BuildInMethodGenerator {
     private fun resolveArgument(methodName: String): MemberArgumentTypeInfo? {
         return if (methodName == EQUALS) {
@@ -43,7 +43,7 @@ internal class KMockBuildInMethodGenerator(
     ): PropertySpec.Builder {
         return proxySpec.initializer(
             "${PROXY_FACTORY.simpleName}.$CREATE_SYNC_PROXY(%S, $COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $IGNORE_ARGUMENT = true)",
-            proxyInfo.proxyId
+            proxyInfo.proxyId,
         )
     }
 
@@ -55,7 +55,7 @@ internal class KMockBuildInMethodGenerator(
 
         return PropertySpec.builder(
             proxyInfo.proxyName,
-            proxy.parameterizedBy(proxyReturnType, sideEffect)
+            proxy.parameterizedBy(proxyReturnType, sideEffect),
         ).let { proxySpec ->
             buildProxyInitializer(
                 proxySpec = proxySpec,
@@ -68,7 +68,7 @@ internal class KMockBuildInMethodGenerator(
         mockName: String,
         proxyInfo: ProxyInfo,
         argument: MemberArgumentTypeInfo?,
-        enableSpy: Boolean
+        enableSpy: Boolean,
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
@@ -83,7 +83,7 @@ internal class KMockBuildInMethodGenerator(
             enableSpy = enableSpy,
             mockName = mockName,
             methodName = proxyInfo.templateName,
-            argument = argument
+            argument = argument,
         )
 
         val invocationArgument = argument?.argumentName ?: ""
@@ -113,7 +113,7 @@ internal class KMockBuildInMethodGenerator(
             mockName = mockName,
             proxyInfo = proxyInfo,
             argument = argument,
-            enableSpy = enableSpy
+            enableSpy = enableSpy,
         )
 
         return Triple(proxy, method, sideEffects[proxyInfo.templateName]!!)

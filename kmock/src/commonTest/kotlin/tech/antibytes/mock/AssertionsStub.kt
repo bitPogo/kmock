@@ -38,7 +38,7 @@ internal class AssertionsStub(
     override fun hasBeenStrictlyCalledWithAtIndex(
         proxy: FunProxy<*, *>,
         callIndex: Int,
-        vararg arguments: Any?
+        vararg arguments: Any?,
     ) {
         return hasBeenStrictlyCalledWithAtIndex?.invoke(proxy, callIndex, arguments)
             ?: throw IllegalStateException("Missing SideEffect hasBeenStrictlyCalledWithAtIndex.")
@@ -47,7 +47,7 @@ internal class AssertionsStub(
     override fun hasBeenCalledWithoutAtIndex(
         proxy: FunProxy<*, *>,
         callIndex: Int,
-        vararg illegal: Any?
+        vararg illegal: Any?,
     ) {
         return hasBeenCalledWithoutAtIndex?.invoke(proxy, callIndex, illegal)
             ?: throw IllegalStateException("Missing SideEffect hasBeenCalledWithoutAtIndex.")

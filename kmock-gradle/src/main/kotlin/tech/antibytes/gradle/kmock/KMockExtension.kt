@@ -34,12 +34,12 @@ public abstract class KMockExtension(
         project,
         CacheController,
         SingleSourceSetConfigurator,
-        KmpSourceSetsConfigurator
+        KmpSourceSetsConfigurator,
     )
     private val illegalNames = setOf(
         ROOT_PACKAGE,
         KMP_FLAG,
-        KSP_DIR
+        KSP_DIR,
     )
     private val legalAliases = "^[a-zA-Z][a-zA-Z0-9]*$".toRegex()
 
@@ -71,7 +71,7 @@ public abstract class KMockExtension(
 
     private fun propagateValue(
         id: String,
-        value: String
+        value: String,
     ) = kspBridge.propagateValue(id, value)
 
     private fun guardMapping(qualifiedName: String, name: String) {
@@ -83,7 +83,7 @@ public abstract class KMockExtension(
 
     private fun propagateMapping(
         kmockKey: String,
-        mapping: Map<String, String>
+        mapping: Map<String, String>,
     ) {
         kspBridge.propagateMapping(
             kmockKey,
@@ -104,7 +104,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateMapping(
                 kmockKey = ALIASES,
-                mapping = value
+                mapping = value,
             )
             _aliasNameMapping = value
         }
@@ -126,7 +126,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateIterable(
                 prefix = USE_BUILD_IN,
-                values = value
+                values = value,
             )
 
             _useBuildInProxiesOn = value
@@ -137,7 +137,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateMapping(
                 kmockKey = TYPE_PREFIXES,
-                mapping = value
+                mapping = value,
             )
 
             _typePrefixMapping = value
@@ -149,7 +149,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateMapping(
                 kmockKey = CUSTOM_METHOD_NAME,
-                mapping = value
+                mapping = value,
             )
 
             _customMethodNames = value
@@ -174,7 +174,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateIterable(
                 prefix = SPY_ON,
-                values = value
+                values = value,
             )
 
             _spyOn = value
@@ -206,7 +206,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateMapping(
                 CUSTOM_ANNOTATION,
-                value
+                value,
             )
 
             _customSharedAnnotations = value
@@ -234,7 +234,7 @@ public abstract class KMockExtension(
         set(value) {
             propagateIterable(
                 prefix = PREVENT_ALIAS_RESOLVING,
-                values = value
+                values = value,
             )
 
             _preventResolvingOfAliases = value

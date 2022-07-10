@@ -9,7 +9,7 @@ package tech.antibytes.gradle.kmock.dependency
 object Version {
 
     val gradle = Gradle
-    const val kotlin = "1.6.21"
+    const val kotlin = "1.7.0"
 
     object Gradle {
         /**
@@ -20,19 +20,24 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "b6f4fbe"
+        const val antibytes = "2dcd1e4"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
-        const val spotless = "6.4.2"
+        const val spotless = "6.8.0"
+
+        /**
+         * [Dokka](https://github.com/Kotlin/dokka)
+         */
+        const val dokka = "1.7.0"
     }
 
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "f25b461"
-        const val kfixture = "0.2.0"
+        const val test = "5b65d35-bump-updates-SNAPSHOT"
+        const val kfixture = "0.2.0-bump-updates-SNAPSHOT"
     }
 
     val google = Google
@@ -44,7 +49,7 @@ object Version {
         /**
          * [KSP DevTools on MavenCentral](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin)
          */
-        const val ksp = "1.6.21-1.0.6"
+        const val ksp = "1.7.0-1.0.6"
     }
 
     val square = Square
@@ -53,13 +58,13 @@ object Version {
         /**
          * [Kotlin Poet](https://square.github.io/kotlinpoet/)
          */
-        const val kotlinPoet = "1.11.0"
+        const val kotlinPoet = "1.12.0"
     }
 
     /**
      * [Compiler Test](https://github.com/tschuchortdev/kotlin-compile-testing)
      */
-    const val compilerTest = "1.4.8"
+    const val compilerTest = "1.4.9"
 
     val mkdocs = MkDoccs
 

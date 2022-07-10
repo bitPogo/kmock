@@ -6,15 +6,15 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class FunProxyArgumentRetrievalSpec {
     private val fixture = kotlinFixture()
@@ -28,7 +28,7 @@ class FunProxyArgumentRetrievalSpec {
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
             0,
-            getArgumentsForCall = { throw error }
+            getArgumentsForCall = { throw error },
         )
 
         // Then
@@ -65,7 +65,7 @@ class FunProxyArgumentRetrievalSpec {
                 capturedIdx = givenIdx
 
                 arguments.toTypedArray()
-            }
+            },
         )
 
         // When
@@ -95,7 +95,7 @@ class FunProxyArgumentRetrievalSpec {
                     counter -= 1
                     arrayOf()
                 }
-            }
+            },
         )
 
         // Then
@@ -126,7 +126,7 @@ class FunProxyArgumentRetrievalSpec {
         val allArgument = mutableListOf(
             arguments,
             arguments,
-            arguments
+            arguments,
         )
 
         val proxy = SyncFunProxyStub(
@@ -134,7 +134,7 @@ class FunProxyArgumentRetrievalSpec {
             3,
             getArgumentsForCall = {
                 allArgument.removeFirst().toTypedArray()
-            }
+            },
         )
 
         // When
@@ -168,7 +168,7 @@ class FunProxyArgumentRetrievalSpec {
                     counter -= 1
                     arrayOf()
                 }
-            }
+            },
         )
 
         // Then
@@ -199,7 +199,7 @@ class FunProxyArgumentRetrievalSpec {
         val allArgument = mutableListOf(
             arguments,
             arguments,
-            arguments
+            arguments,
         )
 
         val proxy = SyncFunProxyStub(
@@ -207,7 +207,7 @@ class FunProxyArgumentRetrievalSpec {
             3,
             getArgumentsForCall = {
                 allArgument.removeFirst().toTypedArray()
-            }
+            },
         )
 
         // When

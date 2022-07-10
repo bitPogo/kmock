@@ -27,11 +27,11 @@ object KMockGradleConfiguration {
                 name = "KMock Gradle Plugin",
                 description = description,
                 year = year,
-                url = url
+                url = url,
             ),
             developers = listOf(developer),
             license = license,
-            scm = sourceControl
+            scm = sourceControl,
         )
     }
 }

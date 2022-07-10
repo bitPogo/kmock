@@ -8,6 +8,10 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kfixture.fixture
@@ -24,10 +28,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class PropertyProxySpec {
     private val fixture = kotlinFixture()
@@ -802,7 +802,7 @@ class PropertyProxySpec {
 
     private class Implementation<T>(
         var fooProp: T? = null,
-        var barProp: AtomicReference<T?> = AtomicReference(null)
+        var barProp: AtomicReference<T?> = AtomicReference(null),
     ) {
         val foo: T
             get() {

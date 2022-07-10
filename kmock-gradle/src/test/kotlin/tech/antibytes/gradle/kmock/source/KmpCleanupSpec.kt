@@ -9,6 +9,8 @@ package tech.antibytes.gradle.kmock.source
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.File
+import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.PluginContainer
@@ -22,8 +24,6 @@ import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import java.io.File
-import java.util.Locale
 
 class KmpCleanupSpec {
     private val fixture = kotlinFixture()
@@ -51,7 +51,7 @@ class KmpCleanupSpec {
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
-            project
+            project,
         )
 
         // When
@@ -88,13 +88,13 @@ class KmpCleanupSpec {
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
-            project
+            project,
         )
 
         invokeGradleAction(
             { probe -> kspTask.doLast(probe) },
             kspTask,
-            kspTask
+            kspTask,
         )
 
         interfaceFile.exists() mustBe true

@@ -6,6 +6,7 @@ import kotlin.Boolean
 import kotlin.Char
 import kotlin.CharSequence
 import kotlin.Comparable
+import kotlin.Enum
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -247,6 +248,10 @@ internal class SharedMock<K : Any, L>(
         ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_nol", collector =
         collector, freeze = freeze)
 
+    public val _zok: KMockContract.SyncFunProxy<Unit, (Enum<*>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.generic.SharedMock#_zok", collector =
+        collector, freeze = freeze)
+
     @Suppress("UNCHECKED_CAST")
     public override fun <T> foo(): T = _fooWithVoid.invoke() as T
 
@@ -456,6 +461,10 @@ internal class SharedMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
+    public override fun <X : Enum<*>> zok(arg0: X): Unit = _zok.invoke(arg0) {
+        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+    }
+
     public fun _clearMock(): Unit {
         _template.clear()
         _fooWithVoid.clear()
@@ -507,5 +516,6 @@ internal class SharedMock<K : Any, L>(
         _rol.clear()
         _lol.clear()
         _nol.clear()
+        _zok.clear()
     }
 }

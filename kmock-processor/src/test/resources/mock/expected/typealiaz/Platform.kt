@@ -104,6 +104,11 @@ internal class PlatformMock<L : Alias23>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_barWithLongTAlias99s",
             collector = collector, freeze = freeze)
 
+    public val _barWithTAlias41s:
+        KMockContract.SyncFunProxy<Unit, (Array<out Alias41<Alias23, out Alias77<Alias73<Int>>>>) -> Unit>
+        = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_barWithTAlias41s",
+        collector = collector, freeze = freeze)
+
     public val _run: KMockContract.SyncFunProxy<Alias21, (L) -> Alias21> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_run", collector =
         collector, freeze = freeze)
@@ -188,6 +193,11 @@ internal class PlatformMock<L : Alias23>(
     public override fun <T : Alias99<out Alias77<Alias73<Int>>>> bar(arg0: Long, vararg arg1: T): T =
         _barWithLongTAlias99s.invoke(arg0, arg1) as T
 
+    public override fun <T : Alias41<Alias23, out Alias77<Alias73<Int>>>> bar(vararg arg1: T): Unit =
+        _barWithTAlias41s.invoke(arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
+
     public override fun run(arg: L): Alias21 = _run.invoke(arg)
 
     public override fun <T : Alias73<K>, K> rol(arg1: T): Unit where K : CharSequence, K :
@@ -221,6 +231,7 @@ internal class PlatformMock<L : Alias23>(
         _barWithAlias99.clear()
         _barWithTAlias99s.clear()
         _barWithLongTAlias99s.clear()
+        _barWithTAlias41s.clear()
         _run.clear()
         _rol.clear()
         _lol.clear()

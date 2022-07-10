@@ -14,4 +14,6 @@ interface Shared {
     fun foo(fuzz: Int, ozz: Any): Any
 
     fun bar(buzz: Int, bozz: Any): Any = bozz
+
+    fun nol(buzz: Enum<*>): Any = buzz
 }

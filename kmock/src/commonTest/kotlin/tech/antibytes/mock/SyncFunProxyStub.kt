@@ -15,20 +15,21 @@ class SyncFunProxyStub(
     override val calls: Int,
     var getArgumentsForCall: ((Int) -> Array<out Any?>)? = null,
     override val ignorableForVerification: Boolean = false,
-    override val frozen: Boolean = true
+    override val frozen: Boolean = true,
 ) : KMockContract.SyncFunProxy<Any, () -> Any> {
     @Deprecated(
         "This property will be replaced with 0.3.0 by error.",
         replaceWith = ReplaceWith("error"),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.WARNING,
     )
     override var throws: Throwable
         get() = TODO("Not yet implemented")
         set(_) {}
+
     @Deprecated(
         "This property will be replaced with 0.3.0 by errors.",
         replaceWith = ReplaceWith("errors"),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.WARNING,
     )
     override var throwsMany: List<Throwable>
         get() = TODO("Not yet implemented")
@@ -65,7 +66,7 @@ class SyncFunProxyStub(
 
     override fun <Arg0> invoke(
         arg0: Arg0,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -73,7 +74,7 @@ class SyncFunProxyStub(
     override fun <Arg0, Arg1> invoke(
         arg0: Arg0,
         arg1: Arg1,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -82,7 +83,7 @@ class SyncFunProxyStub(
         arg0: Arg0,
         arg1: Arg1,
         arg2: Arg2,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -92,7 +93,7 @@ class SyncFunProxyStub(
         arg1: Arg1,
         arg2: Arg2,
         arg3: Arg3,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -103,7 +104,7 @@ class SyncFunProxyStub(
         arg2: Arg2,
         arg3: Arg3,
         arg4: Arg4,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -115,7 +116,7 @@ class SyncFunProxyStub(
         arg3: Arg3,
         arg4: Arg4,
         arg5: Arg5,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -128,7 +129,7 @@ class SyncFunProxyStub(
         arg4: Arg4,
         arg5: Arg5,
         arg6: Arg6,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -142,7 +143,7 @@ class SyncFunProxyStub(
         arg5: Arg5,
         arg6: Arg6,
         arg7: Arg7,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -157,7 +158,7 @@ class SyncFunProxyStub(
         arg6: Arg6,
         arg7: Arg7,
         arg8: Arg8,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -173,7 +174,7 @@ class SyncFunProxyStub(
         arg7: Arg7,
         arg8: Arg8,
         arg9: Arg9,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -190,7 +191,7 @@ class SyncFunProxyStub(
         arg8: Arg8,
         arg9: Arg9,
         arg10: Arg10,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -208,7 +209,7 @@ class SyncFunProxyStub(
         arg9: Arg9,
         arg10: Arg10,
         arg11: Arg11,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }
@@ -227,7 +228,7 @@ class SyncFunProxyStub(
         arg10: Arg10,
         arg11: Arg11,
         arg12: Arg12,
-        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit
+        nonIntrusiveHook: KMockContract.NonIntrusiveFunConfigurator<Any, () -> Any>.() -> Unit,
     ): Any {
         TODO("Not yet implemented")
     }

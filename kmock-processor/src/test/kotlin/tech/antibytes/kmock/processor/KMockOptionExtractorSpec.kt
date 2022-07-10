@@ -33,7 +33,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -55,7 +55,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -75,7 +75,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val keys: List<String> = fixture.listFixture(size = 3)
@@ -102,7 +102,7 @@ class KMockOptionExtractorSpec {
         actual.dependencies mustBe mapOf(
             keys[0] to ancestors0.toSortedSet(),
             keys[1] to ancestors1.toSortedSet(),
-            keys[2] to ancestors2.toSortedSet()
+            keys[2] to ancestors2.toSortedSet(),
         )
     }
 
@@ -116,7 +116,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -136,7 +136,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val keys: List<String> = fixture.listFixture(size = 3)
@@ -173,7 +173,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val keys: List<String> = fixture.listFixture(size = 3)
@@ -212,7 +212,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -232,7 +232,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected: Map<String, String> = fixture.mapFixture(size = 3)
@@ -258,7 +258,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
@@ -284,7 +284,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
@@ -310,7 +310,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected = fixture.listFixture<String>(size = 3).toSet()
@@ -336,7 +336,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -358,7 +358,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_freeze" to expected.toString()
+            "kmock_freeze" to expected.toString(),
         )
 
         // When
@@ -378,7 +378,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -400,7 +400,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_allowInterfaces" to expected.toString()
+            "kmock_allowInterfaces" to expected.toString(),
         )
 
         // When
@@ -420,7 +420,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -442,7 +442,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_spiesOnly" to expected.toString()
+            "kmock_spiesOnly" to expected.toString(),
         )
 
         // When
@@ -462,7 +462,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -484,7 +484,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_spyAll" to expected.toString()
+            "kmock_spyAll" to expected.toString(),
         )
 
         // When
@@ -504,7 +504,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -526,7 +526,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_disable_factories" to expected.toString()
+            "kmock_disable_factories" to expected.toString(),
         )
 
         // When
@@ -546,7 +546,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -566,7 +566,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected: Map<String, String> = fixture.mapFixture(size = 3)
@@ -592,7 +592,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -612,7 +612,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected: Map<String, String> = fixture.mapFixture(size = 3)
@@ -638,7 +638,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -658,7 +658,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val expected: Map<String, String> = fixture.mapFixture(size = 3)
@@ -684,7 +684,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -706,7 +706,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_alternativeProxyAccess" to expected.toString()
+            "kmock_alternativeProxyAccess" to expected.toString(),
         )
 
         // When
@@ -726,7 +726,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -748,7 +748,7 @@ class KMockOptionExtractorSpec {
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
             "kmock_isKmp" to isKmp.toString(),
-            "kmock_enableFineGrainedNames" to expected.toString()
+            "kmock_enableFineGrainedNames" to expected.toString(),
         )
 
         // When
@@ -768,7 +768,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         // When
@@ -788,7 +788,7 @@ class KMockOptionExtractorSpec {
         val delegateKSP = mutableMapOf(
             "kmock_kspDir" to kspDir,
             "kmock_rootPackage" to rootPackage,
-            "kmock_isKmp" to isKmp.toString()
+            "kmock_isKmp" to isKmp.toString(),
         )
 
         val aliasLocks: Set<String> = fixture.setFixture(size = 3)

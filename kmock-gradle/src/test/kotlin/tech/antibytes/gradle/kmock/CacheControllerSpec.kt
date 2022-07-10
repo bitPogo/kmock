@@ -132,7 +132,7 @@ class CacheControllerSpec {
 
         invokeGradleAction(
             { probe -> kspCollection.configureEach(probe) },
-            kspTask
+            kspTask,
         )
 
         every { kspTask.outputs } returns taskOutputs

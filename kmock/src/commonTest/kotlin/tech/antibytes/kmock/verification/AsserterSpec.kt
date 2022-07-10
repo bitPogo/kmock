@@ -6,6 +6,10 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.math.absoluteValue
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
@@ -20,10 +24,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.math.absoluteValue
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 class AsserterSpec {
     private val fixture = kotlinFixture()
@@ -130,7 +130,7 @@ class AsserterSpec {
         // Given
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
-            fixture.fixture()
+            fixture.fixture(),
         )
 
         val asserter = Asserter()
@@ -155,7 +155,7 @@ class AsserterSpec {
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
             fixture.fixture(),
-            ignorableForVerification = true
+            ignorableForVerification = true,
         )
 
         val asserter = Asserter()
@@ -180,7 +180,7 @@ class AsserterSpec {
         val proxy = SyncFunProxyStub(
             fixture.fixture(),
             fixture.fixture(),
-            ignorableForVerification = true
+            ignorableForVerification = true,
         )
 
         val asserter = Asserter(coverAllInvocations = true)

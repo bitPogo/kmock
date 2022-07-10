@@ -15,4 +15,5 @@ object GradlePlugin {
     const val runtimeConfig = "tech.antibytes.gradle-plugins:antibytes-runtime-configuration:${Version.gradle.antibytes}"
     const val spotless = "com.diffplug.spotless:spotless-plugin-gradle:${Version.gradle.spotless}"
     const val ksp = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${Version.google.ksp}"
+    const val dokka = "org.jetbrains.dokka:dokka-core:${Version.gradle.dokka}"
 }

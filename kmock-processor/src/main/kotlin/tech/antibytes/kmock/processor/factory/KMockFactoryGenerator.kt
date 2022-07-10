@@ -45,7 +45,7 @@ internal class KMockFactoryGenerator(
     ) {
         val file = FileSpec.builder(
             rootPackage,
-            FACTORY_FILE_NAME
+            FACTORY_FILE_NAME,
         )
         file.addAnnotation(UNUSED)
         file.addImport(KMOCK_CONTRACT.packageName, KMOCK_CONTRACT.simpleName)
@@ -58,26 +58,26 @@ internal class KMockFactoryGenerator(
 
         val genericFactories = genericGenerator.buildGenericFactories(
             templateSources = generics,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         file.addFunction(
             nonGenericGenerator.buildSharedMockFactory(
                 templateSources = regular,
                 templateMultiSources = templateMultiSources,
-                relaxer = relaxer
-            )
+                relaxer = relaxer,
+            ),
         )
 
         if (!spiesOnly) {
             file.addFunction(
-                nonGenericGenerator.buildKMockFactory()
+                nonGenericGenerator.buildKMockFactory(),
             )
         }
 
         if (spyContainer.hasSpies(templateMultiSources)) {
             file.addFunction(
-                nonGenericGenerator.buildSpyFactory()
+                nonGenericGenerator.buildSpyFactory(),
             )
         }
 
@@ -95,7 +95,7 @@ internal class KMockFactoryGenerator(
 
         val multiInterfaceMocks = multiInterfaceGenerator.buildFactories(
             templateMultiSources = templateMultiSources,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         multiInterfaceMocks.forEach { factories ->
@@ -115,7 +115,7 @@ internal class KMockFactoryGenerator(
         file.build().writeTo(
             codeGenerator = codeGenerator,
             aggregating = false,
-            originatingKSFiles = dependencies
+            originatingKSFiles = dependencies,
         )
     }
 

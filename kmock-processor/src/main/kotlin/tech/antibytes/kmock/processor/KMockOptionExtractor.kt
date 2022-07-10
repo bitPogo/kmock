@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.processor
 
+import java.util.SortedSet
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALIASES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ALTERNATIVE_PROXY_ACCESS
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.CUSTOM_ANNOTATION
@@ -26,13 +27,12 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PREFIXES
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.USE_BUILD_IN
 import tech.antibytes.kmock.processor.ProcessorContract.OptionExtractor
 import tech.antibytes.kmock.processor.ProcessorContract.Options
-import java.util.SortedSet
 
 internal object KMockOptionExtractor : OptionExtractor {
     private fun extractDependencies(
         key: String,
         value: String,
-        dependencies: MutableMap<String, MutableSet<String>>
+        dependencies: MutableMap<String, MutableSet<String>>,
     ) {
         val mappedKey = key.substringAfter(DEPENDENCIES).substringBeforeLast('#')
         val ancestors = dependencies.getOrElse(mappedKey) { mutableSetOf() }
@@ -46,14 +46,14 @@ internal object KMockOptionExtractor : OptionExtractor {
         prefix: String,
         key: String,
         value: String,
-        action: (String, String) -> Unit
+        action: (String, String) -> Unit,
     ) {
         val mappedKey = key.substringAfter(prefix)
         action(mappedKey, value)
     }
 
     private fun extractSourceSets(
-        dependencies: MutableMap<String, MutableSet<String>>
+        dependencies: MutableMap<String, MutableSet<String>>,
     ): Set<String> = dependencies.keys.filterNot { sourceSet -> sourceSet == "commonTest" }.toSet()
 
     private fun MutableMap<String, MutableSet<String>>.sealDependencies(): Map<String, SortedSet<String>> {
@@ -63,7 +63,7 @@ internal object KMockOptionExtractor : OptionExtractor {
     }
 
     override fun convertOptions(
-        kspRawOptions: Map<String, String>
+        kspRawOptions: Map<String, String>,
     ): Options {
         var kspDir: String? = null
         var rootPackage: String? = null
@@ -103,21 +103,21 @@ internal object KMockOptionExtractor : OptionExtractor {
                 key.startsWith(TYPE_PREFIXES) -> extractMappedValue(
                     TYPE_PREFIXES,
                     key,
-                    value
+                    value,
                 ) { qualifiedName, prefix ->
                     useTypePrefixFor[qualifiedName] = prefix
                 }
                 key.startsWith(CUSTOM_METHOD_NAME) -> extractMappedValue(
                     CUSTOM_METHOD_NAME,
                     key,
-                    value
+                    value,
                 ) { proxyId, replacement ->
                     customMethodNames[proxyId] = replacement
                 }
                 key.startsWith(CUSTOM_ANNOTATION) -> extractMappedValue(
                     CUSTOM_ANNOTATION,
                     key,
-                    value
+                    value,
                 ) { annotation, sourceSet ->
                     customAnnotations[annotation] = sourceSet
                 }

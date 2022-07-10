@@ -17,7 +17,7 @@ internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
     onAdd: Function0<Unit>,
 ) : KMockContract.SideEffectChain<ReturnValue, SideEffect> {
     private class FreezingSideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>>(
-        onAdd: Function0<Unit>
+        onAdd: Function0<Unit>,
     ) : SideEffectChainState<ReturnValue, SideEffect> {
         private val _onAdd: AtomicRef<Function0<Unit>> = atomic(onAdd)
 
@@ -26,7 +26,7 @@ internal class SideEffectChain<ReturnValue, SideEffect : Function<ReturnValue>>(
     }
 
     private class NonFreezingSideEffectChainState<ReturnValue, SideEffect : Function<ReturnValue>>(
-        override val onAdd: Function0<Unit>
+        override val onAdd: Function0<Unit>,
     ) : SideEffectChainState<ReturnValue, SideEffect> {
         override val sideEffects: MutableList<SideEffect> = mutableListOf()
     }

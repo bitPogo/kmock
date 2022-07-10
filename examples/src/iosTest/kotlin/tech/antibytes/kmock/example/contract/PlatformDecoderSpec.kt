@@ -6,8 +6,8 @@
 
 package tech.antibytes.kmock.example.contract
 
-import tech.antibytes.kmock.Mock
 import kotlin.test.Test
+import tech.antibytes.kmock.Mock
 
 @Mock(PlatformThingContract::class)
 class PlatformDecoderSpec {

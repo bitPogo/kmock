@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.math.abs
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockContract.Asserter
 import tech.antibytes.kmock.KMockContract.AssertionContext
@@ -17,7 +18,6 @@ import tech.antibytes.kmock.KMockContract.TOO_LESS_CALLS
 import tech.antibytes.kmock.KMockContract.TOO_MANY_CALLS
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.util.format
-import kotlin.math.abs
 
 private fun determineAtLeastMessage(actual: Int, expected: Int): String {
     return if (actual == 0) {
@@ -33,7 +33,7 @@ private infix fun Expectation.mustBeAtLeast(value: Int) {
     if (this.callIndices.size < boundary) {
         val message = determineAtLeastMessage(
             expected = boundary,
-            actual = this.callIndices.size
+            actual = this.callIndices.size,
         )
 
         throw AssertionError(message)
@@ -65,7 +65,7 @@ public fun verify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
-    action: KMockContract.VerificationContext.() -> Expectation
+    action: KMockContract.VerificationContext.() -> Expectation,
 ) {
     val handle = action(VerificationContext)
     val minimum = exactly ?: atLeast
@@ -95,7 +95,7 @@ public suspend fun asyncVerify(
     exactly: Int? = null,
     atLeast: Int = 1,
     atMost: Int? = null,
-    action: suspend KMockContract.VerificationContext.() -> Expectation
+    action: suspend KMockContract.VerificationContext.() -> Expectation,
 ) {
     val handle = action(VerificationContext)
     val minimum = exactly ?: atLeast
@@ -129,12 +129,12 @@ public fun assertProxy(action: CloseableAssertionContext.() -> Unit): Unit = act
  */
 @KMockExperimental
 public suspend fun asyncAssertProxy(
-    action: suspend CloseableAssertionContext.() -> Unit
+    action: suspend CloseableAssertionContext.() -> Unit,
 ): Unit = action(UnchainedAssertion())
 
 private fun <T> runChainedAssertion(
     chain: T,
-    action: ChainedAssertion.() -> Any
+    action: ChainedAssertion.() -> Any,
 ) where T : ChainedAssertion, T : KMockContract.AssertionChain {
     action(chain)
 
@@ -143,7 +143,7 @@ private fun <T> runChainedAssertion(
 
 private suspend fun <T> runAsyncChainedAssertion(
     chain: T,
-    action: suspend ChainedAssertion.() -> Any
+    action: suspend ChainedAssertion.() -> Any,
 ) where T : ChainedAssertion, T : KMockContract.AssertionChain {
     action(chain)
 

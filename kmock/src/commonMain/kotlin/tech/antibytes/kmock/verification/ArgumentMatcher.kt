@@ -17,7 +17,7 @@ internal fun Array<out Any?>.hasBeenCalledWithVoid(): Boolean = this.isEmpty()
 
 internal fun Array<out Any?>.hasBeenCalledWith(
     vararg constraints: Any?,
-    onFail: (Any?, Int) -> Unit = ::noopClosure
+    onFail: (Any?, Int) -> Unit = ::noopClosure,
 ): Boolean {
     return when {
         this.isEmpty() -> constraints.isEmpty()
@@ -52,7 +52,7 @@ internal fun Array<out Any?>.hasBeenCalledWith(
 
 internal fun Array<out Any?>.hasBeenStrictlyCalledWith(
     vararg constraints: Any?,
-    onFail: (Any?, Int) -> Unit = ::noopClosure
+    onFail: (Any?, Int) -> Unit = ::noopClosure,
 ): Boolean {
     return when {
         this.isEmpty() && constraints.isEmpty() -> true
@@ -74,7 +74,7 @@ internal fun Array<out Any?>.hasBeenStrictlyCalledWith(
 
 internal fun Array<out Any?>.hasBeenCalledWithout(
     vararg constraints: Any?,
-    onFail: (Any?, Int) -> Unit = ::noopClosure
+    onFail: (Any?, Int) -> Unit = ::noopClosure,
 ): Boolean {
     return if (this.isEmpty()) {
         constraints.isNotEmpty()

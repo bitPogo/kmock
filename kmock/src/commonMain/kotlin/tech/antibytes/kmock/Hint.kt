@@ -49,7 +49,7 @@ public data class Hint2<Type0 : Any, Type1 : Any>(
  */
 public inline fun <reified Type0 : Any, reified Type1 : Any> hint(
     type0: KClass<Type0> = Type0::class,
-    type1: KClass<Type1> = Type1::class
+    type1: KClass<Type1> = Type1::class,
 ): Hint2<Type0, Type1> = Hint2(type0, type1)
 
 /**

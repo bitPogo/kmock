@@ -20,7 +20,7 @@ import tech.antibytes.kmock.util.format
 
 internal class AssertionChain(
     private val references: List<Reference>,
-    assertions: Assertions = Assertions
+    assertions: Assertions = Assertions,
 ) : AssertionChain, ChainedAssertion, BaseAssertionContext(assertions) {
     private val invocation = atomic(0)
 
@@ -43,21 +43,21 @@ internal class AssertionChain(
     }
 
     private fun guardProxy(
-        expected: Proxy<*, *>
+        expected: Proxy<*, *>,
     ) {
         val actual = references.getOrNull(invocation.value)
             ?: throw AssertionError(CALL_NOT_FOUND.format(expected.id))
 
         if (actual.proxy !== expected) {
             throw AssertionError(
-                STRICT_CALL_NOT_MATCH.format(expected.id, actual.proxy.id)
+                STRICT_CALL_NOT_MATCH.format(expected.id, actual.proxy.id),
             )
         }
     }
 
     override fun runAssertion(
         proxy: Proxy<*, *>,
-        action: (callIndex: Int) -> Unit
+        action: (callIndex: Int) -> Unit,
     ) {
         guardProxy(proxy)
 
@@ -75,8 +75,8 @@ internal class AssertionChain(
                 STRICT_MISSING_EXPECTATION.format(
                     references.size,
                     invocation.value,
-                    references.joinToString(", ") { reference -> reference.proxy.id }
-                )
+                    references.joinToString(", ") { reference -> reference.proxy.id },
+                ),
             )
         }
     }

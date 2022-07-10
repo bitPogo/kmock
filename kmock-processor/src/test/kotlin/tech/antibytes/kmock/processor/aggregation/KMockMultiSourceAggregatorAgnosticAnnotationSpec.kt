@@ -34,7 +34,7 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 

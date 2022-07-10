@@ -50,7 +50,7 @@ class KMockMultiSourceAggregatorFactorySpec {
             annotationFilter = annotationFilter,
             generics = generics,
             customAnnotations = customAnnotations,
-            aliases = aliases
+            aliases = aliases,
         )
 
         // Then

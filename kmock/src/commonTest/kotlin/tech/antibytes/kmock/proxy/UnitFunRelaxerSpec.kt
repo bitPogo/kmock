@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock.proxy
 
-import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.Test
+import tech.antibytes.util.test.mustBe
 
 class UnitFunRelaxerSpec {
     @Test

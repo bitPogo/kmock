@@ -14,6 +14,7 @@ import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import kotlin.test.assertFailsWith
 import org.gradle.api.Project
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -29,7 +30,6 @@ import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.kfixture.setFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.test.assertFailsWith
 
 @OptIn(KMockGradleExperimental::class)
 class ExtensionSpec {
@@ -37,7 +37,7 @@ class ExtensionSpec {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifier = qualifiedBy("stringAlpha")
+            qualifier = qualifiedBy("stringAlpha"),
         )
     }
 
@@ -128,7 +128,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             valueQualifier = qualifiedBy("stringAlpha"),
-            size = 3
+            size = 3,
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -155,7 +155,7 @@ class ExtensionSpec {
         val internalNames = listOf(
             "kmock_rootPackage",
             "kmock_isKmp",
-            "kmock_kspDir"
+            "kmock_kspDir",
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -165,7 +165,7 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.aliasNameMapping = mapOf(
-                name to fixture.fixture(qualifiedBy("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha")),
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
@@ -190,7 +190,7 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.aliasNameMapping = mapOf(
-            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal,
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
@@ -254,7 +254,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = qualifiedBy("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha"),
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -280,7 +280,7 @@ class ExtensionSpec {
         val internalNames = listOf(
             "kmock_rootPackage",
             "kmock_isKmp",
-            "kmock_kspDir"
+            "kmock_kspDir",
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -290,7 +290,7 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.useTypePrefixFor = mapOf(
-                name to fixture.fixture(qualifiedBy("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha")),
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
@@ -315,7 +315,7 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.useTypePrefixFor = mapOf(
-            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal,
         )
 
         // Then
@@ -344,7 +344,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = qualifiedBy("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha"),
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -370,7 +370,7 @@ class ExtensionSpec {
         val internalNames = listOf(
             "kmock_rootPackage",
             "kmock_isKmp",
-            "kmock_kspDir"
+            "kmock_kspDir",
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -380,7 +380,7 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.customMethodNames = mapOf(
-                name to fixture.fixture(qualifiedBy("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha")),
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
@@ -405,7 +405,7 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.customMethodNames = mapOf(
-            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal,
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {
@@ -607,7 +607,7 @@ class ExtensionSpec {
         val kspBridge: KMockPluginContract.KSPBridge = mockk(relaxed = true)
         val expected: Map<String, String> = fixture.mapFixture(
             size = 3,
-            valueQualifier = qualifiedBy("stringAlpha")
+            valueQualifier = qualifiedBy("stringAlpha"),
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -632,7 +632,7 @@ class ExtensionSpec {
         val internalNames = listOf(
             "kmock_rootPackage",
             "kmock_isKmp",
-            "kmock_kspDir"
+            "kmock_kspDir",
         )
 
         every { KSPBridge.getInstance(any(), any(), any(), any()) } returns kspBridge
@@ -642,7 +642,7 @@ class ExtensionSpec {
             val extension = createExtension<KMockExtension>(project)
             // When
             extension.customAnnotationsForMeta = mapOf(
-                name to fixture.fixture(qualifiedBy("stringAlpha"))
+                name to fixture.fixture(qualifiedBy("stringAlpha")),
             )
             // Then
             val error = assertFailsWith<IllegalArgumentException> {
@@ -667,7 +667,7 @@ class ExtensionSpec {
         val extension = createExtension<KMockExtension>(project)
         // When
         extension.customAnnotationsForMeta = mapOf(
-            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal
+            fixture.fixture<String>(qualifiedBy("stringAlpha")) to illegal,
         )
         // Then
         val error = assertFailsWith<IllegalArgumentException> {

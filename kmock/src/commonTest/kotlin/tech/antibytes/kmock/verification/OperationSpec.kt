@@ -6,15 +6,15 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockExperimental
 import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class OperationSpec {
     private val fixture = kotlinFixture()

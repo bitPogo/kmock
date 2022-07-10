@@ -41,7 +41,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         method: suspend () -> ReturnValue,
         chainFunction: suspend () -> ReturnValue,
         nonIntrusiveFunConfiguration: KMockContract.NonIntrusiveFunTarget<ReturnValue, suspend () -> ReturnValue>,
-        vararg arguments: Any?
+        vararg arguments: Any?,
     ): ReturnValue {
         onEvent(arguments)
 
@@ -75,7 +75,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
         return execute(
             method = invocation,
             chainFunction = chainInvocation,
-            nonIntrusiveFunConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook)
+            nonIntrusiveFunConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook),
         )
     }
 
@@ -98,7 +98,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             method = invocation,
             chainFunction = chainInvocation,
             nonIntrusiveFunConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook),
-            arg0
+            arg0,
         )
     }
 
@@ -123,7 +123,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             chainFunction = chainInvocation,
             nonIntrusiveFunConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook),
             arg0,
-            arg1
+            arg1,
         )
     }
 
@@ -150,7 +150,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             nonIntrusiveFunConfiguration = configureNonIntrusiveBehaviour(nonIntrusiveHook),
             arg0,
             arg1,
-            arg2
+            arg2,
         )
     }
 
@@ -179,7 +179,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg0,
             arg1,
             arg2,
-            arg3
+            arg3,
         )
     }
 
@@ -210,7 +210,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg1,
             arg2,
             arg3,
-            arg4
+            arg4,
         )
     }
 
@@ -243,7 +243,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg2,
             arg3,
             arg4,
-            arg5
+            arg5,
         )
     }
 
@@ -278,7 +278,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg3,
             arg4,
             arg5,
-            arg6
+            arg6,
         )
     }
 
@@ -315,7 +315,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg4,
             arg5,
             arg6,
-            arg7
+            arg7,
         )
     }
 
@@ -354,7 +354,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg5,
             arg6,
             arg7,
-            arg8
+            arg8,
         )
     }
 
@@ -395,7 +395,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg6,
             arg7,
             arg8,
-            arg9
+            arg9,
         )
     }
 
@@ -438,7 +438,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg7,
             arg8,
             arg9,
-            arg10
+            arg10,
         )
     }
 
@@ -483,7 +483,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg8,
             arg9,
             arg10,
-            arg11
+            arg11,
         )
     }
 
@@ -530,7 +530,7 @@ internal class AsyncFunProxy<ReturnValue, SideEffect : Function<ReturnValue>>(
             arg9,
             arg10,
             arg11,
-            arg12
+            arg12,
         )
     }
 }

@@ -7,6 +7,9 @@
 package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import tech.antibytes.kfixture.fixture
@@ -14,9 +17,6 @@ import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 class AsyncFunProxyUnfrozenInvocationsSpec {
     private val fixture = kotlinFixture()
@@ -72,7 +72,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         val implementation = Implementation<Any>()
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -95,7 +95,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -127,7 +127,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val expected: Any = fixture.fixture()
@@ -163,7 +163,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         val actualArgument0 = AtomicReference<String?>(null)
@@ -195,7 +195,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -232,7 +232,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -274,7 +274,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         val actualArgument0 = AtomicReference<String?>(null)
@@ -311,7 +311,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -354,7 +354,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -407,7 +407,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -443,7 +443,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -490,7 +490,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -545,7 +545,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         val actualArgument0 = AtomicReference<String?>(null)
@@ -588,7 +588,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -640,7 +640,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -708,7 +708,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         implementation.fun5 = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4 ->
@@ -749,7 +749,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -807,7 +807,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -883,7 +883,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -930,7 +930,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -992,7 +992,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1074,7 +1074,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -1123,7 +1123,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1167,7 +1167,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument4,
             argument5,
             argument6,
-            argument7
+            argument7,
         )
 
         // Then
@@ -1199,7 +1199,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1243,7 +1243,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument4,
             argument5,
             argument6,
-            argument7
+            argument7,
         )
 
         // Then
@@ -1297,7 +1297,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -1322,7 +1322,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument4,
             argument5,
             argument6,
-            argument7
+            argument7,
         ) {
             useSpyIf(implementation) {
                 implementation.fun8(
@@ -1333,7 +1333,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
                     argument4,
                     argument5,
                     argument6,
-                    argument7
+                    argument7,
                 )
             }
         }
@@ -1367,7 +1367,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1415,7 +1415,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument5,
             argument6,
             argument7,
-            argument8
+            argument8,
         )
 
         // Then
@@ -1449,7 +1449,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1497,7 +1497,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument5,
             argument6,
             argument7,
-            argument8
+            argument8,
         )
 
         // Then
@@ -1555,7 +1555,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -1631,7 +1631,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1684,7 +1684,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument6,
             argument7,
             argument8,
-            argument9
+            argument9,
         )
 
         // Then
@@ -1720,7 +1720,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1773,7 +1773,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument6,
             argument7,
             argument8,
-            argument9
+            argument9,
         )
 
         // Then
@@ -1835,7 +1835,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -1916,7 +1916,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -1972,7 +1972,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument7,
             argument8,
             argument9,
-            argument10
+            argument10,
         )
 
         // Then
@@ -2010,7 +2010,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2066,7 +2066,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument7,
             argument8,
             argument9,
-            argument10
+            argument10,
         )
 
         // Then
@@ -2132,7 +2132,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -2218,7 +2218,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2278,7 +2278,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument8,
             argument9,
             argument10,
-            argument11
+            argument11,
         )
 
         // Then
@@ -2318,7 +2318,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2378,7 +2378,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument8,
             argument9,
             argument10,
-            argument11
+            argument11,
         )
 
         // Then
@@ -2448,7 +2448,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -2482,7 +2482,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument8,
             argument9,
             argument10,
-            argument11
+            argument11,
         ) {
             useSpyIf(implementation) {
                 implementation.fun12(
@@ -2497,7 +2497,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
                     argument8,
                     argument9,
                     argument10,
-                    argument11
+                    argument11,
                 )
             }
         }
@@ -2539,7 +2539,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2604,7 +2604,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument9,
             argument10,
             argument11,
-            argument12
+            argument12,
         )
 
         // Then
@@ -2646,7 +2646,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
         // Given
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val argument0: String = fixture.fixture()
         val argument1: Int = fixture.fixture()
@@ -2711,7 +2711,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument9,
             argument10,
             argument11,
-            argument12
+            argument12,
         )
 
         // Then
@@ -2785,7 +2785,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         val proxy = AsyncFunProxy<Any, suspend (String, Int, String, Int, String, Int, String, Int, String, Int, String, Int, String) -> Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -2821,7 +2821,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             argument9,
             argument10,
             argument11,
-            argument12
+            argument12,
         ) {
             useSpyIf(implementation) {
                 implementation.fun13(
@@ -2837,7 +2837,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
                     argument9,
                     argument10,
                     argument11,
-                    argument12
+                    argument12,
                 )
             }
         }
@@ -2894,30 +2894,43 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
 
         @JsName("fun0a")
         var fun0 by _fun0
+
         @JsName("fun1a")
         var fun1 by _fun1
+
         @JsName("fun2a")
         var fun2 by _fun2
+
         @JsName("fun3a")
         var fun3 by _fun3
+
         @JsName("fun4a")
         var fun4 by _fun4
+
         @JsName("fun5a")
         var fun5 by _fun5
+
         @JsName("fun6a")
         var fun6 by _fun6
+
         @JsName("fun7a")
         var fun7 by _fun7
+
         @JsName("fun8a")
         var fun8 by _fun8
+
         @JsName("fun9a")
         var fun9 by _fun9
+
         @JsName("fun10a")
         var fun10 by _fun10
+
         @JsName("fun11a")
         var fun11 by _fun11
+
         @JsName("fun12a")
         var fun12 by _fun12
+
         @JsName("fun13a")
         var fun13 by _fun13
 
@@ -2962,7 +2975,7 @@ class AsyncFunProxyUnfrozenInvocationsSpec {
             arg4: Any?,
             arg5: Any?,
             arg6: Any?,
-            arg7: Any?
+            arg7: Any?,
         ): T {
             return _fun8.value?.invoke(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
                 ?: throw RuntimeException("Missing sideeffect fun8")

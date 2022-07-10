@@ -35,7 +35,7 @@ public annotation class Mock(vararg val interfaces: KClass<*>)
  */
 public annotation class MultiMock(
     val name: String,
-    vararg val interfaces: KClass<*>
+    vararg val interfaces: KClass<*>,
 )
 
 @Retention(AnnotationRetention.SOURCE)
@@ -65,7 +65,7 @@ public annotation class MockCommon(vararg val interfaces: KClass<*>)
  */
 public annotation class MultiMockCommon(
     val name: String,
-    vararg val interfaces: KClass<*>
+    vararg val interfaces: KClass<*>,
 )
 
 @Retention(AnnotationRetention.SOURCE)
@@ -100,7 +100,7 @@ public annotation class MockShared(val sourceSetName: String, vararg val interfa
 public annotation class MultiMockShared(
     val sourceSetName: String,
     val name: String,
-    vararg val interfaces: KClass<*>
+    vararg val interfaces: KClass<*>,
 )
 
 @Retention(AnnotationRetention.SOURCE)
@@ -115,7 +115,7 @@ public annotation class MultiMockShared(
  */
 @KMockExperimental
 public annotation class KMock(
-    vararg val interfaces: KClass<*>
+    vararg val interfaces: KClass<*>,
 )
 
 @Repeatable
@@ -134,7 +134,7 @@ public annotation class KMock(
 @KMockExperimental
 public annotation class KMockMulti(
     val name: String,
-    vararg val interfaces: KClass<*>
+    vararg val interfaces: KClass<*>,
 )
 
 @Retention(AnnotationRetention.SOURCE)
@@ -163,7 +163,7 @@ public annotation class Relaxer
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
-    message = "This API is experimental. It may be removed or changed in future releases."
+    message = "This API is experimental. It may be removed or changed in future releases.",
 )
 @Target(
     AnnotationTarget.CLASS,
@@ -171,7 +171,7 @@ public annotation class Relaxer
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
     AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR
+    AnnotationTarget.CONSTRUCTOR,
 )
 public annotation class KMockExperimental
 
@@ -181,7 +181,7 @@ public annotation class KMockExperimental
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
     AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR
+    AnnotationTarget.CONSTRUCTOR,
 )
 /**
  * Marks a thing which is intended only for internal usage.

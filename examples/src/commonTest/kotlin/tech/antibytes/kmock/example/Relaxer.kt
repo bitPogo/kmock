@@ -6,12 +6,12 @@
 
 package tech.antibytes.kmock.example
 
+import kotlin.native.concurrent.ThreadLocal
+import kotlin.reflect.KClass
 import tech.antibytes.kfixture.PublicApi
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.Relaxer
-import kotlin.native.concurrent.ThreadLocal
-import kotlin.reflect.KClass
 
 @ThreadLocal
 object Fixture {

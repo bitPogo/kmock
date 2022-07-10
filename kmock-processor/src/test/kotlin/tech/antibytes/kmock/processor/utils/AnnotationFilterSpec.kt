@@ -36,7 +36,7 @@ class AnnotationFilterSpec {
     fun `It fulfils AnnotationFilter`() {
         AnnotationFilter(
             mockk(),
-            fixture.listFixture<String>().toSet()
+            fixture.listFixture<String>().toSet(),
         ) fulfils ProcessorContract.AnnotationFilter::class
     }
 
@@ -48,7 +48,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             mockk(),
-            fixture.listFixture<String>().toSet()
+            fixture.listFixture<String>().toSet(),
         ).filterAnnotation(annotations)
 
         // Then
@@ -64,7 +64,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            fixture.listFixture<String>().toSet()
+            fixture.listFixture<String>().toSet(),
         ).filterAnnotation(annotations)
 
         // Then
@@ -99,7 +99,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).filterAnnotation(annotations)
 
         // Then
@@ -128,7 +128,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).filterAnnotation(annotations)
 
         // Then
@@ -147,7 +147,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.map { value -> "${value}Test" }.toSet()
+            annotations.values.map { value -> "${value}Test" }.toSet(),
         ).filterAnnotation(annotations)
 
         // Then
@@ -172,7 +172,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -194,7 +194,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -221,7 +221,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -248,7 +248,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -275,7 +275,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -302,7 +302,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableSingleSourceAnnotation(annotation)
 
         // Then
@@ -324,7 +324,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -346,7 +346,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -373,7 +373,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -405,7 +405,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -437,7 +437,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -469,7 +469,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then
@@ -501,7 +501,7 @@ class AnnotationFilterSpec {
         // When
         val actual = AnnotationFilter(
             logger,
-            annotations.values.toSet()
+            annotations.values.toSet(),
         ).isApplicableMultiSourceAnnotation(annotation)
 
         // Then

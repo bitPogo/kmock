@@ -15,7 +15,7 @@ import tech.antibytes.kmock.KMockContract.Proxy
 internal object VerificationContext : KMockContract.VerificationContext {
     private fun <T> traverseMock(
         proxy: Proxy<*, T>,
-        action: T.() -> Boolean
+        action: T.() -> Boolean,
     ): Expectation {
         val callIndices = mutableListOf<Int>()
 
@@ -33,15 +33,15 @@ internal object VerificationContext : KMockContract.VerificationContext {
     override fun FunProxy<*, *>.hasBeenCalledWithVoid(): Expectation = traverseMock(this) { hasBeenCalledWithVoid() }
 
     override fun FunProxy<*, *>.hasBeenCalledWith(
-        vararg arguments: Any?
+        vararg arguments: Any?,
     ): Expectation = traverseMock(this) { hasBeenCalledWith(*arguments) }
 
     override fun FunProxy<*, *>.hasBeenStrictlyCalledWith(
-        vararg arguments: Any?
+        vararg arguments: Any?,
     ): Expectation = traverseMock(this) { hasBeenStrictlyCalledWith(*arguments) }
 
     override fun FunProxy<*, *>.hasBeenCalledWithout(
-        vararg illegal: Any?
+        vararg illegal: Any?,
     ): Expectation = traverseMock(this) { hasBeenCalledWithout(*illegal) }
 
     override fun PropertyProxy<*>.wasGotten(): Expectation = traverseMock(this) { wasGotten() }
@@ -49,6 +49,6 @@ internal object VerificationContext : KMockContract.VerificationContext {
     override fun PropertyProxy<*>.wasSet(): Expectation = traverseMock(this) { wasSet() }
 
     override fun PropertyProxy<*>.wasSetTo(
-        value: Any?
+        value: Any?,
     ): Expectation = traverseMock(this) { wasSetTo(value) }
 }
