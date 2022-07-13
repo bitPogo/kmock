@@ -2,6 +2,7 @@ package mock.template.`property`
 
 import kotlin.Any
 import kotlin.Boolean
+import kotlin.Enum
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -42,9 +43,17 @@ internal class PlatformMock(
         ProxyFactory.createPropertyProxy("mock.template.property.PlatformMock#_buzz", collector =
         collector, freeze = freeze)
 
+    public override val boo: Enum<*>
+        get() = _boo.executeOnGet()
+
+    public val _boo: KMockContract.PropertyProxy<Enum<*>> =
+        ProxyFactory.createPropertyProxy("mock.template.property.PlatformMock#_boo", collector =
+        collector, freeze = freeze)
+
     public fun _clearMock(): Unit {
         _foo.clear()
         _bar.clear()
         _buzz.clear()
+        _boo.clear()
     }
 }

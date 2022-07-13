@@ -173,7 +173,7 @@ private fun KSType.toProxyPairTypeName(
 
     val (methodType, proxyType) = when (val declaration = this.declaration) {
         is KSClassDeclaration -> {
-            val (methodArguments, proxyArguments) = arguments.toProxyPairTypeName(
+            val (methodArguments, proxyArguments) = typeArguments.toProxyPairTypeName(
                 inheritedVarargArg = false,
                 generics = generics,
                 typeParameterResolver = typeParameterResolver,
@@ -201,7 +201,7 @@ private fun KSType.toProxyPairTypeName(
         }
         is KSTypeAlias -> {
             val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
-                arguments = arguments,
+                arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
 

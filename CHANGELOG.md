@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+* Aliases as type arguments are not correctly resolved, if the Aliases have type arguments on their own
+
 ### Security
 
 ### Bumped

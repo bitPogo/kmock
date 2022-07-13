@@ -102,7 +102,7 @@ internal fun KSType.mapArgumentType(
         }
         is KSClassDeclaration -> {
             declaration.toClassName().withTypeArguments(
-                arguments.mapArgumentType(
+                typeArguments.mapArgumentType(
                     typeParameterResolver = typeParameterResolver,
                     mapping = mapping,
                 )
@@ -110,7 +110,7 @@ internal fun KSType.mapArgumentType(
         }
         is KSTypeAlias -> {
             val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
-                arguments = arguments,
+                arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
 

@@ -8,14 +8,15 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.Mock
 
-interface Generic<T>
+interface GenericAliasPlatform<Z>
 
 typealias Alias21 = (Any) -> Unit
 typealias Alias23 = (Any) -> Any
-typealias Alias77<T> = Generic<T>
-typealias Alias73<T> = Map<String, T>
-typealias Alias55<T> = Alias73<T>
-typealias Alias99<T> = Alias55<T>
+typealias Alias77<Q> = GenericAliasPlatform<Q>
+typealias Alias73<Q> = Map<String, Q>
+typealias Alias73a = Map<String, Int>
+typealias Alias55<Q> = Alias73<Q>
+typealias Alias99<Q> = Alias55<Q>
 
 @Mock(Platform::class)
 interface Platform<L : Alias23> {
@@ -25,6 +26,10 @@ interface Platform<L : Alias23> {
         arg0: Alias77<Any>,
         arg1: Alias23,
         arg2: Alias21
+    ): Any
+
+    fun doMore(
+        arg0: List<Alias73a>,
     ): Any
 
     fun doAnythingElse(
@@ -48,6 +53,7 @@ interface Platform<L : Alias23> {
     fun foo(arg0: Char, vararg arg1: Alias73<IntArray>)
     fun foo(arg0: Int, vararg arg1: Alias73<out String>)
     fun <T : Alias73<out Alias77<Alias73<Int>>>> foo(arg0: Long, vararg arg1: T)
+    fun <T : List<Alias73a>> foo(arg0: T): Any
 
     fun bar(arg1: Alias99<String>)
     fun <T : Alias99<String>> bar(vararg arg1: T)

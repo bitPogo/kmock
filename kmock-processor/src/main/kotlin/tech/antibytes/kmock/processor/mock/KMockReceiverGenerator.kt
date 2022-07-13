@@ -223,7 +223,7 @@ internal class KMockReceiverGenerator(
             proxyGenericTypes = proxyGenerics,
         )
 
-        val propertyType = ksProperty.type.resolve().toTypeName(receiverTypeResolver)
+        val propertyType = ksProperty.type.toTypeName(receiverTypeResolver)
 
         val isMutable = ksProperty.isMutable
 
