@@ -12,6 +12,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
+import kotlin.collections.List
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -40,6 +41,10 @@ internal class PlatformMock<L : Alias23>(
         Alias21,
     ) -> Any> = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doSomething",
         collector = collector, freeze = freeze)
+
+    public val _doMore: KMockContract.SyncFunProxy<Any, (List<Alias73a>) -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doMore", collector =
+        collector, freeze = freeze)
 
     public val _doAnythingElseWithAlias21Alias23: KMockContract.SyncFunProxy<Unit, (Alias21,
         Alias23) -> Unit> =
@@ -89,6 +94,10 @@ internal class PlatformMock<L : Alias23>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_fooWithLongTAlias73s",
             collector = collector, freeze = freeze)
 
+    public val _fooWithTList: KMockContract.SyncFunProxy<Any, (List<Alias73a>) -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_fooWithTList",
+            collector = collector, freeze = freeze)
+
     public val _barWithAlias99: KMockContract.SyncFunProxy<Unit, (Alias99<String>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_barWithAlias99",
             collector = collector, freeze = freeze)
@@ -125,6 +134,8 @@ internal class PlatformMock<L : Alias23>(
         arg1: Alias23,
         arg2: Alias21,
     ): Any = _doSomething.invoke(arg0, arg1, arg2)
+
+    public override fun doMore(arg0: List<Alias73a>): Any = _doMore.invoke(arg0)
 
     public override fun doAnythingElse(arg1: Alias21, arg2: Alias23): Unit =
         _doAnythingElseWithAlias21Alias23.invoke(arg1, arg2) {
@@ -175,6 +186,8 @@ internal class PlatformMock<L : Alias23>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
+    public override fun <T : List<Alias73a>> foo(arg0: T): Any = _fooWithTList.invoke(arg0)
+
     public override fun bar(arg1: Alias99<String>): Unit = _barWithAlias99.invoke(arg1) {
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
@@ -208,6 +221,7 @@ internal class PlatformMock<L : Alias23>(
     public fun _clearMock(): Unit {
         _prop.clear()
         _doSomething.clear()
+        _doMore.clear()
         _doAnythingElseWithAlias21Alias23.clear()
         _doAnythingElseWithAlias77.clear()
         _doOtherThing.clear()
@@ -218,6 +232,7 @@ internal class PlatformMock<L : Alias23>(
         _fooWithCharAlias73s.clear()
         _fooWithIntAlias73s.clear()
         _fooWithLongTAlias73s.clear()
+        _fooWithTList.clear()
         _barWithAlias99.clear()
         _barWithTAlias99s.clear()
         _barWithLongTAlias99s.clear()

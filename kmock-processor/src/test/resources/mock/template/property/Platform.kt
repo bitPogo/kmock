@@ -16,4 +16,5 @@ interface Platform {
         get() = foo.length
 
     var buzz: Any
+    val boo: Enum<*>
 }

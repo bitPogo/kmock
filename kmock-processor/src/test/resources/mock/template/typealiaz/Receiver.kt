@@ -16,6 +16,7 @@ typealias Alias3<T> = Generic<T>
 
 @Mock(Receiver::class)
 interface Receiver<L : Alias11> {
+    val List<Alias3<Any>>.any: Int
     var <T : Alias3<T>> T.member: T
 
     fun Alias11.doSomething(

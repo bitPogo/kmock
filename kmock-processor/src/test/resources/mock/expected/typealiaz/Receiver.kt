@@ -3,8 +3,10 @@ package mock.template.typealiaz
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Comparable
+import kotlin.Int
 import kotlin.Suppress
 import kotlin.Unit
+import kotlin.collections.List
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -19,6 +21,13 @@ internal class ReceiverMock<L : Alias11>(
     @Suppress("unused")
     private val relaxed: Boolean = false,
 ) : Receiver<L> {
+    public override val List<Alias3<Any>>.any: Int
+        get() = _anyGetter.invoke(this@any)
+
+    public val _anyGetter: KMockContract.SyncFunProxy<Int, (List<Alias3<Any>>) -> Int> =
+        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.ReceiverMock#_anyGetter", collector =
+        collector, freeze = freeze)
+
     @Suppress("UNCHECKED_CAST")
     public override var <T : Alias3<T>> T.member: T
         get() = _memberGetter.invoke(this@member) as T
@@ -114,6 +123,7 @@ internal class ReceiverMock<L : Alias11>(
     public override fun run(arg: L): Alias11 = _run.invoke(arg)
 
     public fun _clearMock(): Unit {
+        _anyGetter.clear()
         _memberGetter.clear()
         _memberSetter.clear()
         _doSomethingReceiver.clear()

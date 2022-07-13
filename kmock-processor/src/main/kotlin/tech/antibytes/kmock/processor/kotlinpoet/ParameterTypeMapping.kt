@@ -404,7 +404,7 @@ private fun KSType.mapParameterType(
                 )
         }
         is KSClassDeclaration -> {
-            val argumentsDecorator = arguments.mapParameterType(
+            val argumentsDecorator = typeArguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
                 allGenerics = allGenerics,
@@ -414,7 +414,7 @@ private fun KSType.mapParameterType(
             )
 
             declaration.toClassName().resolveClassType(
-                arguments = arguments,
+                arguments = typeArguments,
                 argumentsDecorator = argumentsDecorator,
                 markedAsNullable = isMarkedNullable,
                 rootNullability = rootNullability,
@@ -427,7 +427,7 @@ private fun KSType.mapParameterType(
         }
         is KSTypeAlias -> {
             val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
-                arguments = arguments,
+                arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
 
