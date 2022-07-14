@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+* pseudo build-in methods are now resolved independently
+
 ### Deprecated
 
 ### Removed

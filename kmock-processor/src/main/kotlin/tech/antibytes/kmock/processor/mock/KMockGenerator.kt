@@ -134,7 +134,16 @@ internal class KMockGenerator(
         template: KSClassDeclaration,
     ): String = "${template.packageName.asString()}.$mockName"
 
-    private fun String.isNotBuildInMethod(): Boolean = this != "equals" && this != "toString" && this != "hashCode"
+    private val KSFunctionDeclaration.firstParameter: String?
+        get() = parameters.firstOrNull()?.type?.resolve()?.declaration?.simpleName?.asString()
+
+    private fun KSFunctionDeclaration.isBuildInMethod(): Boolean {
+        val name = simpleName.asString()
+
+        return (name == "toString" && this.parameters.isEmpty()) ||
+            (name == "hashCode" && this.parameters.isEmpty()) ||
+            (name == "equals" && firstParameter == "Any")
+    }
 
     private fun resolveSuperTypes(
         template: KSClassDeclaration,
@@ -413,9 +422,7 @@ internal class KMockGenerator(
         }
 
         template.getAllFunctions().forEach { ksFunction ->
-            val name = ksFunction.simpleName.asString()
-
-            if (ksFunction.isPublicOpen() && (name.isNotBuildInMethod() || ksFunction.isReceiverMethod())) {
+            if (ksFunction.isPublicOpen() && (!ksFunction.isBuildInMethod() || ksFunction.isReceiverMethod())) {
                 hasReceivers = hasReceivers || ksFunction.isReceiverMethod()
                 mock.addMethodBundle(
                     spyType = spyType,
