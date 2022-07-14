@@ -679,6 +679,31 @@ class KMockMocksSpec {
     }
 
     @Test
+    fun `Given a annotated Source with BuildIns like methods for a Platform is processed, it writes a mock`() {
+        // Given
+        val source = SourceFile.kotlin(
+            "NoBuildIns.kt",
+            loadResource("/template/buildIn/NoBuildIns.kt")
+        )
+        val expected = loadResource("/expected/buildIn/NoBuildIns.kt")
+
+        // When
+        val compilerResult = compile(
+            provider,
+            source,
+            isKmp = false,
+        )
+        val actual = resolveGenerated("NoBuildInsMock.kt")
+        println(actual!!.readText())
+
+        // Then
+        compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK
+        actual isNot null
+
+        actual?.readText()?.normalizeSource() mustBe expected.normalizeSource()
+    }
+
+    @Test
     fun `Given a annotated Source which contains a colliding name with BuildIns for a Platform is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
