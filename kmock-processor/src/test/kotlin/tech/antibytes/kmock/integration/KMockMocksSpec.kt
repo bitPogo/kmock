@@ -694,7 +694,6 @@ class KMockMocksSpec {
             isKmp = false,
         )
         val actual = resolveGenerated("NoBuildInsMock.kt")
-        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

@@ -11,6 +11,7 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.Unit
 import kotlin.collections.Map
+import tech.antibytes.kmock.Hint0
 import tech.antibytes.kmock.Hint1
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockExperimental
@@ -64,6 +65,10 @@ internal class SyncFunMock<L, T>(
         ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_lol", collector =
         collector, freeze = freeze)
 
+    public val _fol: KMockContract.SyncFunProxy<Any, () -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.access.SyncFunMock#_fol", collector =
+        collector, freeze = freeze)
+
     public val _veryLongMethodNameWithABunchOfVariables: KMockContract.SyncFunProxy<Unit, (
         Int,
         Int,
@@ -83,7 +88,7 @@ internal class SyncFunMock<L, T>(
         "foo|(kotlin.Int, kotlin.Any) -> kotlin.Any|[]" to _foo,
         "bar|(kotlin.Int, kotlin.Any) -> kotlin.Any|[]" to _bar,
         "ozz|(kotlin.IntArray) -> kotlin.Any|[]" to _ozz,
-        "izz|(kotlin.Array<out kotlin.Any>) -> kotlin.Any|[]" to _izz,
+        "izz|(kotlin.Array<kotlin.Any>) -> kotlin.Any|[]" to _izz,
         "uzz|() -> kotlin.Unit|[]" to _uzz,
         "tuz|() -> kotlin.Int|[]" to _tuz,
         "uz|() -> L|[]" to _uz,
@@ -91,6 +96,7 @@ internal class SyncFunMock<L, T>(
         "veryLongMethodNameWithABunchOfVariables|(  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,  kotlin.Int,) -> kotlin.Unit|[]"
             to _veryLongMethodNameWithABunchOfVariables,
         "lol|(kotlin.Any?) -> kotlin.Any?|[[kotlin.Any?]]" to _lol,
+        "fol|() -> kotlin.Any|[[kotlin.Any]]" to _fol,
     )
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _foo.invoke(fuzz, ozz)
@@ -113,6 +119,9 @@ internal class SyncFunMock<L, T>(
 
     @Suppress("UNCHECKED_CAST")
     public override fun <T> lol(arg: T): T = _lol.invoke(arg) as T
+
+    @Suppress("UNCHECKED_CAST")
+    public override fun <T : Any> fol(): T = _fol.invoke() as T
 
     public override fun veryLongMethodNameWithABunchOfVariables(
         arg0: Int,
@@ -140,6 +149,7 @@ internal class SyncFunMock<L, T>(
         _uz.clear()
         _tzz.clear()
         _lol.clear()
+        _fol.clear()
         _veryLongMethodNameWithABunchOfVariables.clear()
     }
 
@@ -168,11 +178,11 @@ internal class SyncFunMock<L, T>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf2")
     public fun syncFunProxyOf(reference: (Array<out Any>) -> Any):
-        KMockContract.FunProxy<Any, (Array<out Any>) -> Any> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.Any>) -> kotlin.Any|[]"""]
+        KMockContract.FunProxy<Any, (Array<Any>) -> Any> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<kotlin.Any>) -> kotlin.Any|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Any>) -> kotlin.Any!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Array<out kotlin.Any>) ->
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, (kotlin.Array<kotlin.Any>) ->
         kotlin.Any>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -260,4 +270,14 @@ internal class SyncFunMock<L, T>(
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> T!""")) as
             tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any?, (kotlin.Any?) -> kotlin.Any?>
+
+    @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
+    @KMockExperimental
+    @SafeJvmName("syncFunProxyOf9")
+    public fun <T : Any> syncFunProxyOf(reference: () -> T, hint: Hint0):
+        KMockContract.FunProxy<Any, () -> Any> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|() -> kotlin.Any|[[kotlin.Any]]"""]
+            ?: throw
+            IllegalStateException("""Unknown method ${reference.name} with signature () -> T!""")) as
+            tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Any, () -> kotlin.Any>
 }
