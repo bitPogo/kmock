@@ -150,28 +150,28 @@ internal class PreventResolvingMock<L : Alias923>(
             to _doOtherThing,
         "doSomethingElse|(mock.template.typealiaz.Alias921, mock.template.typealiaz.Alias923) -> kotlin.Unit|[[mock.template.typealiaz.Alias921], [mock.template.typealiaz.Alias923]]"
             to _doSomethingElseWithTAlias921LAlias923,
-        "doSomethingElse|(mock.template.typealiaz.Alias977<kotlin.Any?>) -> mock.template.typealiaz.Alias977<kotlin.Any?>|[[mock.template.typealiaz.Alias977<K>], [kotlin.Any?]]"
+        "doSomethingElse|(mock.template.typealiaz.Alias977<kotlin.Any?>) -> mock.template.typealiaz.Alias977<kotlin.Any?>|[[mock.template.typealiaz.Alias977<X>], [kotlin.Any?]]"
             to _doSomethingElseWithTAlias977,
         "doMoreElse|(kotlin.Function1<kotlin.Any, kotlin.Unit>, kotlin.Function1<kotlin.Any, kotlin.Any>) -> kotlin.Unit|[[kotlin.Function1<kotlin.Any, kotlin.Unit>], [kotlin.Function1<kotlin.Any, kotlin.Any>]]"
             to _doMoreElse,
-        "foo|(mock.template.typealiaz.Alias973<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<K>], [kotlin.Any?]]"
+        "foo|(mock.template.typealiaz.Alias973<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<X>], [kotlin.Any?]]"
             to _fooWithTAlias973,
         "foo|(kotlin.Any, mock.template.typealiaz.Alias973<kotlin.String>?) -> mock.template.typealiaz.Alias973<kotlin.String>|[]"
             to _fooWithAnyAlias973,
-        "foo|(kotlin.Char, kotlin.Array<out mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit|[]"
+        "foo|(kotlin.Char, kotlin.Array<mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit|[]"
             to _fooWithCharAlias973s,
-        "foo|(kotlin.Int, kotlin.Array<out mock.template.typealiaz.Alias973<out kotlin.String>>) -> kotlin.Unit|[]"
+        "foo|(kotlin.Int, kotlin.Array<mock.template.typealiaz.Alias973<kotlin.String>>) -> kotlin.Unit|[]"
             to _fooWithIntAlias973s,
-        "foo|(kotlin.Long, kotlin.Array<out mock.template.typealiaz.Alias973<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"
+        "foo|(kotlin.Long, kotlin.Array<mock.template.typealiaz.Alias973<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"
             to _fooWithLongTAlias973s,
         "bar|(mock.template.typealiaz.Alias999<kotlin.String>) -> kotlin.Unit|[]" to _barWithAlias999,
-        "bar|(kotlin.Array<out mock.template.typealiaz.Alias999<kotlin.String>>) -> mock.template.typealiaz.Alias999<kotlin.String>|[[mock.template.typealiaz.Alias999<kotlin.String>]]"
+        "bar|(kotlin.Array<mock.template.typealiaz.Alias999<kotlin.String>>) -> mock.template.typealiaz.Alias999<kotlin.String>|[[mock.template.typealiaz.Alias999<kotlin.String>]]"
             to _barWithTAlias999s,
-        "bar|(kotlin.Long, kotlin.Array<out mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>|[[mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"
+        "bar|(kotlin.Long, kotlin.Array<mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>|[[mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"
             to _barWithLongTAlias999s,
-        "rol|(mock.template.typealiaz.Alias1000<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias1000<K>], [kotlin.Any?]]"
+        "rol|(mock.template.typealiaz.Alias1000<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias1000<X>], [kotlin.Any?]]"
             to _rol,
-        "toll|(mock.template.typealiaz.Alias977<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Alias977<K>], [kotlin.CharSequence & kotlin.Comparable<K>]]"
+        "toll|(mock.template.typealiaz.Alias977<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Alias977<X>], [kotlin.CharSequence & kotlin.Comparable<X>]]"
             to _toll,
     )
 
@@ -386,7 +386,7 @@ internal class PreventResolvingMock<L : Alias923>(
     @SafeJvmName("syncFunProxyOf7")
     public fun <T : Alias977<K>, K> syncFunProxyOf(reference: (T) -> T, hint: Hint1<T>):
         KMockContract.FunProxy<Alias977<Any?>, (Alias977<Any?>) -> Alias977<Any?>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias977<kotlin.Any?>) -> mock.template.typealiaz.Alias977<kotlin.Any?>|[[mock.template.typealiaz.Alias977<K>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias977<kotlin.Any?>) -> mock.template.typealiaz.Alias977<kotlin.Any?>|[[mock.template.typealiaz.Alias977<X>], [kotlin.Any?]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> T!""")) as
             tech.antibytes.kmock.KMockContract.FunProxy<mock.template.typealiaz.Alias977<kotlin.Any?>,
@@ -410,7 +410,7 @@ internal class PreventResolvingMock<L : Alias923>(
     @SafeJvmName("syncFunProxyOf9")
     public fun <T : Alias973<K>, K> syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
         KMockContract.FunProxy<Unit, (Alias973<Any?>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias973<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<K>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias973<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<X>], [kotlin.Any?]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
@@ -434,38 +434,37 @@ internal class PreventResolvingMock<L : Alias923>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf11")
     public fun syncFunProxyOf(reference: (Char, Array<out Alias973<IntArray>>) -> Unit,
-        hint: Hint2<Char, Array<out Alias973<IntArray>>>): KMockContract.FunProxy<Unit, (Char,
-        Array<out Alias973<IntArray>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Char, kotlin.Array<out mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit|[]"""]
+        hint: Hint2<Char, Array<Alias973<IntArray>>>): KMockContract.FunProxy<Unit, (Char,
+        Array<Alias973<IntArray>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Char, kotlin.Array<mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Char, kotlin.Array<out mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Char, kotlin.Array<out
-        mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit>
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Char,
+            kotlin.Array<mock.template.typealiaz.Alias973<kotlin.IntArray>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf12")
-    public fun syncFunProxyOf(reference: (Int, Array<out Alias973<out String>>) -> Unit,
-        hint: Hint2<Int, Array<out Alias973<out String>>>): KMockContract.FunProxy<Unit, (Int,
-        Array<out Alias973<out String>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Array<out mock.template.typealiaz.Alias973<out kotlin.String>>) -> kotlin.Unit|[]"""]
+    public fun syncFunProxyOf(reference: (Int, Array<out Alias973<String>>) -> Unit,
+        hint: Hint2<Int, Array<Alias973<String>>>): KMockContract.FunProxy<Unit, (Int,
+        Array<Alias973<String>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Array<mock.template.typealiaz.Alias973<kotlin.String>>) -> kotlin.Unit|[]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Array<out mock.template.typealiaz.Alias973<out kotlin.String>>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int, kotlin.Array<out
-        mock.template.typealiaz.Alias973<out kotlin.String>>) -> kotlin.Unit>
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Array<out mock.template.typealiaz.Alias973<kotlin.String>>) -> kotlin.Unit!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int,
+            kotlin.Array<mock.template.typealiaz.Alias973<kotlin.String>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf13")
-    public fun <T : Alias973<out Alias977<Alias973<Int>>>> syncFunProxyOf(reference: (Long,
-        Array<out T>) -> Unit, hint: Hint2<Long, Array<out T>>): KMockContract.FunProxy<Unit, (Long,
-        Array<out Alias973<out Alias977<Alias973<Int>>>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<out mock.template.typealiaz.Alias973<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"""]
+    public fun <T : Alias973<Alias977<Alias973<Int>>>> syncFunProxyOf(reference: (Long,
+        Array<out T>) -> Unit, hint: Hint2<Long, Array<T>>): KMockContract.FunProxy<Unit, (Long,
+        Array<Alias973<Alias977<Alias973<Int>>>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<mock.template.typealiaz.Alias973<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> kotlin.Unit|[[mock.template.typealiaz.Alias973<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Long, kotlin.Array<out T>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Long, kotlin.Array<out
-        mock.template.typealiaz.Alias973<out
-        mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) ->
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Long,
+            kotlin.Array<mock.template.typealiaz.Alias973<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) ->
         kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -483,39 +482,38 @@ internal class PreventResolvingMock<L : Alias923>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf15")
     public fun <T : Alias999<String>> syncFunProxyOf(reference: (Array<out T>) -> T,
-        hint: Hint1<Array<out T>>):
-        KMockContract.FunProxy<Alias999<String>, (Array<out Alias999<String>>) -> Alias999<String>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out mock.template.typealiaz.Alias999<kotlin.String>>) -> mock.template.typealiaz.Alias999<kotlin.String>|[[mock.template.typealiaz.Alias999<kotlin.String>]]"""]
+        hint: Hint1<Array<T>>):
+        KMockContract.FunProxy<Alias999<String>, (Array<Alias999<String>>) -> Alias999<String>> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<mock.template.typealiaz.Alias999<kotlin.String>>) -> mock.template.typealiaz.Alias999<kotlin.String>|[[mock.template.typealiaz.Alias999<kotlin.String>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out T>) -> T!"""))
             as
             tech.antibytes.kmock.KMockContract.FunProxy<mock.template.typealiaz.Alias999<kotlin.String>,
-                    (kotlin.Array<out mock.template.typealiaz.Alias999<kotlin.String>>) ->
+                    (kotlin.Array<mock.template.typealiaz.Alias999<kotlin.String>>) ->
             mock.template.typealiaz.Alias999<kotlin.String>>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf16")
-    public fun <T : Alias999<out Alias977<Alias973<Int>>>> syncFunProxyOf(reference: (Long,
-        Array<out T>) -> T, hint: Hint2<Long, Array<out T>>):
-        KMockContract.FunProxy<Alias999<out Alias977<Alias973<Int>>>, (Long,
-            Array<out Alias999<out Alias977<Alias973<Int>>>>) -> Alias999<out Alias977<Alias973<Int>>>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<out mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>|[[mock.template.typealiaz.Alias999<out mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"""]
+    public fun <T : Alias999<Alias977<Alias973<Int>>>> syncFunProxyOf(reference: (Long,
+        Array<out T>) -> T, hint: Hint2<Long, Array<T>>):
+        KMockContract.FunProxy<Alias999<Alias977<Alias973<Int>>>, (Long,
+            Array<Alias999<Alias977<Alias973<Int>>>>) -> Alias999<Alias977<Alias973<Int>>>> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) -> mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>|[[mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Long, kotlin.Array<out T>) -> T!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<mock.template.typealiaz.Alias999<out
-        mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>, (kotlin.Long,
-            kotlin.Array<out mock.template.typealiaz.Alias999<out
-            mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) ->
-        mock.template.typealiaz.Alias999<out
-        mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>
+            as
+            tech.antibytes.kmock.KMockContract.FunProxy<mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>,
+                    (kotlin.Long,
+                kotlin.Array<mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>) ->
+            mock.template.typealiaz.Alias999<mock.template.typealiaz.Alias977<mock.template.typealiaz.Alias973<kotlin.Int>>>>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf17")
     public fun <T : Alias1000<K>, K> syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
         KMockContract.FunProxy<Unit, (Alias1000<Any?>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias1000<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias1000<K>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias1000<kotlin.Any?>) -> kotlin.Unit|[[mock.template.typealiaz.Alias1000<X>], [kotlin.Any?]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
@@ -527,7 +525,7 @@ internal class PreventResolvingMock<L : Alias923>(
     public fun <T : Alias977<K>, K> syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
         KMockContract.FunProxy<Unit, (Alias977<Any>) -> Unit> where K : CharSequence, K :
     Comparable<K> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias977<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Alias977<K>], [kotlin.CharSequence & kotlin.Comparable<K>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Alias977<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Alias977<X>], [kotlin.CharSequence & kotlin.Comparable<X>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,

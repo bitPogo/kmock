@@ -27,6 +27,7 @@ interface SyncFun<L, T> where T : CharSequence, T : Comparable<T> {
     fun tzz(): T
 
     fun <T> lol(arg: T): T
+    fun <T : Any> fol(): T
 
     fun veryLongMethodNameWithABunchOfVariables(
         arg0: Int,

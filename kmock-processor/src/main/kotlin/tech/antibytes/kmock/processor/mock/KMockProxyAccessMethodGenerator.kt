@@ -142,58 +142,74 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         }
     }
 
-    private fun TypeName.resolveTypeNames(): TypeName {
+    private fun TypeVariableName.resolveTypeName(
+        unifyTypeVariables: Boolean,
+    ): TypeName {
+        return if (unifyTypeVariables) {
+            UNIFIED_TYPE_VARIABLE
+        } else {
+            this
+        }
+    }
+
+    private fun TypeName.resolveTypeNames(
+        unifyTypeVariables: Boolean = false,
+    ): TypeName {
         return when (val type = resolveTypeName()) {
             is ParameterizedTypeName -> {
                 type.rawType().parameterizedBy(
-                    type.typeArguments.resolveTypeNames()
+                    type.typeArguments.resolveTypeNames(unifyTypeVariables)
                 ).copy(nullable = type.isNullable)
             }
+            is TypeVariableName -> type.resolveTypeName(unifyTypeVariables)
             else -> type
         }
     }
 
-    private fun WildcardTypeName.resolveTypeName(): TypeName {
+    private fun WildcardTypeName.resolveTypeName(
+        unifyTypeVariables: Boolean,
+    ): TypeName {
         return if (outTypes.isNotEmpty()) {
-            WildcardTypeName
-                .producerOf(
-                    outTypes.first().resolveTypeNames()
-                )
+            outTypes.first().resolveTypeNames(unifyTypeVariables)
         } else {
-            WildcardTypeName
-                .consumerOf(
-                    inTypes.first().resolveTypeNames()
-                )
+            inTypes.first().resolveTypeNames(unifyTypeVariables)
         }
     }
 
     @JvmName("resolveTypeNamesTypeName")
-    private fun List<TypeName>.resolveTypeNames(): List<TypeName> {
+    private fun List<TypeName>.resolveTypeNames(
+        unifyTypeVariables: Boolean,
+    ): List<TypeName> {
         return map { type ->
             if (type is WildcardTypeName) {
-                type.resolveTypeName()
+                type.resolveTypeName(unifyTypeVariables)
             } else {
-                type.resolveTypeNames()
+                type.resolveTypeNames(unifyTypeVariables)
             }
         }
     }
 
     @JvmName("resolveTypeNamesTypeVariableName")
-    private fun List<TypeVariableName>.resolveTypeNames(): List<TypeVariableName> {
+    private fun List<TypeVariableName>.resolveTypeNames(
+        unifyTypeVariables: Boolean = false,
+    ): List<TypeVariableName> {
         return map { type ->
-            val boundaries = type.bounds.resolveTypeNames()
+            val boundaries = type.bounds.resolveTypeNames(unifyTypeVariables)
 
-            (type.resolveTypeNames() as TypeVariableName).copy(bounds = boundaries, nullable = type.isNullable)
+            (type.resolveTypeNames(unifyTypeVariables) as TypeVariableName)
+                .copy(bounds = boundaries, nullable = type.isNullable)
         }
     }
 
     private fun ParameterSpec.determineArgument(): TypeName {
+        val type = type.resolveTypeNames(false)
+
         return if (this.modifiers.contains(KModifier.VARARG)) {
             ARRAY.parameterizedBy(
-                WildcardTypeName.producerOf(type.resolveTypeNames())
+                WildcardTypeName.producerOf(type)
             )
         } else {
-            this.type.resolveTypeNames()
+            type
         }
     }
 
@@ -224,12 +240,8 @@ internal class KMockProxyAccessMethodGenerator private constructor(
     }
 
     private fun List<TypeName>.resolveGenericMark(): String {
-        return if (this.isEmpty()) {
-            "Any?"
-        } else {
-            this.joinToString(" & ") { typeName ->
-                typeName.resolveTypeNames().toString()
-            }
+        return this.joinToString(" & ") { typeName ->
+            typeName.resolveTypeNames(true).toString()
         }
     }
 
@@ -296,8 +308,6 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             indicator: String,
         ) -> Unit,
     ) {
-        val mappedParameterTypes = typeParameter.mapTypeParameter()
-        val typeParameterMark = typeParameter.resolveMarking(mappedParameterTypes)
         val sideEffect = createSideEffect(
             arguments = proxySideEffect.parameters,
             returnType = proxySideEffect.returnType,
@@ -308,6 +318,10 @@ internal class KMockProxyAccessMethodGenerator private constructor(
             returnType = returnType,
             isSuspending = suspending
         )
+        val mappedParameterTypes = typeParameter.mapTypeParameter()
+        val typeParameterMark = typeParameter
+            .resolveMarking(mappedParameterTypes)
+
         val proxySignature = sideEffect.toFunProxySignature()
         val key = "${sideEffect.toIndicator()}|[$typeParameterMark]"
         addToRegistry(
@@ -832,6 +846,7 @@ internal class KMockProxyAccessMethodGenerator private constructor(
         private const val REFERENCE = "reference"
         private const val SYNC_PROXY_OF = "syncFunProxyOf"
         private const val ASYNC_PROXY_OF = "asyncFunProxyOf"
+        private val UNIFIED_TYPE_VARIABLE = TypeVariableName("X")
         private val propertyType = TypeVariableName("Property")
         private val propertyProxy = PropertyProxy::class.asClassName().parameterizedBy(propertyType)
         private val funProxy = KMockContract.FunProxy::class.asClassName()

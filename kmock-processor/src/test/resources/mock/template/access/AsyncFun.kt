@@ -16,7 +16,7 @@ interface AsyncFun<L, T> where T : CharSequence, T : Comparable<T> {
 
     suspend fun ozz(vararg buzz: Int): Any
 
-    suspend fun izz(vararg buzz: Any): Any
+    suspend fun izz(vararg buzz: L): Any
 
     suspend fun uzz()
 
@@ -27,6 +27,7 @@ interface AsyncFun<L, T> where T : CharSequence, T : Comparable<T> {
     suspend fun tzz(): T
 
     suspend fun <T> lol(arg: T): T
+    suspend fun <T : Any> fol(): T
 
     suspend fun veryLongMethodNameWithABunchOfVariables(
         arg0: Int,
@@ -36,8 +37,8 @@ interface AsyncFun<L, T> where T : CharSequence, T : Comparable<T> {
         arg4: Int,
         arg5: Int,
         arg6: Int,
-        arg7: Int,
+        arg7: L,
         arg8: Int,
-        arg9: Int
+        arg9: T
     )
 }

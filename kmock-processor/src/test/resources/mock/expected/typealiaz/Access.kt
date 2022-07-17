@@ -150,27 +150,27 @@ internal class AccessMock<L : Alias623>(
             to _doSomethingElseWithTAlias621LAlias623,
         "doMoreElse|(kotlin.Function1<kotlin.Any, kotlin.Unit>, kotlin.Function1<kotlin.Any, kotlin.Any>) -> kotlin.Unit|[[kotlin.Function1<kotlin.Any, kotlin.Unit>], [kotlin.Function1<kotlin.Any, kotlin.Any>]]"
             to _doMoreElse,
-        "doSomethingElse|(mock.template.typealiaz.Generics<kotlin.Any?>) -> mock.template.typealiaz.Generics<kotlin.Any?>|[[mock.template.typealiaz.Generics<K>], [kotlin.Any?]]"
+        "doSomethingElse|(mock.template.typealiaz.Generics<kotlin.Any?>) -> mock.template.typealiaz.Generics<kotlin.Any?>|[[mock.template.typealiaz.Generics<X>], [kotlin.Any?]]"
             to _doSomethingElseWithTAlias677,
-        "foo|(kotlin.collections.Map<kotlin.String, kotlin.Any?>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, K>], [kotlin.Any?]]"
+        "foo|(kotlin.collections.Map<kotlin.String, kotlin.Any?>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, X>], [kotlin.Any?]]"
             to _fooWithTAlias673,
         "foo|(kotlin.Any, kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[]"
             to _fooWithAnyAlias673,
-        "foo|(kotlin.Char, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit|[]"
+        "foo|(kotlin.Char, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit|[]"
             to _fooWithCharAlias673s,
-        "foo|(kotlin.Int, kotlin.Array<out kotlin.collections.Map<kotlin.String, out kotlin.String>>) -> kotlin.Unit|[]"
+        "foo|(kotlin.Int, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit|[]"
             to _fooWithIntAlias673s,
-        "foo|(kotlin.Long, kotlin.Array<out kotlin.collections.Map<kotlin.String, out mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, out mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>]]"
+        "foo|(kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String, mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>]]"
             to _fooWithLongTAlias673s,
         "bar|(kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit|[]" to
             _barWithAlias699,
-        "bar|(kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"
+        "bar|(kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"
             to _barWithTAlias699s,
-        "bar|(kotlin.Long, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"
+        "bar|(kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"
             to _barWithLongTAlias699s,
         "rol|(kotlin.collections.Map<kotlin.String, kotlin.String>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, kotlin.String>], [kotlin.Any?]]"
             to _rol,
-        "toll|(mock.template.typealiaz.Generics<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Generics<K>], [kotlin.CharSequence & kotlin.Comparable<K>]]"
+        "toll|(mock.template.typealiaz.Generics<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Generics<X>], [kotlin.CharSequence & kotlin.Comparable<X>]]"
             to _toll,
     )
 
@@ -389,7 +389,7 @@ internal class AccessMock<L : Alias623>(
     @SafeJvmName("syncFunProxyOf7")
     public fun <T : Generics<K>, K> syncFunProxyOf(reference: (T) -> T, hint: Hint1<T>):
         KMockContract.FunProxy<Generics<Any?>, (Generics<Any?>) -> Generics<Any?>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Generics<kotlin.Any?>) -> mock.template.typealiaz.Generics<kotlin.Any?>|[[mock.template.typealiaz.Generics<K>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Generics<kotlin.Any?>) -> mock.template.typealiaz.Generics<kotlin.Any?>|[[mock.template.typealiaz.Generics<X>], [kotlin.Any?]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> T!""")) as
             tech.antibytes.kmock.KMockContract.FunProxy<mock.template.typealiaz.Generics<kotlin.Any?>,
@@ -401,7 +401,7 @@ internal class AccessMock<L : Alias623>(
     @SafeJvmName("syncFunProxyOf8")
     public fun <T : Map<String, K>, K> syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
         KMockContract.FunProxy<Unit, (Map<String, Any?>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.Map<kotlin.String, kotlin.Any?>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, K>], [kotlin.Any?]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.collections.Map<kotlin.String, kotlin.Any?>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, X>], [kotlin.Any?]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
@@ -424,38 +424,38 @@ internal class AccessMock<L : Alias623>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf10")
     public fun syncFunProxyOf(reference: (Char, Array<out Map<String, IntArray>>) -> Unit,
-        hint: Hint2<Char, Array<out Map<String, IntArray>>>): KMockContract.FunProxy<Unit, (Char,
-        Array<out Map<String, IntArray>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Char, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit|[]"""]
+        hint: Hint2<Char, Array<Map<String, IntArray>>>): KMockContract.FunProxy<Unit, (Char,
+        Array<Map<String, IntArray>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Char, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit|[]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Char, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Char, kotlin.Array<out
-        kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit>
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Char,
+            kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.IntArray>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf11")
-    public fun syncFunProxyOf(reference: (Int, Array<out Map<String, out String>>) -> Unit,
-        hint: Hint2<Int, Array<out Map<String, out String>>>): KMockContract.FunProxy<Unit, (Int,
-        Array<out Map<String, out String>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Array<out kotlin.collections.Map<kotlin.String, out kotlin.String>>) -> kotlin.Unit|[]"""]
+    public fun syncFunProxyOf(reference: (Int, Array<out Map<String, String>>) -> Unit,
+        hint: Hint2<Int, Array<Map<String, String>>>): KMockContract.FunProxy<Unit, (Int,
+        Array<Map<String, String>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Int, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit|[]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Array<out kotlin.collections.Map<kotlin.String, out kotlin.String>>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int, kotlin.Array<out
-        kotlin.collections.Map<kotlin.String, out kotlin.String>>) -> kotlin.Unit>
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Int, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit!"""))
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Int,
+            kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf12")
-    public fun <T : Map<String, out Generics<Map<String, Int>>>> syncFunProxyOf(reference: (Long,
-        Array<out T>) -> Unit, hint: Hint2<Long, Array<out T>>): KMockContract.FunProxy<Unit, (Long,
-        Array<out Map<String, out Generics<Map<String, Int>>>>) -> Unit> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<out kotlin.collections.Map<kotlin.String, out mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, out mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>]]"""]
+    public fun <T : Map<String, Generics<Map<String, Int>>>> syncFunProxyOf(reference: (Long,
+        Array<out T>) -> Unit, hint: Hint2<Long, Array<T>>): KMockContract.FunProxy<Unit, (Long,
+        Array<Map<String, Generics<Map<String, Int>>>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String, mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> kotlin.Unit|[[kotlin.collections.Map<kotlin.String, mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Long, kotlin.Array<out T>) -> kotlin.Unit!"""))
-            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Long, kotlin.Array<out
-        kotlin.collections.Map<kotlin.String, out
-        mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) ->
+            as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit, (kotlin.Long,
+            kotlin.Array<kotlin.collections.Map<kotlin.String,
+                mock.template.typealiaz.Generics<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) ->
         kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -474,27 +474,27 @@ internal class AccessMock<L : Alias623>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf14")
     public fun <T : Map<String, String>> syncFunProxyOf(reference: (Array<out T>) -> T,
-        hint: Hint1<Array<out T>>):
-        KMockContract.FunProxy<Map<String, String>, (Array<out Map<String, String>>) -> Map<String, String>>
+        hint: Hint1<Array<T>>):
+        KMockContract.FunProxy<Map<String, String>, (Array<Map<String, String>>) -> Map<String, String>>
         =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out T>) -> T!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.Map<kotlin.String,
-            kotlin.String>, (kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) ->
+            kotlin.String>, (kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) ->
         kotlin.collections.Map<kotlin.String, kotlin.String>>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf15")
     public fun <T : Map<String, String>> syncFunProxyOf(reference: (Long, Array<out T>) -> T,
-        hint: Hint2<Long, Array<out T>>): KMockContract.FunProxy<Map<String, String>, (Long,
-        Array<out Map<String, String>>) -> Map<String, String>> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<out kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
+        hint: Hint2<Long, Array<T>>): KMockContract.FunProxy<Map<String, String>, (Long,
+        Array<Map<String, String>>) -> Map<String, String>> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String, kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>|[[kotlin.collections.Map<kotlin.String, kotlin.String>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Long, kotlin.Array<out T>) -> T!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.collections.Map<kotlin.String,
-            kotlin.String>, (kotlin.Long, kotlin.Array<out kotlin.collections.Map<kotlin.String,
+            kotlin.String>, (kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String,
             kotlin.String>>) -> kotlin.collections.Map<kotlin.String, kotlin.String>>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
@@ -514,7 +514,7 @@ internal class AccessMock<L : Alias623>(
     public fun <T : Generics<K>, K> syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
         KMockContract.FunProxy<Unit, (Generics<Any>) -> Unit> where K : CharSequence, K :
     Comparable<K> =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Generics<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Generics<K>], [kotlin.CharSequence & kotlin.Comparable<K>]]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(mock.template.typealiaz.Generics<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.Generics<X>], [kotlin.CharSequence & kotlin.Comparable<X>]]"""]
             ?: throw
             IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
