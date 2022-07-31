@@ -22,7 +22,7 @@ plugins {
 
     id("tech.antibytes.gradle.publishing")
 
-    id("io.gitlab.arturbosch.detekt") version "1.20.0"
+    id("io.gitlab.arturbosch.detekt") version "1.21.0"
 
     id("org.sonarqube") version "3.3"
 }
@@ -38,7 +38,7 @@ tasks.named<Wrapper>("wrapper") {
 }
 
 detekt {
-    toolVersion = "1.20.0"
+    toolVersion = "1.21.0"
     buildUponDefaultConfig = true // preconfigure defaults
     allRules = false // activate all available (even unstable) rules.
     config = files("$projectDir/detekt/config.yml") // point to your custom config defining rules to run, overwriting default behavior
