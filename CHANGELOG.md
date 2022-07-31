@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+* Gradle 7.4.2 -> 7.5
+
 ## [0.3.0-rc02](https://github.com/bitPogo/kmock/compare/v0.3.0-rc01...v0.3.0-rc02)
 
 ### Changed
