@@ -18,7 +18,6 @@ import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.ARRAY
@@ -34,6 +33,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.MemberReturnTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyBundle
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
 import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeVariableName
 
 internal class MethodGeneratorHelper(
     private val genericResolver: GenericResolver,

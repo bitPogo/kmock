@@ -237,14 +237,18 @@ val kspTasks = tasks.matching { task -> task.name.startsWith("ksp") }
 
 kspTasks.configureEach {
     doLast {
-        project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
-            .walkBottomUp()
-            .toList()
-            .forEach { file ->
-                if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
-                    file.delete()
+        if (!name.startsWith("android")) {
+            val platform = name.substringAfter("kspTestKotlin")
+
+            project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/${platform}Test")
+                .walkBottomUp()
+                .toList()
+                .forEach { file ->
+                    if (file.absolutePath.endsWith("KMockMultiInterfaceArtifacts.kt")) {
+                        file.delete()
+                    }
                 }
-            }
+        }
     }
 }
 

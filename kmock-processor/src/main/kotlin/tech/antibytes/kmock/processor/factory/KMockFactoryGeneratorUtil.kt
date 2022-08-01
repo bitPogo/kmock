@@ -16,7 +16,6 @@ import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
@@ -33,6 +32,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 import kotlin.reflect.KClass
 
 internal class KMockFactoryGeneratorUtil(

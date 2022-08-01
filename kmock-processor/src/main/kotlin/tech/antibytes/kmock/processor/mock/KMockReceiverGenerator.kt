@@ -17,7 +17,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_PROPERTY
@@ -36,6 +35,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.ReceiverGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Relaxer
 import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 import tech.antibytes.kmock.processor.utils.resolveReceiver
 import tech.antibytes.kmock.processor.utils.toReceiverTypeParameterResolver
 

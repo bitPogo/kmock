@@ -17,8 +17,6 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.TYPE_PARAMETER
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
@@ -28,6 +26,8 @@ import tech.antibytes.kmock.processor.kotlinpoet.mapArgumentType
 import tech.antibytes.kmock.processor.kotlinpoet.mapParameterType
 import tech.antibytes.kmock.processor.kotlinpoet.resolveGenericDeclaration
 import tech.antibytes.kmock.processor.kotlinpoet.toTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeVariableName
 
 internal object KMockGenerics : GenericResolver {
     private val nullableAnys = listOf(NULLABLE_ANY)
