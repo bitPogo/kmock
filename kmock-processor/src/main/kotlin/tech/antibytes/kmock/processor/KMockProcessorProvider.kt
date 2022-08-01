@@ -172,7 +172,6 @@ public class KMockProcessorProvider(
 
         return KMockProcessor(
             logger = logger,
-            isUnderCompilerTest = isUnderCompilerTest,
             isKmp = options.isKmp,
             codeGenerator = codeGenerator,
             interfaceGenerator = KMockMultiInterfaceBinder(
