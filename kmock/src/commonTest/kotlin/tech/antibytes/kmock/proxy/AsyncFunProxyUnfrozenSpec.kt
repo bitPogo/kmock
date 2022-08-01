@@ -8,6 +8,9 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -19,9 +22,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class AsyncFunProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
@@ -37,7 +37,7 @@ class AsyncFunProxyUnfrozenSpec {
     fun `It fulfils AsyncFunProxy`() {
         AsyncFunProxy<Unit, suspend () -> Unit>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         ) fulfils KMockContract.AsyncFunProxy::class
     }
 
@@ -46,7 +46,7 @@ class AsyncFunProxyUnfrozenSpec {
     fun `It is never ignorable for verification`() {
         AsyncFunProxy<Unit, suspend () -> Unit>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         ).ignorableForVerification mustBe false
     }
 
@@ -279,7 +279,7 @@ class AsyncFunProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -303,7 +303,7 @@ class AsyncFunProxyUnfrozenSpec {
         val name: String = fixture.fixture()
         val proxy = AsyncFunProxy<Any, suspend () -> Unit>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -326,7 +326,7 @@ class AsyncFunProxyUnfrozenSpec {
 
         val proxy = AsyncFunProxy<Any, suspend () -> Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When

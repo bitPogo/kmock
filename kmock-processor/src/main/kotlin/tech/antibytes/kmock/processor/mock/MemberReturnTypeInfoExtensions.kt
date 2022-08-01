@@ -40,7 +40,7 @@ private fun MemberReturnTypeInfo.resolveCast(condition: Boolean): String {
 internal fun MemberReturnTypeInfo.resolveCastOnReturn(): String = resolveCast(this.needsCastOnReturn())
 
 internal fun MemberReturnTypeInfo.resolveCastForRelaxer(
-    relaxer: Relaxer?
+    relaxer: Relaxer?,
 ): String = resolveCast(this.needsCastForRelaxer(relaxer))
 
 internal fun MemberReturnTypeInfo.resolveCastForReceiverProperty(): String = resolveCast(needsCastForReceiverProperty())

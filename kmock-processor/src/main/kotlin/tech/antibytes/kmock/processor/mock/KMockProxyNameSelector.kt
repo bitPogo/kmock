@@ -12,6 +12,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
+import java.util.SortedSet
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.MemberArgumentTypeInfo
 import tech.antibytes.kmock.processor.ProcessorContract.ProxyInfo
@@ -20,7 +21,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.ProxyNameSelector
 import tech.antibytes.kmock.processor.kotlinpoet.rawType
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.processor.utils.titleCase
-import java.util.SortedSet
 
 internal class KMockProxyNameSelector(
     enableFineGrainedNames: Boolean,
@@ -31,7 +31,7 @@ internal class KMockProxyNameSelector(
     private val buildIns = mapOf(
         "_toString" to "_toStringWithVoid",
         "_equals" to "_equalsWithAny",
-        "_hashCode" to "_hashCodeWithVoid"
+        "_hashCode" to "_hashCodeWithVoid",
     )
 
     private val suffixResolver: Function2<Array<MemberArgumentTypeInfo>, Map<String, GenericDeclaration>, String> =
@@ -113,12 +113,12 @@ internal class KMockProxyNameSelector(
 
     override fun selectPropertyName(
         qualifier: String,
-        propertyName: String
+        propertyName: String,
     ): ProxyInfo {
         return ProxyInfo(
             templateName = propertyName,
             proxyId = "$qualifier#_$propertyName",
-            proxyName = "_$propertyName"
+            proxyName = "_$propertyName",
         )
     }
 
@@ -155,7 +155,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun WildcardTypeName.resolveExhaustiveName(
-        generics: Map<String, GenericDeclaration>
+        generics: Map<String, GenericDeclaration>,
     ): String {
         val name = StringBuilder(0)
         val types = inTypes.ifEmpty { outTypes }
@@ -180,7 +180,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun TypeVariableName.resolveExhaustiveName(
-        generics: Map<String, GenericDeclaration>
+        generics: Map<String, GenericDeclaration>,
     ): String {
         val zero = determineNullabilityPrefix()
         val typePrefix = "$zero$name"
@@ -193,7 +193,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun ParameterizedTypeName.resolveParameterNames(
-        generics: Map<String, GenericDeclaration>
+        generics: Map<String, GenericDeclaration>,
     ): String {
         val parameterNames = StringBuilder()
         typeArguments.forEach { type ->
@@ -283,7 +283,7 @@ internal class KMockProxyNameSelector(
     }
 
     private fun TypeVariableName.resolveFlatName(
-        generics: Map<String, GenericDeclaration>
+        generics: Map<String, GenericDeclaration>,
     ): String {
         return if (name in generics) {
             val genericDeclaration = generics[name]!!
@@ -351,7 +351,7 @@ internal class KMockProxyNameSelector(
     private fun selectMethodProxyName(
         proxyMethodNameCandidate: String,
         generics: Map<String, GenericDeclaration>,
-        arguments: Array<MemberArgumentTypeInfo>
+        arguments: Array<MemberArgumentTypeInfo>,
     ): String {
         return if (proxyMethodNameCandidate in overloadedProxies) {
             determineSuffixedMethodProxyName(
@@ -398,7 +398,7 @@ internal class KMockProxyNameSelector(
 
     override fun selectBuildInMethodName(
         qualifier: String,
-        methodName: String
+        methodName: String,
     ): ProxyInfo {
         val proxyName = selectBuildInMethodProxyName("_$methodName")
         val proxyIdCandidate = "$qualifier#$proxyName"
@@ -420,7 +420,7 @@ internal class KMockProxyNameSelector(
         qualifier: String,
         methodName: String,
         generics: Map<String, GenericDeclaration>,
-        arguments: Array<MemberArgumentTypeInfo>
+        arguments: Array<MemberArgumentTypeInfo>,
     ): ProxyInfo {
         val proxyName = selectMethodProxyName(
             proxyMethodNameCandidate = "_$methodName$suffix",
@@ -452,7 +452,7 @@ internal class KMockProxyNameSelector(
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        arguments = arguments
+        arguments = arguments,
     )
 
     override fun selectReceiverGetterName(
@@ -465,7 +465,7 @@ internal class KMockProxyNameSelector(
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        arguments = arrayOf(receiver)
+        arguments = arrayOf(receiver),
     )
 
     override fun selectReceiverSetterName(
@@ -478,7 +478,7 @@ internal class KMockProxyNameSelector(
         qualifier = qualifier,
         methodName = propertyName,
         generics = generics,
-        arguments = arrayOf(receiver)
+        arguments = arrayOf(receiver),
     )
 
     override fun selectReceiverMethodName(
@@ -491,7 +491,7 @@ internal class KMockProxyNameSelector(
         qualifier = qualifier,
         methodName = methodName,
         generics = generics,
-        arguments = arguments
+        arguments = arguments,
     )
 
     private companion object {

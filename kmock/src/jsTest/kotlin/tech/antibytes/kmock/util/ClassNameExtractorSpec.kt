@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -6,8 +7,8 @@
 
 package tech.antibytes.kmock.util
 
-import tech.antibytes.util.test.mustBe
 import kotlin.test.Test
+import tech.antibytes.util.test.mustBe
 
 actual class ClassNameExtractorSpec {
     @Test

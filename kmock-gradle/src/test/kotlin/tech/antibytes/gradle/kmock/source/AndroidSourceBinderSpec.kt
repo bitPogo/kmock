@@ -57,7 +57,7 @@ class AndroidSourceBinderSpec {
 
         invokeGradleAction(
             { probe -> extensions.configure(ApplicationExtension::class.java, probe) },
-            androidExtension
+            androidExtension,
         )
 
         every { androidExtension.buildTypes } returns buildTypes
@@ -123,7 +123,7 @@ class AndroidSourceBinderSpec {
 
         invokeGradleAction(
             { probe -> extensions.configure(LibraryExtension::class.java, probe) },
-            androidExtension
+            androidExtension,
         )
 
         every { androidExtension.buildTypes } returns buildTypes

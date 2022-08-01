@@ -7,6 +7,9 @@
 package tech.antibytes.kmock.verification
 
 import co.touchlab.stately.isFrozen
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract.CloseableAssertionContext
@@ -19,9 +22,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class UnchainedAssertionSpec {
     private val fixture = kotlinFixture()
@@ -34,7 +34,7 @@ class UnchainedAssertionSpec {
 
     private fun invoke(
         chain: UnchainedAssertion,
-        action: UnchainedAssertion.() -> Unit
+        action: UnchainedAssertion.() -> Unit,
     ) = action(chain)
 
     @Test
@@ -50,7 +50,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -78,7 +78,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -111,7 +111,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -143,7 +143,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            hasBeenCalledAtIndex = { _, _ -> }
+            hasBeenCalledAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -164,7 +164,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            hasBeenCalledAtIndex = { _, _ -> }
+            hasBeenCalledAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -192,7 +192,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -220,7 +220,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -253,7 +253,7 @@ class UnchainedAssertionSpec {
             hasBeenCalledWithVoidAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -285,7 +285,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithVoidAtIndex = { _, _ -> }
+            hasBeenCalledWithVoidAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -305,7 +305,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithVoidAtIndex = { _, _ -> }
+            hasBeenCalledWithVoidAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -336,7 +336,7 @@ class UnchainedAssertionSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -370,7 +370,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -411,7 +411,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -448,7 +448,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithAtIndex = { _, _, _ -> }
+            hasBeenCalledWithAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -468,7 +468,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithAtIndex = { _, _, _ -> }
+            hasBeenCalledWithAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -499,7 +499,7 @@ class UnchainedAssertionSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -533,7 +533,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -574,7 +574,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -611,7 +611,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            hasBeenStrictlyCalledWithAtIndex = { _, _, _ -> }
+            hasBeenStrictlyCalledWithAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -631,7 +631,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            hasBeenStrictlyCalledWithAtIndex = { _, _, _ -> }
+            hasBeenStrictlyCalledWithAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -662,7 +662,7 @@ class UnchainedAssertionSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedArguments = givenArguments
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -696,7 +696,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -737,7 +737,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedArguments.add(givenArguments)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -774,7 +774,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithoutAtIndex = { _, _, _ -> }
+            hasBeenCalledWithoutAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -794,7 +794,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.funProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            hasBeenCalledWithoutAtIndex = { _, _, _ -> }
+            hasBeenCalledWithoutAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -822,7 +822,7 @@ class UnchainedAssertionSpec {
             wasGottenAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -850,7 +850,7 @@ class UnchainedAssertionSpec {
             wasGottenAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -883,7 +883,7 @@ class UnchainedAssertionSpec {
             wasGottenAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -915,7 +915,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            wasGottenAtIndex = { _, _ -> }
+            wasGottenAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -935,7 +935,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            wasGottenAtIndex = { _, _ -> }
+            wasGottenAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -963,7 +963,7 @@ class UnchainedAssertionSpec {
             wasSetAtIndex = { givenProxy, givenIdx ->
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -991,7 +991,7 @@ class UnchainedAssertionSpec {
             wasSetAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1024,7 +1024,7 @@ class UnchainedAssertionSpec {
             wasSetAtIndex = { givenProxy, givenIdx ->
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1056,7 +1056,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            wasSetAtIndex = { _, _ -> }
+            wasSetAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1076,7 +1076,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            wasSetAtIndex = { _, _ -> }
+            wasSetAtIndex = { _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1107,7 +1107,7 @@ class UnchainedAssertionSpec {
                 capturedProxy = givenProxy
                 capturedIdx = givenIdx
                 capturedValue = argument
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1141,7 +1141,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedValues.add(argument)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1182,7 +1182,7 @@ class UnchainedAssertionSpec {
                 capturedProxies.add(givenProxy)
                 capturedIndices.add(givenIdx)
                 capturedValues.add(argument)
-            }
+            },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1214,7 +1214,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = true)
 
         val assertions = AssertionsStub(
-            wasSetToAtIndex = { _, _, _ -> }
+            wasSetToAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1234,7 +1234,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(freeze = false)
 
         val assertions = AssertionsStub(
-            wasSetToAtIndex = { _, _, _ -> }
+            wasSetToAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)
@@ -1276,7 +1276,7 @@ class UnchainedAssertionSpec {
         val expectedProxy = fixture.propertyProxyFixture(calls = calls)
 
         val assertions = AssertionsStub(
-            wasSetToAtIndex = { _, _, _ -> }
+            wasSetToAtIndex = { _, _, _ -> },
         )
 
         val container = UnchainedAssertion(assertions)

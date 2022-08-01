@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -77,7 +78,7 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
 
 private fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
-    typeParameterResolver: TypeParameterResolver
+    typeParameterResolver: TypeParameterResolver,
 ): TypeParameterResolver {
     return if (declaration.typeParameters.isEmpty()) {
         typeParameterResolver

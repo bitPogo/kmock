@@ -68,7 +68,7 @@ internal class KSPBridge private constructor(
     override fun <T> propagateIterable(
         rootKey: String,
         values: Iterable<T>,
-        action: (T) -> String
+        action: (T) -> String,
     ) {
         configureOnce()
         values.forEachIndexed { idx, type ->

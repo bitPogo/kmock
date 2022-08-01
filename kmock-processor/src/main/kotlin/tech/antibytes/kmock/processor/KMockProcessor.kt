@@ -69,32 +69,32 @@ internal class KMockProcessor(
         commonSource: Aggregated<T>,
         sharedSource: Aggregated<T>,
         platformSource: Aggregated<T>,
-        additionalIllSources: List<KSAnnotated> = emptyList()
+        additionalIllSources: List<KSAnnotated> = emptyList(),
     ): Aggregated<T> {
         return Aggregated(
             illFormed = listOf(
                 commonSource.illFormed,
                 sharedSource.illFormed,
                 platformSource.illFormed,
-                additionalIllSources
+                additionalIllSources,
             ).flatten(),
             extractedTemplates = listOf(
                 commonSource.extractedTemplates,
                 sharedSource.extractedTemplates,
-                platformSource.extractedTemplates
+                platformSource.extractedTemplates,
             ).flatten(),
             totalDependencies = listOf(
                 commonSource.totalDependencies,
                 sharedSource.totalDependencies,
                 platformSource.totalDependencies,
-            ).flatten()
+            ).flatten(),
         )
     }
 
     private fun <T : Source> mergeSources(
         rootSource: Aggregated<T>,
         dependentSource: Aggregated<T>,
-        additionalIllSources: List<KSAnnotated> = emptyList()
+        additionalIllSources: List<KSAnnotated> = emptyList(),
     ): Aggregated<T> {
         return Aggregated(
             illFormed = listOf(rootSource.illFormed, dependentSource.illFormed, additionalIllSources).flatten(),
@@ -105,7 +105,7 @@ internal class KMockProcessor(
 
     private fun resolveCommonAggregated(
         singleCommonSources: Aggregated<TemplateSource>,
-        multiCommonSources: Aggregated<TemplateMultiSource>
+        multiCommonSources: Aggregated<TemplateMultiSource>,
     ): Aggregated<TemplateSource> {
         return when {
             multiCommonSources.extractedTemplates.isEmpty() && totalMultiAggregated.extractedTemplates.isEmpty() -> {
@@ -124,7 +124,7 @@ internal class KMockProcessor(
                 mergeSources(
                     rootSource = commonAggregated,
                     dependentSource = singleCommonSources,
-                    additionalIllSources = commonMultiAggregated.illFormed
+                    additionalIllSources = commonMultiAggregated.illFormed,
                 )
             }
         }
@@ -153,7 +153,7 @@ internal class KMockProcessor(
         resolver: Resolver,
         kmockSingleAnnotated: List<KSAnnotated>,
         kmockMultiAnnotated: List<KSAnnotated>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Aggregated<TemplateSource> {
         val singleCommonSources = singleSourceAggregator.extractCommonInterfaces(kmockSingleAnnotated, resolver)
         val multiCommonSources = multiSourceAggregator.extractCommonInterfaces(kmockMultiAnnotated, resolver)
@@ -162,7 +162,7 @@ internal class KMockProcessor(
             templateSources = singleCommonSources.extractedTemplates,
             templateMultiSources = resolveMultiSources(
                 multiCommonSources.extractedTemplates,
-                this.commonMultiAggregated.extractedTemplates
+                this.commonMultiAggregated.extractedTemplates,
             ),
             relaxer = relaxer,
         )
@@ -194,7 +194,7 @@ internal class KMockProcessor(
                 mergeSources(
                     rootSource = sharedAggregated,
                     dependentSource = singleSharedSources,
-                    additionalIllSources = sharedMultiAggregated.illFormed
+                    additionalIllSources = sharedMultiAggregated.illFormed,
                 )
             }
         }
@@ -205,19 +205,19 @@ internal class KMockProcessor(
         kmockSingleAnnotated: Map<String, List<KSAnnotated>>,
         kmockMultiAnnotated: Map<String, List<KSAnnotated>>,
         commonAggregated: Aggregated<TemplateSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Aggregated<TemplateSource> {
         val singleAggregated = singleSourceAggregator.extractSharedInterfaces(kmockSingleAnnotated, resolver)
         val multiAggregated = multiSourceAggregator.extractSharedInterfaces(kmockMultiAnnotated, resolver)
 
         val filteredSingleInterfaces = filter.filter(
             templateSources = filter.filterByDependencies(singleAggregated.extractedTemplates),
-            filteredBy = commonAggregated.extractedTemplates
+            filteredBy = commonAggregated.extractedTemplates,
         )
 
         val filteredMultiInterfaces = filter.filter(
             templateSources = filter.filterByDependencies(multiAggregated.extractedTemplates),
-            filteredBy = commonMultiAggregated.extractedTemplates
+            filteredBy = commonMultiAggregated.extractedTemplates,
         )
 
         mockGenerator.writeSharedMocks(
@@ -226,7 +226,7 @@ internal class KMockProcessor(
                 filteredMultiInterfaces,
                 sharedMultiAggregated.extractedTemplates,
             ),
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return resolveSharedAggregated(
@@ -256,7 +256,7 @@ internal class KMockProcessor(
                 mergeSources(
                     rootSource = platformAggregated,
                     dependentSource = singlePlatformSources,
-                    additionalIllSources = platformMultiAggregated.illFormed
+                    additionalIllSources = platformMultiAggregated.illFormed,
                 )
             }
         }
@@ -268,7 +268,7 @@ internal class KMockProcessor(
         kmockMultiAnnotated: List<KSAnnotated>,
         commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Aggregated<TemplateSource> {
         val singleAggregated = singleSourceAggregator.extractPlatformInterfaces(kmockSingleAnnotated, resolver)
         val multiAggregated = multiSourceAggregator.extractPlatformInterfaces(kmockMultiAnnotated, resolver)
@@ -278,7 +278,7 @@ internal class KMockProcessor(
             filteredBy = listOf(
                 commonAggregated.extractedTemplates,
                 sharedAggregated.extractedTemplates,
-            ).flatten()
+            ).flatten(),
         )
 
         val filteredMultiInterfaces = filter.filter(
@@ -286,7 +286,7 @@ internal class KMockProcessor(
             filteredBy = listOf(
                 commonMultiAggregated.extractedTemplates,
                 sharedMultiAggregated.extractedTemplates,
-            ).flatten()
+            ).flatten(),
         )
 
         mockGenerator.writePlatformMocks(
@@ -322,7 +322,7 @@ internal class KMockProcessor(
                 kmockSingleAnnotated = kmockSingleAnnotated.shared,
                 kmockMultiAnnotated = kmockMultiAnnotated.shared,
                 commonAggregated = commonAggregated,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
 
             Pair(commonAggregated, sharedAggregated)
@@ -335,7 +335,7 @@ internal class KMockProcessor(
         commonAggregated: Aggregated<TemplateSource>,
         sharedAggregated: Aggregated<TemplateSource>,
         totalAggregated: Aggregated<TemplateSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         if (isFirstRound) {
             val totalDependencies = totalAggregated.totalDependencies.merge(totalMultiAggregated.totalDependencies)
@@ -344,7 +344,7 @@ internal class KMockProcessor(
                 templateSources = totalAggregated.extractedTemplates,
                 templateMultiSources = totalMultiAggregated.extractedTemplates,
                 relaxer = relaxer,
-                dependencies = totalDependencies
+                dependencies = totalDependencies,
             )
 
             if (isKmp) {
@@ -361,8 +361,8 @@ internal class KMockProcessor(
                     templateMultiSources = sharedMultiAggregated.extractedTemplates,
                     dependencies = listOf(
                         sharedAggregated.totalDependencies,
-                        sharedMultiAggregated.totalDependencies
-                    ).flatten()
+                        sharedMultiAggregated.totalDependencies,
+                    ).flatten(),
                 )
             }
         }
@@ -381,7 +381,7 @@ internal class KMockProcessor(
         if (interfaceBinderIsApplicable()) {
             interfaceGenerator.bind(
                 totalMultiAggregated.extractedTemplates,
-                totalMultiAggregated.totalDependencies
+                totalMultiAggregated.totalDependencies,
             )
         }
     }
@@ -408,7 +408,7 @@ internal class KMockProcessor(
             commonSource = commonAggregated,
             sharedSource = sharedAggregated,
             platformSource = platformAggregated,
-            additionalIllSources = totalMultiAggregated.illFormed
+            additionalIllSources = totalMultiAggregated.illFormed,
         )
     }
 
@@ -436,7 +436,7 @@ internal class KMockProcessor(
             kmockMultiAnnotated = kmockMultiAnnotated.platform,
             commonAggregated = commonAggregated,
             sharedAggregated = sharedAggregated,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         val totalAggregated = extractTotal(
@@ -451,7 +451,7 @@ internal class KMockProcessor(
             commonAggregated = commonAggregated,
             sharedAggregated = sharedAggregated,
             totalAggregated = totalAggregated,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         finalize()

@@ -8,6 +8,9 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -16,9 +19,6 @@ import tech.antibytes.kmock.error.MockError
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class PropertyProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
@@ -175,7 +175,7 @@ class PropertyProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = PropertyProxy<Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -202,7 +202,7 @@ class PropertyProxyUnfrozenSpec {
         val implementation = Implementation<Any>()
         val proxy = PropertyProxy<Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         implementation.fooProp = value
@@ -418,7 +418,7 @@ class PropertyProxyUnfrozenSpec {
 
         val proxy = PropertyProxy<Any>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any = fixture.fixture()
 
@@ -555,7 +555,7 @@ class PropertyProxyUnfrozenSpec {
 
     private class Implementation<T>(
         var fooProp: T? = null,
-        var barProp: AtomicReference<T?> = AtomicReference(null)
+        var barProp: AtomicReference<T?> = AtomicReference(null),
     ) {
         val foo: T
             get() {

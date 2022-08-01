@@ -12,6 +12,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
@@ -26,14 +27,13 @@ import tech.antibytes.kfixture.mapFixture
 import tech.antibytes.kfixture.qualifier.qualifiedBy
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import java.io.File
 
 class KSPBridgeSpec {
     private val fixture = kotlinFixture {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 
@@ -61,7 +61,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
 
         // Then
@@ -96,7 +96,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateValue(fixture.fixture(), fixture.fixture())
 
         // Then
@@ -134,7 +134,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateValue(fixture.fixture(), fixture.fixture())
         bridge.propagateValue(fixture.fixture(), fixture.fixture())
@@ -174,7 +174,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateValue(fixture.fixture(), fixture.fixture())
 
         // Then
@@ -212,7 +212,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateValue(fixture.fixture(), fixture.fixture())
         bridge.propagateValue(fixture.fixture(), fixture.fixture())
@@ -255,7 +255,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateValue(key, value)
 
         // Then
@@ -290,7 +290,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateMapping(fixture.fixture(), fixture.mapFixture())
 
         // Then
@@ -328,7 +328,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateMapping(fixture.fixture(), fixture.mapFixture())
         bridge.propagateMapping(fixture.fixture(), fixture.mapFixture())
@@ -368,7 +368,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateMapping(fixture.fixture(), fixture.mapFixture())
 
         // Then
@@ -406,7 +406,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateMapping(fixture.fixture(), fixture.mapFixture())
         bridge.propagateMapping(fixture.fixture(), fixture.mapFixture())
@@ -454,11 +454,11 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateMapping(
             rootKey = rootKey,
             mapping = pairs,
-            onPropagation = action
+            onPropagation = action,
         )
 
         // Then
@@ -496,7 +496,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateIterable(fixture.fixture(), fixture.listFixture<String>())
 
         // Then
@@ -534,7 +534,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateIterable(fixture.fixture(), fixture.listFixture<String>())
         bridge.propagateIterable(fixture.fixture(), fixture.listFixture<String>())
@@ -574,7 +574,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateIterable(fixture.fixture(), fixture.listFixture<String>())
 
         // Then
@@ -612,7 +612,7 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         )
         bridge.propagateIterable(fixture.fixture(), fixture.listFixture<String>())
         bridge.propagateIterable(fixture.fixture(), fixture.listFixture<String>())
@@ -662,11 +662,11 @@ class KSPBridgeSpec {
             project = project,
             cacheController = cacheController,
             singleSourceSetConfigurator = singleSource,
-            kmpSourceSetConfigurator = kmpSource
+            kmpSourceSetConfigurator = kmpSource,
         ).propagateIterable(
             rootKey = rootKey,
             values = values,
-            action = action
+            action = action,
         )
 
         // Then

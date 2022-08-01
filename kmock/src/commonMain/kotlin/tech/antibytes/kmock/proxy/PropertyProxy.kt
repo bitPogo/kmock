@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.collections.sharedMutableListOf
+import kotlin.math.max
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -18,7 +19,6 @@ import tech.antibytes.kmock.KMockContract.PropertyProxyInvocationType
 import tech.antibytes.kmock.KMockContract.PropertyProxyState
 import tech.antibytes.kmock.KMockContract.Relaxer
 import tech.antibytes.kmock.error.MockError
-import kotlin.math.max
 
 /**
  * Proxy in order to stub/mock property behaviour.
@@ -129,7 +129,7 @@ internal class PropertyProxy<Value>(
     private fun setPropertyProxyInvocationType(invocationType: PropertyProxyInvocationType) {
         val activePropertyProxyInvocationType = max(
             invocationType.value,
-            state.invocationType.value
+            state.invocationType.value,
         )
 
         if (activePropertyProxyInvocationType == invocationType.value) {
@@ -168,7 +168,7 @@ internal class PropertyProxy<Value>(
     @Deprecated(
         "This property will be replaced with 0.3.0 by getValues.",
         replaceWith = ReplaceWith("error"),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.WARNING,
     )
     override var getMany: List<Value>
         get() = getValues
@@ -233,7 +233,7 @@ internal class PropertyProxy<Value>(
     private fun notifyCollector() {
         state.collector.addReference(
             this,
-            state.calls
+            state.calls,
         )
     }
 
@@ -244,7 +244,7 @@ internal class PropertyProxy<Value>(
     }
 
     private fun <Value> setInvocationType(
-        nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>
+        nonIntrusiveHook: NonIntrusivePropertyConfigurator<Value>,
     ) {
         if (nonIntrusiveHook.isSpyable()) {
             setPropertyProxyInvocationType(PropertyProxyInvocationType.SPY)

@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -64,7 +65,7 @@ private fun KSType.abbreviateType(
     return this.mapArgumentType(extraResolver, mapping, emptyList())
         .rawType()
         .withTypeArguments(
-            typeArguments.mapArgumentType(mapping, typeParameterResolver)
+            typeArguments.mapArgumentType(mapping, typeParameterResolver),
         )
         .copy(nullable = isNullable)
 }
@@ -105,7 +106,7 @@ internal fun KSType.mapArgumentType(
                 typeArguments.mapArgumentType(
                     typeParameterResolver = typeParameterResolver,
                     mapping = mapping,
-                )
+                ),
             )
         }
         is KSTypeAlias -> {
@@ -124,7 +125,7 @@ internal fun KSType.mapArgumentType(
 
             val aliasArgs = typeArguments.mapArgumentType(
                 mapping = mapping,
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = typeParameterResolver,
             )
 
             declaration.parameterizedBy(abbreviatedType, aliasArgs)

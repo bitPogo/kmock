@@ -6,9 +6,9 @@
 
 package tech.antibytes.kmock.processor.utils
 
+import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
 import tech.antibytes.util.test.mustBe
-import kotlin.test.assertFailsWith
 
 class StringExtensionsSpec {
     @Test

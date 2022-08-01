@@ -8,6 +8,10 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import tech.antibytes.kfixture.fixture
@@ -25,10 +29,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class SyncFunProxySpec {
     private val fixture = kotlinFixture()
@@ -63,7 +63,7 @@ class SyncFunProxySpec {
     fun `It is can be ignored for verification if told to`() {
         SyncFunProxy<Unit, () -> Unit>(
             fixture.fixture(),
-            ignorableForVerification = true
+            ignorableForVerification = true,
         ).ignorableForVerification mustBe true
     }
 

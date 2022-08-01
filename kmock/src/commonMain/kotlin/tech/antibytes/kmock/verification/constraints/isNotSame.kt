@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -18,5 +19,5 @@ import tech.antibytes.kmock.KMockContract.ArgumentConstraint
  * @author Matthias Geisler
  */
 public fun isNotSame(
-    illegal: Any?
+    illegal: Any?,
 ): ArgumentConstraint = not(isSame(illegal))

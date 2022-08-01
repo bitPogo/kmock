@@ -22,6 +22,6 @@ public object NoopCollector : Collector {
      */
     public override fun addReference(
         referredProxy: Proxy<*, *>,
-        referredCall: Int
+        referredCall: Int,
     ): Unit = Unit
 }

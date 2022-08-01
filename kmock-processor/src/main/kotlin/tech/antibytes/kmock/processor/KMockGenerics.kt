@@ -55,11 +55,11 @@ internal object KMockGenerics : GenericResolver {
 
     override fun mapDeclaredGenerics(
         generics: Map<String, List<KSTypeReference>>,
-        typeParameterResolver: TypeParameterResolver
+        typeParameterResolver: TypeParameterResolver,
     ): List<TypeVariableName> = generics.map { (type, bounds) ->
         TypeVariableName(
             type,
-            bounds = bounds.map { ksReference -> ksReference.toTypeName(typeParameterResolver) }
+            bounds = bounds.map { ksReference -> ksReference.toTypeName(typeParameterResolver) },
         )
     }
 
@@ -76,7 +76,7 @@ internal object KMockGenerics : GenericResolver {
     private fun mapDeclaredGenericsWithSuffix(
         generics: Map<String, List<KSTypeReference>>,
         suffix: Int,
-        typeResolver: TypeParameterResolver
+        typeResolver: TypeParameterResolver,
     ): List<TypeVariableName> {
         var counter = 0 + suffix
         val mapping = mapTypes(generics, suffix)
@@ -88,7 +88,7 @@ internal object KMockGenerics : GenericResolver {
                         typeParameterResolver = typeResolver,
                         mapping = mapping,
                     )
-                }
+                },
             ).also { counter++ }
         }
     }
@@ -111,7 +111,7 @@ internal object KMockGenerics : GenericResolver {
 
     override fun remapTypes(
         templates: List<KSClassDeclaration>,
-        generics: List<Map<String, List<KSTypeReference>>?>
+        generics: List<Map<String, List<KSTypeReference>>?>,
     ): Pair<List<TypeName>, List<TypeVariableName>> {
         var counter = 0
         val aggregatedTypeParameter: MutableList<TypeVariableName> = mutableListOf()
@@ -119,7 +119,7 @@ internal object KMockGenerics : GenericResolver {
             val typeParameter = resolveTypeParameter(
                 typeParameter = generics[idx],
                 typeResolver = parent.typeParameters.toTypeParameterResolver(),
-                suffix = counter
+                suffix = counter,
             )
             val raw = parent.toClassName()
             counter += generics[idx]?.size ?: 0
@@ -139,7 +139,7 @@ internal object KMockGenerics : GenericResolver {
         return GenericDeclaration(
             types = nullableAnys,
             isRecursive = false,
-            isNullable = true
+            isNullable = true,
         )
     }
 
@@ -227,7 +227,7 @@ internal object KMockGenerics : GenericResolver {
                 allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = typeParameterResolver,
             )
             else -> types.resolveMultiBoundary(
                 visited = visited,
@@ -235,7 +235,7 @@ internal object KMockGenerics : GenericResolver {
                 allGenerics = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = typeParameterResolver,
             )
         }
     }
@@ -243,7 +243,7 @@ internal object KMockGenerics : GenericResolver {
     override fun mapProxyGenerics(
         classScope: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>,
-        typeParameterResolver: TypeParameterResolver
+        typeParameterResolver: TypeParameterResolver,
     ): Map<String, GenericDeclaration> {
         val raw = generics.toMutableMap()
         val resolved: MutableMap<String, GenericDeclaration> = mutableMapOf()
@@ -279,7 +279,7 @@ internal object KMockGenerics : GenericResolver {
 
     override fun resolveMockClassType(
         template: KSClassDeclaration,
-        typeParameterResolver: TypeParameterResolver
+        typeParameterResolver: TypeParameterResolver,
     ): TypeName {
         return if (template.typeParameters.isEmpty()) {
             template.toClassName()
@@ -288,14 +288,14 @@ internal object KMockGenerics : GenericResolver {
                 .parameterizedBy(
                     template.typeParameters.map { type ->
                         type.toTypeVariableName(typeParameterResolver)
-                    }
+                    },
                 )
         }
     }
 
     override fun resolveKMockFactoryType(
         name: String,
-        templateSource: TemplateSource
+        templateSource: TemplateSource,
     ): TypeVariableName {
         val template = templateSource.template
         val typeResolver = template.typeParameters.toTypeParameterResolver()
@@ -305,7 +305,7 @@ internal object KMockGenerics : GenericResolver {
     }
 
     private fun List<KSTypeReference>.toTypeNames(
-        resolver: TypeParameterResolver
+        resolver: TypeParameterResolver,
     ): List<TypeName> = this.map { rawType -> rawType.toTypeName(resolver) }
 
     private fun List<KSTypeReference>.resolveTypeNames(resolver: TypeParameterResolver): List<TypeName> {

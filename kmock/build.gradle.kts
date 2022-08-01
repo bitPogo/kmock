@@ -30,10 +30,10 @@ plugins {
 
     id("kotlinx-atomicfu")
 
-    id("org.jetbrains.dokka") version "1.6.10"
+    id("org.jetbrains.dokka") version "1.7.0"
 
     // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
 }
 
 group = KMockConfiguration.group
@@ -118,6 +118,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+                this.
                 implementation(Dependency.multiplatform.kotlin.common)
                 implementation(Dependency.multiplatform.atomicFu.common)
                 implementation(Dependency.multiplatform.stately.collections)

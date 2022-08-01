@@ -6,14 +6,14 @@
 
 package tech.antibytes.kmock.verification.constraints
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class EqualSpec {
     private val fixture = kotlinFixture()

@@ -8,6 +8,9 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -17,9 +20,6 @@ import tech.antibytes.kmock.error.MockError
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class SyncFunProxyUnfrozenSpec {
     private val fixture = kotlinFixture()
@@ -48,7 +48,7 @@ class SyncFunProxyUnfrozenSpec {
         SyncFunProxy<Unit, () -> Unit>(
             fixture.fixture(),
             ignorableForVerification = true,
-            freeze = false
+            freeze = false,
         ).ignorableForVerification mustBe true
     }
 
@@ -64,7 +64,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val error = RuntimeException(fixture.fixture<String>())
 
@@ -81,7 +81,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val error = RuntimeException(fixture.fixture<String>())
 
@@ -98,7 +98,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val error = RuntimeException(fixture.fixture<String>())
 
@@ -173,7 +173,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any = fixture.fixture()
 
@@ -190,7 +190,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any = fixture.fixture()
 
@@ -207,7 +207,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any?, Function0<Any?>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any? = null
 
@@ -224,7 +224,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         // Then
@@ -241,7 +241,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture()
 
@@ -258,7 +258,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture()
 
@@ -275,7 +275,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val effect: () -> Any = { fixture.fixture() }
 
@@ -311,7 +311,7 @@ class SyncFunProxyUnfrozenSpec {
         val capturedId = AtomicReference<String?>(null)
         val proxy = SyncFunProxy<Any, () -> Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -335,7 +335,7 @@ class SyncFunProxyUnfrozenSpec {
         val name: String = fixture.fixture()
         val proxy = SyncFunProxy<Any, () -> Unit>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -358,7 +358,7 @@ class SyncFunProxyUnfrozenSpec {
 
         val proxy = SyncFunProxy<Any, () -> Any>(
             name,
-            freeze = false
+            freeze = false,
         )
 
         // When
@@ -378,7 +378,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val error = RuntimeException(fixture.fixture<String>())
 
@@ -419,7 +419,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: String = fixture.fixture()
 
@@ -437,7 +437,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
@@ -458,7 +458,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture(size = 1)
 
@@ -615,7 +615,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any = fixture.fixture()
         val error = listOf(RuntimeException(fixture.fixture<String>()))
@@ -636,7 +636,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val value: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
@@ -657,7 +657,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val expected: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
@@ -678,7 +678,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val expected: Any = fixture.fixture()
         val values: List<Any> = fixture.listFixture(size = 2)
@@ -773,7 +773,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
@@ -811,7 +811,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
         val values: List<Any> = fixture.listFixture(size = 5)
 
@@ -853,7 +853,7 @@ class SyncFunProxyUnfrozenSpec {
         // Given
         val proxy = SyncFunProxy<Any, Function0<Any>>(
             fixture.fixture(),
-            freeze = false
+            freeze = false,
         )
 
         val error = Throwable()

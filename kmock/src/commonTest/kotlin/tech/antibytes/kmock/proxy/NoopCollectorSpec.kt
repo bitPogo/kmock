@@ -6,12 +6,12 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.mock.SyncFunProxyStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class NoopCollectorSpec {
     @Test
@@ -25,7 +25,7 @@ class NoopCollectorSpec {
     fun `addReference is called with a Proxy and call index it does nothing`() {
         val actual = NoopCollector.addReference(
             SyncFunProxyStub("", -23),
-            23
+            23,
         )
 
         actual mustBe Unit

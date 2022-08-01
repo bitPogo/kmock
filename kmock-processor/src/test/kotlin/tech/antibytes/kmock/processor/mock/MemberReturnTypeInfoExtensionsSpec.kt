@@ -26,7 +26,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -44,8 +44,8 @@ class MemberReturnTypeInfoExtensionsSpec {
             proxyTypeName = mockk(),
             generic = null,
             classScope = mapOf(
-                "any" to mockk()
-            )
+                "any" to mockk(),
+            ),
         )
 
         // When
@@ -62,14 +62,14 @@ class MemberReturnTypeInfoExtensionsSpec {
         val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            proxyTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types,
         )
 
         val typeInfo = MemberReturnTypeInfo(
             methodTypeName = mockk(),
             proxyTypeName = proxyTypeName,
             generic = null,
-            classScope = classScope
+            classScope = classScope,
         )
 
         every { proxyTypeName.toString() } returns proxyTypeNameStr
@@ -91,7 +91,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         every { proxyTypeName.toString() } returns fixture.fixture()
@@ -114,14 +114,14 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk())
 
         // When
         val actual = typeInfo.needsCastAnnotation(
-            relaxer = mockk()
+            relaxer = mockk(),
         )
 
         // Then
@@ -135,21 +135,21 @@ class MemberReturnTypeInfoExtensionsSpec {
         val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            proxyTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types,
         )
 
         val typeInfo = MemberReturnTypeInfo(
             methodTypeName = proxyTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
-            classScope = classScope
+            classScope = classScope,
         )
 
         every { proxyTypeName.toString() } returns proxyTypeNameStr
 
         // When
         val actual = typeInfo.needsCastAnnotation(
-            relaxer = mockk()
+            relaxer = mockk(),
         )
 
         // Then
@@ -163,7 +163,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -181,7 +181,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk())
@@ -202,7 +202,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk(), mockk())
@@ -222,7 +222,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns emptyList()
@@ -242,7 +242,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -259,7 +259,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
-            classScope = mockk()
+            classScope = mockk(),
         )
 
         // When
@@ -276,7 +276,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = mockk(),
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -296,7 +296,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -315,7 +315,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -335,7 +335,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk())
@@ -357,7 +357,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = methodTypeName,
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk())
@@ -376,14 +376,14 @@ class MemberReturnTypeInfoExtensionsSpec {
         val proxyTypeNameStr = "${fixture.fixture<String>()}?"
         val types: List<TypeName> = mockk()
         val classScope: Map<String, List<TypeName>> = mapOf(
-            proxyTypeNameStr.dropLast(1) to types
+            proxyTypeNameStr.dropLast(1) to types,
         )
 
         val typeInfo = MemberReturnTypeInfo(
             methodTypeName = proxyTypeName,
             proxyTypeName = proxyTypeName,
             generic = null,
-            classScope = classScope
+            classScope = classScope,
         )
 
         every { proxyTypeName.toString() } returns proxyTypeNameStr
@@ -402,7 +402,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = null,
-            classScope = null
+            classScope = null,
         )
 
         // When
@@ -420,7 +420,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = mockk(),
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk())
@@ -442,7 +442,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = methodTypeName,
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns listOf(mockk(), mockk())
@@ -463,7 +463,7 @@ class MemberReturnTypeInfoExtensionsSpec {
             methodTypeName = type,
             proxyTypeName = mockk(),
             generic = generics,
-            classScope = null
+            classScope = null,
         )
 
         every { generics.types } returns emptyList()

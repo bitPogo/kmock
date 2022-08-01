@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -15,8 +17,6 @@ import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.mock.PropertyProxyStub
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class VerificationContextSpec {
     private val fixture = kotlinFixture()
@@ -28,7 +28,7 @@ class VerificationContextSpec {
     }
 
     private fun invoke(
-        action: VerificationContext.() -> Expectation
+        action: VerificationContext.() -> Expectation,
     ): Expectation = action(VerificationContext)
 
     @Test

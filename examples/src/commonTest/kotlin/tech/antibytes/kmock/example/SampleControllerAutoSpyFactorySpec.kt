@@ -7,6 +7,11 @@
 package tech.antibytes.kmock.example
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -37,22 +42,17 @@ import tech.antibytes.util.test.coroutine.defaultTestContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @MockCommon(
     SampleRemoteRepository::class,
     SampleLocalRepository::class,
     SampleDomainObject::class,
-    ExampleContract.DecoderFactory::class
+    ExampleContract.DecoderFactory::class,
 )
 @MultiMockCommon(
     "MergedCommon",
     SampleDomainObject::class,
-    ExampleContract.DecoderFactory::class
+    ExampleContract.DecoderFactory::class,
 )
 class SampleControllerAutoSpyFactorySpec {
     private val fixture = kotlinFixture()
@@ -183,7 +183,7 @@ class SampleControllerAutoSpyFactorySpec {
         val domainObject: SampleDomainObjectMock = kspy(
             instance,
             collector,
-            freeze = false
+            freeze = false,
         )
 
         remote._find.returnValue = domainObject
@@ -229,7 +229,7 @@ class SampleControllerAutoSpyFactorySpec {
 
 private class DomainObject(
     id: String,
-    value: Int
+    value: Int,
 ) : SampleDomainObject {
     private val _id: AtomicRef<String> = atomic(id)
     private val _value: AtomicInt = atomic(value)
@@ -240,5 +240,5 @@ private class DomainObject(
 
 private class DomainObject2(
     override var id: String,
-    override val value: Int
+    override val value: Int,
 ) : SampleDomainObject

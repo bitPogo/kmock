@@ -34,7 +34,7 @@ class PropertyProxyStub(
     @Deprecated(
         "This property will be replaced with 0.3.0 by getValues.",
         replaceWith = ReplaceWith("error"),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.WARNING,
     )
     override var getMany: List<Any>
         get() = TODO("Not yet implemented")

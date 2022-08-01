@@ -6,15 +6,15 @@
 
 package tech.antibytes.kmock.verification.constraints
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class AndSpec {
     private val fixture = kotlinFixture()
@@ -71,7 +71,7 @@ class AndSpec {
         // Given
         val values = arrayOf(
             MockConstraint(false),
-            MockConstraint(false)
+            MockConstraint(false),
         )
         val constraint = and(*values)
 
@@ -88,7 +88,7 @@ class AndSpec {
         // Given
         val values = arrayOf(
             MockConstraint(true),
-            MockConstraint(true)
+            MockConstraint(true),
         )
         val constraint = and(*values)
 
@@ -107,7 +107,7 @@ class AndSpec {
         val id2: String = fixture.fixture()
         val values = arrayOf(
             MockConstraint(false, id1),
-            MockConstraint(true, id2)
+            MockConstraint(true, id2),
         )
         val constraint = and(*values)
 
@@ -120,7 +120,7 @@ class AndSpec {
 
     private class MockConstraint(
         val matches: Boolean,
-        val _toString: String = ""
+        val _toString: String = "",
     ) : KMockContract.ArgumentConstraint {
         override fun matches(actual: Any?): Boolean = matches
         override fun toString(): String = _toString

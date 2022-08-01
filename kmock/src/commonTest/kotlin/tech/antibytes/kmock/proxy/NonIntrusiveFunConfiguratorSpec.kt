@@ -6,14 +6,14 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class NonIntrusiveFunConfiguratorSpec {
     private val fixture = kotlinFixture()
@@ -239,7 +239,7 @@ class NonIntrusiveFunConfiguratorSpec {
             equals = {
                 spyWasCalled = true
                 expected
-            }
+            },
         )
 
         // When
@@ -247,7 +247,7 @@ class NonIntrusiveFunConfiguratorSpec {
             subjectToSpyOn,
             Any(),
             { fixture.fixture() },
-            MockOfMocks::class
+            MockOfMocks::class,
         )
         val actual = spyTarget.unwrapSpy()
 
@@ -269,7 +269,7 @@ class NonIntrusiveFunConfiguratorSpec {
             equals = {
                 parentWasCalled = true
                 expected
-            }
+            },
         )
         val otherMock = MockOfMocks { !expected }
 
@@ -278,7 +278,7 @@ class NonIntrusiveFunConfiguratorSpec {
             subjectToSpyOn,
             otherMock,
             parent::equals,
-            MockOfMocks::class
+            MockOfMocks::class,
         )
         val actual = spyTarget.unwrapSpy()
 
@@ -335,7 +335,7 @@ class NonIntrusiveFunConfiguratorSpec {
         // Given
         val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
         val subjectToSpyOn = MockOfMocks(
-            equals = { fixture.fixture() }
+            equals = { fixture.fixture() },
         )
 
         // When
@@ -343,7 +343,7 @@ class NonIntrusiveFunConfiguratorSpec {
             subjectToSpyOn,
             Any(),
             { fixture.fixture() },
-            MockOfMocks::class
+            MockOfMocks::class,
         )
         val actual = spyTarget.isSpyable()
 
@@ -357,10 +357,10 @@ class NonIntrusiveFunConfiguratorSpec {
         // Given
         val spyTarget = NonIntrusiveFunConfigurator<Boolean, () -> Boolean>()
         val subjectToSpyOn = MockOfMocks(
-            equals = { fixture.fixture() }
+            equals = { fixture.fixture() },
         )
         val parent: Any = MockOfMocks(
-            equals = { fixture.fixture() }
+            equals = { fixture.fixture() },
         )
         val otherMock = MockOfMocks { fixture.fixture() }
 
@@ -369,7 +369,7 @@ class NonIntrusiveFunConfiguratorSpec {
             subjectToSpyOn,
             otherMock,
             parent::equals,
-            MockOfMocks::class
+            MockOfMocks::class,
         )
         val actual = spyTarget.isSpyable()
 

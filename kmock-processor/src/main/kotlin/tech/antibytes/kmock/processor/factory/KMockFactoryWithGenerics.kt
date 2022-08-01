@@ -47,7 +47,7 @@ internal class KMockFactoryWithGenerics(
             type = type,
             generics = generics,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addCode(factoryInvocationWithTemplate)
     }
 
@@ -64,7 +64,7 @@ internal class KMockFactoryWithGenerics(
             spyType = spyType,
             generics = generics,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addCode(spyFactoryInvocationWithTemplate)
     }
 
@@ -73,7 +73,7 @@ internal class KMockFactoryWithGenerics(
 
         val type = genericResolver.resolveKMockFactoryType(
             KMOCK_FACTORY_TYPE_NAME,
-            templateSource
+            templateSource,
         )
 
         return fillMockFactory(
@@ -88,7 +88,7 @@ internal class KMockFactoryWithGenerics(
 
         val spyType = genericResolver.resolveKMockFactoryType(
             KSPY_FACTORY_TYPE_NAME,
-            templateSource
+            templateSource,
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -116,7 +116,7 @@ internal class KMockFactoryWithGenerics(
     }
 
     private fun determineMockTemplate(
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Pair<String, String> {
         return if (relaxer == null) {
             Pair(
@@ -136,7 +136,7 @@ internal class KMockFactoryWithGenerics(
         qualifiedName: String,
         interfaceName: String,
         typeInfo: String,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val (interfaceInvocationTemplate, mockInvocationTemplate) = determineMockTemplate(relaxer)
         if (allowInterfaces) {
@@ -164,7 +164,7 @@ internal class KMockFactoryWithGenerics(
         mockFactory: FunSpec.Builder,
         typeInfo: String,
         templateSource: TemplateSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         val packageName = templateSource.packageName
         val qualifiedName = ensureNotNullClassName(templateSource.template.qualifiedName?.asString())
@@ -183,7 +183,7 @@ internal class KMockFactoryWithGenerics(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateSource,
         generics: List<TypeVariableName>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val typeInfo = "<${generics.joinToString(", ")}>"
 
@@ -192,7 +192,7 @@ internal class KMockFactoryWithGenerics(
                 mockFactory = this,
                 typeInfo = typeInfo,
                 templateSource = templateSource,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
         }
     }
@@ -202,7 +202,7 @@ internal class KMockFactoryWithGenerics(
         spyType: TypeVariableName,
         templateSource: TemplateSource,
         generics: List<TypeVariableName>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = mockType,
@@ -214,19 +214,19 @@ internal class KMockFactoryWithGenerics(
             mockFactory = mockFactory,
             templateSource = templateSource,
             generics = generics,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
     }
 
     private fun buildGenericSharedMockFactory(
         templateSource: TemplateSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val genericTypes = utils.resolveGenerics(templateSource)
 
         val spyType = genericResolver.resolveKMockFactoryType(
             KSPY_FACTORY_TYPE_NAME,
-            templateSource
+            templateSource,
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -236,12 +236,12 @@ internal class KMockFactoryWithGenerics(
             spyType = spyType,
             templateSource = templateSource,
             generics = genericTypes,
-            relaxer = relaxer
+            relaxer = relaxer,
         ).build()
     }
 
     private fun resolveKSpyFactory(
-        source: TemplateSource
+        source: TemplateSource,
     ): FunSpec? {
         return if (spyContainer.isSpyable(source.template, source.packageName, source.templateName)) {
             buildGenericSpyFactory(source)
@@ -252,7 +252,7 @@ internal class KMockFactoryWithGenerics(
 
     override fun buildGenericFactories(
         templateSources: List<TemplateSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): List<FactoryBundle> {
         val factories: MutableList<FactoryBundle> = mutableListOf()
 
@@ -263,15 +263,15 @@ internal class KMockFactoryWithGenerics(
 
             val shared = buildGenericSharedMockFactory(
                 templateSource = source,
-                relaxer = relaxer
+                relaxer = relaxer,
             )
 
             factories.add(
                 FactoryBundle(
                     kmock = kmock,
                     kspy = kspy,
-                    shared = shared
-                )
+                    shared = shared,
+                ),
             )
         }
 

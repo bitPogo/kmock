@@ -35,7 +35,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
     private val utils: MockFactoryGeneratorUtil,
 ) : MockFactoryMultiInterface {
     private fun determineMockTemplate(
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): String {
         return if (relaxer == null) {
             "%LMock($MULTI_INTERFACE_ARGUMENTS as $KSPY_FACTORY_TYPE_NAME?) as $KMOCK_FACTORY_TYPE_NAME"
@@ -46,7 +46,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun FunSpec.Builder.addMock(
         qualifiedName: String,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val statement = determineMockTemplate(relaxer)
         return addStatement(
@@ -58,13 +58,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
     private fun buildMockSelector(
         mockFactory: FunSpec.Builder,
         templateSource: TemplateMultiSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val qualifiedName = "${templateSource.packageName}.${templateSource.templateName}"
 
         return mockFactory.addMock(
             qualifiedName = qualifiedName,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
     }
 
@@ -74,7 +74,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         boundaries: List<TypeName>,
         templateSource: TemplateMultiSource,
         generics: List<TypeVariableName>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val mockFactory = utils.generateKspySignature(
             mockType = mockType,
@@ -82,13 +82,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
             boundaries = boundaries,
             generics = generics,
             hasDefault = false,
-            modifier = utils.resolveModifier(templateSource)
+            modifier = utils.resolveModifier(templateSource),
         )
 
         return buildMockSelector(
             mockFactory = mockFactory,
             templateSource = templateSource,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
     }
 
@@ -100,13 +100,13 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun buildSpyMockFactory(
         templateSource: TemplateMultiSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val (boundaries, _) = resolveBounds(templateSource)
 
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
-            bounds = boundaries
+            bounds = boundaries,
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -117,7 +117,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             boundaries = boundaries,
             templateSource = templateSource,
             generics = emptyList(),
-            relaxer = relaxer
+            relaxer = relaxer,
         ).build()
     }
 
@@ -134,7 +134,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             boundaries = boundaries,
             generics = generics,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addTypeVariables(generics)
     }
 
@@ -153,7 +153,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             boundaries = boundaries,
             generics = generics,
             hasDefault = !isKmp,
-            modifier = modifier
+            modifier = modifier,
         ).addTypeVariables(generics)
     }
 
@@ -175,7 +175,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         val mock = utils.resolveMockType(templateSource, generics)
         val type = TypeVariableName(
             KMOCK_FACTORY_TYPE_NAME,
-            bounds = listOf(mock)
+            bounds = listOf(mock),
         )
 
         return fillMockFactory(
@@ -185,7 +185,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             type = type,
         ).addCode(
             factoryInvocationWithTemplate,
-            generateTypeArguments(boundaries)
+            generateTypeArguments(boundaries),
         ).build()
     }
 
@@ -196,7 +196,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
     ): FunSpec {
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
-            bounds = boundaries
+            bounds = boundaries,
         )
 
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
@@ -209,7 +209,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             generics = generics,
         ).addCode(
             spyFactoryInvocationWithTemplate,
-            generateTypeArguments(boundaries)
+            generateTypeArguments(boundaries),
         ).build()
     }
 
@@ -219,7 +219,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         boundaries: List<TypeName>,
         templateSource: TemplateMultiSource,
         generics: List<TypeVariableName>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec.Builder {
         val mockFactory = utils.generateSharedMockFactorySignature(
             mockType = mockType,
@@ -233,7 +233,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         return buildMockSelector(
             mockFactory = mockFactory,
             templateSource = templateSource,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
     }
 
@@ -241,7 +241,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
         templateSource: TemplateMultiSource,
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
@@ -256,7 +256,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
             templateSource = templateSource,
             boundaries = boundaries,
             generics = generics,
-            relaxer = relaxer
+            relaxer = relaxer,
         ).build()
     }
 
@@ -282,7 +282,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     private fun buildGenericFactories(
         templateSource: TemplateMultiSource,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FactoryMultiBundle {
         val (bounds, generics) = resolveBounds(templateSource)
 
@@ -291,7 +291,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
                 templateSource = templateSource,
                 boundaries = bounds,
                 generics = generics,
-                relaxer = relaxer
+                relaxer = relaxer,
             ),
             kmock = buildGenericKmockFactory(
                 templateSource = templateSource,
@@ -308,7 +308,7 @@ internal class KMockFactoryMultiInterfaceGenerator(
 
     override fun buildFactories(
         templateMultiSources: List<TemplateMultiSource>,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): List<FactoryMultiBundle> {
         val factories: MutableList<FactoryMultiBundle> = mutableListOf()
 
@@ -318,8 +318,8 @@ internal class KMockFactoryMultiInterfaceGenerator(
                     FactoryMultiBundle(
                         kmock = null,
                         shared = null,
-                        kspy = buildSpyMockFactory(source, relaxer)
-                    )
+                        kspy = buildSpyMockFactory(source, relaxer),
+                    ),
                 )
             }
 

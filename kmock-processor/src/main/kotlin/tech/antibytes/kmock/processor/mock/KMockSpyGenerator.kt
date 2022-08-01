@@ -19,11 +19,11 @@ internal object KMockSpyGenerator : SpyGenerator {
     private fun buildSpy(invocation: String): String = "useSpyIf($SPY_PROPERTY) { $invocation }\n"
 
     override fun buildGetterSpy(
-        propertyName: String
+        propertyName: String,
     ): String = buildSpy("$SPY_PROPERTY!!.$propertyName")
 
     override fun buildSetterSpy(
-        propertyName: String
+        propertyName: String,
     ): String = buildSpy("$SPY_PROPERTY!!.$propertyName = $VALUE")
 
     override fun buildReceiverGetterSpy(propertyName: String, propertyType: MemberReturnTypeInfo): String {
@@ -46,7 +46,7 @@ internal object KMockSpyGenerator : SpyGenerator {
     }
 
     private fun determineSpyInvocationArgument(
-        methodInfo: MemberArgumentTypeInfo
+        methodInfo: MemberArgumentTypeInfo,
     ): String {
         return if (methodInfo.isVarArg) {
             "*${methodInfo.argumentName}"
@@ -71,7 +71,7 @@ internal object KMockSpyGenerator : SpyGenerator {
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",
-            transform = ::determineSpyInvocationArgument
+            transform = ::determineSpyInvocationArgument,
         )
         val typesParameter = resolveTypes(parameter)
 
@@ -82,11 +82,11 @@ internal object KMockSpyGenerator : SpyGenerator {
         methodName: String,
         parameter: List<TypeName>,
         arguments: Array<MemberArgumentTypeInfo>,
-        methodReturnType: MemberReturnTypeInfo
+        methodReturnType: MemberReturnTypeInfo,
     ): String {
         val invocationArguments = arguments.joinToString(
             separator = ", ",
-            transform = ::determineSpyInvocationArgument
+            transform = ::determineSpyInvocationArgument,
         )
         val typesParameter = resolveTypes(parameter)
         val invocation = """

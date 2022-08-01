@@ -59,7 +59,7 @@ tasks.withType<Detekt>().configureEach {
         "**/test/resources/**",
         "**/build.gradle.kts",
         "**/settings.gradle.kts",
-        "**/Dangerfile.df.kts",
+        "**/Dangerfile.df.kts"
     )
 
     reports {
@@ -94,7 +94,7 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
         "**/*.pro",
         "**/*.sq",
         "**/*.xml",
-        "**/*.yml",
+        "**/*.yml"
     )
 }
 
