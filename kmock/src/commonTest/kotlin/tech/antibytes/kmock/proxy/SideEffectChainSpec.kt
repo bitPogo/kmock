@@ -9,6 +9,10 @@ package tech.antibytes.kmock.proxy
 import co.touchlab.stately.collections.IsoMutableList
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.TestScopeDispatcher
@@ -17,10 +21,6 @@ import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class SideEffectChainSpec {
     private val testScope1 = TestScopeDispatcher.dispatch("test1")
@@ -76,8 +76,8 @@ class SideEffectChainSpec {
             chain.addAll(
                 listOf(
                     { /* Do nothing */ },
-                    { /* Do nothing */ }
-                )
+                    { /* Do nothing */ },
+                ),
             )
         }
 
@@ -113,7 +113,7 @@ class SideEffectChainSpec {
             {},
             {},
             {},
-            {}
+            {},
         )
 
         // When
@@ -142,7 +142,7 @@ class SideEffectChainSpec {
             {},
             {},
             {},
-            {}
+            {},
         )
 
         // When

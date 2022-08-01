@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -168,7 +169,7 @@ private fun KSType.abbreviateType(
 private fun KSClassDeclaration.isMisalignedVararg(
     inheritedVarargArg: Boolean,
     arguments: List<TypeName>,
-    rootTypeArguments: List<KSTypeArgument>
+    rootTypeArguments: List<KSTypeArgument>,
 ): Boolean {
     val resolved = rootTypeArguments.firstOrNull()?.type?.resolve()?.declaration?.simpleName?.getShortName()
     val derived = arguments.firstOrNull()?.toString()

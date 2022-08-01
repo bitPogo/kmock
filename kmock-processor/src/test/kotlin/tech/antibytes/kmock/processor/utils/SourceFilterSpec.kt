@@ -48,7 +48,7 @@ class SourceFilterSpec {
                 templateName = packageName0,
                 packageName = interfaceName0,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "",
@@ -56,8 +56,8 @@ class SourceFilterSpec {
                 templateName = packageName0,
                 packageName = interfaceName1,
                 generics = null,
-                dependencies = emptyList()
-            )
+                dependencies = emptyList(),
+            ),
         )
 
         val sources1 = listOf(
@@ -67,7 +67,7 @@ class SourceFilterSpec {
                 templateName = packageName1,
                 packageName = interfaceName0,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "",
@@ -75,8 +75,8 @@ class SourceFilterSpec {
                 templateName = packageName0,
                 packageName = interfaceName1,
                 generics = null,
-                dependencies = emptyList()
-            )
+                dependencies = emptyList(),
+            ),
         )
 
         // When
@@ -84,7 +84,7 @@ class SourceFilterSpec {
 
         // Then
         actual mustBe listOf(
-            sources0.first()
+            sources0.first(),
         )
     }
 
@@ -108,7 +108,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = marker1,
@@ -116,8 +116,8 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
-            )
+                dependencies = emptyList(),
+            ),
         )
 
         // When
@@ -144,7 +144,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "otherTest",
@@ -152,7 +152,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
         )
 
@@ -189,7 +189,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "otherTest",
@@ -197,7 +197,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "concurrentTest",
@@ -205,7 +205,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
         )
 
@@ -242,7 +242,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "iosTest",
@@ -250,7 +250,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "otherTest",
@@ -258,7 +258,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
         )
 
@@ -296,7 +296,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "iosTest",
@@ -304,7 +304,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "otherTest",
@@ -312,7 +312,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "linuxTest",
@@ -320,7 +320,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
         )
 
@@ -361,7 +361,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "darwinTest",
@@ -369,7 +369,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "concurrentTest",
@@ -377,7 +377,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "nativeTest",
@@ -385,7 +385,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "otherTest",
@@ -393,7 +393,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
             TemplateSource(
                 indicator = "metaTest",
@@ -401,7 +401,7 @@ class SourceFilterSpec {
                 templateName = interfaceName,
                 packageName = packageName,
                 generics = null,
-                dependencies = emptyList()
+                dependencies = emptyList(),
             ),
         )
 

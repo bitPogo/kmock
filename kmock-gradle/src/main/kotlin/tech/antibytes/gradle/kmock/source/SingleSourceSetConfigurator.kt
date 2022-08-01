@@ -40,13 +40,13 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
         project.dependencies {
             add(
                 "kspTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
             )
 
             if (project.isAndroid()) {
                 add(
                     "kspAndroidTest",
-                    "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+                    "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
                 )
             }
         }

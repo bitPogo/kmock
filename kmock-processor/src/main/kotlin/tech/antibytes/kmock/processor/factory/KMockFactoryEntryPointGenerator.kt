@@ -45,7 +45,7 @@ internal class KMockFactoryEntryPointGenerator(
             type = type.copy(reified = true),
             generics = emptyList(),
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).build()
     }
 
@@ -58,7 +58,7 @@ internal class KMockFactoryEntryPointGenerator(
             mockType = mockType,
             generics = emptyList(),
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).build()
     }
 
@@ -68,14 +68,14 @@ internal class KMockFactoryEntryPointGenerator(
         val generics = utils.resolveGenerics(templateSource)
         val type = genericResolver.resolveKMockFactoryType(
             KMOCK_FACTORY_TYPE_NAME,
-            templateSource
+            templateSource,
         )
 
         return utils.generateKmockSignature(
             type = type.copy(reified = true),
             generics = generics,
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).build()
     }
 
@@ -85,7 +85,7 @@ internal class KMockFactoryEntryPointGenerator(
         val generics = utils.resolveGenerics(templateSource)
         val spyType = genericResolver.resolveKMockFactoryType(
             KSPY_FACTORY_TYPE_NAME,
-            templateSource
+            templateSource,
         )
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME, bounds = listOf(spyType))
 
@@ -94,12 +94,12 @@ internal class KMockFactoryEntryPointGenerator(
             mockType = mockType,
             generics = generics,
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).build()
     }
 
     private fun resolveGenericSpyFactory(
-        source: TemplateSource
+        source: TemplateSource,
     ): FunSpec? {
         return if (spyContainer.isSpyable(source.template, source.packageName, source.templateName)) {
             buildSpyGenericFactory(source)
@@ -109,12 +109,12 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun buildGenericFactories(
-        templateSources: List<TemplateSource>
+        templateSources: List<TemplateSource>,
     ): List<Pair<FunSpec, FunSpec?>> {
         return templateSources.map { template ->
             Pair(
                 buildMockGenericFactory(template),
-                resolveGenericSpyFactory(template)
+                resolveGenericSpyFactory(template),
             )
         }
     }
@@ -136,7 +136,7 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun buildMultiInterfaceSpyFactory(
-        boundaries: List<TypeName>
+        boundaries: List<TypeName>,
     ): FunSpec {
         val spyType = TypeVariableName(KSPY_FACTORY_TYPE_NAME, bounds = boundaries)
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(bounds = listOf(spyType))
@@ -147,14 +147,14 @@ internal class KMockFactoryEntryPointGenerator(
             boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).build()
     }
 
     private fun buildMultiInterfaceGenericKMockFactory(
         source: TemplateMultiSource,
         boundaries: List<TypeName>,
-        generics: List<TypeVariableName>
+        generics: List<TypeVariableName>,
     ): FunSpec {
         val mock = utils.resolveMockType(source, generics)
         val mockType = TypeVariableName(KMOCK_FACTORY_TYPE_NAME).copy(bounds = listOf(mock))
@@ -164,13 +164,13 @@ internal class KMockFactoryEntryPointGenerator(
             boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).addTypeVariables(generics).build()
     }
 
     private fun buildMultiInterfaceGenericKSpyFactory(
         boundaries: List<TypeName>,
-        generics: List<TypeVariableName>
+        generics: List<TypeVariableName>,
     ): FunSpec {
         val spyType = TypeVariableName(
             KSPY_FACTORY_TYPE_NAME,
@@ -185,7 +185,7 @@ internal class KMockFactoryEntryPointGenerator(
             boundaries = boundaries,
             generics = emptyList(),
             hasDefault = true,
-            modifier = KModifier.EXPECT
+            modifier = KModifier.EXPECT,
         ).addTypeVariables(generics).build()
     }
 
@@ -196,7 +196,7 @@ internal class KMockFactoryEntryPointGenerator(
     private fun resolveGenericMultiInterfaceFactories(
         templateSource: TemplateMultiSource,
         boundaries: List<TypeName>,
-        generics: List<TypeVariableName>
+        generics: List<TypeVariableName>,
     ): FunSpec {
         return if (templateSource.isSpyable()) {
             buildMultiInterfaceGenericKSpyFactory(
@@ -213,7 +213,7 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun buildMultiInterfaceFactory(
-        templateSource: TemplateMultiSource
+        templateSource: TemplateMultiSource,
     ): FunSpec? {
         val (types, generics) = genericResolver.remapTypes(templateSource.templates, templateSource.generics)
 
@@ -227,7 +227,7 @@ internal class KMockFactoryEntryPointGenerator(
     }
 
     private fun FileSpec.Builder.generateMultiInterfaceEntryPoints(
-        templateSources: List<TemplateMultiSource>
+        templateSources: List<TemplateMultiSource>,
     ) {
         templateSources.forEach { source ->
             val factory = buildMultiInterfaceFactory(source)
@@ -248,7 +248,7 @@ internal class KMockFactoryEntryPointGenerator(
         if (isKmp && (totalTemplates.isNotEmpty() || totalMultiSources.isNotEmpty())) {
             val file = FileSpec.builder(
                 rootPackage,
-                FACTORY_FILE_NAME
+                FACTORY_FILE_NAME,
             )
             val (_, generics) = utils.splitInterfacesIntoRegularAndGenerics(templateSources)
 
@@ -286,7 +286,7 @@ internal class KMockFactoryEntryPointGenerator(
             if (singleGenerics.isNotEmpty() || multiGenerics.isNotEmpty()) {
                 val file = FileSpec.builder(
                     rootPackage,
-                    FACTORY_FILE_NAME
+                    FACTORY_FILE_NAME,
                 )
                 file.addAnnotation(UNUSED)
 
@@ -315,7 +315,7 @@ internal class KMockFactoryEntryPointGenerator(
         return allKeys.associateWith { key ->
             Pair(
                 singleSources[key] ?: emptyList(),
-                multiSources[key] ?: emptyList()
+                multiSources[key] ?: emptyList(),
             )
         }
     }
@@ -358,7 +358,7 @@ internal class KMockFactoryEntryPointGenerator(
 
             generateShared(
                 buckets = mergeSources(bucketsSingle, bucketsMulti),
-                dependencies = dependencies
+                dependencies = dependencies,
             )
         }
     }

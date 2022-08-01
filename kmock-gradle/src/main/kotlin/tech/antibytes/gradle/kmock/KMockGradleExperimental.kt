@@ -7,7 +7,7 @@ package tech.antibytes.gradle.kmock
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
-    message = "This API is experimental. It may be removed or changed in future releases."
+    message = "This API is experimental. It may be removed or changed in future releases.",
 )
 @Target(
     AnnotationTarget.CLASS,
@@ -15,6 +15,6 @@ package tech.antibytes.gradle.kmock
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
     AnnotationTarget.FIELD,
-    AnnotationTarget.CONSTRUCTOR
+    AnnotationTarget.CONSTRUCTOR,
 )
 public annotation class KMockGradleExperimental

@@ -16,6 +16,8 @@ import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
@@ -32,13 +34,11 @@ import tech.antibytes.kmock.processor.ProcessorContract.GenericResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Source
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
-import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
-import kotlin.reflect.KClass
 
 internal class KMockFactoryGeneratorUtil(
     freezeOnDefault: Boolean,
     isKmp: Boolean,
-    private val genericResolver: GenericResolver
+    private val genericResolver: GenericResolver,
 ) : ProcessorContract.MockFactoryGeneratorUtil {
     private val modifier: KModifier? = if (isKmp) {
         KModifier.ACTUAL
@@ -48,11 +48,11 @@ internal class KMockFactoryGeneratorUtil(
 
     private val spyOn = ParameterSpec.builder(
         SPY_ARGUMENT,
-        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = false)
+        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = false),
     ).build()
     private val spyOnNullable = ParameterSpec.builder(
         SPY_ARGUMENT,
-        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = true)
+        TypeVariableName(KSPY_FACTORY_TYPE_NAME).copy(nullable = true),
     ).build()
 
     private val relaxed = ParameterSpec.builder(RELAXER_ARGUMENT, Boolean::class).build()
@@ -89,13 +89,13 @@ internal class KMockFactoryGeneratorUtil(
         identifier: TypeName,
     ): TypeName {
         return kClass.parameterizedBy(
-            identifier.toParameterizedByStar()
+            identifier.toParameterizedByStar(),
         )
     }
 
     private fun FunSpec.Builder.amendGenericValues(
         identifier: TypeName,
-        generics: List<TypeVariableName>
+        generics: List<TypeVariableName>,
     ): FunSpec.Builder {
         this.addTypeVariables(generics)
 
@@ -103,8 +103,8 @@ internal class KMockFactoryGeneratorUtil(
             this.addParameter(
                 ParameterSpec.builder(
                     name = TEMPLATE_TYPE_ARGUMENT,
-                    type = buildGenericFactoryArgument(identifier)
-                ).build()
+                    type = buildGenericFactoryArgument(identifier),
+                ).build(),
             )
         }
 
@@ -118,8 +118,8 @@ internal class KMockFactoryGeneratorUtil(
             this.addParameter(
                 ParameterSpec.builder(
                     name = "$TEMPLATE_TYPE_ARGUMENT$idx",
-                    type = buildGenericFactoryArgument(boundary)
-                ).build()
+                    type = buildGenericFactoryArgument(boundary),
+                ).build(),
             )
         }
 
@@ -127,7 +127,7 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     private fun buildRelaxedParameter(
-        hasDefault: Boolean
+        hasDefault: Boolean,
     ): ParameterSpec {
         return if (hasDefault) {
             relaxedWithDefault
@@ -137,7 +137,7 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     private fun buildUnitRelaxedParameter(
-        hasDefault: Boolean
+        hasDefault: Boolean,
     ): ParameterSpec {
         return if (hasDefault) {
             relaxedUnitWithDefault
@@ -147,7 +147,7 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     private fun buildVerifierParameter(
-        hasDefault: Boolean
+        hasDefault: Boolean,
     ): ParameterSpec {
         return if (hasDefault) {
             verifierWithDefault
@@ -171,7 +171,7 @@ internal class KMockFactoryGeneratorUtil(
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
         hasDefault: Boolean,
-        modifier: KModifier?
+        modifier: KModifier?,
     ): FunSpec.Builder {
         val kmock = FunSpec.builder(KMOCK_FACTORY)
 
@@ -208,7 +208,7 @@ internal class KMockFactoryGeneratorUtil(
         boundaries: List<TypeName>,
         generics: List<TypeVariableName>,
         hasDefault: Boolean,
-        modifier: KModifier?
+        modifier: KModifier?,
     ): FunSpec.Builder {
         val kspy = FunSpec.builder(KSPY_FACTORY)
 
@@ -257,7 +257,7 @@ internal class KMockFactoryGeneratorUtil(
     }
 
     override fun splitInterfacesIntoRegularAndGenerics(
-        templateSources: List<TemplateSource>
+        templateSources: List<TemplateSource>,
     ): Pair<List<TemplateSource>, List<TemplateSource>> {
         return templateSources.partition { source -> source.generics == null }
     }
@@ -270,7 +270,7 @@ internal class KMockFactoryGeneratorUtil(
 
         return genericResolver.mapDeclaredGenerics(
             generics = templateSource.generics!!,
-            typeParameterResolver = typeResolver
+            typeParameterResolver = typeResolver,
         )
     }
 
@@ -302,7 +302,7 @@ internal class KMockFactoryGeneratorUtil(
             packageName = templateSource.packageName,
             "${templateSource.templateName}Mock",
         ).parameterizedBy(
-            resolveParameter(parameter)
+            resolveParameter(parameter),
         )
     }
 

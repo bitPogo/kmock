@@ -36,7 +36,7 @@ class ParentFinderSpec {
             templateName = templateName,
             template = mockk(),
             generics = emptyMap(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -45,7 +45,7 @@ class ParentFinderSpec {
             templateName = templateName,
             templates = mockk(),
             generics = emptyList(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         // When
@@ -70,7 +70,7 @@ class ParentFinderSpec {
             templateName = templateName,
             template = mockk(),
             generics = emptyMap(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -79,7 +79,7 @@ class ParentFinderSpec {
             templateName = templateName,
             templates = mockk(),
             generics = emptyList(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         // When
@@ -104,7 +104,7 @@ class ParentFinderSpec {
             templateName = fixture.fixture(),
             template = mockk(),
             generics = emptyMap(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -113,7 +113,7 @@ class ParentFinderSpec {
             templateName = fixture.fixture(),
             templates = mockk(),
             generics = emptyList(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         // When
@@ -139,7 +139,7 @@ class ParentFinderSpec {
             templateName = templateName,
             template = mockk(),
             generics = emptyMap(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         val templateMultiSource = TemplateMultiSource(
@@ -148,7 +148,7 @@ class ParentFinderSpec {
             templateName = templateName,
             templates = mockk(),
             generics = emptyList(),
-            dependencies = emptyList()
+            dependencies = emptyList(),
         )
 
         // When

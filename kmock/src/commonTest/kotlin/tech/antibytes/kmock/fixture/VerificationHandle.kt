@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -14,10 +15,10 @@ import tech.antibytes.kmock.verification.Expectation
 internal fun PublicApi.Fixture.fixtureVerificationHandle(
     proxy: KMockContract.Proxy<*, *>? = null,
     calls: Int? = null,
-    callIndices: List<Int>? = null
+    callIndices: List<Int>? = null,
 ): Expectation {
     return Expectation(
         proxy ?: this.funProxyFixture(),
-        callIndices ?: this.listFixture(size = calls ?: 23)
+        callIndices ?: this.listFixture(size = calls ?: 23),
     )
 }

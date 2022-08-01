@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -10,7 +11,7 @@ package tech.antibytes.kmock.verification.constraints
 import tech.antibytes.kmock.KMockContract.ArgumentConstraint
 
 public class not(
-    private val constraint: ArgumentConstraint
+    private val constraint: ArgumentConstraint,
 ) : ArgumentConstraint {
     override fun matches(actual: Any?): Boolean = !constraint.matches(actual)
 

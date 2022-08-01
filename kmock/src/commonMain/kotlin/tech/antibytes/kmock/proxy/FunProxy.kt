@@ -7,6 +7,7 @@
 package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.collections.sharedMutableListOf
+import kotlin.math.max
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -18,7 +19,6 @@ import tech.antibytes.kmock.KMockContract.FunProxyState
 import tech.antibytes.kmock.KMockContract.ProxySideEffectBuilder
 import tech.antibytes.kmock.KMockContract.SideEffectChainBuilder
 import tech.antibytes.kmock.error.MockError
-import kotlin.math.max
 
 /**
  * @suppress
@@ -150,7 +150,7 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
     private fun setFunProxyInvocationType(invocationType: FunProxyInvocationType) {
         val activeInvocationType = max(
             invocationType.value,
-            state.invocationType.value
+            state.invocationType.value,
         )
 
         if (activeInvocationType == invocationType.value) {
@@ -283,7 +283,7 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
     private fun notifyCollector() {
         state.collector.addReference(
             this,
-            state.calls
+            state.calls,
         )
     }
 
@@ -294,7 +294,7 @@ internal abstract class FunProxy<ReturnValue, SideEffect : Function<ReturnValue>
     }
 
     private fun <Value, Invocation : Function<Value>> setInvocationType(
-        nonIntrusiveHook: NonIntrusiveFunConfigurator<Value, Invocation>
+        nonIntrusiveHook: NonIntrusiveFunConfigurator<Value, Invocation>,
     ) {
         if (nonIntrusiveHook.isSpyable()) {
             setFunProxyInvocationType(FunProxyInvocationType.SPY)

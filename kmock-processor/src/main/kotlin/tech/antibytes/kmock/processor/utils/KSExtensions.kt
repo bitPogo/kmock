@@ -33,7 +33,7 @@ internal fun KSClassDeclaration.deriveSimpleName(packageName: String): String {
 internal fun KSDeclaration.isPublicOpen(): Boolean = this.isPublic() && this.isOpen()
 
 internal fun KSClassDeclaration.isInherited(
-    parents: TemplateMultiSource?
+    parents: TemplateMultiSource?,
 ): Boolean = parents != null || this.superTypes.firstOrNull() != null
 
 private fun KSTypeReference.resolveReceiver(
@@ -60,7 +60,7 @@ internal fun KSFunctionDeclaration.resolveReceiver(
 internal fun KSPropertyDeclaration.isReceiverMethod(): Boolean = this.extensionReceiver != null
 
 internal fun KSPropertyDeclaration.toReceiverTypeParameterResolver(
-    parentResolver: TypeParameterResolver
+    parentResolver: TypeParameterResolver,
 ): TypeParameterResolver {
     val receiver = this.extensionReceiver?.resolve()?.declaration
     return receiver?.parentDeclaration?.typeParameters?.toTypeParameterResolver(parentResolver) ?: parentResolver
@@ -69,7 +69,7 @@ internal fun KSPropertyDeclaration.toReceiverTypeParameterResolver(
 internal fun KSFunctionDeclaration.isReceiverMethod(): Boolean = this.extensionReceiver != null
 
 internal fun KSFunctionDeclaration.toReceiverTypeParameterResolver(
-    parentResolver: TypeParameterResolver
+    parentResolver: TypeParameterResolver,
 ): TypeParameterResolver {
     val receiver = this.extensionReceiver?.resolve()?.declaration
 

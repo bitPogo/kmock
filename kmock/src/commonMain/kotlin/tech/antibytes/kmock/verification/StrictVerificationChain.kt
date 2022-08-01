@@ -53,7 +53,7 @@ internal class StrictVerificationChain(
 
     override fun runAssertion(
         proxy: Proxy<*, *>,
-        action: (callIndex: Int) -> Unit
+        action: (callIndex: Int) -> Unit,
     ) {
         val actual = findProxy(proxy)
             ?: throw AssertionError(CALL_NOT_FOUND.format(proxy.id))

@@ -23,7 +23,7 @@ class ProxyAccessMethodGeneratorSpec {
         KMockProxyAccessMethodGenerator.getInstance(
             false,
             mockk(),
-            mockk()
+            mockk(),
         ) fulfils ProxyAccessMethodGenerator::class
     }
 }

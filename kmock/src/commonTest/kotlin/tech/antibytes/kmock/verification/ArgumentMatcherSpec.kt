@@ -6,6 +6,8 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -15,8 +17,6 @@ import tech.antibytes.kmock.verification.constraints.isNot
 import tech.antibytes.kmock.verification.constraints.isNotSame
 import tech.antibytes.kmock.verification.constraints.isSame
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class ArgumentMatcherSpec {
     private val fixture = kotlinFixture()
@@ -168,7 +168,7 @@ class ArgumentMatcherSpec {
             onFail = { givenArgument, givenIdx ->
                 capturedIdx = givenIdx
                 capturedArgument = givenArgument
-            }
+            },
         )
 
         // Then
@@ -198,7 +198,7 @@ class ArgumentMatcherSpec {
 
         // When
         val actual = array.hasBeenCalledWith(
-            *(array.map { value -> isSame(value) }.toTypedArray())
+            *(array.map { value -> isSame(value) }.toTypedArray()),
         )
 
         // Then
@@ -272,7 +272,7 @@ class ArgumentMatcherSpec {
             onFail = { argument, idx ->
                 capturedArgument = argument
                 capturedIndex = idx
-            }
+            },
         )
 
         // Then
@@ -302,7 +302,7 @@ class ArgumentMatcherSpec {
 
         // When
         val actual = array.hasBeenStrictlyCalledWith(
-            *(array.map { value -> isSame(value) }.toTypedArray())
+            *(array.map { value -> isSame(value) }.toTypedArray()),
         )
 
         // Then
@@ -375,7 +375,7 @@ class ArgumentMatcherSpec {
             onFail = { argument, idx ->
                 capturedArgument = argument
                 capturedIndex = idx
-            }
+            },
         )
 
         // Then
@@ -435,7 +435,7 @@ class ArgumentMatcherSpec {
             array[0],
             fixture.fixture<String>(),
             fixture.fixture<String>(),
-            fixture.fixture<String>()
+            fixture.fixture<String>(),
         )
 
         // Then

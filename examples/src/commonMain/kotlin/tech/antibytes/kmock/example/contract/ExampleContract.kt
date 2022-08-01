@@ -43,7 +43,7 @@ interface ExampleContract {
     }
 
     data class Generic<T>(
-        val value: T
+        val value: T,
     )
 
     interface SampleUselessObject {

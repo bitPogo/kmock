@@ -89,8 +89,8 @@ class SpyContainerSpec {
         actual mustBe true
     }
 
-    @Test
     // Aliases & MultiMock
+    @Test
     fun `Given isSpyable is called it return true if the derivative TemplateName is part of the enabled spies`() {
         // Given
         val packageName: String = fixture.fixture()

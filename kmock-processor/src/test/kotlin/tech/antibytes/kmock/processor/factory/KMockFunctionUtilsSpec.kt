@@ -17,7 +17,7 @@ class KMockFunctionUtilsSpec {
         KMockFactoryGeneratorUtil(
             false,
             false,
-            mockk()
+            mockk(),
         ) fulfils ProcessorContract.MockFactoryGeneratorUtil::class
     }
 }

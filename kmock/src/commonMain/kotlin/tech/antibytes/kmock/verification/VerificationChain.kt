@@ -59,7 +59,7 @@ internal class VerificationChain(
 
     private fun runAssertion(
         expected: Proxy<*, *>,
-        action: (callIndex: Int) -> Unit
+        action: (callIndex: Int) -> Unit,
     ) {
         val actual = findProxy(expected)
             ?: throw AssertionError(CALL_NOT_FOUND.format(expected.id))
@@ -108,8 +108,8 @@ internal class VerificationChain(
                     throw AssertionError(
                         CALL_WITH_ARGS_NOT_FOUND.format(
                             this.id,
-                            mapValues(*arguments)
-                        )
+                            mapValues(*arguments),
+                        ),
                     )
                 }
             }
@@ -127,8 +127,8 @@ internal class VerificationChain(
                     throw AssertionError(
                         CALL_WITH_ARGS_NOT_FOUND.format(
                             this.id,
-                            mapValues(*arguments)
-                        )
+                            mapValues(*arguments),
+                        ),
                     )
                 }
             }
@@ -188,8 +188,8 @@ internal class VerificationChain(
                     throw AssertionError(
                         CALL_WITH_ARGS_NOT_FOUND.format(
                             this.id,
-                            value
-                        )
+                            value,
+                        ),
                     )
                 }
             }

@@ -6,6 +6,9 @@
 
 package tech.antibytes.kmock.verification
 
+import kotlin.js.JsName
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kmock.KMockContract
@@ -15,9 +18,6 @@ import tech.antibytes.kmock.fixture.funProxyFixture
 import tech.antibytes.kmock.fixture.propertyProxyFixture
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class VerificationChainSpec {
     private val fixture = kotlinFixture()
@@ -77,8 +77,8 @@ class VerificationChainSpec {
         val proxy = fixture.funProxyFixture()
         val container = VerificationChain(
             listOf(
-                Reference(proxy, 0)
-            )
+                Reference(proxy, 0),
+            ),
         )
 
         // When
@@ -87,7 +87,7 @@ class VerificationChainSpec {
 
     private fun invoke(
         chain: VerificationChain,
-        action: VerificationChain.() -> Unit
+        action: VerificationChain.() -> Unit,
     ) = action(chain)
 
     @Test

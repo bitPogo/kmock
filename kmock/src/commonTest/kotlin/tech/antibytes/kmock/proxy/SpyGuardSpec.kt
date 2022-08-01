@@ -6,12 +6,12 @@
 
 package tech.antibytes.kmock.proxy
 
+import kotlin.js.JsName
+import kotlin.test.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.Test
 
 class SpyGuardSpec {
     private val fixture = kotlinFixture()
