@@ -15,5 +15,6 @@ interface Shared {
     val bar: Int
         get() = foo.length
 
+    val enum: Enum<*>
     var buzz: Any
 }

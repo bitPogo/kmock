@@ -16,10 +16,10 @@ import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
+import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 
 internal fun KSClassDeclaration.deriveSimpleName(packageName: String): String {
     val qualifiedName = ensureNotNullClassName(this.qualifiedName?.asString())
