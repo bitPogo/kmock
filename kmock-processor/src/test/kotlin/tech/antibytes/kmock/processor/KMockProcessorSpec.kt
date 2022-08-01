@@ -42,7 +42,6 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(),
             fixture.fixture(),
-            fixture.fixture(),
             mockk(),
             mockk(),
             mockk(),
@@ -116,7 +115,6 @@ class KMockProcessorSpec {
         // When
         val actual = KMockProcessor(
             mockk(),
-            false,
             true,
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -235,7 +233,6 @@ class KMockProcessorSpec {
         // When
         val processor = KMockProcessor(
             mockk(),
-            false,
             true,
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -372,7 +369,6 @@ class KMockProcessorSpec {
         // When
         KMockProcessor(
             mockk(),
-            false,
             true,
             codeGenerator,
             mockk(relaxed = true),
@@ -625,7 +621,6 @@ class KMockProcessorSpec {
         // When
         val processor = KMockProcessor(
             mockk(),
-            false,
             true,
             codeGenerator,
             interfaceBinder,
@@ -909,7 +904,6 @@ class KMockProcessorSpec {
         KMockProcessor(
             mockk(),
             false,
-            false,
             codeGenerator,
             mockk(relaxed = true),
             mockGenerator,
@@ -1089,7 +1083,6 @@ class KMockProcessorSpec {
         // When
         val processor = KMockProcessor(
             mockk(),
-            false,
             false,
             codeGenerator,
             interfaceBinder,

@@ -32,7 +32,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
  */
 internal class KMockProcessor(
     private val logger: KSPLogger,
-    private val isUnderCompilerTest: Boolean, // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private val isKmp: Boolean,
     private val codeGenerator: KmpCodeGenerator,
     private val interfaceGenerator: MultiInterfaceBinder,
@@ -45,7 +44,6 @@ internal class KMockProcessor(
     private val filter: SourceFilter,
 ) : SymbolProcessor {
     private var isFirstRound: Boolean = true
-    private var lockInterfaceBinder: Boolean = false // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private var commonAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var sharedAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
     private var platformAggregated: Aggregated<TemplateSource> = EMPTY_AGGREGATED_SINGLE
@@ -130,23 +128,8 @@ internal class KMockProcessor(
         }
     }
 
-    // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
     private fun interfaceBinderIsApplicable(): Boolean {
-        return !(isUnderCompilerTest && lockInterfaceBinder) &&
-            totalMultiAggregated.extractedTemplates.isNotEmpty() &&
-            isFirstRound
-    }
-
-    // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
-    private fun resolveMultiSources(
-        aggregated: List<TemplateMultiSource>,
-        stored: List<TemplateMultiSource>,
-    ): List<TemplateMultiSource> {
-        return if (isUnderCompilerTest) {
-            aggregated
-        } else {
-            stored
-        }
+        return totalMultiAggregated.extractedTemplates.isNotEmpty() && isFirstRound
     }
 
     private fun stubCommonSources(
@@ -160,10 +143,7 @@ internal class KMockProcessor(
 
         mockGenerator.writeCommonMocks(
             templateSources = singleCommonSources.extractedTemplates,
-            templateMultiSources = resolveMultiSources(
-                multiCommonSources.extractedTemplates,
-                this.commonMultiAggregated.extractedTemplates,
-            ),
+            templateMultiSources = this.commonMultiAggregated.extractedTemplates,
             relaxer = relaxer,
         )
 
@@ -222,10 +202,7 @@ internal class KMockProcessor(
 
         mockGenerator.writeSharedMocks(
             templateSources = filteredSingleInterfaces,
-            templateMultiSources = resolveMultiSources(
-                filteredMultiInterfaces,
-                sharedMultiAggregated.extractedTemplates,
-            ),
+            templateMultiSources = sharedMultiAggregated.extractedTemplates,
             relaxer = relaxer,
         )
 
@@ -291,10 +268,7 @@ internal class KMockProcessor(
 
         mockGenerator.writePlatformMocks(
             templateSources = filteredSingleInterfaces,
-            templateMultiSources = resolveMultiSources(
-                filteredMultiInterfaces,
-                platformMultiAggregated.extractedTemplates,
-            ),
+            templateMultiSources = platformMultiAggregated.extractedTemplates,
             relaxer = relaxer,
         )
 
@@ -370,7 +344,6 @@ internal class KMockProcessor(
 
     private fun finalize() {
         isFirstRound = false
-        lockInterfaceBinder = true // TODO - Test Concern see: https://github.com/tschuchortdev/kotlin-compile-testing/issues/263
 
         if (isFinalRound()) {
             codeGenerator.closeFiles()
