@@ -47,7 +47,6 @@ internal class MethodGeneratorHelper(
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
             val (methodType, proxyType) = parameter.type.toProxyPairTypeName(
-                inheritedVarargArg = parameter.isVararg && inherited,
                 generics = generics ?: emptyMap(),
                 typeParameterResolver = methodWideResolver,
             )

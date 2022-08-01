@@ -388,7 +388,6 @@ internal class KMockReceiverGenerator(
             generics = proxyGenerics ?: emptyMap(),
         )
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = receiverTypeResolver,
         )

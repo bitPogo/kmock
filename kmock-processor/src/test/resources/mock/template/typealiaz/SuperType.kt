@@ -15,8 +15,8 @@ typealias Alias33 = (Any) -> Any
 typealias Alias97<T> = GenericSuper<T>
 typealias Alias93<T> = Map<String, T>
 typealias Alias105<T> = Alias97<T>
-typealias Alias199<T> = Alias105<T>
-typealias Alias200<T, K> = (Alias105<T>) -> Alias199<K>
+typealias Alias199<W> = Alias105<W>
+typealias Alias200<W, G> = (Alias105<W>) -> Alias199<G>
 
 @Mock(Inherited::class)
 interface Inherited<R : Alias33> : SuperType<R>

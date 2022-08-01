@@ -160,7 +160,7 @@ internal object KMockGenerics : GenericResolver {
         val type = mapParameterType(
             visited = visited,
             classScope = classScope,
-            allGenerics = allGenerics,
+            functionScope = allGenerics,
             rootNullability = rootNullability,
             resolved = resolved,
             typeParameterResolver = typeParameterResolver,
@@ -185,7 +185,7 @@ internal object KMockGenerics : GenericResolver {
             val type = rawType.mapParameterType(
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = allGenerics,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,

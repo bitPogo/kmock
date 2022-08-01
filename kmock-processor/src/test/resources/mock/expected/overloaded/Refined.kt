@@ -98,7 +98,7 @@ internal class RefinedMock<Q : List<Int>>(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithComparable_Array_Map_String_Any",
             collector = collector, freeze = freeze)
 
-    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (Array<out Any>) -> Any> =
+    public val _fooWithArray_Any: KMockContract.SyncFunProxy<Any, (Array<in Any>) -> Any> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithArray_Any",
             collector = collector, freeze = freeze)
 

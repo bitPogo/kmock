@@ -145,7 +145,6 @@ internal class KMockMethodGenerator(
         )
 
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = typeParameterResolver,
         )

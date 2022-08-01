@@ -42,7 +42,6 @@ private fun KSTypeReference.resolveReceiver(
     receiverTypeResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
     return this.toProxyPairTypeName(
-        inheritedVarargArg = false,
         generics = generics ?: emptyMap(),
         typeParameterResolver = receiverTypeResolver,
     )

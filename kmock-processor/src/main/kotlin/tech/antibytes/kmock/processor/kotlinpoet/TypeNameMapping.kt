@@ -7,20 +7,9 @@
 
 package tech.antibytes.kmock.processor.kotlinpoet
 
-import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-
-internal fun KSType.toTypeName(
-    typeParameterResolver: TypeParameterResolver,
-    typeArguments: List<KSTypeArgument> = emptyList(),
-): TypeName = mapArgumentType(
-    typeParameterResolver = typeParameterResolver,
-    mapping = emptyMap(),
-    typeArguments = typeArguments,
-)
 
 internal fun KSTypeReference.toTypeName(
     typeParameterResolver: TypeParameterResolver,
