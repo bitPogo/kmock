@@ -113,7 +113,7 @@ internal fun KSTypeAlias.resolveAlias(
     var resolvedArguments = arguments
     var resolvedType: KSType
     var mappedArgs: List<KSTypeArgument>
-    var extraResolver: TypeParameterResolver
+    var extraResolver: TypeParameterResolver = typeParameterResolver
 
     do {
         resolvedType = typeAlias.type.resolve()
@@ -121,7 +121,7 @@ internal fun KSTypeAlias.resolveAlias(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = extractAliasTypeResolver(this, typeParameterResolver)
+        extraResolver = extractAliasTypeResolver(this, extraResolver)
 
         if (resolvedType.declaration is KSTypeAlias) {
             typeAlias = resolvedType.declaration as KSTypeAlias

@@ -1046,6 +1046,7 @@ class KMockMocksSpec {
             ),
         )
         val actual = resolveGenerated("AccessMock.kt")
+        println(actual!!.readText())
 
         // Then
         compilerResult.exitCode mustBe KotlinCompilation.ExitCode.OK

@@ -8,15 +8,18 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.Mock
 
-interface Generics<T>
+interface GenericsAccess<U>
 
 typealias Alias621 = (Any) -> Unit
 typealias Alias623 = (Any) -> Any
-typealias Alias677<X> = Generics<X>
+typealias Alias677<X> = GenericsAccess<X>
 typealias Alias673<X> = Map<String, X>
 typealias Alias655<X> = Alias673<X>
 typealias Alias699<X> = Alias655<X>
 typealias Alias700<X> = Alias655<X>
+typealias Alias701<E> = Alias677<E>
+typealias Alias702<E> = Alias701<E>
+typealias Alias703<Z, Q> = (Alias701<Z>) -> Alias702<Q>
 
 @Mock(Access::class)
 interface Access<L : Alias623> {
@@ -68,4 +71,5 @@ interface Access<L : Alias623> {
 
     fun <T : Alias700<K>, K> rol(arg: T)
     fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>
+    fun <T : Alias703<Alias623, out Alias677<Alias673<Int>>>> bar(vararg arg1: T)
 }

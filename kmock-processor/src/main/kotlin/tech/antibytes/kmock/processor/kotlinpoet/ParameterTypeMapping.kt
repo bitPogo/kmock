@@ -234,7 +234,6 @@ private fun KSType.abbreviateType(
     classScope: Set<String>,
     functionScope: Set<String>,
     resolved: Map<String, GenericDeclaration>,
-    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     rootNullability: Boolean,
     markedAsNullable: Boolean,
@@ -256,7 +255,7 @@ private fun KSType.abbreviateType(
         resolved = resolved,
         rootNullability = rootNullability,
         typeArguments = emptyList(),
-        typeParameterResolver = extraResolver,
+        typeParameterResolver = typeParameterResolver,
     ).rawType()
         .withTypeArguments(
             argumentsDecorator.resolveArguments(
@@ -357,6 +356,13 @@ private fun TypeVariableName.resolveTypeVariable(
             this.tagWithGenericDeclaration(
                 recursive = false,
                 nullable = nullable,
+                castReturnType = true,
+            )
+        }
+        name !in classScope && name !in functionScope -> { // Generic Types of Aliases
+            ANY.tagWithGenericDeclaration(
+                recursive = false,
+                nullable = true,
                 castReturnType = true,
             )
         }
@@ -478,14 +484,13 @@ private fun KSType.mapParameterType(
                 classScope = classScope,
                 functionScope = functionScope,
                 resolved = resolved,
-                extraResolver = extraResolver,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 markedAsNullable = isMarkedNullable,
                 rootNullability = rootNullability,
                 typeArguments = mappedArgs,
             )
 
-            val aliasArgsDecorator = typeArguments.mapParameterType(
+            val aliasArgsDecorator = arguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
                 functionScope = functionScope,
@@ -503,7 +508,7 @@ private fun KSType.mapParameterType(
                     functionScope = functionScope,
                     rootNullability = rootNullability,
                     resolved = resolved,
-                    typeParameterResolver = typeParameterResolver,
+                    typeParameterResolver = extraResolver,
                 ),
             ).tagTypeFromDecorator(isMarkedNullable, aliasArgsDecorator)
         }

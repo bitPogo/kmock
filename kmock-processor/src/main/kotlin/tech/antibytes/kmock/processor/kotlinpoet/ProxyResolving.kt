@@ -33,11 +33,12 @@ internal fun KSTypeReference.toProxyPairTypeName(
     rootTypeArguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
-    return resolve().toProxyPairTypeName(
+    val resolvedElement = resolve()
+    return resolvedElement.toProxyPairTypeName(
         typeParameterResolver = typeParameterResolver,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
-        typeArguments = element?.typeArguments.orEmpty(),
+        typeArguments = resolvedElement.arguments,
     )
 }
 
@@ -118,14 +119,13 @@ private fun List<KSTypeArgument>.toProxyPairTypeName(
 
 private fun KSType.abbreviateType(
     generics: Map<String, GenericDeclaration>,
-    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     isNullable: Boolean,
     typeArguments: List<KSTypeArgument>,
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
     val (methodType, proxyType) = this.toProxyPairTypeName(
-        typeParameterResolver = extraResolver,
+        typeParameterResolver = typeParameterResolver,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
         typeArguments = emptyList(),
@@ -194,14 +194,13 @@ private fun KSType.toProxyPairTypeName(
 
             val (abbreviatedMethodType, abbreviatedProxyType) = resolvedType.abbreviateType(
                 generics = generics,
-                extraResolver = extraResolver,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
                 typeArguments = mappedArgs,
                 rootTypeArguments = rootTypeArguments,
             )
 
-            val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toProxyPairTypeName(
+            val (aliasMethodArgs, aliasProxyArgs) = arguments.toProxyPairTypeName(
                 generics = generics,
                 typeParameterResolver = typeParameterResolver,
                 rootTypeArguments = rootTypeArguments,

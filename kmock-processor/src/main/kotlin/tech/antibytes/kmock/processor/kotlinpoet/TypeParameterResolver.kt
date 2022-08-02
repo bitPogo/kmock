@@ -88,7 +88,7 @@ private fun KSType.toTypeNameX(
     }
     val type = when (val decl = declaration) {
         is KSClassDeclaration -> {
-            decl.toClassName().withTypeArguments(arguments.map { it.toTypeNameX(typeParamResolver) })
+            decl.toClassName().withTypeArguments(typeArguments.map { it.toTypeNameX(typeParamResolver) })
         }
         is KSTypeParameter -> typeParamResolver[decl.name.getShortName()]
         is KSTypeAlias -> {
@@ -121,7 +121,7 @@ private fun KSType.toTypeNameX(
                 .rawType()
                 .withTypeArguments(mappedArgs.map { it.toTypeNameX(extraResolver) })
 
-            val aliasArgs = typeArguments.map { it.toTypeNameX(typeParamResolver) }
+            val aliasArgs = arguments.map { it.toTypeNameX(typeParamResolver) }
 
             decl.toClassNameInternal()
                 .withTypeArguments(aliasArgs)
@@ -167,9 +167,8 @@ private fun KSTypeArgument.toTypeNameX(
 private fun KSTypeReference.toTypeNameX(
     typeParamResolver: TypeParameterResolver,
 ): TypeName {
-    val resolved = resolve()
-    return resolved.toTypeNameX(
+    return resolve().toTypeNameX(
         typeParamResolver,
-        resolved.arguments,
+        element?.typeArguments.orEmpty(),
     )
 }
