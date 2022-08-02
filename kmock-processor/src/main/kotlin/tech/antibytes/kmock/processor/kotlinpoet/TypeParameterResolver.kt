@@ -100,8 +100,7 @@ private fun KSType.toTypeNameX(
             var extraResolver: TypeParameterResolver = typeParamResolver
             while (true) {
                 resolvedType = typeAlias.type.resolve()
-                mappedArgs = mapTypeArgumentsFromTypeAliasToAbbreviatedType(
-                    typeAlias = typeAlias,
+                mappedArgs = typeAlias.mapAbbreviatedType(
                     typeAliasTypeArguments = arguments,
                     abbreviatedType = resolvedType,
                 )
@@ -131,25 +130,6 @@ private fun KSType.toTypeNameX(
     }
 
     return type.copy(nullable = isMarkedNullable)
-}
-
-private fun mapTypeArgumentsFromTypeAliasToAbbreviatedType(
-    typeAlias: KSTypeAlias,
-    typeAliasTypeArguments: List<KSTypeArgument>,
-    abbreviatedType: KSType,
-): List<KSTypeArgument> {
-    return abbreviatedType.arguments
-        .map { typeArgument ->
-            // Check if type argument is a reference to a typealias type parameter, and not an actual type.
-            val typeAliasTypeParameterIndex = typeAlias.typeParameters.indexOfFirst { typeAliasTypeParameter ->
-                typeAliasTypeParameter.name.asString() == typeArgument.type.toString()
-            }
-            if (typeAliasTypeParameterIndex >= 0) {
-                typeAliasTypeArguments[typeAliasTypeParameterIndex]
-            } else {
-                typeArgument
-            }
-        }
 }
 
 private fun KSTypeArgument.toTypeNameX(

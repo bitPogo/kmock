@@ -23,7 +23,7 @@ typealias Alias703<Z, Q> = (Alias701<Z>) -> Alias702<Q>
 
 @Mock(Access::class)
 interface Access<L : Alias623> {
-    val prop: Alias673<String>
+    /*val prop: Alias673<String>
 
     fun doSomething(
         arg0: Alias677<Any>,
@@ -70,6 +70,6 @@ interface Access<L : Alias623> {
     fun run(arg: L): Alias621
 
     fun <T : Alias700<K>, K> rol(arg: T)
-    fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>
+    fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>*/
     fun <T : Alias703<Alias623, out Alias677<Alias673<Int>>>> bar(vararg arg1: T)
 }

@@ -20,6 +20,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
+import tech.antibytes.kmock.processor.utils.extractParameter
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
@@ -87,11 +88,11 @@ private fun extractAliasTypeResolver(
     }
 }
 
-private fun KSTypeAlias.mapAbbreviatedType(
+internal fun KSTypeAlias.mapAbbreviatedType(
     typeAliasTypeArguments: List<KSTypeArgument>,
     abbreviatedType: KSType,
 ): List<KSTypeArgument> {
-    return abbreviatedType.arguments
+    return type.extractParameter()
         .map { typeArgument ->
             // Check if type argument is a reference to a typealias type parameter, and not an actual type.
             val typeAliasTypeParameterIndex = this.typeParameters.indexOfFirst { typeAliasTypeParameter ->
