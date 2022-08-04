@@ -20,15 +20,15 @@ internal class SharedMock(
 ) : Shared {
     public val _doSomething: KMockContract.SyncFunProxy<Any, (
         Any,
-        Alias0,
-        Alias1,
+        Alias00,
+        Alias01,
     ) -> Any> = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.SharedMock#_doSomething",
         collector = collector, freeze = freeze)
 
     public override fun doSomething(
         arg0: Any,
-        arg1: Alias0,
-        arg2: Alias1,
+        arg1: Alias00,
+        arg2: Alias01,
     ): Any = _doSomething.invoke(arg0, arg1, arg2)
 
     public fun _clearMock(): Unit {

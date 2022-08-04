@@ -8,14 +8,14 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.MockShared
 
-typealias Alias0 = (Any) -> Unit
-typealias Alias1 = (Any) -> Any
+typealias Alias00 = (Any) -> Unit
+typealias Alias01 = (Any) -> Any
 
 @MockShared("sharedTest", Shared::class)
 interface Shared {
     fun doSomething(
         arg0: Any,
-        arg1: Alias0,
-        arg2: Alias1
+        arg1: Alias00,
+        arg2: Alias01
     ): Any
 }
