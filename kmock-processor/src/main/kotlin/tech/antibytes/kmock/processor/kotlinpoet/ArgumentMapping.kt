@@ -21,12 +21,29 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
-private fun KSTypeArgument.resolveVariance(typeName: TypeName): TypeName {
+private fun KSTypeArgument.resolveVariance(
+    type: KSTypeReference,
+    typeParameterResolver: TypeParameterResolver,
+    mapping: Map<String, String>,
+): TypeName {
     return when (variance) {
-        Variance.COVARIANT -> WildcardTypeName.producerOf(typeName)
-        Variance.CONTRAVARIANT -> WildcardTypeName.consumerOf(typeName)
+        Variance.COVARIANT -> WildcardTypeName.producerOf(
+            type.mapArgumentType(
+                typeParameterResolver = typeParameterResolver,
+                mapping = mapping,
+            ),
+        )
+        Variance.CONTRAVARIANT -> WildcardTypeName.consumerOf(
+            type.mapArgumentType(
+                typeParameterResolver = typeParameterResolver,
+                mapping = mapping,
+            ),
+        )
         Variance.STAR -> STAR
-        Variance.INVARIANT -> typeName
+        Variance.INVARIANT -> type.mapArgumentType(
+            typeParameterResolver = typeParameterResolver,
+            mapping = mapping,
+        )
     }
 }
 
@@ -34,12 +51,15 @@ private fun KSTypeArgument.mapArgumentType(
     typeParameterResolver: TypeParameterResolver,
     mapping: Map<String, String>,
 ): TypeName {
-    val typeName = type?.mapArgumentType(
-        typeParameterResolver = typeParameterResolver,
-        mapping = mapping,
-    ) ?: return STAR
-
-    return resolveVariance(typeName)
+    return if (type == null) {
+        STAR
+    } else {
+        resolveVariance(
+            type = type!!,
+            typeParameterResolver = typeParameterResolver,
+            mapping = mapping,
+        )
+    }
 }
 
 private fun List<KSTypeArgument>.mapArgumentType(
@@ -55,13 +75,12 @@ private fun List<KSTypeArgument>.mapArgumentType(
 }
 
 private fun KSType.abbreviateType(
-    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     isNullable: Boolean,
     typeArguments: List<KSTypeArgument>,
     mapping: Map<String, String>,
 ): TypeName {
-    return this.mapArgumentType(extraResolver, mapping, emptyList())
+    return this.mapArgumentType(typeParameterResolver, mapping, emptyList())
         .rawType()
         .withTypeArguments(
             typeArguments.mapArgumentType(mapping, typeParameterResolver)
@@ -115,8 +134,7 @@ internal fun KSType.mapArgumentType(
             )
 
             val abbreviatedType = resolvedType.abbreviateType(
-                extraResolver = extraResolver,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
                 typeArguments = mappedArgs,
                 mapping = mapping,

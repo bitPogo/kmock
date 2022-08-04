@@ -44,28 +44,64 @@ internal fun KSTypeReference.toProxyPairTypeName(
     )
 }
 
-internal fun KSTypeArgument.toProxyPairTypeName(
+private fun KSTypeArgument.resolveVariance(
+    type: KSTypeReference,
     inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
-    val (methodTypeName, proxyTypeName) = type?.toProxyPairTypeName(
-        inheritedVarargArg = inheritedVarargArg,
-        generics = generics,
-        rootTypeArguments = rootTypeArguments,
-        typeParameterResolver = typeParameterResolver,
-    ) ?: return STAR to STAR
-
     return when (variance) {
         Variance.COVARIANT -> {
+            val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
+                inheritedVarargArg = inheritedVarargArg,
+                generics = generics,
+                rootTypeArguments = rootTypeArguments,
+                typeParameterResolver = typeParameterResolver,
+            )
+
             WildcardTypeName.producerOf(methodTypeName) to WildcardTypeName.producerOf(proxyTypeName)
         }
         Variance.CONTRAVARIANT -> {
-            WildcardTypeName.consumerOf(methodTypeName) to WildcardTypeName.producerOf(proxyTypeName)
+            val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
+                inheritedVarargArg = inheritedVarargArg,
+                generics = generics,
+                rootTypeArguments = rootTypeArguments,
+                typeParameterResolver = typeParameterResolver,
+            )
+
+            WildcardTypeName.consumerOf(methodTypeName) to WildcardTypeName.consumerOf(proxyTypeName)
         }
         Variance.STAR -> STAR to STAR
-        Variance.INVARIANT -> methodTypeName to proxyTypeName
+        Variance.INVARIANT ->  {
+            val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
+                inheritedVarargArg = inheritedVarargArg,
+                generics = generics,
+                rootTypeArguments = rootTypeArguments,
+                typeParameterResolver = typeParameterResolver,
+            )
+
+            methodTypeName to proxyTypeName
+        }
+    }
+}
+
+internal fun KSTypeArgument.toProxyPairTypeName(
+    generics: Map<String, GenericDeclaration>,
+    inheritedVarargArg: Boolean,
+    typeParameterResolver: TypeParameterResolver,
+    rootTypeArguments: List<KSTypeArgument>,
+): Pair<TypeName, TypeName> {
+    return if (type == null) {
+        STAR_PAIR
+    } else {
+        resolveVariance(
+            type = type!!,
+            inheritedVarargArg = inheritedVarargArg,
+            generics = generics,
+            rootTypeArguments = rootTypeArguments,
+            typeParameterResolver = typeParameterResolver,
+        )
     }
 }
 
@@ -96,18 +132,17 @@ private fun List<KSTypeArgument>.toProxyPairTypeName(
 private fun KSType.abbreviateType(
     inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
-    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     isNullable: Boolean,
     typeArguments: List<KSTypeArgument>,
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
     val (methodType, proxyType) = this.toProxyPairTypeName(
-        typeParameterResolver = extraResolver,
         inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
         typeArguments = emptyList(),
+        typeParameterResolver = typeParameterResolver,
     )
 
     val (methodArgument, proxyArguments) = typeArguments.toProxyPairTypeName(
@@ -208,8 +243,7 @@ private fun KSType.toProxyPairTypeName(
             val (abbreviatedMethodType, abbreviatedProxyType) = resolvedType.abbreviateType(
                 inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
-                extraResolver = extraResolver,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
                 typeArguments = mappedArgs,
                 rootTypeArguments = rootTypeArguments,
@@ -268,3 +302,5 @@ private val specialArrays: Map<String, TypeName> = mapOf(
     UIntArray::class.asTypeName().toString() to UInt::class.asTypeName(),
     ULongArray::class.asTypeName().toString() to ULong::class.asTypeName(),
 )
+
+private val STAR_PAIR = STAR to STAR

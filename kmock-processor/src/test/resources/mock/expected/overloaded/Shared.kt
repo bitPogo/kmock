@@ -77,7 +77,7 @@ internal class SharedMock(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithTAbc", collector
         = collector, freeze = freeze)
 
-    public val _fooWithArray: KMockContract.SyncFunProxy<Unit, (Array<out Any>) -> Unit> =
+    public val _fooWithArray: KMockContract.SyncFunProxy<Unit, (Array<in Any>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.SharedMock#_fooWithArray", collector
         = collector, freeze = freeze)
 
