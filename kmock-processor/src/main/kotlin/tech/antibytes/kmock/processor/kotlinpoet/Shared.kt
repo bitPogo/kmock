@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -11,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.KSTypeArgument
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName
@@ -20,6 +22,9 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 
+internal fun KSTypeReference.extractParameter(): List<KSTypeArgument> {
+    return element?.typeArguments.orEmpty()
+}
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
 internal fun TypeName.rawType(): ClassName {
@@ -77,7 +82,7 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
 
 private fun extractAliasTypeResolver(
     declaration: KSTypeAlias,
-    typeParameterResolver: TypeParameterResolver
+    typeParameterResolver: TypeParameterResolver,
 ): TypeParameterResolver {
     return if (declaration.typeParameters.isEmpty()) {
         typeParameterResolver
@@ -86,7 +91,7 @@ private fun extractAliasTypeResolver(
     }
 }
 
-private fun KSTypeAlias.mapAbbreviatedType(
+internal fun KSTypeAlias.mapAbbreviatedType(
     typeAliasTypeArguments: List<KSTypeArgument>,
     abbreviatedType: KSType,
 ): List<KSTypeArgument> {

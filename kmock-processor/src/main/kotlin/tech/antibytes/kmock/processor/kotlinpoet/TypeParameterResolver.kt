@@ -25,33 +25,35 @@ import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 
-internal fun List<KSTypeParameter>.toTypeParameterResolver(
-    parent: TypeParameterResolver? = null,
-    sourceTypeHint: String = "<unknown>",
-): TypeParameterResolver {
-    val parametersMap = LinkedHashMap<String, TypeVariableName>()
-    val typeParamResolver = { id: String ->
-        parametersMap[id]
-            ?: parent?.get(id)
-            ?: throw IllegalStateException(
-                "No type argument found for $id! Analyzed $sourceTypeHint with known parameters " +
-                    "${parametersMap.keys}",
+private class Resolver(
+    private val parent: TypeParameterResolver? = null,
+    override val parametersMap: Map<String, TypeVariableName>
+) : TypeParameterResolver {
+    override fun get(index: String): TypeVariableName {
+        return parametersMap.getOrElse(index) {
+            parent?.get(index) ?: throw IllegalStateException(
+                "Unknown type parameter $index, only ${parametersMap.keys} are known."
             )
+        }
     }
+}
 
-    val resolver = object : TypeParameterResolver {
-        override val parametersMap: Map<String, TypeVariableName> = parametersMap
-
-        override operator fun get(index: String): TypeVariableName = typeParamResolver(index)
-    }
-
-    // Fill the parametersMap. Need to do sequentially and allow for referencing previously defined params
-    for (typeVar in this) {
+// Fill the parametersMap. Need to do sequentially and allow for referencing previously defined params
+private fun List<KSTypeParameter>.initializeTypeParameterResolver(): MutableMap<String, TypeVariableName> {
+    return this.associate { parameter ->
         // Put the simple typevar in first, then it can be referenced in the full toTypeVariable()
         // replacement later that may add bounds referencing this.
-        val id = typeVar.name.getShortName()
-        parametersMap[id] = TypeVariableName(id)
-    }
+        val id = parameter.name.getShortName()
+        id to TypeVariableName(id)
+    }.toMutableMap()
+}
+
+internal fun List<KSTypeParameter>.toTypeParameterResolver(
+    parent: TypeParameterResolver? = null,
+): TypeParameterResolver {
+    val parametersMap = initializeTypeParameterResolver()
+
+    val resolver = Resolver(parent, parametersMap)
 
     for (typeVar in this) {
         val id = typeVar.name.getShortName()
@@ -88,20 +90,22 @@ private fun KSType.toTypeNameX(
     }
     val type = when (val decl = declaration) {
         is KSClassDeclaration -> {
-            decl.toClassName().withTypeArguments(arguments.map { it.toTypeNameX(typeParamResolver) })
+            decl.toClassName()
+                .withTypeArguments(
+                    typeArguments.map { it.toTypeNameX(typeParamResolver) }
+                )
         }
         is KSTypeParameter -> typeParamResolver[decl.name.getShortName()]
         is KSTypeAlias -> {
             var typeAlias: KSTypeAlias = decl
-            var arguments = arguments
+            var arguments = typeArguments
 
             var resolvedType: KSType
             var mappedArgs: List<KSTypeArgument>
             var extraResolver: TypeParameterResolver = typeParamResolver
             while (true) {
                 resolvedType = typeAlias.type.resolve()
-                mappedArgs = mapTypeArgumentsFromTypeAliasToAbbreviatedType(
-                    typeAlias = typeAlias,
+                mappedArgs = typeAlias.mapAbbreviatedType(
                     typeAliasTypeArguments = arguments,
                     abbreviatedType = resolvedType,
                 )
@@ -133,25 +137,6 @@ private fun KSType.toTypeNameX(
     return type.copy(nullable = isMarkedNullable)
 }
 
-private fun mapTypeArgumentsFromTypeAliasToAbbreviatedType(
-    typeAlias: KSTypeAlias,
-    typeAliasTypeArguments: List<KSTypeArgument>,
-    abbreviatedType: KSType,
-): List<KSTypeArgument> {
-    return abbreviatedType.arguments
-        .map { typeArgument ->
-            // Check if type argument is a reference to a typealias type parameter, and not an actual type.
-            val typeAliasTypeParameterIndex = typeAlias.typeParameters.indexOfFirst { typeAliasTypeParameter ->
-                typeAliasTypeParameter.name.asString() == typeArgument.type.toString()
-            }
-            if (typeAliasTypeParameterIndex >= 0) {
-                typeAliasTypeArguments[typeAliasTypeParameterIndex]
-            } else {
-                typeArgument
-            }
-        }
-}
-
 private fun KSTypeArgument.toTypeNameX(
     typeParamResolver: TypeParameterResolver,
 ): TypeName {
@@ -170,6 +155,6 @@ private fun KSTypeReference.toTypeNameX(
     val resolved = resolve()
     return resolved.toTypeNameX(
         typeParamResolver,
-        resolved.arguments,
+        this.element?.typeArguments ?: emptyList(),
     )
 }

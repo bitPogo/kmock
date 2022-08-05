@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -34,7 +35,7 @@ private data class ArgumentMappingDecorator(
 )
 
 private fun TypeName.amendTag(
-    amend: Function1<MutableMap<KClass<*>, Any>, Unit>
+    amend: Function1<MutableMap<KClass<*>, Any>, Unit>,
 ): TypeName {
     val tags = tags.toMutableMap()
     amend(tags)
@@ -44,7 +45,7 @@ private fun TypeName.amendTag(
 
 private fun TypeName.tagTypeFromDecorator(
     markedAsNullable: Boolean,
-    decorator: ArgumentMappingDecorator?
+    decorator: ArgumentMappingDecorator?,
 ): TypeName {
     return if (decorator == null) {
         this
@@ -133,6 +134,7 @@ private fun KSTypeArgument.mapParameterType(
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): TypeName {
+
     return if (type == null) {
         STAR_WITH_DECLARATION
     } else {
@@ -264,7 +266,7 @@ private fun KSType.abbreviateType(
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
-            )
+            ),
         ).copy(nullable = markedAsNullable)
 
     return type.tagTypeFromDecorator(markedAsNullable, argumentsDecorator)
@@ -292,7 +294,7 @@ internal fun KSTypeReference.mapParameterType(
 private fun TypeName.tagWithGenericDeclaration(
     recursive: Boolean,
     nullable: Boolean,
-    castReturnType: Boolean
+    castReturnType: Boolean,
 ): TypeName {
     return amendTag { tags ->
         tags[GenericDeclaration::class] = GenericDeclaration(
@@ -306,7 +308,7 @@ private fun TypeName.tagWithGenericDeclaration(
 
 private fun GenericDeclaration?.resolveEventuallyKnownType(
     markedAsNullable: Boolean,
-    typeReference: TypeVariableName
+    typeReference: TypeVariableName,
 ): TypeName {
     return when {
         this == null -> typeReference
@@ -318,8 +320,8 @@ private fun GenericDeclaration?.resolveEventuallyKnownType(
                     isRecursive = isRecursive,
                     isNullable = isNullable || markedAsNullable,
                     doCastReturnType = true,
-                )
-            )
+                ),
+            ),
         )
         else -> types.first().amendTag { tags ->
             tags[GenericDeclaration::class] = GenericDeclaration(
@@ -347,7 +349,7 @@ private fun TypeVariableName.resolveTypeVariable(
             ANY.tagWithGenericDeclaration(
                 recursive = true,
                 nullable = rootNullability,
-                castReturnType = true
+                castReturnType = true,
             )
         }
         name in classScope && name !in functionScope -> {
@@ -372,12 +374,12 @@ private fun TypeVariableName.resolveTypeVariable(
 }
 
 private fun ClassName.markAsNonGeneric(
-    nullable: Boolean
+    nullable: Boolean,
 ): ClassName {
     return amendTag { tags ->
         tags[GenericDeclaration::class] = NON_GENERIC.copy(
             types = listOf(this),
-            isNullable = nullable
+            isNullable = nullable,
         )
     } as ClassName
 }
@@ -405,7 +407,7 @@ private fun ClassName.resolveClassType(
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
-            )
+            ),
         ).tagTypeFromDecorator(markedAsNullable, argumentsDecorator)
     }
 }
@@ -446,7 +448,7 @@ private fun KSType.mapParameterType(
                     functionScope = functionScope,
                     resolved = resolved,
                     rootNullability = rootNullability,
-                    nullable = isMarkedNullable
+                    nullable = isMarkedNullable,
                 )
         }
         is KSClassDeclaration -> {
@@ -494,7 +496,7 @@ private fun KSType.mapParameterType(
                 functionScope = functionScope,
                 rootNullability = rootNullability,
                 resolved = resolved,
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = typeParameterResolver,
             )
 
             declaration.parameterizedBy(
@@ -507,7 +509,7 @@ private fun KSType.mapParameterType(
                     rootNullability = rootNullability,
                     resolved = resolved,
                     typeParameterResolver = extraResolver,
-                )
+                ),
             ).tagTypeFromDecorator(isMarkedNullable, aliasArgsDecorator)
         }
         else -> error("Unsupported type: $declaration")
@@ -515,7 +517,7 @@ private fun KSType.mapParameterType(
 
     return type.resolveNullability(
         isMarkedNullable = isMarkedNullable,
-        rootNullability = rootNullability
+        rootNullability = rootNullability,
     )
 }
 
@@ -526,8 +528,8 @@ private val STAR_WITH_DECLARATION = STAR.copy(
             isRecursive = false,
             isNullable = true,
             doCastReturnType = false,
-        )
-    )
+        ),
+    ),
 )
 
 private val NON_GENERIC = GenericDeclaration(

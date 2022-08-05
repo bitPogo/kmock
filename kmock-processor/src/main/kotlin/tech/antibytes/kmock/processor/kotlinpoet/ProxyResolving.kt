@@ -22,7 +22,6 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
-import tech.antibytes.kmock.processor.utils.extractParameter
 
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
@@ -35,7 +34,8 @@ internal fun KSTypeReference.toProxyPairTypeName(
     rootTypeArguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
-    return resolve().toProxyPairTypeName(
+    val resolvedElement = resolve()
+    return resolvedElement.toProxyPairTypeName(
         typeParameterResolver = typeParameterResolver,
         inheritedVarargArg = inheritedVarargArg,
         generics = generics,
@@ -73,7 +73,7 @@ private fun KSTypeArgument.resolveVariance(
             WildcardTypeName.consumerOf(methodTypeName) to WildcardTypeName.consumerOf(proxyTypeName)
         }
         Variance.STAR -> STAR to STAR
-        Variance.INVARIANT ->  {
+        Variance.INVARIANT -> {
             val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
                 inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
@@ -282,7 +282,7 @@ internal fun KSTypeReference.toProxyPairTypeName(
         inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         typeParameterResolver = typeParameterResolver,
-        typeArguments = typeElements,
+        typeArguments = element?.typeArguments.orEmpty(),
         rootTypeArguments = typeElements,
     )
 }
