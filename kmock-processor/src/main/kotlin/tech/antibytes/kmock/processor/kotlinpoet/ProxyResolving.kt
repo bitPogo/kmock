@@ -235,7 +235,7 @@ private fun KSType.toProxyPairTypeName(
             }
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -245,14 +245,14 @@ private fun KSType.toProxyPairTypeName(
                 generics = generics,
                 typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
-                typeArguments = mappedArgs,
+                typeArguments = arguments,
                 rootTypeArguments = rootTypeArguments,
             )
 
             val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toProxyPairTypeName(
                 inheritedVarargArg = false,
                 generics = generics,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 rootTypeArguments = rootTypeArguments,
             )
             val methodAlias = declaration.parameterizedBy(abbreviatedMethodType, aliasMethodArgs)

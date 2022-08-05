@@ -123,9 +123,9 @@ private fun KSType.toTypeNameX(
                 .toTypeNameX(extraResolver)
                 .copy(nullable = isMarkedNullable)
                 .rawType()
-                .withTypeArguments(mappedArgs.map { it.toTypeNameX(extraResolver) })
+                .withTypeArguments(arguments.map { it.toTypeNameX(extraResolver) })
 
-            val aliasArgs = typeArguments.map { it.toTypeNameX(typeParamResolver) }
+            val aliasArgs = typeArguments.map { it.toTypeNameX(extraResolver) }
 
             decl.toClassNameInternal()
                 .withTypeArguments(aliasArgs)
@@ -152,9 +152,8 @@ private fun KSTypeArgument.toTypeNameX(
 private fun KSTypeReference.toTypeNameX(
     typeParamResolver: TypeParameterResolver,
 ): TypeName {
-    val resolved = resolve()
-    return resolved.toTypeNameX(
+    return resolve().toTypeNameX(
         typeParamResolver,
-        this.element?.typeArguments ?: emptyList(),
+        element?.typeArguments ?: emptyList(),
     )
 }

@@ -81,7 +81,7 @@ private fun KSType.abbreviateType(
     typeArguments: List<KSTypeArgument>,
     mapping: Map<String, String>,
 ): TypeName {
-    return this.mapArgumentType(typeParameterResolver, mapping, emptyList())
+    return mapArgumentType(typeParameterResolver, mapping, emptyList())
         .rawType()
         .withTypeArguments(
             typeArguments.mapArgumentType(mapping, typeParameterResolver),
@@ -129,7 +129,7 @@ internal fun KSType.mapArgumentType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -137,13 +137,13 @@ internal fun KSType.mapArgumentType(
             val abbreviatedType = resolvedType.abbreviateType(
                 typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
-                typeArguments = mappedArgs,
+                typeArguments = arguments,
                 mapping = mapping,
             )
 
             val aliasArgs = typeArguments.mapArgumentType(
                 mapping = mapping,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
             )
 
             declaration.parameterizedBy(abbreviatedType, aliasArgs)

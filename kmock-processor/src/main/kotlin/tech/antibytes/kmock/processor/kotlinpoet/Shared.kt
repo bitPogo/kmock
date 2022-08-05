@@ -80,14 +80,13 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
     )
 }
 
-private fun extractAliasTypeResolver(
-    declaration: KSTypeAlias,
+private fun KSTypeAlias.extractAliasTypeResolver(
     typeParameterResolver: TypeParameterResolver,
 ): TypeParameterResolver {
-    return if (declaration.typeParameters.isEmpty()) {
+    return if (typeParameters.isEmpty()) {
         typeParameterResolver
     } else {
-        declaration.typeParameters.toTypeParameterResolver(typeParameterResolver)
+        typeParameters.toTypeParameterResolver(typeParameterResolver)
     }
 }
 
@@ -113,25 +112,23 @@ internal fun KSTypeAlias.resolveAlias(
     arguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
 ): Triple<KSType, List<KSTypeArgument>, TypeParameterResolver> {
-    var typeAlias: KSTypeAlias = this
-    var resolvedArguments = arguments
+    var typeAlias: KSTypeAlias? = this
+    var resolvedArguments: List<KSTypeArgument>
     var resolvedType: KSType
-    var mappedArgs: List<KSTypeArgument>
+    var mappedArgs: List<KSTypeArgument> = arguments
     var extraResolver: TypeParameterResolver = typeParameterResolver
 
     do {
-        resolvedType = typeAlias.type.resolve()
+        resolvedArguments = mappedArgs
+        resolvedType = typeAlias!!.type.resolve()
         mappedArgs = typeAlias.mapAbbreviatedType(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = extractAliasTypeResolver(this, extraResolver)
+        extraResolver = typeAlias.extractAliasTypeResolver(extraResolver)
 
-        if (resolvedType.declaration is KSTypeAlias) {
-            typeAlias = resolvedType.declaration as KSTypeAlias
-            resolvedArguments = mappedArgs
-        }
-    } while (resolvedType.declaration is KSTypeAlias)
+        typeAlias = resolvedType.declaration as? KSTypeAlias
+    } while (typeAlias is KSTypeAlias)
 
     return Triple(resolvedType, mappedArgs, extraResolver)
 }

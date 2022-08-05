@@ -312,7 +312,7 @@ private fun GenericDeclaration?.resolveEventuallyKnownType(
 ): TypeName {
     return when {
         this == null -> typeReference
-        this.types.size > 1 -> ANY.copy(
+        types.size > 1 -> ANY.copy(
             nullable = isNullable || markedAsNullable,
             tags = mapOf(
                 GenericDeclaration::class to GenericDeclaration(
@@ -474,7 +474,7 @@ private fun KSType.mapParameterType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -487,7 +487,7 @@ private fun KSType.mapParameterType(
                 typeParameterResolver = extraResolver,
                 markedAsNullable = isMarkedNullable,
                 rootNullability = rootNullability,
-                typeArguments = mappedArgs,
+                typeArguments = arguments,
             )
 
             val aliasArgsDecorator = typeArguments.mapParameterType(
@@ -496,7 +496,7 @@ private fun KSType.mapParameterType(
                 functionScope = functionScope,
                 rootNullability = rootNullability,
                 resolved = resolved,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
             )
 
             declaration.parameterizedBy(

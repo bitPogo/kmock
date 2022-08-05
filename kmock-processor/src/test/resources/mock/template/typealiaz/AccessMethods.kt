@@ -19,7 +19,7 @@ typealias Alias699<X> = Alias655<X>
 typealias Alias700<X> = Alias655<X>
 typealias Alias701<E> = Alias677<E>
 typealias Alias702<E> = Alias701<E>
-typealias Alias703<Z, Q> = (Alias701<Z>) -> Alias702<Q>
+typealias Alias703<Z, Q> = Function1<Alias701<Z>, Alias702<Q>>
 
 @Mock(Access::class)
 interface Access<L : Alias623> {
@@ -71,5 +71,6 @@ interface Access<L : Alias623> {
 
     fun <T : Alias700<K>, K> rol(arg: T)
     fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>
-    // TODO: fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(vararg arg1: T)
+    fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(vararg arg1: T)
+    fun bars(vararg arg1: Alias703<Alias623, in Alias677<Alias673<Int>>>)
 }

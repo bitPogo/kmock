@@ -1031,7 +1031,7 @@ class KMockMocksSpec {
     fun `Given a annotated Source for a Platform and has AccessMethods is processed, it writes a mock`() {
         // Given
         val source = SourceFile.kotlin(
-            "SuperType.kt",
+            "AccessMethods.kt",
             loadResource("/template/typealiaz/AccessMethods.kt")
         )
         val expected = loadResource("/expected/typealiaz/Access.kt")
