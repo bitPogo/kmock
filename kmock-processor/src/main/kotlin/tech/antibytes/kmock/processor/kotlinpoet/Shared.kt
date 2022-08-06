@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -11,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.KSTypeArgument
+import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName
@@ -20,6 +22,9 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.tags.TypeAliasTag
 
+internal fun KSTypeReference.extractParameter(): List<KSTypeArgument> {
+    return element?.typeArguments.orEmpty()
+}
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
 internal fun TypeName.rawType(): ClassName {
@@ -75,18 +80,17 @@ internal fun TypeVariableName.copy(name: String): TypeVariableName {
     )
 }
 
-private fun extractAliasTypeResolver(
-    declaration: KSTypeAlias,
-    typeParameterResolver: TypeParameterResolver
+private fun KSTypeAlias.extractAliasTypeResolver(
+    typeParameterResolver: TypeParameterResolver,
 ): TypeParameterResolver {
-    return if (declaration.typeParameters.isEmpty()) {
+    return if (typeParameters.isEmpty()) {
         typeParameterResolver
     } else {
-        declaration.typeParameters.toTypeParameterResolver(typeParameterResolver)
+        typeParameters.toTypeParameterResolver(typeParameterResolver)
     }
 }
 
-private fun KSTypeAlias.mapAbbreviatedType(
+internal fun KSTypeAlias.mapAbbreviatedType(
     typeAliasTypeArguments: List<KSTypeArgument>,
     abbreviatedType: KSType,
 ): List<KSTypeArgument> {
@@ -108,25 +112,23 @@ internal fun KSTypeAlias.resolveAlias(
     arguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
 ): Triple<KSType, List<KSTypeArgument>, TypeParameterResolver> {
-    var typeAlias: KSTypeAlias = this
-    var resolvedArguments = arguments
+    var typeAlias: KSTypeAlias? = this
+    var resolvedArguments: List<KSTypeArgument>
     var resolvedType: KSType
-    var mappedArgs: List<KSTypeArgument>
-    var extraResolver: TypeParameterResolver
+    var mappedArgs: List<KSTypeArgument> = arguments
+    var extraResolver: TypeParameterResolver = typeParameterResolver
 
     do {
-        resolvedType = typeAlias.type.resolve()
+        resolvedArguments = mappedArgs
+        resolvedType = typeAlias!!.type.resolve()
         mappedArgs = typeAlias.mapAbbreviatedType(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = extractAliasTypeResolver(this, typeParameterResolver)
+        extraResolver = typeAlias.extractAliasTypeResolver(extraResolver)
 
-        if (resolvedType.declaration is KSTypeAlias) {
-            typeAlias = resolvedType.declaration as KSTypeAlias
-            resolvedArguments = mappedArgs
-        }
-    } while (resolvedType.declaration is KSTypeAlias)
+        typeAlias = resolvedType.declaration as? KSTypeAlias
+    } while (typeAlias is KSTypeAlias)
 
     return Triple(resolvedType, mappedArgs, extraResolver)
 }

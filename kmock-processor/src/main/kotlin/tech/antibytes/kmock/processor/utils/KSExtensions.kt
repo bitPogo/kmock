@@ -12,7 +12,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.symbol.KSTypeArgument
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
@@ -75,8 +74,4 @@ internal fun KSFunctionDeclaration.toReceiverTypeParameterResolver(
     val receiver = this.extensionReceiver?.resolve()?.declaration
 
     return receiver?.parentDeclaration?.typeParameters?.toTypeParameterResolver(parentResolver) ?: parentResolver
-}
-
-internal fun KSTypeReference.extractParameter(): List<KSTypeArgument> {
-    return element?.typeArguments.orEmpty()
 }

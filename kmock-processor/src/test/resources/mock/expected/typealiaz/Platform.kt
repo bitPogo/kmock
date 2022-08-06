@@ -51,9 +51,9 @@ internal class PlatformMock<L : Alias23>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doAnythingElseWithAlias21Alias23",
             collector = collector, freeze = freeze)
 
-    public val _doAnythingElseWithAlias77:
-        KMockContract.SyncFunProxy<Unit, (Alias77<Alias77<Alias21>>) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doAnythingElseWithAlias77",
+    public val _doAnythingElseWithAlias78:
+        KMockContract.SyncFunProxy<Unit, (Alias78<Alias77<Alias21>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.PlatformMock#_doAnythingElseWithAlias78",
             collector = collector, freeze = freeze)
 
     public val _doOtherThing: KMockContract.SyncFunProxy<Unit, (Alias77<Alias77<Alias21>>,
@@ -142,8 +142,8 @@ internal class PlatformMock<L : Alias23>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public override fun doAnythingElse(arg1: Alias77<Alias77<Alias21>>): Unit =
-        _doAnythingElseWithAlias77.invoke(arg1) {
+    public override fun doAnythingElse(arg1: Alias78<Alias77<Alias21>>): Unit =
+        _doAnythingElseWithAlias78.invoke(arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -223,7 +223,7 @@ internal class PlatformMock<L : Alias23>(
         _doSomething.clear()
         _doMore.clear()
         _doAnythingElseWithAlias21Alias23.clear()
-        _doAnythingElseWithAlias77.clear()
+        _doAnythingElseWithAlias78.clear()
         _doOtherThing.clear()
         _doSomethingElseWithTAlias21LAlias23.clear()
         _doSomethingElseWithTAlias77.clear()

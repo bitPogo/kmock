@@ -8,11 +8,11 @@ package mock.template.typealiaz
 
 import tech.antibytes.kmock.Mock
 
-interface Generic<T>
+interface GenericReceiver<R>
 
 typealias Alias11 = (Any) -> Unit
 typealias Alias2 = (Any) -> Any
-typealias Alias3<T> = Generic<T>
+typealias Alias3<R> = GenericReceiver<R>
 
 @Mock(Receiver::class)
 interface Receiver<L : Alias11> {

@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -34,7 +35,7 @@ private data class ArgumentMappingDecorator(
 )
 
 private fun TypeName.amendTag(
-    amend: Function1<MutableMap<KClass<*>, Any>, Unit>
+    amend: Function1<MutableMap<KClass<*>, Any>, Unit>,
 ): TypeName {
     val tags = tags.toMutableMap()
     amend(tags)
@@ -44,7 +45,7 @@ private fun TypeName.amendTag(
 
 private fun TypeName.tagTypeFromDecorator(
     markedAsNullable: Boolean,
-    decorator: ArgumentMappingDecorator?
+    decorator: ArgumentMappingDecorator?,
 ): TypeName {
     return if (decorator == null) {
         this
@@ -79,33 +80,74 @@ private fun TypeName.transferGenericDeclaration(
     }
 }
 
-private fun KSTypeArgument.resolveVariance(typeName: TypeName): TypeName {
+private fun KSTypeArgument.resolveVariance(
+    type: KSTypeReference,
+    visited: Set<String>,
+    classScope: Set<String>,
+    functionScope: Set<String>,
+    rootNullability: Boolean,
+    resolved: Map<String, GenericDeclaration>,
+    typeParameterResolver: TypeParameterResolver,
+): TypeName {
     return when (variance) {
-        Variance.COVARIANT -> WildcardTypeName.producerOf(typeName).transferGenericDeclaration(typeName)
-        Variance.CONTRAVARIANT -> WildcardTypeName.consumerOf(typeName).transferGenericDeclaration(typeName)
+        Variance.COVARIANT -> {
+            val typeName = type.mapParameterType(
+                visited = visited,
+                classScope = classScope,
+                functionScope = functionScope,
+                rootNullability = rootNullability,
+                resolved = resolved,
+                typeParameterResolver = typeParameterResolver,
+            )
+            WildcardTypeName.producerOf(typeName).transferGenericDeclaration(typeName)
+        }
+        Variance.CONTRAVARIANT -> {
+            val typeName = type.mapParameterType(
+                visited = visited,
+                classScope = classScope,
+                functionScope = functionScope,
+                rootNullability = rootNullability,
+                resolved = resolved,
+                typeParameterResolver = typeParameterResolver,
+            )
+            WildcardTypeName.consumerOf(typeName).transferGenericDeclaration(typeName)
+        }
         Variance.STAR -> STAR_WITH_DECLARATION
-        Variance.INVARIANT -> typeName
+        Variance.INVARIANT -> {
+            type.mapParameterType(
+                visited = visited,
+                classScope = classScope,
+                functionScope = functionScope,
+                rootNullability = rootNullability,
+                resolved = resolved,
+                typeParameterResolver = typeParameterResolver,
+            )
+        }
     }
 }
 
 private fun KSTypeArgument.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): TypeName {
-    val typeName = type?.mapParameterType(
-        visited = visited,
-        classScope = classScope,
-        allGenerics = allGenerics,
-        rootNullability = rootNullability,
-        resolved = resolved,
-        typeParameterResolver = typeParameterResolver,
-    ) ?: return STAR_WITH_DECLARATION
 
-    return resolveVariance(typeName).transferGenericDeclaration(typeName)
+    return if (type == null) {
+        STAR_WITH_DECLARATION
+    } else {
+        resolveVariance(
+            type = type!!,
+            visited = visited,
+            classScope = classScope,
+            functionScope = functionScope,
+            rootNullability = rootNullability,
+            resolved = resolved,
+            typeParameterResolver = typeParameterResolver,
+        )
+    }
 }
 
 internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? = tag(GenericDeclaration::class)
@@ -113,7 +155,7 @@ internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? = tag(Gen
 private fun List<KSTypeArgument>.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
@@ -126,7 +168,7 @@ private fun List<KSTypeArgument>.mapParameterType(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
-            allGenerics = allGenerics,
+            functionScope = functionScope,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -150,7 +192,7 @@ private fun List<KSTypeArgument>.mapParameterType(
 private fun List<KSTypeArgument>.resolveUntaggedTypes(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     rootNullability: Boolean,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
@@ -160,7 +202,7 @@ private fun List<KSTypeArgument>.resolveUntaggedTypes(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
-            allGenerics = allGenerics,
+            functionScope = functionScope,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -170,7 +212,7 @@ private fun List<KSTypeArgument>.resolveUntaggedTypes(
 private fun ArgumentMappingDecorator?.resolveArguments(
     arguments: List<KSTypeArgument>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     rootNullability: Boolean,
     visited: Set<String>,
     resolved: Map<String, GenericDeclaration>,
@@ -181,7 +223,7 @@ private fun ArgumentMappingDecorator?.resolveArguments(
             typeParameterResolver = typeParameterResolver,
             visited = visited,
             classScope = classScope,
-            allGenerics = allGenerics,
+            functionScope = functionScope,
             rootNullability = rootNullability,
             resolved = resolved,
         )
@@ -190,9 +232,8 @@ private fun ArgumentMappingDecorator?.resolveArguments(
 private fun KSType.abbreviateType(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     resolved: Map<String, GenericDeclaration>,
-    extraResolver: TypeParameterResolver,
     typeParameterResolver: TypeParameterResolver,
     rootNullability: Boolean,
     markedAsNullable: Boolean,
@@ -201,7 +242,7 @@ private fun KSType.abbreviateType(
     val argumentsDecorator = typeArguments.mapParameterType(
         visited = visited,
         classScope = classScope,
-        allGenerics = allGenerics,
+        functionScope = functionScope,
         rootNullability = rootNullability,
         resolved = resolved,
         typeParameterResolver = typeParameterResolver,
@@ -210,22 +251,22 @@ private fun KSType.abbreviateType(
     val type = mapParameterType(
         visited = visited,
         classScope = classScope,
-        allGenerics = allGenerics,
+        functionScope = functionScope,
         resolved = resolved,
         rootNullability = rootNullability,
         typeArguments = emptyList(),
-        typeParameterResolver = extraResolver,
+        typeParameterResolver = typeParameterResolver,
     ).rawType()
         .withTypeArguments(
             argumentsDecorator.resolveArguments(
                 arguments = typeArguments,
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
-            )
+            ),
         ).copy(nullable = markedAsNullable)
 
     return type.tagTypeFromDecorator(markedAsNullable, argumentsDecorator)
@@ -234,7 +275,7 @@ private fun KSType.abbreviateType(
 internal fun KSTypeReference.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     rootNullability: Boolean,
     typeParameterResolver: TypeParameterResolver,
@@ -242,7 +283,7 @@ internal fun KSTypeReference.mapParameterType(
     return resolve().mapParameterType(
         visited = visited,
         classScope = classScope,
-        allGenerics = allGenerics,
+        functionScope = functionScope,
         resolved = resolved,
         rootNullability = rootNullability,
         typeParameterResolver = typeParameterResolver,
@@ -253,7 +294,7 @@ internal fun KSTypeReference.mapParameterType(
 private fun TypeName.tagWithGenericDeclaration(
     recursive: Boolean,
     nullable: Boolean,
-    castReturnType: Boolean
+    castReturnType: Boolean,
 ): TypeName {
     return amendTag { tags ->
         tags[GenericDeclaration::class] = GenericDeclaration(
@@ -267,11 +308,11 @@ private fun TypeName.tagWithGenericDeclaration(
 
 private fun GenericDeclaration?.resolveEventuallyKnownType(
     markedAsNullable: Boolean,
-    typeReference: TypeVariableName
+    typeReference: TypeVariableName,
 ): TypeName {
     return when {
         this == null -> typeReference
-        this.types.size > 1 -> ANY.copy(
+        types.size > 1 -> ANY.copy(
             nullable = isNullable || markedAsNullable,
             tags = mapOf(
                 GenericDeclaration::class to GenericDeclaration(
@@ -279,8 +320,8 @@ private fun GenericDeclaration?.resolveEventuallyKnownType(
                     isRecursive = isRecursive,
                     isNullable = isNullable || markedAsNullable,
                     doCastReturnType = true,
-                )
-            )
+                ),
+            ),
         )
         else -> types.first().amendTag { tags ->
             tags[GenericDeclaration::class] = GenericDeclaration(
@@ -296,7 +337,7 @@ private fun GenericDeclaration?.resolveEventuallyKnownType(
 private fun TypeVariableName.resolveTypeVariable(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     rootNullability: Boolean,
     nullable: Boolean,
     resolved: Map<String, GenericDeclaration>,
@@ -308,13 +349,20 @@ private fun TypeVariableName.resolveTypeVariable(
             ANY.tagWithGenericDeclaration(
                 recursive = true,
                 nullable = rootNullability,
-                castReturnType = true
+                castReturnType = true,
             )
         }
-        name in classScope && name !in allGenerics -> {
+        name in classScope && name !in functionScope -> {
             this.tagWithGenericDeclaration(
                 recursive = false,
                 nullable = nullable,
+                castReturnType = true,
+            )
+        }
+        name !in classScope && name !in functionScope -> { // Generic Types of Aliases
+            ANY.tagWithGenericDeclaration(
+                recursive = false,
+                nullable = true,
                 castReturnType = true,
             )
         }
@@ -326,12 +374,12 @@ private fun TypeVariableName.resolveTypeVariable(
 }
 
 private fun ClassName.markAsNonGeneric(
-    nullable: Boolean
+    nullable: Boolean,
 ): ClassName {
     return amendTag { tags ->
         tags[GenericDeclaration::class] = NON_GENERIC.copy(
             types = listOf(this),
-            isNullable = nullable
+            isNullable = nullable,
         )
     } as ClassName
 }
@@ -343,7 +391,7 @@ private fun ClassName.resolveClassType(
     markedAsNullable: Boolean,
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): TypeName {
@@ -355,11 +403,11 @@ private fun ClassName.resolveClassType(
                 arguments = arguments,
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 rootNullability = rootNullability,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
-            )
+            ),
         ).tagTypeFromDecorator(markedAsNullable, argumentsDecorator)
     }
 }
@@ -381,7 +429,7 @@ private fun TypeName.resolveNullability(
 private fun KSType.mapParameterType(
     visited: Set<String>,
     classScope: Set<String>,
-    allGenerics: Set<String>,
+    functionScope: Set<String>,
     resolved: Map<String, GenericDeclaration>,
     typeArguments: List<KSTypeArgument>,
     rootNullability: Boolean,
@@ -397,17 +445,17 @@ private fun KSType.mapParameterType(
                 .resolveTypeVariable(
                     visited = visited,
                     classScope = classScope,
-                    allGenerics = allGenerics,
+                    functionScope = functionScope,
                     resolved = resolved,
                     rootNullability = rootNullability,
-                    nullable = isMarkedNullable
+                    nullable = isMarkedNullable,
                 )
         }
         is KSClassDeclaration -> {
             val argumentsDecorator = typeArguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 resolved = resolved,
                 rootNullability = rootNullability,
                 typeParameterResolver = typeParameterResolver,
@@ -420,13 +468,13 @@ private fun KSType.mapParameterType(
                 rootNullability = rootNullability,
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 resolved = resolved,
                 typeParameterResolver = typeParameterResolver,
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -434,22 +482,21 @@ private fun KSType.mapParameterType(
             val abbreviatedType = resolvedType.abbreviateType(
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 resolved = resolved,
-                extraResolver = extraResolver,
-                typeParameterResolver = typeParameterResolver,
+                typeParameterResolver = extraResolver,
                 markedAsNullable = isMarkedNullable,
                 rootNullability = rootNullability,
-                typeArguments = mappedArgs,
+                typeArguments = arguments,
             )
 
             val aliasArgsDecorator = typeArguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
-                allGenerics = allGenerics,
+                functionScope = functionScope,
                 rootNullability = rootNullability,
                 resolved = resolved,
-                typeParameterResolver = typeParameterResolver
+                typeParameterResolver = extraResolver,
             )
 
             declaration.parameterizedBy(
@@ -458,11 +505,11 @@ private fun KSType.mapParameterType(
                     arguments = typeArguments,
                     visited = visited,
                     classScope = classScope,
-                    allGenerics = allGenerics,
+                    functionScope = functionScope,
                     rootNullability = rootNullability,
                     resolved = resolved,
-                    typeParameterResolver = typeParameterResolver,
-                )
+                    typeParameterResolver = extraResolver,
+                ),
             ).tagTypeFromDecorator(isMarkedNullable, aliasArgsDecorator)
         }
         else -> error("Unsupported type: $declaration")
@@ -470,7 +517,7 @@ private fun KSType.mapParameterType(
 
     return type.resolveNullability(
         isMarkedNullable = isMarkedNullable,
-        rootNullability = rootNullability
+        rootNullability = rootNullability,
     )
 }
 
@@ -481,8 +528,8 @@ private val STAR_WITH_DECLARATION = STAR.copy(
             isRecursive = false,
             isNullable = true,
             doCastReturnType = false,
-        )
-    )
+        ),
+    ),
 )
 
 private val NON_GENERIC = GenericDeclaration(

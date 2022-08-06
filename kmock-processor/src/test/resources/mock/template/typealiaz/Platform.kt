@@ -13,6 +13,7 @@ interface GenericAliasPlatform<Z>
 typealias Alias21 = (Any) -> Unit
 typealias Alias23 = (Any) -> Any
 typealias Alias77<Q> = GenericAliasPlatform<Q>
+typealias Alias78<Q> = Alias77<Q>
 typealias Alias73<Q> = Map<String, Q>
 typealias Alias73a = Map<String, Int>
 typealias Alias55<Q> = Alias73<Q>
@@ -37,7 +38,7 @@ interface Platform<L : Alias23> {
         arg2: Alias23
     )
 
-    fun doAnythingElse(arg1: Alias77<Alias77<Alias21>>)
+    fun doAnythingElse(arg1: Alias78<Alias77<Alias21>>)
 
     fun <T : Alias77<Alias21>, X : Comparable<X>> doOtherThing(arg1: Alias77<T>, arg0: X)
 

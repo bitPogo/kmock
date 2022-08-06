@@ -9,7 +9,7 @@ package mock.template.typealiaz
 import tech.antibytes.kmock.Mock
 import tech.antibytes.kmock.Relaxer
 
-interface Generic<T>
+interface GenericRelaxed<S>
 
 @Relaxer
 internal inline fun <reified T> smooth(id: String): T {
@@ -18,7 +18,7 @@ internal inline fun <reified T> smooth(id: String): T {
 
 typealias Alias101 = (Any) -> Unit
 typealias Alias102 = (Any) -> Any
-typealias Alias107<T> = Generic<T>
+typealias Alias107<T> = GenericRelaxed<T>
 
 @Mock(Relaxed::class)
 interface Relaxed<L : Alias102> {
