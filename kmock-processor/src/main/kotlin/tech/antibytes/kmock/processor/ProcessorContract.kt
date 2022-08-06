@@ -423,7 +423,6 @@ internal interface ProcessorContract {
 
     interface MethodGeneratorHelper {
         fun determineArguments(
-            inherited: Boolean,
             generics: Map<String, GenericDeclaration>?,
             arguments: List<KSValueParameter>,
             methodWideResolver: TypeParameterResolver,
@@ -470,7 +469,6 @@ internal interface ProcessorContract {
             ksFunction: KSFunctionDeclaration,
             classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
-            inherited: Boolean,
             relaxer: Relaxer?,
         ): Triple<PropertySpec, FunSpec, LambdaTypeName>
     }
@@ -501,7 +499,6 @@ internal interface ProcessorContract {
             ksFunction: KSFunctionDeclaration,
             classWideResolver: TypeParameterResolver,
             enableSpy: Boolean,
-            inherited: Boolean,
             relaxer: Relaxer?,
         ): Triple<PropertySpec, FunSpec, LambdaTypeName>
 
@@ -538,6 +535,7 @@ internal interface ProcessorContract {
             enableGenerator: Boolean,
             preventResolvingOfAliases: Set<String>,
             nullableClassGenerics: Map<String, TypeName>,
+            classScopeGenerics: Set<String>,
         ): ProxyAccessMethodGenerator
     }
 

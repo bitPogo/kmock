@@ -111,7 +111,6 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                optIn("kotlin.ExperimentalUnsignedTypes")
                 optIn("kotlin.RequiresOptIn")
             }
         }

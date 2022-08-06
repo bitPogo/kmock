@@ -121,10 +121,10 @@ internal class AccessMock<L : Alias623>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.AccessMock#_barWithLongTAlias699s",
             collector = collector, freeze = freeze)
 
-    public val _barWithTAlias703s:
-        KMockContract.SyncFunProxy<Unit, (Array<out Alias703<Alias623, in Alias677<Alias673<Int>>>>) -> Unit>
-        = ProxyFactory.createSyncFunProxy("mock.template.typealiaz.AccessMock#_barWithTAlias703s",
-        collector = collector, freeze = freeze)
+    public val _barWithTAlias703:
+        KMockContract.SyncFunProxy<Unit, (Alias703<Alias623, in Alias677<Alias673<Int>>>) -> Unit> =
+        ProxyFactory.createSyncFunProxy("mock.template.typealiaz.AccessMock#_barWithTAlias703",
+            collector = collector, freeze = freeze)
 
     public val _run: KMockContract.SyncFunProxy<Alias621, (L) -> Alias621> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.AccessMock#_run", collector =
@@ -150,7 +150,7 @@ internal class AccessMock<L : Alias623>(
         "doElse|(kotlin.Function1<kotlin.Any, kotlin.Unit>, kotlin.Function1<kotlin.Any, kotlin.Any>) -> kotlin.Unit|[]"
             to _doElse,
         "run|(L) -> kotlin.Function1<kotlin.Any, kotlin.Unit>|[]" to _run,
-        "bars|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[]"
+        "bars|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[]"
             to _bars,
         "doAnythingElse|(kotlin.Function1<kotlin.Any, kotlin.Unit>, kotlin.Function1<kotlin.Any, kotlin.Any>) -> kotlin.Function1<kotlin.Any, kotlin.Any>|[]"
             to _doAnythingElseWithAlias621Alias623,
@@ -182,8 +182,8 @@ internal class AccessMock<L : Alias623>(
             to _barWithTAlias699s,
         "bar|(kotlin.Long, kotlin.Array<kotlin.collections.Map<kotlin.String, mock.template.typealiaz.GenericsAccess<kotlin.collections.Map<kotlin.String, kotlin.Int>>>>) -> kotlin.collections.Map<kotlin.String, mock.template.typealiaz.GenericsAccess<kotlin.collections.Map<kotlin.String, kotlin.Int>>>|[[kotlin.collections.Map<kotlin.String, mock.template.typealiaz.GenericsAccess<kotlin.collections.Map<kotlin.String, kotlin.Int>>>]]"
             to _barWithLongTAlias699s,
-        "bar|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[[kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>]]"
-            to _barWithTAlias703s,
+        "bar|(kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>) -> kotlin.Unit|[[kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>]]"
+            to _barWithTAlias703,
         "toll|(mock.template.typealiaz.GenericsAccess<kotlin.Any>) -> kotlin.Unit|[[mock.template.typealiaz.GenericsAccess<X>], [kotlin.CharSequence & kotlin.Comparable<X>]]"
             to _toll,
     )
@@ -260,10 +260,10 @@ internal class AccessMock<L : Alias623>(
     public override fun <T : Alias699<out Alias677<Alias673<Int>>>> bar(arg0: Long, vararg arg1: T): T
         = _barWithLongTAlias699s.invoke(arg0, arg1) as T
 
-    public override fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(vararg arg1: T): Unit
-        = _barWithTAlias703s.invoke(arg1) {
-        useUnitFunRelaxerIf(relaxUnitFun || relaxed)
-    }
+    public override fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(arg1: T): Unit =
+        _barWithTAlias703.invoke(arg1) {
+            useUnitFunRelaxerIf(relaxUnitFun || relaxed)
+        }
 
     public override fun run(arg: L): Alias621 = _run.invoke(arg)
 
@@ -299,7 +299,7 @@ internal class AccessMock<L : Alias623>(
         _barWithAlias699.clear()
         _barWithTAlias699s.clear()
         _barWithLongTAlias699s.clear()
-        _barWithTAlias703s.clear()
+        _barWithTAlias703.clear()
         _run.clear()
         _rol.clear()
         _toll.clear()
@@ -360,15 +360,15 @@ internal class AccessMock<L : Alias623>(
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf3")
     public
-    fun syncFunProxyOf(reference: (Array<out Function1<GenericsAccess<Function1<Any, Any>>, GenericsAccess<Any>>>) -> Unit):
-        KMockContract.FunProxy<Unit, (Array<Function1<GenericsAccess<Function1<Any, Any>>, GenericsAccess<Any>>>) -> Unit>
+    fun syncFunProxyOf(reference: (Array<out Function1<GenericsAccess<Any>, GenericsAccess<Any>>>) -> Unit):
+        KMockContract.FunProxy<Unit, (Array<Function1<GenericsAccess<Any>, GenericsAccess<Any>>>) -> Unit>
         =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[]"""]
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
-                (kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any,
-            kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit>
+                (kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>,
+            mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
@@ -546,16 +546,15 @@ internal class AccessMock<L : Alias623>(
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental
     @SafeJvmName("syncFunProxyOf17")
-    public fun <T : Function1<GenericsAccess<Function1<Any, Any>>, GenericsAccess<Any>>>
-        syncFunProxyOf(reference: (Array<out T>) -> Unit, hint: Hint1<Array<T>>):
-        KMockContract.FunProxy<Unit, (Array<Function1<GenericsAccess<Function1<Any, Any>>, GenericsAccess<Any>>>) -> Unit>
-        =
-        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit|[[kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any, kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>]]"""]
+    public fun <T : Function1<GenericsAccess<Any>, GenericsAccess<Any>>>
+        syncFunProxyOf(reference: (T) -> Unit, hint: Hint1<T>):
+        KMockContract.FunProxy<Unit, (Function1<GenericsAccess<Any>, GenericsAccess<Any>>) -> Unit> =
+        (referenceStore["""${(reference as kotlin.reflect.KFunction<*>).name}|(kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>) -> kotlin.Unit|[[kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>]]"""]
             ?: throw
-            IllegalStateException("""Unknown method ${reference.name} with signature (kotlin.Array<out T>) -> kotlin.Unit!"""))
+            IllegalStateException("""Unknown method ${reference.name} with signature (T) -> kotlin.Unit!"""))
             as tech.antibytes.kmock.KMockContract.FunProxy<kotlin.Unit,
-                (kotlin.Array<kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Function1<kotlin.Any,
-            kotlin.Any>>, mock.template.typealiaz.GenericsAccess<kotlin.Any>>>) -> kotlin.Unit>
+                (kotlin.Function1<mock.template.typealiaz.GenericsAccess<kotlin.Any>,
+            mock.template.typealiaz.GenericsAccess<kotlin.Any>>) -> kotlin.Unit>
 
     @Suppress("UNUSED_PARAMETER", "UNUSED_EXPRESSION", "UNCHECKED_CAST")
     @KMockExperimental

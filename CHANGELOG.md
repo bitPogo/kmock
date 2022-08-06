@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Aliases as type arguments are not correctly resolved, if the Aliases have type arguments on their own
 * Generics cause AccessMethods to collide in their definition
 * Stackoverflow when determine TypeVariance
-* Transitive Aliases are not correctly resolved for AccessMethods if they nested ParameterTypes
 
 ### Security
 

@@ -71,6 +71,6 @@ interface Access<L : Alias623> {
 
     fun <T : Alias700<K>, K> rol(arg: T)
     fun <T : Alias677<K>, K> toll(arg: T) where K : CharSequence, K : Comparable<K>
-    fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(vararg arg1: T)
+    fun <T : Alias703<Alias623, in Alias677<Alias673<Int>>>> bar(arg1: T)
     fun bars(vararg arg1: Alias703<Alias623, in Alias677<Alias673<Int>>>)
 }

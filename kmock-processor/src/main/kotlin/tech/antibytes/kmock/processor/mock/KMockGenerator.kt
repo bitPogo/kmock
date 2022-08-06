@@ -55,7 +55,6 @@ import tech.antibytes.kmock.processor.ProcessorContract.SpyContainer
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateMultiSource
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
-import tech.antibytes.kmock.processor.utils.isInherited
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -219,7 +218,6 @@ internal class KMockGenerator(
         proxyAccessMethodGenerator: ProxyAccessMethodGenerator,
         ksFunction: KSFunctionDeclaration,
         qualifier: String,
-        inherited: Boolean,
         enableSpy: Boolean,
         classScopeGenerics: Map<String, List<TypeName>>?,
         typeResolver: TypeParameterResolver,
@@ -233,7 +231,6 @@ internal class KMockGenerator(
                 ksFunction = ksFunction,
                 classWideResolver = typeResolver,
                 enableSpy = enableSpy,
-                inherited = inherited,
                 relaxer = relaxer,
             )
         } else {
@@ -243,7 +240,6 @@ internal class KMockGenerator(
                 ksFunction = ksFunction,
                 classWideResolver = typeResolver,
                 enableSpy = enableSpy,
-                inherited = inherited,
                 relaxer = relaxer,
             )
         }
@@ -357,6 +353,7 @@ internal class KMockGenerator(
             enableGenerator = enableProxyAccessMethodGenerator,
             preventResolvingOfAliases = preventResolvingOfAliases,
             nullableClassGenerics = nullableClassGenerics,
+            classScopeGenerics = classScopeGenerics?.keys ?: emptySet(),
         )
 
         mock.addSuperinterfaces(superTypes)
@@ -431,7 +428,6 @@ internal class KMockGenerator(
                     ksFunction = ksFunction,
                     qualifier = qualifier,
                     enableSpy = enableSpy,
-                    inherited = template.isInherited(parents),
                     classScopeGenerics = classScopeGenerics,
                     typeResolver = typeResolver,
                     relaxer = relaxer,

@@ -114,7 +114,6 @@ internal class KMockMethodGenerator(
         ksFunction: KSFunctionDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        inherited: Boolean,
         relaxer: Relaxer?,
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
@@ -127,7 +126,6 @@ internal class KMockMethodGenerator(
             methodWideResolver = typeParameterResolver,
         )
         val arguments = utils.determineArguments(
-            inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
             methodWideResolver = typeParameterResolver,
@@ -145,7 +143,6 @@ internal class KMockMethodGenerator(
         )
 
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = typeParameterResolver,
         )

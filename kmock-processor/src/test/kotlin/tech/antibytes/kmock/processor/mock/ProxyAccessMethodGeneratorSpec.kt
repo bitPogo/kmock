@@ -24,6 +24,7 @@ class ProxyAccessMethodGeneratorSpec {
             false,
             mockk(),
             mockk(),
+            mockk(),
         ) fulfils ProxyAccessMethodGenerator::class
     }
 }

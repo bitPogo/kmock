@@ -134,7 +134,6 @@ private fun KSTypeArgument.mapParameterType(
     resolved: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): TypeName {
-
     return if (type == null) {
         STAR_WITH_DECLARATION
     } else {
@@ -474,7 +473,7 @@ private fun KSType.mapParameterType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -487,10 +486,10 @@ private fun KSType.mapParameterType(
                 typeParameterResolver = extraResolver,
                 markedAsNullable = isMarkedNullable,
                 rootNullability = rootNullability,
-                typeArguments = arguments,
+                typeArguments = mappedArgs,
             )
 
-            val aliasArgsDecorator = typeArguments.mapParameterType(
+            val aliasArgsDecorator = arguments.mapParameterType(
                 visited = visited,
                 classScope = classScope,
                 functionScope = functionScope,

@@ -27,12 +27,12 @@ import com.squareup.kotlinpoet.tags.TypeAliasTag
 
 private class Resolver(
     private val parent: TypeParameterResolver? = null,
-    override val parametersMap: Map<String, TypeVariableName>
+    override val parametersMap: Map<String, TypeVariableName>,
 ) : TypeParameterResolver {
     override fun get(index: String): TypeVariableName {
         return parametersMap.getOrElse(index) {
             parent?.get(index) ?: throw IllegalStateException(
-                "Unknown type parameter $index, only ${parametersMap.keys} are known."
+                "Unknown type parameter $index, only ${parametersMap.keys} are known.",
             )
         }
     }
@@ -92,7 +92,7 @@ private fun KSType.toTypeNameX(
         is KSClassDeclaration -> {
             decl.toClassName()
                 .withTypeArguments(
-                    typeArguments.map { it.toTypeNameX(typeParamResolver) }
+                    typeArguments.map { it.toTypeNameX(typeParamResolver) },
                 )
         }
         is KSTypeParameter -> typeParamResolver[decl.name.getShortName()]
@@ -123,9 +123,9 @@ private fun KSType.toTypeNameX(
                 .toTypeNameX(extraResolver)
                 .copy(nullable = isMarkedNullable)
                 .rawType()
-                .withTypeArguments(arguments.map { it.toTypeNameX(extraResolver) })
+                .withTypeArguments(mappedArgs.map { it.toTypeNameX(extraResolver) })
 
-            val aliasArgs = typeArguments.map { it.toTypeNameX(extraResolver) }
+            val aliasArgs = this.arguments.map { it.toTypeNameX(extraResolver) }
 
             decl.toClassNameInternal()
                 .withTypeArguments(aliasArgs)

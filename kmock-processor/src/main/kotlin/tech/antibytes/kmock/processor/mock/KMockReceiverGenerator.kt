@@ -352,7 +352,6 @@ internal class KMockReceiverGenerator(
         ksFunction: KSFunctionDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        inherited: Boolean,
         relaxer: Relaxer?,
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
@@ -370,7 +369,6 @@ internal class KMockReceiverGenerator(
             proxyGenericTypes = proxyGenerics,
         )
         val arguments = utils.determineArguments(
-            inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
             methodWideResolver = receiverTypeResolver,
@@ -388,7 +386,6 @@ internal class KMockReceiverGenerator(
             generics = proxyGenerics ?: emptyMap(),
         )
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = receiverTypeResolver,
         )

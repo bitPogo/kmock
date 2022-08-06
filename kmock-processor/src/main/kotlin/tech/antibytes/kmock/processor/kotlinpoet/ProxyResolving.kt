@@ -17,10 +17,8 @@ import com.google.devtools.ksp.symbol.Variance
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.WildcardTypeName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.GenericDeclaration
 import tech.antibytes.kmock.processor.mock.resolveGeneric
 
@@ -30,7 +28,6 @@ import tech.antibytes.kmock.processor.mock.resolveGeneric
 /* Contains Workaround to overcome KSP misalignment on inherited types with function TypeParameter */
 // see: https://github.com/google/ksp/issues/958
 internal fun KSTypeReference.toProxyPairTypeName(
-    inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     rootTypeArguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
@@ -38,7 +35,6 @@ internal fun KSTypeReference.toProxyPairTypeName(
     val resolvedElement = resolve()
     return resolvedElement.toProxyPairTypeName(
         typeParameterResolver = typeParameterResolver,
-        inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
         typeArguments = element?.typeArguments.orEmpty(),
@@ -47,7 +43,6 @@ internal fun KSTypeReference.toProxyPairTypeName(
 
 private fun KSTypeArgument.resolveVariance(
     type: KSTypeReference,
-    inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
     rootTypeArguments: List<KSTypeArgument>,
@@ -55,7 +50,6 @@ private fun KSTypeArgument.resolveVariance(
     return when (variance) {
         Variance.COVARIANT -> {
             val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
-                inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
                 rootTypeArguments = rootTypeArguments,
                 typeParameterResolver = typeParameterResolver,
@@ -65,7 +59,6 @@ private fun KSTypeArgument.resolveVariance(
         }
         Variance.CONTRAVARIANT -> {
             val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
-                inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
                 rootTypeArguments = rootTypeArguments,
                 typeParameterResolver = typeParameterResolver,
@@ -76,7 +69,6 @@ private fun KSTypeArgument.resolveVariance(
         Variance.STAR -> STAR to STAR
         Variance.INVARIANT -> {
             val (methodTypeName, proxyTypeName) = type.toProxyPairTypeName(
-                inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
                 rootTypeArguments = rootTypeArguments,
                 typeParameterResolver = typeParameterResolver,
@@ -89,7 +81,6 @@ private fun KSTypeArgument.resolveVariance(
 
 internal fun KSTypeArgument.toProxyPairTypeName(
     generics: Map<String, GenericDeclaration>,
-    inheritedVarargArg: Boolean,
     typeParameterResolver: TypeParameterResolver,
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
@@ -98,7 +89,6 @@ internal fun KSTypeArgument.toProxyPairTypeName(
     } else {
         resolveVariance(
             type = type!!,
-            inheritedVarargArg = inheritedVarargArg,
             generics = generics,
             rootTypeArguments = rootTypeArguments,
             typeParameterResolver = typeParameterResolver,
@@ -107,7 +97,6 @@ internal fun KSTypeArgument.toProxyPairTypeName(
 }
 
 private fun List<KSTypeArgument>.toProxyPairTypeName(
-    inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     rootTypeArguments: List<KSTypeArgument>,
     typeParameterResolver: TypeParameterResolver,
@@ -118,7 +107,6 @@ private fun List<KSTypeArgument>.toProxyPairTypeName(
     this.forEach { argument ->
         val (methodType, proxyType) = argument.toProxyPairTypeName(
             typeParameterResolver = typeParameterResolver,
-            inheritedVarargArg = inheritedVarargArg,
             generics = generics,
             rootTypeArguments = rootTypeArguments,
         )
@@ -131,7 +119,6 @@ private fun List<KSTypeArgument>.toProxyPairTypeName(
 }
 
 private fun KSType.abbreviateType(
-    inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
     isNullable: Boolean,
@@ -139,7 +126,6 @@ private fun KSType.abbreviateType(
     rootTypeArguments: List<KSTypeArgument>,
 ): Pair<TypeName, TypeName> {
     val (methodType, proxyType) = this.toProxyPairTypeName(
-        inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
         typeArguments = emptyList(),
@@ -148,7 +134,6 @@ private fun KSType.abbreviateType(
 
     val (methodArgument, proxyArguments) = typeArguments.toProxyPairTypeName(
         typeParameterResolver = typeParameterResolver,
-        inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         rootTypeArguments = rootTypeArguments,
     )
@@ -166,36 +151,11 @@ private fun KSType.abbreviateType(
     return parameterizedMethodType to parameterizedProxyType
 }
 
-private fun KSClassDeclaration.isMisalignedVararg(
-    inheritedVarargArg: Boolean,
-    arguments: List<TypeName>,
-    rootTypeArguments: List<KSTypeArgument>,
-): Boolean {
-    val resolved = rootTypeArguments.firstOrNull()?.type?.resolve()?.declaration?.simpleName?.getShortName()
-    val derived = arguments.firstOrNull()?.toString()
-    val declaration = this.simpleName.getShortName().trimEnd('?')
-
-    return inheritedVarargArg && (
-        (declaration.endsWith("Array") && derived != resolved) ||
-            ("kotlin.$declaration" in specialArrays)
-        )
-}
-
 private fun TypeName.transferProperties(source: TypeName): TypeName {
     return this.copy(nullable = this.isNullable || source.isNullable, annotations = source.annotations)
 }
 
-private fun List<TypeName>.resolveVararg(parent: KSClassDeclaration): TypeName {
-    return when (val typeName = this.firstOrNull()) {
-        null -> specialArrays["kotlin.${parent.simpleName.asString().trimEnd('?')}"]!!
-        STAR -> NULLABLE_ANY
-        is WildcardTypeName -> typeName.outTypes.first()
-        else -> error("Cannot resolve vararg of ${parent.toClassName()}")
-    }
-}
-
 private fun KSType.toProxyPairTypeName(
-    inheritedVarargArg: Boolean,
     typeParameterResolver: TypeParameterResolver,
     generics: Map<String, GenericDeclaration>,
     typeArguments: List<KSTypeArgument>,
@@ -205,25 +165,16 @@ private fun KSType.toProxyPairTypeName(
         "Error type '$this' is not resolvable in the current round of processing."
     }
 
-    var overrideNullability = false
-
     val (methodType, proxyType) = when (val declaration = this.declaration) {
         is KSClassDeclaration -> {
             val (methodArguments, proxyArguments) = typeArguments.toProxyPairTypeName(
-                inheritedVarargArg = false,
                 generics = generics,
                 typeParameterResolver = typeParameterResolver,
                 rootTypeArguments = rootTypeArguments,
             )
 
-            if (declaration.isMisalignedVararg(inheritedVarargArg, methodArguments, rootTypeArguments)) {
-                methodArguments.resolveVararg(declaration).also { resolved ->
-                    overrideNullability = resolved.isNullable
-                } to proxyArguments.resolveVararg(declaration)
-            } else {
-                declaration.toClassName().withTypeArguments(methodArguments) to
-                    declaration.toClassName().withTypeArguments(proxyArguments)
-            }
+            declaration.toClassName().withTypeArguments(methodArguments) to
+                declaration.toClassName().withTypeArguments(proxyArguments)
         }
         is KSTypeParameter -> {
             val name = declaration.name.getShortName()
@@ -236,22 +187,20 @@ private fun KSType.toProxyPairTypeName(
             }
         }
         is KSTypeAlias -> {
-            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
 
             val (abbreviatedMethodType, abbreviatedProxyType) = resolvedType.abbreviateType(
-                inheritedVarargArg = inheritedVarargArg,
                 generics = generics,
                 typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
-                typeArguments = arguments,
+                typeArguments = mappedArgs,
                 rootTypeArguments = rootTypeArguments,
             )
 
-            val (aliasMethodArgs, aliasProxyArgs) = typeArguments.toProxyPairTypeName(
-                inheritedVarargArg = false,
+            val (aliasMethodArgs, aliasProxyArgs) = arguments.toProxyPairTypeName(
                 generics = generics,
                 typeParameterResolver = extraResolver,
                 rootTypeArguments = rootTypeArguments,
@@ -267,12 +216,11 @@ private fun KSType.toProxyPairTypeName(
         else -> error("Unsupported type: $declaration")
     }
 
-    return methodType.copy(nullable = (isMarkedNullable || overrideNullability)) to
-        proxyType.copy(nullable = (proxyType.isNullable || isMarkedNullable || overrideNullability))
+    return methodType.copy(nullable = isMarkedNullable) to
+        proxyType.copy(nullable = (proxyType.isNullable || isMarkedNullable))
 }
 
 internal fun KSTypeReference.toProxyPairTypeName(
-    inheritedVarargArg: Boolean,
     generics: Map<String, GenericDeclaration>,
     typeParameterResolver: TypeParameterResolver,
 ): Pair<TypeName, TypeName> {
@@ -280,28 +228,11 @@ internal fun KSTypeReference.toProxyPairTypeName(
     val type = resolve()
 
     return type.toProxyPairTypeName(
-        inheritedVarargArg = inheritedVarargArg,
         generics = generics,
         typeParameterResolver = typeParameterResolver,
         typeArguments = element?.typeArguments.orEmpty(),
         rootTypeArguments = typeElements,
     )
 }
-
-@OptIn(ExperimentalUnsignedTypes::class)
-private val specialArrays: Map<String, TypeName> = mapOf(
-    IntArray::class.asTypeName().toString() to Int::class.asTypeName(),
-    ByteArray::class.asTypeName().toString() to Byte::class.asTypeName(),
-    ShortArray::class.asTypeName().toString() to Short::class.asTypeName(),
-    LongArray::class.asTypeName().toString() to Long::class.asTypeName(),
-    FloatArray::class.asTypeName().toString() to Float::class.asTypeName(),
-    DoubleArray::class.asTypeName().toString() to Double::class.asTypeName(),
-    CharArray::class.asTypeName().toString() to Char::class.asTypeName(),
-    BooleanArray::class.asTypeName().toString() to Boolean::class.asTypeName(),
-    UByteArray::class.asTypeName().toString() to UByte::class.asTypeName(),
-    UShortArray::class.asTypeName().toString() to UShort::class.asTypeName(),
-    UIntArray::class.asTypeName().toString() to UInt::class.asTypeName(),
-    ULongArray::class.asTypeName().toString() to ULong::class.asTypeName(),
-)
 
 private val STAR_PAIR = STAR to STAR

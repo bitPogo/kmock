@@ -12,6 +12,7 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeAlias
 import com.google.devtools.ksp.symbol.KSTypeArgument
+import com.google.devtools.ksp.symbol.KSTypeParameter
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -25,6 +26,7 @@ import com.squareup.kotlinpoet.tags.TypeAliasTag
 internal fun KSTypeReference.extractParameter(): List<KSTypeArgument> {
     return element?.typeArguments.orEmpty()
 }
+
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/ksTypes.kt#L1
 // see: https://github.com/square/kotlinpoet/blob/9af3f67bb4338f6f35fcd29cb9228227981ae1ce/interop/ksp/src/main/kotlin/com/squareup/kotlinpoet/ksp/utils.kt#L16
 internal fun TypeName.rawType(): ClassName {
@@ -90,14 +92,14 @@ private fun KSTypeAlias.extractAliasTypeResolver(
     }
 }
 
-internal fun KSTypeAlias.mapAbbreviatedType(
+private fun List<KSTypeParameter>.mapAbbreviatedType(
     typeAliasTypeArguments: List<KSTypeArgument>,
     abbreviatedType: KSType,
 ): List<KSTypeArgument> {
     return abbreviatedType.arguments
         .map { typeArgument ->
             // Check if type argument is a reference to a typealias type parameter, and not an actual type.
-            val typeAliasTypeParameterIndex = this.typeParameters.indexOfFirst { typeAliasTypeParameter ->
+            val typeAliasTypeParameterIndex = this.indexOfFirst { typeAliasTypeParameter ->
                 typeAliasTypeParameter.name.asString() == typeArgument.type.toString()
             }
             if (typeAliasTypeParameterIndex >= 0) {
@@ -106,6 +108,20 @@ internal fun KSTypeAlias.mapAbbreviatedType(
                 typeArgument
             }
         }
+}
+
+internal fun KSTypeAlias.mapAbbreviatedType(
+    typeAliasTypeArguments: List<KSTypeArgument>,
+    abbreviatedType: KSType,
+): List<KSTypeArgument> {
+    return if (typeParameters.isEmpty()) {
+        abbreviatedType.arguments
+    } else {
+        typeParameters.mapAbbreviatedType(
+            typeAliasTypeArguments = typeAliasTypeArguments,
+            abbreviatedType = abbreviatedType,
+        )
+    }
 }
 
 internal fun KSTypeAlias.resolveAlias(
@@ -120,12 +136,13 @@ internal fun KSTypeAlias.resolveAlias(
 
     do {
         resolvedArguments = mappedArgs
+
         resolvedType = typeAlias!!.type.resolve()
+        extraResolver = typeAlias.extractAliasTypeResolver(extraResolver)
         mappedArgs = typeAlias.mapAbbreviatedType(
             typeAliasTypeArguments = resolvedArguments,
             abbreviatedType = resolvedType,
         )
-        extraResolver = typeAlias.extractAliasTypeResolver(extraResolver)
 
         typeAlias = resolvedType.declaration as? KSTypeAlias
     } while (typeAlias is KSTypeAlias)
