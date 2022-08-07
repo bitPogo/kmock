@@ -127,6 +127,13 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
     }
 
+    private fun Project.chainTests(): Boolean {
+        return findProperty("kmock.noParallelTests")
+            ?.toString()
+            ?.toBoolean()
+            ?: true
+    }
+
     override fun configure(project: Project) {
         val dependencies = project.dependencies
         val buildDir = project.buildDir.absolutePath.trimEnd('/')
@@ -164,6 +171,9 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         if (kspCollector.isNotEmpty()) {
             propagateDependencies(project, ancestors)
             KmpCleanup.cleanup(project, platforms)
+            if (project.chainTests()) {
+                KmpTestTaskChain.chainTasks(project, kspCollector.keys.toList())
+            }
         }
     }
 }

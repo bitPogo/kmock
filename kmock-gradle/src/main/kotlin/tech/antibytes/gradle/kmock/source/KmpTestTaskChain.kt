@@ -25,14 +25,14 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
                             project.tasks.getByName("testDebugUnitTest"),
                             project.tasks.getByName("testReleaseUnitTest"),
                             project.tasks.getByName("connectedDebugAndroidTest"),
-                        )
+                        ),
                     )
                 }
         }
     }
 
     private fun List<String>.toTestTasks(
-        project: Project
+        project: Project,
     ): List<Task> = this
         .filter { task -> !task.startsWith("android") }
         .map { task -> task.mapTask(project) }
@@ -47,8 +47,8 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
     }
 
     override fun chainTasks(project: Project, platforms: List<String>) {
-        platforms
-            .toTestTasks(project)
-            .chainTasks()
+        project.afterEvaluate {
+            platforms.toTestTasks(this).chainTasks()
+        }
     }
 }

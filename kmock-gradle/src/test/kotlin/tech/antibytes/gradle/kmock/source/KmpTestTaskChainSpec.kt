@@ -15,6 +15,7 @@ import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.TaskContainer
 import org.junit.jupiter.api.Test
 import tech.antibytes.gradle.kmock.KMockPluginContract
+import tech.antibytes.gradle.test.invokeGradleAction
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
 import tech.antibytes.util.test.fulfils
@@ -45,6 +46,11 @@ class KmpTestTaskChainSpec {
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
         every { tasks.getByName(any()) } returnsMany testTasks
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project,
+        )
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -92,6 +98,11 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.android.library") } returns true
         every { tasks.getByName(any()) } returnsMany testTasks
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project,
+        )
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -160,6 +171,11 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.android.application") } returns true
         every { tasks.getByName(any()) } returnsMany testTasks
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project,
+        )
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)

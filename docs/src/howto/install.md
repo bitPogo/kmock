@@ -230,6 +230,11 @@ In case you need to consume snapshots:
 !!!tip
     You may find a full examples, how to set up KMock properly, in the [Playground](https://github.com/bitPogo/kmock-playground).
 
+!!!important
+    Since Kotlin 1.7.0 KmpTest are running always in parallel, which can cause Mocks not to be generated properly.
+    To counter this KMock will chain the test in a arbitrary order which effectively disables the parallel execution.
+    If you want to deactivate this behaviour you may add `kmock.noParallelTests` in your gradle.properties to false.
+
 ## Newer KSP or Kotlin Versions
 KMock eventually not use the latest version of Kotlin or KSP.
 This is mainly done to enable keep it open to projects which cannot update immediately.

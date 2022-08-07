@@ -118,6 +118,7 @@ class KmpSourceSetsConfiguratorSpec {
             "commonTest" to emptySet<String>(),
         )
 
+        every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
@@ -241,6 +242,7 @@ class KmpSourceSetsConfiguratorSpec {
             "commonTest" to emptySet<String>(),
         )
 
+        every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
@@ -382,6 +384,7 @@ class KmpSourceSetsConfiguratorSpec {
             "nativeTest" to setOf("commonTest"),
         )
 
+        every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
@@ -515,6 +518,7 @@ class KmpSourceSetsConfiguratorSpec {
             "iosTest" to setOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
         )
 
+        every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
@@ -743,5 +747,157 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_concurrentTest#1", "metaTest") }
 
         verify(exactly = 1) { kspExtension.arg("kmock_dependencies_metaTest#0", "commonTest") }
+    }
+
+    @Test
+    fun `Given configure is called it configures PlatformTest Sources while chaining the tests`() {
+        // Given
+        mockkObject(KmpTestTaskChain)
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
+
+        val source1: KotlinSourceSet = mockk()
+        val source1Dependencies: KotlinSourceSet = mockk()
+        val source1DependenciesName: String = fixture.fixture()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+        val source2DependenciesName: String = fixture.fixture()
+
+        val sourceSets = mutableListOf(
+            source1,
+            source2,
+        )
+
+        val dependencyGraph = mapOf(
+            "commonTest" to emptySet<String>(),
+        )
+
+        every { project.findProperty(any()) } returns "true"
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
+            kotlin,
+        )
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+
+        every { dependencies.add(any(), any()) } returns mockk()
+
+        every { source1.name } returns "jvmTest"
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source1Dependencies)
+        every { source1Dependencies.name } returns source1DependenciesName
+
+        every { source2.name } returns "jsTest"
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns source2DependenciesName
+
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
+
+        every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
+
+        every { project.tasks } returns mockk(relaxed = true)
+        every { KmpTestTaskChain.chainTasks(any(), any()) } just Runs
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        // Then
+        verify(exactly = 1) {
+            KmpTestTaskChain.chainTasks(project, listOf("jvm", "js"))
+        }
+
+        unmockkObject(KmpTestTaskChain)
+    }
+
+    @Test
+    fun `Given configure is called it configures PlatformTest Sources while using its default chaining tests`() {
+        // Given
+        mockkObject(KmpTestTaskChain)
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
+
+        val source1: KotlinSourceSet = mockk()
+        val source1Dependencies: KotlinSourceSet = mockk()
+        val source1DependenciesName: String = fixture.fixture()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+        val source2DependenciesName: String = fixture.fixture()
+
+        val sourceSets = mutableListOf(
+            source1,
+            source2,
+        )
+
+        val dependencyGraph = mapOf(
+            "commonTest" to emptySet<String>(),
+        )
+
+        every { project.findProperty(any()) } returns null
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.buildDir.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(
+            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
+            kotlin,
+        )
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+
+        every { dependencies.add(any(), any()) } returns mockk()
+
+        every { source1.name } returns "jvmTest"
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source1Dependencies)
+        every { source1Dependencies.name } returns source1DependenciesName
+
+        every { source2.name } returns "jsTest"
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns source2DependenciesName
+
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
+
+        every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
+
+        every { project.tasks } returns mockk(relaxed = true)
+        every { KmpTestTaskChain.chainTasks(any(), any()) } just Runs
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        // Then
+        verify(exactly = 1) {
+            KmpTestTaskChain.chainTasks(project, listOf("jvm", "js"))
+        }
+
+        unmockkObject(KmpTestTaskChain)
     }
 }
