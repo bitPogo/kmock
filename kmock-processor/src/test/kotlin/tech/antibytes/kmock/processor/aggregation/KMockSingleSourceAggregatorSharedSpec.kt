@@ -22,6 +22,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
@@ -41,14 +42,13 @@ import tech.antibytes.kmock.processor.ProcessorContract.SourceSetValidator
 import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.test.assertFailsWith
 
 class KMockSingleSourceAggregatorSharedSpec {
     private val fixture = kotlinFixture {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 
@@ -150,7 +150,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         val arguments: List<KSValueArgument> = listOf(
             mockk(),
-            mockk(relaxed = true)
+            mockk(relaxed = true),
         )
 
         every {
@@ -210,7 +210,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         val arguments: List<KSValueArgument> = listOf(
             mockk(),
-            mockk(relaxed = true)
+            mockk(relaxed = true),
         )
 
         every {
@@ -535,7 +535,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             ClassKind.ENUM_CLASS,
             ClassKind.ENUM_ENTRY,
             ClassKind.OBJECT,
-            ClassKind.ANNOTATION_CLASS
+            ClassKind.ANNOTATION_CLASS,
         )
 
         val selector = fixture.random.nextInt(0, selection.lastIndex)
@@ -629,7 +629,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             ClassKind.ENUM_CLASS,
             ClassKind.ENUM_ENTRY,
             ClassKind.OBJECT,
-            ClassKind.ANNOTATION_CLASS
+            ClassKind.ANNOTATION_CLASS,
         )
 
         val selector = fixture.random.nextInt(0, selection.lastIndex)
@@ -799,8 +799,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
@@ -898,8 +898,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
@@ -916,7 +916,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         // Given
         val marker = fixture.fixture<String>()
         val customAnnotations: Map<String, String> = mapOf(
-            fixture.fixture<String>() to marker
+            fixture.fixture<String>() to marker,
         )
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -1000,8 +1000,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
@@ -1027,7 +1027,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         // Given
         val marker = "${fixture.fixture<String>()}Test"
         val customAnnotations: Map<String, String> = mapOf(
-            fixture.fixture<String>() to marker
+            fixture.fixture<String>() to marker,
         )
         val logger: KSPLogger = mockk()
         val symbol: KSAnnotated = mockk()
@@ -1111,8 +1111,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
@@ -1270,7 +1270,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
+                dependencies = listOf(file),
             ),
             TemplateSource(
                 indicator = "${marker1}Test",
@@ -1278,8 +1278,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 4) { genericResolver.extractGenerics(declaration) }
@@ -1307,7 +1307,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         val marker1 = fixture.fixture<String>()
         val customAnnotations: Map<String, String> = mapOf(
             fixture.fixture<String>() to marker0,
-            fixture.fixture<String>() to marker1
+            fixture.fixture<String>() to marker1,
         )
         val logger: KSPLogger = mockk()
         val source0: KSAnnotated = mockk()
@@ -1438,7 +1438,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
+                dependencies = listOf(file),
             ),
             TemplateSource(
                 indicator = "${marker1}Test",
@@ -1446,8 +1446,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 12) { genericResolver.extractGenerics(declaration) }
@@ -1686,7 +1686,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returnsMany listOf(
             Mock::class.qualifiedName!!,
-            MockCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!,
         )
 
         every {
@@ -1735,7 +1735,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = emptyMap(),
-                dependencies = listOf(file)
+                dependencies = listOf(file),
             ),
         )
         sourceFiles mustBe listOf(file)
@@ -1792,7 +1792,7 @@ class KMockSingleSourceAggregatorSharedSpec {
             notRelatedAnnotation.annotationType.resolve().declaration.qualifiedName!!.asString()
         } returnsMany listOf(
             Mock::class.qualifiedName!!,
-            MockCommon::class.qualifiedName!!
+            MockCommon::class.qualifiedName!!,
         )
 
         every {
@@ -1839,7 +1839,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = emptyMap(),
-                dependencies = listOf(file)
+                dependencies = listOf(file),
             ),
         )
         sourceFiles mustBe listOf(file, file)
@@ -1950,8 +1950,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 1) { genericResolver.extractGenerics(declaration) }
@@ -2050,8 +2050,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageName,
                 template = declaration,
                 generics = generics,
-                dependencies = listOf(file)
-            )
+                dependencies = listOf(file),
+            ),
         )
 
         verify(exactly = 2) { genericResolver.extractGenerics(declaration) }
@@ -2214,7 +2214,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 sourceSet1 to listOf(symbolGiven1),
                 sourceSet2 to listOf(symbolGiven2),
             ),
-            resolver
+            resolver,
         )
 
         // Then
@@ -2226,7 +2226,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageNameFetched,
                 template = declarationFetched,
                 generics = emptyMap(),
-                dependencies = listOf(fileFetched)
+                dependencies = listOf(fileFetched),
             ),
             TemplateSource(
                 indicator = sourceSet1,
@@ -2234,7 +2234,7 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageNameGiven1,
                 template = declarationGiven1,
                 generics = emptyMap(),
-                dependencies = listOf(fileGiven1)
+                dependencies = listOf(fileGiven1),
             ),
             TemplateSource(
                 indicator = sourceSet2,
@@ -2242,8 +2242,8 @@ class KMockSingleSourceAggregatorSharedSpec {
                 packageName = packageNameGiven2,
                 template = declarationGiven2,
                 generics = emptyMap(),
-                dependencies = listOf(fileGiven2)
-            )
+                dependencies = listOf(fileGiven2),
+            ),
         )
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockShared::class.qualifiedName!!, false)

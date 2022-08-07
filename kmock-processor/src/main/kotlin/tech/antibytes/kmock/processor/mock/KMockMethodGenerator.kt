@@ -41,7 +41,7 @@ internal class KMockMethodGenerator(
         arguments: Array<MemberArgumentTypeInfo>,
         parameter: List<TypeName>,
         returnType: MemberReturnTypeInfo,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         if (returnType.needsCastAnnotation(relaxer = relaxer)) {
             method.addAnnotation(UNCHECKED)
@@ -56,7 +56,7 @@ internal class KMockMethodGenerator(
             typeParameter = parameter,
             arguments = arguments,
             methodReturnType = returnType,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         method.addCode(
@@ -77,7 +77,7 @@ internal class KMockMethodGenerator(
         parameter: List<TypeName>,
         returnType: MemberReturnTypeInfo,
         typeResolver: TypeParameterResolver,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
@@ -91,7 +91,7 @@ internal class KMockMethodGenerator(
 
         if (generics != null) {
             method.typeVariables.addAll(
-                this.genericResolver.mapDeclaredGenerics(generics, typeResolver)
+                this.genericResolver.mapDeclaredGenerics(generics, typeResolver),
             )
         }
 
@@ -102,7 +102,7 @@ internal class KMockMethodGenerator(
             arguments = arguments,
             parameter = parameter,
             returnType = returnType,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return method.build()
@@ -114,8 +114,7 @@ internal class KMockMethodGenerator(
         ksFunction: KSFunctionDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        inherited: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
 
@@ -127,10 +126,9 @@ internal class KMockMethodGenerator(
             methodWideResolver = typeParameterResolver,
         )
         val arguments = utils.determineArguments(
-            inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
-            methodWideResolver = typeParameterResolver
+            methodWideResolver = typeParameterResolver,
         )
         val parameter = utils.resolveTypeParameter(
             parameter = ksFunction.typeParameters,
@@ -145,9 +143,8 @@ internal class KMockMethodGenerator(
         )
 
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
-            typeParameterResolver = typeParameterResolver
+            typeParameterResolver = typeParameterResolver,
         )
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
 
@@ -171,7 +168,7 @@ internal class KMockMethodGenerator(
             arguments = arguments,
             returnType = proxySignature.returnType,
             typeResolver = typeParameterResolver,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return Triple(proxySignature.proxy, method, proxySignature.sideEffect)

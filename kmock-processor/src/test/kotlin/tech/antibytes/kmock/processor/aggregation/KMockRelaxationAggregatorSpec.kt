@@ -37,7 +37,7 @@ class KMockRelaxationAggregatorSpec {
         addGenerator(
             String::class,
             StringAlphaGenerator,
-            qualifiedBy("stringAlpha")
+            qualifiedBy("stringAlpha"),
         )
     }
 

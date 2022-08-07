@@ -20,11 +20,11 @@ object KMockConfiguration {
                 name = "KMock Runtime",
                 description = description,
                 year = year,
-                url = url
+                url = url,
             ),
             developers = listOf(developer),
             license = license,
-            scm = sourceControl
+            scm = sourceControl,
         )
     }
 }

@@ -100,7 +100,7 @@ internal class KMockReceiverGenerator(
                         setterProxy.templateName,
                         nonIntrusiveInvocation,
                     )
-                    .build()
+                    .build(),
             )
         }
     }
@@ -117,7 +117,7 @@ internal class KMockReceiverGenerator(
         val property = PropertySpec.builder(
             getterProxy.templateName,
             propertyType.methodTypeName,
-            KModifier.OVERRIDE
+            KModifier.OVERRIDE,
         ).receiver(receiver.methodTypeName)
 
         if (typeParameter.isNotEmpty()) {
@@ -134,7 +134,7 @@ internal class KMockReceiverGenerator(
             enableSpy = enableSpy,
             propertyName = getterProxy.templateName,
             propertyType = propertyType,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         property.getter(
@@ -146,7 +146,7 @@ internal class KMockReceiverGenerator(
                     nonIntrusiveInvocation,
                     cast,
                 )
-                .build()
+                .build(),
         )
 
         property.addSetter(
@@ -172,7 +172,7 @@ internal class KMockReceiverGenerator(
                 qualifier = qualifier,
                 propertyName = propertyName,
                 receiver = receiverInfo,
-                generics = proxyGenerics ?: emptyMap()
+                generics = proxyGenerics ?: emptyMap(),
             )
 
             val (setterProxy, _) = utils.buildProxy(
@@ -207,7 +207,7 @@ internal class KMockReceiverGenerator(
         ksProperty: KSPropertyDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Triple<PropertySpec, PropertySpec?, PropertySpec> {
         val propertyName = ksProperty.simpleName.asString()
         val receiverTypeResolver = ksProperty.toReceiverTypeParameterResolver(classWideResolver)
@@ -231,7 +231,7 @@ internal class KMockReceiverGenerator(
             qualifier = qualifier,
             propertyName = propertyName,
             receiver = receiverInfo,
-            generics = proxyGenerics ?: emptyMap()
+            generics = proxyGenerics ?: emptyMap(),
         )
 
         val (getter, getterReturnType) = utils.buildProxy(
@@ -262,7 +262,7 @@ internal class KMockReceiverGenerator(
             receiver = receiverInfo,
             propertyType = getterReturnType,
             typeParameter = genericResolver.mapDeclaredGenerics(generics, receiverTypeResolver),
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return Triple(getter, setter, property)
@@ -275,7 +275,7 @@ internal class KMockReceiverGenerator(
         typeParameter: List<TypeName>,
         arguments: Array<MemberArgumentTypeInfo>,
         returnType: MemberReturnTypeInfo,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ) {
         if (returnType.needsCastAnnotation(relaxer = relaxer) || enableSpy) {
             method.addAnnotation(UNCHECKED)
@@ -290,7 +290,7 @@ internal class KMockReceiverGenerator(
             typeParameter = typeParameter,
             arguments = arguments,
             methodReturnType = returnType,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         method.addCode(
@@ -313,7 +313,7 @@ internal class KMockReceiverGenerator(
         typeParameter: List<TypeName>,
         returnType: MemberReturnTypeInfo,
         typeResolver: TypeParameterResolver,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
@@ -324,7 +324,7 @@ internal class KMockReceiverGenerator(
 
         if (generics != null) {
             method.typeVariables.addAll(
-                genericResolver.mapDeclaredGenerics(generics, typeResolver)
+                genericResolver.mapDeclaredGenerics(generics, typeResolver),
             )
         }
 
@@ -339,7 +339,7 @@ internal class KMockReceiverGenerator(
             typeParameter = typeParameter,
             arguments = arguments,
             returnType = returnType,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return method.build()
@@ -352,8 +352,7 @@ internal class KMockReceiverGenerator(
         ksFunction: KSFunctionDeclaration,
         classWideResolver: TypeParameterResolver,
         enableSpy: Boolean,
-        inherited: Boolean,
-        relaxer: Relaxer?
+        relaxer: Relaxer?,
     ): Triple<PropertySpec, FunSpec, LambdaTypeName> {
         val methodName = ksFunction.simpleName.asString()
         val methodTypeResolver = ksFunction.typeParameters.toTypeParameterResolver(classWideResolver)
@@ -370,10 +369,9 @@ internal class KMockReceiverGenerator(
             proxyGenericTypes = proxyGenerics,
         )
         val arguments = utils.determineArguments(
-            inherited = inherited,
             arguments = ksFunction.parameters,
             generics = proxyGenerics,
-            methodWideResolver = receiverTypeResolver
+            methodWideResolver = receiverTypeResolver,
         )
         val argumentsWithReceiver = arguments.toMutableList().also { it.add(0, receiverInfo) }.toTypedArray()
         val parameter = utils.resolveTypeParameter(
@@ -385,12 +383,11 @@ internal class KMockReceiverGenerator(
             qualifier = qualifier,
             methodName = methodName,
             arguments = argumentsWithReceiver,
-            generics = proxyGenerics ?: emptyMap()
+            generics = proxyGenerics ?: emptyMap(),
         )
         val (methodReturnType, proxyReturnType) = ksFunction.returnType!!.toProxyPairTypeName(
-            inheritedVarargArg = false,
             generics = proxyGenerics ?: emptyMap(),
-            typeParameterResolver = receiverTypeResolver
+            typeParameterResolver = receiverTypeResolver,
         )
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
 
@@ -415,7 +412,7 @@ internal class KMockReceiverGenerator(
             arguments = arguments,
             returnType = proxySignature.returnType,
             typeResolver = receiverTypeResolver,
-            relaxer = relaxer
+            relaxer = relaxer,
         )
 
         return Triple(proxySignature.proxy, method, proxySignature.sideEffect)
@@ -424,7 +421,7 @@ internal class KMockReceiverGenerator(
     private fun TypeName.createReceiverSpy(): TypeName {
         return LambdaTypeName.get(
             returnType = NULLABLE_ANY,
-            receiver = this
+            receiver = this,
         ).copy(nullable = false)
     }
 

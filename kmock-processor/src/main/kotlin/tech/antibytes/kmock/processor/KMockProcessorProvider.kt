@@ -43,13 +43,13 @@ import tech.antibytes.kmock.processor.utils.SourceSetValidator
 import tech.antibytes.kmock.processor.utils.SpyContainer
 
 public class KMockProcessorProvider(
-    private val isUnderCompilerTest: Boolean = false
+    private val isUnderCompilerTest: Boolean = false,
 ) : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
         options: Options,
         logger: KSPLogger,
         spyContainer: SpyContainer,
-        codeGenerator: KmpCodeGenerator
+        codeGenerator: KmpCodeGenerator,
     ): Pair<MockFactoryGenerator, MockFactoryEntryPointGenerator> {
         return if (options.disableFactories) {
             Pair(NoopFactoryGenerator, NoopFactoryGenerator)
@@ -96,7 +96,7 @@ public class KMockProcessorProvider(
                     spiesOnly = options.spiesOnly,
                     genericResolver = KMockGenerics,
                     codeGenerator = codeGenerator,
-                )
+                ),
             )
         }
     }
@@ -114,17 +114,17 @@ public class KMockProcessorProvider(
 
         val codeGenerator = KMockCodeGenerator(
             kspDir = options.kspDir,
-            kspGenerator = environment.codeGenerator
+            kspGenerator = environment.codeGenerator,
         )
 
         val sourceSetValidator = SourceSetValidator(
             logger = logger,
-            knownSharedSourceSets = options.knownSharedSourceSets
+            knownSharedSourceSets = options.knownSharedSourceSets,
         )
 
         val annotationFilter = AnnotationFilter(
             logger = logger,
-            knownSharedSourceSets = options.knownSharedSourceSets
+            knownSharedSourceSets = options.knownSharedSourceSets,
         )
 
         val relaxerGenerator = KMockRelaxerGenerator()
@@ -172,7 +172,6 @@ public class KMockProcessorProvider(
 
         return KMockProcessor(
             logger = logger,
-            isUnderCompilerTest = isUnderCompilerTest,
             isKmp = options.isKmp,
             codeGenerator = codeGenerator,
             interfaceGenerator = KMockMultiInterfaceBinder(
@@ -220,8 +219,8 @@ public class KMockProcessorProvider(
             relaxationAggregator = KMockRelaxationAggregator(logger),
             filter = SourceFilter(
                 dependencies = options.dependencies,
-                logger = logger
-            )
+                logger = logger,
+            ),
         )
     }
 }

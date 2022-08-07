@@ -25,7 +25,7 @@ class TemplateMultiSourceSpec {
             packageName = fixture.fixture(),
             dependencies = emptyList(),
             templates = emptyList(),
-            generics = listOf(null, null, null, null)
+            generics = listOf(null, null, null, null),
         )
 
         // When
@@ -44,7 +44,7 @@ class TemplateMultiSourceSpec {
             packageName = fixture.fixture(),
             dependencies = emptyList(),
             templates = emptyList(),
-            generics = listOf(null, null, mockk(), null)
+            generics = listOf(null, null, mockk(), null),
         )
 
         // When

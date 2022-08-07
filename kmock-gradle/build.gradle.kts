@@ -22,7 +22,7 @@ plugins {
     id("tech.antibytes.gradle.coverage")
 
     // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.10.0"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
 }
 
 group = KMockGradleConfiguration.group
@@ -65,7 +65,7 @@ java {
 
 tasks.withType<KotlinTaskCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
 }
 

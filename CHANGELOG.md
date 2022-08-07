@@ -22,11 +22,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Aliases as type arguments are not correctly resolved, if the Aliases have type arguments on their own
 * Generics cause AccessMethods to collide in their definition
 * Stackoverflow when determine TypeVariance
-* Transitive Aliases are not correctly resolved for AccessMethods if they nested ParameterTypes
 
 ### Security
 
 ### Bumped
+
+* Gradle 7.4.2 -> 7.5
+* Kotlin 1.6.21 -> 1.7.0
+* KotlinPoet 1.11.0 -> 1.12.0
+* AtomicFu 0.17.3 -> 0.18.2
+* Stately 1.2.1 -> 1.2.3
+* Android Target SDK 31 -> 32
+* CompilerTest 1.4.8 -> 1.4.9
 
 ## [0.3.0-rc02](https://github.com/bitPogo/kmock/compare/v0.3.0-rc01...v0.3.0-rc02)
 

@@ -12,7 +12,7 @@ package tech.antibytes.kmock.error
  * @author Matthias Geisler
  */
 public sealed class MockError(
-    message: String
+    message: String,
 ) : RuntimeException(message) {
     /**
      * Indicates that a Proxy is missing a defined behaviour.

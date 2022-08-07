@@ -7,6 +7,7 @@
 package tech.antibytes.gradle.kmock.source
 
 import com.google.devtools.ksp.gradle.KspExtension
+import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -14,35 +15,34 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DEPENDENCIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
 import tech.antibytes.gradle.kmock.config.MainConfig
-import java.util.Locale
 
 internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     private fun cleanSourceName(sourceName: String): String = sourceName.substringBeforeLast("Test")
 
     private fun addKspDependency(
         dependencies: DependencyHandler,
-        dependency: String
+        dependency: String,
     ) {
         dependencies.add(
             dependency,
-            "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+            "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
         )
     }
 
     private fun extendSourceSet(
         platformName: String,
         sourceSet: KotlinSourceSet,
-        buildDir: String
+        buildDir: String,
     ) {
         when {
             sourceSet.name == "androidAndroidTestDebug" -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/android/androidDebugAndroidTest"
+                    "$buildDir/generated/ksp/android/androidDebugAndroidTest",
                 )
             }
             sourceSet.name == "androidAndroidTestRelease" -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/android/androidReleaseAndroidTest"
+                    "$buildDir/generated/ksp/android/androidReleaseAndroidTest",
                 )
             }
             platformName == "androidAndroid" -> {
@@ -50,7 +50,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
             else -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}"
+                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}",
                 )
             }
         }
@@ -59,7 +59,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     private fun collectDependencies(
         platformName: String,
         dependencies: Set<KotlinSourceSet>,
-        dependencyCollector: MutableMap<String, Set<String>>
+        dependencyCollector: MutableMap<String, Set<String>>,
     ) {
         dependencies.forEach { dependency ->
             val dependsOn = dependencyCollector.getOrElse(dependency.name) { mutableSetOf() }
@@ -86,7 +86,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         kspCollector: MutableMap<String, String>,
         dependencyCollector: MutableMap<String, Set<String>>,
         metaDependencies: MutableMap<String, Set<String>>,
-        dependencyHandler: DependencyHandler
+        dependencyHandler: DependencyHandler,
     ) {
         if (sourceSetName != "androidAndroidTestDebug" && sourceSetName != "androidAndroidTestRelease") {
             val kspDependency = resolveKspDependency(platformName)
@@ -96,7 +96,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
                 collectDependencies(
                     sourceSetName,
                     dependencies,
-                    metaDependencies
+                    metaDependencies,
                 )
                 return
             }
@@ -108,7 +108,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun propagateDependencies(
         project: Project,
-        dependencies: Map<String, Set<String>>
+        dependencies: Map<String, Set<String>>,
     ) {
         val ksp: KspExtension = project.extensions.getByType(KspExtension::class.java)
 
@@ -125,6 +125,13 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             sourceSetName == "androidAndroidTestDebug" ||
             sourceSetName == "androidAndroidTestRelease" ||
             (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
+    }
+
+    private fun Project.chainTests(): Boolean {
+        return findProperty("kmock.noParallelTests")
+            ?.toString()
+            ?.toBoolean()
+            ?: true
     }
 
     override fun configure(project: Project) {
@@ -164,6 +171,9 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         if (kspCollector.isNotEmpty()) {
             propagateDependencies(project, ancestors)
             KmpCleanup.cleanup(project, platforms)
+            if (project.chainTests()) {
+                KmpTestTaskChain.chainTasks(project, kspCollector)
+            }
         }
     }
 }

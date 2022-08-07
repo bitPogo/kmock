@@ -24,18 +24,18 @@ internal class AnnotationFilter(
 ) : ProcessorContract.AnnotationFilter {
     private fun filterBySourceSet(
         annotation: String,
-        sourceSet: String
+        sourceSet: String,
     ): Boolean {
         return when {
             sourceSet !in knownSharedSourceSets && "${sourceSet}Test" !in knownSharedSourceSets -> {
                 logger.warn(
-                    "$annotation is not applicable since is SourceSet ($sourceSet) is not a know shared source."
+                    "$annotation is not applicable since is SourceSet ($sourceSet) is not a know shared source.",
                 )
                 false
             }
             annotation in RESERVED -> {
                 logger.warn(
-                    "$annotation is not applicable since is shadows a build-in annotation."
+                    "$annotation is not applicable since is shadows a build-in annotation.",
                 )
                 false
             }
@@ -44,18 +44,18 @@ internal class AnnotationFilter(
     }
 
     override fun filterAnnotation(
-        annotations: Map<String, String>
+        annotations: Map<String, String>,
     ): Map<String, String> {
         return annotations.filter { (annotation, sourceSet) ->
             filterBySourceSet(
                 annotation = annotation,
-                sourceSet = sourceSet
+                sourceSet = sourceSet,
             )
         }
     }
 
     override fun isApplicableSingleSourceAnnotation(
-        annotation: KSAnnotation
+        annotation: KSAnnotation,
     ): Boolean {
         return annotation.arguments.size == 1 &&
             annotation.arguments[0].value is List<*> &&

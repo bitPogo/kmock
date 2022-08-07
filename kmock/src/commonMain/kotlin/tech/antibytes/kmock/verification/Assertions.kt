@@ -48,14 +48,14 @@ internal object Assertions : KMockContract.Assertions {
             throw AssertionError(
                 MISMATCH.format(
                     arguments[idx],
-                    actual[idx]
-                )
+                    actual[idx],
+                ),
             )
         }
 
         if (!valid) {
             throw AssertionError(
-                HAD_BEEN_CALLED_NO_MATCHER.format(arguments.first())
+                HAD_BEEN_CALLED_NO_MATCHER.format(arguments.first()),
             )
         }
     }
@@ -63,15 +63,15 @@ internal object Assertions : KMockContract.Assertions {
     override fun hasBeenStrictlyCalledWithAtIndex(
         proxy: FunProxy<*, *>,
         callIndex: Int,
-        vararg arguments: Any?
+        vararg arguments: Any?,
     ) {
         val actual = proxy.guardActualRetrieval(callIndex)
         val valid = actual.hasBeenStrictlyCalledWith(*arguments) { actualArgument, idx ->
             throw AssertionError(
                 MISMATCH.format(
                     arguments[idx],
-                    actualArgument
-                )
+                    actualArgument,
+                ),
             )
         }
 
@@ -79,8 +79,8 @@ internal object Assertions : KMockContract.Assertions {
             throw AssertionError(
                 MISMATCHING_SIZE.format(
                     arguments.size,
-                    actual.size
-                )
+                    actual.size,
+                ),
             )
         }
     }
@@ -88,12 +88,12 @@ internal object Assertions : KMockContract.Assertions {
     override fun hasBeenCalledWithoutAtIndex(
         proxy: FunProxy<*, *>,
         callIndex: Int,
-        vararg illegal: Any?
+        vararg illegal: Any?,
     ) {
         val actual = proxy.guardActualRetrieval(callIndex)
         val valid = actual.hasBeenCalledWithout(*illegal) { actualArgument, _ ->
             throw AssertionError(
-                ILLEGAL_VALUE.format(actualArgument)
+                ILLEGAL_VALUE.format(actualArgument),
             )
         }
 
@@ -127,7 +127,7 @@ internal object Assertions : KMockContract.Assertions {
                 throw AssertionError(NOT_SET)
             } else {
                 throw AssertionError(
-                    MISMATCH.format(value, actual.value)
+                    MISMATCH.format(value, actual.value),
                 )
             }
         }

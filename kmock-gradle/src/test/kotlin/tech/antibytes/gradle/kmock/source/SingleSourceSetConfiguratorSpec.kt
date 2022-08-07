@@ -68,7 +68,7 @@ class SingleSourceSetConfiguratorSpec {
 
         invokeGradleAction(
             { probe -> extensions.configure<KotlinJvmProjectExtension>("kotlin", probe) },
-            kotlin
+            kotlin,
         )
 
         every { kotlin.sourceSets } returns sources
@@ -109,7 +109,7 @@ class SingleSourceSetConfiguratorSpec {
 
         invokeGradleAction(
             { probe -> extensions.configure<KotlinJsProjectExtension>("kotlin", probe) },
-            kotlin
+            kotlin,
         )
 
         every { kotlin.sourceSets } returns sources
@@ -154,7 +154,7 @@ class SingleSourceSetConfiguratorSpec {
 
         invokeGradleAction(
             { probe -> extensions.configure<KotlinJsProjectExtension>("kotlin", probe) },
-            kotlin
+            kotlin,
         )
 
         every { kotlin.sourceSets } returns sources
@@ -198,7 +198,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
             )
         }
     }
@@ -229,7 +229,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
             )
         }
     }
@@ -260,7 +260,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}"
+                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
             )
         }
     }

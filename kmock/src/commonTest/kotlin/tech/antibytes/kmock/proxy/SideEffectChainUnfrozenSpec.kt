@@ -6,14 +6,14 @@
 
 package tech.antibytes.kmock.proxy
 
-import tech.antibytes.kmock.KMockContract
-import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.fulfils
-import tech.antibytes.util.test.mustBe
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import tech.antibytes.kmock.KMockContract
+import tech.antibytes.util.test.coroutine.clearBlockingTest
+import tech.antibytes.util.test.fulfils
+import tech.antibytes.util.test.mustBe
 
 class SideEffectChainUnfrozenSpec {
     @BeforeTest
@@ -56,8 +56,8 @@ class SideEffectChainUnfrozenSpec {
         chain.addAll(
             listOf(
                 { /* Do nothing */ },
-                { /* Do nothing */ }
-            )
+                { /* Do nothing */ },
+            ),
         )
 
         // Then
@@ -88,7 +88,7 @@ class SideEffectChainUnfrozenSpec {
             {},
             {},
             {},
-            {}
+            {},
         )
 
         // When
@@ -111,7 +111,7 @@ class SideEffectChainUnfrozenSpec {
             {},
             {},
             {},
-            {}
+            {},
         )
 
         // When

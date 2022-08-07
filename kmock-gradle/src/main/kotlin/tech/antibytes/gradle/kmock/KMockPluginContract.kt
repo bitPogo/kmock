@@ -140,16 +140,20 @@ internal interface KMockPluginContract {
         fun cleanup(project: Project, platforms: List<String>)
     }
 
+    interface KmpTestTaskChain {
+        fun chainTasks(project: Project, kspMapping: Map<String, String>)
+    }
+
     interface KSPBridge {
         fun propagateValue(
             rootKey: String,
-            value: String
+            value: String,
         )
 
         fun propagateMapping(
             rootKey: String,
             mapping: Map<String, String>,
-            onPropagation: (String, String) -> Unit = { _, _ -> Unit }
+            onPropagation: (String, String) -> Unit = { _, _ -> Unit },
         )
 
         fun <T> propagateIterable(

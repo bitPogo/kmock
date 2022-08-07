@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -17,7 +18,7 @@ private fun formatArg(arg: Any?): String {
 private fun formatPart(
     builder: StringBuilder,
     part: String,
-    args: Array<out Any?>
+    args: Array<out Any?>,
 ) {
     val end = part.indexOfFirst { char -> !char.isDigit() }
 
@@ -36,7 +37,7 @@ private fun formatPart(
 
 private fun formatParts(
     parts: List<String>,
-    args: Array<out Any?>
+    args: Array<out Any?>,
 ): String {
     val builder = StringBuilder(parts[0])
 

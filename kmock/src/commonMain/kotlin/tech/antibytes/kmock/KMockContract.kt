@@ -6,6 +6,7 @@
 
 package tech.antibytes.kmock
 
+import kotlin.reflect.KClass
 import tech.antibytes.kmock.error.MockError.MissingCall
 import tech.antibytes.kmock.error.MockError.MissingStub
 import tech.antibytes.kmock.proxy.NoopCollector
@@ -14,7 +15,6 @@ import tech.antibytes.kmock.verification.constraints.eq
 import tech.antibytes.kmock.verification.constraints.isNot
 import tech.antibytes.kmock.verification.constraints.isNotSame
 import tech.antibytes.kmock.verification.constraints.isSame
-import kotlin.reflect.KClass
 
 /**
  * Contract Container of KMock
@@ -492,7 +492,7 @@ public object KMockContract {
         @Deprecated(
             message = "This property will be replaced with 0.3.0 by error.",
             replaceWith = ReplaceWith("error"),
-            level = DeprecationLevel.WARNING
+            level = DeprecationLevel.WARNING,
         )
         public var throws: Throwable
 
@@ -523,7 +523,7 @@ public object KMockContract {
         @Deprecated(
             message = "This property will be replaced with 0.3.0 by errors.",
             replaceWith = ReplaceWith("errors"),
-            level = DeprecationLevel.WARNING
+            level = DeprecationLevel.WARNING,
         )
         public var throwsMany: List<Throwable>
 
@@ -1002,7 +1002,7 @@ public object KMockContract {
      * @author Matthias Geisler
      */
     public sealed class GetOrSet(
-        public val value: Any?
+        public val value: Any?,
     ) {
         /**
          * Argument Container for Getter Proxies.
@@ -1088,7 +1088,7 @@ public object KMockContract {
         @Deprecated(
             message = "This property will be replaced with 0.3.0 by getValues.",
             replaceWith = ReplaceWith("error"),
-            level = DeprecationLevel.WARNING
+            level = DeprecationLevel.WARNING,
         )
         public var getMany: List<Value>
 
@@ -1295,7 +1295,7 @@ public object KMockContract {
         /**
          * The referenced Call.
          */
-        public val callIndex: Int
+        public val callIndex: Int,
     )
 
     /**
@@ -1311,7 +1311,7 @@ public object KMockContract {
          */
         fun hasBeenCalledAtIndex(
             proxy: FunProxy<*, *>,
-            callIndex: Int
+            callIndex: Int,
         )
 
         /**
@@ -1322,7 +1322,7 @@ public object KMockContract {
          */
         fun hasBeenCalledWithVoidAtIndex(
             proxy: FunProxy<*, *>,
-            callIndex: Int
+            callIndex: Int,
         )
 
         /**
@@ -1336,7 +1336,7 @@ public object KMockContract {
         fun hasBeenCalledWithAtIndex(
             proxy: FunProxy<*, *>,
             callIndex: Int,
-            vararg arguments: Any?
+            vararg arguments: Any?,
         )
 
         /**
@@ -1350,7 +1350,7 @@ public object KMockContract {
         fun hasBeenStrictlyCalledWithAtIndex(
             proxy: FunProxy<*, *>,
             callIndex: Int,
-            vararg arguments: Any?
+            vararg arguments: Any?,
         )
 
         /**
@@ -1364,7 +1364,7 @@ public object KMockContract {
         fun hasBeenCalledWithoutAtIndex(
             proxy: FunProxy<*, *>,
             callIndex: Int,
-            vararg illegal: Any?
+            vararg illegal: Any?,
         )
 
         /**
@@ -1375,7 +1375,7 @@ public object KMockContract {
          */
         fun wasGottenAtIndex(
             proxy: PropertyProxy<*>,
-            callIndex: Int
+            callIndex: Int,
         )
 
         /**
@@ -1386,7 +1386,7 @@ public object KMockContract {
          */
         fun wasSetAtIndex(
             proxy: PropertyProxy<*>,
-            callIndex: Int
+            callIndex: Int,
         )
 
         /**
@@ -1399,7 +1399,7 @@ public object KMockContract {
         fun wasSetToAtIndex(
             proxy: PropertyProxy<*>,
             callIndex: Int,
-            value: Any?
+            value: Any?,
         )
     }
 

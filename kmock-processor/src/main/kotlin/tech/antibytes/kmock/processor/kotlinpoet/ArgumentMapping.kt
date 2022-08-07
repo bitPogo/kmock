@@ -129,7 +129,7 @@ internal fun KSType.mapArgumentType(
             )
         }
         is KSTypeAlias -> {
-            val (resolvedType, _, extraResolver) = declaration.resolveAlias(
+            val (resolvedType, mappedArgs, extraResolver) = declaration.resolveAlias(
                 arguments = typeArguments,
                 typeParameterResolver = typeParameterResolver,
             )
@@ -137,11 +137,11 @@ internal fun KSType.mapArgumentType(
             val abbreviatedType = resolvedType.abbreviateType(
                 typeParameterResolver = extraResolver,
                 isNullable = isMarkedNullable,
-                typeArguments = arguments,
+                typeArguments = mappedArgs,
                 mapping = mapping,
             )
 
-            val aliasArgs = typeArguments.mapArgumentType(
+            val aliasArgs = arguments.mapArgumentType(
                 mapping = mapping,
                 typeParameterResolver = extraResolver,
             )

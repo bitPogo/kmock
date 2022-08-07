@@ -9,7 +9,7 @@ package tech.antibytes.gradle.kmock.dependency
 object Version {
 
     val gradle = Gradle
-    const val kotlin = "1.6.21"
+    const val kotlin = "1.7.0"
 
     object Gradle {
         /**
@@ -20,19 +20,19 @@ object Version {
         /**
          * [AnitBytes GradlePlugins](https://github.com/bitPogo/gradle-plugins)
          */
-        const val antibytes = "b6f4fbe"
+        const val antibytes = "fe5483d"
 
         /**
          * [Spotless](https://plugins.gradle.org/plugin/com.diffplug.gradle.spotless)
          */
-        const val spotless = "6.4.2"
+        const val spotless = "6.8.0"
     }
 
     val antibytes = Antibytes
 
     object Antibytes {
-        const val test = "f25b461"
-        const val kfixture = "0.2.0"
+        const val test = "6c316c5"
+        const val kfixture = "0.3.0"
     }
 
     val google = Google
@@ -44,7 +44,7 @@ object Version {
         /**
          * [KSP DevTools on MavenCentral](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin)
          */
-        const val ksp = "1.6.21-1.0.6"
+        const val ksp = "1.7.0-1.0.6"
     }
 
     val square = Square
@@ -53,21 +53,21 @@ object Version {
         /**
          * [Kotlin Poet](https://square.github.io/kotlinpoet/)
          */
-        const val kotlinPoet = "1.11.0"
+        const val kotlinPoet = "1.12.0"
     }
 
     /**
      * [Compiler Test](https://github.com/tschuchortdev/kotlin-compile-testing)
      */
-    const val compilerTest = "1.4.8"
+    const val compilerTest = "1.4.9"
 
-    val mkdocs = MkDoccs
+    val mkdocs = MkDocs
 
-    object MkDoccs {
+    object MkDocs {
         /**
          * [MkDocs Include Plugin](https://github.com/mondeja/mkdocs-include-markdown-plugin/releases)
          */
-        const val includeMarkdown = "3.5.1"
+        const val includeMarkdown = "3.6.1"
 
         /**
          * [MkDocs Kroki](https://pypi.org/project/mkdocs-kroki-plugin/)
@@ -82,7 +82,7 @@ object Version {
         /**
          * [MkDocs Material](https://github.com/squidfunk/mkdocs-material/releases)
          */
-        const val material = "8.2.15"
+        const val material = "8.3.9"
 
         /**
          * [MkDocs Minfier](https://pypi.org/project/mkdocs-minify-plugin/)
@@ -102,6 +102,6 @@ object Version {
         /**
          * (PyMdown)(https://github.com/facelessuser/pymdown-extensions/releases)
          */
-        const val pymdown = "9.4"
+        const val pymdown = "9.5"
     }
 }

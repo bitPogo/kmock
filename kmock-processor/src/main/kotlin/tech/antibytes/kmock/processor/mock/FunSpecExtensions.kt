@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 /*
  * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
  *
@@ -14,7 +15,7 @@ private val varargs = arrayOf(KModifier.VARARG)
 private val noVarargs = arrayOf<KModifier>()
 
 internal fun FunSpec.Builder.addArguments(
-    arguments: Array<MemberArgumentTypeInfo>
+    arguments: Array<MemberArgumentTypeInfo>,
 ): FunSpec.Builder {
     arguments.forEach { argument ->
         val vararged = if (argument.isVarArg) {
@@ -26,7 +27,7 @@ internal fun FunSpec.Builder.addArguments(
         this.addParameter(
             argument.argumentName,
             argument.methodTypeName,
-            *vararged
+            *vararged,
         )
     }
 

@@ -39,7 +39,6 @@ internal class MethodGeneratorHelper(
     private val genericResolver: GenericResolver,
 ) : ProcessorContract.MethodGeneratorHelper {
     override fun determineArguments(
-        inherited: Boolean,
         generics: Map<String, GenericDeclaration>?,
         arguments: List<KSValueParameter>,
         methodWideResolver: TypeParameterResolver,
@@ -47,9 +46,8 @@ internal class MethodGeneratorHelper(
         return arguments.map { parameter ->
             val argumentName = parameter.name!!.asString()
             val (methodType, proxyType) = parameter.type.toProxyPairTypeName(
-                inheritedVarargArg = parameter.isVararg && inherited,
                 generics = generics ?: emptyMap(),
-                typeParameterResolver = methodWideResolver
+                typeParameterResolver = methodWideResolver,
             )
             MemberArgumentTypeInfo(
                 argumentName = argumentName,
@@ -62,7 +60,7 @@ internal class MethodGeneratorHelper(
 
     override fun resolveTypeParameter(
         parameter: List<KSTypeParameter>,
-        methodWideResolver: TypeParameterResolver
+        methodWideResolver: TypeParameterResolver,
     ): List<TypeName> {
         var distribute = false
         val parameterTypes = parameter.map { type ->
@@ -93,7 +91,7 @@ internal class MethodGeneratorHelper(
     override fun resolveProxyGenerics(
         classScope: Map<String, List<TypeName>>?,
         generics: Map<String, List<KSTypeReference>>?,
-        methodWideResolver: TypeParameterResolver
+        methodWideResolver: TypeParameterResolver,
     ): Map<String, GenericDeclaration>? {
         return if (generics == null) {
             null
@@ -101,7 +99,7 @@ internal class MethodGeneratorHelper(
             genericResolver.mapProxyGenerics(
                 classScope,
                 generics,
-                methodWideResolver
+                methodWideResolver,
             )
         }
     }
@@ -118,7 +116,7 @@ internal class MethodGeneratorHelper(
             methodTypeName = methodTypeName,
             proxyTypeName = proxyTypeName,
             generic = generic,
-            classScope = classScopeGenerics
+            classScope = classScopeGenerics,
         )
     }
 
@@ -133,7 +131,7 @@ internal class MethodGeneratorHelper(
                 methodTypeName = methodReturnType,
                 proxyTypeName = proxyReturnType,
                 generic = null,
-                classScope = classScopeGenerics
+                classScope = classScopeGenerics,
             )
         } else {
             mapGenericProxyType(
@@ -154,7 +152,7 @@ internal class MethodGeneratorHelper(
             } else {
                 specialArrays.getOrElse(argument.proxyTypeName.toString()) {
                     ARRAY.parameterizedBy(
-                        WildcardTypeName.producerOf(argument.proxyTypeName)
+                        WildcardTypeName.producerOf(argument.proxyTypeName),
                     )
                 }
             }
@@ -164,7 +162,7 @@ internal class MethodGeneratorHelper(
     private fun buildSideEffectSignature(
         arguments: Array<MemberArgumentTypeInfo>,
         proxyReturnType: TypeName,
-        isSuspending: Boolean
+        isSuspending: Boolean,
     ): LambdaTypeName {
         val argumentTypes = mapProxyArgumentTypeNames(arguments)
         val sideEffect = LambdaTypeName.get(
@@ -209,13 +207,13 @@ internal class MethodGeneratorHelper(
         val sideEffect = buildSideEffectSignature(
             arguments = arguments,
             proxyReturnType = proxyReturnType,
-            isSuspending = suspending
+            isSuspending = suspending,
         )
 
         return ProxyBundle(
             proxy = PropertySpec.builder(
                 proxyInfo.proxyName,
-                proxyType.parameterizedBy(proxyReturnType, sideEffect)
+                proxyType.parameterizedBy(proxyReturnType, sideEffect),
             ).let { proxySpec ->
                 buildProxyInitializer(
                     proxySpec = proxySpec,

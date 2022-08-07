@@ -7,6 +7,9 @@
 package tech.antibytes.kmock.example
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -44,9 +47,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 @OptIn(KMockExperimental::class)
 @KMock(
@@ -70,7 +70,7 @@ class SampleControllerAlternativeAccessSpec {
     private val genericDomainObject: GenericSampleDomainObjectMock<String, Int> = kmock(
         collector,
         relaxed = true,
-        templateType = GenericSampleDomainObject::class
+        templateType = GenericSampleDomainObject::class,
     )
     private val uselessObject: SampleUselessObjectMock = kmock(
         collector,
@@ -78,7 +78,7 @@ class SampleControllerAlternativeAccessSpec {
     )
     private val mergedGenericMock: MergedGenericMock<String, Int, *> = kmock(
         templateType0 = SampleLocalRepository::class,
-        templateType1 = GenericSampleDomainObject::class
+        templateType1 = GenericSampleDomainObject::class,
     )
 
     @BeforeTest
@@ -232,17 +232,19 @@ class SampleControllerAlternativeAccessSpec {
         uselessObject.syncFunProxyOf<Any>(uselessObject::doSomething, hint<Any, Int>()).returnValue = "It"
 
         uselessObject.syncFunProxyOf(
-            uselessObject::doSomethingElse, hint<Map<String, Generic<String>>, String>()
+            uselessObject::doSomethingElse,
+            hint<Map<String, Generic<String>>, String>(),
         ).returnValue = "works!"
 
         uselessObject.syncFunProxyOf<Any>(uselessObject::doSomethingElse, hint<Any, Int>()).returnValue = "It"
         uselessObject.syncFunProxyOf(
-            uselessObject::doAnything, hint<Generic<String>>()
+            uselessObject::doAnything,
+            hint<Generic<String>>(),
         ).returnValue = 109
 
         uselessObject.syncFunProxyOf(
             uselessObject::withFun,
-            hint<Function0<String>>()
+            hint<Function0<String>>(),
         ).returnValue = "still"
 
         uselessObject.syncFunProxyOf(
@@ -252,7 +254,7 @@ class SampleControllerAlternativeAccessSpec {
 
         uselessObject.syncFunProxyOf<Any>(
             uselessObject::run,
-            hint<Any>()
+            hint<Any>(),
         ).returnValue = 91
 
         // When & Then

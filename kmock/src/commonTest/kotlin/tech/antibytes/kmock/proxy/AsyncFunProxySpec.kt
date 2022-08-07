@@ -8,6 +8,10 @@ package tech.antibytes.kmock.proxy
 
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.concurrency.value
+import kotlin.js.JsName
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -23,10 +27,6 @@ import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 import tech.antibytes.util.test.sameAs
-import kotlin.js.JsName
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class AsyncFunProxySpec {
     private val fixture = kotlinFixture()
