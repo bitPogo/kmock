@@ -13,7 +13,7 @@ internal class AliasCommonMock(
     collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: Common? = null,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     @Suppress("unused")
     private val relaxUnitFun: Boolean = false,
     @Suppress("unused")

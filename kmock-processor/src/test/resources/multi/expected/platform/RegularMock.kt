@@ -17,7 +17,7 @@ internal class PlatformMultiMock<MultiMock>(
     collector: KMockContract.Collector = NoopCollector,
     @Suppress("UNUSED_PARAMETER")
     spyOn: MultiMock? = null,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     @Suppress("unused")
     private val relaxUnitFun: Boolean = false,
     @Suppress("unused")

@@ -20,7 +20,7 @@ SharedGenericMultiMock<KMockTypeParameter0, KMockTypeParameter1, KMockTypeParame
     collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     templateType0: KClass<Generic1<*, *>>,
     templateType1: KClass<Generic2<*, *>>,
     templateType2: KClass<GenericSharedContract.Generic3<*, *>>,

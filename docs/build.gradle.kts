@@ -4,7 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.kmock.dependency.MkDocs
+import tech.antibytes.gradle.dependency.MkDocs
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.versioning.Versioning
 

@@ -65,8 +65,8 @@ internal class KMockFactoryGeneratorUtil(
         .defaultValue("false")
         .build()
 
-    private val verifier = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME).build()
-    private val verifierWithDefault = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME)
+    private val collector = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME).build()
+    private val collectorWithDefault = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME)
         .defaultValue(NOOP_COLLECTOR.simpleName)
         .build()
 
@@ -150,9 +150,9 @@ internal class KMockFactoryGeneratorUtil(
         hasDefault: Boolean,
     ): ParameterSpec {
         return if (hasDefault) {
-            verifierWithDefault
+            collectorWithDefault
         } else {
-            verifier
+            collector
         }
     }
 
