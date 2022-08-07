@@ -762,6 +762,8 @@ class KmpSourceSetsConfiguratorSpec {
 
         val kspExtension: KspExtension = mockk()
 
+        val source0: KotlinSourceSet = mockk()
+
         val source1: KotlinSourceSet = mockk()
         val source1Dependencies: KotlinSourceSet = mockk()
         val source1DependenciesName: String = fixture.fixture()
@@ -771,6 +773,7 @@ class KmpSourceSetsConfiguratorSpec {
         val source2DependenciesName: String = fixture.fixture()
 
         val sourceSets = mutableListOf(
+            source0,
             source1,
             source2,
         )
@@ -793,7 +796,13 @@ class KmpSourceSetsConfiguratorSpec {
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
 
-        every { dependencies.add(any(), any()) } returns mockk()
+        every { dependencies.add(any(), any()) } throws RuntimeException()
+        every { dependencies.add("kspJvmTest", any()) } returns mockk()
+        every { dependencies.add("kspJsTest", any()) } returns mockk()
+
+        every { source0.name } returns "commonTest"
+        every { source0.kotlin.srcDir(any()) } returns mockk()
+        every { source0.dependsOn } returns setOf()
 
         every { source1.name } returns "jvmTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
@@ -819,7 +828,13 @@ class KmpSourceSetsConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            KmpTestTaskChain.chainTasks(project, listOf("jvm", "js"))
+            KmpTestTaskChain.chainTasks(
+                project,
+                mapOf(
+                    "jvm" to "kspTestKotlinJvm",
+                    "js" to "kspTestKotlinJs",
+                ),
+            )
         }
 
         unmockkObject(KmpTestTaskChain)
@@ -838,6 +853,8 @@ class KmpSourceSetsConfiguratorSpec {
 
         val kspExtension: KspExtension = mockk()
 
+        val source0: KotlinSourceSet = mockk()
+
         val source1: KotlinSourceSet = mockk()
         val source1Dependencies: KotlinSourceSet = mockk()
         val source1DependenciesName: String = fixture.fixture()
@@ -847,6 +864,7 @@ class KmpSourceSetsConfiguratorSpec {
         val source2DependenciesName: String = fixture.fixture()
 
         val sourceSets = mutableListOf(
+            source0,
             source1,
             source2,
         )
@@ -869,7 +887,13 @@ class KmpSourceSetsConfiguratorSpec {
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
 
-        every { dependencies.add(any(), any()) } returns mockk()
+        every { dependencies.add(any(), any()) } throws RuntimeException()
+        every { dependencies.add("kspJvmTest", any()) } returns mockk()
+        every { dependencies.add("kspJsTest", any()) } returns mockk()
+
+        every { source0.name } returns "commonTest"
+        every { source0.kotlin.srcDir(any()) } returns mockk()
+        every { source0.dependsOn } returns setOf()
 
         every { source1.name } returns "jvmTest"
         every { source1.kotlin.srcDir(any()) } returns mockk()
@@ -895,7 +919,13 @@ class KmpSourceSetsConfiguratorSpec {
 
         // Then
         verify(exactly = 1) {
-            KmpTestTaskChain.chainTasks(project, listOf("jvm", "js"))
+            KmpTestTaskChain.chainTasks(
+                project,
+                mapOf(
+                    "jvm" to "kspTestKotlinJvm",
+                    "js" to "kspTestKotlinJs",
+                ),
+            )
         }
 
         unmockkObject(KmpTestTaskChain)

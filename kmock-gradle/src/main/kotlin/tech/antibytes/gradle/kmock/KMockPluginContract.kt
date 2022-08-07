@@ -141,7 +141,7 @@ internal interface KMockPluginContract {
     }
 
     interface KmpTestTaskChain {
-        fun chainTasks(project: Project, platforms: List<String>)
+        fun chainTasks(project: Project, kspMapping: Map<String, String>)
     }
 
     interface KSPBridge {

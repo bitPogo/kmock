@@ -12,9 +12,11 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.util.isAndroid
 
 internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
-    private fun String.mapTask(project: Project): Task = project.tasks.getByName("${this}Test")
+    private fun String.mapTestTask(project: Project): Task = project.tasks.getByName("${this}Test")
 
-    private fun List<Task>.amendAndroidTasks(project: Project): List<Task> {
+    private fun String.mapKspTask(project: Project): Task = project.tasks.getByName(this)
+
+    private fun List<Task>.amendAndroidTestTasks(project: Project): List<Task> {
         return if (!project.isAndroid()) {
             this
         } else {
@@ -31,12 +33,36 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
         }
     }
 
-    private fun List<String>.toTestTasks(
+    private fun List<Task>.amendAndroidKspTasks(project: Project): List<Task> {
+        return if (!project.isAndroid()) {
+            this
+        } else {
+            this.toMutableList()
+                .also {
+                    it.addAll(
+                        listOf(
+                            project.tasks.getByName("kspDebugUnitTestKotlinAndroid"),
+                            project.tasks.getByName("kspReleaseUnitTestKotlinAndroid"),
+                            project.tasks.getByName("kspDebugAndroidTestKotlinAndroid"),
+                        ),
+                    )
+                }
+        }
+    }
+
+    private fun Iterable<String>.toTestTasks(
         project: Project,
     ): List<Task> = this
         .filter { task -> !task.startsWith("android") }
-        .map { task -> task.mapTask(project) }
-        .amendAndroidTasks(project)
+        .map { task -> task.mapTestTask(project) }
+        .amendAndroidTestTasks(project)
+
+    private fun Iterable<String>.toKspTasks(
+        project: Project,
+    ): List<Task> = this
+        .filter { task -> "Android" !in task }
+        .map { task -> task.mapKspTask(project) }
+        .amendAndroidKspTasks(project)
 
     private fun List<Task>.chainTasks() {
         this.forEachIndexed { idx, task ->
@@ -46,9 +72,13 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
         }
     }
 
-    override fun chainTasks(project: Project, platforms: List<String>) {
+    override fun chainTasks(
+        project: Project,
+        kspMapping: Map<String, String>,
+    ) {
         project.afterEvaluate {
-            platforms.toTestTasks(this).chainTasks()
+            kspMapping.keys.toTestTasks(this).chainTasks()
+            kspMapping.values.toKspTasks(this).chainTasks()
         }
     }
 }

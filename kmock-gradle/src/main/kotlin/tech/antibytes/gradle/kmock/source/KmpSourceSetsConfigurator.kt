@@ -172,7 +172,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             propagateDependencies(project, ancestors)
             KmpCleanup.cleanup(project, platforms)
             if (project.chainTests()) {
-                KmpTestTaskChain.chainTasks(project, kspCollector.keys.toList())
+                KmpTestTaskChain.chainTasks(project, kspCollector)
             }
         }
     }
