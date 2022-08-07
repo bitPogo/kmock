@@ -140,6 +140,10 @@ internal interface KMockPluginContract {
         fun cleanup(project: Project, platforms: List<String>)
     }
 
+    interface KmpTestTaskChain {
+        fun chainTasks(project: Project, platforms: List<String>)
+    }
+
     interface KSPBridge {
         fun propagateValue(
             rootKey: String,
