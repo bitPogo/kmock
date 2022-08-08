@@ -22,13 +22,11 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.TypeVariableName
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.kmock.processor.ProcessorContract.BuildInMethodGenerator
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_ARGUMENT
-import tech.antibytes.kmock.processor.ProcessorContract.Companion.COLLECTOR_NAME
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.COMMON_INDICATOR
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.FREEZE_ARGUMENT
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.KMOCK_CONTRACT
@@ -57,10 +55,10 @@ import tech.antibytes.kmock.processor.ProcessorContract.TemplateSource
 import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 import tech.antibytes.kmock.processor.utils.isPublicOpen
 import tech.antibytes.kmock.processor.utils.isReceiverMethod
-import tech.antibytes.kmock.proxy.NoopCollector
 
 internal class KMockGenerator(
     private val logger: KSPLogger,
+    freezeOnDefault: Boolean,
     private val enableProxyAccessMethodGenerator: Boolean,
     private val spyContainer: SpyContainer,
     private val useBuildInProxiesOn: Set<String>,
@@ -75,6 +73,24 @@ internal class KMockGenerator(
     private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory,
     private val preventResolvingOfAliases: Set<String>,
 ) : ProcessorContract.MockGenerator {
+    private val relaxedWithDefault = ParameterSpec.builder(RELAXER_ARGUMENT, Boolean::class)
+        .addAnnotation(UNUSED)
+        .defaultValue("false")
+        .build()
+
+    private val relaxedUnitWithDefault = ParameterSpec.builder(UNIT_RELAXER_ARGUMENT, Boolean::class)
+        .addAnnotation(UNUSED)
+        .defaultValue("false")
+        .build()
+
+    private val collectorWithDefault = ParameterSpec.builder(COLLECTOR_ARGUMENT, ProcessorContract.COLLECTOR_NAME)
+        .defaultValue(NOOP_COLLECTOR.simpleName)
+        .build()
+
+    private val freezeWithDefault = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class)
+        .defaultValue(freezeOnDefault.toString())
+        .build()
+
     private fun resolveSpyType(superTypes: List<TypeName>): TypeName {
         return if (superTypes.size == 1) {
             superTypes.first()
@@ -86,9 +102,7 @@ internal class KMockGenerator(
     private fun buildConstructor(superTypes: List<TypeName>): FunSpec {
         val constructor = FunSpec.constructorBuilder()
 
-        val collector = ParameterSpec.builder(COLLECTOR_ARGUMENT, COLLECTOR_NAME)
-        collector.defaultValue(noopCollector)
-        constructor.addParameter(collector.build())
+        constructor.addParameter(collectorWithDefault)
 
         val spy = ParameterSpec.builder(
             SPY_ARGUMENT,
@@ -96,21 +110,9 @@ internal class KMockGenerator(
         ).addAnnotation(UNUSED_PARAMETER).defaultValue("null")
         constructor.addParameter(spy.build())
 
-        val freeze = ParameterSpec.builder(FREEZE_ARGUMENT, Boolean::class)
-        freeze.defaultValue("true")
-        constructor.addParameter(freeze.build())
-
-        val relaxUnit = ParameterSpec.builder(
-            UNIT_RELAXER_ARGUMENT,
-            Boolean::class,
-        ).addAnnotation(UNUSED).defaultValue("false")
-        constructor.addParameter(relaxUnit.build())
-
-        val relaxed = ParameterSpec.builder(
-            RELAXER_ARGUMENT,
-            Boolean::class,
-        ).addAnnotation(UNUSED).defaultValue("false")
-        constructor.addParameter(relaxed.build())
+        constructor.addParameter(freezeWithDefault)
+        constructor.addParameter(relaxedUnitWithDefault)
+        constructor.addParameter(relaxedWithDefault)
 
         return constructor.build()
     }
@@ -609,7 +611,6 @@ internal class KMockGenerator(
     }
 
     private companion object {
-        private val noopCollector = NoopCollector::class.asClassName().simpleName
         private val UNUSED_PARAMETER = AnnotationSpec.builder(Suppress::class).addMember("%S", "UNUSED_PARAMETER").build()
         private val UNUSED = AnnotationSpec.builder(Suppress::class).addMember("%S", "unused").build()
     }

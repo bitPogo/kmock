@@ -42,9 +42,7 @@ import tech.antibytes.kmock.processor.utils.SourceFilter
 import tech.antibytes.kmock.processor.utils.SourceSetValidator
 import tech.antibytes.kmock.processor.utils.SpyContainer
 
-public class KMockProcessorProvider(
-    private val isUnderCompilerTest: Boolean = false,
-) : SymbolProcessorProvider {
+public class KMockProcessorProvider : SymbolProcessorProvider {
     private fun determineFactoryGenerator(
         options: Options,
         logger: KSPLogger,
@@ -182,6 +180,7 @@ public class KMockProcessorProvider(
             ),
             mockGenerator = KMockGenerator(
                 logger = logger,
+                freezeOnDefault = options.freezeOnDefault,
                 enableProxyAccessMethodGenerator = options.allowExperimentalProxyAccess,
                 spyContainer = spyContainer,
                 useBuildInProxiesOn = options.useBuildInProxiesOn,
