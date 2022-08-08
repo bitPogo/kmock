@@ -17,6 +17,7 @@ class KMockGeneratorSpec {
         KMockGenerator(
             mockk(),
             false,
+            false,
             mockk(),
             mockk(),
             mockk(),

@@ -96,7 +96,7 @@ class KmpTestTaskChainSpec {
         val project: Project = mockk()
         val tasks: TaskContainer = mockk()
         val plugins: PluginContainer = mockk()
-        val platforms: Map<String, String> = fixture.mutableMapFixture<String, String>(size = 5).toMutableMap().also {
+        val platforms: Map<String, String> = fixture.mutableMapFixture<String, String>(size = 5).also {
             it["android${fixture.fixture<String>()}"] = "kspAndroid${fixture.fixture<String>()}"
         }
         val testTasks: List<Task> = listOf(

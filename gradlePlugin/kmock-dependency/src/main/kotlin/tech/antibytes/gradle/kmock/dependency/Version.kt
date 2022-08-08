@@ -32,7 +32,7 @@ object Version {
 
     object Antibytes {
         const val test = "6c316c5"
-        const val kfixture = "0.3.0"
+        const val kfixture = "0.3.1"
     }
 
     val google = Google
