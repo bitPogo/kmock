@@ -5,13 +5,11 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...main)
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc03...main)
 
 ### Added
 
 ### Changed
-
-* pseudo build-in methods are now resolved independently
 
 ### Deprecated
 
@@ -19,11 +17,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+### Security
+
+### Bumped
+
+## [0.3.0-rc03](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...v0.3.0-rc03)
+
+### Changed
+
+* pseudo build-in methods are now resolved independently
+
+### Fixed
+
 * Aliases as type arguments are not correctly resolved, if the Aliases have type arguments on their own
 * Generics cause AccessMethods to collide in their definition
 * Stackoverflow when determine TypeVariance
-
-### Security
 
 ### Bumped
 

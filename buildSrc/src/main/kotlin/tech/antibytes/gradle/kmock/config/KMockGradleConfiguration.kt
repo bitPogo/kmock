@@ -17,7 +17,7 @@ object KMockGradleConfiguration {
         |It can work non intrusive, if relaxed or while acting as Spy and supports as well stubbing.
         |This plugin apply some necessary configuration and takes care of the communication with the processor.
     """.trimMargin()
-    const val version = "0.3.0-rc02"
+    const val version = "0.3.0-rc03"
 
     val publishing = Publishing
 
