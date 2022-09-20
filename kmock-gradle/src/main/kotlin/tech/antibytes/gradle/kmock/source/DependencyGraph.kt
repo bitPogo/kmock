@@ -20,14 +20,14 @@ internal object DependencyGraph : KMockPluginContract.DependencyGraph {
         metaDependencies.forEach { (sourceSet, children) ->
             val currentNode = traversed[sourceSet]!!
 
-            val childNodes = children.map { child ->
-                val childNode = traversed[child]!!
+            val childNodes = children.mapNotNull { child ->
+                val childNode = traversed[child]
 
-                childNode.copy(
+                childNode?.copy(
                     parents = childNode.parents.toMutableSet().also { it.add(currentNode.name) },
-                ).also { node ->
+                )?.also { node ->
                     traversed[child] = node
-                }.name
+                }?.name
             }
 
             traversed[sourceSet] = currentNode.copy(

@@ -115,4 +115,25 @@ class DependencyGraphSpec {
             "iosTest" to setOf("nativeTest", "commonTest", "concurrentTest", "metaTest"),
         )
     }
+
+    @Test
+    fun `Given resolveAncestors is called with a transitive mapping it returns a Mapping while dealing with unconnected sources`() {
+        // Given
+        val platformSources = emptyMap<String, Set<String>>()
+        val metaSources = mapOf(
+            "commonTest" to setOf("concurrentTest", "nativeTest", "iosTest"),
+            "concurrentTest" to setOf("nativeTest"),
+            "nativeTest" to emptySet(),
+        )
+
+        // When
+        val actual = DependencyGraph.resolveAncestors(platformSources, metaSources)
+
+        // Then
+        actual mustBe mapOf(
+            "commonTest" to emptySet(),
+            "concurrentTest" to setOf("commonTest"),
+            "nativeTest" to setOf("commonTest", "concurrentTest"),
+        )
+    }
 }
