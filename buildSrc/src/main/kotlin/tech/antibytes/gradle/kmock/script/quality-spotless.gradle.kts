@@ -44,7 +44,7 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude(
-            "buildSrc/build/",
+            "**/build/",
             "**/buildSrc/build/",
             "**/kmock-processor/src/test/resources/",
             "**/kmock-gradle/src/test/resources/"

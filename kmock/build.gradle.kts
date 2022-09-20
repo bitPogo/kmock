@@ -4,6 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
+import org.gradle.internal.os.OperatingSystem
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
@@ -17,6 +18,7 @@ import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -105,6 +107,13 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
+
+    // see https://youtrack.jetbrains.com/issue/KT-45416/Do-not-use-iPhone-8-simulator-for-Gradle-tests
+    targets.withType(KotlinNativeTargetWithSimulatorTests::class.java) {
+        if (OperatingSystem.current().version == "12.6") {
+            testRuns["test"].deviceId = "iPhone 14"
+        }
+    }
 
     linuxX64()
 
