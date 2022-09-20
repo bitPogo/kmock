@@ -54,7 +54,7 @@ class KmpTestTaskChainSpec {
         every { project.tasks } returns tasks
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
-        every { tasks.getByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
@@ -67,12 +67,12 @@ class KmpTestTaskChainSpec {
         // Then
         platforms.keys.forEach { taskName ->
             verify(exactly = 1) {
-                tasks.getByName("${taskName}Test")
+                tasks.findByName("${taskName}Test")
             }
         }
         platforms.values.forEach { taskName ->
             verify(exactly = 1) {
-                tasks.getByName(taskName)
+                tasks.findByName(taskName)
             }
         }
 
@@ -116,7 +116,7 @@ class KmpTestTaskChainSpec {
         every { project.tasks } returns tasks
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
-        every { tasks.getByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
@@ -130,14 +130,14 @@ class KmpTestTaskChainSpec {
         platforms.keys.forEach { taskName ->
             if (!taskName.startsWith("android")) {
                 verify(exactly = 1) {
-                    tasks.getByName("${taskName}Test")
+                    tasks.findByName("${taskName}Test")
                 }
             }
         }
         platforms.values.forEach { taskName ->
             if (!taskName.startsWith("kspAndroid")) {
                 verify(exactly = 1) {
-                    tasks.getByName(taskName)
+                    tasks.findByName(taskName)
                 }
             }
         }
@@ -182,9 +182,6 @@ class KmpTestTaskChainSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
         )
         val kspTasks: List<Task> = listOf(
             mockk(relaxed = true),
@@ -192,15 +189,25 @@ class KmpTestTaskChainSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
+        )
+
+        val androidTestTasks: List<Task> = listOf(
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
         )
+        val androidKspTasks: List<Task> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+        )
+
         every { project.tasks } returns tasks
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.android.library") } returns true
-        every { tasks.getByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.getByName(any()) } returnsMany listOf(androidTestTasks, androidKspTasks).flatten()
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
@@ -212,13 +219,17 @@ class KmpTestTaskChainSpec {
 
         // Then
         platforms.keys.forEach { taskName ->
-            verify(exactly = 1) {
-                tasks.getByName("${taskName}Test")
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName("${taskName}Test")
+                }
             }
         }
         platforms.values.forEach { taskName ->
-            verify(exactly = 1) {
-                tasks.getByName(taskName)
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName(taskName)
+                }
             }
         }
 
@@ -255,13 +266,13 @@ class KmpTestTaskChainSpec {
             testTasks[4].mustRunAfter(testTasks[3])
         }
         verify(exactly = 1) {
-            testTasks[5].mustRunAfter(testTasks[4])
+            androidTestTasks[0].mustRunAfter(testTasks[4])
         }
         verify(exactly = 1) {
-            testTasks[6].mustRunAfter(testTasks[5])
+            androidTestTasks[1].mustRunAfter(androidTestTasks[0])
         }
         verify(exactly = 1) {
-            testTasks[7].mustRunAfter(testTasks[6])
+            androidTestTasks[2].mustRunAfter(androidTestTasks[1])
         }
 
         verify(exactly = 1) {
@@ -277,13 +288,13 @@ class KmpTestTaskChainSpec {
             kspTasks[4].mustRunAfter(kspTasks[3])
         }
         verify(exactly = 1) {
-            kspTasks[5].mustRunAfter(kspTasks[4])
+            androidKspTasks[0].mustRunAfter(kspTasks[4])
         }
         verify(exactly = 1) {
-            kspTasks[6].mustRunAfter(kspTasks[5])
+            androidKspTasks[1].mustRunAfter(androidKspTasks[0])
         }
         verify(exactly = 1) {
-            kspTasks[7].mustRunAfter(kspTasks[6])
+            androidKspTasks[2].mustRunAfter(androidKspTasks[1])
         }
     }
 
@@ -300,9 +311,6 @@ class KmpTestTaskChainSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
-            mockk(relaxed = true),
         )
         val kspTasks: List<Task> = listOf(
             mockk(relaxed = true),
@@ -310,6 +318,14 @@ class KmpTestTaskChainSpec {
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
+        )
+
+        val androidTestTasks: List<Task> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+        )
+        val androidKspTasks: List<Task> = listOf(
             mockk(relaxed = true),
             mockk(relaxed = true),
             mockk(relaxed = true),
@@ -318,7 +334,8 @@ class KmpTestTaskChainSpec {
         every { project.plugins } returns plugins
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.android.application") } returns true
-        every { tasks.getByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+        every { tasks.getByName(any()) } returnsMany listOf(androidTestTasks, androidKspTasks).flatten()
 
         invokeGradleAction(
             { probe -> project.afterEvaluate(probe) },
@@ -330,13 +347,17 @@ class KmpTestTaskChainSpec {
 
         // Then
         platforms.keys.forEach { taskName ->
-            verify(exactly = 1) {
-                tasks.getByName("${taskName}Test")
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName("${taskName}Test")
+                }
             }
         }
         platforms.values.forEach { taskName ->
-            verify(exactly = 1) {
-                tasks.getByName(taskName)
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName(taskName)
+                }
             }
         }
 
@@ -373,13 +394,13 @@ class KmpTestTaskChainSpec {
             testTasks[4].mustRunAfter(testTasks[3])
         }
         verify(exactly = 1) {
-            testTasks[5].mustRunAfter(testTasks[4])
+            androidTestTasks[0].mustRunAfter(testTasks[4])
         }
         verify(exactly = 1) {
-            testTasks[6].mustRunAfter(testTasks[5])
+            androidTestTasks[1].mustRunAfter(androidTestTasks[0])
         }
         verify(exactly = 1) {
-            testTasks[7].mustRunAfter(testTasks[6])
+            androidTestTasks[2].mustRunAfter(androidTestTasks[1])
         }
 
         verify(exactly = 1) {
@@ -395,13 +416,165 @@ class KmpTestTaskChainSpec {
             kspTasks[4].mustRunAfter(kspTasks[3])
         }
         verify(exactly = 1) {
-            kspTasks[5].mustRunAfter(kspTasks[4])
+            androidKspTasks[0].mustRunAfter(kspTasks[4])
         }
         verify(exactly = 1) {
-            kspTasks[6].mustRunAfter(kspTasks[5])
+            androidKspTasks[1].mustRunAfter(androidKspTasks[0])
         }
         verify(exactly = 1) {
-            kspTasks[7].mustRunAfter(kspTasks[6])
+            androidKspTasks[2].mustRunAfter(androidKspTasks[1])
+        }
+    }
+
+    @Test
+    fun `Given chainTasks is called it order the TestsTasks while filtering non exiting TestTask`() {
+        // Given
+        val project: Project = mockk()
+        val tasks: TaskContainer = mockk()
+        val plugins: PluginContainer = mockk()
+        val platforms: Map<String, String> = fixture.mutableMapFixture<String, String>(size = 5).also {
+            it["android${fixture.fixture<String>()}"] = "kspAndroid${fixture.fixture<String>()}"
+        }
+        val testTasks: List<Task?> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            null,
+        )
+        val kspTasks: List<Task> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+        )
+        every { project.tasks } returns tasks
+        every { project.plugins } returns plugins
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project,
+        )
+
+        // When
+        KmpTestTaskChain.chainTasks(project, platforms)
+
+        // Then
+        platforms.keys.forEach { taskName ->
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName("${taskName}Test")
+                }
+            }
+        }
+        platforms.values.forEach { taskName ->
+            if (!taskName.startsWith("kspAndroid")) {
+                verify(exactly = 1) {
+                    tasks.findByName(taskName)
+                }
+            }
+        }
+
+        verify(exactly = 1) {
+            testTasks[1]?.mustRunAfter(testTasks[0])
+        }
+        verify(exactly = 1) {
+            testTasks[2]?.mustRunAfter(testTasks[1])
+        }
+        verify(exactly = 1) {
+            testTasks[3]?.mustRunAfter(testTasks[2])
+        }
+
+        verify(exactly = 1) {
+            kspTasks[1].mustRunAfter(kspTasks[0])
+        }
+        verify(exactly = 1) {
+            kspTasks[2].mustRunAfter(kspTasks[1])
+        }
+        verify(exactly = 1) {
+            kspTasks[3].mustRunAfter(kspTasks[2])
+        }
+        verify(exactly = 1) {
+            kspTasks[4].mustRunAfter(kspTasks[3])
+        }
+    }
+
+    @Test
+    fun `Given chainTasks is called it order the TestsTasks while filtering non exiting KspTask`() {
+        // Given
+        val project: Project = mockk()
+        val tasks: TaskContainer = mockk()
+        val plugins: PluginContainer = mockk()
+        val platforms: Map<String, String> = fixture.mutableMapFixture<String, String>(size = 5).also {
+            it["android${fixture.fixture<String>()}"] = "kspAndroid${fixture.fixture<String>()}"
+        }
+        val testTasks: List<Task> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+        )
+        val kspTasks: List<Task?> = listOf(
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            mockk(relaxed = true),
+            null,
+        )
+        every { project.tasks } returns tasks
+        every { project.plugins } returns plugins
+        every { plugins.hasPlugin(any<String>()) } returns false
+        every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
+
+        invokeGradleAction(
+            { probe -> project.afterEvaluate(probe) },
+            project,
+        )
+
+        // When
+        KmpTestTaskChain.chainTasks(project, platforms)
+
+        // Then
+        platforms.keys.forEach { taskName ->
+            if (!taskName.startsWith("android")) {
+                verify(exactly = 1) {
+                    tasks.findByName("${taskName}Test")
+                }
+            }
+        }
+        platforms.values.forEach { taskName ->
+            if (!taskName.startsWith("kspAndroid")) {
+                verify(exactly = 1) {
+                    tasks.findByName(taskName)
+                }
+            }
+        }
+
+        verify(exactly = 1) {
+            testTasks[1].mustRunAfter(testTasks[0])
+        }
+        verify(exactly = 1) {
+            testTasks[2].mustRunAfter(testTasks[1])
+        }
+        verify(exactly = 1) {
+            testTasks[3].mustRunAfter(testTasks[2])
+        }
+        verify(exactly = 1) {
+            testTasks[4].mustRunAfter(testTasks[3])
+        }
+
+        verify(exactly = 1) {
+            kspTasks[1]?.mustRunAfter(kspTasks[0])
+        }
+        verify(exactly = 1) {
+            kspTasks[2]?.mustRunAfter(kspTasks[1])
+        }
+        verify(exactly = 1) {
+            kspTasks[3]?.mustRunAfter(kspTasks[2])
         }
     }
 }
