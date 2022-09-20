@@ -12,9 +12,9 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.util.isAndroid
 
 internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
-    private fun String.mapTestTask(project: Project): Task = project.tasks.getByName("${this}Test")
+    private fun String.mapTestTask(project: Project): Task? = project.tasks.findByName("${this}Test")
 
-    private fun String.mapKspTask(project: Project): Task = project.tasks.getByName(this)
+    private fun String.mapKspTask(project: Project): Task? = project.tasks.findByName(this)
 
     private fun List<Task>.amendAndroidTestTasks(project: Project): List<Task> {
         return if (!project.isAndroid()) {
@@ -54,14 +54,14 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
         project: Project,
     ): List<Task> = this
         .filter { task -> !task.startsWith("android") }
-        .map { task -> task.mapTestTask(project) }
+        .mapNotNull { task -> task.mapTestTask(project) }
         .amendAndroidTestTasks(project)
 
     private fun Iterable<String>.toKspTasks(
         project: Project,
     ): List<Task> = this
         .filter { task -> "Android" !in task }
-        .map { task -> task.mapKspTask(project) }
+        .mapNotNull { task -> task.mapKspTask(project) }
         .amendAndroidKspTasks(project)
 
     private fun List<Task>.chainTasks() {
