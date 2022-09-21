@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+* Gradle 7.5 -> 7.5.1
+* Kotlin 1.7.0 -> 1.7.10
+* AtomicFu 0.18.2 -> 0.18.3
+* Android Target SDK 32 -> 33
+
 ## [0.3.0-rc03](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...v0.3.0-rc03)
 
 ### Changed
