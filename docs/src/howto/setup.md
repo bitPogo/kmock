@@ -121,13 +121,12 @@ kmock {
 ```
 
 ### Default Freezing behaviour
-By the default all Mocks are frozen in order to avoid any issues which can occur with Coroutines.
-If you do not wish that default you can set a new one via `freezeOnDefault`:
+By the default all Mocks will not be frozen. If you do not wish that default you can set a new one via `freezeOnDefault`:
 ```kotlin
 kmock {
     ...
     rootPackage = "my.root.package"
-    freezeOnDefault = false
+    freezeOnDefault = true
 }
 ```
 

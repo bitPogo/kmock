@@ -4,13 +4,13 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.kmock.dependency.MkDocs
+import tech.antibytes.gradle.dependency.MkDocs
 import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.versioning.Versioning
 
 // see: https://github.com/bitfunk/gradle-plugins/blob/29c798a0e0fc572fa94f49da85407c3769dc11cc/docs/build.gradle.kts
 plugins {
-    id("ru.vyarus.mkdocs") version "2.3.0"
+    id("ru.vyarus.mkdocs") version "2.4.0"
     id("com.palantir.git-version")
 }
 

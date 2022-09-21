@@ -23,7 +23,7 @@ internal inline fun <reified Mock> kmock(
     collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
 ): Mock = getMockInstance(
     spyOn = null,
     collector = collector,
@@ -51,7 +51,7 @@ internal inline fun <reified Mock : Platform<K, L>, K : Any, L> kmock(
     collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     templateType: KClass<Platform<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = null,

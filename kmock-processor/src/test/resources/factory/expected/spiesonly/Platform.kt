@@ -30,7 +30,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn> getMockInstance(
 internal inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
 ): Mock = getMockInstance(
     spyOn = spyOn,
     collector = collector,
@@ -57,7 +57,7 @@ private inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : A
 internal inline fun <reified Mock : SpyOn, reified SpyOn : Platform1<K, L>, K : Any, L> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     templateType: KClass<Platform1<*, *>>,
 ): Mock where L : Any, L : Comparable<L> = getMockInstance(
     spyOn = spyOn,

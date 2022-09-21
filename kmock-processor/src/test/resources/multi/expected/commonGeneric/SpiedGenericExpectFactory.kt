@@ -16,7 +16,7 @@ import tech.antibytes.kmock.proxy.NoopCollector
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
 ): Mock
 
 internal expect inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParameter0 : Any,
@@ -24,7 +24,7 @@ internal expect inline fun <reified Mock : SpyOn, reified SpyOn, KMockTypeParame
     KMockTypeParameter5> kspy(
     spyOn: SpyOn,
     collector: KMockContract.Collector = NoopCollector,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     templateType0: KClass<Generic1<*, *>>,
     templateType1: KClass<Generic2<*, *>>,
     templateType2: KClass<GenericCommonContract.Generic3<*, *>>,

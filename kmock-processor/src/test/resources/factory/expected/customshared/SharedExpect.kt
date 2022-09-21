@@ -15,6 +15,6 @@ internal expect inline fun <reified Mock : Shared1<K, L>, K : Any, L> kmock(
     collector: KMockContract.Collector = NoopCollector,
     relaxed: Boolean = false,
     relaxUnitFun: Boolean = false,
-    freeze: Boolean = true,
+    freeze: Boolean = false,
     templateType: KClass<Shared1<*, *>>,
 ): Mock where L : Any, L : Comparable<L>

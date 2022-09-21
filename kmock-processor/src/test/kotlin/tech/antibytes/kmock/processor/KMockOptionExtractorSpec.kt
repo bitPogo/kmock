@@ -343,7 +343,7 @@ class KMockOptionExtractorSpec {
         val actual = KMockOptionExtractor.convertOptions(delegateKSP)
 
         // Then
-        actual.freezeOnDefault mustBe true
+        actual.freezeOnDefault mustBe false
     }
 
     @Test

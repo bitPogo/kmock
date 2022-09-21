@@ -72,7 +72,7 @@ internal object KMockOptionExtractor : OptionExtractor {
         val aliases: MutableMap<String, String> = mutableMapOf()
         val useBuildInProxiesOn: MutableSet<String> = mutableSetOf()
         val spyOn: MutableSet<String> = mutableSetOf()
-        var freezeOnDefault = true
+        var freezeOnDefault = false
         var allowInterfaces = false
         var spiesOnly = false
         var spyAll = false

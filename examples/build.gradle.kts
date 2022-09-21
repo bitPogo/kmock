@@ -4,12 +4,11 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import org.gradle.internal.os.OperatingSystem
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -27,15 +26,17 @@ plugins {
 }
 
 group = KMockConfiguration.group
+val isIDEA = System.getProperty("idea.fatal.error.notification") != null
 
 ksp {
     arg("kmock_rootPackage", "tech.antibytes.kmock.example")
-    arg("kmock_isKmp", true.toString())
+    arg("kmock_isKmp", "true")
     arg("kmock_kspDir", "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
     arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
     arg("kmock_alternativeProxyAccess", "true")
     arg("kmock_allowInterfaces", "true")
     arg("kmock_preventAliasResolving_0", "tech.antibytes.kmock.example.contract.PlatformDecoder")
+    arg("kmock_freeze", "false")
 }
 
 kotlin {
@@ -53,13 +54,7 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
-
-    // see https://youtrack.jetbrains.com/issue/KT-45416/Do-not-use-iPhone-8-simulator-for-Gradle-tests
-    targets.withType(KotlinNativeTargetWithSimulatorTests::class.java) {
-        if (OperatingSystem.current().version == "12.6") {
-            testRuns["test"].deviceId = "iPhone 14"
-        }
-    }
+    ensureIosDeviceCompatibility()
 
     linuxX64()
 
@@ -114,22 +109,31 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
-        val androidAndroidTestRelease by getting {
-            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
+        if (!isIDEA) {
+            val androidAndroidTestRelease by getting {
+                kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
+            }
+            val androidAndroidTestDebug by getting {
+                kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
+            }
+
+            val androidAndroidTest by getting {
+                dependsOn(androidAndroidTestRelease)
+                dependsOn(androidAndroidTestDebug)
+            }
+            val androidTestFixturesDebug by getting
+            val androidTestFixturesRelease by getting
+            val androidTestFixtures by getting {
+                dependsOn(androidTestFixturesDebug)
+                dependsOn(androidTestFixturesRelease)
+            }
+
+            val androidTest by getting {
+                dependsOn(androidTestFixtures)
+            }
         }
-        val androidAndroidTestDebug by getting {
-            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
-        }
-        val androidTestFixtures by getting
-        val androidTestFixturesDebug by getting
-        val androidTestFixturesRelease by getting
         val androidTest by getting {
             kotlin.srcDir("build/generated/ksp/android/androidTest")
-
-            dependsOn(concurrentTest)
-            dependsOn(androidTestFixtures)
-            dependsOn(androidTestFixturesDebug)
-            dependsOn(androidTestFixturesRelease)
 
             dependencies {
                 implementation(Dependency.multiplatform.test.jvm)
@@ -140,7 +144,6 @@ kotlin {
 
         val androidAndroidTest by getting {
             dependsOn(concurrentTest)
-            dependsOn(androidAndroidTestRelease)
 
             dependencies {
                 implementation(Dependency.jvm.test.junit)
