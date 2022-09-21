@@ -5,7 +5,8 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc03...main)
+
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc04...main)
 
 ### Added
 
@@ -21,10 +22,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+
+## [0.3.0-rc04](https://github.com/bitPogo/kmock/compare/v0.3.0-rc03...v0.3.0-rc04)
+
+### Bumped
+
 * Gradle 7.5 -> 7.5.1
 * Kotlin 1.7.0 -> 1.7.10
 * AtomicFu 0.18.2 -> 0.18.3
 * Android Target SDK 32 -> 33
+* KSP 1.7.0-1.0.6 -> 1.7.10-1.0.6
 
 ## [0.3.0-rc03](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...v0.3.0-rc03)
 
