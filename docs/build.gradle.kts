@@ -52,7 +52,6 @@ mkdocs {
     )
 }
 
-
 tasks.register<Delete>("clean") {
     delete("build")
 }
