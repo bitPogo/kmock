@@ -4,7 +4,6 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import org.gradle.internal.os.OperatingSystem
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
@@ -18,7 +17,7 @@ import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -40,6 +39,7 @@ plugins {
 
 group = KMockConfiguration.group
 val dokkaDir = buildDir.resolve("dokka")
+val isIDEA = System.getProperty("idea.fatal.error.notification") != null
 
 antiBytesPublishing {
     packageConfiguration = KMockConfiguration.publishing.packageConfiguration
@@ -107,13 +107,7 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
-
-    // see https://youtrack.jetbrains.com/issue/KT-45416/Do-not-use-iPhone-8-simulator-for-Gradle-tests
-    targets.withType(KotlinNativeTargetWithSimulatorTests::class.java) {
-        if (OperatingSystem.current().version == "12.6") {
-            testRuns["test"].deviceId = "iPhone 14"
-        }
-    }
+    ensureIosDeviceCompatibility()
 
     linuxX64()
 
@@ -153,16 +147,25 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
-        val androidAndroidTestRelease by getting
-        val androidTestFixtures by getting
-        val androidTestFixturesDebug by getting
-        val androidTestFixturesRelease by getting
-        val androidTest by getting {
-            dependsOn(androidAndroidTestRelease)
-            dependsOn(androidTestFixtures)
-            dependsOn(androidTestFixturesDebug)
-            dependsOn(androidTestFixturesRelease)
 
+        if (!isIDEA) {
+            val androidAndroidTestRelease by getting
+            val androidAndroidTest by getting {
+                dependsOn(androidAndroidTestRelease)
+            }
+            val androidTestFixturesDebug by getting
+            val androidTestFixturesRelease by getting
+
+            val androidTestFixtures by getting {
+                dependsOn(androidTestFixturesDebug)
+                dependsOn(androidTestFixturesRelease)
+            }
+
+            val androidTest by getting {
+                dependsOn(androidTestFixtures)
+            }
+        }
+        val androidTest by getting {
             dependencies {
                 implementation(Dependency.multiplatform.test.jvm)
                 implementation(Dependency.multiplatform.test.junit)
