@@ -10,12 +10,12 @@ dependencies:
 
 documentation:
   - docs/**/*
-  - README.adoc
+  - README.md
   - LICENSE
-  - CHANGELOG.adoc
-  - CODE-OF-CONDUCT.adoc
-  - CONTRIBUTION.adoc
-  - readmeOSS.adoc
+  - CHANGELOG.md
+  - CODE-OF-CONDUCT.md
+  - CONTRIBUTION.md
+  - SECURITY.md
 
 # Library
 kmock:
