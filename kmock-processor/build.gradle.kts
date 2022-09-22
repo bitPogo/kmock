@@ -51,7 +51,7 @@ dependencies {
     testImplementation(platform(Dependency.jvm.test.junit))
     testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(Dependency.jvm.test.jupiter)
-    testImplementation(Dependency.jvm.test.mockk)
+    testImplementation(Dependency.jvm.test.mockk.unit)
     testImplementation(LocalDependency.compilerTest.core)
     testImplementation(LocalDependency.compilerTest.ksp)
 }

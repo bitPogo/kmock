@@ -18,6 +18,7 @@ import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
 import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
+import tech.antibytes.gradle.configuration.isIdea
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -39,7 +40,6 @@ plugins {
 
 group = KMockConfiguration.group
 val dokkaDir = buildDir.resolve("dokka")
-val isIDEA = System.getProperty("idea.fatal.error.notification") != null
 
 antiBytesPublishing {
     packageConfiguration = KMockConfiguration.publishing.packageConfiguration
@@ -148,7 +148,7 @@ kotlin {
             }
         }
 
-        if (!isIDEA) {
+        if (!isIdea()) {
             val androidAndroidTestRelease by getting
             val androidAndroidTest by getting {
                 dependsOn(androidAndroidTestRelease)

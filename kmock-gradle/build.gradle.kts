@@ -43,7 +43,7 @@ dependencies {
     testImplementation(LocalDependency.antibytes.test.fixture)
     testImplementation(platform(Dependency.jvm.test.junit))
     testImplementation(Dependency.jvm.test.jupiter)
-    testImplementation(Dependency.jvm.test.mockk)
+    testImplementation(Dependency.jvm.test.mockk.unit)
     testImplementation(Dependency.jvm.test.kotlin)
     testImplementation(Dependency.multiplatform.stately.isolate)
 

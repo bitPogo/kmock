@@ -33,6 +33,10 @@ val repositories = listOf(
         "https://raw.github.com/bitPogo/maven-snapshots/main/snapshots",
         githubGroups,
     ),
+    CustomRepository(
+        "https://raw.github.com/bitPogo/maven-rolling-releases/main/rolling",
+        githubGroups,
+    ),
     /*CustomRepository(
         "https://raw.github.com/bitPogo/maven-releases/main/releases",
         githubGroups

@@ -9,6 +9,7 @@ import tech.antibytes.gradle.kmock.config.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
+import tech.antibytes.gradle.configuration.isIdea
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -26,7 +27,6 @@ plugins {
 }
 
 group = KMockConfiguration.group
-val isIDEA = System.getProperty("idea.fatal.error.notification") != null
 
 ksp {
     arg("kmock_rootPackage", "tech.antibytes.kmock.example")
@@ -109,7 +109,7 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.android)
             }
         }
-        if (!isIDEA) {
+        if (!isIdea()) {
             val androidAndroidTestRelease by getting {
                 kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
             }
