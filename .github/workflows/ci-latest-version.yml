@@ -42,6 +42,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew --no-daemon --stacktrace multiplatformCoverage jvmCoverage sonarqube --info
 
+      - name: Prepare Python
+        run: python3 -m pip install virtualenv --user
+
       - name: Publish documentation
         env:
           GRGIT_USER: ${{ github.actor }}
