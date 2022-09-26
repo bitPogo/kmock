@@ -15,6 +15,7 @@ plugins {
 }
 
 python {
+    envPath = "${rootDir.absolutePath}/.gradle/python/opt/homebrew/"
     pip(
         MkDocs.includeMarkdown,
         MkDocs.kroki,
