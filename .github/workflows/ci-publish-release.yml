@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: ./gradlew build
 
+      - name: Prepare Python
+        run: python3 -m pip install virtualenv --user
+
       - name: Publish documentation
         env:
           GRGIT_USER: ${{ github.actor }}
