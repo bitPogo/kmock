@@ -272,6 +272,8 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 android {
+    namespace = "tech.antibytes.kmock.example"
+
     defaultConfig {
         minSdk = 30
     }
