@@ -85,7 +85,7 @@ class SingleSourceSetConfiguratorSpec {
         SingleSourceSetConfigurator.configure(project)
 
         // Then
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/test/kotlin") }
     }
 
     @Test
@@ -126,7 +126,7 @@ class SingleSourceSetConfiguratorSpec {
         SingleSourceSetConfigurator.configure(project)
 
         // Then
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test/kotlin") }
     }
 
     @Test
@@ -172,7 +172,7 @@ class SingleSourceSetConfiguratorSpec {
 
         // Then
         verify(exactly = 1) { plugins.apply("com.google.devtools.ksp") }
-        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test") }
+        verify(exactly = 1) { test.kotlin.srcDir("$path/generated/ksp/js/test/kotlin") }
     }
 
     @Test
