@@ -88,6 +88,8 @@ antiBytesCoverage {
 }
 
 android {
+    namespace = "tech.antibytes.kmock"
+
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
     }
