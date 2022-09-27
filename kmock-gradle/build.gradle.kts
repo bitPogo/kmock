@@ -54,7 +54,7 @@ kotlin {
     explicitApi()
 
     sourceSets.main {
-        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main")
+        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
     }
 }
 

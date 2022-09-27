@@ -171,11 +171,11 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
+            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/js/jsTest")
+            source2.kotlin.srcDir("$path/generated/ksp/js/jsTest/kotlin")
         }
 
         verify(exactly = 1) {
@@ -317,11 +317,11 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
+            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/android/androidTest")
+            source2.kotlin.srcDir("$path/generated/ksp/android/androidTest/kotlin")
         }
 
         verify(exactly = 0) {
@@ -329,11 +329,11 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source4.kotlin.srcDir("$path/generated/ksp/android/androidDebugAndroidTest")
+            source4.kotlin.srcDir("$path/generated/ksp/android/androidDebugAndroidTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source5.kotlin.srcDir("$path/generated/ksp/android/androidReleaseAndroidTest")
+            source5.kotlin.srcDir("$path/generated/ksp/android/androidReleaseAndroidTest/kotlin")
         }
 
         verify(exactly = 1) {
@@ -440,11 +440,11 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
+            source1.kotlin.srcDir("$path/generated/ksp/native/nativeTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test")
+            source2.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test/kotlin")
         }
 
         verify(exactly = 1) {
@@ -654,43 +654,43 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source0.kotlin.srcDir("$path/generated/ksp/common/commonTest")
+            source0.kotlin.srcDir("$path/generated/ksp/common/commonTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source8.kotlin.srcDir("$path/generated/ksp/meta/metaTest")
+            source8.kotlin.srcDir("$path/generated/ksp/meta/metaTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source1.kotlin.srcDir("$path/generated/ksp/concurrent/concurrentTest")
+            source1.kotlin.srcDir("$path/generated/ksp/concurrent/concurrentTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source2.kotlin.srcDir("$path/generated/ksp/native/nativeTest")
+            source2.kotlin.srcDir("$path/generated/ksp/native/nativeTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source3.kotlin.srcDir("$path/generated/ksp/ios/iosTest")
+            source3.kotlin.srcDir("$path/generated/ksp/ios/iosTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source4.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test")
+            source4.kotlin.srcDir("$path/generated/ksp/iosX64/iosX64Test/kotlin")
         }
 
         verify(exactly = 1) {
-            source5.kotlin.srcDir("$path/generated/ksp/iosArm32/iosArm32Test")
+            source5.kotlin.srcDir("$path/generated/ksp/iosArm32/iosArm32Test/kotlin")
         }
 
         verify(exactly = 1) {
-            source6.kotlin.srcDir("$path/generated/ksp/linuxX64/linuxX64Test")
+            source6.kotlin.srcDir("$path/generated/ksp/linuxX64/linuxX64Test/kotlin")
         }
 
         verify(exactly = 1) {
-            source7.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest")
+            source7.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
         }
 
         verify(exactly = 1) {
-            source9.kotlin.srcDir("$path/generated/ksp/other/otherTest")
+            source9.kotlin.srcDir("$path/generated/ksp/other/otherTest/kotlin")
         }
 
         verify(exactly = 1) {

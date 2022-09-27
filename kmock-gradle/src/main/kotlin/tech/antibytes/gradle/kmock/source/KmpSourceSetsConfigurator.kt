@@ -37,12 +37,12 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         when {
             sourceSet.name == "androidAndroidTestDebug" -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/android/androidDebugAndroidTest",
+                    "$buildDir/generated/ksp/android/androidDebugAndroidTest/kotlin",
                 )
             }
             sourceSet.name == "androidAndroidTestRelease" -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/android/androidReleaseAndroidTest",
+                    "$buildDir/generated/ksp/android/androidReleaseAndroidTest/kotlin",
                 )
             }
             platformName == "androidAndroid" -> {
@@ -50,7 +50,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
             else -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}",
+                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}/kotlin",
                 )
             }
         }
