@@ -18,7 +18,7 @@ include(
     ":kmock",
     ":kmock-processor",
     ":kmock-gradle",
-    ":examples",
+    ":playground",
     ":integration-kmp",
     ":docs"
 )
