@@ -73,6 +73,7 @@
     <ID>MagicNumber:KMockPublishingConfiguration.kt$KMockPublishingConfiguration$2022</ID>
     <ID>MagicNumber:build.gradle.kts$0.90</ID>
     <ID>MagicNumber:build.gradle.kts$0.95</ID>
+    <ID>MagicNumber:build.gradle.kts$21</ID>
     <ID>MagicNumber:build.gradle.kts$30</ID>
     <ID>MagicNumber:build.gradle.kts$8</ID>
     <ID>MagicNumber:settings.gradle.kts$30</ID>
@@ -120,6 +121,7 @@
     <ID>ThrowingExceptionsWithoutMessageOrCause:PropertyProxy.kt$PropertyProxy$NullPointerException()</ID>
     <ID>TooGenericExceptionCaught:KmpSourceSetsConfigurator.kt$KmpSourceSetsConfigurator$e: Throwable</ID>
     <ID>TooManyFunctions:AsyncFunProxy.kt$AsyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : AsyncFunProxyFunProxy</ID>
+    <ID>TooManyFunctions:ExampleContract.kt$ExampleContract$SampleUselessObject</ID>
     <ID>TooManyFunctions:FunProxy.kt$FunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : FunProxy</ID>
     <ID>TooManyFunctions:Hint.kt$tech.antibytes.kmock.Hint.kt</ID>
     <ID>TooManyFunctions:KMockCodeGenerator.kt$KMockCodeGenerator : KmpCodeGenerator</ID>
@@ -146,18 +148,22 @@
     <ID>TooManyFunctions:VerificationAndAssertion.kt$tech.antibytes.kmock.verification.VerificationAndAssertion.kt</ID>
     <ID>TooManyFunctions:VerificationChain.kt$VerificationChain : AssertionChainChainedAssertion</ID>
     <ID>UnnecessaryAbstractClass:BaseSourceAggregator.kt$BaseSourceAggregator$BaseSourceAggregator</ID>
+    <ID>UnusedPrivateMember:AndroidSampleControllerAutoStubSpec.kt$AndroidSampleControllerAutoStubSpec$private val androidThing = AndroidThingMock()</ID>
     <ID>UnusedPrivateMember:KMockFactoryGenerator.kt$KMockFactoryGenerator$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockGenerator.kt$KMockGenerator$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockMultiInterfaceBinder.kt$KMockMultiInterfaceBinder$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockProcessor.kt$KMockProcessor$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:Relaxed.kt$id: String</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependsOn(androidAndroidTestRelease) dependencies { implementation(Dependency.jvm.test.junit) implementation(Dependency.android.test.junit) implementation(Dependency.android.test.composeJunit4) implementation(Dependency.android.test.espressoCore) implementation(Dependency.android.test.uiAutomator) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTestDebug by getting { kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest") }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(androidAndroidTestRelease) dependsOn(androidAndroidTestDebug) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(androidAndroidTestRelease) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(Dependency.jvm.test.junit) implementation(Dependency.android.test.junit) implementation(Dependency.android.test.composeJunit4) implementation(Dependency.android.test.espressoCore) implementation(Dependency.android.test.uiAutomator) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.android) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(Dependency.multiplatform.kotlin.android) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(androidAndroidTestRelease) dependsOn(androidTestFixtures) dependsOn(androidTestFixturesDebug) dependsOn(androidTestFixturesRelease) dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) implementation(Dependency.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) implementation(Dependency.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(androidTestFixtures) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Main by getting { dependsOn(iosMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Test by getting { dependsOn(iosTest) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test") dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jsMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.js) implementation(Dependency.js.nodejs) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { dependencies { implementation(Dependency.multiplatform.test.js) } }</ID>
@@ -165,6 +171,7 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.jdk8) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependsOn(concurrentMain) dependencies { implementation(Dependency.multiplatform.kotlin.jdk8) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependsOn(concurrentTest) dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { kotlin.srcDir("build/generated/ksp/jvm/jvmTest") dependsOn(concurrentTest) dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Main by getting { dependsOn(otherMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(otherTest) }</ID>
