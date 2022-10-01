@@ -30,6 +30,8 @@
     <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer?, ): TypeSpec</ID>
     <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String>, ): Options</ID>
     <ID>ComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
+    <ID>FunctionNaming:SampleComposable.kt$@Composable fun SampleComposable(viewModel: AppContract.SampleViewModel)</ID>
+    <ID>FunctionNaming:SampleComposablePreview.kt$@Preview @Composable fun SampleComposablePreview()</ID>
     <ID>LargeClass:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator : ProxyAccessMethodGenerator</ID>
     <ID>LongMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer?, ): TypeSpec</ID>
     <ID>LongMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String>, ): Options</ID>
@@ -86,6 +88,8 @@
     <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)</ID>
     <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
     <ID>MaxLineLength:Dangerfile.df.kts$val</ID>
+    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-android:${Version.antibytes.test}"</ID>
+    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine-android:${Version.antibytes.test}"</ID>
     <ID>MaxLineLength:GradlePlugin.kt$GradlePlugin$const val runtimeConfig = "tech.antibytes.gradle-plugins:antibytes-runtime-configuration:${Version.gradle.antibytes}"</ID>
     <ID>MaxLineLength:Hint.kt$Hint10$public data</ID>
     <ID>MaxLineLength:Hint.kt$Hint11$public data</ID>

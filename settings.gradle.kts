@@ -20,6 +20,7 @@ include(
     ":kmock-gradle",
     ":playground",
     ":integration-kmp",
+    ":integration-android-application",
     ":docs"
 )
 
