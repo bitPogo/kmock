@@ -124,7 +124,7 @@ allprojects {
 
     ensureKotlinVersion(Version.kotlin.language)
 
-    if (name == "example" || name == "docs") {
+    if (name == "playground" || name.startsWith("integration") || name == "docs") {
         sonarqube {
             isSkipProject = true
         }

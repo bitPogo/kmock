@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import tech.antibytes.gradle.dependency.Version
+import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 
 plugins {
     id("org.jetbrains.kotlin.android")
@@ -15,12 +16,22 @@ plugins {
     id("com.android.application")
 
     id("tech.antibytes.gradle.configuration")
+    id("tech.antibytes.gradle.coverage")
 
     id("tech.antibytes.kmock.kmock-gradle")
 }
 
 kmock {
     rootPackage = "tech.antibytes.kmock.integration"
+}
+
+antiBytesCoverage {
+    val excludes = setOf("**/*")
+    val androidCoverage = AndroidJacocoConfiguration.createAndroidLibraryKmpConfiguration(
+        project,
+        classFilter = excludes,
+    )
+    configurations["android"] = androidCoverage
 }
 
 android {
