@@ -12,12 +12,15 @@ pluginManagement {
 }
 
 includeBuild("gradlePlugin/kmock-dependency")
+includeBuild("gradlePlugin/kmock-test-plugin")
 
 include(
     ":kmock",
     ":kmock-processor",
     ":kmock-gradle",
-    ":examples",
+    ":playground",
+    ":integration-kmp",
+    ":integration-android-application",
     ":docs"
 )
 

@@ -74,6 +74,14 @@
   description: KMock
   color: 000080
 
-- name: examples
-  description: Examples
+-name: integration-kmp
+  description: Integration Project for KMP
+  color: 000080
+
+-name: integration-singel-source
+  description: Integration Project for Singel Sources
+  color: 000080
+
+- name: playground
+  description: Playground
   color: 000080

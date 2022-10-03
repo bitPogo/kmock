@@ -26,6 +26,16 @@ object Dependency {
             const val fixture = "tech.antibytes.kfixture:core:${Version.antibytes.kfixture}"
             const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine:${Version.antibytes.test}"
             const val gradle = "tech.antibytes.gradle-plugins:antibytes-gradle-test-utils:${Version.gradle.antibytes}"
+
+            val android = AndroidTest
+
+            object AndroidTest {
+                const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-android:${Version.antibytes.test}"
+                const val core = "tech.antibytes.test-utils-kmp:test-utils-android:${Version.antibytes.test}"
+                const val fixture = "tech.antibytes.kfixture:core-android:${Version.antibytes.kfixture}"
+                const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine-android:${Version.antibytes.test}"
+                const val ktor = "tech.antibytes.test-utils-kmp:test-utils-ktor-android:${Version.antibytes.test}"
+            }
         }
     }
 

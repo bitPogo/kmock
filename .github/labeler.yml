@@ -27,5 +27,11 @@ kmock-gradle:
 kmock-processor:
   - kmock-processor/**/*
 
-examples:
-  - examples/**/*
+integration-kmp:
+  - integration-kmp/**/*
+
+integration-singel-source:
+  - integration-android-application/**/*
+
+playground:
+  - playground/**/*
