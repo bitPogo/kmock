@@ -21,7 +21,7 @@ object Dependency {
         val test = Test
 
         object Test {
-            const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations:${Version.antibytes.test}"
+            const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-junit4:${Version.antibytes.test}"
             const val core = "tech.antibytes.test-utils-kmp:test-utils:${Version.antibytes.test}"
             const val fixture = "tech.antibytes.kfixture:core:${Version.antibytes.kfixture}"
             const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine:${Version.antibytes.test}"
@@ -30,7 +30,7 @@ object Dependency {
             val android = AndroidTest
 
             object AndroidTest {
-                const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-android:${Version.antibytes.test}"
+                const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-junit4-android:${Version.antibytes.test}"
                 const val core = "tech.antibytes.test-utils-kmp:test-utils-android:${Version.antibytes.test}"
                 const val fixture = "tech.antibytes.kfixture:core-android:${Version.antibytes.kfixture}"
                 const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine-android:${Version.antibytes.test}"

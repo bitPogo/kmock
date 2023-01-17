@@ -88,7 +88,7 @@
     <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)</ID>
     <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
     <ID>MaxLineLength:Dangerfile.df.kts$val</ID>
-    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val annotations = "tech.antibytes.test-utils-kmp:test-utils-annotations-android:${Version.antibytes.test}"</ID>
+    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val annotations = "test-utils-annotations-junit4-android:${Version.antibytes.test}"</ID>
     <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine-android:${Version.antibytes.test}"</ID>
     <ID>MaxLineLength:GradlePlugin.kt$GradlePlugin$const val runtimeConfig = "tech.antibytes.gradle-plugins:antibytes-runtime-configuration:${Version.gradle.antibytes}"</ID>
     <ID>MaxLineLength:Hint.kt$Hint10$public data</ID>

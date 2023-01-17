@@ -5,30 +5,25 @@
  */
 
 import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockConfiguration
+import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
+import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
-
-    // Android
-    id("com.android.library")
-
-    id("tech.antibytes.gradle.configuration")
-    id("tech.antibytes.gradle.coverage")
+    alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
+    alias(antibytesCatalog.plugins.gradle.antibytes.androidLibraryConfiguration)
+    alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
 
     // Processor
-    id("com.google.devtools.ksp")
-
-    id("kotlinx-atomicfu")
+    alias(antibytesCatalog.plugins.gradle.ksp)
+    id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 
     id("tech.antibytes.kmock.kmock-gradle")
 }
 
-group = KMockConfiguration.group
+group = KMockConfiguration(project).group
 
 kotlin {
     android {
@@ -45,7 +40,7 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
-    ensureIosDeviceCompatibility()
+    ensureAppleDeviceCompatibility()
 
     linuxX64()
 

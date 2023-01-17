@@ -3,33 +3,34 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
-
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import tech.antibytes.gradle.dependency.Version
-import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
-import tech.antibytes.gradle.kmock.dependency.addCustomRepositories
-import tech.antibytes.gradle.kmock.dependency.ensureKotlinVersion
+import tech.antibytes.gradle.kmock.config.publishing.KMockPublishingConfiguration
+import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
+import tech.antibytes.gradle.dependency.helper.addCustomRepositories
+import tech.antibytes.gradle.dependency.helper.ensureKotlinVersion
+import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
+import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
+import tech.antibytes.gradle.kmock.config.quality.StableApi
 
 plugins {
+    id("tech.antibytes.gradle.setup")
     id("tech.antibytes.gradle.kmock.dependency")
 
-    id("tech.antibytes.gradle.dependency")
-
-    id("tech.antibytes.gradle.kmock.script.quality-spotless")
-
-    id("org.owasp.dependencycheck")
-
-    id("tech.antibytes.gradle.publishing")
-
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
-
-    id("org.sonarqube") version "3.3"
+    alias(antibytesCatalog.plugins.gradle.antibytes.dependencyHelper)
+    alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
+    alias(antibytesCatalog.plugins.gradle.antibytes.quality)
 }
 
-antiBytesPublishing {
-    versioning = KMockPublishingConfiguration.versioning
-    repositoryConfiguration = KMockPublishingConfiguration.repositories
+antibytesQuality {
+    codeAnalysis.set(CodeAnalysisConfiguration(project = project))
+    stableApi.set(StableApi.api)
+    qualityGate.set(SonarConfiguration(project).configuration)
+}
+
+val publishing = KMockPublishingConfiguration(project)
+
+antibytesPublishing {
+    versioning.set(publishing.versioning)
+    repositories.set(publishing.repositories)
 }
 
 tasks.named<Wrapper>("wrapper") {
@@ -37,98 +38,15 @@ tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-detekt {
-    toolVersion = "1.21.0"
-    buildUponDefaultConfig = true // preconfigure defaults
-    allRules = false // activate all available (even unstable) rules.
-    config = files("$projectDir/detekt/config.yml") // point to your custom config defining rules to run, overwriting default behavior
-    baseline = file("$projectDir/detekt/baseline.xml") // a way of suppressing issues before introducing detekt
-    source = files(projectDir)
-}
-
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = JavaVersion.VERSION_11.toString()
-    exclude(
-        "**/.gradle/**",
-        "**/.idea/**",
-        "**/build/**",
-        "**/buildSrc/**",
-        ".github/**",
-        "gradle/**",
-        "**/example/**",
-        "**/test/resources/**",
-        "**/build.gradle.kts",
-        "**/settings.gradle.kts",
-        "**/Dangerfile.df.kts"
-    )
-
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        txt.required.set(false)
-        sarif.required.set(false)
-    }
-}
-
-tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = JavaVersion.VERSION_11.toString()
-
-    exclude(
-        "**/.gradle/**",
-        "**/.idea/**",
-        "**/build/**",
-        "**/gradle/wrapper/**",
-        ".github/**",
-        "assets/**",
-        "docs/**",
-        "gradle/**",
-        "**/example/**",
-        "**/*.adoc",
-        "**/*.md",
-        "**/gradlew",
-        "**/LICENSE",
-        "**/.java-version",
-        "**/gradlew.bat",
-        "**/*.png",
-        "**/*.properties",
-        "**/*.pro",
-        "**/*.sq",
-        "**/*.xml",
-        "**/*.yml"
-    )
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "kmock")
-        property("sonar.organization", "antibytes")
-        property("sonar.host.url", "https://sonarcloud.io")
-
-        property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.coverage.jacoco.xmlReportPaths", "**/reports/jacoco/**/*.xml")
-        property(
-            "sonar.junit.reportPaths",
-            "**/test-results/jvmTest,**/test-results/testDebugUnitTest,"
-        )
-        property("sonar.kotlin.detekt.reportPaths", "$buildDir/reports/detekt/detekt.xml")
-    }
-}
-
 allprojects {
     repositories {
-        addCustomRepositories()
         mavenCentral()
         google()
         jcenter()
+        addCustomRepositories(kmockRepositories)
     }
 
-    ensureKotlinVersion(Version.kotlin.language)
-
-    if (name == "playground" || name.startsWith("integration") || name == "docs") {
-        sonarqube {
-            isSkipProject = true
-        }
-    }
+    ensureKotlinVersion()
 }
 
 evaluationDependsOnChildren()

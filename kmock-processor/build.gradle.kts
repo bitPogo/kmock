@@ -5,28 +5,27 @@
  */
 
 import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockProcessorConfiguration
+import tech.antibytes.gradle.kmock.config.publishing.KMockProcessorConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 
 plugins {
     kotlin("jvm")
 
-    id("tech.antibytes.gradle.publishing")
-    id("tech.antibytes.gradle.coverage")
-
-    // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
+    alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
+    alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
 }
 
-group = KMockProcessorConfiguration.group
+val publishingConfiguration = KMockProcessorConfiguration(project)
+group = publishingConfiguration.group
 
-antiBytesPublishing {
-    packageConfiguration = KMockProcessorConfiguration.publishing.packageConfiguration
-    repositoryConfiguration = KMockProcessorConfiguration.publishing.repositories
-    versioning = KMockProcessorConfiguration.publishing.versioning
-    signingConfiguration = KMockProcessorConfiguration.publishing.signing
+antibytesPublishing {
+    packaging.set(publishingConfiguration.publishing.packageConfiguration)
+    repositories.set(publishingConfiguration.publishing.repositories)
+    versioning.set(publishingConfiguration.publishing.versioning)
+    signing.set(publishingConfiguration.publishing.signing)
 }
+
 
 
 tasks.withType<KotlinCompile>().configureEach {

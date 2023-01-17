@@ -5,21 +5,19 @@
  */
 
 import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
+import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
-import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.versioning.Versioning
+import tech.antibytes.gradle.kmock.config.publishing.KMockGradleConfiguration
 
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
     id("com.palantir.git-version")
 }
-
-group = KMockGradleConfiguration.group
 
 dependencies {
     implementation(LocalDependency.kotlin.gradle)
@@ -58,13 +56,14 @@ tasks.test {
     useJUnitPlatform()
 }
 
+val publishingConfiguration = KMockGradleConfiguration(project)
 val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
     packageName.set("tech.antibytes.gradle.kmock.config")
     stringFields.set(
         mapOf(
             "version" to Versioning.getInstance(
                 project = project,
-                configuration = KMockPublishingConfiguration().versioning
+                configuration = publishingConfiguration.publishing.versioning
             ).versionName()
         )
     )
@@ -78,13 +77,13 @@ tasks.withType(KotlinCompile::class.java) {
 }
 
 gradlePlugin {
-    plugins.register(KMockGradleConfiguration.pluginId) {
-        id = KMockGradleConfiguration.pluginId
-        group = KMockGradleConfiguration.group
-        displayName = KMockGradleConfiguration.publishing.description
-        description = KMockGradleConfiguration.longDescription
+    plugins.register(publishingConfiguration.pluginId) {
+        id = publishingConfiguration.pluginId
+        group = publishingConfiguration.group
+        displayName = publishingConfiguration.publishing.description
+        description = publishingConfiguration.longDescription
         implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
-        version = KMockGradleConfiguration.version
+        version = publishingConfiguration.version
     }
 }
 configure<JavaPluginExtension> {

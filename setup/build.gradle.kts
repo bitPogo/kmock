@@ -36,12 +36,13 @@ dependencies {
     implementation(antibytesCatalog.gradle.antibytes.publishingConfiguration)
     implementation(antibytesCatalog.gradle.antibytes.quality)
     implementation(antibytesCatalog.gradle.agp)
+    implementation(antibytesCatalog.gradle.kotlinx.atomicfu)
     api(antibytesCatalog.gradle.antibytes.runtimeConfig)
 }
 
 gradlePlugin {
     plugins.create("tech.antibytes.gradle.setup") {
         id = "tech.antibytes.gradle.setup"
-        implementationClass = "tech.antibytes.gradle.util.test.config.SetupPlugin"
+        implementationClass = "tech.antibytes.gradle.kmock.config.SetupPlugin"
     }
 }

@@ -1,24 +1,22 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2023 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
 
-package tech.antibytes.gradle.kmock.config
+package tech.antibytes.gradle.kmock.config.publishing
 
+import org.gradle.api.Project
 import tech.antibytes.gradle.publishing.api.PackageConfiguration
 import tech.antibytes.gradle.publishing.api.PomConfiguration
 
-object KMockProcessorConfiguration {
-    const val group = "tech.antibytes.kmock"
+class KMockConfiguration(project: Project) : PublishingBase() {
+    val publishing = Publishing(project)
 
-    val publishing = Publishing
-
-    object Publishing : KMockPublishingConfiguration() {
+    class Publishing(project: Project) : KMockPublishingConfiguration(project) {
         val packageConfiguration = PackageConfiguration(
-            isPureJavaLibrary = true,
             pom = PomConfiguration(
-                name = "KMock Processor",
+                name = "KMock Runtime",
                 description = description,
                 year = year,
                 url = url,

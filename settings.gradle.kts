@@ -39,10 +39,12 @@ include(
     ":kmock",
     ":kmock-processor",
     ":kmock-gradle",
+    ":docs",
+)
+include(
     ":playground",
     ":integration-kmp",
     ":integration-android-application",
-    ":docs"
 )
 
 dependencyResolutionManagement {

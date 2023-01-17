@@ -5,7 +5,7 @@
  */
 
 import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockProcessorConfiguration
+import tech.antibytes.gradle.kmock.config.publishing.KMockProcessorConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 
@@ -13,7 +13,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = KMockProcessorConfiguration.group
+group = KMockProcessorConfiguration(project).group
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
