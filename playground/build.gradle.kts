@@ -7,7 +7,7 @@
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
-import tech.antibytes.gradle.configuration.isIdea
+import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -100,33 +100,21 @@ kotlin {
                 implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8)
             }
         }
-        if (!isIdea()) {
-            val androidAndroidTestRelease by getting {
-                kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
-            }
-            val androidAndroidTestDebug by getting {
-                kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
-            }
 
-            val androidAndroidTest by getting {
-                dependsOn(androidAndroidTestRelease)
-                dependsOn(androidAndroidTestDebug)
-            }
-            val androidTestFixturesDebug by getting
-            val androidTestFixturesRelease by getting
-            val androidTestFixtures by getting {
-                dependsOn(androidTestFixturesDebug)
-                dependsOn(androidTestFixturesRelease)
-            }
-
-            val androidTest by getting {
-                dependsOn(androidTestFixtures)
-            }
+        // setupAndroidTest()
+        val androidAndroidTestRelease by getting {
+            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
+        }
+        val androidAndroidTestDebug by getting {
+            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
         }
         val androidTest by getting {
+            dependsOn(concurrentTest)
             kotlin.srcDir("build/generated/ksp/android/androidTest")
 
             dependencies {
+                implementation(antibytesCatalog.jvm.test.junit.runtime) // somehow Gradle gets confused
+                implementation(antibytesCatalog.jvm.test.junit.bom) // somehow Gradle gets confused
                 implementation(antibytesCatalog.jvm.test.junit.junit4)
                 implementation(antibytesCatalog.jvm.test.kotlin.junit4)
                 implementation(antibytesCatalog.android.test.robolectric)

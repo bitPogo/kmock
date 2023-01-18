@@ -1,61 +1,61 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues/>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>ArrayPrimitive:AsyncFun.kt$AsyncFunMock$Array&lt;out Int></ID>
-    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;in Int></ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;out Int></ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int>?</ID>
-    <ID>ArrayPrimitive:SuperTyped.kt$SuperTypedMock$Array&lt;Int></ID>
-    <ID>ArrayPrimitive:SyncFun.kt$SyncFunMock$Array&lt;out Int></ID>
-    <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer?, ): TypeSpec</ID>
-    <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String>, ): Options</ID>
+    <ID>ArrayPrimitive:AsyncFun.kt$AsyncFunMock$Array&lt;out Int&gt;</ID>
+    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;in Int&gt;</ID>
+    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;out Int&gt;</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;?</ID>
+    <ID>ArrayPrimitive:SuperTyped.kt$SuperTypedMock$Array&lt;Int&gt;</ID>
+    <ID>ArrayPrimitive:SyncFun.kt$SyncFunMock$Array&lt;out Int&gt;</ID>
+    <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;?, relaxer: Relaxer?, ): TypeSpec</ID>
+    <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String&gt;, ): Options</ID>
     <ID>ComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
     <ID>FunctionNaming:SampleComposable.kt$@Composable fun SampleComposable(viewModel: AppContract.SampleViewModel)</ID>
     <ID>FunctionNaming:SampleComposablePreview.kt$@Preview @Composable fun SampleComposablePreview()</ID>
     <ID>LargeClass:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator : ProxyAccessMethodGenerator</ID>
-    <ID>LongMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference>>?, relaxer: Relaxer?, ): TypeSpec</ID>
-    <ID>LongMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String>, ): Options</ID>
+    <ID>LongMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;?, relaxer: Relaxer?, ): TypeSpec</ID>
+    <ID>LongMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String&gt;, ): Options</ID>
     <ID>LongMethod:KMockProcessorProvider.kt$KMockProcessorProvider$override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor</ID>
-    <ID>LongMethod:ParameterTypeMapping.kt$private fun KSType.mapParameterType( visited: Set&lt;String>, classScope: Set&lt;String>, functionScope: Set&lt;String>, resolved: Map&lt;String, GenericDeclaration>, typeArguments: List&lt;KSTypeArgument>, rootNullability: Boolean, typeParameterResolver: TypeParameterResolver, ): TypeName</ID>
-    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, type7: KClass&lt;Type7> = Type7::class, type8: KClass&lt;Type8> = Type8::class, type9: KClass&lt;Type9> = Type9::class, )</ID>
-    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, type7: KClass&lt;Type7> = Type7::class, type8: KClass&lt;Type8> = Type8::class, type9: KClass&lt;Type9> = Type9::class, type10: KClass&lt;Type10> = Type10::class, )</ID>
-    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, type7: KClass&lt;Type7> = Type7::class, type8: KClass&lt;Type8> = Type8::class, type9: KClass&lt;Type9> = Type9::class, type10: KClass&lt;Type10> = Type10::class, type11: KClass&lt;Type11> = Type11::class, )</ID>
-    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0> = Type0::class, type1: KClass&lt;Type1> = Type1::class, type2: KClass&lt;Type2> = Type2::class, type3: KClass&lt;Type3> = Type3::class, type4: KClass&lt;Type4> = Type4::class, type5: KClass&lt;Type5> = Type5::class, type6: KClass&lt;Type6> = Type6::class, type7: KClass&lt;Type7> = Type7::class, type8: KClass&lt;Type8> = Type8::class, type9: KClass&lt;Type9> = Type9::class, type10: KClass&lt;Type10> = Type10::class, type11: KClass&lt;Type11> = Type11::class, type12: KClass&lt;Type12> = Type12::class, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, arg12: Arg12, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -> ReturnValue>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -> ReturnValue>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -> ReturnValue>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -> ReturnValue>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -> ReturnValue>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, arg12: Arg12, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue>>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue>>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue>>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue>>.() -> Unit = {}, )</ID>
-    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue>>.() -> Unit = {}, )</ID>
+    <ID>LongMethod:ParameterTypeMapping.kt$private fun KSType.mapParameterType( visited: Set&lt;String&gt;, classScope: Set&lt;String&gt;, functionScope: Set&lt;String&gt;, resolved: Map&lt;String, GenericDeclaration&gt;, typeArguments: List&lt;KSTypeArgument&gt;, rootNullability: Boolean, typeParameterResolver: TypeParameterResolver, ): TypeName</ID>
+    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0&gt; = Type0::class, type1: KClass&lt;Type1&gt; = Type1::class, type2: KClass&lt;Type2&gt; = Type2::class, type3: KClass&lt;Type3&gt; = Type3::class, type4: KClass&lt;Type4&gt; = Type4::class, type5: KClass&lt;Type5&gt; = Type5::class, type6: KClass&lt;Type6&gt; = Type6::class, type7: KClass&lt;Type7&gt; = Type7::class, type8: KClass&lt;Type8&gt; = Type8::class, type9: KClass&lt;Type9&gt; = Type9::class, )</ID>
+    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0&gt; = Type0::class, type1: KClass&lt;Type1&gt; = Type1::class, type2: KClass&lt;Type2&gt; = Type2::class, type3: KClass&lt;Type3&gt; = Type3::class, type4: KClass&lt;Type4&gt; = Type4::class, type5: KClass&lt;Type5&gt; = Type5::class, type6: KClass&lt;Type6&gt; = Type6::class, type7: KClass&lt;Type7&gt; = Type7::class, type8: KClass&lt;Type8&gt; = Type8::class, type9: KClass&lt;Type9&gt; = Type9::class, type10: KClass&lt;Type10&gt; = Type10::class, )</ID>
+    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0&gt; = Type0::class, type1: KClass&lt;Type1&gt; = Type1::class, type2: KClass&lt;Type2&gt; = Type2::class, type3: KClass&lt;Type3&gt; = Type3::class, type4: KClass&lt;Type4&gt; = Type4::class, type5: KClass&lt;Type5&gt; = Type5::class, type6: KClass&lt;Type6&gt; = Type6::class, type7: KClass&lt;Type7&gt; = Type7::class, type8: KClass&lt;Type8&gt; = Type8::class, type9: KClass&lt;Type9&gt; = Type9::class, type10: KClass&lt;Type10&gt; = Type10::class, type11: KClass&lt;Type11&gt; = Type11::class, )</ID>
+    <ID>LongParameterList:Hint.kt$( type0: KClass&lt;Type0&gt; = Type0::class, type1: KClass&lt;Type1&gt; = Type1::class, type2: KClass&lt;Type2&gt; = Type2::class, type3: KClass&lt;Type3&gt; = Type3::class, type4: KClass&lt;Type4&gt; = Type4::class, type5: KClass&lt;Type5&gt; = Type5::class, type6: KClass&lt;Type6&gt; = Type6::class, type7: KClass&lt;Type7&gt; = Type7::class, type8: KClass&lt;Type8&gt; = Type8::class, type9: KClass&lt;Type9&gt; = Type9::class, type10: KClass&lt;Type10&gt; = Type10::class, type11: KClass&lt;Type11&gt; = Type11::class, type12: KClass&lt;Type12&gt; = Type12::class, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, arg12: Arg12, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -&gt; ReturnValue&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -&gt; ReturnValue&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -&gt; ReturnValue&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -&gt; ReturnValue&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.AsyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, suspend () -&gt; ReturnValue&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, arg12: Arg12, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue&gt;&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, arg11: Arg11, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue&gt;&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, arg10: Arg10, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue&gt;&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, arg9: Arg9, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue&gt;&gt;.() -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:KMockContract.kt$KMockContract.SyncFunProxy$( arg0: Arg0, arg1: Arg1, arg2: Arg2, arg3: Arg3, arg4: Arg4, arg5: Arg5, arg6: Arg6, arg7: Arg7, arg8: Arg8, nonIntrusiveHook: NonIntrusiveFunConfigurator&lt;ReturnValue, Function0&lt;ReturnValue&gt;&gt;.() -&gt; Unit = {}, )</ID>
     <ID>LongParameterList:KMockFactoryEntryPointGenerator.kt$KMockFactoryEntryPointGenerator$( private val isKmp: Boolean, private val rootPackage: String, private val spyContainer: SpyContainer, private val spiesOnly: Boolean, private val utils: MockFactoryGeneratorUtil, private val genericResolver: GenericResolver, private val codeGenerator: KmpCodeGenerator, )</ID>
     <ID>LongParameterList:KMockFactoryGenerator.kt$KMockFactoryGenerator$( private val logger: KSPLogger, private val rootPackage: String, private val isKmp: Boolean, private val spyContainer: SpyContainer, private val spiesOnly: Boolean, private val nonGenericGenerator: MockFactoryWithoutGenerics, private val genericGenerator: MockFactoryWithGenerics, private val multiInterfaceGenerator: MockFactoryMultiInterface, private val utils: MockFactoryGeneratorUtil, private val codeGenerator: CodeGenerator, )</ID>
-    <ID>LongParameterList:KMockGenerator.kt$KMockGenerator$( private val logger: KSPLogger, freezeOnDefault: Boolean, private val enableProxyAccessMethodGenerator: Boolean, private val spyContainer: SpyContainer, private val useBuildInProxiesOn: Set&lt;String>, private val codeGenerator: KmpCodeGenerator, private val genericsResolver: GenericResolver, private val nameCollector: ProxyNameCollector, private val parentFinder: ParentFinder, private val propertyGenerator: PropertyGenerator, private val methodGenerator: MethodGenerator, private val buildInGenerator: BuildInMethodGenerator, private val receiverGenerator: ReceiverGenerator, private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory, private val preventResolvingOfAliases: Set&lt;String>, )</ID>
+    <ID>LongParameterList:KMockGenerator.kt$KMockGenerator$( private val logger: KSPLogger, freezeOnDefault: Boolean, private val enableProxyAccessMethodGenerator: Boolean, private val spyContainer: SpyContainer, private val useBuildInProxiesOn: Set&lt;String&gt;, private val codeGenerator: KmpCodeGenerator, private val genericsResolver: GenericResolver, private val nameCollector: ProxyNameCollector, private val parentFinder: ParentFinder, private val propertyGenerator: PropertyGenerator, private val methodGenerator: MethodGenerator, private val buildInGenerator: BuildInMethodGenerator, private val receiverGenerator: ReceiverGenerator, private val proxyAccessMethodGeneratorFactory: ProxyAccessMethodGeneratorFactory, private val preventResolvingOfAliases: Set&lt;String&gt;, )</ID>
     <ID>LongParameterList:KMockProcessor.kt$KMockProcessor$( private val logger: KSPLogger, private val isKmp: Boolean, private val codeGenerator: KmpCodeGenerator, private val interfaceGenerator: MultiInterfaceBinder, private val mockGenerator: MockGenerator, private val factoryGenerator: MockFactoryGenerator, private val entryPointGenerator: MockFactoryEntryPointGenerator, private val multiSourceAggregator: MultiSourceAggregator, private val singleSourceAggregator: SingleSourceAggregator, private val relaxationAggregator: RelaxationAggregator, private val filter: SourceFilter, )</ID>
-    <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( proxyInfo: ProxyInfo, generics: Map&lt;String, List&lt;KSTypeReference>>?, isSuspending: Boolean, enableSpy: Boolean, receiverInfo: MemberArgumentTypeInfo, arguments: Array&lt;MemberArgumentTypeInfo>, typeParameter: List&lt;TypeName>, returnType: MemberReturnTypeInfo, typeResolver: TypeParameterResolver, relaxer: Relaxer?, )</ID>
+    <ID>LongParameterList:KMockReceiverGenerator.kt$KMockReceiverGenerator$( proxyInfo: ProxyInfo, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;?, isSuspending: Boolean, enableSpy: Boolean, receiverInfo: MemberArgumentTypeInfo, arguments: Array&lt;MemberArgumentTypeInfo&gt;, typeParameter: List&lt;TypeName&gt;, returnType: MemberReturnTypeInfo, typeResolver: TypeParameterResolver, relaxer: Relaxer?, )</ID>
     <ID>MagicNumber:Dangerfile.df.kts$1000</ID>
     <ID>MagicNumber:Dangerfile.df.kts$20</ID>
     <ID>MagicNumber:Dangerfile.df.kts$2000</ID>
@@ -77,20 +77,15 @@
     <ID>MagicNumber:build.gradle.kts$0.95</ID>
     <ID>MagicNumber:build.gradle.kts$21</ID>
     <ID>MagicNumber:build.gradle.kts$30</ID>
-    <ID>MagicNumber:build.gradle.kts$8</ID>
-    <ID>MagicNumber:settings.gradle.kts$30</ID>
-    <ID>MaxLineLength:AnnotationFilter.kt$AnnotationFilter$((annotation.arguments[0].value as List&lt;*>).size == 0 || (annotation.arguments[0].value as List&lt;*>).random() is KSType)</ID>
-    <ID>MaxLineLength:AnnotationFilter.kt$AnnotationFilter$((annotation.arguments[1].value as List&lt;*>).size == 0 || (annotation.arguments[1].value as List&lt;*>).random() is KSType)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -> ReturnValue)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -> ReturnValue)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)</ID>
-    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
+    <ID>MaxLineLength:AnnotationFilter.kt$AnnotationFilter$((annotation.arguments[0].value as List&lt;*&gt;).size == 0 || (annotation.arguments[0].value as List&lt;*&gt;).random() is KSType)</ID>
+    <ID>MaxLineLength:AnnotationFilter.kt$AnnotationFilter$((annotation.arguments[1].value as List&lt;*&gt;).size == 0 || (annotation.arguments[1].value as List&lt;*&gt;).random() is KSType)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(retrieveSideEffect() as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:AsyncFunProxy.kt$AsyncFunProxy$(sideEffect as suspend (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -&gt; ReturnValue)</ID>
     <ID>MaxLineLength:Dangerfile.df.kts$val</ID>
-    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val annotations = "test-utils-annotations-junit4-android:${Version.antibytes.test}"</ID>
-    <ID>MaxLineLength:Dependency.kt$Dependency.AntiBytes.Test.AndroidTest$const val coroutine = "tech.antibytes.test-utils-kmp:test-utils-coroutine-android:${Version.antibytes.test}"</ID>
-    <ID>MaxLineLength:GradlePlugin.kt$GradlePlugin$const val runtimeConfig = "tech.antibytes.gradle-plugins:antibytes-runtime-configuration:${Version.gradle.antibytes}"</ID>
     <ID>MaxLineLength:Hint.kt$Hint10$public data</ID>
     <ID>MaxLineLength:Hint.kt$Hint11$public data</ID>
     <ID>MaxLineLength:Hint.kt$Hint12$public data</ID>
@@ -111,11 +106,10 @@
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val ARGUMENTS_WITHOUT_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val ARGUMENTS_WITH_RELAXER = "$COLLECTOR_ARGUMENT = $COLLECTOR_ARGUMENT, $RELAXER_ARGUMENT = $RELAXER_ARGUMENT, $UNIT_RELAXER_ARGUMENT = $UNIT_RELAXER_ARGUMENT, $FREEZE_ARGUMENT = $FREEZE_ARGUMENT, $SPY_ARGUMENT = $SPY_ARGUMENT"</ID>
     <ID>MaxLineLength:ProcessorContract.kt$ProcessorContract.Companion$const val UNKNOWN_INTERFACE = "throw RuntimeException(\"Unknown Interface \${$KMOCK_FACTORY_TYPE_NAME::class.simpleName}.\")"</ID>
-    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -> ReturnValue)</ID>
-    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
-    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -> ReturnValue)</ID>
-    <ID>MaxLineLength:build.gradle.kts$config = files("$projectDir/detekt/config.yml")</ID>
-    <ID>NestedBlockDepth:KMockGenerics.kt$KMockGenerics$override fun mapProxyGenerics( classScope: Map&lt;String, List&lt;TypeName>>?, generics: Map&lt;String, List&lt;KSTypeReference>>, typeParameterResolver: TypeParameterResolver, ): Map&lt;String, GenericDeclaration></ID>
+    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(retrieveSideEffect() as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -&gt; ReturnValue)</ID>
+    <ID>MaxLineLength:SyncFunProxy.kt$SyncFunProxy$(sideEffect as (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8, Arg9, Arg10, Arg11, Arg12) -&gt; ReturnValue)</ID>
+    <ID>NestedBlockDepth:KMockGenerics.kt$KMockGenerics$override fun mapProxyGenerics( classScope: Map&lt;String, List&lt;TypeName&gt;&gt;?, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;, typeParameterResolver: TypeParameterResolver, ): Map&lt;String, GenericDeclaration&gt;</ID>
     <ID>SpreadOperator:FunSpecExtensions.kt$( argument.argumentName, argument.methodTypeName, *vararged, )</ID>
     <ID>SpreadOperator:KMockMultiSourceAggregator.kt$KMockMultiSourceAggregator$(shared, *customShared)</ID>
     <ID>SpreadOperator:KMockSingleSourceAggregator.kt$KMockSingleSourceAggregator$(shared, *customShared)</ID>
@@ -124,13 +118,13 @@
     <ID>ThrowingExceptionsWithoutMessageOrCause:FunProxy.kt$FunProxy$NullPointerException()</ID>
     <ID>ThrowingExceptionsWithoutMessageOrCause:PropertyProxy.kt$PropertyProxy$NullPointerException()</ID>
     <ID>TooGenericExceptionCaught:KmpSourceSetsConfigurator.kt$KmpSourceSetsConfigurator$e: Throwable</ID>
-    <ID>TooManyFunctions:AsyncFunProxy.kt$AsyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : AsyncFunProxyFunProxy</ID>
+    <ID>TooManyFunctions:AsyncFunProxy.kt$AsyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue&gt;&gt; : AsyncFunProxyFunProxy</ID>
     <ID>TooManyFunctions:ExampleContract.kt$ExampleContract$SampleUselessObject</ID>
-    <ID>TooManyFunctions:FunProxy.kt$FunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : FunProxy</ID>
+    <ID>TooManyFunctions:FunProxy.kt$FunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue&gt;&gt; : FunProxy</ID>
     <ID>TooManyFunctions:Hint.kt$tech.antibytes.kmock.Hint.kt</ID>
     <ID>TooManyFunctions:KMockCodeGenerator.kt$KMockCodeGenerator : KmpCodeGenerator</ID>
-    <ID>TooManyFunctions:KMockContract.kt$KMockContract$AsyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : FunProxy</ID>
-    <ID>TooManyFunctions:KMockContract.kt$KMockContract$SyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : FunProxy</ID>
+    <ID>TooManyFunctions:KMockContract.kt$KMockContract$AsyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue&gt;&gt; : FunProxy</ID>
+    <ID>TooManyFunctions:KMockContract.kt$KMockContract$SyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue&gt;&gt; : FunProxy</ID>
     <ID>TooManyFunctions:KMockFactoryEntryPointGenerator.kt$KMockFactoryEntryPointGenerator : MockFactoryEntryPointGenerator</ID>
     <ID>TooManyFunctions:KMockFactoryGeneratorUtil.kt$KMockFactoryGeneratorUtil : MockFactoryGeneratorUtil</ID>
     <ID>TooManyFunctions:KMockFactoryMultiInterfaceGenerator.kt$KMockFactoryMultiInterfaceGenerator : MockFactoryMultiInterface</ID>
@@ -146,37 +140,41 @@
     <ID>TooManyFunctions:KMockReceiverGenerator.kt$KMockReceiverGenerator : ReceiverGenerator</ID>
     <ID>TooManyFunctions:KMockSingleSourceAggregator.kt$KMockSingleSourceAggregator : SingleSourceAggregatorBaseSourceAggregator</ID>
     <ID>TooManyFunctions:ParameterTypeMapping.kt$tech.antibytes.kmock.processor.kotlinpoet.ParameterTypeMapping.kt</ID>
-    <ID>TooManyFunctions:PropertyProxy.kt$PropertyProxy&lt;Value> : PropertyProxy</ID>
+    <ID>TooManyFunctions:PropertyProxy.kt$PropertyProxy&lt;Value&gt; : PropertyProxy</ID>
     <ID>TooManyFunctions:Shared.kt$tech.antibytes.kmock.processor.kotlinpoet.Shared.kt</ID>
-    <ID>TooManyFunctions:SyncFunProxy.kt$SyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue>> : SyncFunProxyFunProxy</ID>
+    <ID>TooManyFunctions:SyncFunProxy.kt$SyncFunProxy&lt;ReturnValue, SideEffect : Function&lt;ReturnValue&gt;&gt; : SyncFunProxyFunProxy</ID>
     <ID>TooManyFunctions:VerificationAndAssertion.kt$tech.antibytes.kmock.verification.VerificationAndAssertion.kt</ID>
     <ID>TooManyFunctions:VerificationChain.kt$VerificationChain : AssertionChainChainedAssertion</ID>
     <ID>UnnecessaryAbstractClass:BaseSourceAggregator.kt$BaseSourceAggregator$BaseSourceAggregator</ID>
+    <ID>UnnecessaryAbstractClass:PublishingBase.kt$PublishingBase$PublishingBase</ID>
     <ID>UnusedPrivateMember:AndroidSampleControllerAutoStubSpec.kt$AndroidSampleControllerAutoStubSpec$private val androidThing = AndroidThingMock()</ID>
     <ID>UnusedPrivateMember:KMockFactoryGenerator.kt$KMockFactoryGenerator$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockGenerator.kt$KMockGenerator$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockMultiInterfaceBinder.kt$KMockMultiInterfaceBinder$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockProcessor.kt$KMockProcessor$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:Relaxed.kt$id: String</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(androidAndroidTestRelease) dependsOn(androidAndroidTestDebug) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(androidAndroidTestRelease) }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(Dependency.jvm.test.junit) implementation(Dependency.android.test.junit) implementation(Dependency.android.test.composeJunit4) implementation(Dependency.android.test.espressoCore) implementation(Dependency.android.test.uiAutomator) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.android) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(Dependency.multiplatform.kotlin.android) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) implementation(Dependency.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTestDebug by getting { kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest") }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTestRelease by getting { kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest") }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(androidTestFixtures) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidTest") dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Main by getting { dependsOn(iosMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Test by getting { dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test") dependsOn(iosTest) }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jsMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.js) implementation(Dependency.js.nodejs) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { dependencies { implementation(Dependency.multiplatform.test.js) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { kotlin.srcDir("build/generated/ksp/js/jsTest") dependencies { implementation(Dependency.multiplatform.test.js) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependencies { implementation(Dependency.multiplatform.kotlin.jdk8) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependsOn(concurrentMain) dependencies { implementation(Dependency.multiplatform.kotlin.jdk8) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependsOn(concurrentTest) dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { kotlin.srcDir("build/generated/ksp/jvm/jvmTest") dependsOn(concurrentTest) dependencies { implementation(Dependency.multiplatform.test.jvm) implementation(Dependency.multiplatform.test.junit) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jsMain by getting { dependencies { implementation(antibytesCatalog.js.kotlin.stdlib) implementation(antibytesCatalog.js.kotlinx.nodeJs) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { dependencies { implementation(antibytesCatalog.js.test.kotlin.core) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { kotlin.srcDir("build/generated/ksp/js/jsTest") dependencies { implementation(antibytesCatalog.js.test.kotlin.core) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmMain by getting { dependsOn(concurrentMain) dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { kotlin.srcDir("build/generated/ksp/jvm/jvmTest") dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Main by getting { dependsOn(otherMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(otherTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test") dependsOn(otherTest) }</ID>
