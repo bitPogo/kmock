@@ -1,0 +1,21 @@
+name: Antibytes CI - Label Pull Request Labels
+
+on:
+  pull_request:
+    types: [ opened, synchronize, edited, reopened ]
+    branches:
+      - main
+      - feature/*
+      - release/*
+      - core/*
+      - plugin/*
+      - bugfix/*
+  workflow_dispatch:
+
+jobs:
+  add-pr-labels:
+    uses: bitpogo/workflows/.github/workflows/shared-labeler.yml@main
+    with:
+      labels-path: .github/labeler.yml
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}

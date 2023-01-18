@@ -1,0 +1,18 @@
+name: Antibytes CI - Pull-Request Formcheck
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+    branches:
+      - main
+      - feature/*
+      - release/*
+      - core/*
+      - plugin/*
+      - bugfix/*
+
+jobs:
+  pull-request-precheck:
+    uses: bitpogo/workflows/.github/workflows/shared-pull-request-form-check.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}

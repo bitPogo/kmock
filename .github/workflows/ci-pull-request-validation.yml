@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, edited, reopened]
     branches:
       - main
+      - feature/*
       - release/*
       - core/*
       - plugin/*
@@ -12,54 +13,68 @@ on:
   workflow_dispatch:
 
 jobs:
-  pull-request-validation:
-
-    runs-on: macos-latest
-
+  build:
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
     concurrency:
-      group: validation-${{ github.head_ref }}
+      group: build-linux-${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
 
-    env:
-      PACKAGE_REGISTRY_UPLOAD_USERNAME: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
-      PACKAGE_REGISTRY_UPLOAD_TOKEN: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
-      MAVEN_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
-      MAVEN_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+  coding-conventions:
+    needs: build
+    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@main
+    with:
+      cache-results: true
+      detekt: true
+      api-check: true
+    concurrency:
+      group: coding-conventions-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
+  check-android:
+    needs: build
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
+    with:
+      projects: "[':playground', ':integration-kmp', ':integration-android-application']"
+      api-level: "['31']"
+      arch: "['x86_64']"
+      coverage: true
+      cache-results: true
+    concurrency:
+      group: check-android-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true
 
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt' # See 'Supported distributions' for available options
-          java-version: '11'
+  coverage:
+    needs: [coding-conventions, check-android]
+    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@main
+    with:
+      verify-kmp: true
+      cache-results: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      sonar-token: ${{ secrets.SONAR_TOKEN }}
+    concurrency:
+      group: coverage-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true
 
-      - name: Cleanup
-        run: ./gradlew clean
+  check:
+    needs: build
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
+    with:
+      platforms: "['ios', 'linux-js']" #, 'mingw']"
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true
 
-      - name: Lint
-        run: ./gradlew spotlessCheck
-
-      - name: Static Analysis
-        run: ./gradlew detekt
-
-      - name: Build
-        run: ./gradlew build
-
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        if: failure()
-        with:
-          report_paths: '**/build/test-results/**/TEST-*.xml'
-
-      - name: Quality Gate
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --no-daemon --stacktrace multiplatformCoverageVerification androidCoverage jvmCoverage sonarqube --info
-
-      - name: Publish to Development Repository
-        run: ./gradlew publishDevelopment --stacktrace --no-parallel
+  publish:
+    needs: [ coverage, check ]
+    uses: bitpogo/workflows/.github/workflows/shared-publish-pull-request.yml@main
+    with:
+      uses-mips: false
+    secrets:
+      upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
+      upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
+      maven-key: ${{ secrets.MAVEN_GPG_KEY }}
+      maven-pass: ${{ secrets.MAVEN_GPG_PASS }}
+    concurrency:
+      group: publish-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true

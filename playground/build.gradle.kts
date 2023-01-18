@@ -101,7 +101,7 @@ kotlin {
             }
         }
 
-        // setupAndroidTest()
+        setupAndroidTest()
         val androidAndroidTestRelease by getting {
             kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
         }
