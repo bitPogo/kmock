@@ -20,19 +20,20 @@ plugins {
 }
 
 dependencies {
-    implementation(LocalDependency.kotlin.gradle)
-    implementation(LocalDependency.gradle.ksp)
-    implementation(Dependency.android.androidGradlePlugin)
+    implementation(antibytesCatalog.gradle.kotlin.kotlin)
+    implementation(antibytesCatalog.gradle.ksp.plugin)//.dependency)
+    implementation(antibytesCatalog.gradle.agp)
 
-    testImplementation(LocalDependency.antibytes.test.core)
-    testImplementation(LocalDependency.antibytes.test.fixture)
-    testImplementation(platform(Dependency.jvm.test.junit))
-    testImplementation(Dependency.jvm.test.jupiter)
-    testImplementation(Dependency.jvm.test.mockk.unit)
-    testImplementation(Dependency.jvm.test.kotlin)
-    testImplementation(Dependency.multiplatform.stately.isolate)
+    testImplementation(libs.testUtils.core)
+    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.jvm.test.junit.runtime)
+    testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
+    testImplementation(antibytesCatalog.jvm.test.mockk)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.core)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.junit5)
+    testImplementation(antibytesCatalog.jvm.stately.isolate)
 
-    testImplementation(LocalDependency.antibytes.test.gradle)
+    testImplementation(antibytesCatalog.gradle.test.antibytes.testUtils)
 }
 
 kotlin {

@@ -25,7 +25,7 @@ pluginManagement {
 }
 
 plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "15fbbaa"
+    id("tech.antibytes.gradle.dependency.settings") version "6b92a3b"
 }
 
 includeBuild("../../setup")
@@ -40,6 +40,9 @@ include(
 
 dependencyResolutionManagement {
     versionCatalogs {
+        create("libs") {
+            from(files("../../gradle/libs.versions.toml"))
+        }
         /*
         getByName("antibytesCatalog") {
             version("kotlin-kotlin-plugin", "1.7.20")

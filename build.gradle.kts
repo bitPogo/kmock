@@ -3,13 +3,14 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
-import tech.antibytes.gradle.kmock.config.publishing.KMockPublishingConfiguration
-import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
+import tech.antibytes.gradle.dependency.helper.GradleCompositeBuilds
 import tech.antibytes.gradle.dependency.helper.addCustomRepositories
 import tech.antibytes.gradle.dependency.helper.ensureKotlinVersion
+import tech.antibytes.gradle.kmock.config.publishing.KMockPublishingConfiguration
+import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
+import tech.antibytes.gradle.kmock.config.quality.StableApi
 import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
 import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
-import tech.antibytes.gradle.kmock.config.quality.StableApi
 
 plugins {
     id("tech.antibytes.gradle.setup")
@@ -49,4 +50,5 @@ allprojects {
     ensureKotlinVersion()
 }
 
+GradleCompositeBuilds.configure(project)
 evaluationDependsOnChildren()

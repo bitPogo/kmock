@@ -13,11 +13,6 @@ class SonarConfiguration(project: Project) {
     val configuration = QualityGateConfiguration(
         project = project,
         projectKey = "kmock",
-        exclude = setOf(
-            "playground",
-            "integration-kmp",
-            "integration-android-application",
-            "docs",
-        )
+        exclude = excludes,
     )
 }

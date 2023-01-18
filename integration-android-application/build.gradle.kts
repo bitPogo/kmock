@@ -4,19 +4,17 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import tech.antibytes.gradle.dependency.Version
 import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 
 plugins {
-    id("org.jetbrains.kotlin.android")
+    id(antibytesCatalog.plugins.kotlin.android.get().pluginId)
 
     alias(antibytesCatalog.plugins.gradle.antibytes.androidApplicationConfiguration)
     alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
 
     // Processor
-    alias(antibytesCatalog.plugins.gradle.ksp)
+    alias(antibytesCatalog.plugins.gradle.ksp.plugin)
 
     id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 
@@ -82,37 +80,37 @@ android {
 }
 
 dependencies {
-    implementation(Dependency.multiplatform.kotlin.jdk8)
+    implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8)
 
-    implementation(Dependency.android.ktx.core)
-    implementation(Dependency.android.ktx.viewmodel)
-    implementation(Dependency.android.ktx.viewmodelCoroutine)
-    implementation(Dependency.android.appCompact.core)
+    implementation(antibytesCatalog.android.ktx.core)
+    implementation(antibytesCatalog.android.ktx.viewmodel.core)
+    implementation(antibytesCatalog.android.ktx.viewmodel.compose)
 
-    implementation(Dependency.android.compose.ui)
-    implementation(Dependency.android.compose.material)
-    implementation(Dependency.android.compose.viewmodel)
-    implementation(Dependency.android.compose.foundation)
+    implementation(antibytesCatalog.android.appCompact.core)
 
-    testImplementation(LocalDependency.antibytes.test.android.core)
-    testImplementation(LocalDependency.antibytes.test.android.coroutine)
-    testImplementation(LocalDependency.antibytes.test.android.fixture)
+    implementation(antibytesCatalog.android.compose.ui.core)
+    implementation(antibytesCatalog.android.material.compose.core)
+    implementation(antibytesCatalog.android.compose.foundation.core)
+
+    testImplementation(libs.testUtils.core)
+    testImplementation(libs.testUtils.coroutine)
+    testImplementation(libs.kfixture)
     testImplementation(project(":kmock"))
-    testImplementation(Dependency.android.test.junit)
-    testImplementation(Dependency.android.test.junit4)
+    testImplementation(antibytesCatalog.android.test.junit.core)
+    testImplementation(antibytesCatalog.jvm.test.junit.junit4)
 
     // Debug
-    debugImplementation(Dependency.android.compose.uiTooling)
-    debugImplementation(Dependency.android.compose.uiManifest)
+    debugImplementation(antibytesCatalog.android.compose.ui.tooling.core)
+    debugImplementation(antibytesCatalog.android.test.compose.manifest)
 
-    androidTestImplementation(Dependency.android.test.junit)
-    androidTestImplementation(Dependency.android.test.junit4)
-    androidTestImplementation(Dependency.android.test.composeJunit4)
-    androidTestImplementation(Dependency.android.test.espressoCore)
-    androidTestImplementation(Dependency.android.test.uiAutomator)
+    androidTestImplementation(antibytesCatalog.android.test.junit.core)
+    androidTestImplementation(antibytesCatalog.jvm.test.junit.junit4)
+    androidTestImplementation(antibytesCatalog.android.test.compose.junit4)
+    androidTestImplementation(antibytesCatalog.android.test.espresso.core)
+    androidTestImplementation(antibytesCatalog.android.test.uiAutomator)
 
-    androidTestImplementation(LocalDependency.antibytes.test.android.core)
-    androidTestImplementation(LocalDependency.antibytes.test.android.fixture)
+    androidTestImplementation(libs.testUtils.core)
+    androidTestImplementation(libs.kfixture)
     androidTestImplementation(project(":kmock"))
 }
 

@@ -55,10 +55,9 @@ class AndroidSourceBinderSpec {
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns buildDirPath
 
-        invokeGradleAction(
-            { probe -> extensions.configure(ApplicationExtension::class.java, probe) },
-            androidExtension,
-        )
+        invokeGradleAction(androidExtension) { probe ->
+            extensions.configure(ApplicationExtension::class.java, probe)
+        }
 
         every { androidExtension.buildTypes } returns buildTypes
         every { androidExtension.sourceSets } returns sourceSets
@@ -121,10 +120,9 @@ class AndroidSourceBinderSpec {
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns buildDirPath
 
-        invokeGradleAction(
-            { probe -> extensions.configure(LibraryExtension::class.java, probe) },
-            androidExtension,
-        )
+        invokeGradleAction(androidExtension) { probe ->
+            extensions.configure(LibraryExtension::class.java, probe)
+        }
 
         every { androidExtension.buildTypes } returns buildTypes
         every { androidExtension.sourceSets } returns sourceSets

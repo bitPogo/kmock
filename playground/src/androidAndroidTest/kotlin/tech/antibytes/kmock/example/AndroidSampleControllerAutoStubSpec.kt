@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
@@ -45,7 +44,6 @@ import tech.antibytes.util.test.mustBe
     ExampleContract.DecoderFactory::class,
     AndroidThing::class,
 )
-@Ignore("Should not invoked on CI")
 class AndroidSampleControllerAutoStubSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()

@@ -6,10 +6,9 @@
 
 package tech.antibytes.gradle.kmock.config.quality
 
-import tech.antibytes.gradle.quality.api.StableApiConfiguration
-
-object StableApi {
-    val api = StableApiConfiguration(
-        excludeProjects = excludes,
-    )
-}
+val excludes = setOf(
+    "playground",
+    "integration-kmp",
+    "integration-android-application",
+    "docs",
+)

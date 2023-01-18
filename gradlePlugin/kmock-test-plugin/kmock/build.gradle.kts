@@ -52,31 +52,28 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                this.
-                implementation(Dependency.multiplatform.kotlin.common)
-                implementation(Dependency.multiplatform.atomicFu.common)
-                implementation(Dependency.multiplatform.stately.collections)
+                implementation(antibytesCatalog.common.kotlin.stdlib)
+                implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
+                implementation(antibytesCatalog.common.stately.collections)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.common)
-                implementation(Dependency.multiplatform.test.annotations)
-                implementation(Dependency.multiplatform.coroutines.common)
-
-                implementation(Dependency.multiplatform.stately.concurrency)
-                implementation(Dependency.multiplatform.stately.freeze)
-
-                implementation(LocalDependency.antibytes.test.core)
-                implementation(LocalDependency.antibytes.test.annotations)
-                implementation(LocalDependency.antibytes.test.coroutine)
-                implementation(LocalDependency.antibytes.test.fixture)
+                implementation(antibytesCatalog.common.test.kotlin.core)
+                implementation(libs.testUtils.core)
+                implementation(libs.testUtils.annotations)
+                implementation(libs.testUtils.coroutine)
+                implementation(libs.kfixture)
+                implementation(antibytesCatalog.common.test.kotlinx.coroutines)
+                implementation(antibytesCatalog.common.stately.collections)
+                implementation(antibytesCatalog.common.stately.concurrency)
+                implementation(antibytesCatalog.common.stately.freeze)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.android)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8)
             }
         }
 
@@ -99,33 +96,33 @@ kotlin {
         }
         val androidTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
-                implementation(Dependency.android.test.robolectric)
+                implementation(antibytesCatalog.android.test.junit.core)
+                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
+                implementation(antibytesCatalog.android.test.robolectric)
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.js)
-                implementation(Dependency.js.nodejs)
+                implementation(antibytesCatalog.js.kotlin.stdlib)
+                implementation(antibytesCatalog.js.kotlinx.nodeJs)
             }
         }
         val jsTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.js)
+                implementation(antibytesCatalog.js.test.kotlin.core)
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.jdk8)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
+                implementation(antibytesCatalog.jvm.test.kotlin.core)
+                implementation(antibytesCatalog.jvm.test.junit.junit4)
             }
         }
 

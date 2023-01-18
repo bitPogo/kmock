@@ -74,10 +74,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.extensions } returns extensions
         every { project.buildDir.absolutePath } returns path
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure<KotlinMultiplatformExtension>("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -124,10 +123,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -248,10 +246,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -390,10 +387,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -524,10 +520,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -788,10 +783,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
@@ -879,10 +873,9 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinMultiplatformExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
         every { sources.iterator() } returns sourceSets.listIterator()
