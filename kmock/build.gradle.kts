@@ -4,9 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask

@@ -14,7 +14,6 @@ import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
 
 plugins {
     id("tech.antibytes.gradle.setup")
-    id("tech.antibytes.gradle.kmock.dependency")
 
     alias(antibytesCatalog.plugins.gradle.antibytes.dependencyHelper)
     alias(antibytesCatalog.plugins.gradle.antibytes.publishing)

@@ -4,9 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.publishing.KMockGradleConfiguration
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask

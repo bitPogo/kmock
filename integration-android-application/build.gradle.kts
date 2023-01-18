@@ -4,7 +4,6 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Version
 import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 
 plugins {
@@ -57,7 +56,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Version.android.compose.compiler
+        kotlinCompilerExtensionVersion = antibytesCatalog.versions.android.compose.compiler.get()
     }
 
     packagingOptions {

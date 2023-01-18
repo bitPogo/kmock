@@ -3,17 +3,12 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
-import tech.antibytes.gradle.dependency.Version
-import tech.antibytes.gradle.kmock.config.publishing.KMockPublishingConfiguration
 import tech.antibytes.gradle.dependency.helper.addCustomRepositories
 import tech.antibytes.gradle.dependency.helper.ensureKotlinVersion
 import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
-import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
-import tech.antibytes.gradle.quality.api.StableApiConfiguration
 
 plugins {
     id("tech.antibytes.gradle.setup")
-    id("tech.antibytes.gradle.kmock.dependency")
 
     alias(antibytesCatalog.plugins.gradle.antibytes.dependencyHelper)
     alias(antibytesCatalog.plugins.gradle.antibytes.quality)

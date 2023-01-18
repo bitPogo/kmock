@@ -4,10 +4,8 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
 import tech.antibytes.gradle.kmock.config.publishing.KMockProcessorConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 
 plugins {
     kotlin("jvm")

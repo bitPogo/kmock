@@ -30,8 +30,6 @@ plugins {
 
 includeBuild("../../setup")
 
-includeBuild("kmock-test-dependency")
-
 include(
     ":kmock",
     ":kmock-processor",
