@@ -47,8 +47,10 @@ jobs:
     needs: [coding-conventions, check-android]
     uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@main
     with:
+      jvm: true
       verify-kmp: true
       cache-results: true
+      use-sonar: true
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       sonar-token: ${{ secrets.SONAR_TOKEN }}
