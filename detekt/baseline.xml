@@ -2,34 +2,9 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>ArrayPrimitive:AsyncFun.kt$AsyncFunMock$Array&lt;out Int&gt;</ID>
-    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:Common.kt$CommonMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:GenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:Overloaded.kt$OverloadedMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:Platform.kt$PlatformMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;in Int&gt;</ID>
-    <ID>ArrayPrimitive:Shared.kt$SharedMock$Array&lt;out Int&gt;</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$CommonGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$PlatformGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:SpiedGenericMock.kt$SharedGenericMultiMock$Array&lt;Int&gt;?</ID>
-    <ID>ArrayPrimitive:SuperTyped.kt$SuperTypedMock$Array&lt;Int&gt;</ID>
-    <ID>ArrayPrimitive:SyncFun.kt$SyncFunMock$Array&lt;out Int&gt;</ID>
-    <ID>ComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;?, relaxer: Relaxer?, ): TypeSpec</ID>
-    <ID>ComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String&gt;, ): Options</ID>
-    <ID>ComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
+    <ID>CyclomaticComplexMethod:KMockGenerator.kt$KMockGenerator$private fun buildMock( mockName: String, enableSpy: Boolean, parents: TemplateMultiSource?, template: KSClassDeclaration, generics: Map&lt;String, List&lt;KSTypeReference&gt;&gt;?, relaxer: Relaxer?, ): TypeSpec</ID>
+    <ID>CyclomaticComplexMethod:KMockOptionExtractor.kt$KMockOptionExtractor$override fun convertOptions( kspRawOptions: Map&lt;String, String&gt;, ): Options</ID>
+    <ID>CyclomaticComplexMethod:eq.kt$eq$override fun matches(actual: Any?): Boolean</ID>
     <ID>FunctionNaming:SampleComposable.kt$@Composable fun SampleComposable(viewModel: AppContract.SampleViewModel)</ID>
     <ID>FunctionNaming:SampleComposablePreview.kt$@Preview @Composable fun SampleComposablePreview()</ID>
     <ID>LargeClass:KMockProxyAccessMethodGenerator.kt$KMockProxyAccessMethodGenerator : ProxyAccessMethodGenerator</ID>
@@ -131,7 +106,7 @@
     <ID>TooManyFunctions:KMockFactoryWithGenerics.kt$KMockFactoryWithGenerics : MockFactoryWithGenerics</ID>
     <ID>TooManyFunctions:KMockFactoryWithoutGenerics.kt$KMockFactoryWithoutGenerics : MockFactoryWithoutGenerics</ID>
     <ID>TooManyFunctions:KMockGenerator.kt$KMockGenerator : MockGenerator</ID>
-    <ID>TooManyFunctions:KMockGenerics.kt$KMockGenerics$KMockGenerics</ID>
+    <ID>TooManyFunctions:KMockGenerics.kt$KMockGenerics : GenericResolver</ID>
     <ID>TooManyFunctions:KMockMultiSourceAggregator.kt$KMockMultiSourceAggregator : MultiSourceAggregatorBaseSourceAggregator</ID>
     <ID>TooManyFunctions:KMockNonIntrusiveInvocationGenerator.kt$KMockNonIntrusiveInvocationGenerator : NonIntrusiveInvocationGenerator</ID>
     <ID>TooManyFunctions:KMockProcessor.kt$KMockProcessor : SymbolProcessor</ID>
@@ -153,7 +128,6 @@
     <ID>UnusedPrivateMember:KMockMultiInterfaceBinder.kt$KMockMultiInterfaceBinder$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockProcessor.kt$KMockProcessor$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:Relaxed.kt$id: String</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(androidAndroidTestRelease) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidAndroidTestDebug by getting { kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest") }</ID>
@@ -161,8 +135,7 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(androidTestFixtures) }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidTest") dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidTest") dependencies { implementation(antibytesCatalog.jvm.test.junit.runtime) // somehow Gradle gets confused implementation(antibytesCatalog.jvm.test.junit.bom) // somehow Gradle gets confused implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Main by getting { dependsOn(iosMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Test by getting { dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { dependsOn(iosTest) }</ID>

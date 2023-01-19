@@ -20,6 +20,12 @@ plugins {
     id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
+atomicfu {
+    dependenciesVersion = antibytesCatalog.versions.kotlinx.atomicfu.core.get() // set to null to turn-off auto dependencies
+    transformJvm = false
+    transformJs = false
+}
+
 group = KMockConfiguration(project).group
 
 ksp {
