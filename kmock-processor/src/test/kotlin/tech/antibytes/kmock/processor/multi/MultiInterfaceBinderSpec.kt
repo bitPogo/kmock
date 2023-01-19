@@ -7,7 +7,7 @@
 package tech.antibytes.kmock.processor.multi
 
 import io.mockk.mockk
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import tech.antibytes.kmock.processor.ProcessorContract
 import tech.antibytes.util.test.fulfils
 

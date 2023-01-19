@@ -71,15 +71,19 @@
   color: 000080
 
 - name: kmock
-  description: KMock
+  description: KMock Runtime
   color: 000080
 
 -name: integration-kmp
   description: Integration Project for KMP
   color: 000080
 
--name: integration-singel-source
-  description: Integration Project for Singel Sources
+-name: integration-android-application
+  description: Integration Project for Single Sources
+  color: 000080
+
+- name: integration-plugin
+  description: Integration Test Plugin
   color: 000080
 
 - name: playground

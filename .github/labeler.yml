@@ -1,12 +1,8 @@
-build:
+ci:
   - .github/**/*
 
-scripts:
-  - buildSrc/src/main/kotlin/**/script/**/*.kts
-
 dependencies:
-  - buildSrc/**/*
-  - gradlePlugin/**/*
+  - setup/**/*
 
 documentation:
   - docs/**/*
@@ -14,6 +10,7 @@ documentation:
   - LICENSE
   - CHANGELOG.md
   - CODE-OF-CONDUCT.md
+  - CODE_OF_CONDUCT.md
   - CONTRIBUTION.md
   - SECURITY.md
 
@@ -30,8 +27,11 @@ kmock-processor:
 integration-kmp:
   - integration-kmp/**/*
 
-integration-singel-source:
+integration-android-application:
   - integration-android-application/**/*
 
 playground:
   - playground/**/*
+
+integration-plugin:
+  - gradlePlugin/kmock-test-plugin/**/*

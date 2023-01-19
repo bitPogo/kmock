@@ -4,55 +4,49 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockGradleConfiguration
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
+import tech.antibytes.gradle.kmock.config.publishing.KMockGradleConfiguration
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile as KotlinTaskCompile
 import tech.antibytes.gradle.configuration.runtime.AntiBytesMainConfigurationTask
-import tech.antibytes.gradle.kmock.config.KMockPublishingConfiguration
 import tech.antibytes.gradle.versioning.Versioning
 
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
 
-    id("tech.antibytes.gradle.publishing")
-
-    id("tech.antibytes.gradle.coverage")
-
-    // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
+    alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
+    alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
+    alias(antibytesCatalog.plugins.gradle.antibytes.dokkaConfiguration)
 }
 
-group = KMockGradleConfiguration.group
+val publishingConfiguration = KMockGradleConfiguration(project)
+group = publishingConfiguration.group
 
-antiBytesPublishing {
-    packageConfiguration = KMockGradleConfiguration.publishing.packageConfiguration
-    repositoryConfiguration = KMockGradleConfiguration.publishing.repositories
-    versioning = KMockGradleConfiguration.publishing.versioning
-    signingConfiguration = KMockGradleConfiguration.publishing.signing
+antibytesPublishing {
+    packaging.set(publishingConfiguration.publishing.packageConfiguration)
+    repositories.set(publishingConfiguration.publishing.repositories)
+    versioning.set(publishingConfiguration.publishing.versioning)
+    signing.set(publishingConfiguration.publishing.signing)
 }
 
 dependencies {
-    implementation(LocalDependency.kotlin.gradle)
-    implementation(LocalDependency.gradle.ksp)
-    implementation(Dependency.android.androidGradlePlugin)
+    implementation(antibytesCatalog.gradle.kotlin.kotlin)
+    implementation(antibytesCatalog.gradle.ksp.plugin)//.dependency)
+    implementation(antibytesCatalog.gradle.agp)
 
-    testImplementation(LocalDependency.antibytes.test.core)
-    testImplementation(LocalDependency.antibytes.test.fixture)
-    testImplementation(platform(Dependency.jvm.test.junit))
-    testImplementation(Dependency.jvm.test.jupiter)
-    testImplementation(Dependency.jvm.test.mockk.unit)
-    testImplementation(Dependency.jvm.test.kotlin)
-    testImplementation(Dependency.multiplatform.stately.isolate)
+    testImplementation(libs.testUtils.core)
+    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.jvm.test.junit.runtime)
+    testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
+    testImplementation(antibytesCatalog.jvm.test.mockk)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.core)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.junit5)
+    testImplementation(antibytesCatalog.jvm.stately.isolate)
 
-    testImplementation(LocalDependency.antibytes.test.gradle)
+    testImplementation(antibytesCatalog.gradle.test.antibytes.testUtils)
 }
 
 kotlin {
-    explicitApi()
-
     sourceSets.main {
         kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
     }
@@ -79,7 +73,7 @@ val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java)
         mapOf(
             "version" to Versioning.getInstance(
                 project = project,
-                configuration = KMockPublishingConfiguration().versioning
+                configuration = publishingConfiguration.publishing.versioning
             ).versionName()
         )
     )
@@ -88,21 +82,26 @@ val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java)
 }
 
 tasks.withType(KotlinCompile::class.java) {
-    this.dependsOn(generateConfig)
-    this.mustRunAfter(generateConfig)
+    dependsOn(generateConfig)
+    mustRunAfter(generateConfig)
 }
 
 gradlePlugin {
-    plugins.register(KMockGradleConfiguration.pluginId) {
-        id = KMockGradleConfiguration.pluginId
-        group = KMockGradleConfiguration.group
-        displayName = KMockGradleConfiguration.publishing.description
-        description = KMockGradleConfiguration.longDescription
+    plugins.register(publishingConfiguration.pluginId) {
+        id = publishingConfiguration.pluginId
+        group = publishingConfiguration.group
+        displayName = publishingConfiguration.publishing.description
+        description = publishingConfiguration.longDescription
         implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
-        version = KMockGradleConfiguration.version
+        version = publishingConfiguration.version
     }
 }
+
 configure<JavaPluginExtension> {
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

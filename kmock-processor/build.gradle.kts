@@ -4,30 +4,25 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockProcessorConfiguration
+import tech.antibytes.gradle.kmock.config.publishing.KMockProcessorConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
 
 plugins {
-    kotlin("jvm")
+    id(antibytesCatalog.plugins.kotlin.jvm.get().pluginId)
 
-    id("tech.antibytes.gradle.publishing")
-    id("tech.antibytes.gradle.coverage")
-
-    // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
+    alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
+    alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
 }
 
-group = KMockProcessorConfiguration.group
+val publishingConfiguration = KMockProcessorConfiguration(project)
+group = publishingConfiguration.group
 
-antiBytesPublishing {
-    packageConfiguration = KMockProcessorConfiguration.publishing.packageConfiguration
-    repositoryConfiguration = KMockProcessorConfiguration.publishing.repositories
-    versioning = KMockProcessorConfiguration.publishing.versioning
-    signingConfiguration = KMockProcessorConfiguration.publishing.signing
+antibytesPublishing {
+    packaging.set(publishingConfiguration.publishing.packageConfiguration)
+    repositories.set(publishingConfiguration.publishing.repositories)
+    versioning.set(publishingConfiguration.publishing.versioning)
+    signing.set(publishingConfiguration.publishing.signing)
 }
-
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
@@ -36,33 +31,30 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    implementation(LocalDependency.google.ksp)
-    implementation(LocalDependency.square.kotlinPoet.core) {
+    implementation(antibytesCatalog.gradle.ksp.runtime)
+    implementation(antibytesCatalog.jvm.square.kotlinPoet.core) {
         exclude(module = "kotlin-reflect")
     }
-    implementation(LocalDependency.square.kotlinPoet.ksp) {
+    implementation(antibytesCatalog.jvm.square.kotlinPoet.ksp) {
         exclude(module = "kotlin-reflect")
     }
     implementation(project(":kmock"))
 
-    testImplementation(LocalDependency.antibytes.test.core)
-    testImplementation(LocalDependency.antibytes.test.fixture)
-    testImplementation(Dependency.multiplatform.stately.collections)
-    testImplementation(platform(Dependency.jvm.test.junit))
-    testImplementation(Dependency.jvm.test.kotlin)
-    testImplementation(Dependency.jvm.test.jupiter)
-    testImplementation(Dependency.jvm.test.mockk.unit)
-    testImplementation(LocalDependency.compilerTest.core)
-    testImplementation(LocalDependency.compilerTest.ksp)
+    testImplementation(libs.testUtils.core)
+    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.jvm.test.junit.runtime)
+    testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
+    testImplementation(antibytesCatalog.jvm.test.mockk)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.core)
+    testImplementation(antibytesCatalog.jvm.test.kotlin.junit5)
+    testImplementation(antibytesCatalog.jvm.stately.collections)
+    testImplementation(antibytesCatalog.jvm.test.compiler.core)
+    testImplementation(antibytesCatalog.jvm.test.compiler.ksp)
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-}
-
-kotlin {
-    explicitApi()
 }
 
 tasks.test {

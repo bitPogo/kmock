@@ -2,3 +2,15 @@
 ## SDK Versions
 minSdk = "21"
 
+## Libs
+## [KFixture](https://github.com/bitPogo/kfixture)
+kfixture =  "0.4.0-SNAPSHOT"
+## [Test-Utils](https://github.com/bitPogo/test-utils-kmp)
+testUtils =  "f384302"
+
+
+[libraries]
+kfixture = { module = "tech.antibytes.kfixture:core", version.ref = "kfixture" }
+testUtils-core = { module = "tech.antibytes.test-utils-kmp:test-utils", version.ref = "testUtils" }
+testUtils-annotations = { module = "tech.antibytes.test-utils-kmp:test-utils-annotations-junit4", version.ref = "testUtils" }
+testUtils-coroutine = { module = "tech.antibytes.test-utils-kmp:test-utils-coroutine", version.ref = "testUtils" }

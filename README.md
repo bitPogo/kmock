@@ -4,7 +4,7 @@ A humble mocking library for Kotlin, KotlinJS and Kotlin Multiplatform using Kot
 [![Latest release](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-release-latest.svg)](https://github.com/bitPogo/kmock/releases)
 [![License](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-license.svg)](https://github.com/bitPogo/kmock/blob/main/LICENSE)
 [![Platforms](https://raw.githubusercontent.com/bitPogo/kmock/main/docs/src/assets/badge-platform-support.svg)](https://github.com/bitPogo/kmock/blob/main/docs/src/assets/badge-platform-support.svg)
-[![CI - Build Snapshot Version](https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg)](https://github.com/bitPogo/kmock/actions/workflows/ci-latest-version.yml/badge.svg)
+[![CI - Build Snapshot Version](https://github.com/bitPogo/kmock/actions/workflows/ci-snapshot.yml/badge.svg)](https://github.com/bitPogo/kmock/actions/workflows/ci-snapshot.yml/badge.svg)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kmock)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kmock)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=kmock&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=kmock)

@@ -56,10 +56,9 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -118,10 +117,9 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -209,10 +207,9 @@ class KmpTestTaskChainSpec {
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
         every { tasks.getByName(any()) } returnsMany listOf(androidTestTasks, androidKspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -337,10 +334,9 @@ class KmpTestTaskChainSpec {
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
         every { tasks.getByName(any()) } returnsMany listOf(androidTestTasks, androidKspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -454,10 +450,9 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)
@@ -530,10 +525,9 @@ class KmpTestTaskChainSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { tasks.findByName(any()) } returnsMany listOf(testTasks, kspTasks).flatten()
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpTestTaskChain.chainTasks(project, platforms)

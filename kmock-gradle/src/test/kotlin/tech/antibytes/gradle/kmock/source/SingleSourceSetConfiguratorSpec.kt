@@ -66,18 +66,18 @@ class SingleSourceSetConfiguratorSpec {
         every { project.plugins.hasPlugin("com.android.library") } returns false
         every { project.plugins.hasPlugin("com.android.application") } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinJvmProjectExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
 
         invokeGradleAction(
-            { probe -> sources.getByName("test", probe) },
             test,
             test,
-        )
+        ) { probe ->
+            sources.getByName("test", probe)
+        }
 
         every { test.kotlin.srcDir(any<String>()) } returns mockk()
 
@@ -107,18 +107,18 @@ class SingleSourceSetConfiguratorSpec {
         every { project.plugins.hasPlugin("com.android.library") } returns false
         every { project.plugins.hasPlugin("com.android.application") } returns false
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinJsProjectExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
 
         invokeGradleAction(
-            { probe -> sources.getByName("test", probe) },
             test,
             test,
-        )
+        ) { probe ->
+            sources.getByName("test", probe)
+        }
 
         every { test.kotlin.srcDir(any<String>()) } returns mockk()
 
@@ -152,18 +152,18 @@ class SingleSourceSetConfiguratorSpec {
 
         every { plugins.apply(any()) } returns mockk()
 
-        invokeGradleAction(
-            { probe -> extensions.configure<KotlinJsProjectExtension>("kotlin", probe) },
-            kotlin,
-        )
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
 
         every { kotlin.sourceSets } returns sources
 
         invokeGradleAction(
-            { probe -> sources.getByName("test", probe) },
             test,
             test,
-        )
+        ) { probe ->
+            sources.getByName("test", probe)
+        }
 
         every { test.kotlin.srcDir(any<String>()) } returns mockk()
 

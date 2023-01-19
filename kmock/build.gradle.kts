@@ -4,10 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockConfiguration
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
-import org.jetbrains.dokka.gradle.DokkaTask
+import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
@@ -16,43 +13,31 @@ import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
 import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
-import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
-import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
+import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
+import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
-
-    // Android
-    id("com.android.library")
-
-    id("tech.antibytes.gradle.configuration")
-    id("tech.antibytes.gradle.publishing")
-    id("tech.antibytes.gradle.coverage")
-
-    id("kotlinx-atomicfu")
-
-    id("org.jetbrains.dokka") version "1.7.10"
-
-    // Pin API
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.0"
+    alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
+    alias(antibytesCatalog.plugins.gradle.antibytes.androidLibraryConfiguration)
+    alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
+    alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
+    alias(antibytesCatalog.plugins.gradle.antibytes.dokkaConfiguration)
+    id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-group = KMockConfiguration.group
-val dokkaDir = buildDir.resolve("dokka")
+val publishingConfiguration = KMockConfiguration(project)
+group = publishingConfiguration.group
 
-antiBytesPublishing {
-    packageConfiguration = KMockConfiguration.publishing.packageConfiguration
-    repositoryConfiguration = KMockConfiguration.publishing.repositories
-    versioning = KMockConfiguration.publishing.versioning
-    documentation = DocumentationConfiguration(
-        tasks = setOf("dokkaHtml"),
-        outputDir = dokkaDir
-    )
-    signingConfiguration = KMockConfiguration.publishing.signing
+antibytesPublishing {
+    packaging.set(publishingConfiguration.publishing.packageConfiguration)
+    repositories.set(publishingConfiguration.publishing.repositories)
+    versioning.set(publishingConfiguration.publishing.versioning)
+    documentation.set(publishingConfiguration.publishing.documentation)
+    signing.set(publishingConfiguration.publishing.signing)
 }
 
-antiBytesCoverage {
+antibytesCoverage {
     val branchCoverage = JacocoVerificationRule(
         counter = JacocoCounter.BRANCH,
         measurement = JacocoMeasurement.COVERED_RATIO,
@@ -83,8 +68,8 @@ antiBytesCoverage {
         )
     )
 
-    configurations["jvm"] = jvmCoverage
-    configurations["android"] = androidCoverage
+    configurations.put("jvm", jvmCoverage)
+    configurations.put("android", androidCoverage)
 }
 
 android {
@@ -96,8 +81,6 @@ android {
 }
 
 kotlin {
-    explicitApi()
-
     android()
 
     js(IR) {
@@ -109,7 +92,7 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
-    ensureIosDeviceCompatibility()
+    ensureAppleDeviceCompatibility()
 
     linuxX64()
 
@@ -122,80 +105,61 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                this.
-                implementation(Dependency.multiplatform.kotlin.common)
-                implementation(Dependency.multiplatform.atomicFu.common)
-                implementation(Dependency.multiplatform.stately.collections)
+                implementation(antibytesCatalog.common.kotlin.stdlib)
+                implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
+                implementation(antibytesCatalog.common.stately.collections)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.common)
-                implementation(Dependency.multiplatform.test.annotations)
-                implementation(Dependency.multiplatform.coroutines.common)
-
-                implementation(Dependency.multiplatform.stately.concurrency)
-                implementation(Dependency.multiplatform.stately.freeze)
-
-                implementation(LocalDependency.antibytes.test.core)
-                implementation(LocalDependency.antibytes.test.annotations)
-                implementation(LocalDependency.antibytes.test.coroutine)
-                implementation(LocalDependency.antibytes.test.fixture)
+                implementation(antibytesCatalog.common.test.kotlin.core)
+                implementation(libs.testUtils.core)
+                implementation(libs.testUtils.annotations)
+                implementation(libs.testUtils.coroutine)
+                implementation(libs.kfixture)
+                implementation(antibytesCatalog.common.test.kotlinx.coroutines)
+                implementation(antibytesCatalog.common.stately.collections)
+                implementation(antibytesCatalog.common.stately.concurrency)
+                implementation(antibytesCatalog.common.stately.freeze)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.android)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8)
             }
         }
 
-        if (!isIdea()) {
-            val androidAndroidTestRelease by getting
-            val androidAndroidTest by getting {
-                dependsOn(androidAndroidTestRelease)
-            }
-            val androidTestFixturesDebug by getting
-            val androidTestFixturesRelease by getting
-
-            val androidTestFixtures by getting {
-                dependsOn(androidTestFixturesDebug)
-                dependsOn(androidTestFixturesRelease)
-            }
-
-            val androidTest by getting {
-                dependsOn(androidTestFixtures)
-            }
-        }
+        setupAndroidTest()
         val androidTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
-                implementation(Dependency.android.test.robolectric)
+                implementation(antibytesCatalog.android.test.junit.core)
+                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
+                implementation(antibytesCatalog.android.test.robolectric)
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.js)
-                implementation(Dependency.js.nodejs)
+                implementation(antibytesCatalog.js.kotlin.stdlib)
+                implementation(antibytesCatalog.js.kotlinx.nodeJs)
             }
         }
         val jsTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.js)
+                implementation(antibytesCatalog.js.test.kotlin.core)
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.jdk8)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
+                implementation(antibytesCatalog.jvm.test.kotlin.core)
+                implementation(antibytesCatalog.jvm.test.junit.junit4)
             }
         }
 
@@ -257,24 +221,4 @@ tasks.withType<Detekt>().configureEach {
 }
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = JavaVersion.VERSION_1_8.toString()
-}
-
-
-tasks.withType<DokkaTask>(DokkaTask::class.java).configureEach {
-    outputDirectory.set(dokkaDir)
-
-    moduleName.set("KMock")
-    offlineMode.set(false)
-    suppressObviousFunctions.set(true)
-
-    dokkaSourceSets {
-        configureEach {
-            reportUndocumented.set(true)
-            skipEmptyPackages.set(true)
-            jdkVersion.set(8)
-            noStdlibLink.set(false)
-            noJdkLink.set(false)
-            noAndroidSdkLink.set(false)
-        }
-    }
 }

@@ -49,10 +49,9 @@ class KmpCleanupSpec {
         every { tasks.findByName(any()) } returns null
         every { plugins.hasPlugin(any<String>()) } returns false
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         // When
         KmpCleanup.cleanup(project, platforms)
@@ -86,16 +85,16 @@ class KmpCleanupSpec {
         every { project.buildDir.absolutePath } returns path
         every { project.file(any()) } returns kspDir
 
-        invokeGradleAction(
-            { probe -> project.afterEvaluate(probe) },
-            project,
-        )
+        invokeGradleAction(project) { probe ->
+            project.afterEvaluate(probe)
+        }
 
         invokeGradleAction(
-            { probe -> kspTask.doLast(probe) },
             kspTask,
             kspTask,
-        )
+        ) { probe ->
+            kspTask.doLast(probe)
+        }
 
         interfaceFile.exists() mustBe true
 

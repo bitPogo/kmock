@@ -4,33 +4,19 @@
  * Use of this source code is governed by Apache v2.0
  */
 
-import tech.antibytes.gradle.dependency.Dependency
-import tech.antibytes.gradle.kmock.config.KMockConfiguration
-import tech.antibytes.gradle.kmock.dependency.Dependency as LocalDependency
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import tech.antibytes.gradle.coverage.api.JvmJacocoConfiguration
-import tech.antibytes.gradle.coverage.api.AndroidJacocoConfiguration
-import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
-import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
-import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
-import tech.antibytes.gradle.publishing.api.DocumentationConfiguration
-import tech.antibytes.gradle.configuration.ensureIosDeviceCompatibility
+import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
+import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
-
-    // Android
-    id("com.android.library")
-
-    id("tech.antibytes.gradle.configuration")
-
-    id("kotlinx-atomicfu")
+    alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
+    alias(antibytesCatalog.plugins.gradle.antibytes.androidLibraryConfiguration)
+    id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-group = KMockConfiguration.group
+group = KMockConfiguration(project).group
 
 android {
     namespace = "tech.antibytes.kmock"
@@ -52,7 +38,7 @@ kotlin {
 
     ios()
     iosSimulatorArm64()
-    ensureIosDeviceCompatibility()
+    ensureAppleDeviceCompatibility()
 
     linuxX64()
 
@@ -65,80 +51,61 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                this.
-                implementation(Dependency.multiplatform.kotlin.common)
-                implementation(Dependency.multiplatform.atomicFu.common)
-                implementation(Dependency.multiplatform.stately.collections)
+                implementation(antibytesCatalog.common.kotlin.stdlib)
+                implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
+                implementation(antibytesCatalog.common.stately.collections)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.common)
-                implementation(Dependency.multiplatform.test.annotations)
-                implementation(Dependency.multiplatform.coroutines.common)
-
-                implementation(Dependency.multiplatform.stately.concurrency)
-                implementation(Dependency.multiplatform.stately.freeze)
-
-                implementation(LocalDependency.antibytes.test.core)
-                implementation(LocalDependency.antibytes.test.annotations)
-                implementation(LocalDependency.antibytes.test.coroutine)
-                implementation(LocalDependency.antibytes.test.fixture)
+                implementation(antibytesCatalog.common.test.kotlin.core)
+                implementation(libs.testUtils.core)
+                implementation(libs.testUtils.annotations)
+                implementation(libs.testUtils.coroutine)
+                implementation(libs.kfixture)
+                implementation(antibytesCatalog.common.test.kotlinx.coroutines)
+                implementation(antibytesCatalog.common.stately.collections)
+                implementation(antibytesCatalog.common.stately.concurrency)
+                implementation(antibytesCatalog.common.stately.freeze)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.android)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8)
             }
         }
 
-        if (!isIdea()) {
-            val androidAndroidTestRelease by getting
-            val androidAndroidTest by getting {
-                dependsOn(androidAndroidTestRelease)
-            }
-            val androidTestFixturesDebug by getting
-            val androidTestFixturesRelease by getting
-
-            val androidTestFixtures by getting {
-                dependsOn(androidTestFixturesDebug)
-                dependsOn(androidTestFixturesRelease)
-            }
-
-            val androidTest by getting {
-                dependsOn(androidTestFixtures)
-            }
-        }
+        setupAndroidTest()
         val androidTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
-                implementation(Dependency.android.test.robolectric)
+                implementation(antibytesCatalog.android.test.junit.core)
+                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
+                implementation(antibytesCatalog.android.test.robolectric)
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.js)
-                implementation(Dependency.js.nodejs)
+                implementation(antibytesCatalog.js.kotlin.stdlib)
+                implementation(antibytesCatalog.js.kotlinx.nodeJs)
             }
         }
         val jsTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.js)
+                implementation(antibytesCatalog.js.test.kotlin.core)
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.kotlin.jdk8)
+                implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation(Dependency.multiplatform.test.jvm)
-                implementation(Dependency.multiplatform.test.junit)
+                implementation(antibytesCatalog.jvm.test.kotlin.core)
+                implementation(antibytesCatalog.jvm.test.junit.junit4)
             }
         }
 
@@ -193,11 +160,4 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-}
-
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = JavaVersion.VERSION_1_8.toString()
-}
-tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = JavaVersion.VERSION_1_8.toString()
 }

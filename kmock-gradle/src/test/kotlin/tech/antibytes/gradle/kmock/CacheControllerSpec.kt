@@ -130,10 +130,9 @@ class CacheControllerSpec {
         every { project.tasks } returns tasks
         every { tasks.matching(capture(matcher)) } returns kspCollection
 
-        invokeGradleAction(
-            { probe -> kspCollection.configureEach(probe) },
-            kspTask,
-        )
+        invokeGradleAction(kspTask) { probe ->
+            kspCollection.configureEach(probe)
+        }
 
         every { kspTask.outputs } returns taskOutputs
         every { taskOutputs.cacheIf(capture(cacheable)) } just Runs
