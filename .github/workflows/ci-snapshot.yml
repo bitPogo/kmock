@@ -61,7 +61,7 @@ jobs:
     needs: build
     uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
     with:
-      platforms: "['ios', 'linux-js']" #, 'mingw']"
+      platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-js', 'mingw']"
     concurrency:
       group: check
       cancel-in-progress: true

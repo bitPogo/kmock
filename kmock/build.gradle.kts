@@ -15,6 +15,7 @@ import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
+import tech.antibytes.gradle.configuration.sourcesets.appleWithLegacy
 import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
 
 plugins {
@@ -96,11 +97,11 @@ kotlin {
 
     jvm()
 
-    ios()
-    iosSimulatorArm64()
+    appleWithLegacy()
     ensureAppleDeviceCompatibility()
 
     linuxX64()
+    mingwX64()
 
     sourceSets {
         all {
@@ -177,41 +178,25 @@ kotlin {
             dependsOn(commonTest)
         }
 
-        val darwinMain by creating {
+        val appleMain by getting {
             dependsOn(nativeMain)
         }
-        val darwinTest by creating {
-            dependsOn(nativeTest)
-        }
-
-        val otherMain by creating {
-            dependsOn(nativeMain)
-        }
-
-        val otherTest by creating {
+        val appleTest by getting {
             dependsOn(nativeTest)
         }
 
         val linuxX64Main by getting {
-            dependsOn(otherMain)
+            dependsOn(nativeMain)
         }
-
         val linuxX64Test by getting {
-            dependsOn(otherTest)
+            dependsOn(nativeTest)
         }
 
-        val iosMain by getting {
-            dependsOn(darwinMain)
+        val mingwX64Main by getting {
+            dependsOn(nativeMain)
         }
-        val iosTest by getting {
-            dependsOn(darwinTest)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
+        val mingwX64Test by getting {
+            dependsOn(nativeTest)
         }
     }
 }

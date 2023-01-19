@@ -21,7 +21,7 @@ plugins {
 }
 
 atomicfu {
-    dependenciesVersion = antibytesCatalog.versions.kotlinx.atomicfu.core.get() // set to null to turn-off auto dependencies
+    dependenciesVersion = antibytesCatalog.versions.kotlinx.atomicfu.core.get()
     transformJvm = false
     transformJs = false
 }
