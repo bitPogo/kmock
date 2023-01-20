@@ -16,14 +16,14 @@ jobs:
   build:
     uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
     concurrency:
-      group: build-linux-${{ github.workflow }}-${{ github.head_ref }}
+      group: build-macos-${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
 
   coding-conventions:
     needs: build
     uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@main
     with:
-      cache-results: true
+      cache-reports: true
       detekt: true
       api-check: true
     concurrency:
@@ -38,7 +38,7 @@ jobs:
       api-level: "['31']"
       arch: "['x86_64']"
       coverage: true
-      cache-results: true
+      cache-reports: true
     concurrency:
       group: check-android-${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
@@ -49,7 +49,7 @@ jobs:
     with:
       jvm: true
       verify-kmp: true
-      cache-results: true
+      restore-cached-reports: true
       use-sonar: true
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
