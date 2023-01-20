@@ -30,7 +30,7 @@ jobs:
       uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
       with:
         cleanup: false
-        platforms: "['ios', 'linux-all']" #, 'mingw']"
+        platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-all', 'mingw']"
       concurrency:
         group: check
         cancel-in-progress: true

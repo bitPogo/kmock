@@ -5,7 +5,7 @@
 - stabilize agnostic annotations
 - improve support for Android ✅
 - prototype class mocking for JVM based sources sets
-- support more platforms
+- support more platforms ✅
 
 ## 0.2.0
 - stabilize of the mock generation in respect of base use-cases ✅️

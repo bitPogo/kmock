@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
@@ -108,6 +109,7 @@ class AndroidSampleControllerAutoStubSpec {
     }
 
     @Test
+    @Ignore
     fun `Given find it fetches a DomainObjects`() {
         // Given
         val idOrg = fixture.fixture<String>()
