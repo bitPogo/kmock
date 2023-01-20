@@ -7,13 +7,13 @@ The badges are generate with [Shields.io](https://shields.io/) to generate our B
 - Latest release
 
 ```bash
-curl "https://img.shields.io/badge/Release-0.3.0--rc04-blueviolet.svg?style=flat"  -s -o badge-release-latest.svg
+curl "https://img.shields.io/badge/Release-0.3.0--rc05-blueviolet.svg?style=flat"  -s -o badge-release-latest.svg
 ```
 
 - Platforms
 
 ```bash
-curl "https://img.shields.io/badge/Platform-Android%20•%20JVM%20•%20Js%20•%20iOS%20•%20LinuxX64%20-blue.svg"  -s -o badge-release-latest.svg
+curl "https://img.shields.io/badge/Platform-Android%20|%20JVM%20|%20Js%20|%20iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20LinuxX64%20|%20MingwX64%20-blue.svg"  -s -o badge-platform-support.svg
 ```
 
 - License
