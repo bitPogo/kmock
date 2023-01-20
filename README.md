@@ -24,8 +24,8 @@ So if the project caught your eye check out the [Playground](https://github.com/
 
 KMock has the following dependencies:
 
-* [AndroidGradlePlugin (AGP) 7.3.0](https://developer.android.com/studio/releases/gradle-plugin)
-* [Kotlin 1.7.10](https://kotlinlang.org/docs/releases.html)
+* [AndroidGradlePlugin (AGP) 7.3.1](https://developer.android.com/studio/releases/gradle-plugin)
+* [Kotlin 1.7.20](https://kotlinlang.org/docs/releases.html)
 * [AtomicFu 0.18.3](https://github.com/Kotlin/kotlinx.atomicfu)
 * [Touchlab's Stately 1.2.3](https://github.com/touchlab/Stately)
 * [Square KotlinPoet 1.12.0](https://square.github.io/kotlinpoet/)
@@ -58,6 +58,6 @@ Please take a look [here](https://github.com/bitPogo/kmock/tree/main/docs/src/de
 
 ## Copyright and License
 
-Copyright (c) 2022 Matthias Geisler / All rights reserved.
+Copyright (c) 2023 Matthias Geisler / All rights reserved.
 
 Please refer to the [License](https://github.com/bitPogo/kmock/blob/main/LICENSE) for further details.

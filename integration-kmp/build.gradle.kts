@@ -24,6 +24,12 @@ plugins {
 
 group = KMockConfiguration(project).group
 
+atomicfu {
+    dependenciesVersion = antibytesCatalog.versions.kotlinx.atomicfu.core.get()
+    transformJvm = false
+    transformJs = false
+}
+
 kotlin {
     android {
         publishAllLibraryVariants()

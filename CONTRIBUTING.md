@@ -28,9 +28,9 @@ Also please check out first if an issue had been already opened with your reques
 
 #### Prerequisites
 
-* [Android Studio 2021.3.1 or later](https://developer.android.com/studio#downloads)
+* [Android Studio 2022.1.1 or later](https://developer.android.com/studio#downloads)
 * [Java 11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot)
-* [Kotlin 1.7.10](https://kotlinlang.org/)
+* [Kotlin 1.7.20](https://kotlinlang.org/)
 * [Gradle 7.5.1](https://gradle.org/install/)
 
 #### Features

@@ -26,6 +26,12 @@ android {
     }
 }
 
+atomicfu {
+    dependenciesVersion = antibytesCatalog.versions.kotlinx.atomicfu.core.get()
+    transformJvm = false
+    transformJs = false
+}
+
 kotlin {
     android()
 

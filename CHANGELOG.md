@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+* Kotlin 1.7.10 -> 1.7.20
+* AtomicFu 0.18.3 -> 0.18.5
+* KSP 1.7.10-1.0.6 -> 1.7.20-1.0.6
+* Android Gradle Plugin 7.3.0 -> 7.3.1
 
 ## [0.3.0-rc04](https://github.com/bitPogo/kmock/compare/v0.3.0-rc03...v0.3.0-rc04)
 
@@ -32,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * AtomicFu 0.18.2 -> 0.18.3
 * Android Target SDK 32 -> 33
 * KSP 1.7.0-1.0.6 -> 1.7.10-1.0.6
+* Android Gradle Plugin 7.2.1 -> 7.3.0
 
 ## [0.3.0-rc03](https://github.com/bitPogo/kmock/compare/v0.3.0-rc02...v0.3.0-rc03)
 

@@ -74,11 +74,11 @@
   description: KMock Runtime
   color: 000080
 
--name: integration-kmp
+- name: integration-kmp
   description: Integration Project for KMP
   color: 000080
 
--name: integration-android-application
+- name: integration-android-application
   description: Integration Project for Single Sources
   color: 000080
 
