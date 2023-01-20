@@ -6,48 +6,56 @@ on:
       - 'v*'
 
 jobs:
-  publish-release:
+  build:
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
+    concurrency:
+      group: build-macos
+      cancel-in-progress: true
 
-    runs-on: macos-latest
+    check-android:
+      needs: build
+      uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
+      with:
+        projects: "[':playground', ':integration-kmp', ':integration-android-application']"
+        api-level: "['31']"
+        arch: "['x86_64']"
+        coverage: false
+        cache-reports: false
+      concurrency:
+        group: check-android-${{ github.workflow }}-${{ github.head_ref }}
+        cancel-in-progress: true
 
-    env:
-      PACKAGE_REGISTRY_UPLOAD_USERNAME: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
-      PACKAGE_REGISTRY_UPLOAD_TOKEN: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
-      MAVEN_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
-      MAVEN_KEY: ${{ secrets.MAVEN_GPG_KEY }}
-      OSSR_USERNAME: ${{ secrets.OSSR_USERNAME }}
-      OSSR_PASSWORD: ${{ secrets.OSSR_PASSWORD }}
+    check:
+      needs: build
+      uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
+      with:
+        cleanup: false
+        platforms: "['ios', 'linux-all']" #, 'mingw']"
+      concurrency:
+        group: check
+        cancel-in-progress: true
 
-    steps:
-      - name: Display runner context
-        run: hostname -s
+    docs:
+      needs: [ coverage, check, check-android ]
+      uses: bitpogo/workflows/.github/workflows/shared-mkdocs-release.yml@main
+      secrets:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+      concurrency:
+        group: docs
+        cancel-in-progress: true
 
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt' # See 'Supported distributions' for available options
-          java-version: '11'
-
-      - name: Cleanup
-        run: ./gradlew clean
-
-      - name: Build
-        run: ./gradlew build
-
-      - name: Prepare Python
-        run: python3 -m pip install virtualenv --user
-
-      - name: Publish documentation
-        env:
-          GRGIT_USER: ${{ github.actor }}
-          GRGIT_PASS: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew --no-daemon --stacktrace mkdocsPublish -Prelease
-
-      - name: Publish to Maven Central
-        run: ./gradlew publishMavenCentral --stacktrace --no-parallel
-
-      - name: Publish to Release Repository
-        run: ./gradlew publishRelease --stacktrace --no-parallel
+    publish:
+      needs: [ coverage, check, check-android ]
+      uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@main
+      with:
+        uses-mips: false
+      secrets:
+        upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
+        upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
+        maven-key: ${{ secrets.MAVEN_GPG_KEY }}
+        maven-pass: ${{ secrets.MAVEN_GPG_PASS }}
+        ossr-username: ${{ secrets.OSSR_USERNAME }}
+        ossr-password: ${{ secrets.OSSR_PASSWORD }}
+      concurrency:
+        group: publish
+        cancel-in-progress: true
