@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/changelog/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/changelog/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/concept/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/concept/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/license/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/license/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/migration/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/migration/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/quickstart/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/quickstart/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/roadmap/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/roadmap/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/security/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/security/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/development/badges/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/development/badges/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/development/code-of-conduct/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/development/code-of-conduct/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/development/contributing/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/development/contributing/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/development/releasing/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/development/releasing/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/advanced/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/advanced/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/annotations/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/annotations/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/assertion/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/assertion/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/install/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/install/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/proxy/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/proxy/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/setup/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/setup/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://bitpogo.github.io/kmock/0.3.0-rc04/howto/terminology/</loc>
-         <lastmod>2022-09-21</lastmod>
+         <loc>https://bitpogo.github.io/kmock/unspecified/howto/terminology/</loc>
+         <lastmod>2023-01-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
