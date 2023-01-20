@@ -17,7 +17,7 @@ class KMockGradleConfiguration(project: Project) : PublishingBase() {
         |It can work non intrusive, if relaxed or while acting as Spy and supports as well stubbing.
         |This plugin apply some necessary configuration and takes care of the communication with the processor.
     """.trimMargin()
-    val version = "0.3.0-rc04"
+    val version = "0.3.0-rc05"
 
     val publishing = Publishing(project)
 
