@@ -12,50 +12,50 @@ jobs:
       group: build-macos
       cancel-in-progress: true
 
-    check-android:
-      needs: build
-      uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
-      with:
-        projects: "[':playground', ':integration-kmp', ':integration-android-application']"
-        api-level: "['31']"
-        arch: "['x86_64']"
-        coverage: false
-        cache-reports: false
-      concurrency:
-        group: check-android-${{ github.workflow }}-${{ github.head_ref }}
-        cancel-in-progress: true
+  check-android:
+    needs: build
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
+    with:
+      projects: "[':playground', ':integration-kmp', ':integration-android-application']"
+      api-level: "['31']"
+      arch: "['x86_64']"
+      coverage: false
+      cache-reports: false
+    concurrency:
+      group: check-android-${{ github.workflow }}-${{ github.head_ref }}
+      cancel-in-progress: true
 
-    check:
-      needs: build
-      uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
-      with:
-        cleanup: false
-        platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-all', 'mingw']"
-      concurrency:
-        group: check
-        cancel-in-progress: true
+  check:
+    needs: build
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
+    with:
+      cleanup: false
+      platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-all', 'mingw']"
+    concurrency:
+      group: check
+      cancel-in-progress: true
 
-    docs:
-      needs: [ coverage, check, check-android ]
-      uses: bitpogo/workflows/.github/workflows/shared-mkdocs-release.yml@main
-      secrets:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-      concurrency:
-        group: docs
-        cancel-in-progress: true
+  docs:
+    needs: [ check, check-android ]
+    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-release.yml@main
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    concurrency:
+      group: docs
+      cancel-in-progress: true
 
-    publish:
-      needs: [ coverage, check, check-android ]
-      uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@main
-      with:
-        uses-mips: false
-      secrets:
-        upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
-        upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
-        maven-key: ${{ secrets.MAVEN_GPG_KEY }}
-        maven-pass: ${{ secrets.MAVEN_GPG_PASS }}
-        ossr-username: ${{ secrets.OSSR_USERNAME }}
-        ossr-password: ${{ secrets.OSSR_PASSWORD }}
-      concurrency:
-        group: publish
-        cancel-in-progress: true
+  publish:
+    needs: [ check, check-android ]
+    uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@main
+    with:
+      uses-mips: false
+    secrets:
+      upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
+      upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
+      maven-key: ${{ secrets.MAVEN_GPG_KEY }}
+      maven-pass: ${{ secrets.MAVEN_GPG_PASS }}
+      ossr-username: ${{ secrets.OSSR_USERNAME }}
+      ossr-password: ${{ secrets.OSSR_PASSWORD }}
+    concurrency:
+      group: publish
+      cancel-in-progress: true
