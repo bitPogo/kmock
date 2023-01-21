@@ -111,7 +111,7 @@ internal class KMockCodeGenerator(
     override fun createNewFileByPath(
         dependencies: Dependencies,
         path: String,
-        extensionName: String
+        extensionName: String,
     ): OutputStream {
         TODO("Not yet implemented")
     }
@@ -133,7 +133,7 @@ internal class KMockCodeGenerator(
     override fun associateByPath(
         sources: List<KSFile>,
         path: String,
-        extensionName: String
+        extensionName: String,
     ) = TODO("Not yet implemented")
 
     private companion object {

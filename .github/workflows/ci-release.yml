@@ -16,7 +16,8 @@ jobs:
     needs: build
     uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
     with:
-      projects: "[':playground', ':integration-kmp', ':integration-android-application']"
+      # projects: "[':playground', ':integration-kmp', ':integration-android-application']"
+      projects: "[':playground', ':integration-kmp']"
       api-level: "['31']"
       arch: "['x86_64']"
       coverage: false

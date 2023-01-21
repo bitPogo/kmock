@@ -9,6 +9,6 @@ package tech.antibytes.gradle.kmock.config.quality
 val excludes = setOf(
     "playground",
     "integration-kmp",
-    "integration-android-application",
+    // "integration-android-application", ignored until 1.8
     "docs",
 )

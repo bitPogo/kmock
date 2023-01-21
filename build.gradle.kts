@@ -45,8 +45,7 @@ allprojects {
         jcenter()
         addCustomRepositories(kmockRepositories)
     }
-
-    ensureKotlinVersion()
+    ensureKotlinVersion(antibytesCatalog.versions.kotlin.language.get())
 }
 
 GradleCompositeBuilds.configure(project)
