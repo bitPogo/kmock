@@ -38,6 +38,11 @@ dependencies {
     implementation(antibytesCatalog.gradle.agp)
     implementation(antibytesCatalog.gradle.kotlinx.atomicfu)
     api(antibytesCatalog.gradle.antibytes.runtimeConfig)
+    implementation(antibytesCatalog.gradle.kotlin.kotlin) {
+        version {
+            require("1.7.21")
+        }
+    }
 }
 
 gradlePlugin {

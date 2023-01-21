@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Bumped
 
+* Kotlin 1.7.20 -> 1.7.21
+* KSP 1.7.20-1.0.6 -> 1.7.21-1.0.8
+
 ## [v0.3.0-rc05](https://github.com/bitPogo/kmock/compare/v0.3.0-rc04...v0.3.0-rc05)
 
 ### Added

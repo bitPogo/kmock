@@ -164,6 +164,17 @@ class KMockCodeGeneratorSpec {
     }
 
     @Test
+    fun `createNewFileByPath is not implemented`() {
+        assertFailsWith<NotImplementedError> {
+            KMockCodeGenerator(fixture.fixture(), mockk()).createNewFileByPath(
+                mockk(),
+                fixture.fixture(),
+                fixture.fixture(),
+            )
+        }
+    }
+
+    @Test
     fun `associate is not implemented`() {
         assertFailsWith<NotImplementedError> {
             KMockCodeGenerator(fixture.fixture(), mockk()).associate(
@@ -178,6 +189,17 @@ class KMockCodeGeneratorSpec {
     fun `associateWithClasses is not implemented`() {
         assertFailsWith<NotImplementedError> {
             KMockCodeGenerator(fixture.fixture(), mockk()).associateWithClasses(
+                listOf(),
+                fixture.fixture(),
+                fixture.fixture(),
+            )
+        }
+    }
+
+    @Test
+    fun `associateByPath is not implemented`() {
+        assertFailsWith<NotImplementedError> {
+            KMockCodeGenerator(fixture.fixture(), mockk()).associateByPath(
                 listOf(),
                 fixture.fixture(),
                 fixture.fixture(),
