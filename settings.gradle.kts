@@ -26,12 +26,21 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        getByName("antibytesCatalog") {
+            version("gradle-ksp-plugin-dependency", "1.7.20-1.0.8")
+            version("gradle-ksp-runtime", "1.7.20-1.0.8")
+            version("gradle-ksp-plugin-plugin", "1.7.20-1.0.8")
+        }
+    }
+}
+
 plugins {
     id("tech.antibytes.gradle.dependency.settings") version "022f831"
 }
 
 includeBuild("setup")
-
 includeBuild("gradlePlugin/kmock-test-plugin")
 
 include(

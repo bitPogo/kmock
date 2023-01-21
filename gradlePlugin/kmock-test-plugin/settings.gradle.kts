@@ -41,6 +41,11 @@ dependencyResolutionManagement {
         create("libs") {
             from(files("../../gradle/libs.versions.toml"))
         }
+        getByName("antibytesCatalog") {
+            version("gradle-ksp-plugin-dependency", "1.7.20-1.0.8")
+            version("gradle-ksp-runtime", "1.7.20-1.0.8")
+            version("gradle-ksp-plugin-plugin", "1.7.20-1.0.8")
+        }
     }
 }
 
