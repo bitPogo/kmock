@@ -14,7 +14,7 @@ on:
 
 jobs:
   add-pr-labels:
-    uses: bitpogo/workflows/.github/workflows/shared-labeler.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-labeler.yml@v1.0.0
     with:
       labels-path: .github/labeler.yml
     secrets:

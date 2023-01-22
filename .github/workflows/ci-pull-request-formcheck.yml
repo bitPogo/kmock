@@ -13,6 +13,6 @@ on:
 
 jobs:
   pull-request-precheck:
-    uses: bitpogo/workflows/.github/workflows/shared-pull-request-form-check.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-pull-request-form-check.yml@v1.0.0
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
