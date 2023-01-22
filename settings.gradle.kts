@@ -5,6 +5,8 @@
  */
 import tech.antibytes.gradle.dependency.settings.localGithub
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         val antibytesPlugins = "^tech\\.antibytes\\.[\\.a-z\\-]+"
@@ -76,4 +78,5 @@ buildCache {
     localGithub()
 }
 
-rootProject.name = "kmock"
+// see: https://github.com/gradle/gradle/issues/16608
+rootProject.name = "kmock-lib"

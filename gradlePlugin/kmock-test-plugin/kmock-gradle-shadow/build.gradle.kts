@@ -13,12 +13,12 @@ import tech.antibytes.gradle.kmock.config.publishing.KMockGradleConfiguration
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
-    id("com.palantir.git-version")
+    id(antibytesCatalog.plugins.gradle.antibytes.versioning.get().pluginId)
 }
 
 dependencies {
     implementation(antibytesCatalog.gradle.kotlin.kotlin)
-    implementation(antibytesCatalog.gradle.ksp.plugin)//.dependency)
+    implementation(antibytesCatalog.gradle.ksp.plugin)
     implementation(antibytesCatalog.gradle.agp)
 
     testImplementation(libs.testUtils.core)

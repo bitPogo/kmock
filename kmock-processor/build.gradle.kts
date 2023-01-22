@@ -38,7 +38,7 @@ dependencies {
     implementation(antibytesCatalog.jvm.square.kotlinPoet.ksp) {
         exclude(module = "kotlin-reflect")
     }
-    implementation(project(":kmock"))
+    implementation(projects.kmock)
 
     testImplementation(libs.testUtils.core)
     testImplementation(libs.kfixture)
