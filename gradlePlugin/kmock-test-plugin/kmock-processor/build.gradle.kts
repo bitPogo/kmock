@@ -8,7 +8,7 @@ import tech.antibytes.gradle.kmock.config.publishing.KMockProcessorConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    id(antibytesCatalog.plugins.kotlin.jvm.get().pluginId)
 }
 
 group = KMockProcessorConfiguration(project).group
@@ -27,7 +27,7 @@ dependencies {
     implementation(antibytesCatalog.jvm.square.kotlinPoet.ksp) {
         exclude(module = "kotlin-reflect")
     }
-    implementation(project(":kmock"))
+    implementation(projects.kmockShadow)
 
     testImplementation(libs.testUtils.core)
     testImplementation(libs.kfixture)

@@ -31,7 +31,7 @@ antibytesPublishing {
 
 dependencies {
     implementation(antibytesCatalog.gradle.kotlin.kotlin)
-    implementation(antibytesCatalog.gradle.ksp.plugin)//.dependency)
+    implementation(antibytesCatalog.gradle.ksp.plugin)
     implementation(antibytesCatalog.gradle.agp)
 
     testImplementation(libs.testUtils.core)

@@ -13,14 +13,14 @@ concurrency:
 
 jobs:
   build:
-    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@v1.0.0
     concurrency:
       group: build-macos
       cancel-in-progress: true
 
   coding-conventions:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@v1.0.0
     with:
       cache-reports: true
       detekt: true
@@ -31,7 +31,7 @@ jobs:
 
   check-android:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@v1.0.0
     with:
       # projects: "[':playground', ':integration-kmp', ':integration-android-application']"
       projects: "[':playground', ':integration-kmp']"
@@ -45,7 +45,7 @@ jobs:
 
   coverage:
     needs: [ coding-conventions, check-android ]
-    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@v1.0.0
     with:
       jvm: true
       verify-kmp: true
@@ -60,7 +60,7 @@ jobs:
 
   check:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@v1.0.0
     with:
       platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-js', 'mingw']"
     concurrency:
@@ -69,7 +69,7 @@ jobs:
 
   docs:
     needs: [ coverage, check ]
-    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-snapshot.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-snapshot.yml@v1.0.0
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     concurrency:
@@ -78,7 +78,7 @@ jobs:
 
   publish:
     needs: [ coverage, check ]
-    uses: bitpogo/workflows/.github/workflows/shared-publish-snapshot.yml@main
+    uses: bitpogo/workflows/.github/workflows/shared-publish-snapshot.yml@v1.0.0
     with:
       uses-mips: false
     secrets:

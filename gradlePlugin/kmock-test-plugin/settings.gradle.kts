@@ -31,9 +31,9 @@ plugins {
 includeBuild("../../setup")
 
 include(
-    ":kmock",
+    ":kmock-shadow",
     ":kmock-processor",
-    ":kmock-gradle",
+    ":kmock-gradle-shadow",
 )
 
 dependencyResolutionManagement {
@@ -68,4 +68,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kmock"
+// see: https://github.com/gradle/gradle/issues/16608
+rootProject.name = "kmock-lib-shadow"
