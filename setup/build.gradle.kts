@@ -40,7 +40,7 @@ dependencies {
     api(antibytesCatalog.gradle.antibytes.runtimeConfig)
     implementation(antibytesCatalog.gradle.kotlin.kotlin) {
         version {
-            require("1.7.21")
+            require("1.7.22")
         }
     }
 }
