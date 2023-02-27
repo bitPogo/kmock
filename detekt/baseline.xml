@@ -121,7 +121,7 @@
     <ID>TooManyFunctions:VerificationAndAssertion.kt$tech.antibytes.kmock.verification.VerificationAndAssertion.kt</ID>
     <ID>TooManyFunctions:VerificationChain.kt$VerificationChain : AssertionChainChainedAssertion</ID>
     <ID>UnnecessaryAbstractClass:BaseSourceAggregator.kt$BaseSourceAggregator$BaseSourceAggregator</ID>
-    <ID>UnnecessaryAbstractClass:PublishingBase.kt$PublishingBase$PublishingBase</ID>
+    <ID>UnnecessaryAbstractClass:PublishingGroup.kt$PublishingGroup$PublishingGroup</ID>
     <ID>UnusedPrivateMember:AndroidSampleControllerAutoStubSpec.kt$AndroidSampleControllerAutoStubSpec$private val androidThing = AndroidThingMock()</ID>
     <ID>UnusedPrivateMember:KMockFactoryGenerator.kt$KMockFactoryGenerator$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateMember:KMockGenerator.kt$KMockGenerator$private val logger: KSPLogger</ID>
@@ -136,9 +136,10 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val androidTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidTest") dependencies { implementation(antibytesCatalog.jvm.test.junit.runtime) // somehow Gradle gets confused implementation(antibytesCatalog.jvm.test.junit.bom) // somehow Gradle gets confused implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val appleMain by getting { dependsOn(nativeMain) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val appleTest by getting { dependsOn(nativeTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Main by getting { dependsOn(iosMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosSimulatorArm64Test by getting { dependsOn(iosTest) }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val iosX64Test by getting { kotlin.srcDir("build/generated/ksp/iosX64/iosX64Test") dependsOn(iosTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jsMain by getting { dependencies { implementation(antibytesCatalog.js.kotlin.stdlib) implementation(antibytesCatalog.js.kotlinx.nodeJs) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jsTest by getting { dependencies { implementation(antibytesCatalog.js.test.kotlin.core) } }</ID>
@@ -148,9 +149,12 @@
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val jvmTest by getting { kotlin.srcDir("build/generated/ksp/jvm/jvmTest") dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.kotlin.core) implementation(antibytesCatalog.jvm.test.junit.junit4) } }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Main by getting { dependsOn(nativeMain) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Main by getting { dependsOn(otherMain) }</ID>
-    <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(otherTest) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { dependsOn(nativeTest) }</ID>
     <ID>UnusedPrivateMember:build.gradle.kts$val linuxX64Test by getting { kotlin.srcDir("src-gen/generated/ksp/linuxX64/linuxX64Test") dependsOn(otherTest) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val mingwX64Main by getting { dependsOn(nativeMain) }</ID>
+    <ID>UnusedPrivateMember:build.gradle.kts$val mingwX64Test by getting { dependsOn(nativeTest) }</ID>
     <ID>WrongEqualsTypeParameter:NoBuildIns.kt$NoBuildInsMock$public override fun equals(other: Int): Unit</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -10,7 +10,7 @@ import org.gradle.api.Project
 import tech.antibytes.gradle.publishing.api.PackageConfiguration
 import tech.antibytes.gradle.publishing.api.PomConfiguration
 
-class KMockConfiguration(project: Project) : PublishingBase() {
+class KMockConfiguration(project: Project) : PublishingGroup() {
     val publishing = Publishing(project)
 
     class Publishing(project: Project) : KMockPublishingConfiguration(project) {

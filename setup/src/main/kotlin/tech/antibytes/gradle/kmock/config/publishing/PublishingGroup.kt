@@ -6,6 +6,6 @@
 
 package tech.antibytes.gradle.kmock.config.publishing
 
-abstract class PublishingBase {
+abstract class PublishingGroup {
     val group = "tech.antibytes.kmock"
 }
