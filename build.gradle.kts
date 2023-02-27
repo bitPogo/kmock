@@ -46,7 +46,7 @@ allprojects {
         addCustomRepositories(kmockRepositories)
     }
     // ensureKotlinVersion(antibytesCatalog.versions.kotlin.language.get())
-    ensureKotlinVersion("1.8.0")
+    ensureKotlinVersion("1.8.10")
 }
 
 GradleCompositeBuilds.configure(project)
