@@ -25,11 +25,11 @@ So if the project caught your eye check out the [Playground](https://github.com/
 KMock has the following dependencies:
 
 * [AndroidGradlePlugin (AGP) 7.3.1](https://developer.android.com/studio/releases/gradle-plugin)
-* [Kotlin 1.7.21](https://kotlinlang.org/docs/releases.html)
+* [Kotlin 1.7.22](https://kotlinlang.org/docs/releases.html)
 * [AtomicFu 0.18.5](https://github.com/Kotlin/kotlinx.atomicfu)
 * [Touchlab's Stately 1.2.3](https://github.com/touchlab/Stately)
 * [Square KotlinPoet 1.12.0](https://square.github.io/kotlinpoet/)
-* [Kotlin Symbol Processing (KSP) 1.7.21-1.0.6](https://github.com/google/ksp)
+* [Kotlin Symbol Processing (KSP) 1.7.22-1.0.6](https://github.com/google/ksp)
 * [Gradle 7.5.1](https://gradle.org/)
 
 ## Additional Requirements
