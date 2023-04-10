@@ -7,7 +7,7 @@ The badges are generate with [Shields.io](https://shields.io/) to generate our B
 - Latest release
 
 ```bash
-curl "https://img.shields.io/badge/Release-0.3.0--rc07-blueviolet.svg?style=flat"  -s -o badge-release-latest.svg
+curl "https://img.shields.io/badge/Release-0.3.0--rc08-blueviolet.svg?style=flat"  -s -o badge-release-latest.svg
 ```
 
 - Platforms

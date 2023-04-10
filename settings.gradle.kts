@@ -70,7 +70,7 @@ include(
     ":kmock-gradle",
     ":docs",
     ":playground"
-    // ":integration-kmp" ignored until 1.8 full integration
+    // ":integration-kmp", ignored until 1.8 full integration
     // ":integration-android-application" ignored until 1.8 full integration
 )
 
