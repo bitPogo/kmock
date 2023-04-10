@@ -36,11 +36,15 @@ dependencies {
     implementation(antibytesCatalog.gradle.antibytes.publishingConfiguration)
     implementation(antibytesCatalog.gradle.antibytes.quality)
     implementation(antibytesCatalog.gradle.agp)
-    implementation(antibytesCatalog.gradle.kotlinx.atomicfu)
+    implementation(antibytesCatalog.gradle.kotlinx.atomicfu) {
+        version {
+            require("0.19.0")
+        }
+    }
     api(antibytesCatalog.gradle.antibytes.runtimeConfig)
     implementation(antibytesCatalog.gradle.kotlin.kotlin) {
         version {
-            require("1.7.22")
+            require("1.8.0")
         }
     }
 }

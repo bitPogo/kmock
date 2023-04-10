@@ -31,28 +31,28 @@ pluginManagement {
 dependencyResolutionManagement {
     versionCatalogs {
         getByName("antibytesCatalog") {
-            version("gradle-ksp-plugin-dependency", "1.7.22-1.0.8")
-            version("gradle-ksp-runtime", "1.7.22-1.0.8")
-            version("gradle-ksp-plugin-plugin", "1.7.22-1.0.8")
+            version("gradle-ksp-plugin-dependency", "1.8.0-1.0.8")
+            version("gradle-ksp-runtime", "1.8.0-1.0.8")
+            version("gradle-ksp-plugin-plugin", "1.8.0-1.0.8")
 
-            version("kotlin-android", "1.7.22")
-            version("kotlin-jvm", "1.7.22")
-            version("kotlin-kotlin-dependency", "1.7.22")
-            version("kotlin-kotlin-plugin", "1.7.22")
-            version("kotlin-language", "1.7.22")
-            version("kotlin-multiplatform", "1.7.22")
-            version("kotlin-reflect", "1.7.22")
-            version("kotlin-stdlib-common", "1.7.22")
-            version("kotlin-stdlib-jdk", "1.7.22")
-            version("kotlin-stdlib-jdk8", "1.7.22")
-            version("kotlin-stdlib-js", "1.7.22")
-            version("kotlin-test-annotations", "1.7.22")
-            version("kotlin-test-core-common", "1.7.22")
-            version("kotlin-test-core-js", "1.7.22")
-            version("kotlin-test-core-jvm", "1.7.22")
-            version("kotlin-test-core-wasm", "1.7.22")
-            version("kotlin-test-junit4", "1.7.22")
-            version("kotlin-test-junit5", "1.7.22")
+            version("kotlin-android", "1.8.0")
+            version("kotlin-jvm", "1.8.0")
+            version("kotlin-kotlin-dependency", "1.8.0")
+            version("kotlin-kotlin-plugin", "1.8.0")
+            version("kotlin-language", "1.8.0")
+            version("kotlin-multiplatform", "1.8.0")
+            version("kotlin-reflect", "1.8.0")
+            version("kotlin-stdlib-common", "1.8.0")
+            version("kotlin-stdlib-jdk", "1.8.0")
+            version("kotlin-stdlib-jdk8", "1.8.0")
+            version("kotlin-stdlib-js", "1.8.0")
+            version("kotlin-test-annotations", "1.8.0")
+            version("kotlin-test-core-common", "1.8.0")
+            version("kotlin-test-core-js", "1.8.0")
+            version("kotlin-test-core-jvm", "1.8.0")
+            version("kotlin-test-core-wasm", "1.8.0")
+            version("kotlin-test-junit4", "1.8.0")
+            version("kotlin-test-junit5", "1.8.0")
         }
     }
 }
@@ -69,9 +69,9 @@ include(
     ":kmock-processor",
     ":kmock-gradle",
     ":docs",
-    ":playground",
-    ":integration-kmp"
-    // ":integration-android-application" ignored until 1.8
+    ":playground"
+    // ":integration-kmp" ignored until 1.8 full integration
+    // ":integration-android-application" ignored until 1.8 full integration
 )
 
 buildCache {

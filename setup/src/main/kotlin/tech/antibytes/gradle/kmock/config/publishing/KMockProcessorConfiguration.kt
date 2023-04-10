@@ -11,7 +11,7 @@ import tech.antibytes.gradle.publishing.PublishingApiContract.Type
 import tech.antibytes.gradle.publishing.api.PackageConfiguration
 import tech.antibytes.gradle.publishing.api.PomConfiguration
 
-class KMockProcessorConfiguration(project: Project) : PublishingBase() {
+class KMockProcessorConfiguration(project: Project) : PublishingGroup() {
     val publishing = Publishing(project)
 
     class Publishing(project: Project) : KMockPublishingConfiguration(project) {

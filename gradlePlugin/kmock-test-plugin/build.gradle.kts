@@ -27,7 +27,7 @@ allprojects {
         addCustomRepositories(kmockRepositories)
     }
 
-    ensureKotlinVersion("1.7.21")
+    ensureKotlinVersion("1.8.0")
 }
 
 evaluationDependsOnChildren()

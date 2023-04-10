@@ -10,7 +10,7 @@ import org.gradle.api.Project
 import tech.antibytes.gradle.publishing.api.PackageConfiguration
 import tech.antibytes.gradle.publishing.api.PomConfiguration
 
-class KMockGradleConfiguration(project: Project) : PublishingBase() {
+class KMockGradleConfiguration(project: Project) : PublishingGroup() {
     val id = "kmock-gradle"
     val pluginId = "$group.$id"
     val longDescription = """KMock is generator for Mocks and Spies aiming Kotlin (Multiplatform).
