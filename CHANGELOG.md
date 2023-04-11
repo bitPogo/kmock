@@ -5,7 +5,7 @@ All important changes of this project must be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc07...main)
+## [Unreleased](https://github.com/bitPogo/kmock/compare/v0.3.0-rc08...main)
 
 ### Added
 
@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 ### Bumped
+
+## [v0.3.0-rc08](https://github.com/bitPogo/kmock/compare/v0.3.0-rc07...v0.3.0-rc08)
+
+### Bumped
+
+* Kotlin 1.7.22 -> 1.8.0
+* AtomicFU 0.18.5 -> 0.19.0
+* KSP 1.7.22-1.0.8 -> 1.8.0-1.0.8
 
 ## [v0.3.0-rc07](https://github.com/bitPogo/kmock/compare/v0.3.0-rc06...v0.3.0-rc07)
 

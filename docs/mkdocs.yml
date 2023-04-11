@@ -64,7 +64,7 @@ extra:
 
   repo: https://github.com/bitPogo/kmock
 
-  latest: v0.3.0-rc07
+  latest: v0.3.0-rc08
 
   social:
     - icon: fontawesome/brands/github
