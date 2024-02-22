@@ -150,7 +150,19 @@ private fun KSTypeArgument.mapParameterType(
     }
 }
 
-internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? = tag(GenericDeclaration::class)
+internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? {
+    return tag(GenericDeclaration::class)?.run {
+        copy(
+            types = this.types.map { type ->
+                if (type != this@resolveGenericDeclaration) {
+                    type.copy(nullable = this@resolveGenericDeclaration.isNullable)
+                } else {
+                    type
+                }
+            }
+        )
+    }
+}
 
 private fun List<KSTypeArgument>.mapParameterType(
     visited: Set<String>,

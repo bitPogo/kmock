@@ -151,7 +151,7 @@ internal class KMockProxyNameSelector(
         val prefix = resolveClassPrefix()
         val name = resolveRawClassFlatName()
 
-        return "$zero$prefix$name"
+        return "$prefix$zero$name"
     }
 
     private fun WildcardTypeName.resolveExhaustiveName(

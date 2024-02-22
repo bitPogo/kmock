@@ -64,12 +64,12 @@ internal class InheritedMock<R : Alias33>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias31LAlias33",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any>) -> Unit>
+    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any?>) -> Unit>
         =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias97",
             collector = collector, freeze = freeze)
 
-    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<Any>) -> Unit> =
+    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithTAlias93",
             collector = collector, freeze = freeze)
 

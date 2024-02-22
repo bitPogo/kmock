@@ -153,6 +153,7 @@ public class KMockProcessorProvider : SymbolProcessorProvider {
             nameSelector = nameSelector,
             nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
             genericResolver = KMockGenerics,
+            logger = logger,
         )
         val receiverGenerator = KMockReceiverGenerator(
             utils = methodeGeneratorHelper,

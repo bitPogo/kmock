@@ -271,3 +271,10 @@ android {
         )
     }
 }
+
+
+interface x {
+    fun <T : Q, Q> foo(arg0: T, arg1: Q) where Q : CharSequence, Q : Comparable<Q>?
+}
+
+val p: x? = null
