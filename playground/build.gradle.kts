@@ -87,7 +87,7 @@ kotlin {
 
                 implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
 
-                implementation(project(":kmock"))
+                implementation(projects.kmock)
             }
         }
 
@@ -108,19 +108,18 @@ kotlin {
 
         val androidUnitTest by getting {
             dependsOn(concurrentTest)
-            kotlin.srcDir("build/generated/ksp/android/androidTest")
+            kotlin.srcDir("build/generated/ksp/android/androidUnitTest")
 
             dependencies {
-                implementation("junit:junit:4.13.2")
+                implementation(antibytesCatalog.jvm.test.junit.junit4)
+                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
                 implementation(antibytesCatalog.android.test.robolectric)
             }
         }
 
         val androidInstrumentedTest by getting {
             dependsOn(concurrentTest)
-            kotlin.srcDir("build/generated/ksp/android/androidInstrumentedAndroidTest")
-            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
-            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
+            kotlin.srcDir("build/generated/ksp/android/androidInstrumentedTest")
 
             dependencies {
                 implementation(antibytesCatalog.android.test.junit.core)
@@ -128,6 +127,8 @@ kotlin {
                 implementation(antibytesCatalog.android.test.compose.junit4)
                 implementation(antibytesCatalog.android.test.espresso.core)
                 implementation(antibytesCatalog.android.test.uiAutomator)
+                implementation(antibytesCatalog.jvm.test.junit.junit4)
+                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
             }
         }
 
@@ -271,10 +272,3 @@ android {
         )
     }
 }
-
-
-interface x {
-    fun <T : Q, Q> foo(arg0: T, arg1: Q) where Q : CharSequence, Q : Comparable<Q>?
-}
-
-val p: x? = null

@@ -159,7 +159,7 @@ internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? {
                 } else {
                     type
                 }
-            }
+            },
         )
     }
 }

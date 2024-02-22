@@ -4,7 +4,6 @@ import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
     alias(antibytesCatalog.plugins.gradle.antibytes.androidLibraryConfiguration)
-    alias(antibytesCatalog.plugins.gradle.antibytes.dokkaConfiguration)
     id(antibytesCatalog.plugins.kotlinx.atomicfu.get().pluginId)
 }
 

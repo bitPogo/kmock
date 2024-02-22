@@ -3,6 +3,8 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import tech.antibytes.gradle.dependency.helper.GradleCompositeBuilds
 import tech.antibytes.gradle.dependency.helper.addCustomRepositories
 import tech.antibytes.gradle.dependency.helper.ensureKotlinVersion
@@ -53,3 +55,15 @@ allprojects {
 
 GradleCompositeBuilds.configure(project)
 evaluationDependsOnChildren()
+
+tasks.withType<Detekt>().configureEach {
+    setExcludes(
+        listOf("**/kmock-test-plugin/**"),
+    )
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    setExcludes(
+        listOf("**/kmock-test-plugin/**"),
+    )
+}
