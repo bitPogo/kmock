@@ -20,9 +20,10 @@ pluginManagement {
                 includeGroupByRegex(antibytesPlugins)
             }
         }
+        mavenCentral()
     }
 }
 
 plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "022f831"
+    id("tech.antibytes.gradle.dependency.settings") version "b5d11da"
 }
