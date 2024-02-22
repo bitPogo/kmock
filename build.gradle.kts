@@ -7,6 +7,7 @@ import tech.antibytes.gradle.dependency.helper.GradleCompositeBuilds
 import tech.antibytes.gradle.dependency.helper.addCustomRepositories
 import tech.antibytes.gradle.dependency.helper.ensureKotlinVersion
 import tech.antibytes.gradle.kmock.config.publishing.KMockPublishingConfiguration
+import tech.antibytes.gradle.kmock.config.quality.Linter
 import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
 import tech.antibytes.gradle.kmock.config.quality.StableApi
 import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
@@ -21,6 +22,7 @@ plugins {
 }
 
 antibytesQuality {
+    linter.set(Linter.spotless)
     codeAnalysis.set(CodeAnalysisConfiguration(project = project))
     stableApi.set(StableApi.api)
     qualityGate.set(SonarConfiguration(project).configuration)
@@ -45,8 +47,8 @@ allprojects {
         jcenter()
         addCustomRepositories(kmockRepositories)
     }
-    // ensureKotlinVersion(antibytesCatalog.versions.kotlin.language.get())
-    ensureKotlinVersion("1.8.0")
+
+    ensureKotlinVersion(antibytesCatalog.versions.kotlin.language.get())
 }
 
 GradleCompositeBuilds.configure(project)

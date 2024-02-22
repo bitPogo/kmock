@@ -5,7 +5,6 @@
  */
 
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import tech.antibytes.gradle.coverage.api.JvmJacocoConfiguration
@@ -86,7 +85,7 @@ atomicfu {
 }
 
 kotlin {
-    android()
+    androidTarget()
 
     js(IR) {
         nodejs()

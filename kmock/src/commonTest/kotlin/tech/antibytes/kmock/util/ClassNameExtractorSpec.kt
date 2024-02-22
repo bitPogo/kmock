@@ -4,6 +4,8 @@
  * Use of this source code is governed by Apache v2.0
  */
 
+@file:Suppress("ktlint:standard:function-naming")
+
 package tech.antibytes.kmock.util
 
 import kotlin.js.JsName
