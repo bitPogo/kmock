@@ -7,7 +7,6 @@
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
-import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -107,7 +106,6 @@ kotlin {
             }
         }
 
-        setupAndroidTest()
         val androidAndroidTestRelease by getting {
             kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
         }

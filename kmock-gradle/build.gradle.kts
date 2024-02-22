@@ -34,8 +34,8 @@ dependencies {
     implementation(antibytesCatalog.gradle.ksp.plugin)
     implementation(antibytesCatalog.gradle.agp)
 
-    testImplementation(libs.testUtils.core)
-    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.testUtils.core)
+    testImplementation(antibytesCatalog.kfixture)
     testImplementation(antibytesCatalog.jvm.test.junit.runtime)
     testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
     testImplementation(antibytesCatalog.jvm.test.mockk)
