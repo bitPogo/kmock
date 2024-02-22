@@ -91,9 +91,9 @@ dependencies {
     implementation(antibytesCatalog.android.material.compose.core)
     implementation(antibytesCatalog.android.compose.foundation.core)
 
-    testImplementation(libs.testUtils.core)
-    testImplementation(libs.testUtils.coroutine)
-    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.testUtils.core)
+    testImplementation(antibytesCatalog.testUtils.coroutine)
+    testImplementation(antibytesCatalog.kfixture)
     testImplementation(project(":kmock"))
     testImplementation(antibytesCatalog.android.test.junit.core)
     testImplementation(antibytesCatalog.jvm.test.junit.junit4)
@@ -108,8 +108,8 @@ dependencies {
     androidTestImplementation(antibytesCatalog.android.test.espresso.core)
     androidTestImplementation(antibytesCatalog.android.test.uiAutomator)
 
-    androidTestImplementation(libs.testUtils.core)
-    androidTestImplementation(libs.kfixture)
+    androidTestImplementation(antibytesCatalog.testUtils.core)
+    androidTestImplementation(antibytesCatalog.kfixture)
     androidTestImplementation(project(":kmock"))
 }
 

@@ -3,8 +3,6 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
-import tech.antibytes.gradle.dependency.settings.fullCache
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -28,6 +26,18 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("tech.antibytes.gradle.dependency.settings") version "b5d11da"
+}
+
+includeBuild("../setup")
+
+include(
+    ":kmock-shadow",
+    ":kmock-processor-shadow",
+    ":kmock-gradle-shadow",
+)
+
 dependencyResolutionManagement {
     versionCatalogs {
         getByName("antibytesCatalog") {
@@ -45,24 +55,5 @@ dependencyResolutionManagement {
     }
 }
 
-plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "b5d11da"
-}
-
-includeBuild("setup")
-includeBuild("kmock-test-plugin")
-
-include(
-    ":kmock",
-    ":kmock-processor",
-    ":kmock-gradle",
-    ":docs",
-    ":playground"
-)
-
-buildCache {
-    fullCache(rootDir)
-}
-
 // see: https://github.com/gradle/gradle/issues/16608
-rootProject.name = "kmock-lib"
+rootProject.name = "kmock-lib-shadow"

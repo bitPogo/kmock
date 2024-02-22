@@ -77,10 +77,10 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/common/commonTest")
 
             dependencies {
-                implementation(libs.testUtils.annotations)
-                implementation(libs.testUtils.core)
-                implementation(libs.testUtils.coroutine)
-                implementation(libs.kfixture)
+                implementation(antibytesCatalog.testUtils.annotations)
+                implementation(antibytesCatalog.testUtils.core)
+                implementation(antibytesCatalog.testUtils.coroutine)
+                implementation(antibytesCatalog.kfixture)
                 implementation(antibytesCatalog.common.test.kotlin.core)
 
                 implementation(antibytesCatalog.common.stately.freeze)
@@ -106,13 +106,13 @@ kotlin {
             }
         }
 
-        val androidAndroidTestRelease by getting {
+        /*val androidInstrumentedTestRelease by getting {
             kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
         }
-        val androidAndroidTestDebug by getting {
+        val androidInstrumentedTestDebug by getting {
             kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
-        }
-        val androidTest by getting {
+        }*/
+        val androidUnitTest by getting {
             dependsOn(concurrentTest)
             kotlin.srcDir("build/generated/ksp/android/androidTest")
 
@@ -125,7 +125,7 @@ kotlin {
             }
         }
 
-        val androidAndroidTest by getting {
+        val androidInstrumentedTest by getting {
             dependsOn(concurrentTest)
 
             dependencies {

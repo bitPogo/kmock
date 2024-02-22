@@ -42,9 +42,8 @@ import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.coroutine.defaultTestContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
-import tech.antibytes.util.test.coroutine.runBlockingTestInContext
+import tech.antibytes.util.test.coroutine.defaultScheduler
+import tech.antibytes.util.test.coroutine.runBlockingTestInContextfun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
@@ -99,7 +98,7 @@ class SampleControllerAlternativeAccessSpec {
 
     @Test
     @JsName("fn1")
-    fun `Given fetchAndStore it fetches and stores DomainObjects`(): AsyncTestReturnValue {
+    fun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
         // Given
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)
@@ -153,9 +152,9 @@ class SampleControllerAlternativeAccessSpec {
         // When
         val controller = SampleController(local, remote)
         val doRef = AtomicReference(domainObject)
-        val contextRef = AtomicReference(defaultTestContext)
+        val contextRef = AtomicReference(defaultScheduler)
 
-        return runBlockingTestInContext(defaultTestContext) {
+        return runBlockingTestInContext(defaultScheduler) {
             // When
             controller.find(idOrg)
                 .onEach { actual -> actual mustBe doRef.get() }

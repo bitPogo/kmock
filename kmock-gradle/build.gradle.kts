@@ -14,6 +14,7 @@ plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
 
+    alias(antibytesCatalog.plugins.gradle.antibytes.javaConfiguration)
     alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
     alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
     alias(antibytesCatalog.plugins.gradle.antibytes.dokkaConfiguration)
@@ -48,23 +49,14 @@ dependencies {
 
 kotlin {
     sourceSets.main {
-        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
+        kotlin.srcDir("${layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 tasks.withType<KotlinTaskCompile>().configureEach {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
     }
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
@@ -95,13 +87,4 @@ gradlePlugin {
         implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
         version = publishingConfiguration.version
     }
-}
-
-configure<JavaPluginExtension> {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

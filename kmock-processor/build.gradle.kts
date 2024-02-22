@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id(antibytesCatalog.plugins.kotlin.jvm.get().pluginId)
 
+    alias(antibytesCatalog.plugins.gradle.antibytes.javaConfiguration)
     alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
     alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
 }
@@ -50,18 +51,4 @@ dependencies {
     testImplementation(antibytesCatalog.jvm.stately.collections)
     testImplementation(antibytesCatalog.jvm.test.compiler.core)
     testImplementation(antibytesCatalog.jvm.test.compiler.ksp)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-configure<JavaPluginExtension> {
-    withJavadocJar()
-    withSourcesJar()
 }

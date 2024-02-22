@@ -8,8 +8,7 @@ import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
-import tech.antibytes.gradle.configuration.sourcesets.appleWithLegacy
-import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
+import tech.antibytes.gradle.configuration.sourcesets.apple
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -44,7 +43,7 @@ kotlin {
 
     jvm()
 
-    appleWithLegacy()
+    apple()
     ensureAppleDeviceCompatibility()
 
     linuxX64()
@@ -67,10 +66,10 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(libs.testUtils.annotations)
-                implementation(libs.testUtils.core)
-                implementation(libs.testUtils.coroutine)
-                implementation(libs.kfixture)
+                implementation(antibytesCatalog.testUtils.annotations)
+                implementation(antibytesCatalog.testUtils.core)
+                implementation(antibytesCatalog.testUtils.coroutine)
+                implementation(antibytesCatalog.kfixture)
                 implementation(antibytesCatalog.common.test.kotlin.core)
 
                 implementation(antibytesCatalog.common.stately.freeze)
@@ -96,8 +95,7 @@ kotlin {
             }
         }
 
-        setupAndroidTest()
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependsOn(concurrentTest)
 
             dependencies {
@@ -107,7 +105,7 @@ kotlin {
             }
         }
 
-        val androidAndroidTest by getting {
+        val androidInstrumentedTest by getting {
             dependsOn(concurrentTest)
 
             dependencies {

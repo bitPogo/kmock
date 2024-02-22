@@ -14,11 +14,6 @@ plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.quality)
 }
 
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "7.5.1"
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 allprojects {
     repositories {
         mavenCentral()
@@ -27,7 +22,12 @@ allprojects {
         addCustomRepositories(kmockRepositories)
     }
 
-    ensureKotlinVersion("1.8.0")
+    ensureKotlinVersion()
 }
 
 evaluationDependsOnChildren()
+
+tasks.named<Wrapper>("wrapper") {
+    gradleVersion = antibytesCatalog.versions.gradle.gradle.get()
+    distributionType = Wrapper.DistributionType.ALL
+}

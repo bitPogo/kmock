@@ -25,17 +25,6 @@ dependencies {
     implementation(antibytesCatalog.gradle.kotlin.kotlin)
     implementation(antibytesCatalog.gradle.ksp.plugin)
     implementation(antibytesCatalog.gradle.agp)
-
-    testImplementation(antibytesCatalog.testUtils.core)
-    testImplementation(antibytesCatalog.kfixture)
-    testImplementation(antibytesCatalog.jvm.test.junit.runtime)
-    testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
-    testImplementation(antibytesCatalog.jvm.test.mockk)
-    testImplementation(antibytesCatalog.jvm.test.kotlin.core)
-    testImplementation(antibytesCatalog.jvm.test.kotlin.junit5)
-    testImplementation(antibytesCatalog.jvm.stately.isolate)
-
-    testImplementation(antibytesCatalog.gradle.test.antibytes.testUtils)
 }
 
 kotlin {

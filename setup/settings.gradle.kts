@@ -27,3 +27,5 @@ pluginManagement {
 plugins {
     id("tech.antibytes.gradle.dependency.settings") version "b5d11da"
 }
+
+rootProject.name = "kmock-setup"

@@ -29,8 +29,7 @@ import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.kmock.verification.verifyStrictOrder
 import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.coroutine.defaultTestContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
+import tech.antibytes.util.test.coroutine.defaultScheduler
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
@@ -119,9 +118,9 @@ class SampleControllerAutoStubSpec {
         // When
         val controller = SampleController(local, remote)
         val doRef = AtomicReference(domainObject)
-        val contextRef = AtomicReference(defaultTestContext)
+        val contextRef = AtomicReference(defaultScheduler)
 
-        return runBlockingTestInContext(defaultTestContext) {
+        return runBlockingTestInContext(defaultScheduler) {
             // When
             controller.find(idOrg)
                 .onEach { actual -> actual mustBe doRef.get() }
