@@ -62,7 +62,7 @@ plugins {
 }
 
 includeBuild("setup")
-includeBuild("gradlePlugin/kmock-test-plugin")
+// includeBuild("gradlePlugin/kmock-test-plugin")
 
 include(
     ":kmock",
