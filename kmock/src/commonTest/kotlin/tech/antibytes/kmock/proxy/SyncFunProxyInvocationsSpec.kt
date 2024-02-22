@@ -20,7 +20,7 @@ import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.resolveMultiBlockCalls
 import tech.antibytes.util.test.coroutine.runBlockingTest
 import tech.antibytes.util.test.coroutine.runBlockingTestInContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
+import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.mustBe
 
 class SyncFunProxyInvocationsSpec {
@@ -47,7 +47,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             val actual = proxy.invoke()
 
             // Then
@@ -72,7 +72,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             val actual = proxy.invoke()
 
             // Then
@@ -100,7 +100,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke {
                 useSpyIf(implementation) {
@@ -135,7 +135,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0)
 
@@ -170,7 +170,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0)
 
@@ -209,7 +209,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -256,7 +256,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1)
 
@@ -297,7 +297,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1)
 
@@ -342,7 +342,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -395,7 +395,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2)
 
@@ -440,7 +440,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2)
 
@@ -489,7 +489,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -549,7 +549,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3)
 
@@ -599,7 +599,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3)
 
@@ -654,7 +654,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             // When
             val actual = proxy.invoke(
@@ -912,7 +912,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
 
@@ -973,7 +973,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5)
 
@@ -1039,7 +1039,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1107,7 +1107,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument6 = AtomicReference<String?>(null)
 
         // When
-        runBlockingTestWithTimeoutInScope(testScope1.coroutineContext) {
+        runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.sideEffect = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
@@ -1121,7 +1121,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
 
@@ -1173,7 +1173,7 @@ class SyncFunProxyInvocationsSpec {
         val actualArgument6 = AtomicReference<String?>(null)
 
         // When
-        runBlockingTestWithTimeoutInScope(testScope1.coroutineContext) {
+        runBlockingTestInContext(testScope1.coroutineContext) {
             proxy.sideEffects.add { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
                 actualArgument0.set(givenArg0)
                 actualArgument1.set(givenArg1)
@@ -1187,7 +1187,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(argument0, argument1, argument2, argument3, argument4, argument5, argument6)
 
@@ -1244,7 +1244,7 @@ class SyncFunProxyInvocationsSpec {
         )
 
         // When
-        runBlockingTestWithTimeoutInScope(testScope1.coroutineContext) {
+        runBlockingTestInContext(testScope1.coroutineContext) {
             implementation.fun7 = { givenArg0, givenArg1, givenArg2, givenArg3, givenArg4, givenArg5, givenArg6 ->
                 actualArgument0.set(givenArg0 as String?)
                 actualArgument1.set(givenArg1 as Int?)
@@ -1258,7 +1258,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1347,7 +1347,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1427,7 +1427,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1512,7 +1512,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1608,7 +1608,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1694,7 +1694,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1785,7 +1785,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1890,7 +1890,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -1984,7 +1984,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2081,7 +2081,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2193,7 +2193,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
 
             val actual = proxy.invoke(
@@ -2294,7 +2294,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
 
             val actual = proxy.invoke(
@@ -2398,7 +2398,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2517,7 +2517,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2623,7 +2623,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2732,7 +2732,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2858,7 +2858,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -2970,7 +2970,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,
@@ -3085,7 +3085,7 @@ class SyncFunProxyInvocationsSpec {
             }
         }
 
-        runBlockingTestWithTimeoutInScope(testScope2.coroutineContext) {
+        runBlockingTestInContext(testScope2.coroutineContext) {
             // When
             val actual = proxy.invoke(
                 argument0,

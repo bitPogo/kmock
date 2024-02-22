@@ -40,7 +40,7 @@ import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultTestContext
 import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
+import tech.antibytes.util.test.coroutine.runBlockingTestInContext
 import tech.antibytes.util.test.mustBe
 
 @MockCommon(
@@ -141,7 +141,7 @@ class SampleControllerAutoSpyFactorySpec {
         val doRef = AtomicReference(domainObject)
         val contextRef = AtomicReference(defaultTestContext)
 
-        return runBlockingTestWithTimeoutInScope(defaultTestContext) {
+        return runBlockingTestInContext(defaultTestContext) {
             // When
             controller.find(idOrg)
                 .onEach { actual -> actual.hashCode() mustBe doRef.get().hashCode() }
