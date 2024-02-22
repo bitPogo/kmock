@@ -470,7 +470,7 @@ GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
     fun compareTo(other: GenericCommonContract.Generic3<KMockTypeParameter5, KMockTypeParameter4>):
         Int = _compareTo.invoke(other)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _lol.clear()
         _fooWithVoid.clear()

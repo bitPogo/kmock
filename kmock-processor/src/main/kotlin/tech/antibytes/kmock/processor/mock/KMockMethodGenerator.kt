@@ -81,7 +81,7 @@ internal class KMockMethodGenerator(
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
             .addArguments(arguments)
             .returns(returnType.methodTypeName)
 

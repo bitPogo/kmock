@@ -579,7 +579,7 @@ GenericCommonContract.Generic3<KMockTypeParameter4, KMockTypeParameter5> {
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _lol.clear()
         _fooWithVoid.clear()

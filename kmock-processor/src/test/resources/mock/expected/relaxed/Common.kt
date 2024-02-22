@@ -122,7 +122,7 @@ internal class CommonMock<K : Any, L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _buzz.clear()
         _fooWithAny.clear()

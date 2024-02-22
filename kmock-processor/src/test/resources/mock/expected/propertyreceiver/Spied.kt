@@ -222,7 +222,7 @@ internal class SpiedMock<L>(
 
     public fun spyContext(action: Spied<L>.() -> Any?) = action(__spyOn!!)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _thingGetter.clear()
         _thingSetter.clear()
         _thingsGetter.clear()

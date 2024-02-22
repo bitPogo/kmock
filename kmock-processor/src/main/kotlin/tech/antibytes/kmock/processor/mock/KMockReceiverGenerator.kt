@@ -16,6 +16,7 @@ import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.NULLABLE_ANY
 import tech.antibytes.kmock.processor.ProcessorContract.Companion.SPY_CONTEXT
@@ -118,6 +119,7 @@ internal class KMockReceiverGenerator(
             getterProxy.templateName,
             propertyType.methodTypeName,
             KModifier.OVERRIDE,
+            KModifier.PUBLIC,
         ).receiver(receiver.methodTypeName)
 
         if (typeParameter.isNotEmpty()) {
@@ -317,7 +319,7 @@ internal class KMockReceiverGenerator(
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
             .addArguments(arguments)
             .returns(returnType.methodTypeName)
             .receiver(receiverInfo.methodTypeName)
@@ -432,6 +434,7 @@ internal class KMockReceiverGenerator(
                 spyType.createReceiverSpy(),
             )
             .addCode("return action($SPY_PROPERTY!!)")
+            .returns(NULLABLE_ANY)
             .build()
     }
 

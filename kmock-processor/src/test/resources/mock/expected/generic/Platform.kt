@@ -666,7 +666,7 @@ internal class PlatformMock<K : Any, L>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _fooWithAny.clear()
         _fooWithVoid.clear()

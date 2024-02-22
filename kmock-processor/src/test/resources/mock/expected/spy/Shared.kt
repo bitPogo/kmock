@@ -101,7 +101,7 @@ internal class SharedMock<K : Any, L>(
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _ozz.clear()
         _foo.clear()

@@ -6,7 +6,6 @@ import kotlin.Enum
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -50,7 +49,7 @@ internal class SharedMock(
         ProxyFactory.createPropertyProxy("mock.template.property.SharedMock#_buzz", collector =
         collector, freeze = freeze)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
         _enum.clear()

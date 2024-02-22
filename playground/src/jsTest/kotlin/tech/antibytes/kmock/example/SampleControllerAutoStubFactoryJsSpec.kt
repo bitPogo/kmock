@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.runTest
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -87,29 +88,27 @@ class SampleControllerAutoStubFactoryJsSpec {
 
         // When
         val controller = SampleController(local, remote)
-        return runBlockingTestWithTimeout {
-            val actual = controller.fetchAndStore(url)
+        val actual = controller.fetchAndStore(url)
 
-            // Then
-            actual mustBe domainObject
+        // Then
+        actual mustBe domainObject
 
-            verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
+        verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
+        verify(exactly = 1) { local._store.hasBeenCalledWith(id[1]) }
 
-            collector.assertOrder {
-                remote._fetch.hasBeenStrictlyCalledWith(url)
-                domainObject._id.wasGotten()
-                domainObject._id.wasSet()
-                domainObject._id.wasGotten()
-                domainObject._value.wasGotten()
-                local._store.hasBeenCalledWith(id[1])
-            }
+        collector.assertOrder {
+            remote._fetch.hasBeenStrictlyCalledWith(url)
+            domainObject._id.wasGotten()
+            domainObject._id.wasSet()
+            domainObject._id.wasGotten()
+            domainObject._value.wasGotten()
+            local._store.hasBeenCalledWith(id[1])
+        }
 
-            collector.verifyOrder {
-                remote._fetch.hasBeenCalledWith(url)
-                domainObject._id.wasSetTo("42")
-                local._store.hasBeenCalledWith(id[1])
-            }
+        collector.verifyOrder {
+            remote._fetch.hasBeenCalledWith(url)
+            domainObject._id.wasSetTo("42")
+            local._store.hasBeenCalledWith(id[1])
         }
     }
 

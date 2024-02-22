@@ -30,7 +30,7 @@ internal class SourceFilter(
 
     private fun String.guardedSource(action: () -> Unit) {
         if (this !in dependencies) {
-            logger.error("No SharedSource defined for $this.")
+            logger.warn("No SharedSource defined for $this.")
         } else {
             action()
         }

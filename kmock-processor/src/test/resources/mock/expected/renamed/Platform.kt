@@ -6,7 +6,6 @@ import kotlin.Comparable
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -72,7 +71,7 @@ internal class PlatformMock<K : Any, L>(
         useRelaxerIf(true) { super.hashCode() }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _ozz.clear()
         _bar.clear()

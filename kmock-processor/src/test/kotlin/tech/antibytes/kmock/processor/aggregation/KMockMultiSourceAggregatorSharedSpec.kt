@@ -416,7 +416,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -434,7 +434,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -492,7 +492,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -510,7 +510,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -596,7 +596,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -612,7 +612,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$qualifiedName.") }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -690,7 +690,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -706,7 +706,7 @@ class KMockMultiSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$qualifiedName.") }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -788,7 +788,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -890,7 +890,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -995,7 +995,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -1109,7 +1109,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -1272,7 +1272,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1444,7 +1444,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -1587,7 +1587,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration3.qualifiedName!!.asString() } returns className3
         every { declaration3.packageName.asString() } returns packageName3
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1707,7 +1707,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration3.qualifiedName!!.asString() } returns className3
         every { declaration3.packageName.asString() } returns packageName3
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -1807,7 +1807,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1888,7 +1888,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -1996,7 +1996,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -2104,7 +2104,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableMultiSourceAnnotation(any()) } returns true
 
@@ -2274,7 +2274,7 @@ class KMockMultiSourceAggregatorSharedSpec {
         every { declarationGiven2.parentDeclaration } returns null
         every { declarationGiven2.packageName.asString() } returns packageNameGiven2
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 

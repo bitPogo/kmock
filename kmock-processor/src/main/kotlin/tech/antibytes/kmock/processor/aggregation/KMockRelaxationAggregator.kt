@@ -39,7 +39,7 @@ internal class KMockRelaxationAggregator(
             hasValidTypeParameter(symbol.typeParameters, symbol.returnType)
 
         if (!isValid) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
     }
 

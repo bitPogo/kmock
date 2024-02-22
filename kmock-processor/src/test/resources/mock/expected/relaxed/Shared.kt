@@ -63,7 +63,7 @@ internal class SharedMock<T>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _buzz.clear()
         _uzz.clear()
         _foo.clear()

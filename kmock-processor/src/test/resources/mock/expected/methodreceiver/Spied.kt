@@ -203,9 +203,9 @@ internal class SpiedMock<L>(
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun spyContext(action: Spied<L>.() -> Any?) = action(__spyOn!!)
+    public fun spyContext(action: Spied<L>.() -> Any?): Any? = action(__spyOn!!)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()

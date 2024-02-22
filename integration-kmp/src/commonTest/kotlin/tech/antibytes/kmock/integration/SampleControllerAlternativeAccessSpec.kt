@@ -43,7 +43,6 @@ import tech.antibytes.util.test.annotations.IgnoreJs
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultScheduler
-import tech.antibytes.util.test.coroutine.runBlockingTestInContextfun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
@@ -110,29 +109,27 @@ class SampleControllerAlternativeAccessSpec {
 
         // When
         val controller = SampleController(local, remote)
-        return runBlockingTestWithTimeout {
-            val actual = controller.fetchAndStore(url)
+        val actual = controller.fetchAndStore(url)
 
-            // Then
-            actual mustBe domainObject
+        // Then
+        actual mustBe domainObject
 
-            asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
-            asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
+        asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
+        asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
 
-            collector.asyncAssertOrder {
-                remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                domainObject.propertyProxyOf(domainObject::id).wasSet()
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                domainObject.propertyProxyOf(domainObject::value).wasGotten()
-                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-            }
+        collector.asyncAssertOrder {
+            remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            domainObject.propertyProxyOf(domainObject::id).wasSet()
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            domainObject.propertyProxyOf(domainObject::value).wasGotten()
+            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
+        }
 
-            collector.asyncVerifyOrder {
-                remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
-                domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
-                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-            }
+        collector.asyncVerifyOrder {
+            remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
+            domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
+            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
         }
     }
 

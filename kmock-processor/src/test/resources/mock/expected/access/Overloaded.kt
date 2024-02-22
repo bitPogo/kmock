@@ -812,7 +812,7 @@ internal class OverloadedMock<K : Any, L, U : Int?, W>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _template.clear()
         _trrWithVoid.clear()
         _trrWithAny.clear()

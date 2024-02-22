@@ -283,7 +283,7 @@ internal class RefinedMock<Q : List<Int>>(
     public override fun <T> oo(fuzz: Any, vararg ozz: RRR<T>): Any =
         _ooWithAnyArray_RRR_TAny.invoke(fuzz, ozz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _hashCode.clear()
         _fooWithIntAny.clear()

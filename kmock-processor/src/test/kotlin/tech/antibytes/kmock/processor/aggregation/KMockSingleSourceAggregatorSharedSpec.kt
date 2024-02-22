@@ -413,7 +413,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -431,7 +431,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -486,7 +486,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -504,7 +504,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -588,7 +588,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -604,7 +604,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$simpleName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$simpleName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$simpleName.") }
         verify(exactly = 1) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -680,7 +680,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -696,7 +696,7 @@ class KMockSingleSourceAggregatorSharedSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$simpleName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$simpleName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$simpleName.") }
         verify(exactly = 0) {
             sourceSetValidator.isValidateSourceSet(annotation)
         }
@@ -775,7 +775,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -874,7 +874,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -976,7 +976,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -1087,7 +1087,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -1246,7 +1246,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1414,7 +1414,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -1529,7 +1529,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1608,7 +1608,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -1713,7 +1713,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -1817,7 +1817,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -1926,7 +1926,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -2026,7 +2026,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { annotationFilter.isApplicableSingleSourceAnnotation(any()) } returns true
 
@@ -2197,7 +2197,7 @@ class KMockSingleSourceAggregatorSharedSpec {
         every { declarationGiven2.packageName.asString() } returns packageNameGiven2
         every { declarationGiven2.qualifiedName!!.asString() } returns "$packageNameGiven2.$simpleNameGiven2"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 

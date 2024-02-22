@@ -81,7 +81,7 @@ class KMockSingleSourceAggregatorAgnosticAnnotationSpec {
 
         every { annotation1.parent } returns null
         every { annotation2.parent } returns null
-        every { logger.error(any(), any()) } just Runs
+        every { logger.warn(any(), any()) } just Runs
 
         // When
         val actual = KMockSingleSourceAggregator(
@@ -102,10 +102,10 @@ class KMockSingleSourceAggregatorAgnosticAnnotationSpec {
             resolver.getSymbolsWithAnnotation(KMock::class.qualifiedName!!, false)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation1)
+            logger.warn("Unprocessable source.", annotation1)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation2)
+            logger.warn("Unprocessable source.", annotation2)
         }
     }
 
@@ -137,7 +137,7 @@ class KMockSingleSourceAggregatorAgnosticAnnotationSpec {
         every {
             context2.filePath
         } returns "${fixture.fixture<String>()}/src/${fixture.fixture<String>()}/${fixture.fixture<String>()}"
-        every { logger.error(any(), any()) } just Runs
+        every { logger.warn(any(), any()) } just Runs
 
         // When
         val actual = KMockSingleSourceAggregator(
@@ -158,10 +158,10 @@ class KMockSingleSourceAggregatorAgnosticAnnotationSpec {
             resolver.getSymbolsWithAnnotation(KMock::class.qualifiedName!!, false)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation1)
+            logger.warn("Unprocessable source.", annotation1)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation2)
+            logger.warn("Unprocessable source.", annotation2)
         }
     }
 

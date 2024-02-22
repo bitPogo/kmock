@@ -122,7 +122,7 @@ internal class ReceiverMock<L : Alias11>(
 
     public override fun run(arg: L): Alias11 = _run.invoke(arg)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _anyGetter.clear()
         _memberGetter.clear()
         _memberSetter.clear()

@@ -7,6 +7,7 @@
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
+import tech.antibytes.gradle.configuration.sourcesets.iosx
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -30,7 +31,7 @@ group = KMockConfiguration(project).group
 ksp {
     arg("kmock_rootPackage", "tech.antibytes.kmock.example")
     arg("kmock_isKmp", "true")
-    arg("kmock_kspDir", "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
+    arg("kmock_kspDir", "${project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp")
     arg("kmock_spyOn_0", "tech.antibytes.kmock.example.contract.ExampleContract.SampleDomainObject")
     arg("kmock_alternativeProxyAccess", "true")
     arg("kmock_allowInterfaces", "true")
@@ -39,7 +40,7 @@ ksp {
 }
 
 kotlin {
-    android {
+    androidTarget {
         publishAllLibraryVariants()
         publishLibraryVariantsGroupedByFlavor = true
     }
@@ -51,8 +52,7 @@ kotlin {
 
     jvm()
 
-    ios()
-    iosSimulatorArm64()
+    iosx()
     ensureAppleDeviceCompatibility()
 
     linuxX64()
@@ -106,27 +106,21 @@ kotlin {
             }
         }
 
-        /*val androidInstrumentedTestRelease by getting {
-            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
-        }
-        val androidInstrumentedTestDebug by getting {
-            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
-        }*/
         val androidUnitTest by getting {
             dependsOn(concurrentTest)
             kotlin.srcDir("build/generated/ksp/android/androidTest")
 
             dependencies {
-                implementation(antibytesCatalog.jvm.test.junit.runtime) // somehow Gradle gets confused
-                implementation(antibytesCatalog.jvm.test.junit.bom) // somehow Gradle gets confused
-                implementation(antibytesCatalog.jvm.test.junit.junit4)
-                implementation(antibytesCatalog.jvm.test.kotlin.junit4)
+                implementation("junit:junit:4.13.2")
                 implementation(antibytesCatalog.android.test.robolectric)
             }
         }
 
         val androidInstrumentedTest by getting {
             dependsOn(concurrentTest)
+            kotlin.srcDir("build/generated/ksp/android/androidInstrumentedAndroidTest")
+            kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest")
+            kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest")
 
             dependencies {
                 implementation(antibytesCatalog.android.test.junit.core)
@@ -218,7 +212,6 @@ kotlin {
 }
 
 dependencies {
-    androidTestImplementation("org.junit.jupiter:junit-jupiter")
     add("kspAndroidAndroidTest", project(":kmock-processor"))
     add("kspJvmTest", project(":kmock-processor"))
     add("kspAndroidTest", project(":kmock-processor"))
@@ -235,7 +228,7 @@ kspTasks.configureEach {
         if (!name.startsWith("android")) {
             val platform = name.substringAfter("kspTestKotlin")
 
-            project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/${platform}Test")
+            project.file("${project.project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp/${platform}Test")
                 .walkBottomUp()
                 .toList()
                 .forEach { file ->
@@ -261,7 +254,7 @@ android {
         minSdk = 30
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             setOf(
                 "META-INF/DEPENDENCIES",

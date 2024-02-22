@@ -72,7 +72,7 @@ internal class KMockBuildInMethodGenerator(
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
             .returns(buildIns[proxyInfo.templateName]!!)
 
         if (argument != null) {

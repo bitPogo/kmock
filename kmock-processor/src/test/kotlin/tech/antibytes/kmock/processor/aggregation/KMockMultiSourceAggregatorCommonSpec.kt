@@ -209,7 +209,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -225,7 +225,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
@@ -296,7 +296,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         every { declaration.simpleName.asString() } returns simpleName
         every { declaration.qualifiedName!!.asString() } returns qualifiedName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -312,7 +312,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$qualifiedName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$qualifiedName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$qualifiedName.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MultiMockCommon::class.qualifiedName!!, false)
         }
@@ -376,7 +376,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { genericResolver.extractGenerics(any()) } returns generics
 
@@ -468,7 +468,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { genericResolver.extractGenerics(any()) } returns generics
 
@@ -580,7 +580,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         every { declaration3.qualifiedName!!.asString() } returns className3
         every { declaration3.packageName.asString() } returns packageName3
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { genericResolver.extractGenerics(any()) } returns generics
 
@@ -664,7 +664,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, _, sourceFiles) = KMockMultiSourceAggregator(
@@ -750,7 +750,7 @@ class KMockMultiSourceAggregatorCommonSpec {
 
         every { declaration.packageName.asString() } returns packageName
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, interfaces, sourceFiles) = KMockMultiSourceAggregator(
@@ -866,7 +866,7 @@ class KMockMultiSourceAggregatorCommonSpec {
         every { declarationGiven.parentDeclaration } returns null
         every { declarationGiven.packageName.asString() } returns packageNameGiven
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, interfaces, sourceFiles) = KMockMultiSourceAggregator(

@@ -31,7 +31,7 @@ internal class CommonMock(
         arg2: Alias1,
     ): Any = _doSomething.invoke(arg0, arg1, arg2)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _doSomething.clear()
     }
 }

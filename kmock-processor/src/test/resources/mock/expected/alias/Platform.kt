@@ -4,7 +4,6 @@ import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Suppress
-import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -31,7 +30,7 @@ internal class AliasPlatformMock(
 
     public override fun bar(buzz: Int, bozz: Any): Any = _bar.invoke(buzz, bozz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
     }

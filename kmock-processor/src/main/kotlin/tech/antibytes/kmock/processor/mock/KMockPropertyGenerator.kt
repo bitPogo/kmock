@@ -123,6 +123,7 @@ internal class KMockPropertyGenerator(
         }
 
         property
+            .addModifiers(KModifier.PUBLIC)
             .getter(
                 buildGetter(
                     propertyName = proxyInfo.proxyName,
@@ -145,6 +146,7 @@ internal class KMockPropertyGenerator(
             proxyInfo.templateName,
             propertyType,
             KModifier.OVERRIDE,
+            KModifier.PUBLIC,
         )
 
         buildPropertyBody(

@@ -193,7 +193,7 @@ internal class InheritedMock<R : Alias33>(
 
     public override fun run(arg: R): Alias31 = _run.invoke(arg)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _prop.clear()
         _doSomethingWithAlias97Alias33Alias31.clear()
         _doSomethingWithAlias97.clear()

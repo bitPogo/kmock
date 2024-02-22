@@ -207,7 +207,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { file.parent } returns null
         every { symbol.parent } returns file
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -223,7 +223,7 @@ class KMockSingleSourceAggregatorCommonSpec {
 
         // Then
         error.message mustBe "Cannot stub non interfaces."
-        verify(exactly = 1) { logger.error("Cannot stub non interfaces.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interfaces.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
@@ -289,7 +289,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val error = assertFailsWith<IllegalArgumentException> {
@@ -305,7 +305,7 @@ class KMockSingleSourceAggregatorCommonSpec {
 
         // Then
         error.message mustBe "Cannot stub non interface $packageName.$simpleName."
-        verify(exactly = 1) { logger.error("Cannot stub non interface $packageName.$simpleName.") }
+        verify(exactly = 1) { logger.warn("Cannot stub non interface $packageName.$simpleName.") }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(MockCommon::class.qualifiedName!!, false)
         }
@@ -368,7 +368,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { genericResolver.extractGenerics(any()) } returns generics
 
@@ -457,7 +457,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { genericResolver.extractGenerics(any()) } returns generics
 
@@ -539,7 +539,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, _, sourceFiles) = KMockSingleSourceAggregator(
@@ -624,7 +624,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, interfaces, sourceFiles) = KMockSingleSourceAggregator(
@@ -716,7 +716,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declaration.packageName.asString() } returns packageName
         every { declaration.qualifiedName!!.asString() } returns "$packageName.$simpleName"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         every { sourceSetValidator.isValidateSourceSet(any()) } returns true
 
@@ -836,7 +836,7 @@ class KMockSingleSourceAggregatorCommonSpec {
         every { declarationGiven.packageName.asString() } returns packageNameGiven
         every { declarationGiven.qualifiedName!!.asString() } returns "$packageNameGiven.$simpleNameGiven"
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val (_, interfaces, sourceFiles) = KMockSingleSourceAggregator(

@@ -47,7 +47,7 @@ internal abstract class BaseSourceAggregator(
 
                     shared[indicator] = sources
                 }
-                else -> logger.error("Unprocessable source.", ksAnnotated)
+                else -> logger.warn("Unprocessable source.", ksAnnotated)
             }
         }
 
@@ -99,11 +99,11 @@ internal abstract class BaseSourceAggregator(
     protected fun safeCastInterface(interfaze: KSDeclaration): KSClassDeclaration {
         return when {
             interfaze !is KSClassDeclaration -> {
-                logger.error("Cannot stub non interfaces.")
+                logger.warn("Cannot stub non interfaces.")
                 throw IllegalArgumentException("Cannot stub non interfaces.")
             }
             interfaze.classKind != ClassKind.INTERFACE -> {
-                logger.error("Cannot stub non interface ${interfaze.toClassName()}.")
+                logger.warn("Cannot stub non interface ${interfaze.toClassName()}.")
                 throw IllegalArgumentException("Cannot stub non interface ${interfaze.toClassName()}.")
             }
             else -> interfaze

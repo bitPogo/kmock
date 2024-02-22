@@ -281,7 +281,7 @@ internal class AccessMock<L : Alias623>(
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _prop.clear()
         _doSomething.clear()
         _doAnythingElseWithAlias621Alias623.clear()
