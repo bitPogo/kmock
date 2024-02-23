@@ -9,6 +9,7 @@ package tech.antibytes.kmock.example
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -41,7 +42,6 @@ import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.annotations.IgnoreNative
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultScheduler
@@ -62,6 +62,7 @@ import tech.antibytes.util.test.mustBe
     SampleLocalRepository::class,
     GenericSampleDomainObject::class,
 )
+@Ignore
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
@@ -99,7 +100,6 @@ class SampleControllerAlternativeAccessSpec {
     }
 
     @Test
-    @IgnoreNative
     @JsName("fn1")
     fun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
         // Given

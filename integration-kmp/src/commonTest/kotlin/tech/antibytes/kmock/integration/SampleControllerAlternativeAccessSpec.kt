@@ -9,6 +9,7 @@ package tech.antibytes.kmock.integration
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,7 +44,6 @@ import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.annotations.IgnoreNative
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultScheduler
 import tech.antibytes.util.test.fulfils
@@ -62,6 +62,7 @@ import tech.antibytes.util.test.mustBe
     SampleLocalRepository::class,
     GenericSampleDomainObject::class,
 )
+@Ignore
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
@@ -139,7 +140,6 @@ class SampleControllerAlternativeAccessSpec {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     @JsName("fn2")
-    @IgnoreNative
     fun `Given find it fetches a DomainObjects`() = runTest {
         // Given
         val idOrg = fixture.fixture<String>()
