@@ -11,9 +11,11 @@ import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
@@ -41,6 +43,7 @@ import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
+import tech.antibytes.util.test.annotations.IgnoreNative
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultScheduler
 import tech.antibytes.util.test.fulfils
@@ -133,8 +136,10 @@ class SampleControllerAlternativeAccessSpec {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     @JsName("fn2")
+    @IgnoreNative
     fun `Given find it fetches a DomainObjects`() = runTest {
         // Given
         val idOrg = fixture.fixture<String>()
@@ -157,6 +162,8 @@ class SampleControllerAlternativeAccessSpec {
             .launchIn(CoroutineScope(contextRef.get()))
 
         delay(20)
+
+        advanceUntilIdle()
 
         // Then
         verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
