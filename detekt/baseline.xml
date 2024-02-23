@@ -40,7 +40,6 @@
     <ID>BracesOnWhenStatements:SourceSetValidator.kt$SourceSetValidator$-&gt;</ID>
     <ID>BracesOnWhenStatements:SpiedRegularActualFactory.kt$-&gt;</ID>
     <ID>BracesOnWhenStatements:TypeParameterResolver.kt$-&gt;</ID>
-    <ID>ClassNaming:build.gradle.kts$x</ID>
     <ID>CollapsibleIfStatements:Dangerfile.df.kts$if (isFeatureBranch) { if (!isFeatureTitle) { fail( "Title is not following our pattern:\n" + "\nAdd|Change|Remove|Fix|Bump|Security {Feature title}" ) } }</ID>
     <ID>CollapsibleIfStatements:Dangerfile.df.kts$if (isReleaseBranch) { if (!isReleaseTitle) { fail( "Title is not following our pattern: Prepare Release major.minor.patch (1.2.0)" ) } }</ID>
     <ID>ConstructorParameterNaming:AndSpec.kt$AndSpec.MockConstraint$val _toString: String = ""</ID>
@@ -501,6 +500,7 @@
     <ID>TooManyFunctions:KMockProxyNameSelector.kt$KMockProxyNameSelector : ProxyNameSelectorProxyNameCollector</ID>
     <ID>TooManyFunctions:KMockReceiverGenerator.kt$KMockReceiverGenerator : ReceiverGenerator</ID>
     <ID>TooManyFunctions:KMockSingleSourceAggregator.kt$KMockSingleSourceAggregator : SingleSourceAggregatorBaseSourceAggregator</ID>
+    <ID>TooManyFunctions:KmpSourceSetsConfigurator.kt$KmpSourceSetsConfigurator : SourceSetConfigurator</ID>
     <ID>TooManyFunctions:ParameterTypeMapping.kt$tech.antibytes.kmock.processor.kotlinpoet.ParameterTypeMapping.kt</ID>
     <ID>TooManyFunctions:PropertyProxy.kt$PropertyProxy&lt;Value&gt; : PropertyProxy</ID>
     <ID>TooManyFunctions:Shared.kt$tech.antibytes.kmock.processor.kotlinpoet.Shared.kt</ID>
@@ -525,6 +525,7 @@
     <ID>UnusedImports:Relaxed.kt$import mock.template.typealiaz.smooth</ID>
     <ID>UnusedImports:Shared.kt$import mock.template.relaxed.relaxed</ID>
     <ID>UnusedImports:Shared.kt$import tech.antibytes.kmock.MockShared</ID>
+    <ID>UnusedImports:build.gradle.kts$import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension</ID>
     <ID>UnusedImports:build.gradle.kts$import tech.antibytes.gradle.configuration.isIdea</ID>
     <ID>UnusedParameter:Relaxed.kt$id: String</ID>
     <ID>UnusedPrivateProperty:AndroidSampleControllerAutoStubSpec.kt$AndroidSampleControllerAutoStubSpec$private val androidThing = AndroidThingMock()</ID>
@@ -534,12 +535,12 @@
     <ID>UnusedPrivateProperty:KMockMultiInterfaceBinder.kt$KMockMultiInterfaceBinder$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateProperty:KMockProcessor.kt$KMockProcessor$private val logger: KSPLogger</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val androidInstrumentedTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
-    <ID>UnusedPrivateProperty:build.gradle.kts$val androidInstrumentedTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidInstrumentedAndroidTest") kotlin.srcDir("build/generated/ksp/android/androidReleaseAndroidTest") kotlin.srcDir("build/generated/ksp/android/androidDebugAndroidTest") dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) } }</ID>
+    <ID>UnusedPrivateProperty:build.gradle.kts$val androidInstrumentedTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidInstrumentedTest") dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.android.test.junit.ktx) implementation(antibytesCatalog.android.test.compose.junit4) implementation(antibytesCatalog.android.test.espresso.core) implementation(antibytesCatalog.android.test.uiAutomator) implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) } }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val androidMain by getting { dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val androidMain by getting { dependsOn(concurrentMain) dependencies { implementation(antibytesCatalog.jvm.kotlin.stdlib.jdk8) } }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val androidUnitTest by getting { dependencies { implementation(antibytesCatalog.android.test.junit.core) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val androidUnitTest by getting { dependsOn(concurrentTest) dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
-    <ID>UnusedPrivateProperty:build.gradle.kts$val androidUnitTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidTest") dependencies { implementation("junit:junit:4.13.2") implementation(antibytesCatalog.android.test.robolectric) } }</ID>
+    <ID>UnusedPrivateProperty:build.gradle.kts$val androidUnitTest by getting { dependsOn(concurrentTest) kotlin.srcDir("build/generated/ksp/android/androidUnitTest") dependencies { implementation(antibytesCatalog.jvm.test.junit.junit4) implementation(antibytesCatalog.jvm.test.kotlin.junit4) implementation(antibytesCatalog.android.test.robolectric) } }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val appleMain by getting { dependsOn(nativeMain) }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val appleTest by getting { dependsOn(nativeTest) }</ID>
     <ID>UnusedPrivateProperty:build.gradle.kts$val commonMain by getting { dependencies { implementation(antibytesCatalog.common.kotlin.stdlib) implementation(antibytesCatalog.common.kotlinx.atomicfu.core) implementation(antibytesCatalog.common.stately.collections) } }</ID>
