@@ -14,14 +14,14 @@ on:
 
 jobs:
   build:
-    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
     concurrency:
       group: build-macos-${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
 
   coding-conventions:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@main
     with:
       cache-reports: true
       detekt: true
@@ -32,7 +32,7 @@ jobs:
 
   check-android:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
     with:
       # projects: "[':playground', ':integration-kmp', ':integration-android-application']"
       projects: "[':playground']"
@@ -46,7 +46,7 @@ jobs:
 
   coverage:
     needs: [coding-conventions, check-android]
-    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@main
     with:
       jvm: true
       verify-kmp: true
@@ -61,7 +61,7 @@ jobs:
 
   check:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
     with:
       platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-js', 'mingw']"
     concurrency:
@@ -70,7 +70,7 @@ jobs:
 
   publish:
     needs: [ coverage, check ]
-    uses: bitpogo/workflows/.github/workflows/shared-publish-pull-request.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-publish-pull-request.yml@main
     with:
       uses-mips: false
     secrets:

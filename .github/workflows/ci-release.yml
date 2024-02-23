@@ -7,14 +7,14 @@ on:
 
 jobs:
   build:
-    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
     concurrency:
       group: build-macos
       cancel-in-progress: true
 
   check-android:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
     with:
       # projects: "[':playground', ':integration-kmp', ':integration-android-application']"
       projects: "[':playground']"
@@ -28,7 +28,7 @@ jobs:
 
   check:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
     with:
       cleanup: false
       platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-all', 'mingw']"
@@ -38,7 +38,7 @@ jobs:
 
   docs:
     needs: [ check, check-android ]
-    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-release.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-release.yml@main
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     concurrency:
@@ -47,7 +47,7 @@ jobs:
 
   publish:
     needs: [ check, check-android ]
-    uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@main
     with:
       uses-mips: false
     secrets:

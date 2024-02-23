@@ -5,7 +5,7 @@ on:
 
 jobs:
   sync-labels:
-    uses: bitpogo/workflows/.github/workflows/shared-label-sync.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-label-sync.yml@main
     with:
       labels-path: .github/labels.yml
     secrets:
