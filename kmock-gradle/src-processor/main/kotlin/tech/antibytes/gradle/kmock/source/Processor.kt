@@ -4,6 +4,8 @@
  * Use of this source code is governed by Apache v2.0
  */
 
+@file:Suppress("UnusedReceiverParameter")
+
 package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.artifacts.dsl.DependencyHandler

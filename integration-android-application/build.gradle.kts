@@ -59,7 +59,7 @@ android {
         kotlinCompilerExtensionVersion = antibytesCatalog.versions.android.compose.compiler.get()
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -94,7 +94,7 @@ dependencies {
     testImplementation(antibytesCatalog.testUtils.core)
     testImplementation(antibytesCatalog.testUtils.coroutine)
     testImplementation(antibytesCatalog.kfixture)
-    testImplementation(project(":kmock"))
+    testImplementation(projects.kmock)
     testImplementation(antibytesCatalog.android.test.junit.core)
     testImplementation(antibytesCatalog.jvm.test.junit.junit4)
 
@@ -110,10 +110,5 @@ dependencies {
 
     androidTestImplementation(antibytesCatalog.testUtils.core)
     androidTestImplementation(antibytesCatalog.kfixture)
-    androidTestImplementation(project(":kmock"))
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    androidTestImplementation(projects.kmock)
 }

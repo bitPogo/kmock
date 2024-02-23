@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import tech.antibytes.kfixture.fixture
@@ -75,29 +76,27 @@ class SampleControllerAutoStubSpec {
 
         // When
         val controller = SampleController(local, remote)
-        return runBlockingTestWithTimeout {
-            val actual = controller.fetchAndStore(url)
+        val actual = controller.fetchAndStore(url)
 
-            // Then
-            actual mustBe domainObject
+        // Then
+        actual mustBe domainObject
 
-            verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
-            verify(exactly = 1) { local._store.hasBeenStrictlyCalledWith(id[1], number) }
+        verify(exactly = 1) { remote._fetch.hasBeenStrictlyCalledWith(url) }
+        verify(exactly = 1) { local._store.hasBeenStrictlyCalledWith(id[1], number) }
 
-            verifier.verifyStrictOrder {
-                remote._fetch.hasBeenStrictlyCalledWith(url)
-                domainObject._id.wasGotten()
-                domainObject._id.wasSet()
-                domainObject._id.wasGotten()
-                domainObject._value.wasGotten()
-                local._store.hasBeenStrictlyCalledWith(id[1], number)
-            }
+        verifier.verifyStrictOrder {
+            remote._fetch.hasBeenStrictlyCalledWith(url)
+            domainObject._id.wasGotten()
+            domainObject._id.wasSet()
+            domainObject._id.wasGotten()
+            domainObject._value.wasGotten()
+            local._store.hasBeenStrictlyCalledWith(id[1], number)
+        }
 
-            verifier.verifyOrder {
-                remote._fetch.hasBeenCalledWith(url)
-                domainObject._id.wasSetTo("42")
-                local._store.hasBeenCalledWith(id[1])
-            }
+        verifier.verifyOrder {
+            remote._fetch.hasBeenCalledWith(url)
+            domainObject._id.wasSetTo("42")
+            local._store.hasBeenCalledWith(id[1])
         }
     }
 

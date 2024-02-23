@@ -46,7 +46,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "b5d11da"
+    id("tech.antibytes.gradle.dependency.settings") version "288f8da"
 }
 
 includeBuild("setup")
@@ -59,7 +59,7 @@ include(
     ":docs",
     ":playground",
     ":integration-kmp",
-    /*":integration-android-application",*/
+    ":integration-android-application",
 )
 
 buildCache {

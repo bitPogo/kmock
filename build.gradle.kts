@@ -45,7 +45,6 @@ tasks.named<Wrapper>("wrapper") {
 
 allprojects {
     repositories {
-        // mavenLocal()
         mavenCentral()
         google()
         jcenter()
