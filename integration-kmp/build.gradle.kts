@@ -31,7 +31,7 @@ atomicfu {
 }
 
 kotlin {
-    android {
+    androidTarget {
         publishAllLibraryVariants()
         publishLibraryVariantsGroupedByFlavor = true
     }
@@ -75,8 +75,7 @@ kotlin {
                 implementation(antibytesCatalog.common.stately.freeze)
 
                 implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
-
-                implementation(project(":kmock"))
+                implementation(projects.kmock)
             }
         }
 
@@ -194,13 +193,7 @@ android {
         minSdk = 30
     }
 
-    sourceSets {
-        val androidTest = getByName("androidTest")
-        androidTest.java.setSrcDirs(setOf("src/androidAndroidTest/kotlin"))
-        androidTest.res.setSrcDirs(setOf("src/androidAndroidTest/res"))
-    }
-
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             setOf(
                 "META-INF/DEPENDENCIES",

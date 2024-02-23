@@ -27,7 +27,16 @@ antibytesPublishing {
     packaging.set(publishingConfiguration.publishing.packageConfiguration)
     repositories.set(publishingConfiguration.publishing.repositories)
     versioning.set(publishingConfiguration.publishing.versioning)
-    signing.set(publishingConfiguration.publishing.signing)
+    // signing.set(publishingConfiguration.publishing.signing)
+}
+
+configure<SourceSetContainer> {
+    main {
+        java.srcDirs(
+            "src/main/kotlin",
+            "src-processor/main/kotlin",
+        )
+    }
 }
 
 dependencies {
@@ -60,13 +69,14 @@ tasks.withType<KotlinTaskCompile>().configureEach {
 }
 
 val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
+    val version = Versioning.getInstance(
+        project = project,
+        configuration = publishingConfiguration.publishing.versioning
+    ).versionName()
     packageName.set("tech.antibytes.gradle.kmock.config")
     stringFields.set(
         mapOf(
-            "version" to Versioning.getInstance(
-                project = project,
-                configuration = publishingConfiguration.publishing.versioning
-            ).versionName()
+            "processor" to "tech.antibytes.kmock:kmock-processor:${version}"
         )
     )
 

@@ -61,7 +61,7 @@ class SampleControllerAutoStubSpec {
     }
 
     @Test
-    fun `Given fetchAndStore it fetches and stores DomainObjects`() {
+    fun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
         // Given
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)

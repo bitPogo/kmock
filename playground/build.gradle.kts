@@ -4,6 +4,7 @@
  * Use of this source code is governed by Apache v2.0
  */
 
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
@@ -213,13 +214,13 @@ kotlin {
 }
 
 dependencies {
-    add("kspAndroidAndroidTest", project(":kmock-processor"))
-    add("kspJvmTest", project(":kmock-processor"))
-    add("kspAndroidTest", project(":kmock-processor"))
-    add("kspJsTest", project(":kmock-processor"))
-    add("kspLinuxX64Test", project(":kmock-processor"))
-    add("kspIosX64Test", project(":kmock-processor"))
-    add("kspIosSimulatorArm64Test", project(":kmock-processor"))
+    add("kspAndroidAndroidTest", projects.kmockProcessor)
+    add("kspJvmTest", projects.kmockProcessor)
+    add("kspAndroidTest", projects.kmockProcessor)
+    add("kspJsTest", projects.kmockProcessor)
+    add("kspLinuxX64Test", projects.kmockProcessor)
+    add("kspIosX64Test", projects.kmockProcessor)
+    add("kspIosSimulatorArm64Test", projects.kmockProcessor)
 }
 
 val kspTasks = tasks.matching { task -> task.name.startsWith("ksp") }

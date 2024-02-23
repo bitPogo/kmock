@@ -22,7 +22,7 @@ antibytesPublishing {
     packaging.set(publishingConfiguration.publishing.packageConfiguration)
     repositories.set(publishingConfiguration.publishing.repositories)
     versioning.set(publishingConfiguration.publishing.versioning)
-    signing.set(publishingConfiguration.publishing.signing)
+    // signing.set(publishingConfiguration.publishing.signing)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

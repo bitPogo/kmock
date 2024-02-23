@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.DEPENDENCIES
 import tech.antibytes.gradle.kmock.KMockPluginContract.SourceSetConfigurator
-import tech.antibytes.gradle.kmock.config.MainConfig
 
 internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
     private fun cleanSourceName(sourceName: String): String = sourceName.substringBeforeLast("Test")
@@ -23,10 +22,20 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         dependencies: DependencyHandler,
         dependency: String,
     ) {
-        dependencies.add(
-            dependency,
-            "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
-        )
+        if (!dependency.startsWith("kspAndroidUnitTest") && !dependency.startsWith("kspAndroidInstrumentedTest")) {
+            dependencies.add(
+                dependency,
+                dependencies.determineProcessor(),
+            )
+        }
+    }
+
+    private fun String.cleanAndroid(): String {
+        return if (startsWith("android")) {
+            "android"
+        } else {
+            this
+        }
     }
 
     private fun extendSourceSet(
@@ -50,7 +59,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
             }
             else -> {
                 sourceSet.kotlin.srcDir(
-                    "$buildDir/generated/ksp/$platformName/${sourceSet.name}/kotlin",
+                    "$buildDir/generated/ksp/${platformName.cleanAndroid()}/${sourceSet.name}/kotlin",
                 )
             }
         }
@@ -79,6 +88,10 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         }
     }
 
+    private fun String.isAndroidInstrumented(): Boolean {
+        return startsWith("androidAndroidTest") || startsWith("androidInstrumentedTest")
+    }
+
     private fun addSource(
         sourceSetName: String,
         platformName: String,
@@ -88,7 +101,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         metaDependencies: MutableMap<String, Set<String>>,
         dependencyHandler: DependencyHandler,
     ) {
-        if (sourceSetName != "androidAndroidTestDebug" && sourceSetName != "androidAndroidTestRelease") {
+        if (!sourceSetName.isAndroidInstrumented() || sourceSetName.endsWith("Test")) {
             val kspDependency = resolveKspDependency(platformName)
             try {
                 addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
@@ -121,9 +134,8 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
     private fun isAllowedSourceSet(sourceSetName: String): Boolean {
         return sourceSetName == "androidTest" ||
-            sourceSetName == "androidAndroidTest" ||
-            sourceSetName == "androidAndroidTestDebug" ||
-            sourceSetName == "androidAndroidTestRelease" ||
+            sourceSetName == "androidUnitTest" ||
+            sourceSetName.isAndroidInstrumented() ||
             (sourceSetName.endsWith("Test") && !sourceSetName.startsWith("android"))
     }
 
@@ -136,7 +148,7 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
 
     override fun configure(project: Project) {
         val dependencies = project.dependencies
-        val buildDir = project.buildDir.absolutePath.trimEnd('/')
+        val buildDir = project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')
         val kspCollector: MutableMap<String, String> = mutableMapOf()
         val sourceDependencies: MutableMap<String, Set<String>> = mutableMapOf()
         val metaDependencies: MutableMap<String, Set<String>> = mutableMapOf()

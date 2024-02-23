@@ -8,10 +8,12 @@ package tech.antibytes.gradle.kmock.source
 
 import com.google.devtools.ksp.gradle.KspExtension
 import io.mockk.Runs
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
@@ -72,7 +74,7 @@ class KmpSourceSetsConfiguratorSpec {
 
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
 
         invokeGradleAction(kotlin) { probe ->
             extensions.configure<KotlinMultiplatformExtension>("kotlin", probe)
@@ -120,7 +122,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->
@@ -228,12 +230,22 @@ class KmpSourceSetsConfiguratorSpec {
         val source5Dependencies: KotlinSourceSet = mockk()
         val source5DependenciesName: String = fixture.fixture()
 
+        val source6: KotlinSourceSet = mockk()
+        val source6Dependencies: KotlinSourceSet = mockk()
+        val source6DependenciesName: String = fixture.fixture()
+
+        val source7: KotlinSourceSet = mockk()
+        val source7Dependencies: KotlinSourceSet = mockk()
+        val source7DependenciesName: String = fixture.fixture()
+
         val sourceSets = mutableListOf(
             source1,
             source2,
             source3,
             source4,
             source5,
+            source6,
+            source7,
         )
 
         val dependencyGraph = mapOf(
@@ -243,7 +255,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->
@@ -280,6 +292,16 @@ class KmpSourceSetsConfiguratorSpec {
         every { source5.dependsOn } returns setOf(source5Dependencies)
         every { source5Dependencies.name } returns source5DependenciesName
 
+        every { source6.name } returns "androidUnitTest"
+        every { source6.kotlin.srcDir(any()) } returns mockk()
+        every { source6.dependsOn } returns setOf(source6Dependencies)
+        every { source6Dependencies.name } returns source6DependenciesName
+
+        every { source7.name } returns "androidInstrumentedTest"
+        every { source7.kotlin.srcDir(any()) } returns mockk()
+        every { source7.dependsOn } returns setOf(source7Dependencies)
+        every { source7Dependencies.name } returns source7DependenciesName
+
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
 
@@ -313,6 +335,8 @@ class KmpSourceSetsConfiguratorSpec {
             )
         }
 
+        confirmVerified(dependencies)
+
         verify(exactly = 1) {
             source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
         }
@@ -334,11 +358,21 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
+            source6.kotlin.srcDir("$path/generated/ksp/android/androidUnitTest/kotlin")
+        }
+
+        verify(exactly = 1) {
+            source7.kotlin.srcDir("$path/generated/ksp/android/androidInstrumentedTest/kotlin")
+        }
+
+        verify(exactly = 1) {
             DependencyGraph.resolveAncestors(
                 sourceDependencies = mapOf(
                     source1DependenciesName to setOf("jvm"),
                     source2DependenciesName to setOf("android"),
                     source3DependenciesName to setOf("androidAndroid"),
+                    source6DependenciesName to setOf("androidUnit"),
+                    source7DependenciesName to setOf("androidInstrumented"),
                 ),
                 metaDependencies = emptyMap(),
             )
@@ -347,7 +381,15 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             KmpCleanup.cleanup(
                 project,
-                listOf("jvm", "android", "androidAndroid", "androidAndroid", "androidAndroid"),
+                listOf(
+                    "jvm",
+                    "android",
+                    "androidAndroid",
+                    "androidAndroid",
+                    "androidAndroid",
+                    "androidUnit",
+                    "androidInstrumented",
+                ),
             )
         }
 
@@ -384,7 +426,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->
@@ -517,7 +559,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns "false"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->
@@ -780,7 +822,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns "true"
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->
@@ -870,7 +912,7 @@ class KmpSourceSetsConfiguratorSpec {
         every { project.findProperty(any()) } returns null
         every { project.dependencies } returns dependencies
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin(any<String>()) } returns false
 
         invokeGradleAction(kotlin) { probe ->

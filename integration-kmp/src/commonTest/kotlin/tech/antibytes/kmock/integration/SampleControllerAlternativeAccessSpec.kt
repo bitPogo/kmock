@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.runTest
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -135,7 +136,7 @@ class SampleControllerAlternativeAccessSpec {
 
     @Test
     @JsName("fn2")
-    fun `Given find it fetches a DomainObjects`(): AsyncTestReturnValue {
+    fun `Given find it fetches a DomainObjects`() = runTest {
         // Given
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
@@ -151,35 +152,33 @@ class SampleControllerAlternativeAccessSpec {
         val doRef = AtomicReference(domainObject)
         val contextRef = AtomicReference(defaultScheduler)
 
-        return runBlockingTestInContext(defaultScheduler) {
-            // When
-            controller.find(idOrg)
-                .onEach { actual -> actual mustBe doRef.get() }
-                .launchIn(CoroutineScope(contextRef.get()))
+        // When
+        controller.find(idOrg)
+            .onEach { actual -> actual mustBe doRef.get() }
+            .launchIn(CoroutineScope(contextRef.get()))
 
-            delay(20)
+        delay(20)
 
-            // Then
-            verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
-            verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
+        // Then
+        verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
+        verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
+        verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
 
-            collector.assertOrder {
-                local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                domainObject.propertyProxyOf(domainObject::id).wasSet()
-            }
+        collector.assertOrder {
+            local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            domainObject.propertyProxyOf(domainObject::id).wasSet()
+        }
 
-            collector.verifyOrder {
-                local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-            }
+        collector.verifyOrder {
+            local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
         }
     }
 

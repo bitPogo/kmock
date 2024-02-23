@@ -21,6 +21,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        mavenLocal()
     }
 }
 

@@ -13,6 +13,7 @@ import tech.antibytes.gradle.kmock.config.quality.Linter
 import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
 import tech.antibytes.gradle.kmock.config.quality.StableApi
 import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
+import tech.antibytes.gradle.publishing.PublishingApiContract
 import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
 
 plugins {
@@ -38,12 +39,13 @@ antibytesPublishing {
 }
 
 tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "7.5.1"
+    gradleVersion = antibytesCatalog.versions.gradle.gradle.get()
     distributionType = Wrapper.DistributionType.ALL
 }
 
 allprojects {
     repositories {
+        // mavenLocal()
         mavenCentral()
         google()
         jcenter()

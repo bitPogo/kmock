@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.runTest
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -81,33 +82,31 @@ class SampleControllerAutoStubSpec {
 
         // When
         val controller = SampleController(local, remote)
-        return runBlockingTestWithTimeout {
-            val actual = controller.fetchAndStore(url)
+        val actual = controller.fetchAndStore(url)
 
-            // Then
-            actual mustBe domainObject
+        // Then
+        actual mustBe domainObject
 
-            assertProxy {
-                remote._fetch.hasBeenStrictlyCalledWith(url)
-                remote._fetch.hasNoFurtherInvocations()
-                local._store.hasBeenStrictlyCalledWith(id[1], number)
-                local._store.hasNoFurtherInvocations()
-            }
+        assertProxy {
+            remote._fetch.hasBeenStrictlyCalledWith(url)
+            remote._fetch.hasNoFurtherInvocations()
+            local._store.hasBeenStrictlyCalledWith(id[1], number)
+            local._store.hasNoFurtherInvocations()
+        }
 
-            collector.assertOrder {
-                remote._fetch.hasBeenStrictlyCalledWith(url)
-                domainObject._id.wasGotten()
-                domainObject._id.wasSet()
-                domainObject._id.wasGotten()
-                domainObject._value.wasGotten()
-                local._store.hasBeenCalledWith(id[1])
-            }
+        collector.assertOrder {
+            remote._fetch.hasBeenStrictlyCalledWith(url)
+            domainObject._id.wasGotten()
+            domainObject._id.wasSet()
+            domainObject._id.wasGotten()
+            domainObject._value.wasGotten()
+            local._store.hasBeenCalledWith(id[1])
+        }
 
-            collector.verifyOrder {
-                remote._fetch.hasBeenCalledWith(url)
-                domainObject._id.wasSetTo("42")
-                local._store.hasBeenCalledWith(id[1])
-            }
+        collector.verifyOrder {
+            remote._fetch.hasBeenCalledWith(url)
+            domainObject._id.wasSetTo("42")
+            local._store.hasBeenCalledWith(id[1])
         }
     }
 

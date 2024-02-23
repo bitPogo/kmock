@@ -32,7 +32,7 @@ antibytesPublishing {
     repositories.set(publishingConfiguration.publishing.repositories)
     versioning.set(publishingConfiguration.publishing.versioning)
     documentation.set(publishingConfiguration.publishing.documentation)
-    signing.set(publishingConfiguration.publishing.signing)
+    // signing.set(publishingConfiguration.publishing.signing)
 }
 
 antibytesCoverage {

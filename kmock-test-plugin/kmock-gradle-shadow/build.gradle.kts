@@ -39,14 +39,20 @@ tasks.withType<KotlinTaskCompile>().configureEach {
     }
 }
 
+configure<SourceSetContainer> {
+    main {
+        java.srcDirs(
+            "src/main/kotlin",
+            "src-processor/main/kotlin",
+        )
+    }
+}
+
 val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
     packageName.set("tech.antibytes.gradle.kmock.config")
     stringFields.set(
         mapOf(
-            "version" to Versioning.getInstance(
-                project = project,
-                configuration = publishingConfiguration.publishing.versioning
-            ).versionName()
+            "processor" to ":kmock-processor"
         )
     )
 

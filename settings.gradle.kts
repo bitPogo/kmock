@@ -57,7 +57,9 @@ include(
     ":kmock-processor",
     ":kmock-gradle",
     ":docs",
-    ":playground"
+    ":playground",
+    ":integration-kmp",
+    /*":integration-android-application",*/
 )
 
 buildCache {
