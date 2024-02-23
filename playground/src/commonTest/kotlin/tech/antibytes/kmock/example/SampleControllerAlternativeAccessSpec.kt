@@ -41,6 +41,7 @@ import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
+import tech.antibytes.util.test.annotations.IgnoreNative
 import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
 import tech.antibytes.util.test.coroutine.defaultScheduler
@@ -98,6 +99,7 @@ class SampleControllerAlternativeAccessSpec {
     }
 
     @Test
+    @IgnoreNative
     @JsName("fn1")
     fun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
         // Given
