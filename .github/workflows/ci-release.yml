@@ -48,8 +48,6 @@ jobs:
   publish:
     needs: [ check, check-android ]
     uses: bitpogo/workflows/.github/workflows/shared-publish-release.yml@main
-    with:
-      uses-mips: false
     secrets:
       upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
       upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}
