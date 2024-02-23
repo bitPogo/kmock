@@ -39,8 +39,16 @@ dependencyResolutionManagement {
 
             library("kfixture", "tech.antibytes.kfixture", "core").versionRef("kfixture")
             library("testUtils-core", "tech.antibytes.test-utils-kmp", "test-utils").versionRef("testUtils")
-            library("testUtils-annotations", "tech.antibytes.test-utils-kmp", "test-utils-annotations-junit4").versionRef("testUtils")
-            library("testUtils-coroutine", "tech.antibytes.test-utils-kmp", "test-utils-coroutine").versionRef("testUtils")
+            library(
+                "testUtils-annotations",
+                "tech.antibytes.test-utils-kmp",
+                "test-utils-annotations-junit4",
+            ).versionRef("testUtils")
+            library(
+                "testUtils-coroutine",
+                "tech.antibytes.test-utils-kmp",
+                "test-utils-coroutine",
+            ).versionRef("testUtils")
         }
     }
 }

@@ -25,12 +25,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Gradle 7.5.1 -> 8.6.0
 * Android Gradle Plugin 7.3.1 -> 8.2.2
-* Kotlin 1.7.22 -> 1.9.22
-* KSP 1.7.21-1.0.8 -> 1.9.22-1.0.17
-* AtomicFu 0.18.5 -> 0.23.2
+* Kotlin 1.8.0 -> 1.9.22
+* KSP  1.8.0-1.0.8 -> 1.9.22-1.0.17
+* AtomicFu 0.19.0 -> 0.23.2
 * Stately 1.2.3 -> 2.0.6
 * Android Target SDK 32 -> 34
 * CompilerTest 1.4.9 -> 0.4.0 (ZacSweers)
+* min Java 11 -> 17
 
 ## [v0.3.0-rc08](https://github.com/bitPogo/kmock/compare/v0.3.0-rc07...v0.3.0-rc08)
 
