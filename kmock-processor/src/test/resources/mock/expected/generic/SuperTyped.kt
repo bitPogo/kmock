@@ -183,7 +183,7 @@ internal class SuperTypedMock<K : Any, L>(
 
     public override fun <T> roo(fuzz: Any, vararg ozz: RRR<*>): Any = _roo.invoke(fuzz, ozz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _pptWithZTAnys.clear()
         _pptWithTCharSequenceTComparables.clear()
         _pptWithTComparables.clear()

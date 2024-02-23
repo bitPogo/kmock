@@ -218,7 +218,7 @@ internal class PlatformMock<L : Alias23>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _prop.clear()
         _doSomething.clear()
         _doMore.clear()

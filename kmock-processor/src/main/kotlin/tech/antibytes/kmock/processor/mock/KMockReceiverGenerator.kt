@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -118,6 +118,7 @@ internal class KMockReceiverGenerator(
             getterProxy.templateName,
             propertyType.methodTypeName,
             KModifier.OVERRIDE,
+            KModifier.PUBLIC,
         ).receiver(receiver.methodTypeName)
 
         if (typeParameter.isNotEmpty()) {
@@ -317,7 +318,7 @@ internal class KMockReceiverGenerator(
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
             .addArguments(arguments)
             .returns(returnType.methodTypeName)
             .receiver(receiverInfo.methodTypeName)
@@ -432,6 +433,7 @@ internal class KMockReceiverGenerator(
                 spyType.createReceiverSpy(),
             )
             .addCode("return action($SPY_PROPERTY!!)")
+            .returns(NULLABLE_ANY)
             .build()
     }
 

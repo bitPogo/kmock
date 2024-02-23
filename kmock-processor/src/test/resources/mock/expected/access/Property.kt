@@ -7,7 +7,6 @@ import kotlin.Comparable
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.Map
 import kotlin.reflect.KProperty
 import tech.antibytes.kmock.KMockContract
@@ -77,7 +76,7 @@ internal class PropertyMock<L, T>(
         "buzz|property" to _buzz,
     )
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
         _uzz.clear()

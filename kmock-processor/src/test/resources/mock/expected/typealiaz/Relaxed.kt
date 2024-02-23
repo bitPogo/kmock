@@ -100,7 +100,7 @@ internal class RelaxedMock<L : Alias102>(
         useRelaxerIf(relaxed) { proxyId -> smooth(proxyId,) }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _doSomething.clear()
         _doAnythingElseWithAlias101Alias102.clear()
         _doAnythingElseWithAlias107.clear()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -83,7 +83,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -121,7 +121,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -161,7 +161,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -199,7 +199,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -242,7 +242,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -277,7 +277,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -315,7 +315,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -355,7 +355,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -393,7 +393,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -441,7 +441,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -483,7 +483,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -521,7 +521,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns false
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -561,7 +561,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -599,7 +599,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp
@@ -649,7 +649,7 @@ class KSPBridgeSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") } returns true
         every { extensions.getByType(KspExtension::class.java) } returns ksp

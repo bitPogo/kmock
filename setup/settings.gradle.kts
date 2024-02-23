@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -20,9 +20,13 @@ pluginManagement {
                 includeGroupByRegex(antibytesPlugins)
             }
         }
+        mavenCentral()
+        mavenLocal()
     }
 }
 
 plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "022f831"
+    id("tech.antibytes.gradle.dependency.settings") version "288f8da"
 }
+
+rootProject.name = "kmock-setup"

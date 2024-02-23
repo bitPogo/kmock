@@ -113,7 +113,7 @@ internal class SharedMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _hashCode.clear()
         _fooWithIntAny.clear()

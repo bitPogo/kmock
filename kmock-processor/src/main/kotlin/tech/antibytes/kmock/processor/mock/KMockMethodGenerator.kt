@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
 
 package tech.antibytes.kmock.processor.mock
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
@@ -29,6 +30,7 @@ import tech.antibytes.kmock.processor.kotlinpoet.toProxyPairTypeName
 import tech.antibytes.kmock.processor.kotlinpoet.toTypeParameterResolver
 
 internal class KMockMethodGenerator(
+    private val logger: KSPLogger,
     private val utils: MethodGeneratorHelper,
     private val nameSelector: ProxyNameSelector,
     private val nonIntrusiveInvocationGenerator: NonIntrusiveInvocationGenerator,
@@ -81,7 +83,7 @@ internal class KMockMethodGenerator(
     ): FunSpec {
         val method = FunSpec
             .builder(proxyInfo.templateName)
-            .addModifiers(KModifier.OVERRIDE)
+            .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
             .addArguments(arguments)
             .returns(returnType.methodTypeName)
 
@@ -146,6 +148,7 @@ internal class KMockMethodGenerator(
             generics = proxyGenerics ?: emptyMap(),
             typeParameterResolver = typeParameterResolver,
         )
+
         val isSuspending = ksFunction.modifiers.contains(Modifier.SUSPEND)
 
         val proxySignature = utils.buildProxy(

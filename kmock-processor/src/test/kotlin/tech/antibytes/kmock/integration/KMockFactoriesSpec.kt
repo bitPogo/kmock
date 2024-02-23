@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -7,11 +7,13 @@
 package tech.antibytes.kmock.integration
 
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.kspArgs
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import java.io.File
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import tech.antibytes.kmock.processor.KMockProcessorProvider
@@ -23,6 +25,7 @@ import tech.antibytes.kmock.processor.ProcessorContract.Companion.ROOT_PACKAGE
 import tech.antibytes.util.test.isNot
 import tech.antibytes.util.test.mustBe
 
+@OptIn(ExperimentalCompilerApi::class)
 class KMockFactoriesSpec {
     @TempDir
     lateinit var buildDir: File
@@ -39,7 +42,7 @@ class KMockFactoriesSpec {
         isKmp: Boolean,
         kspArguments: Map<String, String> = emptyMap(),
         vararg sourceFiles: SourceFile,
-    ): KotlinCompilation.Result {
+    ): JvmCompilationResult {
         val args = mutableMapOf(
             KSP_DIR to "${buildDir.absolutePath.trimEnd('/')}/ksp/sources/kotlin",
             ROOT_PACKAGE to rootPackage,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -14,6 +14,7 @@ plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
 
+    alias(antibytesCatalog.plugins.gradle.antibytes.javaConfiguration)
     alias(antibytesCatalog.plugins.gradle.antibytes.publishing)
     alias(antibytesCatalog.plugins.gradle.antibytes.coverage)
     alias(antibytesCatalog.plugins.gradle.antibytes.dokkaConfiguration)
@@ -29,13 +30,22 @@ antibytesPublishing {
     signing.set(publishingConfiguration.publishing.signing)
 }
 
+configure<SourceSetContainer> {
+    main {
+        java.srcDirs(
+            "src/main/kotlin",
+            "src-processor/main/kotlin",
+        )
+    }
+}
+
 dependencies {
     implementation(antibytesCatalog.gradle.kotlin.kotlin)
     implementation(antibytesCatalog.gradle.ksp.plugin)
     implementation(antibytesCatalog.gradle.agp)
 
-    testImplementation(libs.testUtils.core)
-    testImplementation(libs.kfixture)
+    testImplementation(antibytesCatalog.testUtils.core)
+    testImplementation(antibytesCatalog.kfixture)
     testImplementation(antibytesCatalog.jvm.test.junit.runtime)
     testImplementation(platform(antibytesCatalog.jvm.test.junit.bom))
     testImplementation(antibytesCatalog.jvm.test.mockk)
@@ -48,13 +58,8 @@ dependencies {
 
 kotlin {
     sourceSets.main {
-        kotlin.srcDir("${buildDir.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
+        kotlin.srcDir("${layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/antibytes/main/kotlin")
     }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 tasks.withType<KotlinTaskCompile>().configureEach {
@@ -63,18 +68,15 @@ tasks.withType<KotlinTaskCompile>().configureEach {
     }
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
 val generateConfig by tasks.creating(AntiBytesMainConfigurationTask::class.java) {
+    val version = Versioning.getInstance(
+        project = project,
+        configuration = publishingConfiguration.publishing.versioning
+    ).versionName()
     packageName.set("tech.antibytes.gradle.kmock.config")
     stringFields.set(
         mapOf(
-            "version" to Versioning.getInstance(
-                project = project,
-                configuration = publishingConfiguration.publishing.versioning
-            ).versionName()
+            "processor" to "tech.antibytes.kmock:kmock-processor:${version}"
         )
     )
 
@@ -95,13 +97,4 @@ gradlePlugin {
         implementationClass = "tech.antibytes.gradle.kmock.KMockPlugin"
         version = publishingConfiguration.version
     }
-}
-
-configure<JavaPluginExtension> {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-tasks.test {
-    useJUnitPlatform()
 }

@@ -158,9 +158,9 @@ internal class RefinedMock<Q : List<Int>>(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTQString",
             collector = collector, freeze = freeze)
 
-    public val _fooWithTCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any:
+    public val _fooWithTZCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any:
         KMockContract.SyncFunProxy<Unit, (Any, Any) -> Unit> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any",
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_fooWithTZCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any",
             collector = collector, freeze = freeze)
 
     public val _ooWithIntArray_Any: KMockContract.SyncFunProxy<Any, (Int, Array<out Any>) -> Any> =
@@ -171,13 +171,13 @@ internal class RefinedMock<Q : List<Int>>(
         ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithZAnyArray_Int",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_TAny: KMockContract.SyncFunProxy<Any, (Any, Array<*>) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_TAny",
+    public val _ooWithAnyArray_TZAny: KMockContract.SyncFunProxy<Any, (Any, Array<*>) -> Any> =
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_TZAny",
             collector = collector, freeze = freeze)
 
-    public val _ooWithAnyArray_RRR_TAny: KMockContract.SyncFunProxy<Any, (Any,
+    public val _ooWithAnyArray_RRR_TZAny: KMockContract.SyncFunProxy<Any, (Any,
         Array<out RRR<Any?>>) -> Any> =
-        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_RRR_TAny",
+        ProxyFactory.createSyncFunProxy("mock.template.overloaded.RefinedMock#_ooWithAnyArray_RRR_TZAny",
             collector = collector, freeze = freeze)
 
     public override fun foo(fuzz: Int, ozz: Any): Any = _fooWithIntAny.invoke(fuzz, ozz)
@@ -270,7 +270,7 @@ internal class RefinedMock<Q : List<Int>>(
 
     public override fun <T : Q, Q> foo(arg0: T, arg1: Q): Unit where Q : CharSequence, Q :
     Comparable<Q>? =
-        _fooWithTCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any.invoke(arg0, arg1) {
+        _fooWithTZCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any.invoke(arg0, arg1) {
             useUnitFunRelaxerIf(relaxUnitFun || relaxed)
         }
 
@@ -278,12 +278,13 @@ internal class RefinedMock<Q : List<Int>>(
 
     public override fun oo(fuzz: Any?, vararg ozz: Int): Any = _ooWithZAnyArray_Int.invoke(fuzz, ozz)
 
-    public override fun <T> oo(fuzz: Any, vararg ozz: T): Any = _ooWithAnyArray_TAny.invoke(fuzz, ozz)
+    public override fun <T> oo(fuzz: Any, vararg ozz: T): Any = _ooWithAnyArray_TZAny.invoke(fuzz,
+        ozz)
 
     public override fun <T> oo(fuzz: Any, vararg ozz: RRR<T>): Any =
-        _ooWithAnyArray_RRR_TAny.invoke(fuzz, ozz)
+        _ooWithAnyArray_RRR_TZAny.invoke(fuzz, ozz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _hashCode.clear()
         _fooWithIntAny.clear()
@@ -313,10 +314,10 @@ internal class RefinedMock<Q : List<Int>>(
         _fooWithZQ.clear()
         _fooWithTComparable_ZQ.clear()
         _fooWithTQString.clear()
-        _fooWithTCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any.clear()
+        _fooWithTZCharSequenceTZComparable_AnyQCharSequenceQZComparable_Any.clear()
         _ooWithIntArray_Any.clear()
         _ooWithZAnyArray_Int.clear()
-        _ooWithAnyArray_TAny.clear()
-        _ooWithAnyArray_RRR_TAny.clear()
+        _ooWithAnyArray_TZAny.clear()
+        _ooWithAnyArray_RRR_TZAny.clear()
     }
 }

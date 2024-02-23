@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import kotlin.collections.Map
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.KMockExperimental
@@ -60,7 +59,7 @@ internal class BuildInMock(
         useRelaxerIf(true) { super.hashCode() }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _toString.clear()
         _equals.clear()

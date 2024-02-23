@@ -139,7 +139,7 @@ internal class AsyncFunMock<L, T>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
         _ozz.clear()

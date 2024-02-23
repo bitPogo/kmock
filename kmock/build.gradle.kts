@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
 
 import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import tech.antibytes.gradle.coverage.api.JvmJacocoConfiguration
@@ -14,9 +13,7 @@ import tech.antibytes.gradle.coverage.api.JacocoVerificationRule
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoCounter
 import tech.antibytes.gradle.coverage.CoverageApiContract.JacocoMeasurement
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
-import tech.antibytes.gradle.configuration.isIdea
-import tech.antibytes.gradle.configuration.sourcesets.appleWithLegacy
-import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
+import tech.antibytes.gradle.configuration.sourcesets.nativeCoroutine
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -77,7 +74,7 @@ android {
     namespace = "tech.antibytes.kmock"
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = antibytesCatalog.versions.minSdk.get().toInt()
     }
 }
 
@@ -88,7 +85,7 @@ atomicfu {
 }
 
 kotlin {
-    android()
+    androidTarget()
 
     js(IR) {
         nodejs()
@@ -97,11 +94,8 @@ kotlin {
 
     jvm()
 
-    appleWithLegacy()
+    nativeCoroutine()
     ensureAppleDeviceCompatibility()
-
-    linuxX64()
-    mingwX64()
 
     sourceSets {
         all {
@@ -120,10 +114,10 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(antibytesCatalog.common.test.kotlin.core)
-                implementation(libs.testUtils.core)
-                implementation(libs.testUtils.annotations)
-                implementation(libs.testUtils.coroutine)
-                implementation(libs.kfixture)
+                implementation(antibytesCatalog.testUtils.core)
+                implementation(antibytesCatalog.testUtils.annotations)
+                implementation(antibytesCatalog.testUtils.coroutine)
+                implementation(antibytesCatalog.kfixture)
                 implementation(antibytesCatalog.common.test.kotlinx.coroutines)
                 implementation(antibytesCatalog.common.stately.collections)
                 implementation(antibytesCatalog.common.stately.concurrency)
@@ -137,8 +131,7 @@ kotlin {
             }
         }
 
-        setupAndroidTest()
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependencies {
                 implementation(antibytesCatalog.android.test.junit.core)
                 implementation(antibytesCatalog.jvm.test.kotlin.junit4)
@@ -170,40 +163,9 @@ kotlin {
             }
         }
 
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
+        val nativeMain by getting
 
-        val nativeTest by creating {
-            dependsOn(commonTest)
-        }
-
-        val appleMain by getting {
-            dependsOn(nativeMain)
-        }
-        val appleTest by getting {
-            dependsOn(nativeTest)
-        }
-
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val mingwX64Test by getting {
-            dependsOn(nativeTest)
-        }
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        val nativeTest by getting
     }
 }
 

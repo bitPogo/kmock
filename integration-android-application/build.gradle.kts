@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -59,7 +59,7 @@ android {
         kotlinCompilerExtensionVersion = antibytesCatalog.versions.android.compose.compiler.get()
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -91,10 +91,10 @@ dependencies {
     implementation(antibytesCatalog.android.material.compose.core)
     implementation(antibytesCatalog.android.compose.foundation.core)
 
-    testImplementation(libs.testUtils.core)
-    testImplementation(libs.testUtils.coroutine)
-    testImplementation(libs.kfixture)
-    testImplementation(project(":kmock"))
+    testImplementation(antibytesCatalog.testUtils.core)
+    testImplementation(antibytesCatalog.testUtils.coroutine)
+    testImplementation(antibytesCatalog.kfixture)
+    testImplementation(projects.kmock)
     testImplementation(antibytesCatalog.android.test.junit.core)
     testImplementation(antibytesCatalog.jvm.test.junit.junit4)
 
@@ -108,12 +108,7 @@ dependencies {
     androidTestImplementation(antibytesCatalog.android.test.espresso.core)
     androidTestImplementation(antibytesCatalog.android.test.uiAutomator)
 
-    androidTestImplementation(libs.testUtils.core)
-    androidTestImplementation(libs.kfixture)
-    androidTestImplementation(project(":kmock"))
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    androidTestImplementation(antibytesCatalog.testUtils.core)
+    androidTestImplementation(antibytesCatalog.kfixture)
+    androidTestImplementation(projects.kmock)
 }

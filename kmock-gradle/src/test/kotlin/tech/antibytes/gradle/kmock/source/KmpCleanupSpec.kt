@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -82,7 +82,7 @@ class KmpCleanupSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { kspTask.project } returns project
 
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.file(any()) } returns kspDir
 
         invokeGradleAction(project) { probe ->

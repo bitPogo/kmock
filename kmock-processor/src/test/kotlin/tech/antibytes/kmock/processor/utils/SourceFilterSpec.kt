@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -124,8 +124,8 @@ class SourceFilterSpec {
         SourceFilter(mapOf("any" to sortedSetOf()), logger).filterByDependencies(sources)
 
         // Then
-        verify(exactly = 1) { logger.error("No SharedSource defined for $marker0.") }
-        verify(exactly = 1) { logger.error("No SharedSource defined for $marker1.") }
+        verify(exactly = 1) { logger.warn("No SharedSource defined for $marker0.") }
+        verify(exactly = 1) { logger.warn("No SharedSource defined for $marker1.") }
     }
 
     @Test

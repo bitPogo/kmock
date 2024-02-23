@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -108,14 +108,14 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns mockk()
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
@@ -155,14 +155,14 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns mockk()
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
@@ -202,14 +202,14 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns mockk()
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
@@ -253,14 +253,14 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns mockk()
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
@@ -300,14 +300,14 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns mockk()
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
         verify(exactly = 1) {
-            logger.error("Invalid Relaxer!")
+            logger.warn("Invalid Relaxer!")
         }
         verify(exactly = 1) {
             resolver.getSymbolsWithAnnotation(Relaxer::class.qualifiedName!!, false)
@@ -348,13 +348,13 @@ class KMockRelaxationAggregatorSpec {
         every { source.simpleName.asString() } returns functionName
         every { source.containingFile } returns dependency
 
-        every { logger.error(any()) } just Runs
+        every { logger.warn(any()) } just Runs
 
         // When
         val actual = KMockRelaxationAggregator(logger).extractRelaxer(resolver)
 
         // Then
-        verify(exactly = 0) { logger.error(any()) }
+        verify(exactly = 0) { logger.warn(any()) }
 
         actual mustBe ProcessorContract.Relaxer(packageName, functionName, dependency)
         verify(exactly = 1) {

@@ -120,7 +120,7 @@ internal class PlatformMock<L>(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _equalsReceiver.clear()
         _doSomethingReceiver.clear()
         _doSomethingElseReceiverWithSomethingElse.clear()

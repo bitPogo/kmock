@@ -13,14 +13,14 @@ concurrency:
 
 jobs:
   build:
-    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-build-macos.yml@main
     concurrency:
       group: build-macos
       cancel-in-progress: true
 
   coding-conventions:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-coding-conventions-macos.yml@main
     with:
       cache-reports: true
       detekt: true
@@ -31,10 +31,9 @@ jobs:
 
   check-android:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-android-macos.yml@main
     with:
-      # projects: "[':playground', ':integration-kmp', ':integration-android-application']"
-      projects: "[':playground']"
+      projects: "[':integration-kmp', ':integration-android-application']"
       api-level: "['31']"
       arch: "['x86_64']"
       coverage: true
@@ -45,7 +44,7 @@ jobs:
 
   coverage:
     needs: [ coding-conventions, check-android ]
-    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-coverage-macos.yml@main
     with:
       jvm: true
       verify-kmp: true
@@ -60,7 +59,7 @@ jobs:
 
   check:
     needs: build
-    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-test-kmp.yml@main
     with:
       platforms: "['ios', 'macos', 'tvos', 'watchos', 'linux-js', 'mingw']"
     concurrency:
@@ -69,7 +68,7 @@ jobs:
 
   docs:
     needs: [ coverage, check ]
-    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-snapshot.yml@v1.0.0
+    uses: bitpogo/workflows/.github/workflows/shared-mkdocs-snapshot.yml@main
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     concurrency:
@@ -78,9 +77,7 @@ jobs:
 
   publish:
     needs: [ coverage, check ]
-    uses: bitpogo/workflows/.github/workflows/shared-publish-snapshot.yml@v1.0.0
-    with:
-      uses-mips: false
+    uses: bitpogo/workflows/.github/workflows/shared-publish-snapshot.yml@main
     secrets:
       upload-username: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_USERNAME }}
       upload-token: ${{ secrets.PACKAGE_REGISTRY_UPLOAD_TOKEN }}

@@ -70,7 +70,7 @@ internal class PlatformMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _buzz.clear()
         _foo.clear()
         _oo.clear()

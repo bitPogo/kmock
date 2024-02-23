@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -49,7 +49,7 @@ class KMockPluginSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.apply(any()) } returns mockk()
@@ -75,7 +75,7 @@ class KMockPluginSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
@@ -103,7 +103,7 @@ class KMockPluginSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true
@@ -132,7 +132,7 @@ class KMockPluginSpec {
 
         every { project.plugins } returns plugins
         every { project.extensions } returns extensions
-        every { project.buildDir } returns buildDir
+        every { project.layout.buildDirectory.get().asFile } returns buildDir
 
         every { plugins.hasPlugin(any<String>()) } returns false
         every { plugins.hasPlugin("com.google.devtools.ksp") } returns true

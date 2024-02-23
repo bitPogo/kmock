@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -18,7 +18,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 
 internal object AndroidSourceBinder : KMockPluginContract.AndroidSourceBinder {
     private fun Project.resolveAndroidExtension(
-        action: (CommonExtension<*, *, *, *>) -> Unit,
+        action: (CommonExtension<*, *, *, *, *>) -> Unit,
     ) {
         if (plugins.findPlugin("com.android.application") is Plugin<*>) {
             extensions.configure(ApplicationExtension::class.java) {
@@ -40,14 +40,14 @@ internal object AndroidSourceBinder : KMockPluginContract.AndroidSourceBinder {
     ): AndroidSourceSet = getByName("androidTest${buildType.capitalize(Locale.ROOT)}")
 
     private fun String.toKSPUnitTestPath(project: Project): String {
-        return "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/${this}UnitTest"
+        return "${project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp/${this}UnitTest"
     }
 
     private fun String.toKSPInstrumentedTestPath(project: Project): String {
-        return "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/${this}AndroidTest"
+        return "${project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp/${this}AndroidTest"
     }
 
-    private fun CommonExtension<*, *, *, *>.configureKsp(project: Project) {
+    private fun CommonExtension<*, *, *, *, *>.configureKsp(project: Project) {
         defaultBuildTypes.forEach { buildType ->
             val unitTest = sourceSets.getUnitTest(buildType)
             val instrumentedTest = sourceSets.getAndroidTest(buildType)

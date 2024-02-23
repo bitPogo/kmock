@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
-import tech.antibytes.gradle.dependency.settings.localGithub
+import tech.antibytes.gradle.dependency.settings.fullCache
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -31,51 +31,47 @@ pluginManagement {
 dependencyResolutionManagement {
     versionCatalogs {
         getByName("antibytesCatalog") {
-            version("gradle-ksp-plugin-dependency", "1.8.0-1.0.8")
-            version("gradle-ksp-runtime", "1.8.0-1.0.8")
-            version("gradle-ksp-plugin-plugin", "1.8.0-1.0.8")
+            version("minSdk", "21")
+            version("kfixture", "0.4.0-SNAPSHOT")
+            version("testUtils", "b6c6e6c")
+            version("kotlinx-coroutines-core", "1.7.1")
+            version("kotlinx-coroutines-test", "1.7.1")
 
-            version("kotlin-android", "1.8.0")
-            version("kotlin-jvm", "1.8.0")
-            version("kotlin-kotlin-dependency", "1.8.0")
-            version("kotlin-kotlin-plugin", "1.8.0")
-            version("kotlin-language", "1.8.0")
-            version("kotlin-multiplatform", "1.8.0")
-            version("kotlin-reflect", "1.8.0")
-            version("kotlin-stdlib-common", "1.8.0")
-            version("kotlin-stdlib-jdk", "1.8.0")
-            version("kotlin-stdlib-jdk8", "1.8.0")
-            version("kotlin-stdlib-js", "1.8.0")
-            version("kotlin-test-annotations", "1.8.0")
-            version("kotlin-test-core-common", "1.8.0")
-            version("kotlin-test-core-js", "1.8.0")
-            version("kotlin-test-core-jvm", "1.8.0")
-            version("kotlin-test-core-wasm", "1.8.0")
-            version("kotlin-test-junit4", "1.8.0")
-            version("kotlin-test-junit5", "1.8.0")
+            library("kfixture", "tech.antibytes.kfixture", "core").versionRef("kfixture")
+            library("testUtils-core", "tech.antibytes.test-utils-kmp", "test-utils").versionRef("testUtils")
+            library(
+                "testUtils-annotations",
+                "tech.antibytes.test-utils-kmp",
+                "test-utils-annotations-junit4",
+            ).versionRef("testUtils")
+            library(
+                "testUtils-coroutine",
+                "tech.antibytes.test-utils-kmp",
+                "test-utils-coroutine",
+            ).versionRef("testUtils")
         }
     }
 }
 
 plugins {
-    id("tech.antibytes.gradle.dependency.settings") version "022f831"
+    id("tech.antibytes.gradle.dependency.settings") version "288f8da"
 }
 
 includeBuild("setup")
-includeBuild("gradlePlugin/kmock-test-plugin")
+includeBuild("kmock-test-plugin")
 
 include(
     ":kmock",
     ":kmock-processor",
     ":kmock-gradle",
     ":docs",
-    ":playground"
-    // ":integration-kmp", ignored until 1.8 full integration
-    // ":integration-android-application" ignored until 1.8 full integration
+    ":playground",
+    ":integration-kmp",
+    ":integration-android-application",
 )
 
 buildCache {
-    localGithub()
+    fullCache(rootDir)
 }
 
 // see: https://github.com/gradle/gradle/issues/16608

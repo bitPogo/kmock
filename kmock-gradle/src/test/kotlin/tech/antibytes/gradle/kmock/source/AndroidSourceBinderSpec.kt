@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -53,7 +53,7 @@ class AndroidSourceBinderSpec {
 
         every { project.plugins.findPlugin("com.android.application") } returns mockk()
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns buildDirPath
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns buildDirPath
 
         invokeGradleAction(androidExtension) { probe ->
             extensions.configure(ApplicationExtension::class.java, probe)
@@ -118,7 +118,7 @@ class AndroidSourceBinderSpec {
 
         every { project.plugins.findPlugin("com.android.application") } returns null
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns buildDirPath
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns buildDirPath
 
         invokeGradleAction(androidExtension) { probe ->
             extensions.configure(LibraryExtension::class.java, probe)

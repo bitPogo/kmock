@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -81,7 +81,7 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
 
         every { annotation1.parent } returns null
         every { annotation2.parent } returns null
-        every { logger.error(any(), any()) } just Runs
+        every { logger.warn(any(), any()) } just Runs
 
         // When
         val actual = KMockMultiSourceAggregator(
@@ -102,10 +102,10 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
             resolver.getSymbolsWithAnnotation(KMockMulti::class.qualifiedName!!, false)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation1)
+            logger.warn("Unprocessable source.", annotation1)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation2)
+            logger.warn("Unprocessable source.", annotation2)
         }
     }
 
@@ -137,7 +137,7 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
         every {
             context2.filePath
         } returns "${fixture.fixture<String>()}/src/${fixture.fixture<String>()}/${fixture.fixture<String>()}"
-        every { logger.error(any(), any()) } just Runs
+        every { logger.warn(any(), any()) } just Runs
 
         // When
         val actual = KMockMultiSourceAggregator(
@@ -158,10 +158,10 @@ class KMockMultiSourceAggregatorAgnosticAnnotationSpec {
             resolver.getSymbolsWithAnnotation(KMockMulti::class.qualifiedName!!, false)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation1)
+            logger.warn("Unprocessable source.", annotation1)
         }
         verify(exactly = 1) {
-            logger.error("Unprocessable source.", annotation2)
+            logger.warn("Unprocessable source.", annotation2)
         }
     }
 

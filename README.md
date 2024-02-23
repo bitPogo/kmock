@@ -58,6 +58,6 @@ Please take a look [here](https://github.com/bitPogo/kmock/tree/main/docs/src/de
 
 ## Copyright and License
 
-Copyright (c) 2023 Matthias Geisler / All rights reserved.
+Copyright (c) 2024 Matthias Geisler / All rights reserved.
 
 Please refer to the [License](https://github.com/bitPogo/kmock/blob/main/LICENSE) for further details.

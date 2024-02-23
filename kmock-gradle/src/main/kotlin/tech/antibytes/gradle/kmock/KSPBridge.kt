@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -37,7 +37,7 @@ internal class KSPBridge private constructor(
         cacheController.configure(project)
 
         ksp.arg(KMP_FLAG, isKMP.toString())
-        ksp.arg(KSP_DIR, "${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp")
+        ksp.arg(KSP_DIR, "${project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp")
     }
 
     private fun configureOnce() {

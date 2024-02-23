@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJsProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tech.antibytes.gradle.kmock.KMockPluginContract
 import tech.antibytes.gradle.kmock.KMockPluginContract.Companion.KSP_PLUGIN
-import tech.antibytes.gradle.kmock.config.MainConfig
 import tech.antibytes.gradle.kmock.util.applyIfNotExists
 import tech.antibytes.gradle.kmock.util.isAndroid
 import tech.antibytes.gradle.kmock.util.isJs
@@ -38,22 +37,16 @@ internal object SingleSourceSetConfigurator : KMockPluginContract.SourceSetConfi
 
     private fun addKsp(project: Project) {
         project.dependencies {
-            add(
-                "kspTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
-            )
+            add("kspTest", determineProcessor())
 
             if (project.isAndroid()) {
-                add(
-                    "kspAndroidTest",
-                    "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
-                )
+                add("kspAndroidTest", determineProcessor())
             }
         }
     }
 
     override fun configure(project: Project) {
-        val buildDir = project.buildDir.absolutePath.trimEnd('/')
+        val buildDir = project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')
 
         when {
             project.isJs() -> {

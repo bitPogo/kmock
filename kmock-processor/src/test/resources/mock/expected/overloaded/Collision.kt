@@ -110,7 +110,7 @@ internal class CollisionMock(
 
     public override fun foo(vararg fuzz: Any): Any = _fooWithAnys.invoke(fuzz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _hashCode.clear()
         _fooWithIntAny.clear()

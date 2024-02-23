@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -153,6 +153,7 @@ public class KMockProcessorProvider : SymbolProcessorProvider {
             nameSelector = nameSelector,
             nonIntrusiveInvocationGenerator = nonIntrusiveInvocationGenerator,
             genericResolver = KMockGenerics,
+            logger = logger,
         )
         val receiverGenerator = KMockReceiverGenerator(
             utils = methodeGeneratorHelper,

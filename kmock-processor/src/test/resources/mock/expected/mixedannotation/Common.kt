@@ -25,7 +25,7 @@ internal class CommonMock(
         useUnitFunRelaxerIf(relaxUnitFun || relaxed)
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _doSomething.clear()
     }
 }

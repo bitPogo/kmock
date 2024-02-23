@@ -40,7 +40,7 @@ internal class NoBuildInsMock(
 
     public override fun hashCode(base: Any): Int = _hashCodeWithAny.invoke(base)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _equalsWithInt.clear()
         _toStringWithInt.clear()
         _hashCodeWithAny.clear()

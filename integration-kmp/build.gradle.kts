@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -8,8 +8,7 @@ import tech.antibytes.gradle.kmock.config.publishing.KMockConfiguration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import tech.antibytes.gradle.configuration.apple.ensureAppleDeviceCompatibility
 import tech.antibytes.gradle.configuration.isIdea
-import tech.antibytes.gradle.configuration.sourcesets.appleWithLegacy
-import tech.antibytes.gradle.configuration.sourcesets.setupAndroidTest
+import tech.antibytes.gradle.configuration.sourcesets.apple
 
 plugins {
     alias(antibytesCatalog.plugins.gradle.antibytes.kmpConfiguration)
@@ -32,7 +31,7 @@ atomicfu {
 }
 
 kotlin {
-    android {
+    androidTarget {
         publishAllLibraryVariants()
         publishLibraryVariantsGroupedByFlavor = true
     }
@@ -44,7 +43,7 @@ kotlin {
 
     jvm()
 
-    appleWithLegacy()
+    apple()
     ensureAppleDeviceCompatibility()
 
     linuxX64()
@@ -67,17 +66,16 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(libs.testUtils.annotations)
-                implementation(libs.testUtils.core)
-                implementation(libs.testUtils.coroutine)
-                implementation(libs.kfixture)
+                implementation(antibytesCatalog.testUtils.annotations)
+                implementation(antibytesCatalog.testUtils.core)
+                implementation(antibytesCatalog.testUtils.coroutine)
+                implementation(antibytesCatalog.kfixture)
                 implementation(antibytesCatalog.common.test.kotlin.core)
 
                 implementation(antibytesCatalog.common.stately.freeze)
 
                 implementation(antibytesCatalog.common.kotlinx.atomicfu.core)
-
-                implementation(project(":kmock"))
+                implementation(projects.kmock)
             }
         }
 
@@ -96,8 +94,7 @@ kotlin {
             }
         }
 
-        setupAndroidTest()
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependsOn(concurrentTest)
 
             dependencies {
@@ -107,7 +104,7 @@ kotlin {
             }
         }
 
-        val androidAndroidTest by getting {
+        val androidInstrumentedTest by getting {
             dependsOn(concurrentTest)
 
             dependencies {
@@ -196,13 +193,7 @@ android {
         minSdk = 30
     }
 
-    sourceSets {
-        val androidTest = getByName("androidTest")
-        androidTest.java.setSrcDirs(setOf("src/androidAndroidTest/kotlin"))
-        androidTest.res.setSrcDirs(setOf("src/androidAndroidTest/res"))
-    }
-
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             setOf(
                 "META-INF/DEPENDENCIES",
@@ -219,3 +210,5 @@ android {
         )
     }
 }
+
+val kspTasks = tasks.matching { task -> task.name.startsWith("ksp") }

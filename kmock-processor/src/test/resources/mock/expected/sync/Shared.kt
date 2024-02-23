@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.Enum
 import kotlin.Int
 import kotlin.Suppress
-import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -38,7 +37,7 @@ internal class SharedMock(
 
     public override fun nol(buzz: Enum<*>): Any = _nol.invoke(buzz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
         _nol.clear()

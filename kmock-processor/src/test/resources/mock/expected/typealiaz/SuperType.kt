@@ -64,12 +64,12 @@ internal class InheritedMock<R : Alias33>(
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias31LAlias33",
             collector = collector, freeze = freeze)
 
-    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any>) -> Unit>
+    public val _doSomethingElseWithTAlias97: KMockContract.SyncFunProxy<Unit, (Alias97<Any?>) -> Unit>
         =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_doSomethingElseWithTAlias97",
             collector = collector, freeze = freeze)
 
-    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<Any>) -> Unit> =
+    public val _fooWithTAlias93: KMockContract.SyncFunProxy<Unit, (Alias93<Any?>) -> Unit> =
         ProxyFactory.createSyncFunProxy("mock.template.typealiaz.InheritedMock#_fooWithTAlias93",
             collector = collector, freeze = freeze)
 
@@ -193,7 +193,7 @@ internal class InheritedMock<R : Alias33>(
 
     public override fun run(arg: R): Alias31 = _run.invoke(arg)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _prop.clear()
         _doSomethingWithAlias97Alias33Alias31.clear()
         _doSomethingWithAlias97.clear()

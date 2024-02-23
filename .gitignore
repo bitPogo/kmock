@@ -2,6 +2,7 @@
 .gradle/
 build/
 local.properties
+build-cache/
 
 # IDEA/Android Studio ignores
 *iml

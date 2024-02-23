@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import multi.template.kmock.common.CommonContractRegular
 import multi.template.kmock.common.Regular1
 import multi.template.kmock.common.nested.Regular3
@@ -63,7 +62,7 @@ CommonContractRegular.Regular2, MultiMock : Regular3 {
 
     public override fun doSomethingElse(): String = _doSomethingElse.invoke()
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _something.clear()
         _anything.clear()
         _somethingElse.clear()

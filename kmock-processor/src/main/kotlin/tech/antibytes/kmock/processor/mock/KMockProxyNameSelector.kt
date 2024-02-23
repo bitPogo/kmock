@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -151,7 +151,7 @@ internal class KMockProxyNameSelector(
         val prefix = resolveClassPrefix()
         val name = resolveRawClassFlatName()
 
-        return "$zero$prefix$name"
+        return "$prefix$zero$name"
     }
 
     private fun WildcardTypeName.resolveExhaustiveName(

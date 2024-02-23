@@ -1,9 +1,10 @@
-/* ktlint-disable filename */
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
+
+@file:Suppress("ktlint:standard:filename")
 
 package tech.antibytes.kmock.processor.kotlinpoet
 
@@ -149,7 +150,19 @@ private fun KSTypeArgument.mapParameterType(
     }
 }
 
-internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? = tag(GenericDeclaration::class)
+internal fun TypeName.resolveGenericDeclaration(): GenericDeclaration? {
+    return tag(GenericDeclaration::class)?.run {
+        copy(
+            types = this.types.map { type ->
+                if (type != this@resolveGenericDeclaration) {
+                    type.copy(nullable = this@resolveGenericDeclaration.isNullable)
+                } else {
+                    type
+                }
+            },
+        )
+    }
+}
 
 private fun List<KSTypeArgument>.mapParameterType(
     visited: Set<String>,

@@ -5,7 +5,6 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
-import kotlin.Unit
 import multi.template.custom.Regular1
 import multi.template.custom.SharedContractRegular
 import multi.template.custom.nested.Regular3
@@ -109,7 +108,7 @@ SharedContractRegular.Regular2, MultiMock : Regular3 {
         useSpyIf(__spyOn) { __spyOn!!.hashCode() }
     }
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _something.clear()
         _anything.clear()
         _somethingElse.clear()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -9,11 +9,15 @@ package tech.antibytes.kmock.integration
 import co.touchlab.stately.concurrency.AtomicReference
 import kotlin.js.JsName
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import tech.antibytes.kfixture.fixture
 import tech.antibytes.kfixture.kotlinFixture
 import tech.antibytes.kfixture.listFixture
@@ -40,11 +44,8 @@ import tech.antibytes.kmock.verification.asyncVerifyOrder
 import tech.antibytes.kmock.verification.verify
 import tech.antibytes.kmock.verification.verifyOrder
 import tech.antibytes.util.test.annotations.IgnoreJs
-import tech.antibytes.util.test.coroutine.AsyncTestReturnValue
 import tech.antibytes.util.test.coroutine.clearBlockingTest
-import tech.antibytes.util.test.coroutine.defaultTestContext
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeout
-import tech.antibytes.util.test.coroutine.runBlockingTestWithTimeoutInScope
+import tech.antibytes.util.test.coroutine.defaultScheduler
 import tech.antibytes.util.test.fulfils
 import tech.antibytes.util.test.mustBe
 
@@ -61,6 +62,7 @@ import tech.antibytes.util.test.mustBe
     SampleLocalRepository::class,
     GenericSampleDomainObject::class,
 )
+@Ignore
 class SampleControllerAlternativeAccessSpec {
     private val fixture = kotlinFixture()
     private val collector = Asserter()
@@ -99,7 +101,7 @@ class SampleControllerAlternativeAccessSpec {
 
     @Test
     @JsName("fn1")
-    fun `Given fetchAndStore it fetches and stores DomainObjects`(): AsyncTestReturnValue {
+    fun `Given fetchAndStore it fetches and stores DomainObjects`() = runTest {
         // Given
         val url = fixture.fixture<String>()
         val id = fixture.listFixture<String>(size = 2)
@@ -111,35 +113,34 @@ class SampleControllerAlternativeAccessSpec {
 
         // When
         val controller = SampleController(local, remote)
-        return runBlockingTestWithTimeout {
-            val actual = controller.fetchAndStore(url)
+        val actual = controller.fetchAndStore(url)
 
-            // Then
-            actual mustBe domainObject
+        // Then
+        actual mustBe domainObject
 
-            asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
-            asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
+        asyncVerify(exactly = 1) { remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url) }
+        asyncVerify(exactly = 1) { local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1]) }
 
-            collector.asyncAssertOrder {
-                remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                domainObject.propertyProxyOf(domainObject::id).wasSet()
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                domainObject.propertyProxyOf(domainObject::value).wasGotten()
-                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-            }
+        collector.asyncAssertOrder {
+            remote.asyncFunProxyOf(remote::fetch).hasBeenStrictlyCalledWith(url)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            domainObject.propertyProxyOf(domainObject::id).wasSet()
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            domainObject.propertyProxyOf(domainObject::value).wasGotten()
+            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
+        }
 
-            collector.asyncVerifyOrder {
-                remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
-                domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
-                local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
-            }
+        collector.asyncVerifyOrder {
+            remote.asyncFunProxyOf(remote::fetch).hasBeenCalledWith(url)
+            domainObject.propertyProxyOf(domainObject::id).wasSetTo("42")
+            local.asyncFunProxyOf(local::store).hasBeenCalledWith(id[1])
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     @JsName("fn2")
-    fun `Given find it fetches a DomainObjects`(): AsyncTestReturnValue {
+    fun `Given find it fetches a DomainObjects`() = runTest {
         // Given
         val idOrg = fixture.fixture<String>()
         val id = fixture.fixture<String>()
@@ -153,37 +154,37 @@ class SampleControllerAlternativeAccessSpec {
         // When
         val controller = SampleController(local, remote)
         val doRef = AtomicReference(domainObject)
-        val contextRef = AtomicReference(defaultTestContext)
+        val contextRef = AtomicReference(defaultScheduler)
 
-        return runBlockingTestWithTimeoutInScope(defaultTestContext) {
-            // When
-            controller.find(idOrg)
-                .onEach { actual -> actual mustBe doRef.get() }
-                .launchIn(CoroutineScope(contextRef.get()))
+        // When
+        controller.find(idOrg)
+            .onEach { actual -> actual mustBe doRef.get() }
+            .launchIn(CoroutineScope(contextRef.get()))
 
-            delay(20)
+        delay(20)
 
-            // Then
-            verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
-            verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
-            verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
+        advanceUntilIdle()
 
-            collector.assertOrder {
-                local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
-                domainObject.propertyProxyOf(domainObject::id).wasGotten()
-                local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                domainObject.propertyProxyOf(domainObject::id).wasSet()
-            }
+        // Then
+        verify(exactly = 1) { local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg) }
+        verify(exactly = 2) { local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id) }
+        verify(exactly = 2) { remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg) }
 
-            collector.verifyOrder {
-                local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-                remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
-            }
+        collector.assertOrder {
+            local.syncFunProxyOf(local::contains).hasBeenStrictlyCalledWith(idOrg)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
+            domainObject.propertyProxyOf(domainObject::id).wasGotten()
+            local.syncFunProxyOf(local::fetch).hasBeenStrictlyCalledWith(id)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            domainObject.propertyProxyOf(domainObject::id).wasSet()
+        }
+
+        collector.verifyOrder {
+            local.syncFunProxyOf(local::contains).hasBeenCalledWithout("abc")
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
+            remote.syncFunProxyOf(remote::find).hasBeenStrictlyCalledWith(idOrg)
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Matthias Geisler (bitPogo) / All rights reserved.
+ * Copyright (c) 2024 Matthias Geisler (bitPogo) / All rights reserved.
  *
  * Use of this source code is governed by Apache v2.0
  */
@@ -15,6 +15,9 @@ repositories {
     google()
 
     val antibytesPlugins = "^tech\\.antibytes\\.[\\.a-z\\-]+"
+    maven {
+        setUrl("~/.m2/repository")
+    }
     maven {
         setUrl("https://raw.github.com/bitPogo/maven-snapshots/main/snapshots")
         content {
@@ -36,17 +39,9 @@ dependencies {
     implementation(antibytesCatalog.gradle.antibytes.publishingConfiguration)
     implementation(antibytesCatalog.gradle.antibytes.quality)
     implementation(antibytesCatalog.gradle.agp)
-    implementation(antibytesCatalog.gradle.kotlinx.atomicfu) {
-        version {
-            require("0.19.0")
-        }
-    }
+    implementation(antibytesCatalog.gradle.kotlinx.atomicfu)
     api(antibytesCatalog.gradle.antibytes.runtimeConfig)
-    implementation(antibytesCatalog.gradle.kotlin.kotlin) {
-        version {
-            require("1.8.0")
-        }
-    }
+    implementation(antibytesCatalog.gradle.kotlin.kotlin)
 }
 
 gradlePlugin {
@@ -54,4 +49,9 @@ gradlePlugin {
         id = "tech.antibytes.gradle.setup"
         implementationClass = "tech.antibytes.gradle.kmock.config.SetupPlugin"
     }
+}
+
+tasks.named<Wrapper>("wrapper") {
+    gradleVersion = antibytesCatalog.versions.gradle.gradle.get()
+    distributionType = Wrapper.DistributionType.ALL
 }

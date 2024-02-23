@@ -6,7 +6,6 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.IntArray
 import kotlin.Suppress
-import kotlin.Unit
 import tech.antibytes.kmock.KMockContract
 import tech.antibytes.kmock.proxy.NoopCollector
 import tech.antibytes.kmock.proxy.ProxyFactory
@@ -45,7 +44,7 @@ internal class CommonMock(
 
     public override fun izz(vararg buzz: Any): Any = _izz.invoke(buzz)
 
-    public fun _clearMock(): Unit {
+    public fun _clearMock() {
         _foo.clear()
         _bar.clear()
         _ozz.clear()
