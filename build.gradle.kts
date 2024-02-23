@@ -13,7 +13,6 @@ import tech.antibytes.gradle.kmock.config.quality.Linter
 import tech.antibytes.gradle.kmock.config.quality.SonarConfiguration
 import tech.antibytes.gradle.kmock.config.quality.StableApi
 import tech.antibytes.gradle.kmock.config.repositories.Repositories.kmockRepositories
-import tech.antibytes.gradle.publishing.PublishingApiContract
 import tech.antibytes.gradle.quality.api.CodeAnalysisConfiguration
 
 plugins {

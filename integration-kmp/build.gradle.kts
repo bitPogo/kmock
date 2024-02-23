@@ -210,3 +210,5 @@ android {
         )
     }
 }
+
+val kspTasks = tasks.matching { task -> task.name.startsWith("ksp") }

@@ -14,7 +14,7 @@ import tech.antibytes.gradle.kmock.KMockPluginContract
 internal object KmpCleanup : KMockPluginContract.KmpCleanup {
     private fun Task?.addPurgeHook(platform: String) {
         this?.doLast {
-            project.file("${project.buildDir.absolutePath.trimEnd('/')}/generated/ksp/${platform}Test")
+            project.file("${project.layout.buildDirectory.get().asFile.absolutePath.trimEnd('/')}/generated/ksp/${platform}Test")
                 .walkBottomUp()
                 .toList()
                 .forEach { file ->

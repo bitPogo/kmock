@@ -8,12 +8,10 @@ package tech.antibytes.gradle.kmock.source
 
 import com.google.devtools.ksp.gradle.KspExtension
 import io.mockk.Runs
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import org.gradle.api.NamedDomainObjectContainer
@@ -159,14 +157,14 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
                 "kspJsTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
@@ -199,7 +197,7 @@ class KmpSourceSetsConfiguratorSpec {
     }
 
     @Test
-    fun `Given configure is called it configures PlatformTest Sources, which contain a Android Source`() {
+    fun `Given configure is called it configures PlatformTest Sources, which contain a Android Source v1`() {
         // Given
         val project: Project = mockk()
         val extensions: ExtensionContainer = mockk()
@@ -230,22 +228,12 @@ class KmpSourceSetsConfiguratorSpec {
         val source5Dependencies: KotlinSourceSet = mockk()
         val source5DependenciesName: String = fixture.fixture()
 
-        val source6: KotlinSourceSet = mockk()
-        val source6Dependencies: KotlinSourceSet = mockk()
-        val source6DependenciesName: String = fixture.fixture()
-
-        val source7: KotlinSourceSet = mockk()
-        val source7Dependencies: KotlinSourceSet = mockk()
-        val source7DependenciesName: String = fixture.fixture()
-
         val sourceSets = mutableListOf(
             source1,
             source2,
             source3,
             source4,
             source5,
-            source6,
-            source7,
         )
 
         val dependencyGraph = mapOf(
@@ -292,16 +280,6 @@ class KmpSourceSetsConfiguratorSpec {
         every { source5.dependsOn } returns setOf(source5Dependencies)
         every { source5Dependencies.name } returns source5DependenciesName
 
-        every { source6.name } returns "androidUnitTest"
-        every { source6.kotlin.srcDir(any()) } returns mockk()
-        every { source6.dependsOn } returns setOf(source6Dependencies)
-        every { source6Dependencies.name } returns source6DependenciesName
-
-        every { source7.name } returns "androidInstrumentedTest"
-        every { source7.kotlin.srcDir(any()) } returns mockk()
-        every { source7.dependsOn } returns setOf(source7Dependencies)
-        every { source7Dependencies.name } returns source7DependenciesName
-
         every { extensions.getByType(KspExtension::class.java) } returns kspExtension
         every { kspExtension.arg(any(), any()) } just Runs
 
@@ -317,25 +295,23 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
-
-        confirmVerified(dependencies)
 
         verify(exactly = 1) {
             source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
@@ -358,21 +334,11 @@ class KmpSourceSetsConfiguratorSpec {
         }
 
         verify(exactly = 1) {
-            source6.kotlin.srcDir("$path/generated/ksp/android/androidUnitTest/kotlin")
-        }
-
-        verify(exactly = 1) {
-            source7.kotlin.srcDir("$path/generated/ksp/android/androidInstrumentedTest/kotlin")
-        }
-
-        verify(exactly = 1) {
             DependencyGraph.resolveAncestors(
                 sourceDependencies = mapOf(
                     source1DependenciesName to setOf("jvm"),
                     source2DependenciesName to setOf("android"),
                     source3DependenciesName to setOf("androidAndroid"),
-                    source6DependenciesName to setOf("androidUnit"),
-                    source7DependenciesName to setOf("androidInstrumented"),
                 ),
                 metaDependencies = emptyMap(),
             )
@@ -381,15 +347,137 @@ class KmpSourceSetsConfiguratorSpec {
         verify(exactly = 1) {
             KmpCleanup.cleanup(
                 project,
-                listOf(
-                    "jvm",
-                    "android",
-                    "androidAndroid",
-                    "androidAndroid",
-                    "androidAndroid",
-                    "androidUnit",
-                    "androidInstrumented",
+                listOf("jvm", "android", "androidAndroid", "androidAndroid", "androidAndroid"),
+            )
+        }
+
+        verify(exactly = 0) { kspExtension.arg(any(), any()) }
+    }
+
+    @Test
+    fun `Given configure is called it configures PlatformTest Sources, which contain a Android Source v2`() {
+        // Given
+        val project: Project = mockk()
+        val extensions: ExtensionContainer = mockk()
+        val dependencies: DependencyHandler = mockk()
+        val kotlin: KotlinMultiplatformExtension = mockk()
+        val sources: NamedDomainObjectContainer<KotlinSourceSet> = mockk()
+        val path: String = fixture.fixture()
+
+        val kspExtension: KspExtension = mockk()
+
+        val source1: KotlinSourceSet = mockk()
+        val source1Dependencies: KotlinSourceSet = mockk()
+        val source1DependenciesName: String = fixture.fixture()
+
+        val source2: KotlinSourceSet = mockk()
+        val source2Dependencies: KotlinSourceSet = mockk()
+        val source2DependenciesName: String = fixture.fixture()
+
+        val source3: KotlinSourceSet = mockk()
+        val source3Dependencies: KotlinSourceSet = mockk()
+        val source3DependenciesName: String = fixture.fixture()
+
+        val sourceSets = mutableListOf(
+            source1,
+            source2,
+            source3,
+        )
+
+        val dependencyGraph = mapOf(
+            "commonTest" to emptySet<String>(),
+        )
+
+        every { project.findProperty(any()) } returns "false"
+        every { project.dependencies } returns dependencies
+        every { project.extensions } returns extensions
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        invokeGradleAction(kotlin) { probe ->
+            extensions.configure("kotlin", probe)
+        }
+
+        every { kotlin.sourceSets } returns sources
+        every { sources.iterator() } returns sourceSets.listIterator()
+
+        every { dependencies.add(any(), any()) } returns mockk()
+
+        every { source1.name } returns "jvmTest"
+        every { source1.kotlin.srcDir(any()) } returns mockk()
+        every { source1.dependsOn } returns setOf(source1Dependencies)
+        every { source1Dependencies.name } returns source1DependenciesName
+
+        every { source2.name } returns "androidUnitTest"
+        every { source2.kotlin.srcDir(any()) } returns mockk()
+        every { source2.dependsOn } returns setOf(source2Dependencies)
+        every { source2Dependencies.name } returns source2DependenciesName
+
+        every { source3.name } returns "androidInstrumentedTest"
+        every { source3.kotlin.srcDir(any()) } returns mockk()
+        every { source3.dependsOn } returns setOf(source3Dependencies)
+        every { source3Dependencies.name } returns source3DependenciesName
+
+        every { extensions.getByType(KspExtension::class.java) } returns kspExtension
+        every { kspExtension.arg(any(), any()) } just Runs
+
+        every { DependencyGraph.resolveAncestors(any(), any()) } returns dependencyGraph
+        every { KmpCleanup.cleanup(any(), any()) } just Runs
+
+        every { project.tasks } returns mockk(relaxed = true)
+
+        // When
+        KmpSourceSetsConfigurator.configure(project)
+
+        // Then
+        verify(exactly = 1) {
+            dependencies.add(
+                "kspJvmTest",
+                MainConfig.processor,
+            )
+        }
+
+        verify(exactly = 1) {
+            dependencies.add(
+                "kspAndroidTest",
+                MainConfig.processor,
+            )
+        }
+
+        verify(exactly = 1) {
+            dependencies.add(
+                "kspAndroidAndroidTest",
+                MainConfig.processor,
+            )
+        }
+
+        verify(exactly = 1) {
+            source1.kotlin.srcDir("$path/generated/ksp/jvm/jvmTest/kotlin")
+        }
+
+        verify(exactly = 1) {
+            source2.kotlin.srcDir("$path/generated/ksp/android/androidUnitTest/kotlin")
+        }
+
+        verify(exactly = 1) {
+            source3.kotlin.srcDir("$path/generated/ksp/android/androidInstrumentedTest/kotlin")
+        }
+
+        verify(exactly = 1) {
+            DependencyGraph.resolveAncestors(
+                sourceDependencies = mapOf(
+                    source1DependenciesName to setOf("jvm"),
+                    source2DependenciesName to setOf("androidUnit"),
+                    source3DependenciesName to setOf("androidInstrumented"),
                 ),
+                metaDependencies = emptyMap(),
+            )
+        }
+
+        verify(exactly = 1) {
+            KmpCleanup.cleanup(
+                project,
+                listOf("jvm", "androidUnit", "androidInstrumented"),
             )
         }
 
@@ -466,14 +554,14 @@ class KmpSourceSetsConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspNativeTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosX64Test",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
@@ -630,63 +718,63 @@ class KmpSourceSetsConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspCommonTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspMetaTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspConcurrentTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspNativeTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosX64Test",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspIosArm32Test",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspLinuxX64Test",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 
         verify(atLeast = 1) {
             dependencies.add(
                 "kspJvmTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
 

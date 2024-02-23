@@ -82,7 +82,7 @@ class KmpCleanupSpec {
         every { plugins.hasPlugin(any<String>()) } returns false
         every { kspTask.project } returns project
 
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.file(any()) } returns kspDir
 
         invokeGradleAction(project) { probe ->

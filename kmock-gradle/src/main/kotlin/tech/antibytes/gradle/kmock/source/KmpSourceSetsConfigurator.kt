@@ -22,12 +22,10 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         dependencies: DependencyHandler,
         dependency: String,
     ) {
-        if (!dependency.startsWith("kspAndroidUnitTest") && !dependency.startsWith("kspAndroidInstrumentedTest")) {
-            dependencies.add(
-                dependency,
-                dependencies.determineProcessor(),
-            )
-        }
+        dependencies.add(
+            dependency,
+            dependencies.determineProcessor(),
+        )
     }
 
     private fun String.cleanAndroid(): String {
@@ -92,6 +90,14 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         return startsWith("androidAndroidTest") || startsWith("androidInstrumentedTest")
     }
 
+    private fun String.ensureAndroidName(): String {
+        return when (this) {
+            "androidInstrumented" -> "androidAndroid"
+            "androidUnit" -> "android"
+            else -> this
+        }
+    }
+
     private fun addSource(
         sourceSetName: String,
         platformName: String,
@@ -104,7 +110,10 @@ internal object KmpSourceSetsConfigurator : SourceSetConfigurator {
         if (!sourceSetName.isAndroidInstrumented() || sourceSetName.endsWith("Test")) {
             val kspDependency = resolveKspDependency(platformName)
             try {
-                addKspDependency(dependencyHandler, "ksp${platformName.capitalize(Locale.ROOT)}Test")
+                addKspDependency(
+                    dependencyHandler,
+                    "ksp${platformName.ensureAndroidName().capitalize(Locale.ROOT)}Test",
+                )
             } catch (e: Throwable) {
                 collectDependencies(
                     sourceSetName,

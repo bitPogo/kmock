@@ -3,7 +3,6 @@
  *
  * Use of this source code is governed by Apache v2.0
  */
-
 package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.Project
@@ -33,6 +32,23 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
         }
     }
 
+    private fun List<Task>.amendAndroidKspTasks(project: Project): List<Task> {
+        return if (!project.isAndroid()) {
+            this
+        } else {
+            this.toMutableList()
+                .also {
+                    it.addAll(
+                        listOf(
+                            project.tasks.getByName("kspDebugUnitTestKotlinAndroid"),
+                            project.tasks.getByName("kspReleaseUnitTestKotlinAndroid"),
+                            project.tasks.getByName("kspDebugAndroidTestKotlinAndroid"),
+                        ),
+                    )
+                }
+        }
+    }
+
     private fun Iterable<String>.toTestTasks(
         project: Project,
     ): List<Task> = this
@@ -42,7 +58,10 @@ internal object KmpTestTaskChain : KMockPluginContract.KmpTestTaskChain {
 
     private fun Iterable<String>.toKspTasks(
         project: Project,
-    ): List<Task> = this.mapNotNull { task -> task.mapKspTask(project) }
+    ): List<Task> = this
+        .filter { task -> "Android" !in task }
+        .mapNotNull { task -> task.mapKspTask(project) }
+        .amendAndroidKspTasks(project)
 
     private fun List<Task>.chainTasks() {
         this.forEachIndexed { idx, task ->

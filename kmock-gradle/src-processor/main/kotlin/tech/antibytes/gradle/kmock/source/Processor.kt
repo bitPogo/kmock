@@ -9,7 +9,6 @@
 package tech.antibytes.gradle.kmock.source
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.kotlin.dsl.project
 import tech.antibytes.gradle.kmock.config.MainConfig
 
 internal fun DependencyHandler.determineProcessor(): Any = MainConfig.processor

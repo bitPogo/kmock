@@ -61,7 +61,7 @@ class SingleSourceSetConfiguratorSpec {
 
         every { project.dependencies } returns mockk(relaxed = true)
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns false
         every { project.plugins.hasPlugin("com.android.library") } returns false
         every { project.plugins.hasPlugin("com.android.application") } returns false
@@ -100,7 +100,7 @@ class SingleSourceSetConfiguratorSpec {
 
         every { project.dependencies } returns mockk(relaxed = true)
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
 
         every { project.plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
         every { project.plugins.hasPlugin("com.google.devtools.ksp") } returns true
@@ -142,7 +142,7 @@ class SingleSourceSetConfiguratorSpec {
 
         every { project.dependencies } returns mockk(relaxed = true)
         every { project.extensions } returns extensions
-        every { project.buildDir.absolutePath } returns path
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns path
         every { project.plugins } returns plugins
 
         every { plugins.hasPlugin("org.jetbrains.kotlin.js") } returns true
@@ -181,7 +181,7 @@ class SingleSourceSetConfiguratorSpec {
         val project: Project = mockk()
         val dependencies: DependencyHandler = mockk()
 
-        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns fixture.fixture<String>()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
 
@@ -198,7 +198,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
     }
@@ -209,7 +209,7 @@ class SingleSourceSetConfiguratorSpec {
         val project: Project = mockk()
         val dependencies: DependencyHandler = mockk()
 
-        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns fixture.fixture<String>()
         every { project.extensions } returns mockk(relaxed = true)
         every { project.dependencies } returns dependencies
 
@@ -229,7 +229,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(atLeast = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
     }
@@ -241,7 +241,7 @@ class SingleSourceSetConfiguratorSpec {
         val dependencies: DependencyHandler = mockk()
 
         every { project.extensions } returns mockk(relaxed = true)
-        every { project.buildDir.absolutePath } returns fixture.fixture<String>()
+        every { project.layout.buildDirectory.get().asFile.absolutePath } returns fixture.fixture<String>()
         every { project.dependencies } returns dependencies
 
         every { dependencies.add(any<String>(), any<String>()) } returns mockk()
@@ -260,7 +260,7 @@ class SingleSourceSetConfiguratorSpec {
         verify(exactly = 1) {
             dependencies.add(
                 "kspAndroidTest",
-                "tech.antibytes.kmock:kmock-processor:${MainConfig.version}",
+                MainConfig.processor,
             )
         }
     }
